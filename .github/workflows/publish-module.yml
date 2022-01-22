@@ -1,0 +1,57 @@
+name: Publish module
+  
+on:
+  workflow_call:
+    inputs:
+      tag:
+        description: "The git tag of the module to publish."
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "The git tag of the module to publish."
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+    
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ inputs.tag }}
+
+      - name: "Log in to Azure"
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.TEST_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.TEST_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.TEST_AZURE_SUBSCRIPTION_ID }}
+
+      - name: Get module path and version
+        id: get-module-path-and-version
+        uses: actions/github-script@v5
+        with:
+          result-encoding: string
+          script: |
+            const tag = context.payload.inputs.tag
+            const splitIndex = tag.lastIndexOf("/")
+            const modulePath = tag.substring(0, splitIndex)
+            const version = tag.substring(splitIndex + 1)
+
+            core.setOutput("module_path", modulePath)
+            core.setOutput("version", version)
+            
+      - name: "Publish module"
+        run: |
+          echo "modules/${{ steps.get-module-path-and-version.outputs.module_path }}/main.json"
+          echo "br:${{ secrets.TEST_REGISTRY_SERVER }}/${{ steps.get-module-path-and-version.outputs.module_path }}:${{ steps.get-module-path-and-version.outputs.version }}"
+
+            
