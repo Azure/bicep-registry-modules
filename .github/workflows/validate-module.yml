@@ -1,0 +1,58 @@
+name: Validate module
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  prerequisite:
+    runs-on: ubuntu-latest
+    outputs:
+      changed-module: ${{ steps.check-for-module-changes.outputs.result }}
+    steps:
+      - name: Check for module changes
+        uses: actions/github-script@v5
+        id: check-for-module-changes
+        with:
+          result-encoding: string
+          script: |
+            const { data: files } = await github.pulls.listFiles({
+              owner: context.payload.repository.owner.login,
+              repo: context.payload.repository.name,
+              pull_number: context.payload.number,
+            })
+
+            const path = require("path")
+            const modulePaths = [...new Set(files
+              .filter(x => x.filename.startsWith("modules/"))
+              .map(x => {
+                const directories = path.dirname(x)
+                const segments = directories.split("/").slice(0, 3)
+                return segments.join("/")
+              }))]
+
+            switch (modulePaths.length) {
+              case 0:
+                console.log("No module changes found.")
+                return ""
+              case 1:
+                console.log("Found 1 changed module: %c%s", "color:blue", modulePaths[0])
+                return modulePaths[0]
+              default:
+                console.log("Found more than one changed modules:")
+                for (const modulePath of modulePaths) {
+                  console.log(" %c- %s", "color:blue", modulePath)
+                }
+                core.setFailed("Only one module can be added or updated at a time.")
+            }
+
+  main:
+    runs-on: ubuntu-latest
+    needs: prerequisite
+    if: needs.prerequisite.outputs.changedModule
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Echo changed module
+        run: echo ${{ needs.prerequisite.outputs.changedModule }}
