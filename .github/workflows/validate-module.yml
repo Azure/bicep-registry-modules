@@ -26,7 +26,7 @@ jobs:
             const modulePaths = [...new Set(files
               .filter(x => x.filename.startsWith("modules/"))
               .map(x => {
-                const directories = path.dirname(x)
+                const directories = path.dirname(x.filename)
                 const segments = directories.split("/").slice(0, 3)
                 return segments.join("/")
               }))]
