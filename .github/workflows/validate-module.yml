@@ -36,12 +36,12 @@ jobs:
                 console.log("No module changes found.")
                 return ""
               case 1:
-                console.log("Found 1 changed module: %c%s", "color:blue;", modulePaths[0])
+                console.log(`Found 1 changed module: ${modulePaths[0]}`)
                 return modulePaths[0]
               default:
                 console.log("Found more than one changed modules:")
                 for (const modulePath of modulePaths) {
-                  console.log(" %c- %s", "color:blue;", modulePath)
+                  console.log(` - ${modulePath}`)
                 }
                 core.setFailed("Only one module can be added or updated at a time.")
             }
