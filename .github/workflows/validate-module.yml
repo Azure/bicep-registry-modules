@@ -51,16 +51,18 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
 
       # TODO: remove once brm is published
       - name: Install Bicep registry module tool
         run: dotnet tool install -g --add-source ./packages Bicep.RegistryModuleTool
-      
+
       - name: Validate module files
         run: bmr validate
         working-directory: ${{ needs.prerequisite.outputs.changed_module_dir }}
-          
+
       # TODO: deployment test
