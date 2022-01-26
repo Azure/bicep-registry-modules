@@ -1,0 +1,18 @@
+name: Publish module
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Log in to Azure'
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.TEST_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.TEST_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.TEST_AZURE_SUBSCRIPTION_ID }}
