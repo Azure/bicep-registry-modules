@@ -65,7 +65,7 @@ jobs:
         run: bicep --version
 
       - name: Validate module files
-        run: brm validate --verbose
+        run: brm validate
         working-directory: ${{ needs.prerequisite.outputs.changed_module_dir }}
 
       # TODO: deployment test
