@@ -10,9 +10,6 @@ jobs:
     outputs:
       changed_module_dir: ${{ steps.check-for-module-changes.outputs.result }}
     steps:
-      - name: Test Bicep
-        run: /usr/local/bin/bicep --help
-
       - name: Check for module changes
         uses: actions/github-script@v5
         id: check-for-module-changes
@@ -63,6 +60,9 @@ jobs:
       # TODO: remove once brm is published
       - name: Install Bicep registry module tool
         run: dotnet tool install -g --add-source ./packages Bicep.RegistryModuleTool
+      
+      - name: Show Bicep version
+        run: bicep --version
 
       - name: Validate module files
         run: brm validate --verbose
