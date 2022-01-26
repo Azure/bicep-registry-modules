@@ -6,11 +6,15 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - name: 'Log in to Azure'
+      - name: "Log in to Azure"
         uses: azure/login@v1
         with:
           client-id: ${{ secrets.TEST_AZURE_CLIENT_ID }}
