@@ -10,6 +10,9 @@ jobs:
     outputs:
       changed_module_dir: ${{ steps.check-for-module-changes.outputs.result }}
     steps:
+      - name: Test Bicep
+        run: /usr/local/bin/bicep --help
+
       - name: Check for module changes
         uses: actions/github-script@v5
         id: check-for-module-changes
