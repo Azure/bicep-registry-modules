@@ -62,7 +62,7 @@ jobs:
         run: dotnet tool install -g --add-source ./packages Bicep.RegistryModuleTool
 
       - name: Validate module files
-        run: brm validate
+        run: brm validate --verbose
         working-directory: ${{ needs.prerequisite.outputs.changed_module_dir }}
 
       # TODO: deployment test
