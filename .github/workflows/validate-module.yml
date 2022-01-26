@@ -8,7 +8,7 @@ jobs:
   prerequisite:
     runs-on: ubuntu-latest
     outputs:
-      changed_module: ${{ steps.check-for-module-changes.outputs.result }}
+      changed_module_dir: ${{ steps.check-for-module-changes.outputs.result }}
     steps:
       - name: Check for module changes
         uses: actions/github-script@v5
@@ -23,36 +23,46 @@ jobs:
             })
 
             const path = require("path")
-            const modulePaths = [...new Set(files
+            const moduleDirs = [...new Set(files
               .filter(x => x.filename.startsWith("modules/"))
               .map(x => {
-                const directories = path.dirname(x.filename)
-                const segments = directories.split("/").slice(0, 3)
+                const dirs = path.dirname(x.filename)
+                const segments = dirs.split("/").slice(0, 3)
                 return segments.join("/")
               }))]
 
-            switch (modulePaths.length) {
+            switch (moduleDirs.length) {
               case 0:
                 console.log("No module changes found.")
                 return ""
               case 1:
-                console.log(`Found 1 changed module: ${modulePaths[0]}`)
-                return modulePaths[0]
+                console.log(`Found 1 changed module: ${moduleDirs[0]}`)
+                return moduleDirs[0]
               default:
                 console.log("Found more than one changed modules:")
-                for (const modulePath of modulePaths) {
-                  console.log(` - ${modulePath}`)
-                }
+                moduleDirs.forEach((moduleDir) => console.log(`- ${moduleDir}`))
                 core.setFailed("Only one module can be added or updated at a time.")
             }
 
   main:
     runs-on: ubuntu-latest
     needs: prerequisite
-    if: needs.prerequisite.outputs.changed_module
+    if: needs.prerequisite.outputs.changed_module_dir
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
 
-      - name: Echo changed module
-        run: echo ${{ needs.prerequisite.outputs.changed_module }}
+      # TODO: remove once bmr is published
+      - name: Install Bicep registry module tool
+        run: dotnet tool install -g --add-source ./packages Bicep.RegistryModuleTool
+      
+      - name: Validate module files
+        run: bmr validate
+        working-directory: ${{ needs.prerequisite.outputs.changed_module_dir }}
+          
+      # TODO: deployment test
+          
+
