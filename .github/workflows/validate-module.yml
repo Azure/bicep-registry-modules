@@ -9,7 +9,7 @@ on:
 
 jobs:
   prerequisite:
-    uses: ./.github/workflows/get-changed-module.yml
+    uses: Azure/bicep-registry-modules/.github/workflows/get-changed-module.yml@main
 
   main:
     runs-on: ubuntu-latest
