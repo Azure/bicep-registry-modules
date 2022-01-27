@@ -6,43 +6,7 @@ on:
 
 jobs:
   prerequisite:
-    runs-on: ubuntu-latest
-    outputs:
-      changed_module_dir: ${{ steps.check-for-module-changes.outputs.result }}
-    steps:
-      - name: Check for module changes
-        uses: actions/github-script@v5
-        id: check-for-module-changes
-        with:
-          result-encoding: string
-          script: |
-            const { data: files } = await github.rest.pulls.listFiles({
-              owner: context.payload.repository.owner.login,
-              repo: context.payload.repository.name,
-              pull_number: context.payload.number,
-            })
-
-            const path = require("path")
-            const moduleDirs = [...new Set(files
-              .filter(x => x.filename.startsWith("modules/"))
-              .map(x => {
-                const dirs = path.dirname(x.filename)
-                const segments = dirs.split("/").slice(0, 3)
-                return segments.join("/")
-              }))]
-
-            switch (moduleDirs.length) {
-              case 0:
-                console.log("No module changes found.")
-                return ""
-              case 1:
-                console.log(`Found 1 changed module: ${moduleDirs[0]}`)
-                return moduleDirs[0]
-              default:
-                console.log("Found more than one changed modules:")
-                moduleDirs.forEach((moduleDir) => console.log(`- ${moduleDir}`))
-                core.setFailed("Only one module can be added or updated at a time.")
-            }
+    uses: ./.github/workflows/get-changed-module
 
   main:
     runs-on: ubuntu-latest

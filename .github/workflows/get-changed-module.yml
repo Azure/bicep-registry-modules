@@ -1,0 +1,79 @@
+name: Get changed module
+
+on:
+  workflow_call:
+    outputs:
+      changed_module_dir:
+        description: "The directory of the changed module. Empty if no module was changed."
+        value: ${{ jobs.main.outputs.changed_module_dir }}
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    outputs:
+      changed_module_dir: ${{ steps.get-changed-module.outputs.result }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Get changed module
+        uses: actions/github-script@v5
+        id: get-changed-module
+        with:
+          result-encoding: string
+          script: |
+            let base;
+            let head;
+
+            switch (context.eventName) {
+              case "pull_request":
+                base = context.payload.pull_request.base.sha
+                head = context.payload.pull_request.head.sha
+                break
+              case "push":
+                base = context.payload.before
+                head = context.payload.after
+                break
+              default:
+                core.setFailed(`Not supported event: ${context.eventName}.`)
+            }
+            
+            const { status, data } = await github.rest.repos.compareCommitsWithBasehead({
+              owner: github.context.repo.owner,
+              repo: github.context.repo.repo,
+              basehead: `${base}...${head}`
+            })
+            
+            if (status !== 200) {
+              core.setFailed(`Expected github.rest.repos.compareCommitsWithBasehead to return 200, got ${status}.`)
+            }
+            
+            if (data.status !== "ahead") {
+              core.setFailed("The head commit ${head} is not ahead of the base commit ${base}.")
+            }
+            
+            const path = require("path")
+            const fs = require("fs")
+            const cyan = "\u001b[48;5;6m"
+            
+            const moduleDirs = [...new Set(data.files
+              .filter(file => file.filename.startsWith("modules/"))
+              .map(file => path.dirname(file.filename)
+                .split("/")
+                .slice(0, 3)
+                .join("/"))
+              .filter(dir => fs.existsSync(dir)))]
+            
+            switch (moduleDirs.length) {
+              case 0:
+                core.info("No changed module found.")
+                return ""
+              case 1:
+                core.info("Found 1 changed module:")
+                core.info(`- ${cyan}${moduleDirs[0]}`)
+                return moduleDirs[0]
+              default:
+                core.log("Found more than one changed modules:")
+                moduleDirs.forEach((dir) => console.log(`- ${cyan}${dir}`))
+                core.setFailed("Only one module can be added or updated at a time.")
+            }
