@@ -7,4 +7,4 @@ on:
 
 jobs:
   call-workflow:
-    uses: .github/workflows/test-reusable.yml
+    uses: ./github/workflows/test-reusable.yml
