@@ -1,9 +1,6 @@
 name: Get changed module
 
 on:
-  pull_request:
-    branches:
-      - main
   workflow_call:
     outputs:
       changed_module_dir:
