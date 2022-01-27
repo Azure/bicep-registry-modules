@@ -2,11 +2,12 @@ name: Validate module
 
 on:
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   prerequisite:
-    uses: ./.github/workflows/get-changed-module
+    uses: ./.github/workflows/get-changed-module.yml
 
   main:
     runs-on: ubuntu-latest
