@@ -7,7 +7,7 @@ on:
 
 jobs:
   prerequisite:
-    uses: ./.github/workflows/get-changed-module.yml
+    uses: ./get-changed-module.yml
 
   main:
     runs-on: ubuntu-latest
