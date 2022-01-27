@@ -1,0 +1,10 @@
+name: Call a reusable workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  call-workflow:
+    uses: /.github/workflows/test-reusable.yml
