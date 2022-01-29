@@ -67,14 +67,15 @@ jobs:
           azPSVersion: "latest"
       
       # TODO: generate parameters
+      
+      - name: Build test file
+        run: bicep build ${{ needs.get-module-to-validate.outputs.module_dir }}/test/main.test.bicep --outfile main.test.json
         
       - name: Deploy test file
         uses: azure/powershell@v1
         with:
           inlineScript: |
-            Get-Location
-            echo "${{ needs.get-module-to-validate.outputs.module_dir }}/test/main.test.bicep"
-            New-AzResourceGroupDeployment -TemplateFile "${{ needs.get-module-to-validate.outputs.module_dir }}/test/main.test.bicep" -ResourceGroupName "${{ steps.generate-rg-name.outputs.result }} -Verbose"
+            New-AzResourceGroupDeployment -TemplateFile main.test.json -ResourceGroupName ${{ steps.generate-rg-name.outputs.result }}
           azPSVersion: "latest"
       
       - name: Clean up resource group
