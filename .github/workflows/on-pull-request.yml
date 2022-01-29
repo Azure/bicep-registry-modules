@@ -79,13 +79,21 @@ jobs:
           azPSVersion: "latest"
       
       - name: Clean up resource group
+        id: clean-up-rg
         if: always() && steps.generate-rg-name.outputs.result
         continue-on-error: true
         uses: azure/powershell@v1
         with:
           inlineScript: |
             Invoke-WebRequest -Uri https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/test/ci-scripts/Kill-AzResourceGroup.ps1 -OutFile .\Kill-AzResourceGroup.ps1
-            .\Kill-AzResourceGroup.ps1 -ResourceGroupName "${{ steps.generate-rg-name.outputs.result }}"
+            $success = .\Kill-AzResourceGroup.ps1 -ResourceGroupName "${{ steps.generate-rg-name.outputs.result }}"
+            Write-Output "::set-output name=success::$success"
           azPSVersion: "latest"
 
+      - name: Report resource group cleanup failure
+        if: always() && steps.generate-rg-name.outputs.result && steps.clean-up-rg.outputs.success != "True"
+        uses: actions/github-script@v5
+        with:
+          script: |
+            core.warning("Failed to delete the resource group ${{ steps.generate-rg-name.outputs.result }}. Manual cleanup is needed.")
 
