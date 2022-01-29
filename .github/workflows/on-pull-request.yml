@@ -35,7 +35,7 @@ jobs:
         working-directory: ${{ needs.get-module-to-validate.outputs.module_dir }}
 
   test-module-deployment:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs:
       - get-module-to-validate
       - validate-module
@@ -72,7 +72,8 @@ jobs:
         uses: azure/powershell@v1
         with:
           inlineScript: |
-            bicep --version
+            Get-Location
+            echo "./${{ needs.get-module-to-validate.outputs.module_dir }}/test/main.test.bicep"
             New-AzResourceGroupDeployment -TemplateFile "./${{ needs.get-module-to-validate.outputs.module_dir }}/test/main.test.bicep" -ResourceGroupName "${{ steps.generate-rg-name.outputs.result }}"
           azPSVersion: "latest"
       
