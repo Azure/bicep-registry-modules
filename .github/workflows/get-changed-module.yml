@@ -48,8 +48,8 @@ jobs:
               core.setFailed(`Expected github.rest.repos.compareCommitsWithBasehead to return 200, got ${status}.`)
             }
             
-            if (data.status !== "ahead") {
-              core.setFailed("The head commit ${head} is not ahead of the base commit ${base}.")
+            if (context.eventName === "push" && data.status !== "ahead") {
+              core.setFailed(`The head commit ${head} is not ahead of the base commit ${base}.`)
             }
             
             const path = require("path")
