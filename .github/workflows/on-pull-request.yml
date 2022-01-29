@@ -40,6 +40,9 @@ jobs:
       - get-module-to-validate
       - validate-module
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
       - name: Log in to Azure
         uses: azure/login@v1
         with:
@@ -67,17 +70,12 @@ jobs:
           azPSVersion: "latest"
       
       # TODO: generate parameters
-      
-      - name: Build test file
-        run: |
-          ls
-          bicep build ${{ needs.get-module-to-validate.outputs.module_dir }}/test/main.test.bicep --outfile main.test.json
         
       - name: Deploy test file
         uses: azure/powershell@v1
         with:
           inlineScript: |
-            New-AzResourceGroupDeployment -TemplateFile main.test.json -ResourceGroupName ${{ steps.generate-rg-name.outputs.result }}
+            New-AzResourceGroupDeployment -TemplateFile "${{ needs.get-module-to-validate.outputs.module_dir }}/test/main.test.bicep"  -ResourceGroupName ${{ steps.generate-rg-name.outputs.result }}
           azPSVersion: "latest"
       
       - name: Clean up resource group
