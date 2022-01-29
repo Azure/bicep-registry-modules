@@ -1,5 +1,5 @@
 name: Publish module
-  
+
 on:
   workflow_call:
     inputs:
@@ -17,7 +17,6 @@ on:
 permissions:
   id-token: write
   contents: read
-    
 
 jobs:
   main:
@@ -48,10 +47,10 @@ jobs:
 
             core.setOutput("module_path", modulePath)
             core.setOutput("version", version)
-            
+
       - name: "Publish module"
         run: |
           echo "modules/${{ steps.get-module-path-and-version.outputs.module_path }}/main.json"
           echo "br:${{ secrets.TEST_REGISTRY_SERVER }}/${{ steps.get-module-path-and-version.outputs.module_path }}:${{ steps.get-module-path-and-version.outputs.version }}"
 
-            
+

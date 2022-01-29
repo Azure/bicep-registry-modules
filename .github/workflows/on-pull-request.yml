@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   get-module-to-validate:
     uses: Azure/bicep-registry-modules/.github/workflows/get-changed-module.yml@main
@@ -72,7 +76,7 @@ jobs:
           azPSVersion: "latest"
       
       - name: Clean up resource group
-        if: always()
+        if: always() && steps.generate-rg-name.outputs.result
         uses: azure/powershell@v1
         with:
           inlineScript: |
