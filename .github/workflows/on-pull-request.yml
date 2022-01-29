@@ -69,7 +69,9 @@ jobs:
       # TODO: generate parameters
       
       - name: Build test file
-        run: bicep build ${{ needs.get-module-to-validate.outputs.module_dir }}/test/main.test.bicep --outfile main.test.json
+        run: |
+          ls
+          bicep build ${{ needs.get-module-to-validate.outputs.module_dir }}/test/main.test.bicep --outfile main.test.json
         
       - name: Deploy test file
         uses: azure/powershell@v1
@@ -80,6 +82,7 @@ jobs:
       
       - name: Clean up resource group
         if: always() && steps.generate-rg-name.outputs.result
+        continue-on-error: true
         uses: azure/powershell@v1
         with:
           inlineScript: |
