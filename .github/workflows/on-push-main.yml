@@ -1,0 +1,86 @@
+name: On push main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  get-module-to-publish:
+    uses: Azure/bicep-registry-modules/.github/workflows/get-changed-module.yml@main
+
+  create-tag:
+    runs-on: ubuntu-latest
+    needs: get-module-to-publish
+    if: ${{ needs.get-module-to-publish.outputs.module_dir }}
+    outputs:
+      tag: ${{ steps.create-tag.outputs.result }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+            
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Install execa
+        run: npm install execa
+
+      - name: Install semver
+        run: npm install semver
+
+      - name: "Create tag"
+        id: create-tag
+        uses: actions/github-script@v5
+        with:
+          result-encoding: string
+          script: |
+            const execa = require("execa")
+            const semverCompare = require("semver/functions/compare")
+
+            const module_dir = "${{ needs.get-changed-module.outputs.module_dir }}"
+            const base = context.payload.before
+            const head = context.payload.head
+            const { stdout: baseVersionOutput } = await execa("nbgv", ["get-version", "-p", module_dir, base])
+            const { stdout: headVersionOutput } = await execa("nbgv", ["get-version", "-p", module_dir, head])
+
+            const baseVersion = JSON.parse(baseVersionOutput).semVer2
+            const headVersion = JSON.parse(headVersionOutput).semVer2
+            const compareResult = semverCompare(headVersion, baseVersion)
+            
+            if (compareResult < 0) {
+              core.setFailed("The version ${headVersion} calculated at the commit ${head} (head) is smaller than the version ${baseVersion} calculated at the base commit ${base} (base).")
+            }
+            
+            if (compareResult === 0) {
+              core.info(`No version update detected.`)
+              return ""
+            }
+
+            const red = "\u001b[31m"
+            const green = "\u001b[32m"
+            const reset = "\u001b[0m"
+            core.info(`Detected version update: ${red}${baseVersion} (old) ${reset}-> ${green}${headVersion} (new).`)
+              
+            const module_path = module_dir.substring(module_dir.indexOf("/") + 1)
+            const tag = `${module_path}/${headVersion}`
+
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/tags/${tag}`,
+              sha: context.sha,
+            })
+            
+            core.info(`Created a new tag: ${tag} (${head}).`)
+            return tag
+          
+  publish-module:
+    needs: create-tag
+    if: needs.create-tag.outputs.tag
+    uses: Azure/bicep-registry-modules/.github/workflows/publish-module.yml@main
+    with:
+      tag: ${{ needs.create-tag.outputs.tag }}
