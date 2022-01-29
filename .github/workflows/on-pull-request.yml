@@ -30,4 +30,54 @@ jobs:
         run: brm validate
         working-directory: ${{ needs.get-changed-module.outputs.module_dir }}
 
-      # TODO: deployment test
+  test-module-deployment:
+    runs-on: windows-latest
+    needs:
+      - get-module-to-validate
+      - validate-module
+    steps:
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.TEST_AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.TEST_AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.TEST_AZURE_SUBSCRIPTION_ID }}
+          enable-AzPSSession: true
+      
+      - name: Generate resource group name
+        id: generate-rg-name
+        uses: actions/github-script@v5
+        with:
+          result-encoding: string
+          script: |
+            const pullRequestNumber = context.payload.pull_request.number
+            const sha = context.payload.pull_request.base.sha.substring(0, 7)
+            const timestamp = Date.now()
+            return `brm-test-pr-${pullRequestNumber}-commit-${sha}-ts-${timestamp}`
+      
+      - name: Create resource group
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            New-AzResourceGroup -ResourceGroupName "${{ steps.generate-rg-name.outputs.result }}" -Location "westus"
+          azPSVersion: "latest"
+      
+      # TODO: generate parameters
+        
+      - name: Deploy test file
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            New-AzResourceGroupDeployment -TemplateFile ".\${{ needs.get-changed-module.outputs.module_dir }}\test\main.test.bicep" -ResourceGroupName "${{ steps.generate-rg-name.outputs.result }}"
+          azPSVersion: "latest"
+      
+      - name: Clean up resource group
+        if: always()
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            Invoke-WebRequest -Uri https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/test/ci-scripts/Kill-AzResourceGroup.ps1 -OutFile .\Kill-AzResourceGroup.ps1
+            .\Kill-AzResourceGroup.ps1 -ResourceGroupName "${{ steps.generate-rg-name.outputs.result }}"
+          azPSVersion: "latest"
+
+
