@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-schema#",
+  "name": "Hello world",
+  "description": "A simple hello-world module",
+  "owner": "bicep-writers"
+}
