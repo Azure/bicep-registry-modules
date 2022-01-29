@@ -91,7 +91,7 @@ jobs:
           azPSVersion: "latest"
 
       - name: Report resource group cleanup failure
-        if: always() && steps.generate-rg-name.outputs.result && steps.clean-up-rg.outputs.success != "True"
+        if: always() && steps.generate-rg-name.outputs.result && steps.clean-up-rg.outputs.success != 'True'
         uses: actions/github-script@v5
         with:
           script: |
