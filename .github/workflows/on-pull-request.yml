@@ -73,8 +73,8 @@ jobs:
         with:
           inlineScript: |
             Get-Location
-            echo "./${{ needs.get-module-to-validate.outputs.module_dir }}/test/main.test.bicep"
-            New-AzResourceGroupDeployment -TemplateFile "./${{ needs.get-module-to-validate.outputs.module_dir }}/test/main.test.bicep" -ResourceGroupName "${{ steps.generate-rg-name.outputs.result }}"
+            echo "${{ needs.get-module-to-validate.outputs.module_dir }}/test/main.test.bicep"
+            New-AzResourceGroupDeployment -TemplateFile "${{ needs.get-module-to-validate.outputs.module_dir }}/test/main.test.bicep" -ResourceGroupName "${{ steps.generate-rg-name.outputs.result }} -Verbose"
           azPSVersion: "latest"
       
       - name: Clean up resource group
