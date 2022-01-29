@@ -5,7 +5,7 @@ on:
     outputs:
       module_dir:
         description: "The directory of the added or updated module. Empty if no module was changed."
-        value: ${{ jobs.main.outputs.changed_module_dir }}
+        value: ${{ jobs.main.outputs.module_dir }}
 
 jobs:
   main:
@@ -54,7 +54,7 @@ jobs:
             
             const path = require("path")
             const fs = require("fs")
-            const cyan = "\u001b[48;5;6m"
+            const cyan = "\u001b[36;1m"
             
             const moduleDirs = [...new Set(data.files
               .filter(file => file.filename.startsWith("modules/"))
