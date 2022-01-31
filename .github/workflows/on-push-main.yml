@@ -1,0 +1,87 @@
+name: On push main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  get-module-to-publish:
+    uses: ./.github/workflows/get-changed-module.yml
+
+  create-tag:
+    runs-on: ubuntu-latest
+    needs: get-module-to-publish
+    if: ${{ needs.get-module-to-publish.outputs.module_dir }}
+    outputs:
+      tag: ${{ steps.create-tag.outputs.result }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+            
+      - name: Install semver
+        run: npm install semver
+      
+      - name: Get base version
+        id: get-base-version
+        env:
+          PublicRelease: true
+        run: echo ::set-output name=base_version::$(nbgv get-version ${{ github.event.before }} --format json | jq '.SemVer2')
+        working-directory: ${{ needs.get-module-to-publish.outputs.module_dir }}
+
+      - name: Get head version
+        id: get-head-version
+        env:
+          PublicRelease: true
+        run: echo ::set-output name=head_version::$(nbgv get-version ${{ github.event.after }} --format json | jq '.SemVer2')
+        working-directory: ${{ needs.get-module-to-publish.outputs.module_dir }}
+
+      - name: "Create tag"
+        id: create-tag
+        uses: actions/github-script@v5
+        with:
+          result-encoding: string
+          script: |
+            const semverCompare = require("semver/functions/compare")
+            const module_dir = "${{ needs.get-module-to-publish.outputs.module_dir }}"
+            const base = context.payload.before
+            const head = context.payload.after
+            const baseVersion = ${{ steps.get-base-version.outputs.base_version }}
+            const headVersion = ${{ steps.get-head-version.outputs.head_version }}
+            const compareResult = semverCompare(headVersion, baseVersion)
+            
+            if (compareResult < 0) {
+              core.setFailed("The version ${headVersion} calculated at the commit ${head} (head) is smaller than the version ${baseVersion} calculated at the base commit ${base} (base).")
+            }
+            
+            if (compareResult === 0) {
+              core.info(`No version update detected.`)
+              return ""
+            }
+
+            const red = "\u001b[31m"
+            const green = "\u001b[32m"
+            const reset = "\u001b[0m"
+            core.info(`Detected version update: ${red}${baseVersion} (old) ${reset}-> ${green}${headVersion} (new).`)
+              
+            const module_path = module_dir.substring(module_dir.indexOf("/") + 1)
+            const tag = `${module_path}/${headVersion}`
+
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/tags/${tag}`,
+              sha: context.sha,
+            })
+            
+            core.info(`Created a new tag: ${tag} (${head}).`)
+            return tag
+          
+  publish-module:
+    needs: create-tag
+    if: needs.create-tag.outputs.tag
+    uses: ./.github/workflows/publish-module.yml
+    with:
+      tag: ${{ needs.create-tag.outputs.tag }}

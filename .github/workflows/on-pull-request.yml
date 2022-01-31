@@ -1,0 +1,107 @@
+name: On pull request
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  get-module-to-validate:
+    uses: ./.github/workflows/get-changed-module.yml
+
+  validate-module-files:
+    runs-on: ubuntu-latest
+    needs: get-module-to-validate
+    if: needs.get-module-to-validate.outputs.module_dir
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+
+      # TODO: remove once brm is published
+      - name: Install Bicep registry module tool
+        run: dotnet tool install -g --add-source ./tools/packages Bicep.RegistryModuleTool
+
+      - name: Validate module files
+        run: brm validate
+        working-directory: ${{ needs.get-module-to-validate.outputs.module_dir }}
+
+  test-module-deployment:
+    runs-on: ubuntu-latest
+    needs:
+      - get-module-to-validate
+      - validate-module-files
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.DEPLOYMENT_TEST_CLIENT_ID }}
+          tenant-id: ${{ secrets.DEPLOYMENT_TEST_TENANT_ID }}
+          subscription-id: ${{ secrets.DEPLOYMENT_TEST_SUBSCRIPTION_ID }}
+          enable-AzPSSession: true
+      
+      - name: Generate resource group name
+        id: generate-rg-name
+        uses: actions/github-script@v5
+        with:
+          result-encoding: string
+          script: |
+            const pullRequestNumber = context.payload.pull_request.number
+            const sha = context.payload.pull_request.base.sha.substring(0, 7)
+
+            const now = new Date()
+            const month = `${now.getMonth() + 1}`.padStart(2, "0")
+            const date = `${now.getDate()}`.padStart(2, "0")
+            const hours = `${now.getHours()}`.padStart(2, "0")
+            const minutes = `${now.getMinutes()}`.padStart(2, "0")
+            const seconds = `${now.getSeconds()}`.padStart(2, "0")
+            const timestamp = `${now.getFullYear()}${month}${date}${hours}${minutes}${seconds}`
+
+            return `brm-test-pr-${pullRequestNumber}-commit-${sha}-ts-${timestamp}`
+      
+      - name: Create resource group
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            New-AzResourceGroup -ResourceGroupName "${{ steps.generate-rg-name.outputs.result }}" -Location "westus"
+          azPSVersion: "latest"
+      
+      # TODO: generate parameters
+        
+      - name: Deploy test file
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            New-AzResourceGroupDeployment -TemplateFile "${{ needs.get-module-to-validate.outputs.module_dir }}/test/main.test.bicep"  -ResourceGroupName ${{ steps.generate-rg-name.outputs.result }}
+          azPSVersion: "latest"
+      
+      - name: Clean up resource group
+        id: clean-up-rg
+        if: always() && steps.generate-rg-name.outputs.result
+        continue-on-error: true
+        uses: azure/powershell@v1
+        with:
+          inlineScript: |
+            Invoke-WebRequest -Uri https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/test/ci-scripts/Kill-AzResourceGroup.ps1 -OutFile .\Kill-AzResourceGroup.ps1
+            $success = .\Kill-AzResourceGroup.ps1 -ResourceGroupName "${{ steps.generate-rg-name.outputs.result }}"
+            Write-Output "::set-output name=success::$success"
+          azPSVersion: "latest"
+
+      - name: Report resource group cleanup failure
+        if: always() && steps.generate-rg-name.outputs.result && steps.clean-up-rg.outputs.success != 'True'
+        uses: actions/github-script@v5
+        with:
+          script: |
+            core.warning("Failed to delete the resource group ${{ steps.generate-rg-name.outputs.result }}. Manual cleanup is needed.")
+
