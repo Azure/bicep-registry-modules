@@ -65,11 +65,11 @@ jobs:
       - name: "Log in to Azure"
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.PUBLISH_TEST_CLIENT_ID }}
-          tenant-id: ${{ secrets.PUBLISH_TEST_TENANT_ID }}
-          subscription-id: ${{ secrets.PUBLISH_TEST_SUBSCRIPTION_ID }}
+          client-id: ${{ secrets.PUBLISH_CLIENT_ID }}
+          tenant-id: ${{ secrets.PUBLISH_TENANT_ID }}
+          subscription-id: ${{ secrets.PUBLISH_SUBSCRIPTION_ID }}
 
       - name: "Publish module"
         run: |
           chmod +x ./tools/bin/bicep
-          ./tools/bin/bicep publish "modules/${{ steps.get-module-path-and-version.outputs.module_path }}/main.json" --target "br:${{ secrets.TEST_REGISTRY_SERVER }}/${{ steps.get-module-path-and-version.outputs.module_path }}:${{ steps.get-module-path-and-version.outputs.version }}"
+          ./tools/bin/bicep publish "modules/${{ steps.get-module-path-and-version.outputs.module_path }}/main.json" --target "br:${{ secrets.PUBLISH_REGISTRY_SERVER }}/${{ steps.get-module-path-and-version.outputs.module_path }}:${{ steps.get-module-path-and-version.outputs.version }}"
