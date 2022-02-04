@@ -1,0 +1,60 @@
+name: On push main
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  get-module-to-publish:
+    # TODO: switch to relative path once https://github.com/github/feedback/discussions/10679 is fixed.
+    uses: Azure/bicep-registry-modules/workflows/get-changed-module.yml@main
+
+  create-tag:
+    runs-on: ubuntu-latest
+    needs: get-module-to-publish
+    if: ${{ needs.get-module-to-publish.outputs.module_dir }}
+    outputs:
+      tag: ${{ steps.create-tag.outputs.result }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install semver
+        run: npm install semver
+
+      - name: Get base and head versions
+        id: get-versions
+        env:
+          PublicRelease: true
+        run: |
+          echo ::set-output name=base_version::$(nbgv get-version ${{ github.event.before }} --format json | jq '.SemVer2')
+          echo ::set-output name=head_version::$(nbgv get-version ${{ github.event.after }} --format json | jq '.SemVer2')
+        working-directory: ${{ needs.get-module-to-publish.outputs.module_dir }}
+
+      - name: Create tag
+        id: create-tag
+        uses: actions/github-script@v5
+        with:
+          result-encoding: string
+          script: |
+            const script = require("./scripts/github-actions/create-tag.js")
+            return await script({
+              require,
+              github,
+              context,
+              core,
+              moduleDir: "${{ needs.get-module-to-publish.outputs.module_dir }}"
+              baseVersion: ${{ steps.get-versions.outputs.base_version }}
+              headVersion: ${{ steps.get-versions.outputs.head_version }}
+            })
+
+  publish-module:
+    needs: create-tag
+    if: needs.create-tag.outputs.tag
+    # TODO: switch to relative path once https://github.com/github/feedback/discussions/10679 is fixed.
+    uses: Azure/bicep-registry-modules/workflows/publish-module.yml@main
+    with:
+      tag: ${{ needs.create-tag.outputs.tag }}

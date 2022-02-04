@@ -1,0 +1,59 @@
+name: Publish module
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        description: "The git tag of the module to publish."
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "The git tag of the module to publish."
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Parse tag
+        id: parse-tag
+        uses: actions/github-script@v5
+        with:
+          result-encoding: string
+          script: |
+            const script = require("./scripts/github-actions/parse-tag.js")
+            script({ context, core })
+
+      - name: Checkout tag
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ inputs.tag }}
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.PUBLISH_CLIENT_ID }}
+          tenant-id: ${{ secrets.PUBLISH_TENANT_ID }}
+          subscription-id: ${{ secrets.PUBLISH_SUBSCRIPTION_ID }}
+      
+      # TODO: remove once a new Bicep release is out
+      - name: Download Bicep CLI
+        run: |
+          echo default login ${{ secrets.BICEP_REPO_USERNAME }} password ${{ secrets.BICEP_REPO_TOKEN }} > .netrc
+          mkdir -p tools/bin
+          curl --netrc-file .netrc -L -o tools/bin.zip https://api.github.com/repos/Azure/bicep/actions/artifacts/156705325/zip
+          7z x tools/bin.zip -o./tools/bin
+          chmod +x tools/bin/bicep
+
+      - name: Publish module
+        run: tools/bin/bicep publish "modules/${{ steps.parse-tag.outputs.module_path }}/main.json" --target "br:${{ secrets.PUBLISH_REGISTRY_SERVER }}/${{ steps.parse-tag.outputs.module_path }}:${{ steps.parse-tag.outputs.version }}"
