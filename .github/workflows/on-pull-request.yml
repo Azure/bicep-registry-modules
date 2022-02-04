@@ -26,7 +26,7 @@ jobs:
       # TODO: remove once brm is published
       - name: Download Bicep registry module tool
         run: |
-          echo default login ${{ secrets.GITHUB_USERNAME }} password ${{ secrets.GITHUB_TOKEN }} > .netrc
+          echo default login ${{ secrets.BICEP_REPO_USERNAME }} password ${{ secrets.BICEP_REPO_TOKEN }} > .netrc
           mkdir -p tools/packages
           curl --netrc-file .netrc -L -o tools/packages.zip https://api.github.com/repos/Azure/bicep/actions/artifacts/156705318/zip
           7z x tools/packages.zip -o./tools/packages

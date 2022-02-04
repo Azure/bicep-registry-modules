@@ -49,7 +49,7 @@ jobs:
       # TODO: remove once a new Bicep release is out
       - name: Download Bicep CLI
         run: |
-          echo default login ${{ secrets.GITHUB_USERNAME }} password ${{ secrets.GITHUB_TOKEN }} > .netrc
+          echo default login ${{ secrets.BICEP_REPO_USERNAME }} password ${{ secrets.BICEP_REPO_TOKEN }} > .netrc
           mkdir -p tools/bin
           curl --netrc-file .netrc -L -o tools/bin.zip https://api.github.com/repos/Azure/bicep/actions/artifacts/156705325/zip
           7z x tools/bin.zip -o./tools/bin
