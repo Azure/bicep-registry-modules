@@ -8,7 +8,7 @@ on:
 jobs:
   get-module-to-validate:
     # TODO: switch to relative path once https://github.com/github/feedback/discussions/10679 is fixed.
-    uses: Azure/bicep-registry-modules/workflows/get-changed-module.yml@main
+    uses: Azure/bicep-registry-modules/.github/workflows/get-changed-module.yml@main
 
   validate-module-files:
     runs-on: ubuntu-latest
