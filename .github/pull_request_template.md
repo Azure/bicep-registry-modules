@@ -15,7 +15,7 @@
 
 ## Updating an existing module
 
-<!--Run through the checklist if your PR updates a new module.-->
+<!--Run through the checklist if your PR updates an existing module.-->
 
 - [ ] I have run `brm validate` locally to verify the module files.
 - [ ] I have run deployment tests locally to ensure the module is deployable.
