@@ -548,17 +548,6 @@
                 "scripts/"
               ]
             }
-          },
-          {
-            "operator": "not",
-            "operands": [
-              {
-                "name": "activitySenderHasPermissions",
-                "parameters": {
-                  "permissions": "write"
-                }
-              }
-            ]
           }
         ]
       },
@@ -568,12 +557,18 @@
         "issues",
         "project_card"
       ],
-      "taskName": "Add a comment when the CI files are changed by authors who don't have write access to the repository",
+      "taskName": "Add a comment when the CI files are changed by authors who don't have write or admin access to the repository",
       "actions": [
         {
           "name": "addReply",
           "parameters": {
-            "comment": "This PR contains changes to the CI definition files. Reviews from @bicep-admin are needed."
+            "comment": "This PR contains changes to the CI definitions. Reviews from @bicep-admin are needed."
+          }
+        },
+        {
+          "name": "requestReviewer",
+          "parameters": {
+            "reviewer": "bicep-admins"
           }
         }
       ]
