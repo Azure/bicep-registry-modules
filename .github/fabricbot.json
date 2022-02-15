@@ -536,10 +536,6 @@
         "operator": "and",
         "operands": [
           {
-            "name": "isOpen",
-            "parameters": {}
-          },
-          {
             "name": "prModifiesFiles",
             "parameters": {
               "permissions": "write",
@@ -550,12 +546,18 @@
             }
           },
           {
-            "operator": "not",
+            "operator": "or",
             "operands": [
               {
-                "name": "activitySenderHasPermissions",
+                "name": "isAction",
                 "parameters": {
-                  "permissions": "write"
+                  "action": "opened"
+                }
+              },
+              {
+                "name": "isAction",
+                "parameters": {
+                  "action": "reopened"
                 }
               }
             ]
@@ -568,12 +570,18 @@
         "issues",
         "project_card"
       ],
-      "taskName": "Add a comment when the CI files are changed by authors who don't have write access to the repository",
+      "taskName": "Add a comment and request reviews from bicep-admins when the CI files are changed",
       "actions": [
         {
           "name": "addReply",
           "parameters": {
-            "comment": "This PR contains changes to the CI definition files. Reviews from @bicep-admin are needed."
+            "comment": "This PR contains changes to the CI definitions. Reviews from @bicep-admin are needed."
+          }
+        },
+        {
+          "name": "requestReviewer",
+          "parameters": {
+            "reviewer": "bicep-admins"
           }
         }
       ]
