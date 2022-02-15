@@ -46,9 +46,9 @@ jobs:
               github,
               context,
               core,
-              moduleDir: "${{ needs.get-module-to-publish.outputs.module_dir }}"
-              baseVersion: ${{ steps.get-versions.outputs.base_version }}
-              headVersion: ${{ steps.get-versions.outputs.head_version }}
+              moduleDir: "${{ needs.get-module-to-publish.outputs.module_dir }}",
+              baseVersion: ${{ steps.get-versions.outputs.base_version }},
+              headVersion: ${{ steps.get-versions.outputs.head_version }},
             })
 
   publish-module:
