@@ -56,4 +56,4 @@ jobs:
           chmod +x tools/bin/bicep
 
       - name: Publish module
-        run: tools/bin/bicep publish "modules/${{ steps.parse-tag.outputs.module_path }}/main.json" --target "br:${{ secrets.PUBLISH_REGISTRY_SERVER }}/public/oss/bicep/${{ steps.parse-tag.outputs.module_path }}:${{ steps.parse-tag.outputs.version }}"
+        run: tools/bin/bicep publish "modules/${{ steps.parse-tag.outputs.module_path }}/main.json" --target "br:${{ secrets.PUBLISH_REGISTRY_SERVER }}/public/bicep/${{ steps.parse-tag.outputs.module_path }}:${{ steps.parse-tag.outputs.version }}"
