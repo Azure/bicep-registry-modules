@@ -557,7 +557,7 @@
         "issues",
         "project_card"
       ],
-      "taskName": "Add a comment when the CI files are changed by authors who don't have write or admin access to the repository",
+      "taskName": "Add a comment and request reviews from bicep-admins when the CI files are changed",
       "actions": [
         {
           "name": "addReply",
