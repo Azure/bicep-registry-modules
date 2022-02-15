@@ -536,10 +536,6 @@
         "operator": "and",
         "operands": [
           {
-            "name": "isOpen",
-            "parameters": {}
-          },
-          {
             "name": "prModifiesFiles",
             "parameters": {
               "permissions": "write",
@@ -548,6 +544,23 @@
                 "scripts/"
               ]
             }
+          },
+          {
+            "operator": "or",
+            "operands": [
+              {
+                "name": "isAction",
+                "parameters": {
+                  "action": "opened"
+                }
+              },
+              {
+                "name": "isAction",
+                "parameters": {
+                  "action": "reopened"
+                }
+              }
+            ]
           }
         ]
       },
