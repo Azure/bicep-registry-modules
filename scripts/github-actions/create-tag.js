@@ -56,4 +56,4 @@ async function createTag({
   return tag;
 }
 
-module.exports = createTag
+module.exports = createTag;
