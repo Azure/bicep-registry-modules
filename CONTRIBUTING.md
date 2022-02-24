@@ -108,6 +108,7 @@ You should increase the MINOR version when you change the module in a backward-c
 
 If your change is non-breaking but does not require updating the MINOR version, the PATCH version should be increased, and it will be done by the CI automatically before publishing the module to the Bicep registry. The following scenarios will trigger a PATCH version bump:
 
+- Updating the metadata file
 - Updating the description of a parameter
 - Updating the description of an output
 - Adding a variable
