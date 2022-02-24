@@ -18,7 +18,7 @@ Before creating a new module, you must fill out this [issue template](https://gi
 
 ### Creating a directory for the new module
 
-Add a new directory under the `modules` folder in your local bicep-registry-modules repository with the path in lowercase following the pattern `<ModuleGroup>/<ModuleName>`. `<ModuleGroup>` can be any Azure resource provider name without the `Microsoft.` prefix. `<ModuleName>` should be a singular noun or noun phrase. Child modules should be placed side by side with parent modules to maintain a flat file structure. For examples:
+Add a new directory under the `modules` folder in your local bicep-registry-modules repository with the path in lowercase following the pattern `<ModuleGroup>/<ModuleName>`. Typical `<ModuleGroup>` names are Azure resource provider names without the `Microsoft.` prefix, but other names are also allowed as long as they make sense. `<ModuleName>` should be a singular noun or noun phrase. Child modules should be placed side by side with parent modules to maintain a flat file structure. For examples:
 
 - `compute/vm-with-public-ip`
 - `web/containerized-web-app`
@@ -82,19 +82,20 @@ You should bump the MAJOR version when you make breaking changes to the module. 
 - Adding a new parameter with no default value
 - Renaming a parameter
 - Removing a parameter
-- Change the type of a parameter
-- Change the constraints of a parameter, including:
-  - Remove a value from the allowed values array
-  - Change a value in the allowed values array
-  - Change the minimum or maximum length of the parameter
-  - Change the minimum or maximum value of the parameter
-  - Mark the parameter as secure
+- Changing the type of a parameter
+- Changing the default value of a parameter
+- Changing the constraints of a parameter, including:
+  - Removing a value from the allowed values array
+  - Changing a value in the allowed values array
+  - Changing the minimum or maximum length of the parameter
+  - Changing the minimum or maximum value of the parameter
+  - Marking the parameter as secure
 - Renaming an output
 - Removing an output
 - Change the type of an output
 - Adding a new resource
 - Removing a resource
-- Bump the MAJOR version of a referenced public registry module
+- Bumping the MAJOR version of a referenced public registry module
 
 ### Bumping MINOR version
 
@@ -106,7 +107,7 @@ You should increase the MINOR version when you change the module in a backward-c
 
 ### Bumping PATCH version
 
-If your change is non-breaking but does not require updating the MINOR version, the PATCH version should be increased, and it will be done by the CI automatically before publishing the module to the Bicep registry. The following scenarios will trigger a PATCH version bump:
+If your change is non-breaking but does not require updating the MINOR version, the PATCH version will be bumped by the CI automatically when publishing the module to the Bicep registry once your pull request is merged. The PATCH version is increased by the git commit "height" since last time the `main.json` or `metadata.json` file of a module was changed on the `main` branch. Because we only allow squash merging, the git commit height is always 1 for each module update PR merged into `main`. The following scenarios will trigger a PATCH version bump:
 
 - Updating the metadata file
 - Updating the description of a parameter
@@ -114,8 +115,8 @@ If your change is non-breaking but does not require updating the MINOR version, 
 - Adding a variable
 - Removing a variable
 - Renaming a variable
-- Bump the API version of a resource
-- Bump the MINOR or PATCH version of a referenced public registry module
+- Bumping the API version of a resource
+- Bumping the MINOR or PATCH version of a referenced public registry module
 
 ## Validating a module
 
