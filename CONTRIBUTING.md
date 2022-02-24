@@ -18,8 +18,6 @@ Before creating a new module, you must fill out this [issue template](https://gi
 
 ### Creating a directory for the new module
 
-<!-- TODO: need to discuss the pattern of the module path -->
-
 Add a new directory under the `modules` folder in your local bicep-registry-modules repository with the path in lowercase following the pattern `<ModuleGroup>/<ModuleName>`. `<ModuleGroup>` can be any Azure resource provider name without the `Microsoft.` prefix. `<ModuleName>` should be a singular noun or noun phrase. Child modules should be placed side by side with parent modules to maintain a flat file structure. For examples:
 
 - `compute/vm-with-public-ip`
