@@ -11,8 +11,17 @@
   "license": "MIT",
   "bugs": "https://github.com/azure/bicep-registry-modules/issues",
   "homepage": "https://github.com/azure/bicep-registry-modules#readme",
+  "scripts": {
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "prettier:check": "prettier --check .",
+    "prettier": "prettier --write ."
+  },
   "devDependencies": {
     "@actions/core": "^1.6.0",
-    "@actions/github": "^5.0.0"
+    "@actions/github": "^5.0.0",
+    "eslint": "^8.9.0",
+    "eslint-config-prettier": "^8.3.0",
+    "prettier": "^2.5.1"
   }
 }

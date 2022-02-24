@@ -45,7 +45,7 @@ jobs:
           client-id: ${{ secrets.PUBLISH_CLIENT_ID }}
           tenant-id: ${{ secrets.PUBLISH_TENANT_ID }}
           subscription-id: ${{ secrets.PUBLISH_SUBSCRIPTION_ID }}
-      
+
       # TODO: remove once a new Bicep release is out
       - name: Download Bicep CLI
         run: |

@@ -42,10 +42,10 @@ body:
     attributes:
       label: Code snippet
       description: Please copy and paste any code snippet that can help reproduce the problem.
-      render: bicep
+      render: Bicep
   - type: textarea
     id: logs
     attributes:
       label: Relevant log output
       description: Please copy and paste any relevant log output.
-      render: shell
+      render: Shell
