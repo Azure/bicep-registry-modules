@@ -44,10 +44,7 @@
         }
       ],
       "eventType": "issue",
-      "eventNames": [
-        "issues",
-        "project_card"
-      ]
+      "eventNames": ["issues", "project_card"]
     }
   },
   {
@@ -101,9 +98,7 @@
         }
       ],
       "eventType": "issue",
-      "eventNames": [
-        "issue_comment"
-      ]
+      "eventNames": ["issue_comment"]
     }
   },
   {
@@ -144,10 +139,7 @@
         }
       ],
       "eventType": "issue",
-      "eventNames": [
-        "issues",
-        "project_card"
-      ]
+      "eventNames": ["issues", "project_card"]
     }
   },
   {
@@ -177,9 +169,7 @@
         }
       ],
       "eventType": "issue",
-      "eventNames": [
-        "issue_comment"
-      ]
+      "eventNames": ["issue_comment"]
     }
   },
   {
@@ -192,66 +182,31 @@
       "frequency": [
         {
           "weekDay": 0,
-          "hours": [
-            1,
-            7,
-            13,
-            19
-          ]
+          "hours": [1, 7, 13, 19]
         },
         {
           "weekDay": 1,
-          "hours": [
-            1,
-            7,
-            13,
-            19
-          ]
+          "hours": [1, 7, 13, 19]
         },
         {
           "weekDay": 2,
-          "hours": [
-            1,
-            7,
-            13,
-            19
-          ]
+          "hours": [1, 7, 13, 19]
         },
         {
           "weekDay": 3,
-          "hours": [
-            1,
-            7,
-            13,
-            19
-          ]
+          "hours": [1, 7, 13, 19]
         },
         {
           "weekDay": 4,
-          "hours": [
-            1,
-            7,
-            13,
-            19
-          ]
+          "hours": [1, 7, 13, 19]
         },
         {
           "weekDay": 5,
-          "hours": [
-            1,
-            7,
-            13,
-            19
-          ]
+          "hours": [1, 7, 13, 19]
         },
         {
           "weekDay": 6,
-          "hours": [
-            1,
-            7,
-            13,
-            19
-          ]
+          "hours": [1, 7, 13, 19]
         }
       ],
       "searchTerms": [
@@ -300,66 +255,31 @@
       "frequency": [
         {
           "weekDay": 0,
-          "hours": [
-            2,
-            8,
-            14,
-            20
-          ]
+          "hours": [2, 8, 14, 20]
         },
         {
           "weekDay": 1,
-          "hours": [
-            2,
-            8,
-            14,
-            20
-          ]
+          "hours": [2, 8, 14, 20]
         },
         {
           "weekDay": 2,
-          "hours": [
-            2,
-            8,
-            14,
-            20
-          ]
+          "hours": [2, 8, 14, 20]
         },
         {
           "weekDay": 3,
-          "hours": [
-            2,
-            8,
-            14,
-            20
-          ]
+          "hours": [2, 8, 14, 20]
         },
         {
           "weekDay": 4,
-          "hours": [
-            2,
-            8,
-            14,
-            20
-          ]
+          "hours": [2, 8, 14, 20]
         },
         {
           "weekDay": 5,
-          "hours": [
-            2,
-            8,
-            14,
-            20
-          ]
+          "hours": [2, 8, 14, 20]
         },
         {
           "weekDay": 6,
-          "hours": [
-            2,
-            8,
-            14,
-            20
-          ]
+          "hours": [2, 8, 14, 20]
         }
       ],
       "searchTerms": [
@@ -416,66 +336,31 @@
       "frequency": [
         {
           "weekDay": 0,
-          "hours": [
-            3,
-            9,
-            15,
-            21
-          ]
+          "hours": [3, 9, 15, 21]
         },
         {
           "weekDay": 1,
-          "hours": [
-            3,
-            9,
-            15,
-            21
-          ]
+          "hours": [3, 9, 15, 21]
         },
         {
           "weekDay": 2,
-          "hours": [
-            3,
-            9,
-            15,
-            21
-          ]
+          "hours": [3, 9, 15, 21]
         },
         {
           "weekDay": 3,
-          "hours": [
-            3,
-            9,
-            15,
-            21
-          ]
+          "hours": [3, 9, 15, 21]
         },
         {
           "weekDay": 4,
-          "hours": [
-            3,
-            9,
-            15,
-            21
-          ]
+          "hours": [3, 9, 15, 21]
         },
         {
           "weekDay": 5,
-          "hours": [
-            3,
-            9,
-            15,
-            21
-          ]
+          "hours": [3, 9, 15, 21]
         },
         {
           "weekDay": 6,
-          "hours": [
-            3,
-            9,
-            15,
-            21
-          ]
+          "hours": [3, 9, 15, 21]
         }
       ],
       "searchTerms": [
@@ -539,10 +424,7 @@
             "name": "prModifiesFiles",
             "parameters": {
               "permissions": "write",
-              "pathFilters": [
-                ".github/",
-                "scripts/"
-              ]
+              "pathFilters": [".github/", "scripts/"]
             }
           },
           {
@@ -565,11 +447,7 @@
         ]
       },
       "eventType": "pull_request",
-      "eventNames": [
-        "pull_request",
-        "issues",
-        "project_card"
-      ],
+      "eventNames": ["pull_request", "issues", "project_card"],
       "taskName": "Add a comment and request reviews from bicep-admins when the CI files are changed",
       "actions": [
         {
