@@ -408,7 +408,8 @@
       "taskName": "Add 'In-PR' label on issue when an open pull request is targeting it",
       "inPrLabelText": "Status: In PR",
       "fixedLabelText": "Status: Fixed",
-      "fixedLabelEnabled": true
+      "fixedLabelEnabled": true,
+      "label_inPr": ""
     }
   },
   {
@@ -453,7 +454,7 @@
         {
           "name": "addReply",
           "parameters": {
-            "comment": "This PR contains changes to the CI definitions. Reviews from @bicep-admin are needed."
+            "comment": "This PR contains changes to the CI definitions. Reviews from @bicep-admins are needed."
           }
         },
         {
@@ -463,6 +464,23 @@
           }
         }
       ]
+    }
+  },
+  {
+    "taskType": "trigger",
+    "capabilityId": "AutoMerge",
+    "subCapability": "AutoMerge",
+    "version": "1.0",
+    "config": {
+      "taskName": "Auto merge PRs",
+      "label": "Auto Merge",
+      "minMinutesOpen": "30",
+      "mergeType": "squash",
+      "enforceDMPAsStatus": true,
+      "deleteBranches": true,
+      "removeLabelOnPush": true,
+      "usePrDescriptionAsCommitMessage": true,
+      "conditionalMergeTypes": []
     }
   }
 ]
