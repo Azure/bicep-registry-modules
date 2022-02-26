@@ -117,7 +117,7 @@ async function createPullRequestToUpdateReadme(github, context, newReadme) {
     issue_number: prData.number,
     labels: ["Auto Merge"],
   });
-  
+
   return prData.html_url;
 }
 
@@ -146,9 +146,9 @@ async function refreshModuleTable({ require, github, context, core }) {
 
   const oldTable = oldTableMatch[0].replace(/^\s+|\s+$/g, "");
   const newTable = generateModulesTable(fs, path);
-  
+
   if (oldTable === newTable) {
-    core.info("The module table is update-to-date.")
+    core.info("The module table is update-to-date.");
     return;
   }
 
@@ -158,8 +158,14 @@ async function refreshModuleTable({ require, github, context, core }) {
       parser: "markdown",
     });
 
-    const prUrl = await createPullRequestToUpdateReadme(github, context, newReadmeFormatted);
-    core.info(`The module table is outdated. A pull request ${prUrl} was created to update it.`)
+    const prUrl = await createPullRequestToUpdateReadme(
+      github,
+      context,
+      newReadmeFormatted
+    );
+    core.info(
+      `The module table is outdated. A pull request ${prUrl} was created to update it.`
+    );
   }
 }
 
