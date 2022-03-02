@@ -68,10 +68,13 @@ async function generateModulesTable(fs, path) {
  */
 async function createPullRequestToUpdateReadme(github, context, newReadme) {
   const branch = `refresh-module-table-${getTimestamp()}`;
-  const ref = `refs/heads/${branch}`;
 
   // Create a new branch.
-  await github.rest.git.createRef({ ...context.repo, ref, sha: context.sha });
+  await github.rest.git.createRef({
+    ...context.repo,
+    ref: `refs/heads/${branch}`,
+    sha: context.sha,
+  });
 
   // Update README.md.
   const { data: treeData } = await github.rest.git.createTree({
@@ -96,7 +99,12 @@ async function createPullRequestToUpdateReadme(github, context, newReadme) {
   });
 
   // Update HEAD of the new branch.
-  await github.rest.git.updateRef({ ...context.repo, ref, sha: commitData.sha });
+  await github.rest.git.updateRef({
+    ...context.repo,
+    // The ref parameter for updateRef is not the same as createRef.
+    ref: `heads/${branch}`,
+    sha: commitData.sha,
+  });
 
   // Create a pull request.
   const { data: prData } = await github.rest.pulls.create({
