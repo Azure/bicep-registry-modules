@@ -67,17 +67,15 @@ async function generateModulesTable(fs, path) {
  * @param {string} newReadme
  */
 async function createPullRequestToUpdateReadme(github, context, newReadme) {
-  const { owner, repo, sha } = context;
-  const branch = `refresh-modules-table-${getTimestamp()}`;
+  const branch = `refresh-module-table-${getTimestamp()}`;
   const ref = `refs/heads/${branch}`;
 
   // Create a new branch.
-  await github.rest.git.createRef({ owner, repo, ref, sha });
+  await github.rest.git.createRef({ ...context.repo, ref, sha: context.sha });
 
   // Update README.md.
   const { data: treeData } = await github.rest.git.createTree({
-    owner,
-    repo,
+    ...context.repo,
     tree: [
       {
         type: "blob",
@@ -86,34 +84,31 @@ async function createPullRequestToUpdateReadme(github, context, newReadme) {
         content: newReadme,
       },
     ],
-    base_tree: sha,
+    base_tree: context.sha,
   });
 
   // Create a commit.
   const { data: commitData } = await github.rest.git.createCommit({
-    owner,
-    repo,
-    message: "Refresh modules table",
+    ...context.repo,
+    message: "Refresh module table",
     tree: treeData.sha,
-    parents: [sha],
+    parents: [context.sha],
   });
 
   // Update HEAD of the new branch.
-  await github.rest.git.updateRef({ owner, repo, ref, sha: commitData.sha });
+  await github.rest.git.updateRef({ ...context.repo, ref, sha: commitData.sha });
 
   // Create a pull request.
   const { data: prData } = await github.rest.pulls.create({
-    owner,
-    repo,
-    title: "Refresh modules table in README.md",
+    ...context.repo,
+    title: "Refresh module table in README.md",
     head: branch,
     base: "main",
     maintainer_can_modify: true,
   });
 
   await github.rest.issues.addLabels({
-    owner,
-    repo,
+    ...context.repo,
     issue_number: prData.number,
     labels: ["Auto Merge"],
   });
