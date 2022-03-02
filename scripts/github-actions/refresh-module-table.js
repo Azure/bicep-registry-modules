@@ -115,12 +115,6 @@ async function createPullRequestToUpdateReadme(github, context, newReadme) {
     maintainer_can_modify: true,
   });
 
-  await github.rest.issues.addLabels({
-    ...context.repo,
-    issue_number: prData.number,
-    labels: ["Auto Merge"],
-  });
-
   return prData.html_url;
 }
 
@@ -148,7 +142,7 @@ async function refreshModuleTable({ require, github, context, core }) {
   }
 
   const oldTable = oldTableMatch[0].replace(/^\s+|\s+$/g, "");
-  const newTable = generateModulesTable(fs, path);
+  const newTable = await generateModulesTable(fs, path);
 
   if (oldTable === newTable) {
     core.info("The module table is update-to-date.");
