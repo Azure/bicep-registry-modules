@@ -7,6 +7,9 @@ This repo contains the source code of all currently available Bicep modules in t
 Below is a table containing all published modules.
 
 <!-- Begin Module Table -->
+
+EMPTY_TABLE
+
 <!-- End Module Table -->
 
 ## Contributing
