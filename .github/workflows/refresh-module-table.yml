@@ -17,6 +17,10 @@ jobs:
         uses: actions/github-script@v6
         with:
           result-encoding: string
+          # We cannot use the default GITHUB_TOKEN to run the script which has a step to create a PR.
+          # PRs created by the GITHUB_TOKEN will not trigger any workflow runs to prevents users
+          #  from accidentally creating recursive workflow runs.
+          github-token: ${{ secrets.PR_TOKEN }}
           script: |
             const script = require("./scripts/github-actions/refresh-module-table.js")
             await script({ require, github, context, core })
