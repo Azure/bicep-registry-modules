@@ -36,7 +36,7 @@ jobs:
 
       - name: Create tag
         id: create-tag
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         with:
           result-encoding: string
           script: |

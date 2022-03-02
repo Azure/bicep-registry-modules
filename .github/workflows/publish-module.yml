@@ -27,7 +27,7 @@ jobs:
 
       - name: Parse tag
         id: parse-tag
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         with:
           result-encoding: string
           script: |

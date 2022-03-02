@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Get changed module
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         id: get-changed-module
         with:
           result-encoding: string
