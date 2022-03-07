@@ -494,15 +494,9 @@
             }
           },
           {
-            "name": "activitySenderHasPermissions",
-            "parameters": {
-              "permissions": "write"
-            }
-          },
-          {
             "name": "titleContains",
             "parameters": {
-              "titlePattern": "🤖 Refresh module table"
+              "titlePattern": "Refresh module table"
             }
           }
         ]
