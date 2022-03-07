@@ -429,21 +429,10 @@
             }
           },
           {
-            "operator": "or",
-            "operands": [
-              {
-                "name": "isAction",
-                "parameters": {
-                  "action": "opened"
-                }
-              },
-              {
-                "name": "isAction",
-                "parameters": {
-                  "action": "reopened"
-                }
-              }
-            ]
+            "name": "isAction",
+            "parameters": {
+              "action": "opened"
+            }
           }
         ]
       },
@@ -454,13 +443,13 @@
         {
           "name": "addReply",
           "parameters": {
-            "comment": "This PR contains changes to the CI definitions. Reviews from @bicep-admins are needed."
+            "comment": "This PR contains changes to the CI definitions. Reviews from @Azure/bicep-admins are needed."
           }
         },
         {
           "name": "requestReviewer",
           "parameters": {
-            "reviewer": "bicep-admins"
+            "reviewer": "Azure/bicep-admins"
           }
         }
       ]
@@ -481,6 +470,68 @@
       "removeLabelOnPush": true,
       "usePrDescriptionAsCommitMessage": true,
       "conditionalMergeTypes": []
+    }
+  },
+  {
+    "taskType": "trigger",
+    "capabilityId": "IssueResponder",
+    "subCapability": "PullRequestResponder",
+    "version": "1.0",
+    "config": {
+      "conditions": {
+        "operator": "and",
+        "operands": [
+          {
+            "name": "isAction",
+            "parameters": {
+              "action": "opened"
+            }
+          },
+          {
+            "name": "isActivitySender",
+            "parameters": {
+              "user": "github-actions[bot]"
+            }
+          },
+          {
+            "name": "activitySenderHasPermissions",
+            "parameters": {
+              "permissions": "write"
+            }
+          },
+          {
+            "name": "titleContains",
+            "parameters": {
+              "titlePattern": "🤖 Refresh module table"
+            }
+          }
+        ]
+      },
+      "eventType": "pull_request",
+      "eventNames": ["pull_request", "issues", "project_card"],
+      "taskName": "Auto approve module table refresh PRs sent by github-actions",
+      "actions": [
+        {
+          "name": "closeIssue",
+          "parameters": {}
+        },
+        {
+          "name": "reopenIssue",
+          "parameters": {}
+        },
+        {
+          "name": "addLabel",
+          "parameters": {
+            "label": "Auto Merge"
+          }
+        },
+        {
+          "name": "approvePullRequest",
+          "parameters": {
+            "comment": "Auto approving module table refresh pull request."
+          }
+        }
+      ]
     }
   }
 ]
