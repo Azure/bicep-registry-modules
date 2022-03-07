@@ -443,13 +443,13 @@
         {
           "name": "addReply",
           "parameters": {
-            "comment": "This PR contains changes to the CI definitions. Reviews from @bicep-admins are needed."
+            "comment": "This PR contains changes to the CI definitions. Reviews from @Azure/bicep-admins are needed."
           }
         },
         {
           "name": "requestReviewer",
           "parameters": {
-            "reviewer": "bicep-admins"
+            "reviewer": "Azure/bicep-admins"
           }
         }
       ]
