@@ -438,18 +438,12 @@
       },
       "eventType": "pull_request",
       "eventNames": ["pull_request", "issues", "project_card"],
-      "taskName": "Add a comment and request reviews from bicep-admins when the CI files are changed",
+      "taskName": "Add a comment to notify bicep-admins when the CI files are changed",
       "actions": [
         {
           "name": "addReply",
           "parameters": {
             "comment": "This PR contains changes to the CI definitions. Reviews from @Azure/bicep-admins are needed."
-          }
-        },
-        {
-          "name": "requestReviewer",
-          "parameters": {
-            "reviewer": "Azure/bicep-admins"
           }
         }
       ]
