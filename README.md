@@ -7,6 +7,11 @@ This repo contains the source code of all currently available Bicep modules in t
 Below is a table containing all published modules.
 
 <!-- Begin Module Table -->
+
+| Module                |                                                                                                                                                                                                                                                       Version |                                                                                                                                                                                                                        Docs |
+| :-------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| `samples/hello-world` | <a href="https://mcr.microsoft.com/v2/bicep/samples/hello-world/tags/list"><image src="https://img.shields.io/badge/dynamic/json?label=mcr&query=%24.tags%5B0%5D&url=https%3A%2F%2Fmcr.microsoft.com%2Fv2%2Fbicep%2Fsamples%2Fhello-world%2Ftags%2Flist"></a> | [🦾 Code](https://github.com/Azure/bicep-registry-modules/tree/main/modules/samples/hello-world/main.bicep) ｜ [📃 Readme](https://github.com/Azure/bicep-registry-modules/tree/main/modules/samples/hello-world/README.md) |
+
 <!-- End Module Table -->
 
 ## Contributing

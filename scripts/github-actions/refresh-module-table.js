@@ -67,17 +67,18 @@ async function generateModulesTable(fs, path) {
  * @param {string} newReadme
  */
 async function createPullRequestToUpdateReadme(github, context, newReadme) {
-  const { owner, repo, sha } = context;
-  const branch = `refresh-modules-table-${getTimestamp()}`;
-  const ref = `refs/heads/${branch}`;
+  const branch = `refresh-module-table-${getTimestamp()}`;
 
   // Create a new branch.
-  await github.rest.git.createRef({ owner, repo, ref, sha });
+  await github.rest.git.createRef({
+    ...context.repo,
+    ref: `refs/heads/${branch}`,
+    sha: context.sha,
+  });
 
   // Update README.md.
   const { data: treeData } = await github.rest.git.createTree({
-    owner,
-    repo,
+    ...context.repo,
     tree: [
       {
         type: "blob",
@@ -86,36 +87,32 @@ async function createPullRequestToUpdateReadme(github, context, newReadme) {
         content: newReadme,
       },
     ],
-    base_tree: sha,
+    base_tree: context.sha,
   });
 
   // Create a commit.
   const { data: commitData } = await github.rest.git.createCommit({
-    owner,
-    repo,
-    message: "Refresh modules table",
+    ...context.repo,
+    message: "Refresh module table",
     tree: treeData.sha,
-    parents: [sha],
+    parents: [context.sha],
   });
 
   // Update HEAD of the new branch.
-  await github.rest.git.updateRef({ owner, repo, ref, sha: commitData.sha });
+  await github.rest.git.updateRef({
+    ...context.repo,
+    // The ref parameter for updateRef is not the same as createRef.
+    ref: `heads/${branch}`,
+    sha: commitData.sha,
+  });
 
   // Create a pull request.
   const { data: prData } = await github.rest.pulls.create({
-    owner,
-    repo,
-    title: "Refresh modules table in README.md",
+    ...context.repo,
+    title: "🤖 Refresh module table",
     head: branch,
     base: "main",
     maintainer_can_modify: true,
-  });
-
-  await github.rest.issues.addLabels({
-    owner,
-    repo,
-    issue_number: prData.number,
-    labels: ["Auto Merge"],
   });
 
   return prData.html_url;
@@ -145,7 +142,7 @@ async function refreshModuleTable({ require, github, context, core }) {
   }
 
   const oldTable = oldTableMatch[0].replace(/^\s+|\s+$/g, "");
-  const newTable = generateModulesTable(fs, path);
+  const newTable = await generateModulesTable(fs, path);
 
   if (oldTable === newTable) {
     core.info("The module table is update-to-date.");

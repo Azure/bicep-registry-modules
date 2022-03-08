@@ -1,4 +1,4 @@
-name: Refresh modules table
+name: Refresh module table
 
 on:
   workflow_dispatch:
