@@ -1,14 +1,21 @@
 <#
 .SYNOPSIS
-  Finds test Bicep file.
+  Finds changed module.
   
 .DESCRIPTION
-  The script finds the test Bicep file if exact one module is changed by the pull request that triggers the pipeline.
+  The script finds the changed module in the pull request that triggers the pipeline.
 
 .PARAMETER GitHubToken
   The GitHub personal access token to use for authentication.
+
+.PARAMETER Repository
+  The Bicep registry module repository name.
+
+.PARAMETER PullRequestNumber
+  The pull request number.
 #>
 param(
+  # TODO: remove the PAT once the Bicep registry repo goes public.
   [Parameter(mandatory = $True)]
   [string]$GitHubToken,
 
@@ -27,7 +34,7 @@ $pullRequestFiles = Invoke-RestMethod `
   -Token (ConvertTo-SecureString $GitHubToken -AsPlainText -Force)
 
 $separator = [IO.Path]::DirectorySeparatorChar
-$testFilePaths = @(
+$changedModuleDirectories = @(
   $pullRequestFiles |
   Where-Object { $_.filename.StartsWith("modules") } |                # Get changed module files.
   ForEach-Object { Split-Path $_.filename } |                         # Get directories of changed module files.
@@ -38,11 +45,9 @@ $testFilePaths = @(
     Join-String -Separator $separator
   } |                                                                 # Get module root directories.
   Select-Object -Unique |                                             # Remove duplicates.
-  Where-Object { Test-Path $_ } |                                     # Ignore removed directories.
-  ForEach-Object { Join-Path $_ -ChildPath "test\main.test.bicep" } | # Get test file paths.
-  Where-Object { Test-Path $_ -PathType "Leaf" }                      # Filter out non-existent test file paths.
+  Where-Object { Test-Path $_ }                                       # Ignore removed directories.
 )
 
 # If no test file or more than one test file was found, set an empty string to skip the subsequent steps.
-$testFilePath = if ($testFilePaths.Length -eq 1) { $testFilePaths[0] } else { "" }
-Set-AzurePipelinesVariable -VariableName "TestFilePath" -VariableValue $testFilePath
+$changedModuleDirectory = if ($changedModuleDirectories.Length -eq 1) { $changedModuleDirectories[0] } else { "" }
+Set-AzurePipelinesVariable -VariableName "ChangedModuleDirectory" -VariableValue $changedModuleDirectory

@@ -500,18 +500,18 @@
       "taskName": "Auto approve module table refresh PRs sent by github-actions",
       "actions": [
         {
+          "name": "addLabel",
+          "parameters": {
+            "label": "Auto Merge"
+          }
+        },
+        {
           "name": "closeIssue",
           "parameters": {}
         },
         {
           "name": "reopenIssue",
           "parameters": {}
-        },
-        {
-          "name": "addLabel",
-          "parameters": {
-            "label": "Auto Merge"
-          }
         },
         {
           "name": "approvePullRequest",
