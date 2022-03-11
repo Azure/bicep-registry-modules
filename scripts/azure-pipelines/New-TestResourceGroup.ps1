@@ -61,7 +61,8 @@ Invoke-AzurePipelinesTask {
   $pullRequestNumber = $env:SYSTEM_PULLREQUEST_PULLREQUESTNUMBER
   $commitId = $env:BUILD_SOURCEVERSION.Substring(0, 7)
   $timestamp = Get-Date -Format "yyyyMMddHHmmss" -AsUTC
-  $resourceGroupName = "br-test-pr-$pullRequestNumber-commit-$commitId-ts-$timestamp"
+  $guid = [GUID]::NewGuid().ToString('N')
+  $resourceGroupName = "$pullRequestNumber-$commitId-$timestamp-$guid"
   
   # Create the resource group and wait for replication.
   New-AzResourceGroup -Name $resourceGroupName -Location $Location -Verbose
