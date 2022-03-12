@@ -23,16 +23,8 @@ jobs:
         with:
           dotnet-version: 6.0.x
 
-      # TODO: remove once brm is published
-      - name: Download Bicep registry module tool
-        run: |
-          echo default login ${{ secrets.BICEP_REPO_USERNAME }} password ${{ secrets.BICEP_REPO_TOKEN }} > .netrc
-          mkdir -p tools/packages
-          curl --netrc-file .netrc -L -o tools/packages.zip https://api.github.com/repos/Azure/bicep/actions/artifacts/159371053/zip
-          7z x tools/packages.zip -o./tools/packages
-
       - name: Install Bicep registry module tool
-        run: dotnet tool install -g --add-source ./tools/packages Bicep.RegistryModuleTool --prerelease
+        run: dotnet tool install --global Azure.Bicep.RegistryModuleTool
 
       - name: Validate module files
         run: brm validate
