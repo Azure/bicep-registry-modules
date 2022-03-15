@@ -65,6 +65,7 @@ The `main.bicep` file is the public interface of the module. When authoring `mai
 The `test/main.test.bicep` file is the test file for `main.bicep`. It will be deployed to a test environment in the PR merge pipeline to make sure `main.bicep` is deployable. You must add at least one test to the file. To add a test, simply create a module referencing `main.bicep` and provide values for the required parameters. You may write multiple tests to ensure different paths of the module are covered. If any of the parameters are secrets, make sure to provide generated values instead of hard-coded ones. Below is an example showing how to use the combination of some string functions to construct a dynamic azure-compatible password for a virtual machine:
 
 ```bicep
+@secure()
 param vmPasswordSuffix string = uniqueString(newGuid())
 
 var vmPassword = 'pwd#${vmPasswordSuffix}'
