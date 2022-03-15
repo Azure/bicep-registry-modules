@@ -4,15 +4,14 @@
 
 - Create a fork of the [Azure/bicep-registry-modules](https://github.com/Azure/bicep-registry-modules) repository and clone the fork to your local machine.
 - Install [.NET 6.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0/runtime)
-  <!-- TODO: Add link to Nuget once the tool is published -->
-- Install the [Bicep registry module]() .NET tool by running:
-  - `dotnet tool install -g brm`
+- Install the [Bicep registry module](https://www.nuget.org/packages/Azure.Bicep.RegistryModuleTool/) .NET tool by running:
+  - `dotnet tool install --global Azure.Bicep.RegistryModuleTool`
 
 ## Creating a new module
 
 ### Making a proposal
 
-<!-- TODO: update the issue link -->
+<!-- TODO: update the issue link once the repo is public -->
 
 Before creating a new module, you must fill out this [issue template](https://github.com/Azure/bicep-registry-modules/issues/new) to make a proposal. Once the proposal is approved, proceed with the following steps. You should not send out a pull request to add a module without an associated approval as the pull request will be rejected.
 
@@ -63,7 +62,22 @@ The `metadata.json` file contains metadata of the module including `name`, `desc
 
 The `main.bicep` file is the public interface of the module. When authoring `main.bicep`, make sure to provide a description for each parameter and output. You are free to create other Bicep files inside the module folder and reference them as local modules in `main.bicep` if needed. You may also reference other registry modules to help build your module. If you do so, make sure to add them as external references with specific version numbers. You should not reference other registry modules through local file path, since they may get updated overtime.
 
-The `test/main.test.bicep` file is the test file for `main.bicep`. It will be deployed to a test environment in the PR merge pipeline to make sure `main.bicep` is deployable. You must add at least one test to the file. To add a test, simply create a module referencing `main.bicep` and provide values for the required parameters. You may write multiple tests to ensure different paths of the module are covered.
+The `test/main.test.bicep` file is the test file for `main.bicep`. It will be deployed to a test environment in the PR merge pipeline to make sure `main.bicep` is deployable. You must add at least one test to the file. To add a test, simply create a module referencing `main.bicep` and provide values for the required parameters. You may write multiple tests to ensure different paths of the module are covered. If any of the parameters are secrets, make sure to provide generated values instead of hard-coded ones. Below is an example showing how to use the combination of some string functions to construct a dynamic azure-compatible password for a virtual machine:
+
+```bicep
+@secure()
+param vmPasswordSuffix string = uniqueString(newGuid())
+
+var vmPassword = 'pwd#${vmPasswordSuffix}'
+
+module testMain '../main.bicep' = {
+  name: 'testMain'
+  params: {
+    vmUsername: 'testuser'
+    vmPassword: vmPassword
+  }
+}
+```
 
 The `README.md` file is the documentation of the module. A large proportion of the file contents, such as the parameter and output tables, are generated based on the contents of other files. However, you must update the `Examples` section manually to provide examples of how the module can be used.
 
@@ -118,7 +132,7 @@ If your change is non-breaking but does not require updating the MINOR version, 
 - Bumping the API version of a resource
 - Bumping the MINOR or PATCH version of a referenced public registry module
 
-## Validating a module
+## Validating module files
 
 > Before running the command, don't forget to run `generate` to ensure all files are up-to-date.
 
@@ -128,12 +142,14 @@ You may use the Bicep registry module tool to validate the contents of the regis
 brm validate
 ```
 
-## Submitting a pull request
+## Running deployment tests
 
-> The `brm validate` command does not deploy `test/main.test.bicep`, but it is highly recommended that you run a test deployment locally using Azure CLI or Azure PowerShell before submitting a pull request.
+The `brm validate` command mentioned in the above step does not deploy the `test/main.test.bicep` file. Instead, it will be deployed to a temporary resource group as part of the pull request merge validation CI pipeline once you submit a pull request. However, due to security limitations, the CI pipeline won't deploy the test file if the module's target scope is `subscription`, `managementGroup`, or `tenant`. In such cases, you must run test deployments locally using Azure CLI or Azure Powershell before submitting a pull request.
+
+## Submitting a pull request
 
 Once the module files are validated locally, you can commit your changes and open a pull request. You must link the new module proposal in the pull request description if you are trying to add a new module.
 
 ## Publishing a module
 
-Once your pull request is approved and merged to the main, a CI job will be triggered to publish the module to the Bicep registry.
+Once your pull request is approved and merged to the `main` branch, a GitHub workflow will be triggered to publish the module to the Bicep registry automatically.

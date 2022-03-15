@@ -22,7 +22,7 @@ body:
       label: Why is the module needed?
       description: Explain why the exiting module cannot be updated to meet your needs and why a new module must be created.
     validations:
-      required: true
+      required: false
   - type: input
     id: module-path
     attributes:
