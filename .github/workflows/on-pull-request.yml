@@ -7,7 +7,7 @@ on:
 
 jobs:
   get-module-to-validate:
-    uses: ./.github/workflows/get-changed-module.yml@main
+    uses: ./.github/workflows/get-changed-module.yml
 
   validate-module-files:
     runs-on: ubuntu-latest

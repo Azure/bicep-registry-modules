@@ -7,7 +7,7 @@ on:
 
 jobs:
   get-module-to-publish:
-    uses: ./.github/workflows/get-changed-module.yml@main
+    uses: ./.github/workflows/get-changed-module.yml
 
   create-tag:
     runs-on: ubuntu-latest
@@ -53,6 +53,6 @@ jobs:
   publish-module:
     needs: create-tag
     if: needs.create-tag.outputs.tag
-    uses: ./.github/workflows/publish-module.yml@main
+    uses: ./.github/workflows/publish-module.yml
     with:
       tag: ${{ needs.create-tag.outputs.tag }}
