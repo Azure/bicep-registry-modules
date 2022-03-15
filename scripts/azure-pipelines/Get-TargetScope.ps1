@@ -13,6 +13,8 @@ param(
   [string]$ChangedModuleDirectory
 )
 
+Import-Module .\scripts\azure-pipelines\utils\AzurePipelinesUtils.psm1 -Force
+
 $armTemplateFilePath = Join-Path $ChangedModuleDirectory -ChildPath "main.json"
 $targetScope = ""
 

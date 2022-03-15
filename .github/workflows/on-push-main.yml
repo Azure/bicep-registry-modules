@@ -7,8 +7,7 @@ on:
 
 jobs:
   get-module-to-publish:
-    # TODO: switch to relative path once https://github.com/github/feedback/discussions/10679 is fixed.
-    uses: Azure/bicep-registry-modules/.github/workflows/get-changed-module.yml@main
+    uses: ./.github/workflows/get-changed-module.yml@main
 
   create-tag:
     runs-on: ubuntu-latest
@@ -54,7 +53,6 @@ jobs:
   publish-module:
     needs: create-tag
     if: needs.create-tag.outputs.tag
-    # TODO: switch to relative path once https://github.com/github/feedback/discussions/10679 is fixed.
-    uses: Azure/bicep-registry-modules/.github/workflows/publish-module.yml@main
+    uses: ./.github/workflows/publish-module.yml@main
     with:
       tag: ${{ needs.create-tag.outputs.tag }}
