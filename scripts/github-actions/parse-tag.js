@@ -1,12 +1,11 @@
 /**
  * @typedef Params
- * @property {typeof import("@actions/github").context} context
  * @property {typeof import("@actions/core")} core
+ * @property {string} tag
  *
  * @param {Params} params
  */
-function parseTag({ context, core }) {
-  const tag = context.payload.inputs.tag;
+function parseTag({ core, tag }) {
   const segments = tag.split("/");
 
   if (segments.length !== 3 || segments.includes("")) {
