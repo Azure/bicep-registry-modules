@@ -24,10 +24,10 @@ if (Test-Path $armTemplateFilePath -PathType "Leaf") {
   $armTemplateSchemaPattern = "https?://schema\.management\.azure\.com/schemas/[0-9a-zA-Z-]+/{0}Template\.json#?"
   
   $targetScope = switch -Regex ($armTemplateSchema) {
-    {$armTemplateSchemaPattern -f "deployment"} { "resourceGroup" }
-    {$armTemplateSchemaPattern -f "subscriptionDeployment"} { "subscription" }
-    {$armTemplateSchemaPattern -f "managementGroupDeployment"} { "managementGroup" }
-    {$armTemplateSchemaPattern -f "tenantDeployment"} { "tenant" }
+    $($armTemplateSchemaPattern -f "deployment") { "resourceGroup" }
+    $($armTemplateSchemaPattern -f "subscriptionDeployment") { "subscription" }
+    $($armTemplateSchemaPattern -f "managementGroupDeployment") { "managementGroup" }
+    $($armTemplateSchemaPattern -f "tenantDeployment") { "tenant" }
     default { "" }
   }
 }
