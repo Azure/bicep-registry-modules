@@ -50,5 +50,14 @@ jobs:
           tenant-id: ${{ secrets.PUBLISH_TENANT_ID }}
           subscription-id: ${{ secrets.PUBLISH_SUBSCRIPTION_ID }}
 
+      # Adding a step to explicitly install the latest Bicep CLI because there is
+      # always a delay in updating Bicep CLI in the job runner environments.
+      - name: Install the latest Bicep CLI
+        run: |
+          curl -Lo bicep https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64
+          chmod +x ./bicep
+          sudo mv ./bicep /usr/local/bin/bicep
+          bicep --version
+
       - name: Publish module
-        run: tools/bin/bicep publish "modules/${{ steps.parse-tag.outputs.module_path }}/main.json" --target "br:${{ secrets.PUBLISH_REGISTRY_SERVER }}/public/bicep/${{ steps.parse-tag.outputs.module_path }}:${{ steps.parse-tag.outputs.version }}"
+        run: bicep publish "modules/${{ steps.parse-tag.outputs.module_path }}/main.json" --target "br:${{ secrets.PUBLISH_REGISTRY_SERVER }}/public/bicep/${{ steps.parse-tag.outputs.module_path }}:${{ steps.parse-tag.outputs.version }}"
