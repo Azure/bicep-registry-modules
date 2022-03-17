@@ -32,12 +32,16 @@ jobs:
           result-encoding: string
           script: |
             const script = require("./scripts/github-actions/parse-tag.js")
-            script({ context, core })
+            const tag = "${{ github.event.inputs.tag || inputs.tag }}"
+            script({ core, tag })
 
       - name: Checkout tag
         uses: actions/checkout@v2
         with:
-          ref: ${{ inputs.tag }}
+          # Input contexts for workflow_dispatch and workflow_call are inconsistent.
+          # For workflow_dispatch, use ${{ github.event.inputs.<variable_name> }}
+          # For workflow_call, use ${{ inputs.<variable_name> }}
+          ref: ${{ github.event.inputs.tag || inputs.tag }}
 
       - name: Log in to Azure
         uses: azure/login@v1
