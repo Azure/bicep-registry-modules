@@ -1,0 +1,52 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.4.1318.3566",
+      "templateHash": "3301425885685314729"
+    }
+  },
+  "parameters": {
+    "names": {
+      "type": "array",
+      "defaultValue": [
+        "Michael",
+        "Dwight",
+        "Jim",
+        "Pam"
+      ],
+      "metadata": {
+        "description": "An array containing names."
+      }
+    }
+  },
+  "resources": [],
+  "outputs": {
+    "namesByVariable": {
+      "type": "array",
+      "copy": {
+        "count": "[length(parameters('names'))]",
+        "input": {
+          "name": "[parameters('names')[copyIndex()]]"
+        }
+      },
+      "metadata": {
+        "description": "An output demonstrating iterating array items with an item variable."
+      }
+    },
+    "out3": {
+      "type": "array",
+      "copy": {
+        "count": "[length(parameters('names'))]",
+        "input": {
+          "name": "[parameters('names')[copyIndex()]]"
+        }
+      },
+      "metadata": {
+        "description": "An output demonstrating iterating array items with an index."
+      }
+    }
+  }
+}
