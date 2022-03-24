@@ -1,6 +1,6 @@
 # Array Loop
 
-A sample Bicep registry module demonstrating array loops.
+A sample Bicep registry module demonstrating array iterations.
 
 ## Parameters
 
@@ -17,12 +17,10 @@ A sample Bicep registry module demonstrating array loops.
 
 ## Examples
 
-### Example 1
+### Using the module
 
 ```bicep
-```
-
-### Example 2
-
-```bicep
+module arrayLoop 'br/public:samples/array-loop' = {
+  name: 'arrayLoop'
+}
 ```
