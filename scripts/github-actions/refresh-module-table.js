@@ -39,7 +39,7 @@ async function generateModulesTable(fs, path) {
       const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${modulePath}/tags/list`;
 
       badgeUrl.searchParams.append("label", "mcr");
-      badgeUrl.searchParams.append("query", "$.tags[0]");
+      badgeUrl.searchParams.append("query", "$.tags[(@.length-1)]");
       badgeUrl.searchParams.append("url", versionListUrl);
 
       console.log(badgeUrl.href);
