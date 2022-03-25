@@ -7,6 +7,12 @@ on:
         description: "The git tag of the module to publish."
         required: true
         type: string
+    secrets:
+      # Secrets must be passed from the caller workflow explicitly.
+      PUBLISH_CLIENT_ID:
+        required: true
+      PUBLISH_TENANT_ID:
+        required: true
   workflow_dispatch:
     inputs:
       tag:
