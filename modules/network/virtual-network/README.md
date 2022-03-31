@@ -1,6 +1,6 @@
 # Virtual Networks
 
-This template deploys Microsoft.Network Virtual Networks and optionally available children or extensions
+This module deploys Microsoft.Network Virtual Networks and optionally available children or extensions
 
 ## Parameters
 
@@ -38,10 +38,123 @@ This template deploys Microsoft.Network Virtual Networks and optionally availabl
 
 ### Example 1
 
+An example of how to deploy a virtual network using the minimum required parameters.
+
 ```bicep
+module minvnet 'br/public:network/virtual-network:1.0' = {
+  name: '${uniqueString(deployment().name, 'WestEurope')}-minvnet'
+  params: {
+    name: 'carml-az-vnet-min-01'
+    addressPrefixes: [
+      '10.0.0.0/16'
+    ]
+  }
+}
 ```
 
 ### Example 2
 
+An example of how to deploy a virtual network with multiple subnets, role assignment and diagnostic settings.
+
 ```bicep
+module genvnet 'br/public:network/virtual-network:1.0' = {
+  name: '${uniqueString(deployment().name, 'WestEurope')}-genvnet'
+  params: {
+    name: 'carml-az-vnet-gen-01'
+    location: 'WestEurope'
+    addressPrefixes: [
+      '10.0.0.0/16'
+    ]
+    subnets: [
+      {
+        name: 'GatewaySubnet'
+        addressPrefix: '10.0.255.0/24'
+      }
+      {
+        name: 'carml-az-subnet-x-001'
+        addressPrefix: '10.0.0.0/24'
+        networkSecurityGroupId: '/subscriptions/111111-1111-1111-1111-111111111111/resourceGroups/validation-rg/providers/Microsoft.Network/networkSecurityGroups/adp-carml-az-nsg-x-001'
+        serviceEndpoints: [
+          {
+            service: 'Microsoft.Storage'
+          }
+          {
+            service: 'Microsoft.Sql'
+          }
+        ]
+        routeTableId: '/subscriptions/111111-1111-1111-1111-111111111111/resourceGroups/validation-rg/providers/Microsoft.Network/routeTables/adp-carml-az-udr-x-001'
+      }
+      {
+        name: 'carml-az-subnet-x-002'
+        addressPrefix: '10.0.3.0/24'
+        delegations: [
+          {
+            name: 'netappDel'
+            properties: {
+              serviceName: 'Microsoft.Netapp/volumes'
+            }
+          }
+        ]
+      }
+      {
+        name: 'carml-az-subnet-x-003'
+        addressPrefix: '10.0.6.0/24'
+        privateEndpointNetworkPolicies: 'Disabled'
+        privateLinkServiceNetworkPolicies: 'Enabled'
+      }
+    ]
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Reader'
+        principalIds: [
+          '222222-2222-2222-2222-2222222222'
+        ]
+        principalType: 'ServicePrincipal'
+      }
+    ]
+    diagnosticLogsRetentionInDays: 7
+    diagnosticStorageAccountId: '/subscriptions/111111-1111-1111-1111-111111111111/resourceGroups/validation-rg/providers/Microsoft.Storage/storageAccounts/adpcarmlazsafa001'
+    diagnosticWorkspaceId: '/subscriptions/111111-1111-1111-1111-111111111111/resourcegroups/validation-rg/providers/microsoft.operationalinsights/workspaces/adp-carml-az-law-appi-001'
+    diagnosticEventHubAuthorizationRuleId: '/subscriptions/111111-1111-1111-1111-111111111111/resourceGroups/validation-rg/providers/Microsoft.EventHub/namespaces/adp-carml-az-evhns-x-001/AuthorizationRules/RootManageSharedAccessKey'
+    diagnosticEventHubName: 'adp-carml-az-evh-x-001'
+  }
+}
+```
+
+### Example 3
+
+An example that deployes a virtual network with one subnet including a bi-directional peering to another virtual network.
+
+```bicep
+module peervnet 'br/public:network/virtual-network:1.0' = {
+  name: '${uniqueString(deployment().name, 'WestEurope')}-peervnet'
+  params: {
+    name: 'carml-az-vnet-peer-01'
+    location: 'WestEurope'
+    addressPrefixes: [
+      '10.0.0.0/24'
+    ]
+
+    subnets: [
+      {
+        'name': 'GatewaySubnet'
+        'addressPrefix': '10.0.0.0/26'
+      }
+    ]
+
+    virtualNetworkPeerings: [
+      {
+        remoteVirtualNetworkId: '/subscriptions/111111-1111-1111-1111-111111111111/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-carml-az-vnet-x-001'
+        allowForwardedTraffic: true
+        allowGatewayTransit: false
+        allowVirtualNetworkAccess: true
+        useRemoteGateways: false
+        remotePeeringEnabled: true
+        remotePeeringName: 'customName'
+        remotePeeringAllowVirtualNetworkAccess: true
+        remotePeeringAllowForwardedTraffic: true
+      }
+    ]
+  }
+}
 ```

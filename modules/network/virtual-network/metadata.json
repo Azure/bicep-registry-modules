@@ -1,6 +1,6 @@
 {
   "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema#",
   "name": "Virtual Networks",
-  "description": "This template deploys Microsoft.Network Virtual Networks and optionally available children or extensions",
+  "description": "This module deploys Microsoft.Network Virtual Networks and optionally available children or extensions",
   "owner": "CARML"
 }
