@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.4.1008.15138",
-      "templateHash": "15333760313736805540"
+      "version": "0.4.1318.3566",
+      "templateHash": "15567849158229106902"
     }
   },
   "parameters": {
@@ -77,7 +77,6 @@
       }
     }
   },
-  "functions": [],
   "resources": [
     {
       "type": "Microsoft.Compute/availabilitySets",
@@ -114,7 +113,7 @@
         "count": "[length(parameters('roleAssignments'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-06-01",
+      "apiVersion": "2020-10-01",
       "name": "[format('{0}-AvSet-Rbac-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -144,8 +143,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.1008.15138",
-              "templateHash": "16355735172693578174"
+              "version": "0.4.1318.3566",
+              "templateHash": "8176262699368239987"
             }
           },
           "parameters": {
@@ -167,7 +166,6 @@
               "type": "string"
             }
           },
-          "functions": [],
           "variables": {
             "builtInRoleNames": {
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
