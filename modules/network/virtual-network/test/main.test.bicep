@@ -196,7 +196,7 @@ module peervnet '../main.bicep' = {
         allowGatewayTransit: false
         allowVirtualNetworkAccess: true
         useRemoteGateways: false
-        remotePeeringEnable: true
+        remotePeeringEnabled: true
         remotePeeringName: 'customName'
         remotePeeringAllowVirtualNetworkAccess: true
         remotePeeringAllowForwardedTraffic: true
