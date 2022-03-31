@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.4.1008.15138",
-      "templateHash": "10147482368024752074"
+      "templateHash": "14935489320451950594"
     }
   },
   "parameters": {
@@ -253,247 +253,6 @@
     },
     {
       "copy": {
-        "name": "virtualNetwork_subnets",
-        "count": "[length(parameters('subnets'))]",
-        "mode": "serial",
-        "batchSize": 1
-      },
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-06-01",
-      "name": "[format('{0}-subnet-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "virtualNetworkName": {
-            "value": "[parameters('name')]"
-          },
-          "name": {
-            "value": "[parameters('subnets')[copyIndex()].name]"
-          },
-          "addressPrefix": {
-            "value": "[parameters('subnets')[copyIndex()].addressPrefix]"
-          },
-          "addressPrefixes": {
-            "value": "[if(contains(parameters('subnets')[copyIndex()], 'addressPrefixes'), parameters('subnets')[copyIndex()].addressPrefixes, createArray())]"
-          },
-          "applicationGatewayIpConfigurations": {
-            "value": "[if(contains(parameters('subnets')[copyIndex()], 'applicationGatewayIpConfigurations'), parameters('subnets')[copyIndex()].applicationGatewayIpConfigurations, createArray())]"
-          },
-          "delegations": {
-            "value": "[if(contains(parameters('subnets')[copyIndex()], 'delegations'), parameters('subnets')[copyIndex()].delegations, createArray())]"
-          },
-          "ipAllocations": {
-            "value": "[if(contains(parameters('subnets')[copyIndex()], 'ipAllocations'), parameters('subnets')[copyIndex()].ipAllocations, createArray())]"
-          },
-          "natGatewayId": {
-            "value": "[if(contains(parameters('subnets')[copyIndex()], 'natGatewayId'), parameters('subnets')[copyIndex()].natGatewayId, '')]"
-          },
-          "networkSecurityGroupId": {
-            "value": "[if(contains(parameters('subnets')[copyIndex()], 'networkSecurityGroupId'), parameters('subnets')[copyIndex()].networkSecurityGroupId, '')]"
-          },
-          "privateEndpointNetworkPolicies": {
-            "value": "[if(contains(parameters('subnets')[copyIndex()], 'privateEndpointNetworkPolicies'), parameters('subnets')[copyIndex()].privateEndpointNetworkPolicies, '')]"
-          },
-          "privateLinkServiceNetworkPolicies": {
-            "value": "[if(contains(parameters('subnets')[copyIndex()], 'privateLinkServiceNetworkPolicies'), parameters('subnets')[copyIndex()].privateLinkServiceNetworkPolicies, '')]"
-          },
-          "routeTableId": {
-            "value": "[if(contains(parameters('subnets')[copyIndex()], 'routeTableId'), parameters('subnets')[copyIndex()].routeTableId, '')]"
-          },
-          "serviceEndpointPolicies": {
-            "value": "[if(contains(parameters('subnets')[copyIndex()], 'serviceEndpointPolicies'), parameters('subnets')[copyIndex()].serviceEndpointPolicies, createArray())]"
-          },
-          "serviceEndpoints": {
-            "value": "[if(contains(parameters('subnets')[copyIndex()], 'serviceEndpoints'), parameters('subnets')[copyIndex()].serviceEndpoints, createArray())]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.4.1008.15138",
-              "templateHash": "11008521397834246066"
-            }
-          },
-          "parameters": {
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "Optional. The Name of the subnet resource."
-              }
-            },
-            "virtualNetworkName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of the parent virtual network"
-              }
-            },
-            "addressPrefix": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The address prefix for the subnet."
-              }
-            },
-            "networkSecurityGroupId": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. The resource ID of the network security group to assign to the subnet"
-              }
-            },
-            "routeTableId": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. The resource ID of the route table to assign to the subnet"
-              }
-            },
-            "serviceEndpoints": {
-              "type": "array",
-              "defaultValue": [],
-              "metadata": {
-                "description": "Optional. The service endpoints to enable on the subnet"
-              }
-            },
-            "delegations": {
-              "type": "array",
-              "defaultValue": [],
-              "metadata": {
-                "description": "Optional. The delegations to enable on the subnet"
-              }
-            },
-            "natGatewayId": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. The resource ID of the NAT Gateway to use for the subnet"
-              }
-            },
-            "privateEndpointNetworkPolicies": {
-              "type": "string",
-              "defaultValue": "",
-              "allowedValues": [
-                "Disabled",
-                "Enabled",
-                ""
-              ],
-              "metadata": {
-                "description": "Optional. enable or disable apply network policies on private endpoint in the subnet."
-              }
-            },
-            "privateLinkServiceNetworkPolicies": {
-              "type": "string",
-              "defaultValue": "",
-              "allowedValues": [
-                "Disabled",
-                "Enabled",
-                ""
-              ],
-              "metadata": {
-                "description": "Optional. enable or disable apply network policies on private link service in the subnet."
-              }
-            },
-            "addressPrefixes": {
-              "type": "array",
-              "defaultValue": [],
-              "metadata": {
-                "description": "Optional. List of address prefixes for the subnet."
-              }
-            },
-            "applicationGatewayIpConfigurations": {
-              "type": "array",
-              "defaultValue": [],
-              "metadata": {
-                "description": "Optional. Application gateway IP configurations of virtual network resource."
-              }
-            },
-            "ipAllocations": {
-              "type": "array",
-              "defaultValue": [],
-              "metadata": {
-                "description": "Optional. Array of IpAllocation which reference this subnet"
-              }
-            },
-            "serviceEndpointPolicies": {
-              "type": "array",
-              "defaultValue": [],
-              "metadata": {
-                "description": "Optional. An array of service endpoint policies."
-              }
-            }
-          },
-          "functions": [],
-          "resources": [
-            {
-              "type": "Microsoft.Network/virtualNetworks/subnets",
-              "apiVersion": "2021-05-01",
-              "name": "[format('{0}/{1}', parameters('virtualNetworkName'), parameters('name'))]",
-              "properties": {
-                "addressPrefix": "[parameters('addressPrefix')]",
-                "networkSecurityGroup": "[if(not(empty(parameters('networkSecurityGroupId'))), createObject('id', parameters('networkSecurityGroupId')), null())]",
-                "routeTable": "[if(not(empty(parameters('routeTableId'))), createObject('id', parameters('routeTableId')), null())]",
-                "natGateway": "[if(not(empty(parameters('natGatewayId'))), createObject('id', parameters('natGatewayId')), null())]",
-                "serviceEndpoints": "[parameters('serviceEndpoints')]",
-                "delegations": "[parameters('delegations')]",
-                "privateEndpointNetworkPolicies": "[if(not(empty(parameters('privateEndpointNetworkPolicies'))), parameters('privateEndpointNetworkPolicies'), null())]",
-                "privateLinkServiceNetworkPolicies": "[if(not(empty(parameters('privateLinkServiceNetworkPolicies'))), parameters('privateLinkServiceNetworkPolicies'), null())]",
-                "addressPrefixes": "[parameters('addressPrefixes')]",
-                "applicationGatewayIpConfigurations": "[parameters('applicationGatewayIpConfigurations')]",
-                "ipAllocations": "[parameters('ipAllocations')]",
-                "serviceEndpointPolicies": "[parameters('serviceEndpointPolicies')]"
-              }
-            }
-          ],
-          "outputs": {
-            "resourceGroupName": {
-              "type": "string",
-              "value": "[resourceGroup().name]",
-              "metadata": {
-                "description": "The resource group the virtual network peering was deployed into"
-              }
-            },
-            "name": {
-              "type": "string",
-              "value": "[parameters('name')]",
-              "metadata": {
-                "description": "The name of the virtual network peering"
-              }
-            },
-            "resourceId": {
-              "type": "string",
-              "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('name'))]",
-              "metadata": {
-                "description": "The resource ID of the virtual network peering"
-              }
-            },
-            "subnetAddressPrefix": {
-              "type": "string",
-              "value": "[reference(resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('name'))).addressPrefix]",
-              "metadata": {
-                "description": "The address prefix for the subnet"
-              }
-            },
-            "subnetAddressPrefixes": {
-              "type": "array",
-              "value": "[if(not(empty(parameters('addressPrefixes'))), reference(resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('name'))).addressPrefixes, createArray())]",
-              "metadata": {
-                "description": "List of address prefixes for the subnet"
-              }
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/virtualNetworks', parameters('name'))]"
-      ]
-    },
-    {
-      "copy": {
         "name": "virtualNetwork_peering_local",
         "count": "[length(parameters('virtualNetworkPeerings'))]"
       },
@@ -641,7 +400,7 @@
         }
       },
       "dependsOn": [
-        "virtualNetwork_subnets"
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('name'))]"
       ]
     },
     {
@@ -796,8 +555,7 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Network/virtualNetworks', parameters('name'))]",
-        "virtualNetwork_subnets"
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('name'))]"
       ]
     },
     {

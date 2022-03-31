@@ -129,40 +129,11 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   }
 }
 
-//NOTE Start: ------------------------------------
-// The below module (virtualNetwork_subnets) is a duplicate of the child resource (subnets) defined in the parent module (virtualNetwork).
-// The reason it exists so that deployment validation tests can be performed on the child module (subnets), in case that module needed to be deployed alone outside of this template.
-// The reason for duplication is due to the current design for the (virtualNetworks) resource from Azure, where if the child module (subnets) does not exist within it, causes
-//    an issue, where the child resource (subnets) gets all of its properties removed, hence not as 'idempotent' as it should be. See https://github.com/Azure/azure-quickstart-templates/issues/2786 for more details.
-// You can safely remove the below child module (virtualNetwork_subnets) in your consumption of the module (virtualNetworks) to reduce the template size and duplication.
-//NOTE End  : ------------------------------------
-
-@batchSize(1)
-module virtualNetwork_subnets 'subnets/deploy.bicep' = [for (subnet, index) in subnets: {
-  name: '${uniqueString(deployment().name, location)}-subnet-${index}'
-  params: {
-    virtualNetworkName: virtualNetwork.name
-    name: subnet.name
-    addressPrefix: subnet.addressPrefix
-    addressPrefixes: contains(subnet, 'addressPrefixes') ? subnet.addressPrefixes : []
-    applicationGatewayIpConfigurations: contains(subnet, 'applicationGatewayIpConfigurations') ? subnet.applicationGatewayIpConfigurations : []
-    delegations: contains(subnet, 'delegations') ? subnet.delegations : []
-    ipAllocations: contains(subnet, 'ipAllocations') ? subnet.ipAllocations : []
-    natGatewayId: contains(subnet, 'natGatewayId') ? subnet.natGatewayId : ''
-    networkSecurityGroupId: contains(subnet, 'networkSecurityGroupId') ? subnet.networkSecurityGroupId : ''
-    privateEndpointNetworkPolicies: contains(subnet, 'privateEndpointNetworkPolicies') ? subnet.privateEndpointNetworkPolicies : ''
-    privateLinkServiceNetworkPolicies: contains(subnet, 'privateLinkServiceNetworkPolicies') ? subnet.privateLinkServiceNetworkPolicies : ''
-    routeTableId: contains(subnet, 'routeTableId') ? subnet.routeTableId : ''
-    serviceEndpointPolicies: contains(subnet, 'serviceEndpointPolicies') ? subnet.serviceEndpointPolicies : []
-    serviceEndpoints: contains(subnet, 'serviceEndpoints') ? subnet.serviceEndpoints : []
-  }
-}]
-
 // Local to Remote peering
 module virtualNetwork_peering_local 'virtualNetworkPeerings/deploy.bicep' = [for (peering, index) in virtualNetworkPeerings: {
   name: '${uniqueString(deployment().name, location)}-virtualNetworkPeering-local-${index}'
   params: {
-    localVnetName: name
+    localVnetName: virtualNetwork.name
     remoteVirtualNetworkId: peering.remoteVirtualNetworkId
     name: contains(peering, 'name') ? peering.name : '${name}-${last(split(peering.remoteVirtualNetworkId, '/'))}'
     allowForwardedTraffic: contains(peering, 'allowForwardedTraffic') ? peering.allowForwardedTraffic : true
@@ -171,9 +142,6 @@ module virtualNetwork_peering_local 'virtualNetworkPeerings/deploy.bicep' = [for
     doNotVerifyRemoteGateways: contains(peering, 'doNotVerifyRemoteGateways') ? peering.doNotVerifyRemoteGateways : true
     useRemoteGateways: contains(peering, 'useRemoteGateways') ? peering.useRemoteGateways : false
   }
-  dependsOn: [
-    virtualNetwork_subnets
-  ]
 }]
 
 // Remote to local peering (reverse)
@@ -190,9 +158,6 @@ module virtualNetwork_peering_remote 'virtualNetworkPeerings/deploy.bicep' = [fo
     doNotVerifyRemoteGateways: contains(peering, 'remotePeeringDoNotVerifyRemoteGateways') ? peering.remotePeeringDoNotVerifyRemoteGateways : true
     useRemoteGateways: contains(peering, 'remotePeeringUseRemoteGateways') ? peering.remotePeeringUseRemoteGateways : false
   }
-  dependsOn: [
-    virtualNetwork_subnets
-  ]
 }]
 
 resource virtualNetwork_lock 'Microsoft.Authorization/locks@2017-04-01' = if (lock != 'NotSpecified') {
