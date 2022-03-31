@@ -1,6 +1,6 @@
 # Availability Set
 
-This template deploys Microsoft.Compute Availability Sets and optionally available children or extensions
+This module deploys Microsoft.Compute Availability Sets and optionally available children or extensions
 
 ## Parameters
 
