@@ -31,8 +31,8 @@ This template deploys Microsoft.Network Virtual Networks and optionally availabl
 | resourceGroupName | string | The resource group the virtual network was deployed into |
 | resourceId        | string | The resource ID of the virtual network                   |
 | name              | string | The name of the virtual network                          |
-| subnetNames       | array  |                                                          |
-| subnetResourceIds | array  |                                                          |
+| subnetNames       | array  | The names of the deployed subnets                        |
+| subnetResourceIds | array  | The resource IDs of the deployed subnets                 |
 
 ## Examples
 

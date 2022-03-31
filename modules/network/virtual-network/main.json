@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.4.1008.15138",
-      "templateHash": "14935489320451950594"
+      "version": "0.4.1318.3566",
+      "templateHash": "729733479101395695"
     }
   },
   "parameters": {
@@ -144,7 +144,6 @@
       }
     }
   },
-  "functions": [],
   "variables": {
     "copy": [
       {
@@ -257,7 +256,7 @@
         "count": "[length(parameters('virtualNetworkPeerings'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-06-01",
+      "apiVersion": "2020-10-01",
       "name": "[format('{0}-virtualNetworkPeering-local-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -296,8 +295,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.1008.15138",
-              "templateHash": "12461786378614344062"
+              "version": "0.4.1318.3566",
+              "templateHash": "4478949867498928823"
             }
           },
           "parameters": {
@@ -356,7 +355,6 @@
               }
             }
           },
-          "functions": [],
           "resources": [
             {
               "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
@@ -410,7 +408,7 @@
         "count": "[length(parameters('virtualNetworkPeerings'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-06-01",
+      "apiVersion": "2020-10-01",
       "name": "[format('{0}-virtualNetworkPeering-remote-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "subscriptionId": "[split(parameters('virtualNetworkPeerings')[copyIndex()].remoteVirtualNetworkId, '/')[2]]",
       "resourceGroup": "[split(parameters('virtualNetworkPeerings')[copyIndex()].remoteVirtualNetworkId, '/')[4]]",
@@ -451,8 +449,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.1008.15138",
-              "templateHash": "12461786378614344062"
+              "version": "0.4.1318.3566",
+              "templateHash": "4478949867498928823"
             }
           },
           "parameters": {
@@ -511,7 +509,6 @@
               }
             }
           },
-          "functions": [],
           "resources": [
             {
               "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
@@ -564,7 +561,7 @@
         "count": "[length(parameters('roleAssignments'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-06-01",
+      "apiVersion": "2020-10-01",
       "name": "[format('{0}-VNet-Rbac-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -594,8 +591,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.1008.15138",
-              "templateHash": "15107847006887852467"
+              "version": "0.4.1318.3566",
+              "templateHash": "16614563491795014102"
             }
           },
           "parameters": {
@@ -617,7 +614,6 @@
               "type": "string"
             }
           },
-          "functions": [],
           "variables": {
             "builtInRoleNames": {
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -704,6 +700,9 @@
       "copy": {
         "count": "[length(parameters('subnets'))]",
         "input": "[parameters('subnets')[copyIndex()].name]"
+      },
+      "metadata": {
+        "description": "The names of the deployed subnets"
       }
     },
     "subnetResourceIds": {
@@ -711,6 +710,9 @@
       "copy": {
         "count": "[length(parameters('subnets'))]",
         "input": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('name'), parameters('subnets')[copyIndex()].name)]"
+      },
+      "metadata": {
+        "description": "The resource IDs of the deployed subnets"
       }
     }
   }
