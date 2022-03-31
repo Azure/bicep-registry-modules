@@ -28,10 +28,45 @@ This template deploys Microsoft.Compute Availability Sets and optionally availab
 
 ### Example 1
 
+Example invocation with the minimum required parameters
+
 ```bicep
+module minavs 'br/public:resources/resource-group:1.0' = {
+  name: '${uniqueString(deployment().name, location)}-minavs'
+  params: {
+    name: 'carml-az-avs-min-01'
+    location: location
+  }
+}
 ```
 
 ### Example 2
 
+Example invocation with several properties including tags & role assignments.
+
 ```bicep
+module genavs 'br/public:resources/resource-group:1.0' = {
+  name: '${uniqueString(deployment().name, location)}-genavs'
+  params: {
+    name: 'carml-az-avs-gen-01'
+    proximityPlacementGroupId: '/subscriptions/111111-1111-1111-1111-111111111111/resourceGroups/validation-rg/providers/Microsoft.Compute/proximityPlacementGroups/adp-carml-az-ppg-x-001'
+    availabilitySetSku: 'aligned'
+    availabilitySetUpdateDomain: 2
+    availabilitySetFaultDomain: 2
+    tags: {
+      tag1: 'tag1Value'
+      tag2: 'tag2Value'
+    }
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Reader'
+        principalIds: [
+          '222222-2222-2222-2222-2222222222'
+        ]
+        principalType: 'ServicePrincipal'
+      }
+    ]
+    location: location
+  }
+}
 ```
