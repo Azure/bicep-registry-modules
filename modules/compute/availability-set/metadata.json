@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema#",
+  "name": "Availability Set",
+  "description": "This module deploys Microsoft.Compute Availability Sets and optionally available children or extensions",
+  "owner": "CARML"
+}
