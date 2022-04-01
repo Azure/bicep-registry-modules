@@ -59,3 +59,4 @@ jobs:
     secrets:
       PUBLISH_CLIENT_ID: ${{ secrets.PUBLISH_CLIENT_ID }}
       PUBLISH_TENANT_ID: ${{ secrets.PUBLISH_TENANT_ID }}
+      PUBLISH_SUBSCRIPTION_ID: ${{ secrets.PUBLISH_SUBSCRIPTION_ID }}
