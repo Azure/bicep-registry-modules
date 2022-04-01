@@ -13,6 +13,8 @@ on:
         required: true
       PUBLISH_TENANT_ID:
         required: true
+      PUBLISH_SUBSCRIPTION_ID:
+        required: true
   workflow_dispatch:
     inputs:
       tag:
