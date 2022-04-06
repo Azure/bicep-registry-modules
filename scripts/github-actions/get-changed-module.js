@@ -70,8 +70,8 @@ async function getChangedModule({ require, github, context, core }) {
       core.info(`- ${cyan}${moduleDirs[0]}`);
       return moduleDirs[0];
     default:
-      core.log(`Found ${moduleDirs.length} changed modules:`);
-      moduleDirs.forEach((dir) => console.log(`- ${cyan}${dir}`));
+      core.info(`Found ${moduleDirs.length} changed modules:`);
+      moduleDirs.forEach((dir) => core.info(`- ${cyan}${dir}`));
       core.setFailed("Only one module can be added or updated at a time.");
   }
 }
