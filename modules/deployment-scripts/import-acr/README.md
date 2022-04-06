@@ -33,7 +33,7 @@ param acrName string =  'yourAzureContainerRegistry'
 
 var imageName = 'ghcr.io/kedacore/keda-metrics-apiserver:main'
 
-module acrImport '../main.bicep' = {
+module acrImport 'br/public:deployment-scripts/import-acr:1.0.1' = {
   name: 'testAcrImportSingle'
   params: {
     acrName: acrName
@@ -55,7 +55,7 @@ var imageNames = [
   'docker.io/bitnami/redis:latest'
 ]
 
-module acrImport '../main.bicep' = {
+module acrImport 'br/public:deployment-scripts/import-acr:1.0.1' = {
   name: 'testAcrImportMulti'
   params: {
     acrName: acrName
@@ -71,7 +71,7 @@ module acrImport '../main.bicep' = {
 param location string = resourceGroup().location
 param acrName string =  'yourAzureContainerRegistry'
 
-module acrImportAZV '../main.bicep' = {
+module acrImport 'br/public:deployment-scripts/import-acr:1.0.1' = {
   name: 'testAcrImportAZV'
   params: {
     azCliVersion: '2.34.1'
