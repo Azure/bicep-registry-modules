@@ -4,7 +4,7 @@
 
 - Create a fork of the [Azure/bicep-registry-modules](https://github.com/Azure/bicep-registry-modules) repository and clone the fork to your local machine.
 - Install [.NET 6.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0/runtime)
-- Install the [Bicep registry module](https://www.nuget.org/packages/Azure.Bicep.RegistryModuleTool/) .NET tool by running:
+- Install the [Bicep registry module](https://www.nuget.org/packages/Azure.Bicep.RegistryModuleTool/) tool by running:
   - `dotnet tool install --global Azure.Bicep.RegistryModuleTool`
 
 ## Creating a new module
@@ -13,7 +13,7 @@
 
 <!-- TODO: update the issue link once the repo is public -->
 
-Before creating a new module, you must fill out this [issue template](https://github.com/Azure/bicep-registry-modules/issues/new) to make a proposal. Once the proposal is approved, proceed with the following steps. You should not send out a pull request to add a module without an associated approval as the pull request will be rejected.
+Before creating a new module, you must fill out this [issue template](https://github.com/Azure/bicep-registry-modules/issues/new) to make a proposal. Each module needs to have its own proposal. Please avoid including multiple modules in one issue. Once the proposal is approved, proceed with the following steps. You should not send out a pull request to add a module without an associated approval as the pull request will be rejected.
 
 ### Creating a directory for the new module
 
@@ -24,6 +24,9 @@ Add a new directory under the `modules` folder in your local bicep-registry-modu
 - `web/containerized-web-app-config`
 
 ### Generating module files
+
+> Before generating module files, please make sure both Bicep CLI and Bicep registry module tool installed on your machine are up-to-date. This is to avoid any file content outdated errors in the pull request validation CI, since the CI always uses the latest versions of Bicep CLI and Bicep registry module tool.
+
 
 Open a terminal and navigate to the newly created folder. From there, run the following command to generate the required files for the Bicep public registry module:
 
@@ -148,7 +151,7 @@ The `brm validate` command mentioned in the above step does not deploy the `test
 
 ## Submitting a pull request
 
-Once the module files are validated locally, you can commit your changes and open a pull request. You must link the new module proposal in the pull request description if you are trying to add a new module.
+Once the module files are validated locally, you can commit your changes and open a pull request. You must link the new module proposal in the pull request description if you are trying to add a new module. Another thing to mention is that adding or updating multiple modules is not supported and will cause a failure in the pull request validation CI, so please only add or change one module at a time.
 
 ## Publishing a module
 
