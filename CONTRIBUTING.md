@@ -150,7 +150,7 @@ The `brm validate` command mentioned in the above step does not deploy the `test
 
 ## Submitting a pull request
 
-Once the module files are validated locally, you can commit your changes and open a pull request. You must link the new module proposal in the pull request description if you are trying to add a new module. Another thing to mention is that adding or updating multiple modules is not supported and will cause a failure in the pull request validation CI, so please only add or change one module at a time.
+Once the module files are validated locally, you can commit your changes and open a pull request. You must link the new module proposal in the pull request description if you are trying to add a new module. Adding or updating multiple modules is not supported and will cause a failure in the pull request validation CI, so please only add or change one module at a time.
 
 ## Publishing a module
 
