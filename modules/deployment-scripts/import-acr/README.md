@@ -25,7 +25,7 @@ An Azure CLI Deployment Script that imports public container images to an Azure 
 
 ## Examples
 
-### Example 1
+### Importing a single image
 
 ```bicep
 param location string = resourceGroup().location
@@ -43,7 +43,7 @@ module acrImport 'br/public:deployment-scripts/import-acr:1.0.1' = {
 }
 ```
 
-### Example 2
+### Importing multiple images
 
 ```bicep
 param location string = resourceGroup().location
@@ -65,7 +65,7 @@ module acrImport 'br/public:deployment-scripts/import-acr:1.0.1' = {
 }
 ```
 
-### Example 3
+### Setting a specific Azure CLI Version to use
 
 ```bicep
 param location string = resourceGroup().location
