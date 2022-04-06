@@ -56,7 +56,7 @@ resource rbac 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = [fo
   }
 }]
 
-resource createAddCertificate 'Microsoft.Resources/deploymentScripts@2020-10-01' = [for image in images: {
+resource createImportImage 'Microsoft.Resources/deploymentScripts@2020-10-01' = [for image in images: {
   name: 'ACR-Import-Image-${replace(replace(image,':',''),'/','-')}'
   location: location
   identity: {

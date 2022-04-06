@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.4.1318.3566",
-      "templateHash": "11559672930203607118"
+      "templateHash": "9810179174344479223"
     }
   },
   "parameters": {
@@ -115,7 +115,7 @@
     },
     {
       "copy": {
-        "name": "createAddCertificate",
+        "name": "createImportImage",
         "count": "[length(parameters('images'))]"
       },
       "type": "Microsoft.Resources/deploymentScripts",
