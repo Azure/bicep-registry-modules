@@ -27,7 +27,6 @@ Add a new directory under the `modules` folder in your local bicep-registry-modu
 
 > Before generating module files, please make sure both Bicep CLI and Bicep registry module tool installed on your machine are up-to-date. This is to avoid any file content outdated errors in the pull request validation CI, since the CI always uses the latest versions of Bicep CLI and Bicep registry module tool.
 
-
 Open a terminal and navigate to the newly created folder. From there, run the following command to generate the required files for the Bicep public registry module:
 
 ```
