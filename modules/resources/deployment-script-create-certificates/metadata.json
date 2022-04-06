@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema#",
+  "name": "AKV Self-Signed Certificate Generator",
+  "description": "An Azure CLI Deployment Script that creates Azure KeyVault self-signed certificates",
+  "owner": "Aks-Bicep-Accelerator-Maintainers"
+}
