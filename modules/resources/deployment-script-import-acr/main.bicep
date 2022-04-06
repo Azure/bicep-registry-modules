@@ -16,7 +16,7 @@ param timeout string = 'PT30M'
 @description('The retention period for the deployment script')
 param retention string = 'P1D'
 
-@description('An array of Azure RoleId that are required for the DeploymentScript resource')
+@description('An array of Azure RoleIds that are required for the DeploymentScript resource')
 param rbacRolesNeeded array = [
   'b24988ac-6180-42a0-ab88-20f7382dd24c' //Contributor is needed to import ACR
 ]
@@ -28,6 +28,8 @@ param managedIdName string = 'id-ContainerRegistryImport'
 param images array = [
   'docker.io/bitnami/external-dns:latest'
 ]
+
+param initialScriptDelay string = '30s'
 
 @allowed([
   'OnSuccess'
@@ -83,10 +85,17 @@ resource createImportImage 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
         name: 'imageName'
         value: image
       }
+      {
+        name: 'initialDelay'
+        value: initialScriptDelay
+      }
     ]
     scriptContent: '''
       #!/bin/bash
       set -e
+
+      echo "Waiting on RBAC replication ($initialDelay)"
+      sleep $initialDelay
 
       echo "Importing Image: $imageName into ACR: $acrName"
       az acr import -n $acrName --source $imageName --force
