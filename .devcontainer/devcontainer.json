@@ -1,30 +1,26 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
-// https://github.com/microsoft/vscode-dev-containers/tree/v0.224.3/containers/ubuntu
 {
-	"name": "Ubuntu",
-	"build": {
-		"dockerfile": "Dockerfile",
-		"args": { "VARIANT": "focal" }
-	},
+  "name": "Ubuntu",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": { "VARIANT": "focal" }
+  },
 
-	// Set *default* container specific settings.json values on container create.
-	"settings": {},
+  "settings": {},
 
+  "extensions": [
+	"ms-azuretools.vscode-bicep",
+	"esbenp.prettier-vscode"
+],
 
-	// Add the IDs of extensions you want installed when the container is created.
-	"extensions": [
-		"ms-azuretools.vscode-bicep"
-	],
+  "postCreateCommand": "dotnet tool install -g Azure.Bicep.RegistryModuleTool",
+  "postStartCommand": "az bicep install",
 
-	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "dotnet tool install -g Azure.Bicep.RegistryModuleTool",
+  "remoteEnv": {
+    "PATH": "${containerEnv:PATH}:/root/.dotnet/tools:/root/.azure/bin"
+  },
 
-	"remoteEnv": {
-		"PATH": "${containerEnv:PATH}:/root/.dotnet/tools"
-	},
-
-	"features": {
-		"azure-cli": "latest",
-		"dotnet": "6.0"
-	}
+  "features": {
+    "azure-cli": "latest",
+    "dotnet": "6.0"
+  }
 }
