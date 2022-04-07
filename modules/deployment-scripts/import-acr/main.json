@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.4.1318.3566",
-      "templateHash": "2414084080006657456"
+      "templateHash": "17518112087598995896"
     }
   },
   "parameters": {
@@ -174,7 +174,7 @@
             "value": "[parameters('initialScriptDelay')]"
           }
         ],
-        "scriptContent": "      #!/bin/bash\r\n      set -e\r\n\r\n      echo \"Waiting on RBAC replication ($initialDelay)\"\r\n      sleep $initialDelay\r\n\r\n      echo \"Importing Image: $imageName into ACR: $acrName\"\r\n      az acr import -n $acrName --source $imageName --force\r\n    ",
+        "scriptContent": "      #!/bin/bash\n      set -e\n\n      echo \"Waiting on RBAC replication ($initialDelay)\"\n      sleep $initialDelay\n\n      echo \"Importing Image: $imageName into ACR: $acrName\"\n      az acr import -n $acrName --source $imageName --force\n    ",
         "cleanupPreference": "[parameters('cleanupPreference')]"
       },
       "dependsOn": [
