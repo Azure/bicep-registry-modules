@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - main
-
+      
 jobs:
   get-module-to-validate:
     uses: ./.github/workflows/get-changed-module.yml
