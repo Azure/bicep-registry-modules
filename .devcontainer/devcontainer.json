@@ -16,11 +16,11 @@
 		"ms-azuretools.vscode-bicep"
 	],
 
-	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "dotnet tool install -g Azure.Bicep.RegistryModuleTool",
-
+	"postStartCommand": "az bicep install",
+	
 	"remoteEnv": {
-		"PATH": "${containerEnv:PATH}:/root/.dotnet/tools"
+		"PATH": "${containerEnv:PATH}:/root/.dotnet/tools:/root/.azure/bin"
 	},
 
 	"features": {
