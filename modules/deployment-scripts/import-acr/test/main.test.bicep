@@ -1,12 +1,5 @@
-/*
-Write deployment tests in this file. Any module that references the main
-module file is a deployment test. Make sure at least one test is added.
-*/
-
 param location string = resourceGroup().location
 param acrName string =  'crtest${uniqueString(newGuid())}'
-
-
 
 var ContributorRoleDefinitionId='b24988ac-6180-42a0-ab88-20f7382dd24c'
 
@@ -31,7 +24,7 @@ module acrImportSingle '../main.bicep' = {
   }
 }
 
-//Test 2. Simple, 3 Image
+//Test 2. Simple, multi Image
 var imageNames = [
   'docker.io/bitnami/external-dns:latest'
   'quay.io/jetstack/cert-manager-cainjector:v1.7.2'
@@ -55,7 +48,10 @@ resource depScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-3
 module acrImportEID '../main.bicep' = {
   name: 'testAcrImportEID'
   params: {
-    managedIdName: depScriptId.name
+    useExistingManagedIdentity: true
+    managedIdentityName: depScriptId.name
+    existingManagedIdentityResourceGroupName: resourceGroup().name
+    existingManagedIdentitySubId: subscription().subscriptionId
     acrName: acr.name
     location: location
     images: array('ghcr.io/kedacore/keda:main')
@@ -70,5 +66,16 @@ module acrImportAZV '../main.bicep' = {
     acrName: acr.name
     location: location
     images: array('mcr.microsoft.com/azuredocs/azure-vote-front:v1')
+  }
+}
+
+//Test 5. Custom Script Delay
+module acrImportCustomDelay '../main.bicep' = {
+  name: 'testAcrImportDelay'
+  params: {
+    initialScriptDelay: '60s'
+    acrName: acr.name
+    location: location
+    images: array('mcr.microsoft.com/mcr/hello-world:Canary-IngestionTest')
   }
 }

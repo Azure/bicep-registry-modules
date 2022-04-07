@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.4.1318.3566",
-      "templateHash": "6322251868843133434"
+      "templateHash": "2414084080006657456"
     }
   },
   "parameters": {
@@ -59,11 +59,32 @@
         "description": "An array of Azure RoleIds that are required for the DeploymentScript resource"
       }
     },
-    "managedIdName": {
+    "useExistingManagedIdentity": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Does the Managed Identity already exists, or should be created"
+      }
+    },
+    "managedIdentityName": {
       "type": "string",
       "defaultValue": "id-ContainerRegistryImport",
       "metadata": {
         "description": "Name of the Managed Identity resource"
+      }
+    },
+    "existingManagedIdentitySubId": {
+      "type": "string",
+      "defaultValue": "[subscription().subscriptionId]",
+      "metadata": {
+        "description": "For an existing Managed Identity, the Subscription Id it is located in"
+      }
+    },
+    "existingManagedIdentityResourceGroupName": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().name]",
+      "metadata": {
+        "description": "For an existing Managed Identity, the Resource Group it is located in"
       }
     },
     "images": {
@@ -76,7 +97,7 @@
       "type": "string",
       "defaultValue": "30s",
       "metadata": {
-        "description": "A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propogate"
+        "description": "A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate"
       }
     },
     "cleanupPreference": {
@@ -94,9 +115,10 @@
   },
   "resources": [
     {
+      "condition": "[not(parameters('useExistingManagedIdentity'))]",
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2018-11-30",
-      "name": "[parameters('managedIdName')]",
+      "name": "[parameters('managedIdentityName')]",
       "location": "[parameters('location')]"
     },
     {
@@ -107,14 +129,14 @@
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2020-08-01-preview",
       "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('acrName'))]",
-      "name": "[guid(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), parameters('rbacRolesNeeded')[copyIndex()], resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdName')))]",
+      "name": "[guid(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), parameters('rbacRolesNeeded')[copyIndex()], if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]",
       "properties": {
         "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('rbacRolesNeeded')[copyIndex()])]",
-        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdName'))).principalId]",
+        "principalId": "[if(parameters('useExistingManagedIdentity'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId, reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId)]",
         "principalType": "ServicePrincipal"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdName'))]"
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]"
       ]
     },
     {
@@ -129,7 +151,7 @@
       "identity": {
         "type": "UserAssigned",
         "userAssignedIdentities": {
-          "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdName')))]": {}
+          "[format('{0}', if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]": {}
         }
       },
       "kind": "AzureCLI",
@@ -152,11 +174,11 @@
             "value": "[parameters('initialScriptDelay')]"
           }
         ],
-        "scriptContent": "      #!/bin/bash\n      set -e\n\n      echo \"Waiting on RBAC replication ($initialDelay)\"\n      sleep $initialDelay\n\n      echo \"Importing Image: $imageName into ACR: $acrName\"\n      az acr import -n $acrName --source $imageName --force\n    ",
+        "scriptContent": "      #!/bin/bash\r\n      set -e\r\n\r\n      echo \"Waiting on RBAC replication ($initialDelay)\"\r\n      sleep $initialDelay\r\n\r\n      echo \"Importing Image: $imageName into ACR: $acrName\"\r\n      az acr import -n $acrName --source $imageName --force\r\n    ",
         "cleanupPreference": "[parameters('cleanupPreference')]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdName'))]",
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]",
         "rbac"
       ]
     }

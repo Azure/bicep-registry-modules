@@ -21,13 +21,22 @@ param rbacRolesNeeded array = [
   'b24988ac-6180-42a0-ab88-20f7382dd24c' //Contributor is needed to import ACR
 ]
 
+@description('Does the Managed Identity already exists, or should be created')
+param useExistingManagedIdentity bool = false
+
 @description('Name of the Managed Identity resource')
-param managedIdName string = 'id-ContainerRegistryImport'
+param managedIdentityName string = 'id-ContainerRegistryImport'
+
+@description('For an existing Managed Identity, the Subscription Id it is located in')
+param existingManagedIdentitySubId string = subscription().subscriptionId
+
+@description('For an existing Managed Identity, the Resource Group it is located in')
+param existingManagedIdentityResourceGroupName string = resourceGroup().name
 
 @description('An array of fully qualified images names to import')
 param images array
 
-@description('A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propogate')
+@description('A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate')
 param initialScriptDelay string = '30s'
 
 @allowed([
@@ -42,17 +51,22 @@ resource acr 'Microsoft.ContainerRegistry/registries@2021-12-01-preview' existin
   name: acrName
 }
 
-resource depScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: managedIdName
+resource newDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = if (!useExistingManagedIdentity) {
+  name: managedIdentityName
   location: location
 }
 
+resource existingDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = if (useExistingManagedIdentity ) {
+  name: managedIdentityName
+  scope: resourceGroup(existingManagedIdentitySubId, existingManagedIdentityResourceGroupName)
+}
+
 resource rbac 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = [for roleDefId in rbacRolesNeeded: {
-  name: guid(acr.id, roleDefId, depScriptId.id)
+  name: guid(acr.id, roleDefId, useExistingManagedIdentity ? existingDepScriptId.id : newDepScriptId.id)
   scope: acr
   properties: {
     roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', roleDefId)
-    principalId: depScriptId.properties.principalId
+    principalId: useExistingManagedIdentity ? existingDepScriptId.properties.principalId : newDepScriptId.properties.principalId
     principalType: 'ServicePrincipal'
   }
 }]
@@ -63,7 +77,7 @@ resource createImportImage 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
-      '${depScriptId.id}': {}
+      '${useExistingManagedIdentity ? existingDepScriptId.id : newDepScriptId.id}': {}
     }
   }
   kind: 'AzureCLI'
