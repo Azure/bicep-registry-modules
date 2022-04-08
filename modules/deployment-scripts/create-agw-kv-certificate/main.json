@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.4.1318.3566",
-      "templateHash": "491657933686265403"
+      "templateHash": "3921902708755418416"
     }
   },
   "parameters": {
@@ -57,13 +57,22 @@
         "description": "The retention period for the deployment script"
       }
     },
-    "rbacRolesNeeded": {
+    "rbacRolesNeededOnKV": {
+      "type": "array",
+      "defaultValue": [
+        "a4417e6f-fecd-4de8-b567-7b0420556985"
+      ],
+      "metadata": {
+        "description": "An array of Azure Key Vault RoleIds that are required for the DeploymentScript resource"
+      }
+    },
+    "rbacRolesNeededOnAppGw": {
       "type": "array",
       "defaultValue": [
         "b24988ac-6180-42a0-ab88-20f7382dd24c"
       ],
       "metadata": {
-        "description": "An array of Azure RoleIds that are required for the DeploymentScript resource"
+        "description": "An array of Azure Application Gateway RoleIds that are required for the DeploymentScript resource"
       }
     },
     "useExistingManagedIdentity": {
@@ -75,7 +84,7 @@
     },
     "managedIdentityName": {
       "type": "string",
-      "defaultValue": "id-ContainerRegistryImport",
+      "defaultValue": "id-KeyVaultCertificateCreator",
       "metadata": {
         "description": "Name of the Managed Identity resource"
       }
@@ -130,7 +139,14 @@
         "OnExpiration",
         "Always"
       ]
+    },
+    "agwIdName": {
+      "type": "string",
+      "defaultValue": ""
     }
+  },
+  "variables": {
+    "managedIdentityOperator": "[resourceId('Microsoft.Authorization/roleDefinitions', 'f1a07417-d97a-45cb-824c-7a7467783830')]"
   },
   "resources": [
     {
@@ -138,19 +154,22 @@
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2018-11-30",
       "name": "[parameters('managedIdentityName')]",
-      "location": "[parameters('location')]"
+      "location": "[parameters('location')]",
+      "metadata": {
+        "description": "A new managed identity that will be created in this Resource Group, this is the default option"
+      }
     },
     {
       "copy": {
-        "name": "rbac",
-        "count": "[length(parameters('rbacRolesNeeded'))]"
+        "name": "rbacKv",
+        "count": "[length(parameters('rbacRolesNeededOnKV'))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2020-08-01-preview",
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('akvName'))]",
-      "name": "[guid(resourceId('Microsoft.KeyVault/vaults', parameters('akvName')), parameters('rbacRolesNeeded')[copyIndex()], if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]",
+      "name": "[guid(resourceId('Microsoft.KeyVault/vaults', parameters('akvName')), parameters('rbacRolesNeededOnKV')[copyIndex()], if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]",
       "properties": {
-        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('rbacRolesNeeded')[copyIndex()])]",
+        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('rbacRolesNeededOnKV')[copyIndex()])]",
         "principalId": "[if(parameters('useExistingManagedIdentity'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId, reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId)]",
         "principalType": "ServicePrincipal"
       },
@@ -159,13 +178,49 @@
       ]
     },
     {
+      "condition": "[and(not(empty(parameters('agwName'))), not(equals(parameters('agwCertType'), 'none')))]",
+      "copy": {
+        "name": "rbacAppGw",
+        "count": "[length(parameters('rbacRolesNeededOnAppGw'))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2020-08-01-preview",
+      "scope": "[format('Microsoft.Network/applicationGateways/{0}', parameters('agwName'))]",
+      "name": "[guid(resourceId('Microsoft.Network/applicationGateways', parameters('agwName')), parameters('rbacRolesNeededOnAppGw')[copyIndex()], if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]",
+      "properties": {
+        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('rbacRolesNeededOnAppGw')[copyIndex()])]",
+        "principalId": "[if(parameters('useExistingManagedIdentity'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId, reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId)]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2020-08-01-preview",
+      "scope": "[format('Microsoft.ManagedIdentity/userAssignedIdentities/{0}', parameters('agwIdName'))]",
+      "name": "[format('{0}', guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('agwIdName')), variables('managedIdentityOperator'), if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))))]",
+      "properties": {
+        "roleDefinitionId": "[variables('managedIdentityOperator')]",
+        "principalId": "[if(parameters('useExistingManagedIdentity'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId, reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId)]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]"
+      ],
+      "metadata": {
+        "description": "Managed identity requires \"Managed Identity Operator\" permission over the user assigned identity of the Application Gateway."
+      }
+    },
+    {
       "copy": {
         "name": "createImportImage",
         "count": "[length(parameters('certNames'))]"
       },
       "type": "Microsoft.Resources/deploymentScripts",
       "apiVersion": "2020-10-01",
-      "name": "[format('ACR-Import-{0}-{1}', parameters('akvName'), replace(replace(parameters('certNames')[copyIndex()], ':', ''), '/', '-'))]",
+      "name": "[format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certNames')[copyIndex()], ':', ''), '/', '-'))]",
       "location": "[parameters('location')]",
       "identity": {
         "type": "UserAssigned",
@@ -209,13 +264,32 @@
             "value": "[parameters('initialScriptDelay')]"
           }
         ],
-        "scriptContent": "      #!/bin/bash\r\n      set -e\r\n\r\n      echo \"Waiting on RBAC replication ($initialDelay)\"\r\n      sleep $initialDelay\r\n\r\n      echo \"Creating AKV Cert $certName\";\r\n      az keyvault certificate create --vault-name $akvName -n $certName -p \"$(az keyvault certificate get-default-policy | sed -e s/CN=CLIGetDefaultPolicy/CN=${certName}/g )\";\r\n\r\n      sleep $certificateWait\r\n\r\n      echo \"getting akv secretid for $certName to add to $agwName\";\r\n      versionedSecretId=$(az keyvault certificate show -n $certName --vault-name $akvName --query \"sid\" -o tsv);\r\n      unversionedSecretId=$(echo $versionedSecretId | cut -d'/' -f-5) # remove the version from the url;\r\n\r\n      echo $agwCertType\r\n      echo \"creating root certificate reference in application gateway\";\r\n      rootcertcmd=\"az network application-gateway root-cert create --gateway-name $agwName  -g $RG -n $certName --keyvault-secret $unversionedSecretId\";\r\n      $rootcertcmd\r\n\r\n    ",
+        "scriptContent": "      #!/bin/bash\n      set -e\n\n      echo \"Waiting on Identity RBAC replication ($initialDelay)\"\n      sleep $initialDelay\n\n      echo \"Creating AKV Cert $certName\"\n      az keyvault certificate create --vault-name $akvName -n $certName -p \"$(az keyvault certificate get-default-policy | sed -e s/CN=CLIGetDefaultPolicy/CN=${certName}/g )\";\n\n      echo \"Waiting for AKV Cert Generation ($certificateWait)\"\n      sleep $certificateWait\n\n      echo \"getting akv secretid for $certName to add to $agwName\";\n      versionedSecretId=$(az keyvault certificate show -n $certName --vault-name $akvName --query \"sid\" -o tsv);\n      unversionedSecretId=$(echo $versionedSecretId | cut -d'/' -f-5) # remove the version from the url;\n      \n      case $agwCertType in\n        none)\n          echo \"AppGw not configured\"\n          ;;\n\n        root-cert)\n          echo $agwCertType\n          echo \"creating root certificate reference in application gateway\";\n          rootcertcmd=\"az network application-gateway root-cert create --gateway-name $agwName  -g $RG -n $certName --keyvault-secret $unversionedSecretId\";\n          $rootcertcmd\n          ;;\n\n        ssl-cert)\n        echo $agwCertType\n        echo \"creating root certificate reference in application gateway\";\n        rootcertcmd=\"az network application-gateway root-cert create --gateway-name $agwName  -g $RG -n $certName --keyvault-secret $unversionedSecretId\";\n        $rootcertcmd\n        ;;\n\n      esac\n\n      if [ \"$agwCertType\" != \"none\" ];\n      then\n        echo $agwCertType\n        echo \"creating root certificate reference in application gateway\";\n        rootcertcmd=\"az network application-gateway root-cert create --gateway-name $agwName  -g $RG -n $certName --keyvault-secret $unversionedSecretId\";\n        $rootcertcmd\n      fi\n\n      jsonOutputString=$(jq -n --arg cn \"$certName\" --arg sid \"$unversionedSecretId\" --arg vsid \"$versionedSecretId\" --arg ct \"$agwCertType\" '{certName: $cn, certSecretId: {versioned: $vsid, unversioned: $sid }, agwCertType: $ct}')\n      echo $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n    ",
         "cleanupPreference": "[parameters('cleanupPreference')]"
       },
       "dependsOn": [
         "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]",
-        "rbac"
+        "rbacAppGw",
+        "rbacKv"
       ]
     }
-  ]
+  ],
+  "outputs": {
+    "createdCertificates": {
+      "type": "array",
+      "copy": {
+        "count": "[length(parameters('certNames'))]",
+        "input": {
+          "certName": "[parameters('certNames')[copyIndex()]]",
+          "DeploymentScriptName": "[format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certNames')[copyIndex()], ':', ''), '/', '-'))]",
+          "DeploymentScriptOutputs": "[reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certNames')[copyIndex()], ':', ''), '/', '-')))).outputs]",
+          "DeploymentScriptStartTime": "[reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certNames')[copyIndex()], ':', ''), '/', '-')))).status.startTime]",
+          "DeploymentScriptEndTime": "[reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certNames')[copyIndex()], ':', ''), '/', '-')))).status.endTime]"
+        }
+      },
+      "metadata": {
+        "description": "Array of info from each Certificate Deployment Script"
+      }
+    }
+  }
 }
