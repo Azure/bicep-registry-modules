@@ -57,7 +57,7 @@ module minvnet 'br/public:network/virtual-network:1.0' = {
 An example of how to deploy a virtual network with multiple subnets, role assignment and diagnostic settings.
 
 ```bicep
-module genvnet 'br/public:network/virtual-network:1.0' = {
+module genvnet 'br/public:network/virtual-network:1.0.1' = {
   name: '${uniqueString(deployment().name, 'WestEurope')}-genvnet'
   params: {
     name: 'carml-az-vnet-gen-01'
@@ -126,7 +126,7 @@ module genvnet 'br/public:network/virtual-network:1.0' = {
 An example that deployes a virtual network with one subnet including a bi-directional peering to another virtual network.
 
 ```bicep
-module peervnet 'br/public:network/virtual-network:1.0' = {
+module peervnet 'br/public:network/virtual-network:1.0.1' = {
   name: '${uniqueString(deployment().name, 'WestEurope')}-peervnet'
   params: {
     name: 'carml-az-vnet-peer-01'
