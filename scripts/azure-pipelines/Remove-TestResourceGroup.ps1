@@ -59,6 +59,18 @@ Invoke-AzurePipelinesTask {
   Write-Host "Checking for Private Endpoint connections..." 
   Remove-AzPrivateEndpointConnectionInResourceGroup -ResourceGroupName $ResourceGroupName
 
+  Write-Host "Checking for Key vaults..." 
+  Remove-AzKeyVaultInResourceGroup -ResourceGroupName $ResourceGroupName
+
+  Write-Host "Checking for Cognitive Services accounts..." 
+  Remove-AzCognitiveServicesAccountInResourceGroup -ResourceGroupName $ResourceGroupName
+
+  Write-Host "Checking for API Management services..." 
+  Remove-AzApiManagementServiceInResourceGroup -ResourceGroupName $ResourceGroupName
+
+  Write-Host "Checking for Operational Insights workspaces..." 
+  Remove-AzOperationalInsightsWorkspaceInResourceGroup -ResourceGroupName $ResourceGroupName
+
   # Finally...
   Write-Host "Removed resources preventing removing the resource group. Attempting to remove the resource group again..."
   Remove-AzResourceGroup -Force -Verbose -Name $ResourceGroupName
