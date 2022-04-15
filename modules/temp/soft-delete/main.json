@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.5.6.12127",
-      "templateHash": "28712529101259037"
+      "templateHash": "15300795442592639307"
     }
   },
   "parameters": {
@@ -27,22 +27,8 @@
         "enabledForDeployment": true,
         "enabledForTemplateDeployment": true,
         "enabledForDiskEncryption": true,
-        "tenantId": "tenantId",
-        "accessPolicies": [
-          {
-            "tenantId": "tenantId",
-            "objectId": "objectId",
-            "permissions": {
-              "keys": [
-                "get"
-              ],
-              "secrets": [
-                "list",
-                "get"
-              ]
-            }
-          }
-        ],
+        "tenantId": "[tenant().tenantId]",
+        "accessPolicies": [],
         "sku": {
           "name": "standard",
           "family": "A"
