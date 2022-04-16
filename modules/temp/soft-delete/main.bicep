@@ -2,7 +2,7 @@
 param location string = 'westus2'
 
 resource keyVault 'Microsoft.KeyVault/vaults@2019-09-01' = {
-  name: 'name'
+  name: uniqueString(resourceGroup().name)
   location: location
   properties: {
     enabledForDeployment: true
