@@ -464,7 +464,7 @@ function Remove-AzKeyVaultInResourceGroup {
     }
     else {
       Write-Host "Purging Key vault" $keyVault.VaultName "..."
-      Remove-AzKeyVault -VaultName $keyVault.VaultName -ResourceGroupName $ResourceGroupName -InRemovedState -Force
+      Remove-AzKeyVault -VaultName $keyVault.VaultName -Location $keyVault.Location -ResourceGroupName $ResourceGroupName -InRemovedState -Force
     }
   }
 }
