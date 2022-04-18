@@ -5,14 +5,20 @@
     "_generator": {
       "name": "bicep",
       "version": "0.5.6.12127",
-      "templateHash": "10838303638479552872"
+      "templateHash": "4453164611731413701"
     }
   },
   "resources": [
     {
       "type": "Microsoft.CognitiveServices/accounts",
       "apiVersion": "2022-03-01",
-      "name": "testaccount"
+      "name": "testaccount",
+      "location": "westus2",
+      "sku": {
+        "name": "S0"
+      },
+      "kind": "CognitiveServices",
+      "properties": {}
     }
   ]
 }
