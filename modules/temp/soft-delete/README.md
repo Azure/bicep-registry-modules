@@ -4,9 +4,8 @@ Key vault module
 
 ## Parameters
 
-| Name       | Type     | Required | Description                           |
-| :--------- | :------: | :------: | :------------------------------------ |
-| `location` | `string` | No       | Specifies the location for resources. |
+| Name | Type | Required | Description |
+| :--- | :--: | :------: | :---------- |
 
 ## Outputs
 
