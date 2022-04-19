@@ -16,27 +16,11 @@ var rbacWriter='a7ffa36f-339b-4b5c-8bdf-e2c188b2c0eb'
 var rbacReader='7f6c6a51-bcf8-42ba-9220-52d62157d7db'
 
 //Prerequisites
-resource aks 'Microsoft.ContainerService/managedClusters@2022-01-02-preview' = {
-  location: location
-  name: aksName
-  properties: {
-    dnsPrefix: aksName
-    enableRBAC: true
-    aadProfile: {
-      managed: true
-      enableAzureRBAC: true
-    }
-    agentPoolProfiles: [
-      {
-        name: 'np01'
-        mode: 'System'
-        vmSize: 'Standard_DS2_v2'
-        count: 2
-      }
-    ]
-  }
-  identity: {
-    type: 'SystemAssigned'
+module prereq 'prereq.test.bicep' = {
+  name: 'test-prereqs'
+  params: {
+    location: location
+    aksName: aksName
   }
 }
 
@@ -49,7 +33,7 @@ module kubectlGetNodes '../main.bicep' = {
       contributor
       rbacClusterAdmin
     ]
-    aksName: aks.name
+    aksName: prereq.outputs.aksName
     location: location
     commands: [
       'kubectl get nodes'
@@ -66,7 +50,7 @@ module kubectlGetPods '../main.bicep' = {
       contributor
       rbacReader
     ]
-    aksName: aks.name
+    aksName: prereq.outputs.aksName
     location: location
     commands: [
       'kubectl get pods'
@@ -83,7 +67,7 @@ module kubectlRunNginx '../main.bicep' = {
       contributor
       rbacWriter
     ]
-    aksName: aks.name
+    aksName: prereq.outputs.aksName
     location: location
     commands: [
       'kubectl run nginx --image=nginx'
@@ -101,7 +85,7 @@ module helmContour '../main.bicep' = {
       contributor
       rbacWriter
     ]
-    aksName: aks.name
+    aksName: prereq.outputs.aksName
     location: location
     commands: [
       'helm version'
