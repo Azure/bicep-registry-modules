@@ -7,6 +7,8 @@
 - Install the [Bicep registry module](https://www.nuget.org/packages/Azure.Bicep.RegistryModuleTool/) tool by running:
   - `dotnet tool install --global Azure.Bicep.RegistryModuleTool`
 
+> A GitHub Codespace is available which is preconfigured with all of these prerequisites.
+
 ## Creating a new module
 
 ### Making a proposal
