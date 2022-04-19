@@ -1,0 +1,21 @@
+{
+  "name": "Ubuntu",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": { "VARIANT": "focal" }
+  },
+
+  "extensions": ["ms-azuretools.vscode-bicep", "esbenp.prettier-vscode"],
+
+  "postCreateCommand": "dotnet tool install -g Azure.Bicep.RegistryModuleTool",
+  "postStartCommand": "az bicep install",
+
+  "remoteEnv": {
+    "PATH": "${containerEnv:PATH}:/root/.dotnet/tools:/root/.azure/bin"
+  },
+
+  "features": {
+    "azure-cli": "latest",
+    "dotnet": "6.0"
+  }
+}

@@ -19,9 +19,24 @@ Import-Module .\scripts\azure-pipelines\utils\AzureResourceUtils.psm1 -Force
 
 
 Invoke-AzurePipelinesTask {
-  Write-Host "Remove resource group:" $ResourceGroupName "..."
+  Write-Host "Removing resource group:" $ResourceGroupName "..."
 
-  # First, try removing the resource group blindly.
+  # First, try removing and purging soft-delete enabled resources...
+  Write-Host "Removing soft-delete enabled resources..." 
+
+  Write-Host "Checking for Key vaults..." 
+  Remove-AzKeyVaultInResourceGroup -ResourceGroupName $ResourceGroupName
+
+  Write-Host "Checking for Cognitive Services accounts..." 
+  Remove-AzCognitiveServicesAccountInResourceGroup -ResourceGroupName $ResourceGroupName
+
+  Write-Host "Checking for API Management services..." 
+  Remove-AzApiManagementServiceInResourceGroup -ResourceGroupName $ResourceGroupName
+
+  Write-Host "Checking for Operational Insights workspaces..." 
+  Remove-AzOperationalInsightsWorkspaceInResourceGroup -ResourceGroupName $ResourceGroupName
+
+  # Try removing the resource group.
   if (Remove-AzResourceGroup -Name $ResourceGroupName -Force -Verbose -ErrorAction "SilentlyContinue") {
     exit
   }
