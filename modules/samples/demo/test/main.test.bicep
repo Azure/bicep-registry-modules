@@ -1,0 +1,8 @@
+/*
+Write deployment tests in this file. Any module that references the main
+module file is a deployment test. Make sure at least one test is added.
+*/
+#disable-next-line explicit-values-for-loc-params
+module testMain '../main.bicep' = {
+  name: 'testMain'
+}
