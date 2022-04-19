@@ -4,7 +4,7 @@ resource apiManagement 'Microsoft.ApiManagement/service@2021-08-01' = {
   location: 'westus2'
   sku: {
     name: 'Basic'
-    capacity: 0
+    capacity: 1
   }
   properties: {
     publisherName: 'test'

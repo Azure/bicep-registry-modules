@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.5.6.12127",
-      "templateHash": "2234353015867947240"
+      "templateHash": "14248300980635718313"
     }
   },
   "resources": [
@@ -16,7 +16,7 @@
       "location": "westus2",
       "sku": {
         "name": "Basic",
-        "capacity": 0
+        "capacity": 1
       },
       "properties": {
         "publisherName": "test",
