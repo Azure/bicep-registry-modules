@@ -1,11 +1,13 @@
-resource account 'Microsoft.CognitiveServices/accounts@2022-03-01' = {
-  name: 'testaccount'
+resource apiManagement 'Microsoft.ApiManagement/service@2021-08-01' = {
+  name: 'shengloltestservice'
   #disable-next-line no-hardcoded-location
   location: 'westus2'
   sku: {
-    name: 'S0'
+    name: 'Basic'
+    capacity: 0
   }
-  kind: 'CognitiveServices'
   properties: {
+    publisherName: 'test'
+    publisherEmail: 'shenglong.li@microsoft.com'
   }
 }

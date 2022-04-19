@@ -5,20 +5,23 @@
     "_generator": {
       "name": "bicep",
       "version": "0.5.6.12127",
-      "templateHash": "4453164611731413701"
+      "templateHash": "2234353015867947240"
     }
   },
   "resources": [
     {
-      "type": "Microsoft.CognitiveServices/accounts",
-      "apiVersion": "2022-03-01",
-      "name": "testaccount",
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2021-08-01",
+      "name": "shengloltestservice",
       "location": "westus2",
       "sku": {
-        "name": "S0"
+        "name": "Basic",
+        "capacity": 0
       },
-      "kind": "CognitiveServices",
-      "properties": {}
+      "properties": {
+        "publisherName": "test",
+        "publisherEmail": "shenglong.li@microsoft.com"
+      }
     }
   ]
 }
