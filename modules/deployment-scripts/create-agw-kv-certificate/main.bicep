@@ -74,8 +74,9 @@ resource agw 'Microsoft.Network/applicationGateways@2021-05-01' existing = if (!
   name: agwName
 }
 
+@description('The User Assigned Identity of the Azure Application Gateway')
 param agwIdName string = ''
-resource agwId 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = if (!empty(agwName) && agwCertType != 'none') {
+resource agwId 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = if (!empty(agwName) && !empty(agwIdName) && agwCertType != 'none') {
   name: agwIdName
 }
 
@@ -188,7 +189,7 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = [
       echo "getting akv secretid for $certName to add to $agwName";
       versionedSecretId=$(az keyvault certificate show -n $certName --vault-name $akvName --query "sid" -o tsv);
       unversionedSecretId=$(echo $versionedSecretId | cut -d'/' -f-5) # remove the version from the url;
-      
+
       case $agwCertType in
         none)
           echo "AppGw not configured"

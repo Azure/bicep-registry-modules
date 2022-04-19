@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.4.1318.3566",
-      "templateHash": "3921902708755418416"
+      "version": "0.5.6.12127",
+      "templateHash": "9989677178170053629"
     }
   },
   "parameters": {
@@ -128,6 +128,13 @@
         "description": "A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate"
       }
     },
+    "agwCertImportDelay": {
+      "type": "string",
+      "defaultValue": "120s",
+      "metadata": {
+        "description": "A delay before the Application Gateway imports the Certificate from KeyVault. Primarily to allow the certificate creation operation to complete"
+      }
+    },
     "cleanupPreference": {
       "type": "string",
       "defaultValue": "OnSuccess",
@@ -142,7 +149,10 @@
     },
     "agwIdName": {
       "type": "string",
-      "defaultValue": ""
+      "defaultValue": "",
+      "metadata": {
+        "description": "The User Assigned Identity of the Azure Application Gateway"
+      }
     }
   },
   "variables": {
@@ -197,10 +207,11 @@
       ]
     },
     {
+      "condition": "[and(not(empty(parameters('agwName'))), not(equals(parameters('agwCertType'), 'none')))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2020-08-01-preview",
       "scope": "[format('Microsoft.ManagedIdentity/userAssignedIdentities/{0}', parameters('agwIdName'))]",
-      "name": "[format('{0}', guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('agwIdName')), variables('managedIdentityOperator'), if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))))]",
+      "name": "[guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('agwIdName')), variables('managedIdentityOperator'), if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]",
       "properties": {
         "roleDefinitionId": "[variables('managedIdentityOperator')]",
         "principalId": "[if(parameters('useExistingManagedIdentity'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId, reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId)]",
@@ -215,7 +226,7 @@
     },
     {
       "copy": {
-        "name": "createImportImage",
+        "name": "createImportCert",
         "count": "[length(parameters('certNames'))]"
       },
       "type": "Microsoft.Resources/deploymentScripts",
@@ -261,10 +272,10 @@
           },
           {
             "name": "certificateWait",
-            "value": "[parameters('initialScriptDelay')]"
+            "value": "[parameters('agwCertImportDelay')]"
           }
         ],
-        "scriptContent": "      #!/bin/bash\n      set -e\n\n      echo \"Waiting on Identity RBAC replication ($initialDelay)\"\n      sleep $initialDelay\n\n      echo \"Creating AKV Cert $certName\"\n      az keyvault certificate create --vault-name $akvName -n $certName -p \"$(az keyvault certificate get-default-policy | sed -e s/CN=CLIGetDefaultPolicy/CN=${certName}/g )\";\n\n      echo \"Waiting for AKV Cert Generation ($certificateWait)\"\n      sleep $certificateWait\n\n      echo \"getting akv secretid for $certName to add to $agwName\";\n      versionedSecretId=$(az keyvault certificate show -n $certName --vault-name $akvName --query \"sid\" -o tsv);\n      unversionedSecretId=$(echo $versionedSecretId | cut -d'/' -f-5) # remove the version from the url;\n      \n      case $agwCertType in\n        none)\n          echo \"AppGw not configured\"\n          ;;\n\n        root-cert)\n          echo $agwCertType\n          echo \"creating root certificate reference in application gateway\";\n          rootcertcmd=\"az network application-gateway root-cert create --gateway-name $agwName  -g $RG -n $certName --keyvault-secret $unversionedSecretId\";\n          $rootcertcmd\n          ;;\n\n        ssl-cert)\n        echo $agwCertType\n        echo \"creating root certificate reference in application gateway\";\n        rootcertcmd=\"az network application-gateway root-cert create --gateway-name $agwName  -g $RG -n $certName --keyvault-secret $unversionedSecretId\";\n        $rootcertcmd\n        ;;\n\n      esac\n\n      if [ \"$agwCertType\" != \"none\" ];\n      then\n        echo $agwCertType\n        echo \"creating root certificate reference in application gateway\";\n        rootcertcmd=\"az network application-gateway root-cert create --gateway-name $agwName  -g $RG -n $certName --keyvault-secret $unversionedSecretId\";\n        $rootcertcmd\n      fi\n\n      jsonOutputString=$(jq -n --arg cn \"$certName\" --arg sid \"$unversionedSecretId\" --arg vsid \"$versionedSecretId\" --arg ct \"$agwCertType\" '{certName: $cn, certSecretId: {versioned: $vsid, unversioned: $sid }, agwCertType: $ct}')\n      echo $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n    ",
+        "scriptContent": "      #!/bin/bash\n      set -e\n\n      echo \"Waiting on Identity RBAC replication ($initialDelay)\"\n      sleep $initialDelay\n\n      echo \"Creating AKV Cert $certName\"\n      az keyvault certificate create --vault-name $akvName -n $certName -p \"$(az keyvault certificate get-default-policy | sed -e s/CN=CLIGetDefaultPolicy/CN=${certName}/g )\";\n\n      echo \"Waiting for AKV Cert Generation ($certificateWait)\"\n      sleep $certificateWait\n\n      echo \"getting akv secretid for $certName to add to $agwName\";\n      versionedSecretId=$(az keyvault certificate show -n $certName --vault-name $akvName --query \"sid\" -o tsv);\n      unversionedSecretId=$(echo $versionedSecretId | cut -d'/' -f-5) # remove the version from the url;\n\n      case $agwCertType in\n        none)\n          echo \"AppGw not configured\"\n          ;;\n\n        root-cert)\n          echo $agwCertType\n          echo \"creating root certificate reference in application gateway\";\n          rootcertcmd=\"az network application-gateway root-cert create --gateway-name $agwName -g $RG -n $certName --key-vault-secret-id $unversionedSecretId\";\n          echo $rootcertcmd\n          #$rootcertcmd\n          ;;\n\n        ssl-cert)\n          echo $agwCertType\n          echo \"creating fe ssl certificate reference in application gateway\";\n          fecertcmd=\"az network application-gateway ssl-cert create --gateway-name $agwName -g $RG -n $certName --key-vault-secret-id $unversionedSecretId\";\n          echo $fecertcmd\n          #$fecertcmd\n          ;;\n\n      esac\n\n      jsonOutputString=$(jq -n --arg cn \"$certName\" --arg sid \"$unversionedSecretId\" --arg vsid \"$versionedSecretId\" --arg ct \"$agwCertType\" '{certName: $cn, certSecretId: {versioned: $vsid, unversioned: $sid }, agwCertType: $ct}')\n      echo $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n    ",
         "cleanupPreference": "[parameters('cleanupPreference')]"
       },
       "dependsOn": [

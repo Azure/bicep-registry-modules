@@ -1,6 +1,6 @@
 {
   "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema#",
   "name": "Key Vault Certificate Creation",
-  "description": "Create Key Vault self-signed certificates and optionally integrarte with Application Gateway",
+  "description": "Create Key Vault self-signed certificates and optionally integrate with Application Gateway",
   "owner": "Aks-Bicep-Accelerator-Maintainers"
 }
