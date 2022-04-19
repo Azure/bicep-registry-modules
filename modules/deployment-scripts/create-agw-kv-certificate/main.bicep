@@ -55,6 +55,9 @@ param agwCertType string = 'none'
 @description('A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate')
 param initialScriptDelay string = '30s'
 
+@description('A delay before the Application Gateway imports the Certificate from KeyVault. Primarily to allow the certificate creation operation to complete')
+param agwCertImportDelay string = '120s'
+
 @allowed([
   'OnSuccess'
   'OnExpiration'
@@ -110,9 +113,9 @@ resource rbacAppGw 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' 
 
 var managedIdentityOperator = resourceId('Microsoft.Authorization/roleDefinitions', 'f1a07417-d97a-45cb-824c-7a7467783830')
 @description('Managed identity requires "Managed Identity Operator" permission over the user assigned identity of the Application Gateway.')
-resource agwIdRbac 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = {
+resource agwIdRbac 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' =  if (!empty(agwName) && agwCertType != 'none') {
   scope: agwId
-  name: '${guid(agwId.id, managedIdentityOperator, useExistingManagedIdentity ? existingDepScriptId.id : newDepScriptId.id)}'
+  name: guid(agwId.id, managedIdentityOperator, useExistingManagedIdentity ? existingDepScriptId.id : newDepScriptId.id)
   properties: {
     roleDefinitionId: managedIdentityOperator
     principalId: useExistingManagedIdentity ? existingDepScriptId.properties.principalId : newDepScriptId.properties.principalId
@@ -120,7 +123,7 @@ resource agwIdRbac 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' 
   }
 }
 
-resource createImportImage 'Microsoft.Resources/deploymentScripts@2020-10-01' = [for certName in certNames: {
+resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = [for certName in certNames: {
   name: 'AKV-Cert-${akv.name}-${replace(replace(certName,':',''),'/','-')}'
   location: location
   identity: {
@@ -166,7 +169,7 @@ resource createImportImage 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
       }
       {
         name: 'certificateWait'
-        value: initialScriptDelay
+        value: agwCertImportDelay
       }
     ]
     scriptContent: '''
@@ -194,26 +197,20 @@ resource createImportImage 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
         root-cert)
           echo $agwCertType
           echo "creating root certificate reference in application gateway";
-          rootcertcmd="az network application-gateway root-cert create --gateway-name $agwName  -g $RG -n $certName --keyvault-secret $unversionedSecretId";
-          $rootcertcmd
+          rootcertcmd="az network application-gateway root-cert create --gateway-name $agwName -g $RG -n $certName --key-vault-secret-id $unversionedSecretId";
+          echo $rootcertcmd
+          #$rootcertcmd
           ;;
 
         ssl-cert)
-        echo $agwCertType
-        echo "creating root certificate reference in application gateway";
-        rootcertcmd="az network application-gateway root-cert create --gateway-name $agwName  -g $RG -n $certName --keyvault-secret $unversionedSecretId";
-        $rootcertcmd
-        ;;
+          echo $agwCertType
+          echo "creating fe ssl certificate reference in application gateway";
+          fecertcmd="az network application-gateway ssl-cert create --gateway-name $agwName -g $RG -n $certName --key-vault-secret-id $unversionedSecretId";
+          echo $fecertcmd
+          #$fecertcmd
+          ;;
 
       esac
-
-      if [ "$agwCertType" != "none" ];
-      then
-        echo $agwCertType
-        echo "creating root certificate reference in application gateway";
-        rootcertcmd="az network application-gateway root-cert create --gateway-name $agwName  -g $RG -n $certName --keyvault-secret $unversionedSecretId";
-        $rootcertcmd
-      fi
 
       jsonOutputString=$(jq -n --arg cn "$certName" --arg sid "$unversionedSecretId" --arg vsid "$versionedSecretId" --arg ct "$agwCertType" '{certName: $cn, certSecretId: {versioned: $vsid, unversioned: $sid }, agwCertType: $ct}')
       echo $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH
@@ -225,8 +222,8 @@ resource createImportImage 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
 @description('Array of info from each Certificate Deployment Script')
 output createdCertificates array = [for (certName, i) in certNames: {
   certName: certName
-  DeploymentScriptName: createImportImage[i].name
-  DeploymentScriptOutputs: createImportImage[i].properties.outputs
-  DeploymentScriptStartTime: createImportImage[i].properties.status.startTime
-  DeploymentScriptEndTime: createImportImage[i].properties.status.endTime
+  DeploymentScriptName: createImportCert[i].name
+  DeploymentScriptOutputs: createImportCert[i].properties.outputs
+  DeploymentScriptStartTime: createImportCert[i].properties.status.startTime
+  DeploymentScriptEndTime: createImportCert[i].properties.status.endTime
 }]
