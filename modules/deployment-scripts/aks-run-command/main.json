@@ -1,0 +1,215 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.5.6.12127",
+      "templateHash": "3391235872307003005"
+    }
+  },
+  "parameters": {
+    "aksName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure Kubernetes Service"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "The location to deploy the resources to"
+      }
+    },
+    "forceUpdateTag": {
+      "type": "string",
+      "defaultValue": "[utcNow()]",
+      "metadata": {
+        "description": "How the deployment script should be forced to execute"
+      }
+    },
+    "azCliVersion": {
+      "type": "string",
+      "defaultValue": "2.35.0",
+      "metadata": {
+        "description": "Version of the Azure CLI to use"
+      }
+    },
+    "timeout": {
+      "type": "string",
+      "defaultValue": "PT30M",
+      "metadata": {
+        "description": "Deployment Script timeout"
+      }
+    },
+    "retention": {
+      "type": "string",
+      "defaultValue": "P1D",
+      "metadata": {
+        "description": "The retention period for the deployment script"
+      }
+    },
+    "rbacRolesNeeded": {
+      "type": "array",
+      "defaultValue": [
+        "acdd72a7-3385-48ef-bd42-f606fba81ae7",
+        "7f6c6a51-bcf8-42ba-9220-52d62157d7db"
+      ],
+      "metadata": {
+        "description": "An array of Azure RoleIds that are required for the DeploymentScript resource"
+      }
+    },
+    "useExistingManagedIdentity": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Does the Managed Identity already exists, or should be created"
+      }
+    },
+    "managedIdentityName": {
+      "type": "string",
+      "defaultValue": "id-AksRunCommandProxy",
+      "metadata": {
+        "description": "Name of the Managed Identity resource"
+      }
+    },
+    "existingManagedIdentitySubId": {
+      "type": "string",
+      "defaultValue": "[subscription().subscriptionId]",
+      "metadata": {
+        "description": "For an existing Managed Identity, the Subscription Id it is located in"
+      }
+    },
+    "existingManagedIdentityResourceGroupName": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().name]",
+      "metadata": {
+        "description": "For an existing Managed Identity, the Resource Group it is located in"
+      }
+    },
+    "commands": {
+      "type": "array",
+      "metadata": {
+        "description": "An array of commands to run"
+      }
+    },
+    "initialScriptDelay": {
+      "type": "string",
+      "defaultValue": "120s",
+      "metadata": {
+        "description": "A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate"
+      }
+    },
+    "cleanupPreference": {
+      "type": "string",
+      "defaultValue": "OnSuccess",
+      "metadata": {
+        "description": "When the script resource is cleaned up"
+      },
+      "allowedValues": [
+        "OnSuccess",
+        "OnExpiration",
+        "Always"
+      ]
+    }
+  },
+  "resources": [
+    {
+      "condition": "[not(parameters('useExistingManagedIdentity'))]",
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2018-11-30",
+      "name": "[parameters('managedIdentityName')]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "copy": {
+        "name": "rbac",
+        "count": "[length(parameters('rbacRolesNeeded'))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2020-08-01-preview",
+      "scope": "[format('Microsoft.ContainerService/managedClusters/{0}', parameters('aksName'))]",
+      "name": "[guid(resourceId('Microsoft.ContainerService/managedClusters', parameters('aksName')), parameters('rbacRolesNeeded')[copyIndex()], if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]",
+      "properties": {
+        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('rbacRolesNeeded')[copyIndex()])]",
+        "principalId": "[if(parameters('useExistingManagedIdentity'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId, reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId)]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]"
+      ]
+    },
+    {
+      "copy": {
+        "name": "runAksCommand",
+        "count": "[length(parameters('commands'))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
+      "name": "[format('AKS-Run-{0}-{1}-{2}', parameters('aksName'), deployment().name, copyIndex())]",
+      "location": "[parameters('location')]",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[format('{0}', if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]": {}
+        }
+      },
+      "kind": "AzureCLI",
+      "properties": {
+        "forceUpdateTag": "[parameters('forceUpdateTag')]",
+        "azCliVersion": "[parameters('azCliVersion')]",
+        "timeout": "[parameters('timeout')]",
+        "retentionInterval": "[parameters('retention')]",
+        "environmentVariables": [
+          {
+            "name": "RG",
+            "value": "[resourceGroup().name]"
+          },
+          {
+            "name": "aksName",
+            "value": "[parameters('aksName')]"
+          },
+          {
+            "name": "command",
+            "value": "[parameters('commands')[copyIndex()]]"
+          },
+          {
+            "name": "initialDelay",
+            "value": "[parameters('initialScriptDelay')]"
+          },
+          {
+            "name": "loopIndex",
+            "value": "[string(copyIndex())]"
+          }
+        ],
+        "scriptContent": "      #!/bin/bash\r\n      set -e\r\n\r\n      if [ \"$loopIndex\" == \"0\" ] && [ \"$initialDelay\" != \"0\" ]\r\n      then\r\n        echo \"Waiting on RBAC replication ($initialDelay)\"\r\n        sleep $initialDelay\r\n\r\n        #Force RBAC refresh\r\n        az logout\r\n        az login --identity\r\n      fi\r\n\r\n      echo \"Sending command $command to AKS Cluster $aksName in $RG\"\r\n      cmdOut=$(az aks command invoke -g $RG -n $aksName -o json --command \"${command}\")\r\n      echo $cmdOut\r\n\r\n      jsonOutputString=$cmdOut\r\n      echo $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\r\n    ",
+        "cleanupPreference": "[parameters('cleanupPreference')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]",
+        "rbac"
+      ]
+    }
+  ],
+  "outputs": {
+    "commandOutput": {
+      "type": "array",
+      "copy": {
+        "count": "[length(parameters('commands'))]",
+        "input": {
+          "DeploymentScriptIndex": "[copyIndex()]",
+          "DeploymentScriptName": "[format('AKS-Run-{0}-{1}-{2}', parameters('aksName'), deployment().name, copyIndex())]",
+          "DeploymentScriptOutputs": "[reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKS-Run-{0}-{1}-{2}', parameters('aksName'), deployment().name, copyIndex()))).outputs]",
+          "DeploymentScriptStartTime": "[reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKS-Run-{0}-{1}-{2}', parameters('aksName'), deployment().name, copyIndex()))).status.startTime]",
+          "DeploymentScriptEndTime": "[reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKS-Run-{0}-{1}-{2}', parameters('aksName'), deployment().name, copyIndex()))).status.endTime]"
+        }
+      },
+      "metadata": {
+        "description": "Array of command output from each Deployment Script AKS run command"
+      }
+    }
+  }
+}
