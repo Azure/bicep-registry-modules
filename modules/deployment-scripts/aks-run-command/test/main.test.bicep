@@ -49,7 +49,7 @@ module kubectlGetNodes '../main.bicep' = {
       contributor
       rbacClusterAdmin
     ]
-    aksName: aksName
+    aksName: aks.name
     location: location
     commands: [
       'kubectl get nodes'
@@ -66,7 +66,7 @@ module kubectlGetPods '../main.bicep' = {
       contributor
       rbacReader
     ]
-    aksName: aksName
+    aksName: aks.name
     location: location
     commands: [
       'kubectl get pods'
@@ -83,7 +83,7 @@ module kubectlRunNginx '../main.bicep' = {
       contributor
       rbacWriter
     ]
-    aksName: aksName
+    aksName: aks.name
     location: location
     commands: [
       'kubectl run nginx --image=nginx'
@@ -101,7 +101,7 @@ module helmContour '../main.bicep' = {
       contributor
       rbacWriter
     ]
-    aksName: aksName
+    aksName: aks.name
     location: location
     commands: [
       'helm version'
