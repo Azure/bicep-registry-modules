@@ -79,7 +79,7 @@ module acrImport 'br/public:deployment-scripts/create-agw-kv-certificate:1.0.1' 
 
 Creates a single self-signed certificate in Azure KeyVault, and make it available as a front-end SSL Certificate in Azure Application Gateway.
 
-> Requires the Azure Application Gateway to use [User Managed Identities](https://docs.microsoft.com/azure/application-gateway/key-vault-certs#obtain-a-user-assigned-managed-identity)
+> Requires the Azure Application Gateway to be configured with a [User Managed Identity](https://docs.microsoft.com/azure/application-gateway/key-vault-certs#obtain-a-user-assigned-managed-identity)
 
 ```bicep
 param location string = resourceGroup().location

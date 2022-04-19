@@ -192,23 +192,21 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = [
 
       case $agwCertType in
         none)
-          echo "AppGw not configured"
+          echo "AppGw Certificate Creation not configured"
           ;;
 
         root-cert)
-          echo $agwCertType
-          echo "creating root certificate reference in application gateway";
+          echo "Creating root certificate in application gateway";
           rootcertcmd="az network application-gateway root-cert create --gateway-name $agwName -g $RG -n $certName --key-vault-secret-id $unversionedSecretId";
-          echo $rootcertcmd
-          #$rootcertcmd
+          echo $rootcertcmd #Inspecting az command is a great DEBUG for the script output
+          $rootcertcmd
           ;;
 
         ssl-cert)
-          echo $agwCertType
-          echo "creating fe ssl certificate reference in application gateway";
+          echo "Creating ssl certificate in application gateway";
           fecertcmd="az network application-gateway ssl-cert create --gateway-name $agwName -g $RG -n $certName --key-vault-secret-id $unversionedSecretId";
-          echo $fecertcmd
-          #$fecertcmd
+          echo $fecertcmd #Inspecting az command is a great DEBUG for the script output
+          $fecertcmd
           ;;
 
       esac

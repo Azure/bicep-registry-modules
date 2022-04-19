@@ -1,3 +1,15 @@
+/*
+Create-Agw-Kv-Certificate test notes
+
+1. All prerequisite resources are referenced in prereq.test.bicep for clarity.
+
+2. AppGw Deployments are sequenced explicitly with DependsOn due to encountered errors like;
+- PutApplicationGatewayOperation canceled
+- CanceledAndSupersededDueToAnotherOperation
+- [Full Error] : Operation PutApplicationGatewayOperation was canceled and superseded by operation PutApplicationGatewayOperation.
+
+*/
+
 param location string = resourceGroup().location
 param akvName string =  'akvtest${uniqueString(resourceGroup().id)}'
 param agwName string = 'agw-${uniqueString(resourceGroup().id)}'
@@ -54,8 +66,6 @@ module AgwSingleAkvCert '../main.bicep' = {
     agwIdName: prereq.outputs.agwIdName
     certNames: array('appGwSingleSSL')
     agwCertType: 'ssl-cert'
-    //managedIdentityName: 'id-justtesting1'
-    initialScriptDelay: '60s'
     retention: shortRetention
   }
 }
@@ -73,9 +83,11 @@ module AgwMultiAkvFeCert '../main.bicep' = {
       'AgwMultiAkvFeCert2'
     ]
     agwCertType: 'ssl-cert'
-    initialScriptDelay: '60s'
     retention: shortRetention
   }
+  dependsOn: [
+    AgwSingleAkvCert
+  ]
 }
 
 //Test 5. AppGw Single Backend Cert
@@ -88,8 +100,9 @@ module AgwSingleAkvBeCert '../main.bicep' = {
     agwIdName: prereq.outputs.agwIdName
     certNames: array('appGwSingleRoot')
     agwCertType: 'root-cert'
-    //managedIdentityName: 'id-justtesting1'
-    initialScriptDelay: '60s'
     retention: shortRetention
   }
+  dependsOn: [
+    AgwMultiAkvFeCert
+  ]
 }
