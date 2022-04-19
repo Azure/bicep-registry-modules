@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.5.6.12127",
-      "templateHash": "3396845916134371"
+      "templateHash": "17755572642697697453"
     }
   },
   "parameters": {
@@ -185,7 +185,7 @@
             "value": "[string(copyIndex())]"
           }
         ],
-        "scriptContent": "      #!/bin/bash\r\n      set -e\r\n\r\n      if [ \"$loopIndex\" == \"0\" ] && [ \"$initialDelay\" != \"0\" ]\r\n      then\r\n        echo \"Waiting on RBAC replication ($initialDelay)\"\r\n        sleep $initialDelay\r\n\r\n        #Force RBAC refresh\r\n        az logout\r\n        az login --identity\r\n      fi\r\n\r\n      echo \"Sending command $command to AKS Cluster $aksName in $RG\"\r\n      cmdOut=$(az aks command invoke -g $RG -n $aksName -o json --command \"${command}\")\r\n      echo $cmdOut\r\n\r\n      jsonOutputString=$cmdOut\r\n      echo $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\r\n    ",
+        "scriptContent": "      #!/bin/bash\n      set -e\n\n      if [ \"$loopIndex\" == \"0\" ] && [ \"$initialDelay\" != \"0\" ]\n      then\n        echo \"Waiting on RBAC replication ($initialDelay)\"\n        sleep $initialDelay\n\n        #Force RBAC refresh\n        az logout\n        az login --identity\n      fi\n\n      echo \"Sending command $command to AKS Cluster $aksName in $RG\"\n      cmdOut=$(az aks command invoke -g $RG -n $aksName -o json --command \"${command}\")\n      echo $cmdOut\n\n      jsonOutputString=$cmdOut\n      echo $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n    ",
         "cleanupPreference": "[parameters('cleanupPreference')]"
       },
       "dependsOn": [
