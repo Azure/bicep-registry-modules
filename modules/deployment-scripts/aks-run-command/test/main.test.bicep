@@ -7,8 +7,7 @@ If you are using ...Azure CLI, you can force a refresh of your role assignment c
 */
 
 param location string = resourceGroup().location
-param aksName string =  'crtestbjvuodwnit73q' //'crtest${uniqueString(newGuid())}'
-param managedIdentityName string = 'id-crtest${uniqueString(newGuid())}'
+param aksName string =  'crtest${uniqueString(newGuid())}'
 
 //RBAC RoleId vars
 var contributor='b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -45,7 +44,7 @@ resource aks 'Microsoft.ContainerService/managedClusters@2022-01-02-preview' = {
 module kubectlGetNodes '../main.bicep' = {
   name: 'kubectlgetnodes'
   params: {
-    managedIdentityName: managedIdentityName
+    managedIdentityName: 'kubectlGetNodes'
     rbacRolesNeeded:[
       contributor
       rbacClusterAdmin
