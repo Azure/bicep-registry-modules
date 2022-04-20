@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.5.6.12127",
-      "templateHash": "10197498417809521496"
+      "templateHash": "3222388638426459136"
     }
   },
   "parameters": {
@@ -227,7 +227,9 @@
     {
       "copy": {
         "name": "createImportCert",
-        "count": "[length(parameters('certNames'))]"
+        "count": "[length(parameters('certNames'))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Resources/deploymentScripts",
       "apiVersion": "2020-10-01",

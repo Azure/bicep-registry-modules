@@ -34,7 +34,7 @@ Create Key Vault self-signed certificates and optionally integrate with Applicat
 
 ## Examples
 
-### Example 1
+### Single KeyVault Certificate
 
 Creates a single self-signed certificate in Azure KeyVault.
 
@@ -53,7 +53,7 @@ module acrImport 'br/public:deployment-scripts/create-agw-kv-certificate:1.0.1' 
 }
 ```
 
-### Example 2
+### Multiple KeyVault Certificates
 
 Create multiple self-signed certificates in Azure KeyVault
 
@@ -62,7 +62,7 @@ param location string = resourceGroup().location
 param akvName string =  'yourAzureKeyVault'
 param certificateNames array = [
   'myapp'
-  'myotherapp
+  'myotherapp'
 ]
 
 module acrImport 'br/public:deployment-scripts/create-agw-kv-certificate:1.0.1' = {
@@ -75,9 +75,9 @@ module acrImport 'br/public:deployment-scripts/create-agw-kv-certificate:1.0.1' 
 }
 ```
 
-### Example 3
+### KeyVault Certificate added to Application Gateway
 
-Creates a single self-signed certificate in Azure KeyVault, and make it available as a front-end SSL Certificate in Azure Application Gateway.
+Creates a single self-signed certificate in Azure KeyVault, and makes it available as a front-end SSL Certificate in Azure Application Gateway.
 
 > Requires the Azure Application Gateway to be configured with a [User Managed Identity](https://docs.microsoft.com/azure/application-gateway/key-vault-certs#obtain-a-user-assigned-managed-identity)
 
