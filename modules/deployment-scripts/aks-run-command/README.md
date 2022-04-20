@@ -106,3 +106,23 @@ module runCmd 'br/public:deployment-scripts/aks-run-command:1.0.1' = {
   }
 }
 ```
+
+### Running Helm Commands
+
+```bicep
+module helmInstallIngressController 'br/public:deployment-scripts/aks-run-command:1.0.1' = {
+  name: 'helmInstallIngressController'
+  params: {
+    aksName: aksName
+    location: location
+    rbacRolesNeeded:[
+      contributor
+      rbacWriter
+    ]
+    commands: [
+      'helm repo add bitnami https://charts.bitnami.com/bitnami; helm repo update'
+      'helm upgrade --install  contour-ingress bitnami/contour --version 7.7.1 --namespace ingress-basic --create-namespace --set envoy.kind=deployment --set contour.service.externalTrafficPolicy=cluster'
+    ]
+  }
+}
+```
