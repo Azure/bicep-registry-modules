@@ -1,0 +1,39 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.5.6.12127",
+      "templateHash": "2840278901564719901"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ContainerService/managedClusters",
+      "apiVersion": "2022-01-02-preview",
+      "name": "shengloltestaks",
+      "location": "westus2",
+      "properties": {
+        "dnsPrefix": "shengloltestaks",
+        "enableRBAC": true,
+        "aadProfile": {
+          "managed": true,
+          "enableAzureRBAC": true
+        },
+        "agentPoolProfiles": [
+          {
+            "name": "np01",
+            "mode": "System",
+            "vmSize": "Standard_DS2_v2",
+            "count": 2
+          }
+        ],
+        "nodeResourceGroup": "aslfjalsdjfsadf7asjlfjsafljsadlfjaslfd8asfjalsfjasdf8asfdjalsjfadsjflajflsajfa78234jasljfasf8sa24jljasldfjalsdjflasjdfayadkfnsadjf"
+      },
+      "identity": {
+        "type": "SystemAssigned"
+      }
+    }
+  ]
+}

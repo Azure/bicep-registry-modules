@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema#",
+  "name": "Test ADO parameter",
+  "description": "Test ADO parameter",
+  "owner": "shenglol"
+}
