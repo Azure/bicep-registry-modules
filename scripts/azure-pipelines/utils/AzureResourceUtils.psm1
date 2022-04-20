@@ -29,9 +29,9 @@ function Clear-AzRecoveryServicesVault {
     }
     #Invoking API to disable enhanced security
     $body = @{properties = @{enhancedSecurityState = "Disabled" } }
-    $restUri = $Vault.ID + "/backupconfig/vaultconfig?api-version=2020-05-13"
+    $vaultPath = $Vault.ID + "/backupconfig/vaultconfig?api-version=2020-05-13"
 
-    Invoke-RestMethod -Uri $restUri -Body ($body | ConvertTo-JSON -Depth 5) -Method PATCH
+    Invoke-AzRestMethod -Method "PATCH" -Path $vaultPath -Payload ($body | ConvertTo-JSON -Depth 5)
 
     #Fetch all protected items and servers
     $backupItemsVM = Get-AzRecoveryServicesBackupItem -BackupManagementType AzureVM -WorkloadType AzureVM -VaultId $Vault.ID
@@ -446,6 +446,83 @@ function Remove-AzPrivateEndpointConnectionInResourceGroup {
   }
 }
 
+function Remove-AzKeyVaultInResourceGroup {
+  [CmdletBinding()]
+  param (
+    [Parameter(mandatory = $true)]
+    [string]$ResourceGroupName
+  )
+  
+  $keyVaults = Get-AzKeyVault -ResourceGroupName $ResourceGroupName
+  
+  foreach ($keyVault in $keyVaults) {
+    Write-Host "Removing Key vault" $keyVault.VaultName "..."
+    Remove-AzKeyVault -VaultName $keyVault.VaultName -ResourceGroupName $ResourceGroupName -Force
+
+    if ($keyVault.EnablePurgeProtection) {
+      Write-Warning ('Key vault {0} had purge protection enabled. The retention time is {1} days. Please wait until after this period before re-running the test.' -f  $keyVault.VaultName, $keyVault.SoftDeleteRetentionInDays)
+    }
+    else {
+      Write-Host "Purging Key vault" $keyVault.VaultName "..."
+      Remove-AzKeyVault -VaultName $keyVault.VaultName -Location $keyVault.Location -InRemovedState -Force
+    }
+  }
+}
+
+function Remove-AzCognitiveServicesAccountInResourceGroup {
+  [CmdletBinding()]
+  param (
+    [Parameter(mandatory = $true)]
+    [string]$ResourceGroupName
+  )
+  
+  $accounts = Get-AzCognitiveServicesAccount -ResourceGroupName $ResourceGroupName
+  
+  foreach ($account in $accounts) {
+    Write-Host "Removing Cognitive Services account" $account.AccountName "..."
+    $account | Remove-AzCognitiveServicesAccount -Force
+
+    Write-Host "Purging Cognitive Services account" $account.AccountName "..."
+    $account | Remove-AzCognitiveServicesAccount -Location $account.Location -InRemovedState -Force
+  }
+}
+
+function Remove-AzApiManagementServiceInResourceGroup {
+  [CmdletBinding()]
+  param (
+    [Parameter(mandatory = $true)]
+    [string]$ResourceGroupName
+  )
+  
+  $context = Get-AzContext
+  $subscriptionId = $context.Subscription.Id
+  $services = Get-AzApiManagement -ResourceGroupName $ResourceGroupName
+  
+  foreach ($service in $services) {
+    Write-Host "Removing API Management service" $service.Name "..."
+    $service | Remove-AzApiManagement
+
+    Write-Host "Purging API Management service" $service.Name "..."
+    $purgePath = "/subscriptions/{0}/providers/Microsoft.ApiManagement/locations/{1}/deletedservices/{2}?api-version=2020-06-01-preview" -f $subscriptionId, $service.Location, $service.Name
+    Invoke-AzRestMethod -Method "DELETE" -Path $purgePath
+  }
+}
+
+function Remove-AzOperationalInsightsWorkspaceInResourceGroup {
+  [CmdletBinding()]
+  param (
+    [Parameter(mandatory = $true)]
+    [string]$ResourceGroupName
+  )
+  
+  $workspaces = Get-AzOperationalInsightsWorkspace -ResourceGroupName $ResourceGroupName
+  
+  foreach ($workspace in $workspaces) {
+    Write-Host "Removing Operational Insights workspace" $workspace.Name "..."
+    $workspace | Remove-AzOperationalInsightsWorkspace -ForceDelete -Force
+  }
+}
+
 Export-ModuleMember -Function `
   Remove-AzResourceLockInResourceGroup, `
   Remove-AzRecoveryServicesVaultInResourceGroup, `
@@ -456,5 +533,9 @@ Export-ModuleMember -Function `
   Remove-AzRedisCacheLinkInResourceGroup, `
   Remove-AzSubnetDelegationInResourceGroup, `
   Remove-AzVirtualHubIPConfigurationInResourceGroup, `
-  Remove-AzPrivateEndpointConnectionInResourceGroup
+  Remove-AzPrivateEndpointConnectionInResourceGroup, `
+  Remove-AzKeyVaultInResourceGroup, `
+  Remove-AzCognitiveServicesAccountInResourceGroup, `
+  Remove-AzApiManagementServiceInResourceGroup, `
+  Remove-AzOperationalInsightsWorkspaceInResourceGroup
   
