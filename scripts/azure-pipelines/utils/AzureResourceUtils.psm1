@@ -495,7 +495,11 @@ function Remove-AzKeyVaultInResourceGroup {
   foreach ($keyVault in $keyVaults) {
     Write-Host "Removing Key vault" $keyVault.VaultName "..."
     Remove-AzKeyVault -VaultName $keyVault.VaultName -ResourceGroupName $ResourceGroupName -Force
-
+    
+    if (-not $keyVault.EnableSoftDelete) {
+      continue
+    }
+    
     if ($keyVault.EnablePurgeProtection) {
       Write-Warning ('Key vault {0} had purge protection enabled. The retention time is {1} days. Please wait until after this period before re-running the test.' -f  $keyVault.VaultName, $keyVault.SoftDeleteRetentionInDays)
     }
@@ -523,7 +527,7 @@ function Remove-AzCognitiveServicesAccountInResourceGroup {
   foreach ($account in $accounts) {
     Write-Host "Removing Cognitive Services account" $account.AccountName "..."
     $account | Remove-AzCognitiveServicesAccount -Force
-
+    
     Wait-Replication {
       Write-Host "Waiting for the Cognitive Services account deletion operation to complete..."
       $null -ne (Get-AzCognitiveServicesAccount -ResourceGroupName $ResourceGroupName -Name $account.AccountName -Location $account.Location -InRemovedState)
