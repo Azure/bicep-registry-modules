@@ -495,9 +495,13 @@ function Remove-AzKeyVaultInResourceGroup {
   foreach ($keyVault in $keyVaults) {
     Write-Host "Removing Key vault" $keyVault.VaultName "..."
     Remove-AzKeyVault -VaultName $keyVault.VaultName -ResourceGroupName $ResourceGroupName -Force
-
+    
+    if (-not $keyVault.EnableSoftDelete) {
+      continue
+    }
+    
     if ($keyVault.EnablePurgeProtection) {
-      Write-Warning ('Key vault {0} had purge protection enabled. The retention time is {1} days. Please wait until after this period before re-running the test.' -f  $keyVault.VaultName, $keyVault.SoftDeleteRetentionInDays)
+      Write-Warning ('Key vault {0} had purge protection enabled. The retention time is {1} days. Please wait until after this period before re-running the test.' -f $keyVault.VaultName, $keyVault.SoftDeleteRetentionInDays)
     }
     else {
       Wait-Replication {
