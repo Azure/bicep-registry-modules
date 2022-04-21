@@ -1,5 +1,5 @@
 param location string = resourceGroup().location
-param akvName string =  'akvtest${uniqueString(resourceGroup().id)}'
+param akvName string =  'akvtest${uniqueString(newGuid())}'
 
 @description('A short retention is good for test envs')
 var shortRetention = 'PT1H'
