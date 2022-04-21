@@ -18,44 +18,8 @@ Param(
   [string]$Location = "westus"
 )
 
-function Wait-Replication {
-  [CmdletBinding()]
-  Param(
-    [Parameter(mandatory = $true)]
-    [scriptblock]$ScriptBlock,
-
-    [int]$SuccessCount = 2,
-
-    [int]$DelayInSeconds = 2,
-
-    [int]$MaximumFailureCount = 20
-  )
-  
-  Begin {
-    $successiveSuccessCount = 0
-    $failureCount = 0
-  }
-  
-  Process {
-    while ($successiveSuccessCount -lt $SuccessCount) {
-      if ($ScriptBlock.Invoke()) {
-        $successiveSuccessCount++
-      }
-      else {
-        $successiveSuccessCount = 0
-        $failureCount++
-        
-        if ($failureCount -eq $MaximumFailureCount) {
-          throw "Reached maximum failure count: $MaximumFailureCount."
-        }
-      }
-    }
-    
-    Start-Sleep $DelayInSeconds
-  }
-}
-
 Import-Module .\scripts\azure-pipelines\utils\AzurePipelinesUtils.psm1 -Force
+Import-Module .\scripts\azure-pipelines\utils\AzureResourceUtils.psm1 -Force
 
 Invoke-AzurePipelinesTask {
   $pullRequestNumber = $env:SYSTEM_PULLREQUEST_PULLREQUESTNUMBER

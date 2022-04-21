@@ -1,3 +1,40 @@
+function Wait-Replication {
+  [CmdletBinding()]
+  Param(
+    [Parameter(mandatory = $true)]
+    [scriptblock]$ScriptBlock,
+
+    [int]$SuccessCount = 2,
+
+    [int]$DelayInSeconds = 2,
+
+    [int]$MaximumFailureCount = 20
+  )
+  
+  Begin {
+    $successiveSuccessCount = 0
+    $failureCount = 0
+  }
+  
+  Process {
+    while ($successiveSuccessCount -lt $SuccessCount) {
+      if ($ScriptBlock.Invoke()) {
+        $successiveSuccessCount++
+      }
+      else {
+        $successiveSuccessCount = 0
+        $failureCount++
+        
+        if ($failureCount -eq $MaximumFailureCount) {
+          throw "Reached maximum failure count: $MaximumFailureCount."
+        }
+      }
+    }
+    
+    Start-Sleep $DelayInSeconds
+  }
+}
+
 <#
 .SYNOPSIS
   Clears a Recovery Services vault.
@@ -463,6 +500,11 @@ function Remove-AzKeyVaultInResourceGroup {
       Write-Warning ('Key vault {0} had purge protection enabled. The retention time is {1} days. Please wait until after this period before re-running the test.' -f  $keyVault.VaultName, $keyVault.SoftDeleteRetentionInDays)
     }
     else {
+      Wait-Replication {
+        Write-Host "Waiting for the Key vault deletion operation to complete..."
+        $null -ne (Get-AzKeyVault -VaultName $keyVault.VaultName -Location $keyVault.Location -InRemovedState)
+      }
+
       Write-Host "Purging Key vault" $keyVault.VaultName "..."
       Remove-AzKeyVault -VaultName $keyVault.VaultName -Location $keyVault.Location -InRemovedState -Force
     }
@@ -481,6 +523,11 @@ function Remove-AzCognitiveServicesAccountInResourceGroup {
   foreach ($account in $accounts) {
     Write-Host "Removing Cognitive Services account" $account.AccountName "..."
     $account | Remove-AzCognitiveServicesAccount -Force
+
+    Wait-Replication {
+      Write-Host "Waiting for the Cognitive Services account deletion operation to complete..."
+      $null -ne (Get-AzCognitiveServicesAccount -ResourceGroupName $ResourceGroupName -Name $account.AccountName -Location $account.Location -InRemovedState)
+    }
 
     Write-Host "Purging Cognitive Services account" $account.AccountName "..."
     $account | Remove-AzCognitiveServicesAccount -Location $account.Location -InRemovedState -Force
@@ -501,6 +548,9 @@ function Remove-AzApiManagementServiceInResourceGroup {
   foreach ($service in $services) {
     Write-Host "Removing API Management service" $service.Name "..."
     $service | Remove-AzApiManagement
+    
+    Write-Host "Waiting for the API Management service deletion operation to complete..."
+    Start-Sleep 20
 
     Write-Host "Purging API Management service" $service.Name "..."
     $purgePath = "/subscriptions/{0}/providers/Microsoft.ApiManagement/locations/{1}/deletedservices/{2}?api-version=2020-06-01-preview" -f $subscriptionId, $service.Location, $service.Name
@@ -524,6 +574,7 @@ function Remove-AzOperationalInsightsWorkspaceInResourceGroup {
 }
 
 Export-ModuleMember -Function `
+  Wait-Replication, `
   Remove-AzResourceLockInResourceGroup, `
   Remove-AzRecoveryServicesVaultInResourceGroup, `
   Remove-AzDataProtectionBackupVaultInResourceGroup, `
