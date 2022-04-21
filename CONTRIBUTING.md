@@ -1,5 +1,9 @@
 # Contributing to Bicep public registry
 
+> We only accept pull requests created by Microsoft employees for now. External customers can make proposals or report bugs by opening an [issue](https://github.com/Azure/bicep-registry-modules/issues).
+
+The following instructions are created to help with the development of Bicep public registry modules.
+
 ## Prerequisite
 
 - Create a fork of the [Azure/bicep-registry-modules](https://github.com/Azure/bicep-registry-modules) repository and clone the fork to your local machine.
