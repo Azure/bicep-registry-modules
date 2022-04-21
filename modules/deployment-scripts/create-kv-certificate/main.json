@@ -1,0 +1,207 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.5.6.12127",
+      "templateHash": "1359701360302340797"
+    }
+  },
+  "parameters": {
+    "akvName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure Key Vault"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "The location to deploy the resources to"
+      }
+    },
+    "forceUpdateTag": {
+      "type": "string",
+      "defaultValue": "[utcNow()]",
+      "metadata": {
+        "description": "How the deployment script should be forced to execute"
+      }
+    },
+    "azCliVersion": {
+      "type": "string",
+      "defaultValue": "2.35.0",
+      "metadata": {
+        "description": "Version of the Azure CLI to use"
+      }
+    },
+    "timeout": {
+      "type": "string",
+      "defaultValue": "PT30M",
+      "metadata": {
+        "description": "Deployment Script timeout"
+      }
+    },
+    "retention": {
+      "type": "string",
+      "defaultValue": "P1D",
+      "metadata": {
+        "description": "The retention period for the deployment script"
+      }
+    },
+    "rbacRolesNeededOnKV": {
+      "type": "string",
+      "defaultValue": "a4417e6f-fecd-4de8-b567-7b0420556985",
+      "metadata": {
+        "description": "The RoleDefinitionId required for the DeploymentScript resource to interact with KeyVault"
+      }
+    },
+    "useExistingManagedIdentity": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Does the Managed Identity already exists, or should be created"
+      }
+    },
+    "managedIdentityName": {
+      "type": "string",
+      "defaultValue": "id-KeyVaultCertificateCreator",
+      "metadata": {
+        "description": "Name of the Managed Identity resource"
+      }
+    },
+    "existingManagedIdentitySubId": {
+      "type": "string",
+      "defaultValue": "[subscription().subscriptionId]",
+      "metadata": {
+        "description": "For an existing Managed Identity, the Subscription Id it is located in"
+      }
+    },
+    "existingManagedIdentityResourceGroupName": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().name]",
+      "metadata": {
+        "description": "For an existing Managed Identity, the Resource Group it is located in"
+      }
+    },
+    "certNames": {
+      "type": "array",
+      "metadata": {
+        "description": "An array of Certificate names to create"
+      }
+    },
+    "initialScriptDelay": {
+      "type": "string",
+      "defaultValue": "30s",
+      "metadata": {
+        "description": "A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate"
+      }
+    },
+    "cleanupPreference": {
+      "type": "string",
+      "defaultValue": "OnSuccess",
+      "metadata": {
+        "description": "When the script resource is cleaned up"
+      },
+      "allowedValues": [
+        "OnSuccess",
+        "OnExpiration",
+        "Always"
+      ]
+    }
+  },
+  "resources": [
+    {
+      "condition": "[not(parameters('useExistingManagedIdentity'))]",
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2018-11-30",
+      "name": "[parameters('managedIdentityName')]",
+      "location": "[parameters('location')]",
+      "metadata": {
+        "description": "A new managed identity that will be created in this Resource Group, this is the default option"
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2020-08-01-preview",
+      "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('akvName'))]",
+      "name": "[guid(resourceId('Microsoft.KeyVault/vaults', parameters('akvName')), parameters('rbacRolesNeededOnKV'), if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]",
+      "properties": {
+        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('rbacRolesNeededOnKV'))]",
+        "principalId": "[if(parameters('useExistingManagedIdentity'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId, reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId)]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]"
+      ]
+    },
+    {
+      "copy": {
+        "name": "createImportCert",
+        "count": "[length(parameters('certNames'))]"
+      },
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
+      "name": "[format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certNames')[copyIndex()], ':', ''), '/', '-'))]",
+      "location": "[parameters('location')]",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[format('{0}', if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]": {}
+        }
+      },
+      "kind": "AzureCLI",
+      "properties": {
+        "forceUpdateTag": "[parameters('forceUpdateTag')]",
+        "azCliVersion": "[parameters('azCliVersion')]",
+        "timeout": "[parameters('timeout')]",
+        "retentionInterval": "[parameters('retention')]",
+        "environmentVariables": [
+          {
+            "name": "RG",
+            "value": "[resourceGroup().name]"
+          },
+          {
+            "name": "akvName",
+            "value": "[parameters('akvName')]"
+          },
+          {
+            "name": "certName",
+            "value": "[parameters('certNames')[copyIndex()]]"
+          },
+          {
+            "name": "initialDelay",
+            "value": "[parameters('initialScriptDelay')]"
+          },
+          {
+            "name": "spClientId",
+            "value": "[if(parameters('useExistingManagedIdentity'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').clientId, reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').clientId)]"
+          }
+        ],
+        "scriptContent": "      #!/bin/bash\n      set -e\n\n      echo \"Waiting on Identity RBAC replication ($initialDelay)\"\n      sleep $initialDelay\n\n      #echo \"Querying role assignments for service principal\"\n      #az role assignment list --assignee $spClientId\n\n      echo \"Creating AKV Cert $certName\"\n      az keyvault certificate create --vault-name $akvName -n $certName -p \"$(az keyvault certificate get-default-policy | sed -e s/CN=CLIGetDefaultPolicy/CN=${certName}/g )\";\n\n      echo \"Getting akv secretid for $certName\";\n      versionedSecretId=$(az keyvault certificate show -n $certName --vault-name $akvName --query \"sid\" -o tsv);\n      unversionedSecretId=$(echo $versionedSecretId | cut -d'/' -f-5) # remove the version from the url;\n\n      jsonOutputString=$(jq -n --arg cn \"$certName\" --arg sid \"$unversionedSecretId\" --arg vsid \"$versionedSecretId\" '{certName: $cn, certSecretId: {versioned: $vsid, unversioned: $sid }}')\n      echo $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n    ",
+        "cleanupPreference": "[parameters('cleanupPreference')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]",
+        "[extensionResourceId(resourceId('Microsoft.KeyVault/vaults', parameters('akvName')), 'Microsoft.Authorization/roleAssignments', guid(resourceId('Microsoft.KeyVault/vaults', parameters('akvName')), parameters('rbacRolesNeededOnKV'), if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "createdCertificates": {
+      "type": "array",
+      "copy": {
+        "count": "[length(parameters('certNames'))]",
+        "input": {
+          "certName": "[parameters('certNames')[copyIndex()]]",
+          "DeploymentScriptName": "[format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certNames')[copyIndex()], ':', ''), '/', '-'))]",
+          "DeploymentScriptOutputs": "[reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certNames')[copyIndex()], ':', ''), '/', '-')))).outputs]"
+        }
+      },
+      "metadata": {
+        "description": "Array of info from each Certificate Deployment Script"
+      }
+    }
+  }
+}
