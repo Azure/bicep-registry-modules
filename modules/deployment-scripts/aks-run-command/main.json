@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.5.6.12127",
-      "templateHash": "17755572642697697453"
+      "templateHash": "10408770114389588885"
     }
   },
   "parameters": {
@@ -27,27 +27,6 @@
       "defaultValue": "[utcNow()]",
       "metadata": {
         "description": "How the deployment script should be forced to execute"
-      }
-    },
-    "azCliVersion": {
-      "type": "string",
-      "defaultValue": "2.35.0",
-      "metadata": {
-        "description": "Version of the Azure CLI to use"
-      }
-    },
-    "timeout": {
-      "type": "string",
-      "defaultValue": "PT30M",
-      "metadata": {
-        "description": "Deployment Script timeout"
-      }
-    },
-    "retention": {
-      "type": "string",
-      "defaultValue": "P1D",
-      "metadata": {
-        "description": "The retention period for the deployment script"
       }
     },
     "rbacRolesNeeded": {
@@ -160,9 +139,9 @@
       "kind": "AzureCLI",
       "properties": {
         "forceUpdateTag": "[parameters('forceUpdateTag')]",
-        "azCliVersion": "[parameters('azCliVersion')]",
-        "timeout": "[parameters('timeout')]",
-        "retentionInterval": "[parameters('retention')]",
+        "azCliVersion": "2.35.0",
+        "timeout": "PT10M",
+        "retentionInterval": "P1D",
         "environmentVariables": [
           {
             "name": "RG",
