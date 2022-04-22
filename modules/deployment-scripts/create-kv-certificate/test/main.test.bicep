@@ -1,8 +1,5 @@
 param location string = resourceGroup().location
-param akvName string =  'akvtest${uniqueString(resourceGroup().id)}'
-
-@description('A short retention is good for test envs')
-var shortRetention = 'PT1H'
+param akvName string =  'akvtest${uniqueString(resourceGroup().id, deployment().name)}'
 
 //Prerequisites
 resource akv 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
@@ -27,8 +24,8 @@ module akvCertSingle '../main.bicep' = {
   params: {
     akvName: akv.name
     location: location
-    certNames: array('myapp')
-    retention: shortRetention
+    certNames: array('mysingleapp')
+    initialScriptDelay: '0'
   }
 }
 output singleCertName string = first(akvCertSingle.outputs.createdCertificates).certName
@@ -45,7 +42,8 @@ module akvCertMultiple '../main.bicep' = {
       'myapp'
       'myotherapp'
     ]
-    retention: shortRetention
+    initialScriptDelay: '0'
+    managedIdentityName: 'aDifferentIdentity'
   }
 }
 output multiCert1SecretId string = first(akvCertMultiple.outputs.createdCertificates).DeploymentScriptOutputs.certSecretId.unversioned

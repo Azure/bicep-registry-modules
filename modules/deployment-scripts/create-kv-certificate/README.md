@@ -9,9 +9,6 @@ Create Key Vault self-signed certificates
 | `akvName`                                  | `string` | Yes      | The name of the Azure Key Vault                                                                               |
 | `location`                                 | `string` | No       | The location to deploy the resources to                                                                       |
 | `forceUpdateTag`                           | `string` | No       | How the deployment script should be forced to execute                                                         |
-| `azCliVersion`                             | `string` | No       | Version of the Azure CLI to use                                                                               |
-| `timeout`                                  | `string` | No       | Deployment Script timeout                                                                                     |
-| `retention`                                | `string` | No       | The retention period for the deployment script                                                                |
 | `rbacRolesNeededOnKV`                      | `string` | No       | The RoleDefinitionId required for the DeploymentScript resource to interact with KeyVault                     |
 | `useExistingManagedIdentity`               | `bool`   | No       | Does the Managed Identity already exists, or should be created                                                |
 | `managedIdentityName`                      | `string` | No       | Name of the Managed Identity resource                                                                         |

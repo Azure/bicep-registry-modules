@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.5.6.12127",
-      "templateHash": "5890698983254915894"
+      "templateHash": "838843595633637759"
     }
   },
   "parameters": {
@@ -27,27 +27,6 @@
       "defaultValue": "[utcNow()]",
       "metadata": {
         "description": "How the deployment script should be forced to execute"
-      }
-    },
-    "azCliVersion": {
-      "type": "string",
-      "defaultValue": "2.35.0",
-      "metadata": {
-        "description": "Version of the Azure CLI to use"
-      }
-    },
-    "timeout": {
-      "type": "string",
-      "defaultValue": "PT30M",
-      "metadata": {
-        "description": "Deployment Script timeout"
-      }
-    },
-    "retention": {
-      "type": "string",
-      "defaultValue": "P1D",
-      "metadata": {
-        "description": "The retention period for the deployment script"
       }
     },
     "rbacRolesNeededOnKV": {
@@ -93,7 +72,7 @@
     },
     "initialScriptDelay": {
       "type": "string",
-      "defaultValue": "30s",
+      "defaultValue": "0",
       "metadata": {
         "description": "A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate"
       }
@@ -154,14 +133,10 @@
       "kind": "AzureCLI",
       "properties": {
         "forceUpdateTag": "[parameters('forceUpdateTag')]",
-        "azCliVersion": "[parameters('azCliVersion')]",
-        "timeout": "[parameters('timeout')]",
-        "retentionInterval": "[parameters('retention')]",
+        "azCliVersion": "2.35.0",
+        "timeout": "PT10M",
+        "retentionInterval": "P1D",
         "environmentVariables": [
-          {
-            "name": "RG",
-            "value": "[resourceGroup().name]"
-          },
           {
             "name": "akvName",
             "value": "[parameters('akvName')]"
@@ -175,11 +150,15 @@
             "value": "[parameters('initialScriptDelay')]"
           },
           {
-            "name": "spClientId",
-            "value": "[if(parameters('useExistingManagedIdentity'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').clientId, reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').clientId)]"
+            "name": "certCreateRetryMax",
+            "value": "10"
+          },
+          {
+            "name": "certCreateRetryWaitSleep",
+            "value": "5s"
           }
         ],
-        "scriptContent": "      #!/bin/bash\n      set -e\n\n      echo \"Waiting on Identity RBAC replication ($initialDelay)\"\n      sleep $initialDelay\n\n      #echo \"Querying role assignments for service principal\"\n      #az role assignment list --assignee $spClientId\n\n      echo \"Creating AKV Cert $certName\"\n      az keyvault certificate create --vault-name $akvName -n $certName -p \"$(az keyvault certificate get-default-policy | sed -e s/CN=CLIGetDefaultPolicy/CN=${certName}/g )\";\n\n      echo \"Getting akv secretid for $certName\";\n      createdCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)\n      unversionedSecretId=$(echo $createdCert | jq -r \".sid\" | cut -d'/' -f-5) # remove the version from the url;\n\n      jsonOutputString=$(echo $createdCert | jq --arg usid $unversionedSecretId '{name: .name ,certSecretId: {versioned: .sid, unversioned: $usid }, thumbprint: .x509Thumbprint, thumbprintHex: .x509ThumbprintHex}')\n      echo $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n    ",
+        "scriptContent": "      #!/bin/bash\n      set -e\n\n      echo \"Waiting on Identity RBAC replication ($initialDelay)\"\n      sleep $initialDelay\n\n      echo \"Creating AKV Cert $certName\"\n      az keyvault certificate create --vault-name $akvName -n $certName -p \"$(az keyvault certificate get-default-policy | sed -e s/CN=CLIGetDefaultPolicy/CN=${certName}/g )\";\n\n      echo \"Getting Certificate $certName\";\n      retryLoopCount=0\n      createdCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)\n      while [ -z \"$(echo $createdCert | jq -r '.x509ThumbprintHex')\" ] && [ $retryLoopCount -lt $certCreateRetryMax ]\n      do\n        echo \"Waiting for cert creation (attempt $retryLoopCount)...\"\n        sleep $certCreateRetryWaitSleep\n        createdCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)\n        retryLoopCount=$((retryLoopCount+1))\n      done\n\n      unversionedSecretId=$(echo $createdCert | jq -r \".sid\" | cut -d'/' -f-5) # remove the version from the url;\n      jsonOutputString=$(echo $createdCert | jq --arg usid $unversionedSecretId '{name: .name ,certSecretId: {versioned: .sid, unversioned: $usid }, thumbprint: .x509Thumbprint, thumbprintHex: .x509ThumbprintHex}')\n      echo $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n    ",
         "cleanupPreference": "[parameters('cleanupPreference')]"
       },
       "dependsOn": [

@@ -7,15 +7,6 @@ param location string = resourceGroup().location
 @description('How the deployment script should be forced to execute')
 param forceUpdateTag  string = utcNow()
 
-@description('Version of the Azure CLI to use')
-param azCliVersion string = '2.35.0'
-
-@description('Deployment Script timeout')
-param timeout string = 'PT30M'
-
-@description('The retention period for the deployment script')
-param retention string = 'P1D'
-
 @description('The RoleDefinitionId required for the DeploymentScript resource to interact with KeyVault')
 param rbacRolesNeededOnKV string = 'a4417e6f-fecd-4de8-b567-7b0420556985' //KeyVault Certificate Officer
 
@@ -35,7 +26,7 @@ param existingManagedIdentityResourceGroupName string = resourceGroup().name
 param certNames array
 
 @description('A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate')
-param initialScriptDelay string = '30s'
+param initialScriptDelay string = '0'
 
 @allowed([
   'OnSuccess'
@@ -86,14 +77,10 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = [
   ]
   properties: {
     forceUpdateTag: forceUpdateTag
-    azCliVersion: azCliVersion
-    timeout: timeout
-    retentionInterval: retention
+    azCliVersion: '2.35.0'
+    timeout: 'PT10M'
+    retentionInterval: 'P1D'
     environmentVariables: [
-      {
-        name: 'RG'
-        value: resourceGroup().name
-      }
       {
         name: 'akvName'
         value: akvName
@@ -107,8 +94,12 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = [
         value: initialScriptDelay
       }
       {
-        name: 'spClientId'
-        value: useExistingManagedIdentity ? existingDepScriptId.properties.clientId : newDepScriptId.properties.clientId
+        name: 'certCreateRetryMax'
+        value: '10'
+      }
+      {
+        name: 'certCreateRetryWaitSleep'
+        value: '5s'
       }
     ]
     scriptContent: '''
@@ -118,16 +109,21 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = [
       echo "Waiting on Identity RBAC replication ($initialDelay)"
       sleep $initialDelay
 
-      #echo "Querying role assignments for service principal"
-      #az role assignment list --assignee $spClientId
-
       echo "Creating AKV Cert $certName"
       az keyvault certificate create --vault-name $akvName -n $certName -p "$(az keyvault certificate get-default-policy | sed -e s/CN=CLIGetDefaultPolicy/CN=${certName}/g )";
 
-      echo "Getting akv secretid for $certName";
+      echo "Getting Certificate $certName";
+      retryLoopCount=0
       createdCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)
-      unversionedSecretId=$(echo $createdCert | jq -r ".sid" | cut -d'/' -f-5) # remove the version from the url;
+      while [ -z "$(echo $createdCert | jq -r '.x509ThumbprintHex')" ] && [ $retryLoopCount -lt $certCreateRetryMax ]
+      do
+        echo "Waiting for cert creation (attempt $retryLoopCount)..."
+        sleep $certCreateRetryWaitSleep
+        createdCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)
+        retryLoopCount=$((retryLoopCount+1))
+      done
 
+      unversionedSecretId=$(echo $createdCert | jq -r ".sid" | cut -d'/' -f-5) # remove the version from the url;
       jsonOutputString=$(echo $createdCert | jq --arg usid $unversionedSecretId '{name: .name ,certSecretId: {versioned: .sid, unversioned: $usid }, thumbprint: .x509Thumbprint, thumbprintHex: .x509ThumbprintHex}')
       echo $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH
     '''
