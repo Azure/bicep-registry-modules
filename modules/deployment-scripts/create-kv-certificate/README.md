@@ -1,6 +1,6 @@
 # Key Vault Certificate Creation
 
-Create Key Vault self-signed certificates
+Create Key Vault self-signed certificates. Requires Key Vaults to be using RBAC Authorization, not Access Policies.
 
 ## Parameters
 
