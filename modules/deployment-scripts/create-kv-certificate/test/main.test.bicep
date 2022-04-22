@@ -11,7 +11,7 @@ resource akv 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
       name: 'standard'
     }
     tenantId: subscription().tenantId
-    enableSoftDelete: ! contains(resourceGroup().tags,'kvSoftDelete')
+    enableSoftDelete: false //! contains(resourceGroup().tags,'kvSoftDelete')
     enableRbacAuthorization: true
     accessPolicies: []
   }
