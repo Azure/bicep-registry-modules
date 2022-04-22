@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.5.6.12127",
-      "templateHash": "1359701360302340797"
+      "templateHash": "5890698983254915894"
     }
   },
   "parameters": {
@@ -179,7 +179,7 @@
             "value": "[if(parameters('useExistingManagedIdentity'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').clientId, reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').clientId)]"
           }
         ],
-        "scriptContent": "      #!/bin/bash\n      set -e\n\n      echo \"Waiting on Identity RBAC replication ($initialDelay)\"\n      sleep $initialDelay\n\n      #echo \"Querying role assignments for service principal\"\n      #az role assignment list --assignee $spClientId\n\n      echo \"Creating AKV Cert $certName\"\n      az keyvault certificate create --vault-name $akvName -n $certName -p \"$(az keyvault certificate get-default-policy | sed -e s/CN=CLIGetDefaultPolicy/CN=${certName}/g )\";\n\n      echo \"Getting akv secretid for $certName\";\n      versionedSecretId=$(az keyvault certificate show -n $certName --vault-name $akvName --query \"sid\" -o tsv);\n      unversionedSecretId=$(echo $versionedSecretId | cut -d'/' -f-5) # remove the version from the url;\n\n      jsonOutputString=$(jq -n --arg cn \"$certName\" --arg sid \"$unversionedSecretId\" --arg vsid \"$versionedSecretId\" '{certName: $cn, certSecretId: {versioned: $vsid, unversioned: $sid }}')\n      echo $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n    ",
+        "scriptContent": "      #!/bin/bash\n      set -e\n\n      echo \"Waiting on Identity RBAC replication ($initialDelay)\"\n      sleep $initialDelay\n\n      #echo \"Querying role assignments for service principal\"\n      #az role assignment list --assignee $spClientId\n\n      echo \"Creating AKV Cert $certName\"\n      az keyvault certificate create --vault-name $akvName -n $certName -p \"$(az keyvault certificate get-default-policy | sed -e s/CN=CLIGetDefaultPolicy/CN=${certName}/g )\";\n\n      echo \"Getting akv secretid for $certName\";\n      createdCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)\n      unversionedSecretId=$(echo $createdCert | jq -r \".sid\" | cut -d'/' -f-5) # remove the version from the url;\n\n      jsonOutputString=$(echo $createdCert | jq --arg usid $unversionedSecretId '{name: .name ,certSecretId: {versioned: .sid, unversioned: $usid }, thumbprint: .x509Thumbprint, thumbprintHex: .x509ThumbprintHex}')\n      echo $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n    ",
         "cleanupPreference": "[parameters('cleanupPreference')]"
       },
       "dependsOn": [

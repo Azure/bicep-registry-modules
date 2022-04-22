@@ -125,10 +125,10 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = [
       az keyvault certificate create --vault-name $akvName -n $certName -p "$(az keyvault certificate get-default-policy | sed -e s/CN=CLIGetDefaultPolicy/CN=${certName}/g )";
 
       echo "Getting akv secretid for $certName";
-      versionedSecretId=$(az keyvault certificate show -n $certName --vault-name $akvName --query "sid" -o tsv);
-      unversionedSecretId=$(echo $versionedSecretId | cut -d'/' -f-5) # remove the version from the url;
+      createdCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)
+      unversionedSecretId=$(echo $createdCert | jq -r ".sid" | cut -d'/' -f-5) # remove the version from the url;
 
-      jsonOutputString=$(jq -n --arg cn "$certName" --arg sid "$unversionedSecretId" --arg vsid "$versionedSecretId" '{certName: $cn, certSecretId: {versioned: $vsid, unversioned: $sid }}')
+      jsonOutputString=$(echo $createdCert | jq --arg usid $unversionedSecretId '{name: .name ,certSecretId: {versioned: .sid, unversioned: $usid }, thumbprint: .x509Thumbprint, thumbprintHex: .x509ThumbprintHex}')
       echo $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH
     '''
     cleanupPreference: cleanupPreference

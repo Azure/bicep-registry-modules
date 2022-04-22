@@ -1,5 +1,5 @@
 param location string = resourceGroup().location
-param akvName string =  'akvtest${uniqueString(newGuid())}'
+param akvName string =  'akvtest${uniqueString(resourceGroup().id)}'
 
 @description('A short retention is good for test envs')
 var shortRetention = 'PT1H'
@@ -31,6 +31,9 @@ module akvCertSingle '../main.bicep' = {
     retention: shortRetention
   }
 }
+output singleCertName string = first(akvCertSingle.outputs.createdCertificates).certName
+output singleSecretId string = first(akvCertSingle.outputs.createdCertificates).DeploymentScriptOutputs.certSecretId.unversioned
+output singleThumbprint string = first(akvCertSingle.outputs.createdCertificates).DeploymentScriptOutputs.thumbprintHex
 
 //Test 2. Array of certificates
 module akvCertMultiple '../main.bicep' = {
@@ -45,3 +48,5 @@ module akvCertMultiple '../main.bicep' = {
     retention: shortRetention
   }
 }
+output multiCert1SecretId string = first(akvCertMultiple.outputs.createdCertificates).DeploymentScriptOutputs.certSecretId.unversioned
+output multiCert2SecretId string = akvCertMultiple.outputs.createdCertificates[1].DeploymentScriptOutputs.certSecretId.unversioned

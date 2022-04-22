@@ -38,7 +38,7 @@ param location string = resourceGroup().location
 param akvName string =  'yourAzureKeyVault'
 param certificateName string = 'myapp'
 
-module acrImport 'br/public:deployment-scripts/create-agw-kv-certificate:1.0.1' = {
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:1.0.1' = {
   name: 'akvCertSingle'
   params: {
     akvName: akvName
@@ -46,6 +46,9 @@ module acrImport 'br/public:deployment-scripts/create-agw-kv-certificate:1.0.1' 
     certNames: array(certificateName)
   }
 }
+output secretId string = first(kvCert.outputs.createdCertificates).DeploymentScriptOutputs.certSecretId.unversioned
+output thumbprint string = first(kvCert.outputs.createdCertificates).DeploymentScriptOutputs.thumbprintHex
+
 ```
 
 ### Multiple KeyVault Certificates
@@ -60,7 +63,7 @@ param certificateNames array = [
   'myotherapp'
 ]
 
-module acrImport 'br/public:deployment-scripts/create-agw-kv-certificate:1.0.1' = {
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:1.0.1' = {
   name: 'akvCertSingle'
   params: {
     akvName: akvName
@@ -68,4 +71,7 @@ module acrImport 'br/public:deployment-scripts/create-agw-kv-certificate:1.0.1' 
     certNames: certificateNames
   }
 }
+
+output myAppSecretId string = first(kvCert.outputs.createdCertificates).DeploymentScriptOutputs.certSecretId.unversioned
+output myOtherAppSecretId string = kvCert.outputs.createdCertificates[1].DeploymentScriptOutputs.certSecretId.unversioned
 ```
