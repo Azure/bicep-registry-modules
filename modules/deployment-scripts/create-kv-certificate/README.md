@@ -14,15 +14,18 @@ Create Key Vault self-signed certificates. Requires Key Vaults to be using RBAC 
 | `managedIdentityName`                      | `string` | No       | Name of the Managed Identity resource                                                                         |
 | `existingManagedIdentitySubId`             | `string` | No       | For an existing Managed Identity, the Subscription Id it is located in                                        |
 | `existingManagedIdentityResourceGroupName` | `string` | No       | For an existing Managed Identity, the Resource Group it is located in                                         |
-| `certNames`                                | `array`  | Yes      | An array of Certificate names to create                                                                       |
+| `certificateName`                          | `string` | Yes      | The name of the certificate to create                                                                         |
 | `initialScriptDelay`                       | `string` | No       | A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate |
 | `cleanupPreference`                        | `string` | No       | When the script resource is cleaned up                                                                        |
 
 ## Outputs
 
-| Name                | Type  | Description                                           |
-| :------------------ | :---: | :---------------------------------------------------- |
-| createdCertificates | array | Array of info from each Certificate Deployment Script |
+| Name                           | Type   | Description                                       |
+| :----------------------------- | :----: | :------------------------------------------------ |
+| certificateSecretId            | string | KeyVault secret id to the created version         |
+| certificateSecretIdUnversioned | string | KeyVault secret id which uses the unversioned uri |
+| certificateThumbprint          | string | Certificate Thumbprint                            |
+| certificateThumbprintHex       | string | Certificate Thumbprint (in hex)                   |
 
 ## Examples
 
@@ -40,11 +43,11 @@ module kvCert 'br/public:deployment-scripts/create-kv-certificate:1.0.1' = {
   params: {
     akvName: akvName
     location: location
-    certNames: array(certificateName)
+    certificateName: certificateName
   }
 }
-output secretId string = first(kvCert.outputs.createdCertificates).DeploymentScriptOutputs.certSecretId.unversioned
-output thumbprint string = first(kvCert.outputs.createdCertificates).DeploymentScriptOutputs.thumbprintHex
+output SecretId string = akvCertSingle.outputs.certificateSecretId
+output Thumbprint string = akvCertSingle.outputs.certificateThumbprintHex
 
 ```
 
@@ -60,15 +63,19 @@ param certificateNames array = [
   'myotherapp'
 ]
 
-module kvCert 'br/public:deployment-scripts/create-kv-certificate:1.0.1' = {
-  name: 'akvCertSingle'
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:1.0.1' = [ for certificateName in certificateNames : {
+  name: 'akvCert-${certificateName}'
   params: {
-    akvName: akvName
+    akvName:  akvName
     location: location
-    certNames: certificateNames
+    certificateName: certificateName
   }
-}
+}]
 
-output myAppSecretId string = first(kvCert.outputs.createdCertificates).DeploymentScriptOutputs.certSecretId.unversioned
-output myOtherAppSecretId string = kvCert.outputs.createdCertificates[1].DeploymentScriptOutputs.certSecretId.unversioned
+@description('Array of info from each Certificate')
+output createdCertificates array = [for (certificateName, i) in certificateNames: {
+  certificateName: certificateName
+  certificateSecretId: akvCertMultiple[i].outputs.certificateSecretId
+  certificateThumbprint: akvCertMultiple[i].outputs.certificateThumbprintHex
+}]
 ```

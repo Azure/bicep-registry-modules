@@ -24,26 +24,33 @@ module akvCertSingle '../main.bicep' = {
   params: {
     akvName: akv.name
     location: location
-    certNames: array('mysingleapp')
+    certificateName: 'mysingleapp'
   }
 }
-output singleCertName string = first(akvCertSingle.outputs.createdCertificates).certName
-output singleSecretId string = first(akvCertSingle.outputs.createdCertificates).DeploymentScriptOutputs.certSecretId.unversioned
-output singleThumbprint string = first(akvCertSingle.outputs.createdCertificates).DeploymentScriptOutputs.thumbprintHex
+output singleSecretId string = akvCertSingle.outputs.certificateSecretId
+output singleThumbprint string = akvCertSingle.outputs.certificateThumbprintHex
 
 //Test 2. Array of certificates
-module akvCertMultiple '../main.bicep' = {
-  name: 'akvCertMultiple'
+var certificateNames = [
+  'myapp'
+  'myotherapp'
+]
+
+@batchSize(1)
+module akvCertMultiple '../main.bicep' = [ for certificateName in certificateNames : {
+  name: 'akvCertMultiple-${certificateName}'
   params: {
     akvName:  akv.name
     location: location
-    certNames: [
-      'myapp'
-      'myotherapp'
-    ]
+    certificateName: certificateName
     initialScriptDelay: '0'
     managedIdentityName: 'aDifferentIdentity'
   }
-}
-output multiCert1SecretId string = first(akvCertMultiple.outputs.createdCertificates).DeploymentScriptOutputs.certSecretId.unversioned
-output multiCert2SecretId string = akvCertMultiple.outputs.createdCertificates[1].DeploymentScriptOutputs.certSecretId.unversioned
+}]
+
+@description('Array of info from each Certificate')
+output createdCertificates array = [for (certificateName, i) in certificateNames: {
+  certificateName: certificateName
+  certificateSecretId: akvCertMultiple[i].outputs.certificateSecretId
+  certificateThumbprint: akvCertMultiple[i].outputs.certificateThumbprintHex
+}]
