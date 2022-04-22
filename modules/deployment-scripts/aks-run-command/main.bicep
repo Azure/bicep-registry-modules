@@ -131,9 +131,7 @@ resource runAksCommand 'Microsoft.Resources/deploymentScripts@2020-10-01' = [for
 
 @description('Array of command output from each Deployment Script AKS run command')
 output commandOutput array = [for (command, i) in commands: {
-  DeploymentScriptIndex: i
-  DeploymentScriptName: runAksCommand[i].name
-  DeploymentScriptOutputs: runAksCommand[i].properties.outputs
-  DeploymentScriptStartTime: runAksCommand[i].properties.status.startTime
-  DeploymentScriptEndTime: runAksCommand[i].properties.status.endTime
+  Index: i
+  Name: runAksCommand[i].name
+  CommandOutput: runAksCommand[i].properties.outputs
 }]
