@@ -25,7 +25,6 @@ module akvCertSingle '../main.bicep' = {
     akvName: akv.name
     location: location
     certNames: array('mysingleapp')
-    initialScriptDelay: '0'
   }
 }
 output singleCertName string = first(akvCertSingle.outputs.createdCertificates).certName

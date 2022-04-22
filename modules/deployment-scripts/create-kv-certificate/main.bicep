@@ -52,7 +52,7 @@ resource existingDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2
   scope: resourceGroup(existingManagedIdentitySubId, existingManagedIdentityResourceGroupName)
 }
 
-resource rbacKv 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = {
+resource rbacKv 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = if (!empty(rbacRolesNeededOnKV)) {
   name: guid(akv.id, rbacRolesNeededOnKV, useExistingManagedIdentity ? existingDepScriptId.id : newDepScriptId.id)
   scope: akv
   properties: {
@@ -94,11 +94,11 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = [
         value: initialScriptDelay
       }
       {
-        name: 'certCreateRetryMax'
+        name: 'retryMax'
         value: '10'
       }
       {
-        name: 'certCreateRetryWaitSleep'
+        name: 'retrySleep'
         value: '5s'
       }
     ]
@@ -109,16 +109,25 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = [
       echo "Waiting on Identity RBAC replication ($initialDelay)"
       sleep $initialDelay
 
-      echo "Creating AKV Cert $certName"
-      az keyvault certificate create --vault-name $akvName -n $certName -p "$(az keyvault certificate get-default-policy | sed -e s/CN=CLIGetDefaultPolicy/CN=${certName}/g )";
+      #Retry loop to catch errors (usually RBAC delays)
+      retryLoopCount=0
+      until [ $retryLoopCount -ge $retryMax ]
+      do
+        echo "Creating AKV Cert $certName (attempt $retryLoopCount)..."
+        az keyvault certificate create --vault-name $akvName -n $certName -p "$(az keyvault certificate get-default-policy | sed -e s/CN=CLIGetDefaultPolicy/CN=${certName}/g )" \
+          && break
+
+        sleep $retrySleep
+        retryLoopCount=$((retryLoopCount+1))
+      done
 
       echo "Getting Certificate $certName";
       retryLoopCount=0
       createdCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)
-      while [ -z "$(echo $createdCert | jq -r '.x509ThumbprintHex')" ] && [ $retryLoopCount -lt $certCreateRetryMax ]
+      while [ -z "$(echo $createdCert | jq -r '.x509ThumbprintHex')" ] && [ $retryLoopCount -lt $retryMax ]
       do
         echo "Waiting for cert creation (attempt $retryLoopCount)..."
-        sleep $certCreateRetryWaitSleep
+        sleep $retrySleep
         createdCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)
         retryLoopCount=$((retryLoopCount+1))
       done
