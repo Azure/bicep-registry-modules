@@ -117,6 +117,7 @@ Deployment of `1` storage account with
   - `1` whitelisted IP
 - `1` Systems-Assigned & `1` User-Assigned identities
 - `4` Private Endpoints for blob, queue, table & file
+- `1` role assignment for `1` identity
 - Diagnostic settings using default settings (all logs & metrics) pointing to a storage account, diagnostic workspace & event hub
 - Blob services with
   - Diagnostic settings diagnostic settings using default settings (all logs & metrics) pointing to a storage account, diagnostic workspace & event hub
