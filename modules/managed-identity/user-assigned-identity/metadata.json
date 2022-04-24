@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema#",
+  "name": "User Assigned Identities",
+  "description": "This module deploys Microsoft.ManagedIdentity User Assigned Identities and optionally available children or extensions",
+  "owner": "CARML"
+}
