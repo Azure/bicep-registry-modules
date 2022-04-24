@@ -34,38 +34,32 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
   }
 }
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
-  name: 'adp-carml-vnet-${serviceShort}-01'
-  location: location
-  properties: {
-    addressSpace: {
-      addressPrefixes: [
-        '10.0.0.0/16'
-      ]
-    }
+module virtualNetwork 'br/public:network/virtual-network:1.0.1' = {
+  name: '${uniqueString(deployment().name, 'WestEurope')}-vnet'
+  params: {
+    name: 'adp-carml-vnet-${serviceShort}-01'
+    addressPrefixes: [
+      '10.0.0.0/16'
+    ]
     subnets: [
       {
         name: 'carml-az-subnet-x-001'
-        properties: {
-          addressPrefix: '10.0.0.0/24'
-          serviceEndpoints: [
-            {
-              service: 'Microsoft.Storage'
-            }
-          ]
-        }
+        addressPrefix: '10.0.0.0/24'
+        serviceEndpoints: [
+          {
+            service: 'Microsoft.Storage'
+          }
+        ]
       }
       {
         name: 'carml-az-subnet-x-002-privateEndpoints'
-        properties: {
-          addressPrefix: '10.0.1.0/24'
-          privateEndpointNetworkPolicies: 'Disabled'
-          serviceEndpoints: [
-            {
-              service: 'Microsoft.Storage'
-            }
-          ]
-        }
+        addressPrefix: '10.0.1.0/24'
+        privateEndpointNetworkPolicies: 'Disabled'
+        serviceEndpoints: [
+          {
+            service: 'Microsoft.Storage'
+          }
+        ]
       }
     ]
   }
@@ -158,32 +152,32 @@ module defstrg '../main.bicep' = {
       defaultAction: 'Deny'
       virtualNetworkRules: [
         {
-          id: virtualNetwork.properties.subnets[0].id
+          id: virtualNetwork.outputs.subnetResourceIds[0]
           action: 'Allow'
         }
       ]
       ipRules: [
         {
-            action: 'Allow'
-            value: '1.1.1.1'
+          action: 'Allow'
+          value: '1.1.1.1'
         }
       ]
     }
     privateEndpoints: [
       {
-        subnetResourceId: virtualNetwork.properties.subnets[1].id
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
         service: 'blob'
       }
       {
-        subnetResourceId: virtualNetwork.properties.subnets[1].id
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
         service: 'table'
       }
       {
-        subnetResourceId: virtualNetwork.properties.subnets[1].id
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
         service: 'queue'
       }
       {
-        subnetResourceId: virtualNetwork.properties.subnets[1].id
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
         service: 'file'
       }
     ]
