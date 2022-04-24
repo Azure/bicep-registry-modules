@@ -41,7 +41,7 @@ module minMSI 'br/public:managed-identity/user-assigned-identity:1.0' = {
 
 Deployment of `1` user assigned identity with
 - `2` tags
-- `1` role assignment
+- `1` role assignment for `1` identity
 
 ```bicep
 module genMSI '../main.bicep' = {
