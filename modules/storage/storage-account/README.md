@@ -53,7 +53,7 @@ This module deploys Microsoft.Storage Storage Accounts and optionally available 
 
 ### Example 1
 
-Example invocation with the minimum required parameters for `1` storage account.
+Deployment of `1` storage account using the minimum required parameters.
 
 ```bicep
 module minstrg 'br/public:storage/storage-account:1.0' = {
