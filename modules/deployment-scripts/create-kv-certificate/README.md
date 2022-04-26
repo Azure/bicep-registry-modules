@@ -15,6 +15,7 @@ Create Key Vault self-signed certificates. Requires Key Vaults to be using RBAC 
 | `existingManagedIdentitySubId`             | `string` | No       | For an existing Managed Identity, the Subscription Id it is located in                                        |
 | `existingManagedIdentityResourceGroupName` | `string` | No       | For an existing Managed Identity, the Resource Group it is located in                                         |
 | `certificateName`                          | `string` | Yes      | The name of the certificate to create                                                                         |
+| `certificateCommonName`                    | `string` | No       | The common name of the certificate to create                                                                  |
 | `initialScriptDelay`                       | `string` | No       | A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate |
 | `cleanupPreference`                        | `string` | No       | When the script resource is cleaned up                                                                        |
 
@@ -22,6 +23,7 @@ Create Key Vault self-signed certificates. Requires Key Vaults to be using RBAC 
 
 | Name                           | Type   | Description                                       |
 | :----------------------------- | :----: | :------------------------------------------------ |
+| certificateName                | string | Certificate name                                  |
 | certificateSecretId            | string | KeyVault secret id to the created version         |
 | certificateSecretIdUnversioned | string | KeyVault secret id which uses the unversioned uri |
 | certificateThumbprint          | string | Certificate Thumbprint                            |
@@ -38,12 +40,36 @@ param location string = resourceGroup().location
 param akvName string =  'yourAzureKeyVault'
 param certificateName string = 'myapp'
 
-module kvCert 'br/public:deployment-scripts/create-kv-certificate:1.0.1' = {
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:1.1.1' = {
   name: 'akvCertSingle'
   params: {
     akvName: akvName
     location: location
     certificateName: certificateName
+  }
+}
+output SecretId string = akvCertSingle.outputs.certificateSecretId
+output Thumbprint string = akvCertSingle.outputs.certificateThumbprintHex
+
+```
+
+### Single KeyVault Certificate with fqdn common name
+
+Creates a single self-signed certificate in Azure KeyVault using a specific certificate common name.
+
+```bicep
+param location string = resourceGroup().location
+param akvName string =  'yourAzureKeyVault'
+param certificateName string = 'myapp'
+param certificateCommonName string = '${certificateName}.mydomain.local'
+
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:1.1.1' = {
+  name: 'akvCertSingle'
+  params: {
+    akvName: akvName
+    location: location
+    certificateName: certificateName
+    certificateCommonName: certificateCommonName
   }
 }
 output SecretId string = akvCertSingle.outputs.certificateSecretId
@@ -63,7 +89,7 @@ param certificateNames array = [
   'myotherapp'
 ]
 
-module kvCert 'br/public:deployment-scripts/create-kv-certificate:1.0.1' = [ for certificateName in certificateNames : {
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:1.1.1' = [ for certificateName in certificateNames : {
   name: 'akvCert-${certificateName}'
   params: {
     akvName:  akvName
