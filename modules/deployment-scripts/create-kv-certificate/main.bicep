@@ -25,6 +25,9 @@ param existingManagedIdentityResourceGroupName string = resourceGroup().name
 @description('The name of the certificate to create')
 param certificateName string
 
+@description('The common name of the certificate to create')
+param certificateCommonName string = certificateName
+
 @description('A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate')
 param initialScriptDelay string = '0'
 
@@ -90,6 +93,10 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
         value: certificateName
       }
       {
+        name: 'certCommonName'
+        value: certificateCommonName
+      }
+      {
         name: 'initialDelay'
         value: initialScriptDelay
       }
@@ -113,8 +120,8 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
       retryLoopCount=0
       until [ $retryLoopCount -ge $retryMax ]
       do
-        echo "Creating AKV Cert $certName (attempt $retryLoopCount)..."
-        az keyvault certificate create --vault-name $akvName -n $certName -p "$(az keyvault certificate get-default-policy | sed -e s/CN=CLIGetDefaultPolicy/CN=${certName}/g )" \
+        echo "Creating AKV Cert $certName with CN $certCommonName (attempt $retryLoopCount)..."
+        az keyvault certificate create --vault-name $akvName -n $certName -p "$(az keyvault certificate get-default-policy | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g )" \
           && break
 
         sleep $retrySleep
@@ -139,6 +146,9 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
     cleanupPreference: cleanupPreference
   }
 }
+
+@description('Certificate name')
+output certificateName string = createImportCert.properties.outputs.name
 
 @description('KeyVault secret id to the created version')
 output certificateSecretId string = createImportCert.properties.outputs.certSecretId.versioned
