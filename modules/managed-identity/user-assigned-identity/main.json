@@ -5,15 +5,14 @@
     "_generator": {
       "name": "bicep",
       "version": "0.5.6.12127",
-      "templateHash": "10678751030153270458"
+      "templateHash": "8823006644125331881"
     }
   },
   "parameters": {
     "name": {
       "type": "string",
-      "defaultValue": "[guid(resourceGroup().id)]",
       "metadata": {
-        "description": "Optional. Name of the User Assigned Identity."
+        "description": "Required. Name of the User Assigned Identity."
       }
     },
     "location": {

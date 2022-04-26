@@ -6,7 +6,7 @@ This module deploys Microsoft.ManagedIdentity User Assigned Identities and optio
 
 | Name              | Type     | Required | Description                                                                                                                                                                                                                                                                                                                                                                                                    |
 | :---------------- | :------: | :------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`            | `string` | No       | Optional. Name of the User Assigned Identity.                                                                                                                                                                                                                                                                                                                                                                  |
+| `name`            | `string` | Yes      | Required. Name of the User Assigned Identity.                                                                                                                                                                                                                                                                                                                                                                  |
 | `location`        | `string` | No       | Optional. Location for all resources.                                                                                                                                                                                                                                                                                                                                                                          |
 | `lock`            | `string` | No       | Optional. Specify the type of lock.                                                                                                                                                                                                                                                                                                                                                                            |
 | `roleAssignments` | `array`  | No       | Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11' |
@@ -28,7 +28,7 @@ This module deploys Microsoft.ManagedIdentity User Assigned Identities and optio
 Deployment of `1` user assigned identity using the minimum required parameters.
 
 ```bicep
-module minMSI 'br/public:managed-identity/user-assigned-identity:1.0' = {
+module minMSI 'br/public:managed-identity/user-assigned-identity:1.0.1' = {
   name: '${uniqueString(deployment().name, 'WestEurope')}-min-msi'
   params: {
     name: 'carml-az-uai-min-01'
@@ -45,7 +45,7 @@ Deployment of `1` user assigned identity with
 - `1` role assignment for `1` identity
 
 ```bicep
-module genMSI '../main.bicep' = {
+module genMSI 'br/public:managed-identity/user-assigned-identity:1.0.1' = {
   name: '${uniqueString(deployment().name, 'WestEurope')}-gen-msi'
   params: {
     name: 'carml-az-uai-gen-01'
