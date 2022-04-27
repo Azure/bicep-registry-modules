@@ -38,7 +38,7 @@ async function generateModulesTable(axios, fs, path, core) {
     for (const moduleName of moduleNames) {
       const modulePath = `${moduleGroup}/${moduleName}`;
       const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${modulePath}/tags/list`;
-      
+
       try {
         const versionListResponse = await axios.get(versionListUrl);
         const latestVersion = versionListResponse.data.tags.sort().at(-1);
@@ -149,27 +149,24 @@ async function refreshModuleTable({ require, github, context, core }) {
 
   const oldTable = oldTableMatch[0].replace(/^\s+|\s+$/g, "");
   const newTable = await generateModulesTable(axios, fs, path);
+  const newReadme = oldReadme.replace(oldTable, newTable);
+  const newReadmeFormatted = prettier.format(newReadme, {
+    parser: "markdown",
+  });
 
-  if (oldTable === newTable) {
+  if (oldReadme === newReadmeFormatted) {
     core.info("The module table is update-to-date.");
     return;
   }
 
-  if (oldTable !== newTable) {
-    const newReadme = oldReadme.replace(oldTable, newTable);
-    const newReadmeFormatted = prettier.format(newReadme, {
-      parser: "markdown",
-    });
-
-    const prUrl = await createPullRequestToUpdateReadme(
-      github,
-      context,
-      newReadmeFormatted
-    );
-    core.info(
-      `The module table is outdated. A pull request ${prUrl} was created to update it.`
-    );
-  }
+  const prUrl = await createPullRequestToUpdateReadme(
+    github,
+    context,
+    newReadmeFormatted
+  );
+  core.info(
+    `The module table is outdated. A pull request ${prUrl} was created to update it.`
+  );
 }
 
 module.exports = refreshModuleTable;
