@@ -17,7 +17,7 @@ var imageName = 'ghcr.io/kedacore/keda-metrics-apiserver:main'
 module acrImportSingle '../main.bicep' = {
   name: 'testAcrImportSingle'
   params: {
-    rbacRolesNeeded: array(ContributorRoleDefinitionId)
+    rbacRoleNeeded: ContributorRoleDefinitionId
     acrName: acr.name
     location: location
     images: array(imageName)
@@ -62,7 +62,6 @@ module acrImportEID '../main.bicep' = {
 module acrImportAZV '../main.bicep' = {
   name: 'testAcrImportAZV'
   params: {
-    azCliVersion: '2.34.1'
     acrName: acr.name
     location: location
     images: array('mcr.microsoft.com/azuredocs/azure-vote-front:v1')

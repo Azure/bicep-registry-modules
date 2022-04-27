@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.4.1318.3566",
-      "templateHash": "17518112087598995896"
+      "version": "0.5.6.12127",
+      "templateHash": "13896569015360344837"
     }
   },
   "parameters": {
@@ -29,34 +29,11 @@
         "description": "How the deployment script should be forced to execute"
       }
     },
-    "azCliVersion": {
+    "rbacRoleNeeded": {
       "type": "string",
-      "defaultValue": "2.30.0",
+      "defaultValue": "b24988ac-6180-42a0-ab88-20f7382dd24c",
       "metadata": {
-        "description": "Version of the Azure CLI to use"
-      }
-    },
-    "timeout": {
-      "type": "string",
-      "defaultValue": "PT30M",
-      "metadata": {
-        "description": "Deployment Script timeout"
-      }
-    },
-    "retention": {
-      "type": "string",
-      "defaultValue": "P1D",
-      "metadata": {
-        "description": "The retention period for the deployment script"
-      }
-    },
-    "rbacRolesNeeded": {
-      "type": "array",
-      "defaultValue": [
-        "b24988ac-6180-42a0-ab88-20f7382dd24c"
-      ],
-      "metadata": {
-        "description": "An array of Azure RoleIds that are required for the DeploymentScript resource"
+        "description": "Azure RoleId that are required for the DeploymentScript resource to import images"
       }
     },
     "useExistingManagedIdentity": {
@@ -122,16 +99,13 @@
       "location": "[parameters('location')]"
     },
     {
-      "copy": {
-        "name": "rbac",
-        "count": "[length(parameters('rbacRolesNeeded'))]"
-      },
+      "condition": "[not(empty(parameters('rbacRoleNeeded')))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2020-08-01-preview",
       "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('acrName'))]",
-      "name": "[guid(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), parameters('rbacRolesNeeded')[copyIndex()], if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]",
+      "name": "[guid(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), parameters('rbacRoleNeeded'), if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]",
       "properties": {
-        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('rbacRolesNeeded')[copyIndex()])]",
+        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('rbacRoleNeeded'))]",
         "principalId": "[if(parameters('useExistingManagedIdentity'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId, reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId)]",
         "principalType": "ServicePrincipal"
       },
@@ -146,7 +120,7 @@
       },
       "type": "Microsoft.Resources/deploymentScripts",
       "apiVersion": "2020-10-01",
-      "name": "[format('ACR-Import-{0}-{1}', parameters('acrName'), replace(replace(parameters('images')[copyIndex()], ':', ''), '/', '-'))]",
+      "name": "[format('ACR-Import-{0}-{1}', parameters('acrName'), last(split(replace(parameters('images')[copyIndex()], ':', ''), '/')))]",
       "location": "[parameters('location')]",
       "identity": {
         "type": "UserAssigned",
@@ -157,9 +131,9 @@
       "kind": "AzureCLI",
       "properties": {
         "forceUpdateTag": "[parameters('forceUpdateTag')]",
-        "azCliVersion": "[parameters('azCliVersion')]",
-        "timeout": "[parameters('timeout')]",
-        "retentionInterval": "[parameters('retention')]",
+        "azCliVersion": "2.30.0",
+        "timeout": "PT30M",
+        "retentionInterval": "P1D",
         "environmentVariables": [
           {
             "name": "acrName",
@@ -172,14 +146,22 @@
           {
             "name": "initialDelay",
             "value": "[parameters('initialScriptDelay')]"
+          },
+          {
+            "name": "retryMax",
+            "value": "2"
+          },
+          {
+            "name": "retrySleep",
+            "value": "5s"
           }
         ],
-        "scriptContent": "      #!/bin/bash\n      set -e\n\n      echo \"Waiting on RBAC replication ($initialDelay)\"\n      sleep $initialDelay\n\n      echo \"Importing Image: $imageName into ACR: $acrName\"\n      az acr import -n $acrName --source $imageName --force\n    ",
+        "scriptContent": "      #!/bin/bash\n      set -e\n\n      echo \"Waiting on RBAC replication ($initialDelay)\"\n      sleep $initialDelay\n      \n      #Retry loop to catch errors (usually RBAC delays, but 'Error copying blobs' is also not unheard of)\n      retryLoopCount=0\n      until [ $retryLoopCount -ge $retryMax ]\n      do\n        echo \"Importing Image: $imageName into ACR: $acrName\"\n        az acr import -n $acrName --source $imageName --force \\\n          && break\n\n        sleep $retrySleep\n        retryLoopCount=$((retryLoopCount+1))\n      done\n\n    ",
         "cleanupPreference": "[parameters('cleanupPreference')]"
       },
       "dependsOn": [
         "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]",
-        "rbac"
+        "[extensionResourceId(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), 'Microsoft.Authorization/roleAssignments', guid(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), parameters('rbacRoleNeeded'), if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))))]"
       ]
     }
   ]
