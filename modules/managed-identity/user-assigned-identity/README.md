@@ -25,7 +25,7 @@ This module deploys Microsoft.ManagedIdentity User Assigned Identities and optio
 
 ### Example 1
 
-Deployment of `1` user assigned identity using the minimum required parameters.
+Deployment of **1** user assigned identity using the minimum required parameters.
 
 ```bicep
 module minMSI 'br/public:managed-identity/user-assigned-identity:1.0.1' = {
@@ -39,10 +39,10 @@ module minMSI 'br/public:managed-identity/user-assigned-identity:1.0.1' = {
 
 ### Example 2
 
-Deployment of `1` user assigned identity with
+Deployment of **1** user assigned identity with
 
-- `2` tags
-- `1` role assignment for `1` identity
+- **2** tags
+- **1** role assignment for **1** identity
 
 ```bicep
 module genMSI 'br/public:managed-identity/user-assigned-identity:1.0.1' = {
