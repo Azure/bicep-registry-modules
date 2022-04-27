@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.4.1318.3566",
-      "templateHash": "17518112087598995896"
+      "version": "0.5.6.12127",
+      "templateHash": "8467326771224834359"
     }
   },
   "parameters": {
@@ -29,34 +29,11 @@
         "description": "How the deployment script should be forced to execute"
       }
     },
-    "azCliVersion": {
+    "rbacRoleNeeded": {
       "type": "string",
-      "defaultValue": "2.30.0",
+      "defaultValue": "b24988ac-6180-42a0-ab88-20f7382dd24c",
       "metadata": {
-        "description": "Version of the Azure CLI to use"
-      }
-    },
-    "timeout": {
-      "type": "string",
-      "defaultValue": "PT30M",
-      "metadata": {
-        "description": "Deployment Script timeout"
-      }
-    },
-    "retention": {
-      "type": "string",
-      "defaultValue": "P1D",
-      "metadata": {
-        "description": "The retention period for the deployment script"
-      }
-    },
-    "rbacRolesNeeded": {
-      "type": "array",
-      "defaultValue": [
-        "b24988ac-6180-42a0-ab88-20f7382dd24c"
-      ],
-      "metadata": {
-        "description": "An array of Azure RoleIds that are required for the DeploymentScript resource"
+        "description": "Azure RoleId that are required for the DeploymentScript resource to import images"
       }
     },
     "useExistingManagedIdentity": {
@@ -122,16 +99,13 @@
       "location": "[parameters('location')]"
     },
     {
-      "copy": {
-        "name": "rbac",
-        "count": "[length(parameters('rbacRolesNeeded'))]"
-      },
+      "condition": "[not(empty(parameters('rbacRoleNeeded')))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2020-08-01-preview",
       "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('acrName'))]",
-      "name": "[guid(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), parameters('rbacRolesNeeded')[copyIndex()], if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]",
+      "name": "[guid(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), parameters('rbacRoleNeeded'), if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]",
       "properties": {
-        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('rbacRolesNeeded')[copyIndex()])]",
+        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('rbacRoleNeeded'))]",
         "principalId": "[if(parameters('useExistingManagedIdentity'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId, reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId)]",
         "principalType": "ServicePrincipal"
       },
@@ -157,9 +131,9 @@
       "kind": "AzureCLI",
       "properties": {
         "forceUpdateTag": "[parameters('forceUpdateTag')]",
-        "azCliVersion": "[parameters('azCliVersion')]",
-        "timeout": "[parameters('timeout')]",
-        "retentionInterval": "[parameters('retention')]",
+        "azCliVersion": "2.30.0",
+        "timeout": "PT30M",
+        "retentionInterval": "P1D",
         "environmentVariables": [
           {
             "name": "acrName",
@@ -179,7 +153,7 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]",
-        "rbac"
+        "[extensionResourceId(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), 'Microsoft.Authorization/roleAssignments', guid(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), parameters('rbacRoleNeeded'), if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))))]"
       ]
     }
   ]

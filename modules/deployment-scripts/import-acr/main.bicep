@@ -7,19 +7,8 @@ param location string = resourceGroup().location
 @description('How the deployment script should be forced to execute')
 param forceUpdateTag  string = utcNow()
 
-@description('Version of the Azure CLI to use')
-param azCliVersion string = '2.30.0'
-
-@description('Deployment Script timeout')
-param timeout string = 'PT30M'
-
-@description('The retention period for the deployment script')
-param retention string = 'P1D'
-
-@description('An array of Azure RoleIds that are required for the DeploymentScript resource')
-param rbacRolesNeeded array = [
-  'b24988ac-6180-42a0-ab88-20f7382dd24c' //Contributor is needed to import ACR
-]
+@description('Azure RoleId that are required for the DeploymentScript resource to import images')
+param rbacRoleNeeded string = 'b24988ac-6180-42a0-ab88-20f7382dd24c' //Contributor is needed to import ACR
 
 @description('Does the Managed Identity already exists, or should be created')
 param useExistingManagedIdentity bool = false
@@ -61,15 +50,15 @@ resource existingDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2
   scope: resourceGroup(existingManagedIdentitySubId, existingManagedIdentityResourceGroupName)
 }
 
-resource rbac 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = [for roleDefId in rbacRolesNeeded: {
-  name: guid(acr.id, roleDefId, useExistingManagedIdentity ? existingDepScriptId.id : newDepScriptId.id)
+resource rbac 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = if (!empty(rbacRoleNeeded)) {
+  name: guid(acr.id, rbacRoleNeeded, useExistingManagedIdentity ? existingDepScriptId.id : newDepScriptId.id)
   scope: acr
   properties: {
-    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', roleDefId)
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', rbacRoleNeeded)
     principalId: useExistingManagedIdentity ? existingDepScriptId.properties.principalId : newDepScriptId.properties.principalId
     principalType: 'ServicePrincipal'
   }
-}]
+}
 
 resource createImportImage 'Microsoft.Resources/deploymentScripts@2020-10-01' = [for image in images: {
   name: 'ACR-Import-${acr.name}-${replace(replace(image,':',''),'/','-')}'
@@ -86,9 +75,9 @@ resource createImportImage 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
   ]
   properties: {
     forceUpdateTag: forceUpdateTag
-    azCliVersion: azCliVersion
-    timeout: timeout
-    retentionInterval: retention
+    azCliVersion: '2.30.0'
+    timeout: 'PT30M'
+    retentionInterval: 'P1D'
     environmentVariables: [
       {
         name: 'acrName'
