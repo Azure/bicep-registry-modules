@@ -148,7 +148,7 @@ async function refreshModuleTable({ require, github, context, core }) {
   }
 
   const oldTable = oldTableMatch[0].replace(/^\s+|\s+$/g, "");
-  const newTable = await generateModulesTable(axios, fs, path);
+  const newTable = await generateModulesTable(axios, fs, path, core);
   const newReadme = oldReadme.replace(oldTable, newTable);
   const newReadmeFormatted = prettier.format(newReadme, {
     parser: "markdown",
