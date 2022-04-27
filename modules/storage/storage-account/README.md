@@ -53,10 +53,10 @@ This module deploys Microsoft.Storage Storage Accounts and optionally available 
 
 ### Example 1
 
-Deployment of `1` storage account using the minimum required parameters.
+Deployment of **1** storage account using the minimum required parameters.
 
 ```bicep
-module minstrg 'br/public:storage/storage-account:1.0' = {
+module minstrg 'br/public:storage/storage-account:1.0.1' = {
   name: '${uniqueString(deployment().name, 'WestEurope')}-minstrg'
   params: {
     name: 'carmlazsamin001'
@@ -68,10 +68,10 @@ module minstrg 'br/public:storage/storage-account:1.0' = {
 
 ### Example 2
 
-Example deployment for `1` storage account version 1.
+Example deployment for **1** storage account version 1.
 
 ```bicep
-module minstrg 'br/public:storage/storage-account:1.0' = {
+module minstrg 'br/public:storage/storage-account:1.0.1' = {
   name: '${uniqueString(deployment().name, 'WestEurope')}-strg'
   params: {
     name: 'carmlazsav1001'
@@ -83,10 +83,10 @@ module minstrg 'br/public:storage/storage-account:1.0' = {
 
 ### Example 3
 
-Example deployment of `1` storage account with `1` NFS file share.
+Example deployment of **1** storage account with **1** NFS file share.
 
 ```bicep
-module minstrg 'br/public:storage/storage-account:1.0' = {
+module minstrg 'br/public:storage/storage-account:1.0.1' = {
   name: '${uniqueString(deployment().name, 'WestEurope')}-strg'
   params: {
     name: 'carmlazsax001'
@@ -109,31 +109,31 @@ module minstrg 'br/public:storage/storage-account:1.0' = {
 
 ### Example 4
 
-Deployment of `1` storage account with
+Deployment of **1** storage account with
 
-- `2` Tags
+- **2** Tags
 - An enabled firewall with
-  - `1` whitelisted subnet
-  - `1` whitelisted IP
-- `1` Systems-Assigned & `1` User-Assigned identities
-- `4` Private Endpoints for blob, queue, table & file
-- `1` role assignment for `1` identity
+  - **1** whitelisted subnet
+  - **1** whitelisted IP
+- **1** Systems-Assigned & **1** User-Assigned identities
+- **4** Private Endpoints for blob, queue, table & file
+- **1** role assignment for **1** identity
 - Diagnostic settings using default settings (all logs & metrics) pointing to a storage account, diagnostic workspace & event hub
 - Blob services with
   - Diagnostic settings diagnostic settings using default settings (all logs & metrics) pointing to a storage account, diagnostic workspace & event hub
-  - `2` containers - `1` of which with RBAC enabled
+  - **2** containers - **1** of which with RBAC enabled
 - File services with
   - Diagnostic settings diagnostic settings using default settings (all logs & metrics) pointing to a storage account, diagnostic workspace & event hub
-  - `2` file shares - `1` of which with RBAC enabled
+  - **2** file shares - **1** of which with RBAC enabled
 - Queue services with
   - Diagnostic settings diagnostic settings using default settings (all logs & metrics) pointing to a storage account, diagnostic workspace & event hub
-  - `2` queues - `1` of which with RBAC enabled
+  - **2** queues - **1** of which with RBAC enabled
 - Table services with
   - Diagnostic settings diagnostic settings using default settings (all logs & metrics) pointing to a storage account, diagnostic workspace & event hub
-  - `2` tables
+  - **2** tables
 
 ```bicep
-module minstrg 'br/public:storage/storage-account:1.0' = {
+module minstrg 'br/public:storage/storage-account:1.0.1' = {
   name: '${uniqueString(deployment().name, 'WestEurope')}-strg'
   params: {
     name: 'carmlazsax002'

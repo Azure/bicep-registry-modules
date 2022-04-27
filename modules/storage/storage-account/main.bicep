@@ -120,7 +120,6 @@ param basetime string = utcNow('u')
   'Enabled'
   'Disabled'
 ])
-
 @description('Optional. Enable or disallow public network access to Storage Account..')
 param publicNetworkAccess string = 'Enabled'
 
