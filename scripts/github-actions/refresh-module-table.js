@@ -22,10 +22,12 @@ function getSubdirNames(fs, dir) {
 }
 
 /**
+ * @param {typeof import("axios").default} axios
  * @param {typeof import("fs")} fs
  * @param {typeof import("path")} path
+ * @param {typeof import("@actions/core")} core
  */
-async function generateModulesTable(fs, path) {
+async function generateModulesTable(axios, fs, path, core) {
   const tableData = [["Module", "Version", "Docs"]];
   const moduleGroups = getSubdirNames(fs, "modules");
 
@@ -35,24 +37,27 @@ async function generateModulesTable(fs, path) {
 
     for (const moduleName of moduleNames) {
       const modulePath = `${moduleGroup}/${moduleName}`;
-      const badgeUrl = new URL("https://img.shields.io/badge/dynamic/json");
       const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${modulePath}/tags/list`;
+      
+      try {
+        const versionListResponse = await axios.get(versionListUrl);
+        const latestVersion = versionListResponse.data.tags.sort().at(-1);
+        const badgeUrl = `https://img.shields.io/badge/mcr-${latestVersion}-blue`;
 
-      badgeUrl.searchParams.append("label", "mcr");
-      badgeUrl.searchParams.append("query", "$.tags[(@.length-1)]");
-      badgeUrl.searchParams.append("url", versionListUrl);
+        core.debug(badgeUrl.href);
 
-      console.log(badgeUrl.href);
+        const module = `\`${modulePath}\``;
+        const versionBadge = `<a href="${versionListUrl}"><image src="${badgeUrl}"></a>`;
 
-      const module = `\`${modulePath}\``;
-      const versionBadge = `<a href="${versionListUrl}"><image src="${badgeUrl.href}"></a>`;
+        const moduleRootUrl = `https://github.com/Azure/bicep-registry-modules/tree/main/modules/${modulePath}`;
+        const codeLink = `[🦾 Code](${moduleRootUrl}/main.bicep)`;
+        const readmeLink = `[📃 Readme](${moduleRootUrl}/README.md)`;
+        const docs = `${codeLink} ｜ ${readmeLink}`;
 
-      const moduleRootUrl = `https://github.com/Azure/bicep-registry-modules/tree/main/modules/${modulePath}`;
-      const codeLink = `[🦾 Code](${moduleRootUrl}/main.bicep)`;
-      const readmeLink = `[📃 Readme](${moduleRootUrl}/README.md)`;
-      const docs = `${codeLink} ｜ ${readmeLink}`;
-
-      tableData.push([module, versionBadge, docs]);
+        tableData.push([module, versionBadge, docs]);
+      } catch (error) {
+        core.setFailed(error);
+      }
     }
   }
 
@@ -131,6 +136,7 @@ async function refreshModuleTable({ require, github, context, core }) {
   const fs = require("fs");
   const path = require("path");
   const prettier = require("prettier");
+  const axios = require("axios").default;
 
   const oldReadme = fs.readFileSync("README.md", { encoding: "utf-8" });
   const oldTableMatch = oldReadme.match(
@@ -142,7 +148,7 @@ async function refreshModuleTable({ require, github, context, core }) {
   }
 
   const oldTable = oldTableMatch[0].replace(/^\s+|\s+$/g, "");
-  const newTable = await generateModulesTable(fs, path);
+  const newTable = await generateModulesTable(axios, fs, path);
 
   if (oldTable === newTable) {
     core.info("The module table is update-to-date.");
