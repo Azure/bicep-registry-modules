@@ -61,7 +61,7 @@ resource rbac 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = if 
 }
 
 resource createImportImage 'Microsoft.Resources/deploymentScripts@2020-10-01' = [for image in images: {
-  name: 'ACR-Import-${acr.name}-${replace(replace(image,':',''),'/','-')}'
+  name: 'ACR-Import-${acr.name}-${last(split(replace(image,':',''),'/'))}'
   location: location
   identity: {
     type: 'UserAssigned'
@@ -91,6 +91,14 @@ resource createImportImage 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
         name: 'initialDelay'
         value: initialScriptDelay
       }
+      {
+        name: 'retryMax'
+        value: '2'
+      }
+      {
+        name: 'retrySleep'
+        value: '5s'
+      }
     ]
     scriptContent: '''
       #!/bin/bash
@@ -98,9 +106,19 @@ resource createImportImage 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
 
       echo "Waiting on RBAC replication ($initialDelay)"
       sleep $initialDelay
+      
+      #Retry loop to catch errors (usually RBAC delays, but 'Error copying blobs' is also not unheard of)
+      retryLoopCount=0
+      until [ $retryLoopCount -ge $retryMax ]
+      do
+        echo "Importing Image: $imageName into ACR: $acrName"
+        az acr import -n $acrName --source $imageName --force \
+          && break
 
-      echo "Importing Image: $imageName into ACR: $acrName"
-      az acr import -n $acrName --source $imageName --force
+        sleep $retrySleep
+        retryLoopCount=$((retryLoopCount+1))
+      done
+
     '''
     cleanupPreference: cleanupPreference
   }
