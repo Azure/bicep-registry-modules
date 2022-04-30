@@ -70,7 +70,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' existing 
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2021-04-01-preview' = [for principalId in principalIds: {
   scope: storageAccount
-  name: guid(storageAccount.name, principalId, roleDefinitionIdOrName)
+  name: guid(storageAccount.id, principalId, roleDefinitionIdOrName)
   properties: {
     description: description
     roleDefinitionId: contains(builtInRoleNames, roleDefinitionIdOrName) ? builtInRoleNames[roleDefinitionIdOrName] : roleDefinitionIdOrName

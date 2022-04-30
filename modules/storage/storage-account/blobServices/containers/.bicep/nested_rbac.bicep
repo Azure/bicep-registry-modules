@@ -61,7 +61,7 @@ resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@20
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2021-04-01-preview' = [for principalId in principalIds: {
   scope: container
-  name: guid(container.name, principalId, roleDefinitionIdOrName)
+  name: guid(container.id, principalId, roleDefinitionIdOrName)
   properties: {
     description: description
     roleDefinitionId: contains(builtInRoleNames, roleDefinitionIdOrName) ? builtInRoleNames[roleDefinitionIdOrName] : roleDefinitionIdOrName
