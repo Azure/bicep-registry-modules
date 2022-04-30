@@ -5,7 +5,7 @@ param name string = ''
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'')
+@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
 param roleAssignments array = []
 
 @description('Optional. Enables system assigned managed identity on the resource.')
@@ -47,22 +47,22 @@ param storageAccountAccessTier string = 'Hot'
 @description('Optional. Provides the identity based authentication settings for Azure Files.')
 param azureFilesIdentityBasedAuthentication object = {}
 
-@description('Optional. Configuration Details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible')
+@description('Optional. Configuration Details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints array = []
 
 @description('Optional. The Storage Account ManagementPolicies Rules.')
 param managementPolicyRules array = []
 
-@description('Optional. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. For security reasons, it is recommended to set the DefaultAction Deny')
+@description('Optional. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. For security reasons, it is recommended to set the DefaultAction Deny.')
 param networkAcls object = {}
 
 @description('Optional. A boolean indicating whether or not the service applies a secondary layer of encryption with platform managed keys for data at rest. For security reasons, it is recommended to set it to true.')
 param requireInfrastructureEncryption bool = true
 
-@description('Optional. Blob service and containers to deploy')
+@description('Optional. Blob service and containers to deploy.')
 param blobServices object = {}
 
-@description('Optional. File service and shares to deploy')
+@description('Optional. File service and shares to deploy.')
 param fileServices object = {}
 
 @description('Optional. Queue service and queues to create.')
@@ -82,7 +82,7 @@ param allowBlobPublicAccess bool = false
 @description('Optional. Set the minimum TLS version on request to storage.')
 param minimumTlsVersion string = 'TLS1_2'
 
-@description('Optional. If true, enables Hierarchical Namespace for the storage account')
+@description('Optional. If true, enables Hierarchical Namespace for the storage account.')
 param enableHierarchicalNamespace bool = false
 
 @description('Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely.')
@@ -113,14 +113,14 @@ param lock string = 'NotSpecified'
 @description('Optional. Tags of the resource.')
 param tags object = {}
 
-@description('Generated. Do not provide a value! Used to generate a name')
+@description('Generated. Do not provide a value! Used to generate a name.')
 param basetime string = utcNow('u')
 
 @allowed([
   'Enabled'
   'Disabled'
 ])
-@description('Optional. Enable or disallow public network access to Storage Account..')
+@description('Optional. Enable or disallow public network access to Storage Account.')
 param publicNetworkAccess string = 'Enabled'
 
 @description('Optional. Allows HTTPS traffic only to storage service if sets to true.')
