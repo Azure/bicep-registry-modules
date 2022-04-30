@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.5.6.12127",
-      "templateHash": "8453773217291485038"
+      "templateHash": "18041075136274409062"
     }
   },
   "parameters": {
@@ -28,7 +28,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'"
+        "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
       }
     },
     "systemAssignedIdentity": {
@@ -98,7 +98,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. Configuration Details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible"
+        "description": "Optional. Configuration Details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible."
       }
     },
     "managementPolicyRules": {
@@ -112,7 +112,7 @@
       "type": "object",
       "defaultValue": {},
       "metadata": {
-        "description": "Optional. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. For security reasons, it is recommended to set the DefaultAction Deny"
+        "description": "Optional. Networks ACLs, this value contains IPs to whitelist and/or Subnet information. For security reasons, it is recommended to set the DefaultAction Deny."
       }
     },
     "requireInfrastructureEncryption": {
@@ -126,14 +126,14 @@
       "type": "object",
       "defaultValue": {},
       "metadata": {
-        "description": "Optional. Blob service and containers to deploy"
+        "description": "Optional. Blob service and containers to deploy."
       }
     },
     "fileServices": {
       "type": "object",
       "defaultValue": {},
       "metadata": {
-        "description": "Optional. File service and shares to deploy"
+        "description": "Optional. File service and shares to deploy."
       }
     },
     "queueServices": {
@@ -173,7 +173,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. If true, enables Hierarchical Namespace for the storage account"
+        "description": "Optional. If true, enables Hierarchical Namespace for the storage account."
       }
     },
     "diagnosticLogsRetentionInDays": {
@@ -236,14 +236,14 @@
       "type": "string",
       "defaultValue": "[utcNow('u')]",
       "metadata": {
-        "description": "Generated. Do not provide a value! This date value is used to generate a SAS token to access the modules."
+        "description": "Generated. Do not provide a value! Used to generate a name."
       }
     },
     "publicNetworkAccess": {
       "type": "string",
       "defaultValue": "Enabled",
       "metadata": {
-        "description": "Optional. Enable or disallow public network access to Storage Account.."
+        "description": "Optional. Enable or disallow public network access to Storage Account."
       },
       "allowedValues": [
         "Enabled",
@@ -400,7 +400,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.5.6.12127",
-              "templateHash": "16610301563380405946"
+              "templateHash": "15703390128463734367"
             }
           },
           "parameters": {
@@ -498,7 +498,7 @@
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2021-04-01-preview",
               "scope": "[format('Microsoft.Storage/storageAccounts/{0}', last(split(parameters('resourceId'), '/')))]",
-              "name": "[guid(last(split(parameters('resourceId'), '/')), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+              "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', last(split(parameters('resourceId'), '/'))), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
               "properties": {
                 "description": "[parameters('description')]",
                 "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
@@ -548,7 +548,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.5.6.12127",
-              "templateHash": "1106636052820512350"
+              "templateHash": "15391491256363801110"
             }
           },
           "parameters": {
@@ -567,60 +567,55 @@
           },
           "variables": {
             "privateEndpointResourceName": "[last(split(parameters('privateEndpointResourceId'), '/'))]",
-            "privateEndpoint_var": {
-              "name": "[if(contains(parameters('privateEndpointObj'), 'name'), if(empty(parameters('privateEndpointObj').name), format('{0}-{1}', variables('privateEndpointResourceName'), parameters('privateEndpointObj').service), parameters('privateEndpointObj').name), format('{0}-{1}', variables('privateEndpointResourceName'), parameters('privateEndpointObj').service))]",
-              "subnetResourceId": "[parameters('privateEndpointObj').subnetResourceId]",
-              "service": [
-                "[parameters('privateEndpointObj').service]"
-              ],
-              "privateDnsZoneResourceIds": "[if(contains(parameters('privateEndpointObj'), 'privateDnsZoneResourceIds'), if(empty(parameters('privateEndpointObj').privateDnsZoneResourceIds), createArray(), parameters('privateEndpointObj').privateDnsZoneResourceIds), createArray())]",
-              "customDnsConfigs": "[if(contains(parameters('privateEndpointObj'), 'customDnsConfigs'), if(empty(parameters('privateEndpointObj').customDnsConfigs), null(), parameters('privateEndpointObj').customDnsConfigs), null())]"
-            }
+            "privateEndpointName": "[if(contains(parameters('privateEndpointObj'), 'name'), if(empty(parameters('privateEndpointObj').name), format('{0}-{1}', variables('privateEndpointResourceName'), parameters('privateEndpointObj').service), parameters('privateEndpointObj').name), format('{0}-{1}', variables('privateEndpointResourceName'), parameters('privateEndpointObj').service))]",
+            "privateDnsZoneResourceIds": "[if(contains(parameters('privateEndpointObj'), 'privateDnsZoneResourceIds'), if(empty(parameters('privateEndpointObj').privateDnsZoneResourceIds), createArray(), parameters('privateEndpointObj').privateDnsZoneResourceIds), createArray())]"
           },
           "resources": [
             {
               "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
               "apiVersion": "2021-02-01",
-              "name": "[format('{0}/{1}', variables('privateEndpoint_var').name, 'default')]",
+              "name": "[format('{0}/{1}', variables('privateEndpointName'), 'default')]",
               "properties": {
                 "copy": [
                   {
                     "name": "privateDnsZoneConfigs",
-                    "count": "[length(variables('privateEndpoint_var').privateDnsZoneResourceIds)]",
+                    "count": "[length(variables('privateDnsZoneResourceIds'))]",
                     "input": {
-                      "name": "[last(split(variables('privateEndpoint_var').privateDnsZoneResourceIds[copyIndex('privateDnsZoneConfigs')], '/'))]",
+                      "name": "[last(split(variables('privateDnsZoneResourceIds')[copyIndex('privateDnsZoneConfigs')], '/'))]",
                       "properties": {
-                        "privateDnsZoneId": "[variables('privateEndpoint_var').privateDnsZoneResourceIds[copyIndex('privateDnsZoneConfigs')]]"
+                        "privateDnsZoneId": "[variables('privateDnsZoneResourceIds')[copyIndex('privateDnsZoneConfigs')]]"
                       }
                     }
                   }
                 ]
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Network/privateEndpoints', variables('privateEndpoint_var').name)]"
+                "[resourceId('Microsoft.Network/privateEndpoints', variables('privateEndpointName'))]"
               ]
             },
             {
               "type": "Microsoft.Network/privateEndpoints",
               "apiVersion": "2021-05-01",
-              "name": "[variables('privateEndpoint_var').name]",
+              "name": "[variables('privateEndpointName')]",
               "location": "[parameters('privateEndpointVnetLocation')]",
               "tags": "[parameters('tags')]",
               "properties": {
                 "privateLinkServiceConnections": [
                   {
-                    "name": "[variables('privateEndpoint_var').name]",
+                    "name": "[variables('privateEndpointName')]",
                     "properties": {
                       "privateLinkServiceId": "[parameters('privateEndpointResourceId')]",
-                      "groupIds": "[variables('privateEndpoint_var').service]"
+                      "groupIds": [
+                        "[parameters('privateEndpointObj').service]"
+                      ]
                     }
                   }
                 ],
                 "manualPrivateLinkServiceConnections": [],
                 "subnet": {
-                  "id": "[variables('privateEndpoint_var').subnetResourceId]"
+                  "id": "[parameters('privateEndpointObj').subnetResourceId]"
                 },
-                "customDnsConfigs": "[variables('privateEndpoint_var').customDnsConfigs]"
+                "customDnsConfigs": "[if(contains(parameters('privateEndpointObj'), 'customDnsConfigs'), if(empty(parameters('privateEndpointObj').customDnsConfigs), null(), parameters('privateEndpointObj').customDnsConfigs), null())]"
               }
             }
           ]
@@ -777,7 +772,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.5.6.12127",
-              "templateHash": "11993069625057783378"
+              "templateHash": "10936025742501955132"
             }
           },
           "parameters": {
@@ -996,7 +991,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.5.6.12127",
-                      "templateHash": "7770972967088969988"
+                      "templateHash": "9864386904781594921"
                     }
                   },
                   "parameters": {
@@ -1220,7 +1215,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.5.6.12127",
-                              "templateHash": "2389940191716042805"
+                              "templateHash": "8417372577673016381"
                             }
                           },
                           "parameters": {
@@ -1309,7 +1304,7 @@
                               "type": "Microsoft.Authorization/roleAssignments",
                               "apiVersion": "2021-04-01-preview",
                               "scope": "[format('Microsoft.Storage/storageAccounts/{0}/blobServices/{1}/containers/{2}', split(format('{0}/{1}/{2}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10], split(parameters('resourceId'), '/')[12]), '/')[0], split(format('{0}/{1}/{2}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10], split(parameters('resourceId'), '/')[12]), '/')[1], split(format('{0}/{1}/{2}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10], split(parameters('resourceId'), '/')[12]), '/')[2])]",
-                              "name": "[guid(format('{0}/{1}/{2}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10], split(parameters('resourceId'), '/')[12]), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+                              "name": "[guid(resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', split(format('{0}/{1}/{2}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10], split(parameters('resourceId'), '/')[12]), '/')[0], split(format('{0}/{1}/{2}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10], split(parameters('resourceId'), '/')[12]), '/')[1], split(format('{0}/{1}/{2}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10], split(parameters('resourceId'), '/')[12]), '/')[2]), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
                               "properties": {
                                 "description": "[parameters('description')]",
                                 "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
@@ -1436,7 +1431,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.5.6.12127",
-              "templateHash": "13276686463619496514"
+              "templateHash": "17510986479395046839"
             }
           },
           "parameters": {
@@ -1651,7 +1646,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.5.6.12127",
-                      "templateHash": "917826211693342407"
+                      "templateHash": "16755187031106439569"
                     }
                   },
                   "parameters": {
@@ -1761,7 +1756,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.5.6.12127",
-                              "templateHash": "2512438268213117259"
+                              "templateHash": "6165556054300699465"
                             }
                           },
                           "parameters": {
@@ -1859,7 +1854,7 @@
                               "type": "Microsoft.Authorization/roleAssignments",
                               "apiVersion": "2021-04-01-preview",
                               "scope": "[format('Microsoft.Storage/storageAccounts/{0}/fileServices/{1}/shares/{2}', split(format('{0}/{1}/{2}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10], split(parameters('resourceId'), '/')[12]), '/')[0], split(format('{0}/{1}/{2}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10], split(parameters('resourceId'), '/')[12]), '/')[1], split(format('{0}/{1}/{2}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10], split(parameters('resourceId'), '/')[12]), '/')[2])]",
-                              "name": "[guid(format('{0}/{1}/{2}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10], split(parameters('resourceId'), '/')[12]), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+                              "name": "[guid(resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', split(format('{0}/{1}/{2}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10], split(parameters('resourceId'), '/')[12]), '/')[0], split(format('{0}/{1}/{2}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10], split(parameters('resourceId'), '/')[12]), '/')[1], split(format('{0}/{1}/{2}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10], split(parameters('resourceId'), '/')[12]), '/')[2]), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
                               "properties": {
                                 "description": "[parameters('description')]",
                                 "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
@@ -1980,7 +1975,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.5.6.12127",
-              "templateHash": "1661791195483510467"
+              "templateHash": "11018769530255082382"
             }
           },
           "parameters": {
@@ -2169,7 +2164,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.5.6.12127",
-                      "templateHash": "8210347123662324713"
+                      "templateHash": "14575113135346693855"
                     }
                   },
                   "parameters": {
@@ -2254,7 +2249,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.5.6.12127",
-                              "templateHash": "11014868406062922847"
+                              "templateHash": "16950073849712458767"
                             }
                           },
                           "parameters": {
@@ -2349,7 +2344,7 @@
                               "type": "Microsoft.Authorization/roleAssignments",
                               "apiVersion": "2021-04-01-preview",
                               "scope": "[format('Microsoft.Storage/storageAccounts/{0}/queueServices/{1}/queues/{2}', split(format('{0}/{1}/{2}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10], split(parameters('resourceId'), '/')[12]), '/')[0], split(format('{0}/{1}/{2}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10], split(parameters('resourceId'), '/')[12]), '/')[1], split(format('{0}/{1}/{2}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10], split(parameters('resourceId'), '/')[12]), '/')[2])]",
-                              "name": "[guid(format('{0}/{1}/{2}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10], split(parameters('resourceId'), '/')[12]), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+                              "name": "[guid(resourceId('Microsoft.Storage/storageAccounts/queueServices/queues', split(format('{0}/{1}/{2}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10], split(parameters('resourceId'), '/')[12]), '/')[0], split(format('{0}/{1}/{2}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10], split(parameters('resourceId'), '/')[12]), '/')[1], split(format('{0}/{1}/{2}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10], split(parameters('resourceId'), '/')[12]), '/')[2]), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
                               "properties": {
                                 "description": "[parameters('description')]",
                                 "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
