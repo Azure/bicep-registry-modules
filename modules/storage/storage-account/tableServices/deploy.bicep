@@ -78,6 +78,7 @@ resource tableServices 'Microsoft.Storage/storageAccounts/tableServices@2021-04-
 }
 
 resource tableServices_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if ((!empty(diagnosticStorageAccountId)) || (!empty(diagnosticWorkspaceId)) || (!empty(diagnosticEventHubAuthorizationRuleId)) || (!empty(diagnosticEventHubName))) {
+  scope: tableServices
   name: diagnosticSettingsName
   properties: {
     storageAccountId: !empty(diagnosticStorageAccountId) ? diagnosticStorageAccountId : null
@@ -87,7 +88,6 @@ resource tableServices_diagnosticSettings 'Microsoft.Insights/diagnosticSettings
     metrics: diagnosticsMetrics
     logs: diagnosticsLogs
   }
-  scope: tableServices
 }
 
 module tableServices_tables 'tables/deploy.bicep' = [for (tableName, index) in tables: {

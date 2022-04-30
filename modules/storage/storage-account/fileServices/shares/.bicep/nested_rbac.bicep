@@ -69,6 +69,7 @@ resource fileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2019-0
 }
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2021-04-01-preview' = [for principalId in principalIds: {
+  scope: fileShare
   name: guid(fileShare.name, principalId, roleDefinitionIdOrName)
   properties: {
     description: description
@@ -76,5 +77,4 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2021-04-01-prev
     principalId: principalId
     principalType: !empty(principalType) ? principalType : null
   }
-  scope: fileShare
 }]

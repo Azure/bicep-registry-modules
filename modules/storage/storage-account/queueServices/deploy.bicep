@@ -78,6 +78,7 @@ resource queueServices 'Microsoft.Storage/storageAccounts/queueServices@2021-04-
 }
 
 resource queueServices_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if ((!empty(diagnosticStorageAccountId)) || (!empty(diagnosticWorkspaceId)) || (!empty(diagnosticEventHubAuthorizationRuleId)) || (!empty(diagnosticEventHubName))) {
+  scope: queueServices
   name: diagnosticSettingsName
   properties: {
     storageAccountId: !empty(diagnosticStorageAccountId) ? diagnosticStorageAccountId : null
@@ -87,7 +88,6 @@ resource queueServices_diagnosticSettings 'Microsoft.Insights/diagnosticSettings
     metrics: diagnosticsMetrics
     logs: diagnosticsLogs
   }
-  scope: queueServices
 }
 
 module queueServices_queues 'queues/deploy.bicep' = [for (queue, index) in queues: {

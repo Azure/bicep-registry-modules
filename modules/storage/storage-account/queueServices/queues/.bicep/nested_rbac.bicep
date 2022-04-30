@@ -66,6 +66,7 @@ resource queue 'Microsoft.Storage/storageAccounts/queueServices/queues@2019-06-0
 }
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2021-04-01-preview' = [for principalId in principalIds: {
+  scope: queue
   name: guid(queue.name, principalId, roleDefinitionIdOrName)
   properties: {
     description: description
@@ -73,5 +74,4 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2021-04-01-prev
     principalId: principalId
     principalType: !empty(principalType) ? principalType : null
   }
-  scope: queue
 }]

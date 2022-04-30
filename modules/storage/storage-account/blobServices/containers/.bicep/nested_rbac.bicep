@@ -60,6 +60,7 @@ resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@20
 }
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2021-04-01-preview' = [for principalId in principalIds: {
+  scope: container
   name: guid(container.name, principalId, roleDefinitionIdOrName)
   properties: {
     description: description
@@ -67,5 +68,4 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2021-04-01-prev
     principalId: principalId
     principalType: !empty(principalType) ? principalType : null
   }
-  scope: container
 }]

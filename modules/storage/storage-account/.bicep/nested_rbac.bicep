@@ -69,6 +69,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' existing 
 }
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2021-04-01-preview' = [for principalId in principalIds: {
+  scope: storageAccount
   name: guid(storageAccount.name, principalId, roleDefinitionIdOrName)
   properties: {
     description: description
@@ -76,5 +77,4 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2021-04-01-prev
     principalId: principalId
     principalType: !empty(principalType) ? principalType : null
   }
-  scope: storageAccount
 }]

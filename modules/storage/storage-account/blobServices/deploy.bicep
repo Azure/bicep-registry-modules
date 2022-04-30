@@ -93,6 +93,7 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2021-06-01
 }
 
 resource blobServices_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if ((!empty(diagnosticStorageAccountId)) || (!empty(diagnosticWorkspaceId)) || (!empty(diagnosticEventHubAuthorizationRuleId)) || (!empty(diagnosticEventHubName))) {
+  scope: blobServices
   name: diagnosticSettingsName
   properties: {
     storageAccountId: !empty(diagnosticStorageAccountId) ? diagnosticStorageAccountId : null
@@ -102,7 +103,6 @@ resource blobServices_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@
     metrics: diagnosticsMetrics
     logs: diagnosticsLogs
   }
-  scope: blobServices
 }
 
 module blobServices_container 'containers/deploy.bicep' = [for (container, index) in containers: {

@@ -90,6 +90,7 @@ resource fileServices 'Microsoft.Storage/storageAccounts/fileServices@2021-04-01
 }
 
 resource fileServices_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if ((!empty(diagnosticStorageAccountId)) || (!empty(diagnosticWorkspaceId)) || (!empty(diagnosticEventHubAuthorizationRuleId)) || (!empty(diagnosticEventHubName))) {
+  scope: fileServices
   name: diagnosticSettingsName
   properties: {
     storageAccountId: !empty(diagnosticStorageAccountId) ? diagnosticStorageAccountId : null
@@ -99,7 +100,6 @@ resource fileServices_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@
     metrics: diagnosticsMetrics
     logs: diagnosticsLogs
   }
-  scope: fileServices
 }
 
 module fileServices_shares 'shares/deploy.bicep' = [for (share, index) in shares: {
