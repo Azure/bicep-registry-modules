@@ -29,7 +29,6 @@ This module deploys a blob container
 | Parameter Name | Type | Default Value | Allowed Values | Description |
 | :-- | :-- | :-- | :-- | :-- |
 | `blobServicesName` | string | `'default'` |  | Name of the blob service. |
-| `enableDefaultTelemetry` | bool | `True` |  | Enable telemetry via the Customer Usage Attribution ID (GUID). |
 | `immutabilityPolicyName` | string | `'default'` |  | Name of the immutable policy. |
 | `immutabilityPolicyProperties` | object | `{object}` |  | Configure immutability policy. |
 | `publicAccess` | string | `'None'` | `[Container, Blob, None]` | Specifies whether data in the container may be accessed publicly and the level of access. |
