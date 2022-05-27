@@ -123,7 +123,7 @@ module genvnet 'br/public:network/virtual-network:1.0' = {
 
 ### Example 3
 
-An example that deployes a virtual network with one subnet including a bi-directional peering to another virtual network.
+An example that deploys a virtual network with one subnet including a bi-directional peering to another virtual network.
 
 ```bicep
 module peervnet 'br/public:network/virtual-network:1.0' = {
