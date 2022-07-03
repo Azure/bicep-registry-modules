@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema#",
+  "name": "Deployment Delay",
+  "description": "A Deployment Script that introduces a delay to the deployment process.",
+  "owner": "gordonby"
+}
