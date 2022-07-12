@@ -2,6 +2,10 @@
 
 A Deployment Script that introduces a delay to the deployment process.
 
+## Description
+
+{{ Add detailed description for the module. }}
+
 ## Parameters
 
 | Name          | Type     | Required | Description                             |
