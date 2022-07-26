@@ -6,9 +6,9 @@ param passwordAdministratorLogin string = 'crtest${uniqueString(newGuid())}'
 module testMain '../main.bicep' = {
   name: 'testMain'
   params: {
-    location: location
-    vmssName: vmssName
-    administratorLogin: administratorLogin
+    location                  : location
+    vmssName                  : vmssName
+    administratorLogin        : administratorLogin
     passwordAdministratorLogin: passwordAdministratorLogin
   }
 }
