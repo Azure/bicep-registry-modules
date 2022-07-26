@@ -1,12 +1,14 @@
-@description('Deployment Location')
-param location string = resourceGroup().location
+param location                   string = resourceGroup().location
+param vmssName                   string = 'crtest${uniqueString(newGuid())}'
+param administratorLogin         string = 'stubAdmLog'
+param passwordAdministratorLogin string = 'crtest${uniqueString(newGuid())}'
 
 module testMain '../main.bicep' = {
   name: 'testMain'
   params: {
     location: location
-    vmssName: 'GEN-UNIQUE-7'
-    administratorLogin: 'GEN-UNIQUE'
-    passwordAdministratorLogin: 'GEN-PASSWORD'
+    vmssName: vmssName
+    administratorLogin: administratorLogin
+    passwordAdministratorLogin: passwordAdministratorLogin
   }
 }
