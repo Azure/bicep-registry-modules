@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.9.13224",
-      "templateHash": "14157587555883255881"
+      "templateHash": "15361273760969364477"
     }
   },
   "parameters": {
@@ -31,10 +31,11 @@
     },
     "vmssImgPublisher": {
       "type": "string",
-      "defaultValue": "microsoftcorporation1602274591143",
+      "defaultValue": "microsoft-azure-gaming",
       "allowedValues": [
         "microsoftcorporation1602274591143",
-        "azure-gaming"
+        "azure-gaming",
+        "microsoft-azure-gaming"
       ],
       "metadata": {
         "description": "GameDev Image Publisher"
