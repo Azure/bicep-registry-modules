@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.9.13224",
-      "templateHash": "2823250073952916021"
+      "templateHash": "14157587555883255881"
     }
   },
   "parameters": {
@@ -275,7 +275,7 @@
     }
   },
   "variables": {
-    "customData": "[format('fileShareStorageAccount={0}\r\nfileShareStorageAccountKey={1}\r\nfileShareName={2}\r\np4Port={3}\r\np4Username={4}\r\np4Password={5}\r\np4Workspace={6}\r\np4Stream={7}\r\np4ClientViews={8}\r\nibLicenseKey={9}\r\ngdkVersion={10}\r\nuseVmToSysprepCustomImage={11}\r\nremoteAccessTechnology={12}\r\nteradiciRegKey={13}\r\nparsecTeamId={14}\r\nparsecTeamKey={15}\r\nparsecHost={16}\r\nparsecUserEmail={17}\r\nparsecIsGuestAccess={18}\r\ndeployedFromSolutionTemplate={19}\r\n', parameters('fileShareStorageAccount'), parameters('fileShareStorageAccountKey'), parameters('fileShareName'), parameters('p4Port'), parameters('p4Username'), parameters('p4Password'), parameters('p4Workspace'), parameters('p4Stream'), parameters('p4ClientViews'), parameters('ibLicenseKey'), parameters('gdkVersion'), parameters('useVmToSysprepCustomImage'), parameters('remoteAccessTechnology'), parameters('teradiciRegKey'), parameters('parsecTeamId'), parameters('parsecTeamKey'), parameters('parsecHost'), parameters('parsecUserEmail'), parameters('parsecIsGuestAccess'), false())]"
+    "customData": "[format('fileShareStorageAccount={0}\nfileShareStorageAccountKey={1}\nfileShareName={2}\np4Port={3}\np4Username={4}\np4Password={5}\np4Workspace={6}\np4Stream={7}\np4ClientViews={8}\nibLicenseKey={9}\ngdkVersion={10}\nuseVmToSysprepCustomImage={11}\nremoteAccessTechnology={12}\nteradiciRegKey={13}\nparsecTeamId={14}\nparsecTeamKey={15}\nparsecHost={16}\nparsecUserEmail={17}\nparsecIsGuestAccess={18}\ndeployedFromSolutionTemplate={19}\n', parameters('fileShareStorageAccount'), parameters('fileShareStorageAccountKey'), parameters('fileShareName'), parameters('p4Port'), parameters('p4Username'), parameters('p4Password'), parameters('p4Workspace'), parameters('p4Stream'), parameters('p4ClientViews'), parameters('ibLicenseKey'), parameters('gdkVersion'), parameters('useVmToSysprepCustomImage'), parameters('remoteAccessTechnology'), parameters('teradiciRegKey'), parameters('parsecTeamId'), parameters('parsecTeamKey'), parameters('parsecHost'), parameters('parsecUserEmail'), parameters('parsecIsGuestAccess'), false())]"
   },
   "resources": [
     {
@@ -486,11 +486,17 @@
   "outputs": {
     "id": {
       "type": "string",
-      "value": "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('vmssName'))]"
+      "value": "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('vmssName'))]",
+      "metadata": {
+        "description": "VMSS ID"
+      }
     },
     "name": {
       "type": "string",
-      "value": "[parameters('vmssName')]"
+      "value": "[parameters('vmssName')]",
+      "metadata": {
+        "description": "VMSS Name"
+      }
     }
   }
 }
