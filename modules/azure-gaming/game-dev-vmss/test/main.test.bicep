@@ -1,5 +1,5 @@
 param location                   string = resourceGroup().location
-param vmssName                   string = 'crtest${uniqueString(newGuid())}'
+param vmssName                   string = 'take(crtest${uniqueString(newGuid())},7)'
 param administratorLogin         string = 'stubAdmLog'
 param passwordAdministratorLogin string = 'crtest${uniqueString(newGuid())}'
 
