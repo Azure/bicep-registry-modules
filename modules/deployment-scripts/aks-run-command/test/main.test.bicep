@@ -77,6 +77,21 @@ module kubectlRunNginx '../main.bicep' = {
 }
 
 //Test 4. Helm
+var scriptContents = '''
+#!/bin/bash
+helm version
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+
+helm upgrade \
+  --install  contour-ingress bitnami/contour \
+  --version 7.7.1 \
+  --namespace ingress-basic \
+  --create-namespace \
+  --set envoy.kind=deployment \
+  --set contour.service.externalTrafficPolicy=cluster
+'''
+
 module helmContour '../main.bicep' = {
   name: 'helmContour'
   params: {
@@ -87,10 +102,7 @@ module helmContour '../main.bicep' = {
     ]
     aksName: prereq.outputs.aksName
     location: location
-    commands: [
-      'helm version'
-      'helm repo add bitnami https://charts.bitnami.com/bitnami; helm repo update'
-      'helm upgrade --install  contour-ingress bitnami/contour --version 7.7.1 --namespace ingress-basic --create-namespace --set envoy.kind=deployment --set contour.service.externalTrafficPolicy=cluster'
+    scriptContents: scriptContents
     ]
   }
 }
