@@ -2,6 +2,10 @@
 
 An Azure CLI Deployment Script that allows you to run a command on a Kubernetes cluster.
 
+## Description
+
+{{ Add detailed description for the module. }}
+
 ## Parameters
 
 | Name                                       | Type     | Required | Description                                                                                                   |
@@ -17,6 +21,7 @@ An Azure CLI Deployment Script that allows you to run a command on a Kubernetes 
 | `commands`                                 | `array`  | Yes      | An array of commands to run                                                                                   |
 | `initialScriptDelay`                       | `string` | No       | A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate |
 | `cleanupPreference`                        | `string` | No       | When the script resource is cleaned up                                                                        |
+| `scriptContent`                            | `string` | No       | Default Script to issue commands to AKS                                                                       |
 
 ## Outputs
 

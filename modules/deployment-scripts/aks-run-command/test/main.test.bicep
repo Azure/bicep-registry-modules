@@ -77,7 +77,7 @@ module kubectlRunNginx '../main.bicep' = {
 }
 
 //Test 4. Helm
-var scriptContents = '''
+var scriptContent = '''
 #!/bin/bash
 helm version
 helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -102,7 +102,7 @@ module helmContour '../main.bicep' = {
     ]
     aksName: prereq.outputs.aksName
     location: location
-    scriptContents: scriptContents
-    ]
+    scriptContent: scriptContent
+    commands: ['helm']
   }
 }

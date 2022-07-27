@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.5.6.12127",
-      "templateHash": "25989803949072927"
+      "version": "0.8.9.13224",
+      "templateHash": "13495157807979780178"
     }
   },
   "parameters": {
@@ -91,7 +91,17 @@
         "OnExpiration",
         "Always"
       ]
+    },
+    "scriptContent": {
+      "type": "string",
+      "defaultValue": "[variables('$fxv#0')]",
+      "metadata": {
+        "description": "Default Script to issue commands to AKS"
+      }
     }
+  },
+  "variables": {
+    "$fxv#0": "#!/bin/bash\nset -e\n\nif [ \"$loopIndex\" == \"0\" ] && [ \"$initialDelay\" != \"0\" ]\nthen\n  echo \"Waiting on RBAC replication ($initialDelay)\"\n  sleep $initialDelay\n\n  #Force RBAC refresh\n  az logout\n  az login --identity\nfi\n\necho \"Sending command $command to AKS Cluster $aksName in $RG\"\ncmdOut=$(az aks command invoke -g $RG -n $aksName -o json --command \"${command}\")\necho $cmdOut\n\njsonOutputString=$cmdOut\necho $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n"
   },
   "resources": [
     {
@@ -164,7 +174,7 @@
             "value": "[string(copyIndex())]"
           }
         ],
-        "scriptContent": "      #!/bin/bash\n      set -e\n\n      if [ \"$loopIndex\" == \"0\" ] && [ \"$initialDelay\" != \"0\" ]\n      then\n        echo \"Waiting on RBAC replication ($initialDelay)\"\n        sleep $initialDelay\n\n        #Force RBAC refresh\n        az logout\n        az login --identity\n      fi\n\n      echo \"Sending command $command to AKS Cluster $aksName in $RG\"\n      cmdOut=$(az aks command invoke -g $RG -n $aksName -o json --command \"${command}\")\n      echo $cmdOut\n\n      jsonOutputString=$cmdOut\n      echo $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n    ",
+        "scriptContent": "[parameters('scriptContent')]",
         "cleanupPreference": "[parameters('cleanupPreference')]"
       },
       "dependsOn": [

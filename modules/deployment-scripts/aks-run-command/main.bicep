@@ -40,7 +40,7 @@ param initialScriptDelay string = '120s'
 param cleanupPreference string = 'OnSuccess'
 
 @description('Default Script to issue commands to AKS')
-param scriptContent string = loadTextFile('./scripts/run_command.sh')
+param scriptContent string = loadTextContent('./scripts/run_command.sh')
 
 resource aks 'Microsoft.ContainerService/managedClusters@2022-01-02-preview' existing = {
   name: aksName
