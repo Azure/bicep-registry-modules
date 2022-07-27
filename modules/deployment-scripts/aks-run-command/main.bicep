@@ -40,27 +40,7 @@ param initialScriptDelay string = '120s'
 param cleanupPreference string = 'OnSuccess'
 
 @description('Default Script to issue commands to AKS')
-param scriptContent string = '''
-#!/bin/bash
-set -e
-
-if [ "$loopIndex" == "0" ] && [ "$initialDelay" != "0" ]
-then
-  echo "Waiting on RBAC replication ($initialDelay)"
-  sleep $initialDelay
-
-  #Force RBAC refresh
-  az logout
-  az login --identity
-fi
-
-echo "Sending command $command to AKS Cluster $aksName in $RG"
-cmdOut=$(az aks command invoke -g $RG -n $aksName -o json --command "${command}")
-echo $cmdOut
-
-jsonOutputString=$cmdOut
-echo $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH
-'''
+param scriptContent string = loadTextFile('./scripts/run_command.sh')
 
 resource aks 'Microsoft.ContainerService/managedClusters@2022-01-02-preview' existing = {
   name: aksName
