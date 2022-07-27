@@ -4,7 +4,7 @@ param location string
 param nameseed string
 
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' = {
-  name: 'cr${nameseed}'
+  name: 'cr${nameseed}${uniqueString(resourceGroup().id, location)}'
   location: location
   sku: {
     name: 'Standard'
