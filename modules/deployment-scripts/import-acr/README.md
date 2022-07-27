@@ -2,6 +2,10 @@
 
 An Azure CLI Deployment Script that imports public container images to an Azure Container Registry
 
+## Description
+
+An Azure CLI Deployment Script that imports public container images to an Azure Container Registry.
+
 ## Parameters
 
 | Name                                       | Type     | Required | Description                                                                                                   |
@@ -20,8 +24,9 @@ An Azure CLI Deployment Script that imports public container images to an Azure 
 
 ## Outputs
 
-| Name | Type | Description |
-| :--- | :--: | :---------- |
+| Name   | Type  | Description                                  |
+| :----- | :---: | :------------------------------------------- |
+| images | array | Returning an array of the imported imageUris |
 
 ## Examples
 
@@ -33,7 +38,7 @@ param acrName string =  'yourAzureContainerRegistry'
 
 var imageName = 'mcr.microsoft.com/azuredocs/azure-vote-front:v1'
 
-module acrImport 'br/public:deployment-scripts/import-acr:2.0.1' = {
+module acrImport 'br/public:deployment-scripts/import-acr:2.1.1' = {
   name: 'testAcrImportSingle'
   params: {
     acrName: acrName
@@ -55,7 +60,7 @@ var imageNames = [
   'docker.io/bitnami/redis:latest'
 ]
 
-module acrImport 'br/public:deployment-scripts/import-acr:2.0.1' = {
+module acrImport 'br/public:deployment-scripts/import-acr:2.1.1' = {
   name: 'testAcrImportMulti'
   params: {
     acrName: acrName
@@ -72,7 +77,7 @@ param location string = resourceGroup().location
 param acrName string =  'yourAzureContainerRegistry'
 param existingManagedIdName = 'yourExistingManagedIdentity'
 
-module acrImport 'br/public:deployment-scripts/import-acr:2.0.1' = {
+module acrImport 'br/public:deployment-scripts/import-acr:2.1.1' = {
   name: 'testAcrImport'
   params: {
     useExistingManagedIdentity: true
@@ -93,7 +98,7 @@ module acrImport 'br/public:deployment-scripts/import-acr:2.0.1' = {
 param location string = resourceGroup().location
 param acrName string =  'yourAzureContainerRegistry'
 
-module acrImport 'br/public:deployment-scripts/import-acr:2.0.1' = {
+module acrImport 'br/public:deployment-scripts/import-acr:2.1.1' = {
   name: 'testAcrImport'
   params: {
     initialScriptDelay: '60s'
