@@ -24,9 +24,9 @@ An Azure CLI Deployment Script that imports public container images to an Azure 
 
 ## Outputs
 
-| Name   | Type  | Description                                  |
-| :----- | :---: | :------------------------------------------- |
-| images | array | Returning an array of the imported imageUris |
+| Name   | Type  | Description                        |
+| :----- | :---: | :--------------------------------- |
+| images | array | An array of the imported imageUris |
 
 ## Examples
 
