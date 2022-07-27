@@ -13,7 +13,6 @@ The Azure resources that this module creates are;
 - A ServiceBus (Pub-Sub DAPR component) or a Storage Account (State DAPR component)
 - Log Analytics Workspace
 - Application Insights
-- (optionally) an Azure Container Registry
 
 ## Parameters
 
@@ -35,9 +34,18 @@ The Azure resources that this module creates are;
 
 ## Examples
 
-### Example 1
+### Creation of Environment for ServiceBus PubSub apps
 
 ```bicep
+module test1 'br/public:app/dapr-containerapps-environment:1.0.1' = {
+  name: 'pubsub'
+  params: {
+    location: location
+    nameseed: 'pubsub-sb1'
+    applicationEntityName: 'orders'
+    daprComponentType: 'pubsub.azure.servicebus'
+  }
+}
 ```
 
 ### Example 2
