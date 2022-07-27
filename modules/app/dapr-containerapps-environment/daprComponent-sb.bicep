@@ -5,6 +5,9 @@ param containerAppEnvName string
 
 param createAzureServiceForComponent bool = true
 
+param scopes array = []
+
+
 var daprComponent = 'pubsub.azure.servicebus'
 var serviceBusConnectionStringName = 'sb-root-connectionstring'
 
@@ -34,7 +37,7 @@ resource daprServiceBus 'Microsoft.App/managedEnvironments/daprComponents@2022-0
         value: entityName
       }
     ]
-    scopes: []
+    scopes: scopes
   }
 }
 

@@ -5,6 +5,8 @@ param containerAppEnvName string
 
 param createAzureServiceForComponent bool = true
 
+param scopes array = []
+
 var daprComponent = 'state.azure.blobstorage'
 
 resource containerAppEnv 'Microsoft.App/managedEnvironments@2022-01-01-preview' existing = {
@@ -37,7 +39,7 @@ resource daprStorageAccStateStore 'Microsoft.App/managedEnvironments/daprCompone
         value: entityName
       }
     ]
-    scopes: []
+    scopes: scopes
   }
 }
 

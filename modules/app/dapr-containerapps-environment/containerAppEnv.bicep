@@ -17,7 +17,7 @@ param runtimeSubnetId string = ''
 @description('Sets the environment to only have a internal load balancer')
 param internalVirtualIp bool = false
 
-resource containerAppEnv 'Microsoft.App/managedEnvironments@2022-01-01-preview' = {
+resource containerAppEnv 'Microsoft.App/managedEnvironments@2022-03-01' = {
   name: containerAppEnvName
   location: location
   properties: {
@@ -33,11 +33,9 @@ resource containerAppEnv 'Microsoft.App/managedEnvironments@2022-01-01-preview' 
       runtimeSubnetId: runtimeSubnetId
       internal: internalVirtualIp
     }
+    daprAIInstrumentationKey: appInsights.outputs.instrumentationKey
   }
 }
-output containerAppEnvironmentName string = containerAppEnv.name
-
-
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
   name: containerAppLogAnalyticsName
@@ -49,3 +47,17 @@ resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
     retentionInDays: logRetentionDays
   }
 }
+
+module appInsights 'appinsights.bicep' = {
+  name: 'appInsights-${nameseed}'
+  params: {
+    location: location
+    logAnalyticsId: logAnalytics.id
+    nameseed: nameseed
+  }
+}
+
+output containerAppEnvironmentName string = containerAppEnv.name
+output logAnalyticsName string = logAnalytics.name
+output logAnalyticsId string = logAnalytics.id
+output appInsightsInstrumentationKey string = appInsights.outputs.instrumentationKey
