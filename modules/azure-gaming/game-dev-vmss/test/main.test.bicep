@@ -1,7 +1,7 @@
 param location                   string = resourceGroup().location
 param vmssName                   string = take('crtest${uniqueString(newGuid())}',7)
-param administratorLogin         string = 'B1gD6taB1gD6ta'
-param passwordAdministratorLogin string = 'crtest${uniqueString(newGuid())}'
+param administratorLogin         string = 'dcibadmin'
+param passwordAdministratorLogin string = 'B1gD6taB1gD6ta'
 
 module testMain '../main.bicep' = {
   name: 'testMain'
