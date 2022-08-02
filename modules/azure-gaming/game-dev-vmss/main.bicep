@@ -15,12 +15,6 @@ param vmssSku string = 'Standard_D4ds_v4'
 ])
 param vmssImgPublisher string = 'microsoft-azure-gaming'
 
-@description('GameDev Image Product Id')
-@allowed([
-  'game-dev-vm'
-])
-param vmssImgProduct string = 'game-dev-vm'
-
 @description('GameDev Image Sku')
 @allowed([
   'win10_no_engine_1_0'
@@ -155,6 +149,7 @@ parsecIsGuestAccess={18}
 deployedFromSolutionTemplate={19}
 ''', fileShareStorageAccount, fileShareStorageAccountKey, fileShareName, p4Port, p4Username, p4Password, p4Workspace, p4Stream, p4ClientViews, ibLicenseKey, gdkVersion, useVmToSysprepCustomImage, remoteAccessTechnology, teradiciRegKey, parsecTeamId, parsecTeamKey, parsecHost, parsecUserEmail, parsecIsGuestAccess, false)
 
+var vmssImgProduct = 'game-dev-vm'
 
 module vnet './nestedtemplates/virtualNetworks.bicep'  = {
   name:                       vnetName
