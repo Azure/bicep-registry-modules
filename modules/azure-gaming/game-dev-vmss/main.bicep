@@ -236,7 +236,7 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
 }
 
 @description('VMSS ID')
-output id   string = vmss.id
+output id string = vmss.id
 
 @description('VMSS Name')
 output name string = vmss.name
