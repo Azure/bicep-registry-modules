@@ -4,7 +4,7 @@ Bicep Module to simplify deployment of the Azure Game Developer VMSS
 
 ## Description
 
-{{ Add detailed description for the module. }}
+Enable the deployment of the Azure Game Developer Virtual Machine Images onto Azure VMSS for use in Game Development Scenarios.
 
 ## Parameters
 
