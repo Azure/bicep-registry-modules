@@ -1,7 +1,8 @@
 param location                   string = resourceGroup().location
-param vmssName                   string = concat('vmss',take(uniqueString(newGuid()),9))
+param vmssName                   string = 'vmss${take(uniqueString(newGuid()), 9)}'
 param administratorLogin         string = 'dcibadmin'
-param passwordAdministratorLogin string = 'B1gD6taB1gD6ta'
+@secure()
+param passwordAdministratorLogin string = newGuid()
 
 module testMain '../main.bicep' = {
   name: 'testMain'
