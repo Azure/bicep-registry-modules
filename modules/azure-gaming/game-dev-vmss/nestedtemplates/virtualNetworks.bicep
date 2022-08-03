@@ -1,8 +1,8 @@
-param location                 string
-param vnetAddressPrefix        string
-param subnetAddressPrefix      string
-param vnetName                 string
-param subnetName               string 
+param location string
+param vnetAddressPrefix string
+param subnetAddressPrefix string
+param vnetName string
+param subnetName string 
 param networkSecurityGroupName string
 
 //By Default the nsg will allow the vnet access and deny all other access
