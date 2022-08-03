@@ -201,7 +201,7 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
           offer:     vmssImgProduct
           sku:       vmssImgSku
           version:   vmssImgVersion
-	}
+	      }
       }
       networkProfile: {
         networkInterfaceConfigurations: [
@@ -230,7 +230,7 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
         computerNamePrefix: vmssName
         adminUsername:      administratorLogin
         adminPassword:      passwordAdministratorLogin
-	customData:         base64(customData)
+	      customData:         base64(customData)
 	windowsConfiguration: {
           provisionVMAgent: true
         }	
