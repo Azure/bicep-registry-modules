@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.9.13224",
-      "templateHash": "10991200666454200185"
+      "templateHash": "10855846035943117826"
     }
   },
   "parameters": {
@@ -237,21 +237,21 @@
     },
     "vnetName": {
       "type": "string",
-      "defaultValue": "[format('vnet-{0}', parameters('vmssName'))]",
+      "defaultValue": "[uniqueString('vnet', parameters('vmssName'), newGuid())]",
       "metadata": {
         "description": "Virtual Network Resource Name"
       }
     },
     "subnetName": {
       "type": "string",
-      "defaultValue": "[format('subnet{0}', parameters('vmssName'))]",
+      "defaultValue": "[uniqueString('subnet', parameters('vmssName'), newGuid())]",
       "metadata": {
         "description": "Virtual Network Subnet Name"
       }
     },
     "networkSecurityGroupName": {
       "type": "string",
-      "defaultValue": "[format('nsg-{0}', parameters('vmssName'))]",
+      "defaultValue": "[uniqueString('nsg', parameters('vmssName'), newGuid())]",
       "metadata": {
         "description": "Virtual Network Security Group Name"
       }
