@@ -1,5 +1,5 @@
 param location string = resourceGroup().location
-param vmssName string = 'vmss${take(uniqueString(newGuid()), 9)}'
+param vmssName string = 'vmss${take(uniqueString(deployment().name, location), 9)}'
 param administratorLogin string = 'dcibadmin'
 @secure()
 param passwordAdministratorLogin string = newGuid()
