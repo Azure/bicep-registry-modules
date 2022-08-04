@@ -11,6 +11,7 @@ ContainerAppConsoleLogs_CL | where ContainerAppName_s == 'nodeappacr' and (Log_s
 param location string
 param nodeAppImage string = 'ghcr.io/dapr/samples/hello-k8s-node:latest'
 param nodeAppName string = 'nodeappacr'
+param pyAppImage string = 'ghcr.io/dapr/samples/hello-k8s-python:latest'
 
 @description('If your Acr is already seeded with the images, you can opt-out of the import')
 param importImagesToAcr bool = true
@@ -44,13 +45,13 @@ module acrImportImages 'br/public:deployment-scripts/import-acr:2.1.1' = if(impo
     location: location
     images: [
       nodeAppImage
-      'ghcr.io/dapr/samples/hello-k8s-python:latest'
+      pyAppImage
     ]
   }
 }
 
 module appStateAcr 'containerAppAcr.bicep' = {
-  name: 'stateAppAcr'
+  name: 'stateNodeAppAcr'
   params: {
     location: location
     containerAppName: nodeAppName
@@ -59,6 +60,24 @@ module appStateAcr 'containerAppAcr.bicep' = {
     containerImage: acrImportImages.outputs.images[0].acrHostedImageUri
     targetPort: 3000
     externalIngress: false
+    environmentVariables: [
+      {
+        name: 'APP_PORT'
+        value: '3000'
+      }
+    ]
+  }
+}
+
+module appPythonClient 'containerApp.bicep' = {
+  name: 'stateNodePyApp'
+  params: {
+    location: location
+    containerAppName: 'pythonapp'
+    containerAppEnvName:test3Env.outputs.containerAppEnvironmentName
+    containerImage: acrImportImages.outputs.images[1].acrHostedImageUri
+    enableIngress: false
+    daprAppProtocol: ''
     environmentVariables: [
       {
         name: 'APP_PORT'

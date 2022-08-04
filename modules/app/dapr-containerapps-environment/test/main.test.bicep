@@ -6,7 +6,7 @@ module file is a deployment test. Make sure at least one test is added.
 param location string = 'canadacentral'
 
 module justAnEnv '../main.bicep' = {
-  name: 'test1-public-vnet-servicebus'
+  name: 'simplesEnv'
   params: {
     location: location
     nameseed: 'simples'
