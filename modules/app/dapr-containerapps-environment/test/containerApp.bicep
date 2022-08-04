@@ -126,9 +126,9 @@ resource containerApp 'Microsoft.App/containerApps@2022-03-01' = {
   ]
 }
 
-resource acr 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' existing = if(!empty(azureContainerRegistry)) {
-  name: azureContainerRegistry
-}
+// resource acr 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' existing = if(!empty(azureContainerRegistry)) {
+//   name: azureContainerRegistry
+// }
 
 resource uai 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
   name: 'id-${containerAppName}'
