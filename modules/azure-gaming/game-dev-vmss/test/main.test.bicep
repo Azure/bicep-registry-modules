@@ -11,6 +11,5 @@ module testMain '../main.bicep' = {
     vmssName                  : vmssName
     administratorLogin        : administratorLogin
     passwordAdministratorLogin: passwordAdministratorLogin
-    subnetName                : subnetName
   }
 }
