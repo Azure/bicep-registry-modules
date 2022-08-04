@@ -3,7 +3,6 @@ param vmssName string = 'vmss${take(uniqueString(newGuid()), 9)}'
 param administratorLogin string = 'dcibadmin'
 @secure()
 param passwordAdministratorLogin string = newGuid()
-param subnetName string = 'sub${uniqueString(newGuid())}'
 
 module testMain '../main.bicep' = {
   name: 'testMain'
