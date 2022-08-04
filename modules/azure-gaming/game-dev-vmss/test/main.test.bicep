@@ -1,5 +1,5 @@
 param location string = resourceGroup().location
-param vmssName string = 'vmssdeploy'
+param vmssName string = 'bicep'
 param administratorLogin string = 'dcibadmin'
 @secure()
 param passwordAdministratorLogin string = newGuid()
