@@ -14,6 +14,8 @@ param location string //cannot use resourceGroup().location since it's not avail
 param infraSubnetId string = ''
 param runtimeSubnetId string = ''
 
+param tags object = {}
+
 @description('Sets the environment to only have a internal load balancer')
 param internalVirtualIp bool = false
 
@@ -35,6 +37,7 @@ resource containerAppEnv 'Microsoft.App/managedEnvironments@2022-03-01' = {
     }
     daprAIInstrumentationKey: appInsights.outputs.instrumentationKey
   }
+  tags: tags
 }
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {

@@ -1,3 +1,10 @@
+/*
+This file exists as a near identical duplicate of containerApp.bicep because of;
+https://github.com/Azure/bicep/issues/7836
+
+It's just a file used for the tests, so no big whoop... but it'll be nice to refactor it out soon.
+*/
+
 @description('Specifies the name of the container app.')
 param containerAppName string = 'containerapp-${uniqueString(resourceGroup().id)}'
 
@@ -99,7 +106,12 @@ resource containerApp 'Microsoft.App/containerApps@2022-03-01' = {
         enabled: true
       }
       activeRevisionsMode: revisionMode
-      registries: []
+      registries: [
+        {
+          identity: uai.id
+          server: acr.properties.loginServer
+        }
+      ]
     }
     template: {
       revisionSuffix: revisionSuffix

@@ -8,6 +8,8 @@ param createAzureServiceForComponent bool = true
 param scopes array = []
 
 var daprComponent = 'state.azure.blobstorage'
+var rawStorageAccountName='st${name}${uniqueString(resourceGroup().id, name)}'
+var storageAccountName = length(rawStorageAccountName) > 24 ? substring(rawStorageAccountName, 0, 24) : rawStorageAccountName
 
 resource containerAppEnv 'Microsoft.App/managedEnvironments@2022-01-01-preview' existing = {
   name: containerAppEnvName
@@ -43,9 +45,6 @@ resource daprStorageAccStateStore 'Microsoft.App/managedEnvironments/daprCompone
   }
 }
 
-var rawStorageAccountName='st${name}${uniqueString(resourceGroup().id)}'
-var storageAccountName = length(rawStorageAccountName) > 24 ? substring(rawStorageAccountName, 0, 24) : rawStorageAccountName
-
 resource storageaccount 'Microsoft.Storage/storageAccounts@2021-09-01' = if(createAzureServiceForComponent && daprComponent=='state.azure.blobstorage') {
   name: storageAccountName
   kind: 'StorageV2'
@@ -54,10 +53,10 @@ resource storageaccount 'Microsoft.Storage/storageAccounts@2021-09-01' = if(crea
     name: 'Standard_LRS'
   }
 
-  resource state 'blobServices' = {
+  resource stateb 'blobServices' = {
     name: 'default'
     
-    resource state 'containers' = {
+    resource statec 'containers' = {
       name: entityName
       properties: {
         publicAccess: 'None'

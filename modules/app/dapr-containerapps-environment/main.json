@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.9.13224",
-      "templateHash": "2567109167033014376"
+      "templateHash": "5065475598480790325"
     }
   },
   "parameters": {
@@ -23,6 +23,7 @@
     },
     "applicationEntityName": {
       "type": "string",
+      "defaultValue": "[parameters('nameseed')]",
       "metadata": {
         "description": "The application relevant name for the dapr component you are implementing"
       },
@@ -31,7 +32,7 @@
     "daprComponentType": {
       "type": "string",
       "metadata": {
-        "description": "The DAPR application component type to configure in the Environment"
+        "description": "The dapr application component type to configure in the Environment"
       },
       "allowedValues": [
         "pubsub.azure.servicebus",
@@ -49,7 +50,14 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Names of container apps that can use this Dapr component"
+        "description": "Names of container apps that can use this dapr component"
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Any tags that are to be applied to the Environment Components"
       }
     }
   },
@@ -76,6 +84,9 @@
           },
           "nameseed": {
             "value": "[parameters('nameseed')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
           }
         },
         "template": {
@@ -85,7 +96,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.8.9.13224",
-              "templateHash": "15511581859222736191"
+              "templateHash": "12434502888026869915"
             }
           },
           "parameters": {
@@ -124,6 +135,10 @@
               "type": "string",
               "defaultValue": ""
             },
+            "tags": {
+              "type": "object",
+              "defaultValue": {}
+            },
             "internalVirtualIp": {
               "type": "bool",
               "defaultValue": false,
@@ -153,6 +168,7 @@
                 },
                 "daprAIInstrumentationKey": "[reference(resourceId('Microsoft.Resources/deployments', format('appInsights-{0}', parameters('nameseed')))).outputs.instrumentationKey.value]"
               },
+              "tags": "[parameters('tags')]",
               "dependsOn": [
                 "[resourceId('Microsoft.Resources/deployments', format('appInsights-{0}', parameters('nameseed')))]",
                 "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('containerAppLogAnalyticsName'))]"
@@ -279,7 +295,7 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "name": {
+          "componentName": {
             "value": "[variables('autoDaprComponentName')]"
           },
           "location": {
@@ -299,11 +315,11 @@
             "_generator": {
               "name": "bicep",
               "version": "0.8.9.13224",
-              "templateHash": "5090044809953448820"
+              "templateHash": "6301481072104802397"
             }
           },
           "parameters": {
-            "name": {
+            "componentName": {
               "type": "string"
             },
             "location": {
@@ -333,39 +349,39 @@
               "condition": "[parameters('createAzureServiceForComponent')]",
               "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
               "apiVersion": "2021-11-01",
-              "name": "[format('{0}/{1}/{2}', format('sb-{0}', parameters('name')), parameters('entityName'), parameters('entityName'))]",
+              "name": "[format('{0}/{1}/{2}', format('sb-{0}-{1}', parameters('componentName'), uniqueString(resourceGroup().id, parameters('location'))), parameters('entityName'), parameters('entityName'))]",
               "properties": {
                 "deadLetteringOnFilterEvaluationExceptions": true,
                 "deadLetteringOnMessageExpiration": true,
                 "maxDeliveryCount": 10
               },
               "dependsOn": [
-                "[resourceId('Microsoft.ServiceBus/namespaces/topics', format('sb-{0}', parameters('name')), parameters('entityName'))]"
+                "[resourceId('Microsoft.ServiceBus/namespaces/topics', format('sb-{0}-{1}', parameters('componentName'), uniqueString(resourceGroup().id, parameters('location'))), parameters('entityName'))]"
               ]
             },
             {
               "condition": "[parameters('createAzureServiceForComponent')]",
               "type": "Microsoft.ServiceBus/namespaces/topics",
               "apiVersion": "2021-11-01",
-              "name": "[format('{0}/{1}', format('sb-{0}', parameters('name')), parameters('entityName'))]",
+              "name": "[format('{0}/{1}', format('sb-{0}-{1}', parameters('componentName'), uniqueString(resourceGroup().id, parameters('location'))), parameters('entityName'))]",
               "properties": {
                 "supportOrdering": true
               },
               "dependsOn": [
-                "[resourceId('Microsoft.ServiceBus/namespaces', format('sb-{0}', parameters('name')))]"
+                "[resourceId('Microsoft.ServiceBus/namespaces', format('sb-{0}-{1}', parameters('componentName'), uniqueString(resourceGroup().id, parameters('location'))))]"
               ]
             },
             {
               "type": "Microsoft.App/managedEnvironments/daprComponents",
               "apiVersion": "2022-03-01",
-              "name": "[format('{0}/{1}', parameters('containerAppEnvName'), format('{0}-sb', parameters('name')))]",
+              "name": "[format('{0}/{1}', parameters('containerAppEnvName'), parameters('componentName'))]",
               "properties": {
                 "componentType": "[variables('daprComponent')]",
                 "version": "v1",
                 "secrets": [
                   {
                     "name": "[variables('serviceBusConnectionStringName')]",
-                    "value": "[format('{0};EntityPath={1}', listKeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.ServiceBus/namespaces', format('sb-{0}', parameters('name')))), '2021-11-01').primaryConnectionString, parameters('entityName'))]"
+                    "value": "[format('{0};EntityPath={1}', listKeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.ServiceBus/namespaces', format('sb-{0}-{1}', parameters('componentName'), uniqueString(resourceGroup().id, parameters('location'))))), '2021-11-01').primaryConnectionString, parameters('entityName'))]"
                   }
                 ],
                 "metadata": [
@@ -381,14 +397,14 @@
                 "scopes": "[parameters('scopes')]"
               },
               "dependsOn": [
-                "[resourceId('Microsoft.ServiceBus/namespaces', format('sb-{0}', parameters('name')))]"
+                "[resourceId('Microsoft.ServiceBus/namespaces', format('sb-{0}-{1}', parameters('componentName'), uniqueString(resourceGroup().id, parameters('location'))))]"
               ]
             },
             {
               "condition": "[parameters('createAzureServiceForComponent')]",
               "type": "Microsoft.ServiceBus/namespaces",
               "apiVersion": "2021-11-01",
-              "name": "[format('sb-{0}', parameters('name'))]",
+              "name": "[format('sb-{0}-{1}', parameters('componentName'), uniqueString(resourceGroup().id, parameters('location')))]",
               "location": "[parameters('location')]",
               "sku": {
                 "name": "Standard",
@@ -436,7 +452,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.8.9.13224",
-              "templateHash": "3315925227614739036"
+              "templateHash": "7907781575970378646"
             }
           },
           "parameters": {
@@ -463,7 +479,7 @@
           },
           "variables": {
             "daprComponent": "state.azure.blobstorage",
-            "rawStorageAccountName": "[format('st{0}{1}', parameters('name'), uniqueString(resourceGroup().id))]",
+            "rawStorageAccountName": "[format('st{0}{1}', parameters('name'), uniqueString(resourceGroup().id, parameters('name')))]",
             "storageAccountName": "[if(greater(length(variables('rawStorageAccountName')), 24), substring(variables('rawStorageAccountName'), 0, 24), variables('rawStorageAccountName'))]"
           },
           "resources": [
