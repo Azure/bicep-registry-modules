@@ -70,7 +70,7 @@ module appStateAcr 'containerAppAcr.bicep' = {
 }
 
 module appPythonClient 'containerApp.bicep' = {
-  name: 'stateNodePyApp'
+  name: 'stateNodePyAppAcr'
   params: {
     location: location
     containerAppName: 'pythonapp'
