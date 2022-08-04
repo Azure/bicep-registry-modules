@@ -118,13 +118,13 @@ param parsecUserEmail string = ''
 param parsecIsGuestAccess bool = false
 
 @description('Virtual Network Resource Name')
-param vnetName string = 'subnet${uniqueString(vmssName)}'
+param vnetName string = 'vnet-${vmssName}'
 
 @description('Virtual Network Subnet Name')
-param subnetName string = 'subnet${uniqueString(newGuid())}'
+param subnetName string = 'subnet-${vmssName}'
 
 @description('Virtual Network Security Group Name')
-param networkSecurityGroupName string = 'nsg${uniqueString(newGuid())}'
+param networkSecurityGroupName string = 'nsg-${vmssName}'
 
 @description('Virtual Network Address Prefix')
 param vnetAddressPrefix string = '172.17.72.0/24' //Change as needed
