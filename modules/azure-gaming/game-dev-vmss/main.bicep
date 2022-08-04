@@ -158,7 +158,7 @@ deployedFromSolutionTemplate={19}
 var vmssImgProduct = 'game-dev-vm'
 
 module vnet './nestedtemplates/virtualNetworks.bicep'  = {
-  name:                       vnetName
+  name:                       '${vnetName}-${deployment().name}'
   params: {
     location:                 location
     vnetName:                 vnetName
