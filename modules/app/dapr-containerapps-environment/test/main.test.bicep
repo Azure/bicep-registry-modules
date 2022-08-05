@@ -32,7 +32,7 @@ module test2State 'test2-state.bicep' = {
 
 @description('test3 extends the test2 scenario, but with a container registry for private image hosting')
 module test3 'test3-acr.bicep' = {
-  name: 'test3-acr'
+  name: 'test3-state-acr'
   params: {
     location: location
   }
