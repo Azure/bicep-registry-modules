@@ -134,7 +134,7 @@ resource containerApp 'Microsoft.App/containerApps@2022-03-01' = {
   }
   tags: tags
   dependsOn: [
-    uaiRbac
+    rbacDelay
   ]
 }
 
@@ -157,6 +157,17 @@ resource uaiRbac 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = 
     principalId: uai.properties.principalId
     principalType: 'ServicePrincipal'
   }
+}
+
+module rbacDelay 'br/public:deployment-scripts/wait:1.0.1' = {
+  name: 'waitForRbacPropagation'
+  params: {
+    waitSeconds: 30
+    location: location
+  }
+  dependsOn: [
+    uaiRbac
+  ]
 }
 
 output containerAppFQDN string = enableIngress ? containerApp.properties.configuration.ingress.fqdn : ''
