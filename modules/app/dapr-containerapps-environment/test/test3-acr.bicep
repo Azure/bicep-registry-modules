@@ -31,7 +31,7 @@ module test3Env '../main.bicep' = {
 }
 
 module acr 'containerRegistry.bicep' = {
-  name: 'acr'
+  name: 'test3-acr'
   params: {
     location: location
     nameseed: 'stateSt1'
@@ -40,7 +40,7 @@ module acr 'containerRegistry.bicep' = {
 
 @description('This module seeds the ACR with the public version of the app')
 module acrImportImages 'br/public:deployment-scripts/import-acr:2.1.1' = if(importImagesToAcr) {
-  name: 'importStateImpact'
+  name: 'test3-importImages'
   params: {
     acrName: acr.outputs.name
     location: location
