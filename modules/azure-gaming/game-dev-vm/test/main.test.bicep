@@ -21,6 +21,7 @@ module win10 '../main.bicep' = [for engine in engines: {
     adminPass: adminPass
     osType: 'win10'
     gameEngine: engine
+    vmSize: Standard_NV6
   }
 }]
 
