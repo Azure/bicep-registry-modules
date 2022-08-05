@@ -12,6 +12,7 @@ param location string
 param nodeAppImage string = 'ghcr.io/dapr/samples/hello-k8s-node:latest'
 param nodeAppName string = 'nodeappacr'
 param pyAppImage string = 'ghcr.io/dapr/samples/hello-k8s-python:latest'
+param pyAppName string = 'pythonappacr'
 
 @description('If your Acr is already seeded with the images, you can opt-out of the import')
 param importImagesToAcr bool = true
@@ -73,8 +74,9 @@ module appPythonClient 'containerApp.bicep' = {
   name: 'stateNodePyAppAcr'
   params: {
     location: location
-    containerAppName: 'pythonapp'
+    containerAppName: pyAppName
     containerAppEnvName:test3Env.outputs.containerAppEnvironmentName
+    azureContainerRegistry: acr.outputs.name
     containerImage: acrImportImages.outputs.images[1].acrHostedImageUri
     enableIngress: false
     daprAppProtocol: ''
