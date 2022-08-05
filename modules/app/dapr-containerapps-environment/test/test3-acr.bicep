@@ -51,7 +51,7 @@ module acrImportImages 'br/public:deployment-scripts/import-acr:2.1.1' = if(impo
   }
 }
 
-module appStateAcr 'containerAppAcr.bicep' = {
+module appNodeStateAcr 'containerAppAcr.bicep' = {
   name: 'stateNodeAppAcr'
   params: {
     location: location
@@ -70,21 +70,15 @@ module appStateAcr 'containerAppAcr.bicep' = {
   }
 }
 
-module appPythonClient 'containerApp.bicep' = {
+module appPythonClient 'containerAppAcr.bicep' = {
   name: 'stateNodePyAppAcr'
   params: {
     location: location
     containerAppName: pyAppName
-    containerAppEnvName:test3Env.outputs.containerAppEnvironmentName
+    containerAppEnvName: test3Env.outputs.containerAppEnvironmentName
     azureContainerRegistry: acr.outputs.name
     containerImage: acrImportImages.outputs.images[1].acrHostedImageUri
     enableIngress: false
     daprAppProtocol: ''
-    environmentVariables: [
-      {
-        name: 'APP_PORT'
-        value: '3000'
-      }
-    ]
   }
 }

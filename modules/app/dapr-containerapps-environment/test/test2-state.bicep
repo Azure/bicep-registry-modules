@@ -50,12 +50,6 @@ module appPythonClient 'containerApp.bicep' = {
     containerImage: 'ghcr.io/dapr/samples/hello-k8s-python:latest'
     enableIngress: false
     daprAppProtocol: ''
-    environmentVariables: [
-      {
-        name: 'APP_PORT'
-        value: '3000'
-      }
-    ]
   }
 }
 
