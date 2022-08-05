@@ -160,7 +160,7 @@ resource uaiRbac 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = 
 }
 
 module rbacDelay 'br/public:deployment-scripts/wait:1.0.1' = {
-  name: 'waitForRbacPropagation'
+  name: 'wait-${containerAppName}'
   params: {
     waitSeconds: 30
     location: location
