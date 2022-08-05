@@ -1,7 +1,7 @@
 param location string = resourceGroup().location
 param vmName string = 'bicep'
 param adminName string = 'dcibadmin'
-param vmSize string = 'Standard_D14_v2'
+param vmSize string = 'Standard_D4s_v3'
 
 @secure()
 param adminPass string = newGuid()
