@@ -150,6 +150,7 @@ param enableAAD bool = false
 @allowed([ 'AutomaticByOS', 'AutomaticByPlatform', 'Manual' ])
 param windowsUpdateOption string = 'AutomaticByOS'
 
+
 var environmentMapping = { no_engine: 'no_engine_1_0', ue_4_27_2: 'unreal_4_27_2', ue_5_0_1: 'unreal_5_0_1'}
 
 var environments = {
@@ -477,21 +478,19 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2021-05-01' = {
   }
 }
 
-resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = if (vnetNewOrExisting == 'new') {
-  name: vnetName
-  location: location
-  properties: {
-    addressSpace: {
-      addressPrefixes: [
-        first(vnetARPrefixes)
-      ]
-    }
+module vnet 'br/public:network/virtual-network:1.0.2' = if (vnetNewOrExisting == 'new') {
+  name: '${vnetName}-${deployment().name}'  
+  params: {
+    name: vnetName
+    location: location
+    addressPrefixes: [first(vnetARPrefixes)]
     subnets: [
       {
-        name: subNetName
-        properties: {
-          addressPrefix: subNetARPrefix
-        }
+        name                             : subNetName        
+        addressPrefix                    : subNetARPrefix
+        privateEndpointNetworkPolicies   : 'Disabled'
+        privateLinkServiceNetworkPolicies: 'Enabled'
+        networkSecurityGroupId           : nsg.id
       }
     ]
   }

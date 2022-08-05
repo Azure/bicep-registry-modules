@@ -1,6 +1,7 @@
 param location string = resourceGroup().location
 param vmName string = 'bicep'
 param adminName string = 'dcibadmin'
+param vmSize string = 'Standard_D14_v2'
 
 @secure()
 param adminPass string = newGuid()
@@ -15,13 +16,13 @@ var engines = [
 module win10 '../main.bicep' = [for engine in engines: {
   name: 'win10_${engine}'
   params: {
-    location : location
-    vmName   : vmName
-    adminName: adminName
-    adminPass: adminPass
-    osType: 'win10'
+    location  : location
+    vmName    : vmName
+    adminName : adminName
+    adminPass : adminPass
+    osType    : 'win10'
     gameEngine: engine
-    vmSize: Standard_NV6
+    vmSize    : vmSize
   }
 }]
 
@@ -29,11 +30,12 @@ module win10 '../main.bicep' = [for engine in engines: {
 // module ws2019 '../main.bicep' = [for engine in engines: {
 //   name: 'ws2019_${engine}'
 //   params: {
-//     location : location
-//     vmName   : vmName
-//     adminName: adminName
-//     adminPass: adminPass
-//     osType: 'ws2019'
+//     location  : location
+//     vmName    : vmName
+//     adminName : adminName
+//     adminPass : adminPass
+//     osType    : 'ws2019'
 //     gameEngine: engine
+//     vmSize    : vmSize
 //   }
 // }]
