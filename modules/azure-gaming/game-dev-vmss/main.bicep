@@ -231,7 +231,7 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
         adminUsername:      administratorLogin
         adminPassword:      passwordAdministratorLogin
 	      customData:         base64(customData)
-	windowsConfiguration: {
+	      windowsConfiguration: {
           provisionVMAgent: true
         }	
       }
