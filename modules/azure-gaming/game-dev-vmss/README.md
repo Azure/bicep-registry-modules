@@ -47,7 +47,7 @@ See our [documentation](https://docs.microsoft.com/en-us/gaming/azure/game-dev-v
 | `vnetAddressPrefix`          | `string`       | No       | Virtual Network Address Prefix        |
 | `subnetAddressPrefix`        | `string`       | No       | Virtual Network Subnet Address Prefix |
 | `enableAnalyticsDashboard`   | `bool`         | No       | Enable Analytics Dashboard Extension  |
-| `analyticsWorkspaceID`       | `string`       | No       | Analytics Workspace ID                |
+| `analyticsWorkspaceName`     | `string`       | No       | Analytics Workspace Name              |
 
 ## Outputs
 

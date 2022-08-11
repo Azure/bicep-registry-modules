@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "9013596801582338039"
+      "templateHash": "12378934256733711014"
     }
   },
   "parameters": {
@@ -277,11 +277,11 @@
         "description": "Enable Analytics Dashboard Extension"
       }
     },
-    "analyticsWorkspaceID": {
+    "analyticsWorkspaceName": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Analytics Workspace ID"
+        "description": "Analytics Workspace Name"
       }
     }
   },
@@ -359,7 +359,7 @@
             }
           },
           "extensionProfile": {
-            "extensions": "[if(parameters('enableAnalyticsDashboard'), createArray(createObject('name', 'MMAExtension', 'properties', createObject('publisher', 'Microsoft.EnterpriseCloud.Monitoring', 'type', 'MicrosoftMonitoringAgent', 'typeHandlerVersion', '1.0', 'autoUpgradeMinorVersion', true(), 'settings', createObject('workspaceId', reference(parameters('analyticsWorkspaceID'), '2015-03-20').customerId, 'stopOnMultipleConnections', 'true'), 'protectedSettings', createObject('workspaceKey', listKeys(parameters('analyticsWorkspaceID'), '2015-03-20').primarySharedKey))), createObject('name', 'DependencyAgentWindows', 'properties', createObject('publisher', 'Microsoft.Azure.Monitoring.DependencyAgent', 'type', 'DependencyAgentWindows', 'typeHandlerVersion', '9.5', 'autoUpgradeMinorVersion', true()))), createArray())]"
+            "extensions": "[if(parameters('enableAnalyticsDashboard'), createArray(createObject('name', 'MMAExtension', 'properties', createObject('publisher', 'Microsoft.EnterpriseCloud.Monitoring', 'type', 'MicrosoftMonitoringAgent', 'typeHandlerVersion', '1.0', 'autoUpgradeMinorVersion', true(), 'settings', createObject('workspaceId', reference(resourceId('Microsoft.OperationalInsights/workspaces', parameters('analyticsWorkspaceName')), '2021-06-01').customerId, 'stopOnMultipleConnections', 'true'), 'protectedSettings', createObject('workspaceKey', listKeys(resourceId('Microsoft.OperationalInsights/workspaces', parameters('analyticsWorkspaceName')), '2021-06-01').primarySharedKey))), createObject('name', 'DependencyAgentWindows', 'properties', createObject('publisher', 'Microsoft.Azure.Monitoring.DependencyAgent', 'type', 'DependencyAgentWindows', 'typeHandlerVersion', '9.5', 'autoUpgradeMinorVersion', true()))), createArray())]"
           },
           "priority": "Regular"
         },

@@ -135,8 +135,8 @@ param subnetAddressPrefix string = '172.17.72.0/25' // 172.17.72.[0-128] is part
 @description('Enable Analytics Dashboard Extension')
 param enableAnalyticsDashboard bool = false
 
-@description('Analytics Workspace ID')
-param analyticsWorkspaceID string = ''
+@description('Analytics Workspace Name')
+param analyticsWorkspaceName string = ''
 
 var customData = format('''
 fileShareStorageAccount={0}
@@ -173,6 +173,10 @@ module vnet './modules/virtualNetworks.bicep'  = {
     vnetAddressPrefix:        vnetAddressPrefix
     subnetAddressPrefix:      subnetAddressPrefix
   }
+}
+
+resource analyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing = if (enableAnalyticsDashboard) {
+  name: analyticsWorkspaceName
 }
 
 resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
@@ -251,11 +255,11 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
               typeHandlerVersion: '1.0'
               autoUpgradeMinorVersion: true
               settings: {
-                workspaceId: reference(analyticsWorkspaceID, '2015-03-20').customerId
+                workspaceId: analyticsWorkspace.properties.customerId
                 stopOnMultipleConnections: 'true'
               }
               protectedSettings: {
-                workspaceKey: listKeys(analyticsWorkspaceID, '2015-03-20').primarySharedKey
+                workspaceKey: analyticsWorkspace.listKeys().primarySharedKey
               }
             }
           }
