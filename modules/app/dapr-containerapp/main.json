@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "13405595525947657127"
+      "templateHash": "11880330372389530928"
     }
   },
   "parameters": {
@@ -222,7 +222,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "6437117831708110378"
+              "templateHash": "207709523229223255"
             }
           },
           "parameters": {
@@ -453,7 +453,7 @@
               "type": "string",
               "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-{0}', parameters('containerAppName')))).principalId]",
               "metadata": {
-                "description": "The PrinicpalId of the Container Apps Managed Identity"
+                "description": "The PrincipalId of the Container Apps Managed Identity"
               }
             }
           }
@@ -464,7 +464,7 @@
       "condition": "[not(empty(parameters('azureContainerRegistry')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[parameters('containerAppName')]",
+      "name": "[format('{0}-acr', parameters('containerAppName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -533,7 +533,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "6437117831708110378"
+              "templateHash": "207709523229223255"
             }
           },
           "parameters": {
@@ -764,7 +764,7 @@
               "type": "string",
               "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-{0}', parameters('containerAppName')))).principalId]",
               "metadata": {
-                "description": "The PrinicpalId of the Container Apps Managed Identity"
+                "description": "The PrincipalId of the Container Apps Managed Identity"
               }
             }
           }
@@ -775,14 +775,14 @@
   "outputs": {
     "containerAppFQDN": {
       "type": "string",
-      "value": "[if(parameters('enableIngress'), if(empty(parameters('azureContainerRegistry')), reference(resourceId('Microsoft.Resources/deployments', parameters('containerAppName')), '2020-10-01').outputs.containerAppFQDN.value, reference(resourceId('Microsoft.Resources/deployments', parameters('containerAppName')), '2020-10-01').outputs.containerAppFQDN.value), '')]",
+      "value": "[if(parameters('enableIngress'), if(empty(parameters('azureContainerRegistry')), reference(resourceId('Microsoft.Resources/deployments', parameters('containerAppName')), '2020-10-01').outputs.containerAppFQDN.value, reference(resourceId('Microsoft.Resources/deployments', format('{0}-acr', parameters('containerAppName'))), '2020-10-01').outputs.containerAppFQDN.value), '')]",
       "metadata": {
         "description": "If ingress is enabled, this is the FQDN that the Container App is exposed on"
       }
     },
     "userAssignedIdPrincipalId": {
       "type": "string",
-      "value": "[if(empty(parameters('azureContainerRegistry')), reference(resourceId('Microsoft.Resources/deployments', parameters('containerAppName')), '2020-10-01').outputs.userAssignedIdPrincipalId.value, reference(resourceId('Microsoft.Resources/deployments', parameters('containerAppName')), '2020-10-01').outputs.userAssignedIdPrincipalId.value)]",
+      "value": "[if(empty(parameters('azureContainerRegistry')), reference(resourceId('Microsoft.Resources/deployments', parameters('containerAppName')), '2020-10-01').outputs.userAssignedIdPrincipalId.value, reference(resourceId('Microsoft.Resources/deployments', format('{0}-acr', parameters('containerAppName'))), '2020-10-01').outputs.userAssignedIdPrincipalId.value)]",
       "metadata": {
         "description": "The PrinicpalId of the Container Apps Managed Identity"
       }

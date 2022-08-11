@@ -152,5 +152,5 @@ resource uaiRbac 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = 
 @description('If ingress is enabled, this is the FQDN that the Container App is exposed on')
 output containerAppFQDN string = enableIngress ? containerApp.properties.configuration.ingress.fqdn : ''
 
-@description('The PrinicpalId of the Container Apps Managed Identity')
+@description('The PrincipalId of the Container Apps Managed Identity')
 output userAssignedIdPrincipalId string = uai.properties.principalId
