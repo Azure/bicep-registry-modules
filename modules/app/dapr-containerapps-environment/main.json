@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "17661763881859988268"
+      "templateHash": "14707403987720294781"
     }
   },
   "parameters": {
@@ -315,7 +315,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "3282502007592692369"
+              "templateHash": "4951669750013197138"
             }
           },
           "parameters": {
@@ -381,7 +381,7 @@
                 "secrets": [
                   {
                     "name": "[variables('serviceBusConnectionStringName')]",
-                    "value": "[format('{0};EntityPath={1}', listKeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.ServiceBus/namespaces', format('sb-{0}-{1}', parameters('componentName'), uniqueString(resourceGroup().id, parameters('location'))))), '2021-11-01').primaryConnectionString, parameters('entityName'))]"
+                    "value": "[format('{0};EntityPath={1}', listKeys(resourceId('Microsoft.ServiceBus/namespaces/AuthorizationRules', format('sb-{0}-{1}', parameters('componentName'), uniqueString(resourceGroup().id, parameters('location'))), 'RootManageSharedAccessKey'), '2021-11-01').primaryConnectionString, parameters('entityName'))]"
                   }
                 ],
                 "metadata": [
