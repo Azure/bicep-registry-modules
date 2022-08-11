@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "11880330372389530928"
+      "templateHash": "5588273921349947994"
     }
   },
   "parameters": {
@@ -222,7 +222,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "207709523229223255"
+              "templateHash": "1206158240314369422"
             }
           },
           "parameters": {
@@ -453,7 +453,7 @@
               "type": "string",
               "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-{0}', parameters('containerAppName')))).principalId]",
               "metadata": {
-                "description": "The PrincipalId of the Container Apps Managed Identity"
+                "description": "The Principal Id of the Container Apps Managed Identity"
               }
             }
           }
@@ -533,7 +533,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "207709523229223255"
+              "templateHash": "1206158240314369422"
             }
           },
           "parameters": {
@@ -764,7 +764,7 @@
               "type": "string",
               "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-{0}', parameters('containerAppName')))).principalId]",
               "metadata": {
-                "description": "The PrincipalId of the Container Apps Managed Identity"
+                "description": "The Principal Id of the Container Apps Managed Identity"
               }
             }
           }

@@ -141,4 +141,4 @@ resource keyvault 'Microsoft.KeyVault/vaults@2022-07-01' = existing {
 }
 ```
 
-Reference sample for this workload : [dapr pub sub](https://github.com/dapr/quickstarts/tree/master/pub_sub/javascript/sdk)
+Reference sample for workload : [dapr pub sub](https://github.com/dapr/quickstarts/tree/master/pub_sub/javascript/sdk)

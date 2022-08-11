@@ -6,7 +6,7 @@ It deploys 2 container apps, and the corresponding LogAnalytics workspace can be
 ContainerAppConsoleLogs_CL | where ContainerAppName_s == 'nodeapp' and (Log_s contains 'persisted' or Log_s contains 'order') | project ContainerAppName_s, Log_s, TimeGenerated | take 5
 */
 
-param location string
+param location string = resourceGroup().location
 
 var nodeAppName='nodeapp'
 

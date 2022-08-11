@@ -171,5 +171,8 @@ module rbacDelay 'br/public:deployment-scripts/wait:1.0.1' = {
   ]
 }
 
+@description('If ingress is enabled, this is the FQDN that the Container App is exposed on')
 output containerAppFQDN string = enableIngress ? containerApp.properties.configuration.ingress.fqdn : ''
+
+@description('The Principal Id of the Container Apps Managed Identity')
 output userAssignedIdPrincipalId string = uai.properties.principalId
