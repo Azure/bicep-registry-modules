@@ -23,7 +23,7 @@ resource daprServiceBus 'Microsoft.App/managedEnvironments/daprComponents@2022-0
     secrets: [
       {
         name: serviceBusConnectionStringName
-        value: '${listKeys('${servicebus.id}/AuthorizationRules/RootManageSharedAccessKey', servicebus.apiVersion).primaryConnectionString};EntityPath=${entityName}'
+        value: '${sbAuthRule.listKeys().primaryConnectionString};EntityPath=${entityName}'
       }
     ]
     metadata: [
@@ -63,4 +63,9 @@ resource servicebus 'Microsoft.ServiceBus/namespaces@2021-11-01' = if(createAzur
       }
     }
   }
+}
+
+resource sbAuthRule 'Microsoft.ServiceBus/namespaces/AuthorizationRules@2021-11-01' existing = {
+  name: 'RootManageSharedAccessKey'
+  parent: servicebus
 }
