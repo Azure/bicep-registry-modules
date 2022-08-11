@@ -184,8 +184,8 @@ module peervnet '../main.bicep' = {
 
     subnets: [
       {
-        'name': 'GatewaySubnet'
-        'addressPrefix': '10.0.0.0/26'
+        name: 'GatewaySubnet'
+        addressPrefix: '10.0.0.0/26'
       }
     ]
 
