@@ -29,7 +29,7 @@ param daprAppProtocol string = 'http'
 ])
 param revisionMode string = 'Single'
 
-@description('Number of CPU cores the container can use. Can be with a maximum of two decimals.')
+@description('Number of CPU cores the container can use. Can be with a maximum of two decimals places. Max of 2.0. Valid values include, 0.5 1.25 1.4')
 param cpuCore string = '0.5'
 
 @description('Amount of memory (in gibibytes, GiB) allocated to the container up to 4GiB. Can be with a maximum of two decimals. Ratio with CPU cores must be equal to 2.')
