@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
+  "name": "Azure Game Developer VMSS",
+  "summary": "Bicep Module to simplify deployment of the Azure Game Developer VMSS",
+  "owner": "dciborow"
+}
