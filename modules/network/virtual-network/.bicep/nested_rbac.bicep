@@ -41,7 +41,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' existing 
   name: last(split(resourceId, '/'))
 }
 
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2021-04-01-preview' = [for principalId in principalIds: {
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for principalId in principalIds: {
   name: guid(virtualNetwork.name, principalId, roleDefinitionIdOrName)
   properties: {
     description: description
