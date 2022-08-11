@@ -132,6 +132,12 @@ param vnetAddressPrefix string = '172.17.72.0/24' //Change as needed
 @description('Virtual Network Subnet Address Prefix')
 param subnetAddressPrefix string = '172.17.72.0/25' // 172.17.72.[0-128] is part of this subnet
 
+@description('Enable Analytics Dashboard Extension')
+param enableAnalyticsDashboard bool = false
+
+@description('Analytics Workspace ID')
+param analyticsWorkspaceID string = ''
+
 var customData = format('''
 fileShareStorageAccount={0}
 fileShareStorageAccountKey={1}
@@ -234,6 +240,35 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
 	      windowsConfiguration: {
           provisionVMAgent: true
         }	
+      }
+      extensionProfile: {
+        extensions: (enableAnalyticsDashboard ? [
+          {
+            name: 'MMAExtension'
+            properties: {
+              publisher: 'Microsoft.EnterpriseCloud.Monitoring'
+              type: 'MicrosoftMonitoringAgent'
+              typeHandlerVersion: '1.0'
+              autoUpgradeMinorVersion: true
+              settings: {
+                workspaceId: reference(analyticsWorkspaceID, '2015-03-20').customerId
+                stopOnMultipleConnections: 'true'
+              }
+              protectedSettings: {
+                workspaceKey: listKeys(analyticsWorkspaceID, '2015-03-20').primarySharedKey
+              }
+            }
+          }
+          {
+            name: 'DependencyAgentWindows'
+            properties: {
+              publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
+              type: 'DependencyAgentWindows'
+              typeHandlerVersion: '9.5'
+              autoUpgradeMinorVersion: true
+            }
+          }
+        ]:[])
       }
       priority: 'Regular'
     }
