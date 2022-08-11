@@ -11,6 +11,7 @@ param applicationEntityName string = nameseed
 @allowed([
   'pubsub.azure.servicebus'
   'state.azure.blobstorage'
+  'state.azure.cosmosdb'
 ])
 @description('The dapr application component type to configure in the Environment')
 param daprComponentType string
@@ -28,6 +29,7 @@ param tags object = {}
 var autoDaprComponentNameMap  = {
   'pubsub.azure.servicebus' : '${applicationEntityName}pubsub'
   'state.azure.blobstorage' : '${applicationEntityName}statestore'
+  'state.azure.cosmosdb' : '${applicationEntityName}statestore'
 }
 
 @description('Chooses a good default name for the dapr component')
@@ -52,12 +54,23 @@ module daprComponentSb 'daprComponent-sb.bicep' = if (daprComponentType=='pubsub
   }
 }
 
-module daprComponentState 'daprComponent-stor.bicep' = if (daprComponentType=='state.azure.blobstorage') {
-  name: 'dapr-state-${nameseed}'
+module daprComponentStateStor 'daprComponent-stor.bicep' = if (daprComponentType=='state.azure.blobstorage') {
+  name: 'dapr-state-stor-${nameseed}'
   params: {
     name: autoDaprComponentName
     location: location
     containerAppEnvName: containerAppEnv.outputs.containerAppEnvironmentName
+    entityName: applicationEntityName
+    scopes: daprComponentScopes
+  }
+}
+
+module daprComponentStateCosmoa 'daprComponent-cosmosdb.bicep' = if (daprComponentType=='state.azure.cosmosdb') {
+  name: 'dapr-state-cosmos-${nameseed}'
+  params: {
+    location: location
+    containerAppEnvName: containerAppEnv.outputs.containerAppEnvironmentName
+    componentName: autoDaprComponentName
     entityName: applicationEntityName
     scopes: daprComponentScopes
   }
