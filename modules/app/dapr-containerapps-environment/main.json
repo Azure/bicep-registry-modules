@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "14707403987720294781"
+      "templateHash": "3435344949521712332"
     }
   },
   "parameters": {
@@ -36,7 +36,8 @@
       },
       "allowedValues": [
         "pubsub.azure.servicebus",
-        "state.azure.blobstorage"
+        "state.azure.blobstorage",
+        "state.azure.cosmosdb"
       ]
     },
     "daprComponentName": {
@@ -64,7 +65,8 @@
   "variables": {
     "autoDaprComponentNameMap": {
       "pubsub.azure.servicebus": "[format('{0}pubsub', parameters('applicationEntityName'))]",
-      "state.azure.blobstorage": "[format('{0}statestore', parameters('applicationEntityName'))]"
+      "state.azure.blobstorage": "[format('{0}statestore', parameters('applicationEntityName'))]",
+      "state.azure.cosmosdb": "[format('{0}statestore', parameters('applicationEntityName'))]"
     },
     "autoDaprComponentName": "[if(empty(parameters('daprComponentName')), variables('autoDaprComponentNameMap')[parameters('daprComponentType')], parameters('daprComponentName'))]"
   },
@@ -422,7 +424,7 @@
       "condition": "[equals(parameters('daprComponentType'), 'state.azure.blobstorage')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('dapr-state-{0}', parameters('nameseed'))]",
+      "name": "[format('dapr-state-stor-{0}', parameters('nameseed'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -547,6 +549,176 @@
               "location": "[parameters('location')]",
               "sku": {
                 "name": "Standard_LRS"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', format('containerAppEnv-{0}', parameters('nameseed')))]"
+      ]
+    },
+    {
+      "condition": "[equals(parameters('daprComponentType'), 'state.azure.cosmosdb')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[format('dapr-state-cosmos-{0}', parameters('nameseed'))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "containerAppEnvName": {
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('containerAppEnv-{0}', parameters('nameseed')))).outputs.containerAppEnvironmentName.value]"
+          },
+          "componentName": {
+            "value": "[variables('autoDaprComponentName')]"
+          },
+          "entityName": {
+            "value": "[parameters('applicationEntityName')]"
+          },
+          "scopes": {
+            "value": "[parameters('daprComponentScopes')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.9.1.41621",
+              "templateHash": "9049349038582607649"
+            }
+          },
+          "parameters": {
+            "componentName": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "entityName": {
+              "type": "string"
+            },
+            "containerAppEnvName": {
+              "type": "string"
+            },
+            "createAzureServiceForComponent": {
+              "type": "bool",
+              "defaultValue": true
+            },
+            "scopes": {
+              "type": "array",
+              "defaultValue": []
+            }
+          },
+          "variables": {
+            "daprComponent": "state.azure.cosmosdb",
+            "databaseKeyName": "masterkey",
+            "databaseName": "[format('{0}Db', parameters('entityName'))]",
+            "databaseLocations": [
+              {
+                "locationName": "[parameters('location')]",
+                "failoverPriority": 0,
+                "isZoneRedundant": false
+              }
+            ]
+          },
+          "resources": [
+            {
+              "condition": "[parameters('createAzureServiceForComponent')]",
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+              "apiVersion": "2022-05-15",
+              "name": "[format('{0}/{1}/{2}', format('cosmos-{0}-{1}', parameters('componentName'), uniqueString(resourceGroup().id, parameters('location'))), variables('databaseName'), parameters('entityName'))]",
+              "properties": {
+                "resource": {
+                  "id": "[parameters('entityName')]",
+                  "partitionKey": {
+                    "paths": [
+                      "/partitionKey"
+                    ],
+                    "kind": "Hash"
+                  }
+                },
+                "options": {
+                  "autoscaleSettings": {
+                    "maxThroughput": 4000
+                  }
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', format('cosmos-{0}-{1}', parameters('componentName'), uniqueString(resourceGroup().id, parameters('location'))), variables('databaseName'))]"
+              ]
+            },
+            {
+              "condition": "[parameters('createAzureServiceForComponent')]",
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
+              "apiVersion": "2022-05-15",
+              "name": "[format('{0}/{1}', format('cosmos-{0}-{1}', parameters('componentName'), uniqueString(resourceGroup().id, parameters('location'))), variables('databaseName'))]",
+              "properties": {
+                "resource": {
+                  "id": "[variables('databaseName')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', format('cosmos-{0}-{1}', parameters('componentName'), uniqueString(resourceGroup().id, parameters('location'))))]"
+              ]
+            },
+            {
+              "type": "Microsoft.App/managedEnvironments/daprComponents",
+              "apiVersion": "2022-03-01",
+              "name": "[format('{0}/{1}', parameters('containerAppEnvName'), parameters('componentName'))]",
+              "properties": {
+                "componentType": "[variables('daprComponent')]",
+                "version": "v1",
+                "secrets": [
+                  {
+                    "name": "[variables('databaseKeyName')]",
+                    "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', format('cosmos-{0}-{1}', parameters('componentName'), uniqueString(resourceGroup().id, parameters('location')))), '2022-05-15').primaryMasterKey]"
+                  }
+                ],
+                "metadata": [
+                  {
+                    "name": "url",
+                    "value": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', format('cosmos-{0}-{1}', parameters('componentName'), uniqueString(resourceGroup().id, parameters('location')))), '2022-05-15').documentEndpoint]"
+                  },
+                  {
+                    "name": "database",
+                    "value": "[variables('databaseName')]"
+                  },
+                  {
+                    "name": "collection",
+                    "value": "[parameters('entityName')]"
+                  },
+                  {
+                    "name": "[variables('databaseKeyName')]",
+                    "secretRef": "[variables('databaseKeyName')]"
+                  }
+                ],
+                "scopes": "[parameters('scopes')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', format('cosmos-{0}-{1}', parameters('componentName'), uniqueString(resourceGroup().id, parameters('location'))))]"
+              ]
+            },
+            {
+              "condition": "[parameters('createAzureServiceForComponent')]",
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2022-05-15",
+              "name": "[format('cosmos-{0}-{1}', parameters('componentName'), uniqueString(resourceGroup().id, parameters('location')))]",
+              "kind": "GlobalDocumentDB",
+              "location": "[parameters('location')]",
+              "properties": {
+                "consistencyPolicy": {
+                  "defaultConsistencyLevel": "Session"
+                },
+                "locations": "[variables('databaseLocations')]",
+                "databaseAccountOfferType": "Standard"
               }
             }
           ]

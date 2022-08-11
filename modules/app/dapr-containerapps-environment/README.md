@@ -49,7 +49,7 @@ module myenv 'br/public:app/dapr-containerapps-environment:1.0.1' = {
 }
 ```
 
-### Example 2
+### Creation of Environment for Blob based state
 
 ```bicep
 module myenv 'br/public:app/dapr-containerapps-environment:1.0.1' = {
@@ -60,7 +60,24 @@ module myenv 'br/public:app/dapr-containerapps-environment:1.0.1' = {
     applicationEntityName: 'appdata'
     daprComponentType: 'state.azure.blobstorage'
     daprComponentScopes: [
-      'nodeapp'
+      'myapp'
+    ]
+  }
+}
+```
+
+### Creation of Environment for CosmosDb based state
+
+```bicep
+module myenv 'br/public:app/dapr-containerapps-environment:1.0.1' = {
+  name: 'state'
+  params: {
+    location: location
+    nameseed: 'stateSt2'
+    applicationEntityName: 'appdata'
+    daprComponentType: 'state.azure.cosmosdb'
+    daprComponentScopes: [
+      'myapp'
     ]
   }
 }
