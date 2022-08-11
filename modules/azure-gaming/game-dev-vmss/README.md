@@ -59,7 +59,7 @@ See our [documentation](https://docs.microsoft.com/en-us/gaming/azure/game-dev-v
 ### Using the Azure Game Developer VMSS module
 
 ```bicep
-module gameDevVMSS 'br/public:azure-gaming/game-dev-vmss:1.0.0' = {
+module gameDevVMSS 'br/public:azure-gaming/game-dev-vmss:1.0.1' = {
   name: 'gameDevVMSS'
   params: {
     vmssName: 'vmssPool'
