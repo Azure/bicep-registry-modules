@@ -4,7 +4,7 @@ This module deploys Microsoft.Network Virtual Networks and optionally available 
 
 ## Description
 
-This module deploys Microsoft.Network Virtual Networks and optionally available children or extensions
+Use this module within other Bicep templates to simpllfy the usage of a Virtual Network, with resources like Virtual Machines, or Virtual Machine Scale Sets.
 
 ## Parameters
 
