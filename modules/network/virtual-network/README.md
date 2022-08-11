@@ -1,10 +1,8 @@
 # Virtual Networks
 
-This module deploys Microsoft.Network Virtual Networks and optionally available children or extensions
-
 ## Description
 
-{{ Add detailed description for the module. }}
+This module deploys Microsoft.Network Virtual Networks and optionally available children or extensions
 
 ## Parameters
 
