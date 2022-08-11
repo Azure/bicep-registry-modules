@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "4555986790498274703"
+      "templateHash": "9013596801582338039"
     }
   },
   "parameters": {
@@ -269,6 +269,20 @@
       "metadata": {
         "description": "Virtual Network Subnet Address Prefix"
       }
+    },
+    "enableAnalyticsDashboard": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enable Analytics Dashboard Extension"
+      }
+    },
+    "analyticsWorkspaceID": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Analytics Workspace ID"
+      }
     }
   },
   "variables": {
@@ -343,6 +357,9 @@
             "windowsConfiguration": {
               "provisionVMAgent": true
             }
+          },
+          "extensionProfile": {
+            "extensions": "[if(parameters('enableAnalyticsDashboard'), createArray(createObject('name', 'MMAExtension', 'properties', createObject('publisher', 'Microsoft.EnterpriseCloud.Monitoring', 'type', 'MicrosoftMonitoringAgent', 'typeHandlerVersion', '1.0', 'autoUpgradeMinorVersion', true(), 'settings', createObject('workspaceId', reference(parameters('analyticsWorkspaceID'), '2015-03-20').customerId, 'stopOnMultipleConnections', 'true'), 'protectedSettings', createObject('workspaceKey', listKeys(parameters('analyticsWorkspaceID'), '2015-03-20').primarySharedKey))), createObject('name', 'DependencyAgentWindows', 'properties', createObject('publisher', 'Microsoft.Azure.Monitoring.DependencyAgent', 'type', 'DependencyAgentWindows', 'typeHandlerVersion', '9.5', 'autoUpgradeMinorVersion', true()))), createArray())]"
           },
           "priority": "Regular"
         },
