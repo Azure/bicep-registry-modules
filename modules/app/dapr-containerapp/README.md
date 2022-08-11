@@ -4,7 +4,8 @@ A dapr optimised container app
 
 ## Description
 
-{{ Add detailed description for the module. }}
+This module deploys a dapr Container App to be deployed with an optimised configuration.
+When used in combination with the dapr-ContainerApps-Environment module, the infrastructure required to deploy your applications is greatly simplified.
 
 ## Parameters
 
@@ -38,12 +39,106 @@ A dapr optimised container app
 
 ## Examples
 
-### Example 1
+### Stateful workload
 
 ```bicep
+module myenv 'br/public:app/dapr-containerapps-environment:1.0.1' = {
+  name: 'state'
+  params: {
+    location: location
+    nameseed: 'stateSt1'
+    applicationEntityName: 'appdata'
+    daprComponentType: 'state.azure.blobstorage'
+    daprComponentScopes: [
+      'nodeapp'
+    ]
+  }
+}
+
+module appNodeService 'br/public:app/dapr-containerapp:1.0.1' = {
+  name: 'stateNodeApp'
+  params: {
+    location: location
+    containerAppName: 'nodeapp'
+    containerAppEnvName: myenv.outputs.containerAppEnvironmentName
+    containerImage: 'ghcr.io/dapr/samples/hello-k8s-node:latest'
+    targetPort: 3000
+    externalIngress: false
+    environmentVariables: [
+      {
+        name: 'APP_PORT'
+        value: '3000'
+      }
+    ]
+  }
+}
+
+module appPythonClient 'br/public:app/dapr-containerapp:1.0.1' = {
+  name: 'statePyApp'
+  params: {
+    location: location
+    containerAppName: 'pythonapp'
+    containerAppEnvName: myenv.outputs.containerAppEnvironmentName
+    containerImage: 'ghcr.io/dapr/samples/hello-k8s-python:latest'
+    enableIngress: false
+    daprAppProtocol: ''
+  }
+}
 ```
 
-### Example 2
+Reference sample for workload: [dapr microservices](https://docs.microsoft.com/en-us/azure/container-apps/microservices-dapr-azure-resource-manager)
+
+### Pub-Sub workload
 
 ```bicep
+module myenv 'br/public:app/dapr-containerapps-environment:1.0.1' = {
+  name: 'pubsub'
+  params: {
+    location: location
+    nameseed: 'pubsub-sb1'
+    applicationEntityName: 'orders'
+    daprComponentType: 'pubsub.azure.servicebus'
+  }
+}
+
+module appSubscriber 'br/public:app/dapr-containerapp:1.0.1' = {
+  name: 'subscriber'
+  params: {
+    location: location
+    containerAppEnvName: myenv.outputs.containerAppEnvironmentName
+    containerAppName: 'subscriber-orders'
+    containerImage: 'ghcr.io/gordonby/dapr-sample-pubsub-orders:0.1'
+    environmentVariables: pubSubAppEnvVars
+    targetPort: 5001
+  }
+}
+
+module appPublisher 'br/public:app/dapr-containerapp:1.0.1' = {
+  name: 'publisher'
+  params: {
+    location: location
+    containerAppEnvName: myenv.outputs.containerAppEnvironmentName
+    containerAppName: 'publisher-checkout'
+    containerImage: 'ghcr.io/gordonby/dapr-sample-pubsub-checkout:0.1'
+    environmentVariables: pubSubAppEnvVars
+    enableIngress: false
+  }
+}
+
+var pubSubAppEnvVars = [ {
+  name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+  value: myenv.outputs.appInsightsInstrumentationKey
+}
+{
+  name: 'AZURE_KEY_VAULT_ENDPOINT'
+  value: keyvault.properties.vaultUri
+}
+]
+
+resource keyvault 'Microsoft.KeyVault/vaults@2022-07-01' = existing {
+  name: 'yourkeyvault'
+  location: location
+}
 ```
+
+Reference sample for this workload : [dapr pub sub](https://github.com/dapr/quickstarts/tree/master/pub_sub/javascript/sdk)
