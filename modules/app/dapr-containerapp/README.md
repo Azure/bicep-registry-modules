@@ -28,6 +28,7 @@ When used in combination with the dapr-ContainerApps-Environment module, the inf
 | `revisionSuffix`         | `string` | No       | Revisions to the container app need to be unique                                                                                                            |
 | `environmentVariables`   | `array`  | No       | Any environment variables that your container needs                                                                                                         |
 | `azureContainerRegistry` | `string` | No       | An ACR name can be optionally passed if thats where the container app image is homed                                                                        |
+| `createUserManagedId`    | `bool`   | No       | Will create a user managed identity for the application to access other Azure resoruces as                                                                  |
 | `tags`                   | `object` | No       | Any tags that are to be applied to the Container App                                                                                                        |
 
 ## Outputs

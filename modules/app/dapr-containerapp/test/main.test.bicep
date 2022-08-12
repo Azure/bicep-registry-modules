@@ -32,6 +32,7 @@ module appNodeService '../main.bicep' = {
     containerImage: 'ghcr.io/dapr/samples/hello-k8s-node:latest'
     targetPort: 3000
     externalIngress: false
+    createUserManagedId: false
     environmentVariables: [
       {
         name: 'APP_PORT'
@@ -49,8 +50,19 @@ module appPythonClient '../main.bicep' = {
     containerAppEnvName: test2Env.outputs.containerAppEnvironmentName
     containerImage: 'ghcr.io/dapr/samples/hello-k8s-python:latest'
     enableIngress: false
+    createUserManagedId: false
     daprAppProtocol: ''
   }
 }
 
 output containerAppEnvironmentName string =  test2Env.outputs.containerAppEnvironmentName
+
+
+
+@description('This module tests the same state app as this file, but through an Azure Container Registry')
+module acrTest 'test-acr.bicep' =  {
+  name: 'acrapp'
+  params: {
+    location: location
+  }
+}

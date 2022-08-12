@@ -59,13 +59,16 @@ param revisionSuffix string = uniqueString(utcNow())
 @description('Any environment variables that your container needs')
 param environmentVariables array = []
 
-@description('An ACR name can be optionally passed if thats where the container app image is homed')
-param azureContainerRegistry string = ''
+// @description('An ACR name can be optionally passed if thats where the container app image is homed')
+// param azureContainerRegistry string = ''
+
+@description('Will create a user managed identity for the application to access other Azure resoruces as')
+param createUserManagedId bool = true
 
 @description('Any tags that are to be applied to the Container App')
 param tags object = {}
 
-var acrPullRole = resourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
+//var acrPullRole = resourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
 
 resource containerAppEnv 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
   name: containerAppEnvName
@@ -74,11 +77,13 @@ resource containerAppEnv 'Microsoft.App/managedEnvironments@2022-03-01' existing
 resource containerApp 'Microsoft.App/containerApps@2022-03-01' = {
   name: containerAppName
   location: location
-  identity: {
+  identity: createUserManagedId ? {
     type: 'UserAssigned'
     userAssignedIdentities: {
       '${uai.id}': {}
     }
+  } : {
+    type: 'None'
   }
   properties: {
     managedEnvironmentId: containerAppEnv.id
@@ -124,7 +129,7 @@ resource containerApp 'Microsoft.App/containerApps@2022-03-01' = {
   }
   tags: tags
   dependsOn: [
-    uaiRbac
+    //uaiRbac
   ]
 }
 
@@ -132,25 +137,25 @@ resource containerApp 'Microsoft.App/containerApps@2022-03-01' = {
 //   name: azureContainerRegistry
 // }
 
-resource uai 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
+resource uai 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' =  if(createUserManagedId) {
   name: 'id-${containerAppName}'
   location: location
 }
 
-@description('This allows the managed identity of the container app to access the registry')
-resource uaiRbac 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = if(!empty(azureContainerRegistry)) {
-  //name: guid(acr.id, uai.id, acrPullRole)
-  //scope: acr
-  name: guid(resourceGroup().id, uai.id, acrPullRole)
-  properties: {
-    roleDefinitionId: acrPullRole
-    principalId: uai.properties.principalId
-    principalType: 'ServicePrincipal'
-  }
-}
+// @description('This allows the managed identity of the container app to access the registry')
+// resource uaiRbac 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = if(createUserManagedId && !empty(azureContainerRegistry)) {
+//   //name: guid(acr.id, uai.id, acrPullRole)
+//   //scope: acr
+//   name: guid(resourceGroup().id, uai.id, acrPullRole)
+//   properties: {
+//     roleDefinitionId: acrPullRole
+//     principalId: uai.properties.principalId
+//     principalType: 'ServicePrincipal'
+//   }
+// }
 
 @description('If ingress is enabled, this is the FQDN that the Container App is exposed on')
 output containerAppFQDN string = enableIngress ? containerApp.properties.configuration.ingress.fqdn : ''
 
 @description('The Principal Id of the Container Apps Managed Identity')
-output userAssignedIdPrincipalId string = uai.properties.principalId
+output userAssignedIdPrincipalId string = createUserManagedId ? uai.properties.principalId : ''

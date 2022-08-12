@@ -88,6 +88,9 @@ param environmentVariables array = []
 @description('An ACR name can be optionally passed if thats where the container app image is homed')
 param azureContainerRegistry string = ''
 
+@description('Will create a user managed identity for the application to access other Azure resoruces as')
+param createUserManagedId bool = true
+
 @description('Any tags that are to be applied to the Container App')
 param tags object = {}
 
@@ -97,10 +100,11 @@ module containerAppsNoACR 'containerapp.bicep' = if (empty(azureContainerRegistr
  params: {
   location: location
   containerAppEnvName: containerAppEnvName
-  azureContainerRegistry: ''
+  //azureContainerRegistry: ''
   containerAppName: containerAppName
   containerImage: containerImage
   cpuCore: cpuCore
+  createUserManagedId: createUserManagedId
   daprAppPort: daprAppPort
   daprAppProtocol: daprAppProtocol
   enableIngress: enableIngress
@@ -116,7 +120,7 @@ module containerAppsNoACR 'containerapp.bicep' = if (empty(azureContainerRegistr
  }
 }
 
-module containerAppsACR 'containerapp.bicep' = if (!empty(azureContainerRegistry)) {
+module containerAppsACR 'containerapp-acr.bicep' = if (!empty(azureContainerRegistry)) {
   name: '${containerAppName}-acr'
   params: {
    location: location
@@ -125,6 +129,7 @@ module containerAppsACR 'containerapp.bicep' = if (!empty(azureContainerRegistry
    containerAppName: containerAppName
    containerImage: containerImage
    cpuCore: cpuCore
+   createUserManagedId: createUserManagedId
    daprAppPort: daprAppPort
    daprAppProtocol: daprAppProtocol
    enableIngress: enableIngress
