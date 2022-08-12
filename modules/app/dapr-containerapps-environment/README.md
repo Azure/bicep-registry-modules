@@ -1,18 +1,25 @@
-# DAPR ACA Environment
+# Dapr ACA Environment
 
-Container Apps Environment for DAPR
+Container Apps Environment for Dapr
 
 ## Description
 
-Provides an optimised Container App Environment for DAPR applications.
+Provides an optimised Container App Environment for Dapr applications.
 
 The Azure resources that this module creates are;
 
 - Azure Container Apps Environment
-- DAPR components for Container Apps
-- A ServiceBus (Pub-Sub DAPR component) or a Storage Account (State DAPR component)
+- Dapr components for Container Apps
 - Log Analytics Workspace
 - Application Insights
+
+Depending on which `daprComponentType` is selected, the corresponding Azure service is deployed and integrated with Dapr. These patterns are aligned with the Container Apps Environments required by the Dapr application quickstarts.
+
+Dapr component type | Azure Service | Sample reference
+------------------- | ------------- | ----------------
+Pub-Sub | Azure Service Bus | [dapr pub sub quickstart](https://github.com/dapr/quickstarts/tree/master/pub_sub/javascript/sdk)
+State Blob | Azure Storage Account | [dapr container apps microservices](https://docs.microsoft.com/en-us/azure/container-apps/microservices-dapr-azure-resource-manager)
+State CosmosDb | Azure CosmosDb | [dapr container apps api store](https://github.com/Azure-Samples/container-apps-store-api-microservice)
 
 ## Parameters
 
