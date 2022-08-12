@@ -65,6 +65,7 @@ module appNodeService 'br/public:app/dapr-containerapp:1.0.1' = {
     containerImage: 'ghcr.io/dapr/samples/hello-k8s-node:latest'
     targetPort: 3000
     externalIngress: false
+    createUserManagedId: false
     environmentVariables: [
       {
         name: 'APP_PORT'
@@ -82,6 +83,7 @@ module appPythonClient 'br/public:app/dapr-containerapp:1.0.1' = {
     containerAppEnvName: myenv.outputs.containerAppEnvironmentName
     containerImage: 'ghcr.io/dapr/samples/hello-k8s-python:latest'
     enableIngress: false
+    createUserManagedId: false
     daprAppProtocol: ''
   }
 }
