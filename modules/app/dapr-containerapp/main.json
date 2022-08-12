@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "16761696289545657340"
+      "templateHash": "7966047607025495492"
     }
   },
   "parameters": {
@@ -229,7 +229,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "2516301407779442661"
+              "templateHash": "13090141787330058627"
             }
           },
           "parameters": {
@@ -377,7 +377,7 @@
               "apiVersion": "2022-03-01",
               "name": "[parameters('containerAppName')]",
               "location": "[parameters('location')]",
-              "identity": "[if(parameters('createUserManagedId'), createObject('type', 'UserAssigned', 'userAssignedIdentities', createObject(format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-{0}', parameters('containerAppName')))), createObject())), createObject())]",
+              "identity": "[if(parameters('createUserManagedId'), createObject('type', 'UserAssigned', 'userAssignedIdentities', createObject(format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-{0}', parameters('containerAppName')))), createObject())), createObject('type', 'None'))]",
               "properties": {
                 "managedEnvironmentId": "[resourceId('Microsoft.App/managedEnvironments', parameters('containerAppEnvName'))]",
                 "configuration": {
@@ -433,7 +433,7 @@
             },
             "userAssignedIdPrincipalId": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-{0}', parameters('containerAppName'))), '2022-01-31-preview').principalId]",
+              "value": "[if(parameters('createUserManagedId'), reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-{0}', parameters('containerAppName'))), '2022-01-31-preview').principalId, '')]",
               "metadata": {
                 "description": "The Principal Id of the Container Apps Managed Identity"
               }
@@ -518,7 +518,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.9.1.41621",
-              "templateHash": "5321523859549136465"
+              "templateHash": "3502482138940038235"
             }
           },
           "parameters": {
@@ -656,7 +656,7 @@
               "type": "bool",
               "defaultValue": true,
               "metadata": {
-                "description": "Will create a user managed identity for the application to access other Azure resoruces as the Azure Container Registry"
+                "description": "Will create a user managed identity for the application to access other Azure resoruces as"
               }
             },
             "tags": {
@@ -676,7 +676,7 @@
               "apiVersion": "2022-03-01",
               "name": "[parameters('containerAppName')]",
               "location": "[parameters('location')]",
-              "identity": "[if(parameters('createUserManagedId'), createObject('type', 'UserAssigned', 'userAssignedIdentities', createObject(format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-{0}', parameters('containerAppName')))), createObject())), createObject())]",
+              "identity": "[if(parameters('createUserManagedId'), createObject('type', 'UserAssigned', 'userAssignedIdentities', createObject(format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-{0}', parameters('containerAppName')))), createObject())), createObject('type', 'None'))]",
               "properties": {
                 "managedEnvironmentId": "[resourceId('Microsoft.App/managedEnvironments', parameters('containerAppEnvName'))]",
                 "configuration": {
@@ -828,7 +828,7 @@
             },
             "userAssignedIdPrincipalId": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-{0}', parameters('containerAppName'))), '2022-01-31-preview').principalId]",
+              "value": "[if(parameters('createUserManagedId'), reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-{0}', parameters('containerAppName'))), '2022-01-31-preview').principalId, '')]",
               "metadata": {
                 "description": "The Principal Id of the Container Apps Managed Identity"
               }
