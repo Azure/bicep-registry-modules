@@ -84,7 +84,7 @@ module runCmd 'br/public:deployment-scripts/aks-run-command:1.0.1' = {
 ```
 
 ```bicep
-module runCmd 'br/public:deployment-scripts/aks-run-command:1.0.1' = {
+module runCmd 'br/public:deployment-scripts/aks-run-helm:1.0.1' = {
   name: 'kubectlRunNginx'
   params: {
     aksName: aksName
@@ -101,7 +101,7 @@ module runCmd 'br/public:deployment-scripts/aks-run-command:1.0.1' = {
 ### Running Helm Commands
 
 ```bicep
-module helmInstallIngressController 'br/public:deployment-scripts/aks-run-command:1.0.1' = {
+module helmInstallIngressController 'br/public:deployment-scripts/aks-run-helm:1.0.1' = {
   name: 'helmInstallIngressController'
   params: {
     aksName: aksName
