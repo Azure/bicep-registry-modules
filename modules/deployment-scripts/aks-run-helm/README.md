@@ -13,7 +13,6 @@ An Azure CLI Deployment Script that allows you to run a Helm command at a Kubern
 | `aksName`                                  | `string` | Yes      | The name of the Azure Kubernetes Service                                        |
 | `location`                                 | `string` | No       | The location to deploy the resources to                                         |
 | `forceUpdateTag`                           | `string` | No       | How the deployment script should be forced to execute                           |
-| `rbacRolesNeeded`                          | `array`  | No       | An array of Azure RoleIds that are required for the DeploymentScript resource   |
 | `useExistingManagedIdentity`               | `bool`   | No       | Does the Managed Identity already exists, or should be created                  |
 | `managedIdentityName`                      | `string` | No       | Name of the Managed Identity resource                                           |
 | `existingManagedIdentitySubId`             | `string` | No       | For an existing Managed Identity, the Subscription Id it is located in          |
@@ -25,9 +24,8 @@ An Azure CLI Deployment Script that allows you to run a Helm command at a Kubern
 
 ## Outputs
 
-| Name          | Type  | Description                                                         |
-| :------------ | :---: | :------------------------------------------------------------------ |
-| commandOutput | array | Array of command output from each Deployment Script AKS run command |
+| Name | Type | Description |
+| :--- | :--: | :---------- |
 
 ## Examples
 

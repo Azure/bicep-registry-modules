@@ -8,10 +8,6 @@ If you are using ...Azure CLI, you can force a refresh of your role assignment c
 param location string = resourceGroup().location
 param aksName string =  'crtest${uniqueString(newGuid())}'
 
-//RBAC RoleId vars
-var contributor='b24988ac-6180-42a0-ab88-20f7382dd24c'
-var rbacWriter='a7ffa36f-339b-4b5c-8bdf-e2c188b2c0eb'
-
 //Prerequisites
 module prereq 'prereq.test.bicep' = {
   name: 'test-prereqs'
@@ -26,10 +22,6 @@ module sampleHelmChart '../main.bicep' = {
   name: 'sampleHelmChart'
   params: {
     managedIdentityName: 'kubectlHelmChart'
-    rbacRolesNeeded:[
-      contributor
-      rbacWriter
-    ]
     aksName: prereq.outputs.aksName
     location: location
     helmApps: [{helmApp: 'azure-marketplace/wordpress', helmAppName: 'my-wordpress'}]
@@ -42,10 +34,6 @@ module helmContour '../main.bicep' = {
   name: 'helmContour'
   params: {
     managedIdentityName: 'helmContourIngress'
-    rbacRolesNeeded:[
-      contributor
-      rbacWriter
-    ]
     aksName: prereq.outputs.aksName
     location: location
     helmRepo: 'bitnami'
