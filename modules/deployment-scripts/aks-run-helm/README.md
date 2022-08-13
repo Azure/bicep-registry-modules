@@ -32,7 +32,7 @@ An Azure CLI Deployment Script that allows you to run a Helm command at a Kubern
 ### Running a simple command
 
 ```bicep
-module runCmd 'br/public:deployment-scripts/aks-run-command:1.0.1' = {
+module runCmd 'br/public:deployment-scripts/aks-run-helm:1.0.1' = {
   name: 'kubectlGetPods'
   params: {
     aksName: aksName
@@ -47,7 +47,7 @@ module runCmd 'br/public:deployment-scripts/aks-run-command:1.0.1' = {
 When working with an existing managed identity that has the correct RBAC, you can opt out of new RBAC assignments and set the initial delay to zero.
 
 ```bicep
-module runCmd 'br/public:deployment-scripts/aks-run-command:1.0.1' = {
+module runCmd 'br/public:deployment-scripts/aks-run-helm:1.0.1' = {
   name: 'kubectlGetNodes'
   params: {
     useExistingManagedIdentity: true
@@ -69,15 +69,11 @@ The module will sequence each command to run after the previous completes. There
 var contributor='b24988ac-6180-42a0-ab88-20f7382dd24c'
 var rbacWriter='a7ffa36f-339b-4b5c-8bdf-e2c188b2c0eb'
 
-module runCmd 'br/public:deployment-scripts/aks-run-command:1.0.1' = {
+module runCmd 'br/public:deployment-scripts/aks-run-helm:1.0.1' = {
   name: 'kubectlRunNginx'
   params: {
     aksName: aksName
     location: location
-    rbacRolesNeeded:[
-      contributor
-      rbacWriter
-    ]
     helmApps: [{helmApp: 'azure-marketplace/wordpress', helmAppName: 'my-wordpress'}]
   }
 }
@@ -89,10 +85,6 @@ module runCmd 'br/public:deployment-scripts/aks-run-helm:1.0.1' = {
   params: {
     aksName: aksName
     location: location
-    rbacRolesNeeded:[
-      contributor
-      rbacWriter
-    ]
     helmApps: [{helmApp: 'azure-marketplace/wordpress', helmAppName: 'my-wordpress'}]
   }
 }
@@ -106,10 +98,6 @@ module helmInstallIngressController 'br/public:deployment-scripts/aks-run-helm:1
   params: {
     aksName: aksName
     location: location
-    rbacRolesNeeded:[
-      contributor
-      rbacWriter
-    ]
     helmApps: [
       {
         helmApp: 'bitnami/contour'
