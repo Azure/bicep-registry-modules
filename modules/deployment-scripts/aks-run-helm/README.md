@@ -4,7 +4,11 @@ An Azure CLI Deployment Script that allows you to run a Helm command at a Kubern
 
 ## Description
 
-{{ Add detailed description for the module. }}
+When deploying a Kubernetes cluster, it may be useful to include Helm scripts as part of the deployment process.
+Using this Bicep module, you can directly include the setup and configuration of helm apps from any public container registry.
+This module helps make sure that each resource has the proper permissions to succesful run these steps.
+
+More information about using Helm on Azure can be found [here](https://docs.microsoft.com/en-us/azure/aks/quickstart-helm)
 
 ## Parameters
 
