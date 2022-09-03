@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "13522623285326736397"
+      "templateHash": "2465942561230693956"
     }
   },
   "parameters": {
@@ -99,7 +99,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('helmInstall-{0}-{1}-{2}', parameters('aksName'), parameters('helmApps')[copyIndex()].helmApp, copyIndex())]",
+      "name": "[format('helmInstall-{0}-{1}', parameters('helmApps')[copyIndex()].helmAppName, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"

@@ -37,7 +37,7 @@ param helmApps array  = []
 param cleanupPreference string = 'OnSuccess'
 
 module helmAppInstalls 'br/public:deployment-scripts/aks-run-command:1.0.1' = [for (app, i) in helmApps: {
-  name: 'helmInstall-${aksName}-${app.helmApp}-${i}'
+  name: 'helmInstall-${app.helmAppName}-${i}'
   params: {
     aksName: aksName
     location: location
