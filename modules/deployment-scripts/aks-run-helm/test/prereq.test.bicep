@@ -1,5 +1,4 @@
 param aksName string =  'crtest${uniqueString(newGuid())}'
-//param forceUpdateTag  string = utcNow()
 param location string = resourceGroup().location
 
 resource aks 'Microsoft.ContainerService/managedClusters@2022-01-02-preview' = {
