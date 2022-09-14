@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
+  "name": "AKS Run Helm Script",
+  "summary": "An Azure CLI Deployment Script that allows you to run a Helm command at a Kubernetes cluster.",
+  "owner": "dciborow"
+}
