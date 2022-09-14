@@ -2,6 +2,11 @@
 
 Create Key Vault self-signed certificates. Requires Key Vaults to be using RBAC Authorization, not Access Policies.
 
+## Description
+
+In order to create a certificate and place it an Azure Key Vault, a custom script step must be used.
+This Bicep module simplifies the process, by automating the creation of a Self-Signed certificate.
+
 ## Parameters
 
 | Name                                       | Type     | Required | Description                                                                                                   |
