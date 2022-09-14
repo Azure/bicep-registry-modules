@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.9.1.41621",
-      "templateHash": "2465942561230693956"
+      "templateHash": "6578759237462202332"
     }
   },
   "parameters": {
@@ -57,25 +57,17 @@
         "description": "For an existing Managed Identity, the Resource Group it is located in"
       }
     },
-    "helmRepo": {
+    "publicIP": {
       "type": "string",
-      "defaultValue": "azure-marketplace",
       "metadata": {
-        "description": "Public Helm Repo Name"
+        "description": "Azure Public IP to attach to AKS"
       }
     },
-    "helmRepoURL": {
+    "publicIPResourceGroup": {
       "type": "string",
-      "defaultValue": "https://marketplace.azurecr.io/helm/v1/repo",
+      "defaultValue": "[resourceGroup().name]",
       "metadata": {
-        "description": "Public Helm Repo URL"
-      }
-    },
-    "helmApps": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Helm Apps {helmApp: 'azure-marketplace/wordpress', helmAppName: 'my-wordpress'}"
+        "description": "Resource Group of Azure Public IP"
       }
     },
     "cleanupPreference": {
@@ -91,15 +83,18 @@
       ]
     }
   },
+  "variables": {
+    "helmRepo": "ingress-nginx",
+    "helmRepoURL": "https://kubernetes.github.io/ingress-nginx",
+    "helmApp": "ingress-nginx/ingress-nginx",
+    "helmAppName": "ingress-nginx",
+    "helmAppParams": "[format('--set ingress-nginx.controller.service.loadBalancerIP={0} --set ingress-nginx.controller.service.annotations.\"service\\.beta\\.kubernetes\\.io/azure-load-balancer-resource-group\"=\"{1}\"', parameters('publicIP'), parameters('publicIPResourceGroup'))]"
+  },
   "resources": [
     {
-      "copy": {
-        "name": "helmAppInstalls",
-        "count": "[length(parameters('helmApps'))]"
-      },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('helmInstall-{0}-{1}', parameters('helmApps')[copyIndex()].helmAppName, copyIndex())]",
+      "name": "[format('helmInstall-{0}', variables('helmAppName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -114,8 +109,8 @@
           },
           "commands": {
             "value": [
-              "[format('helm repo add {0} {1}; helm repo update', parameters('helmRepo'), parameters('helmRepoURL'))]",
-              "[format('helm upgrade --install  {0} {1} {2}', parameters('helmApps')[copyIndex()].helmApp, parameters('helmApps')[copyIndex()].helmAppName, if(contains(parameters('helmApps')[copyIndex()], 'helmAppParams'), parameters('helmApps')[copyIndex()].helmAppParams, ''))]"
+              "[format('helm repo add {0} {1}; helm repo update', variables('helmRepo'), variables('helmRepoURL'))]",
+              "[format('helm upgrade --install  {0} {1} {2}', variables('helmApp'), variables('helmAppName'), variables('helmAppParams'))]"
             ]
           },
           "forceUpdateTag": {

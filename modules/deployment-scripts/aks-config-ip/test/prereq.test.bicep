@@ -1,4 +1,4 @@
-param aksName string =  'crtest${uniqueString(newGuid())}'
+param aksName string =  'crtest${uniqueString(resourceGroup().name)}'
 param location string = resourceGroup().location
 param publicIpSku object = {
   name: 'Standard'

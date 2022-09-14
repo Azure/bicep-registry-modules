@@ -6,7 +6,7 @@ If you are using ...Azure CLI, you can force a refresh of your role assignment c
 */
 
 param location string = resourceGroup().location
-param aksName string =  'crtest${uniqueString(newGuid())}'
+param aksName string =  'crtest${resourceGroup().name}'
 
 //Prerequisites
 module prereq 'prereq.test.bicep' = {
@@ -24,7 +24,7 @@ module configurePublicIP '../main.bicep' = {
     managedIdentityName: 'kubectlHelmChart'
     aksName: prereq.outputs.aksName
     location: location
-    STATIC_IP: prereq.outputs.public_ip
-    RESOURCE_GROUP: resourceGroup().name
+    publicIP: prereq.outputs.public_ip
+    publicIPResourceGroup: resourceGroup().name
   }
 }
