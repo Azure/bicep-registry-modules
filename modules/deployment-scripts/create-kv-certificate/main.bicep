@@ -56,7 +56,7 @@ resource existingDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2
 }
 
 resource rbacKv 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = if (!empty(rbacRolesNeededOnKV)) {
-  name: guid(akv.id, rbacRolesNeededOnKV, useExistingManagedIdentity ? existingDepScriptId.id : newDepScriptId.id)
+  name: guid(akv.id, rbacRolesNeededOnKV, managedIdentityName)
   scope: akv
   properties: {
     roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', rbacRolesNeededOnKV)
