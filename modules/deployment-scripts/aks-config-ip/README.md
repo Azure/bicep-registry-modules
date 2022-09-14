@@ -4,11 +4,11 @@ An Azure CLI Deployment Script that allows you to run a Helm command at a Kubern
 
 ## Description
 
-When deploying a Kubernetes cluster, it may be useful to include Helm scripts as part of the deployment process.
-Using this Bicep module, you can directly include the setup and configuration of helm apps from any public container registry.
-This module helps make sure that each resource has the proper permissions to succesful run these steps.
+An ingress controller is a piece of software that provides reverse proxy, configurable traffic routing, and TLS termination for Kubernetes services.
+Kubernetes ingress resources are used to configure the ingress rules and routes for individual Kubernetes services.
+When you use an ingress controller and ingress rules, a single IP address can be used to route traffic to multiple services in a Kubernetes cluster.
 
-More information about using Helm on Azure can be found [here](https://docs.microsoft.com/en-us/azure/aks/quickstart-helm)
+[This]((https://docs.microsoft.com/en-us/azure/aks/ingress-basic?tabs=azure-cli)) article shows you how to deploy the NGINX ingress controller in an Azure Kubernetes Service (AKS) cluster manually. Two applications are then run in the AKS cluster, each of which is accessible over the single IP address.
 
 ## Parameters
 
