@@ -39,20 +39,19 @@ var helmApp = 'ingress-nginx/ingress-nginx'
 var helmAppName = 'ingress-nginx'
 var helmAppParams = '--set ingress-nginx.controller.service.loadBalancerIP=${publicIP} --set ingress-nginx.controller.service.annotations."service\\.beta\\.kubernetes\\.io/azure-load-balancer-resource-group"="${publicIPResourceGroup}"'
 
-module helmAppInstalls 'br/public:deployment-scripts/aks-run-command:1.0.1' = {
+module helmAppInstalls 'br/public:deployment-scripts/aks-run-helm:1.0.1' = {
   name: 'helmInstall-${helmAppName}'
   params: {
     aksName: aksName
     location: location
-    commands: [
-      'helm repo add ${helmRepo} ${helmRepoURL}; helm repo update'
-      'helm upgrade --install  ${helmApp} ${helmAppName} ${helmAppParams}'
-    ]
     forceUpdateTag: forceUpdateTag
     useExistingManagedIdentity: useExistingManagedIdentity
     managedIdentityName: managedIdentityName
     existingManagedIdentitySubId: existingManagedIdentitySubId
     existingManagedIdentityResourceGroupName: existingManagedIdentityResourceGroupName
     cleanupPreference: cleanupPreference
+    helmRepo: helmRepo
+    helmRepoURL: helmRepoURL
+    helmApps: [{helmApp: helmApp, helmAppName: helmAppName, helmAppParams: helmAppParams}]
   }
 }
