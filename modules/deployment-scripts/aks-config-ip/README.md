@@ -40,7 +40,8 @@ module runCmd 'br/public:deployment-scripts/aks-run-helm:1.0.1' = {
   params: {
     aksName: aksName
     location: location
-    helmApps: [{helmApp: 'azure-marketplace/wordpress', helmAppName: 'my-wordpress'}]
+    publicIP: publicIP
+    publicIPResourceGroup: publicIPResourceGroup
   }
 }
 ```
@@ -59,55 +60,8 @@ module runCmd 'br/public:deployment-scripts/aks-run-helm:1.0.1' = {
     rbacRolesNeeded:[]
     aksName: aksName
     location: location
-    helmApps: [{helmApp: 'azure-marketplace/wordpress', helmAppName: 'my-wordpress'}]
-  }
-}
-```
-
-### Sending multiple sequenced commands
-
-The module will sequence each command to run after the previous completes. There is a time impact for the DeploymentScript resource to create, therefore use new command items with consideration.
-
-```bicep
-var contributor='b24988ac-6180-42a0-ab88-20f7382dd24c'
-var rbacWriter='a7ffa36f-339b-4b5c-8bdf-e2c188b2c0eb'
-
-module runCmd 'br/public:deployment-scripts/aks-run-helm:1.0.1' = {
-  name: 'kubectlRunNginx'
-  params: {
-    aksName: aksName
-    location: location
-    helmApps: [{helmApp: 'azure-marketplace/wordpress', helmAppName: 'my-wordpress'}]
-  }
-}
-```
-
-```bicep
-module runCmd 'br/public:deployment-scripts/aks-run-helm:1.0.1' = {
-  name: 'kubectlRunNginx'
-  params: {
-    aksName: aksName
-    location: location
-    helmApps: [{helmApp: 'azure-marketplace/wordpress', helmAppName: 'my-wordpress'}]
-  }
-}
-```
-
-### Running Helm Commands
-
-```bicep
-module helmInstallIngressController 'br/public:deployment-scripts/aks-run-helm:1.0.1' = {
-  name: 'helmInstallIngressController'
-  params: {
-    aksName: aksName
-    location: location
-    helmApps: [
-      {
-        helmApp: 'bitnami/contour'
-        helmAppName: 'contour-ingress'
-        helmParams: '--version 7.7.1 --namespace ingress-basic --create_namespace --set envoy.kind=deployment --set contour.service.externalTrafficPolicy=cluster'
-      }
-    ]
+    publicIP: publicIP
+    publicIPResourceGroup: publicIPResourceGroup
   }
 }
 ```
