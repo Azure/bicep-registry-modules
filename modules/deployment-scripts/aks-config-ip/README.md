@@ -1,6 +1,6 @@
-# AKS Run Helm Script
+# AKS Confiugre Public IP
 
-An Azure CLI Deployment Script that allows you to run a Helm command at a Kubernetes cluster.
+An Azure CLI Deployment Script that allows you to configure a Public IP address with AKS.
 
 ## Description
 
