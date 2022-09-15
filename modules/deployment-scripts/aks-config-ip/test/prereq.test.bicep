@@ -4,7 +4,7 @@ param publicIpSku object = {
   name: 'Standard'
   tier: 'Regional'
 }
-param publicIpDns string = uniqueString(resourceGroup().id)
+param publicIpDns string = 'pubip${uniqueString(resourceGroup().id)}'
 
 resource publicIP 'Microsoft.Network/publicIPAddresses@2021-03-01' = {
   name: 'pubip-${uniqueString(resourceGroup().id)}'
