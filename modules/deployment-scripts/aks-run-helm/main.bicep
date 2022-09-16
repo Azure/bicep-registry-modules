@@ -36,14 +36,16 @@ param helmApps array  = []
 @description('When the script resource is cleaned up')
 param cleanupPreference string = 'OnSuccess'
 
-module helmAppInstalls 'br/public:deployment-scripts/aks-run-command:1.0.1' = [for (app, i) in helmApps: {
-  name: 'helmInstall-${app.helmAppName}-${i}'
+var commands =  [ for (app, i) in helmApps: [
+  'helm repo add ${contains(app, 'helmRepo') ? app.helmRepo: helmRepo} ${contains(app, 'helmRepoURL') ? app.helmRepoURL : helmRepoURL}; helm repo update; helm upgrade ${app.helmAppName} ${app.helmApp} --install ${contains(app, 'helmAppParams') ? app.helmAppParams : ''}'
+]]
+
+module helmAppInstalls 'br/public:deployment-scripts/aks-run-command:1.0.1' = {
+  name: 'helmInstallApps'
   params: {
     aksName: aksName
     location: location
-    commands: [
-      'helm repo add ${helmRepo} ${helmRepoURL}; helm repo update; helm upgrade ${app.helmAppName} ${app.helmApp} --install ${contains(app, 'helmAppParams') ? app.helmAppParams : ''}'
-    ]
+    commands: commands
     forceUpdateTag: forceUpdateTag
     useExistingManagedIdentity: useExistingManagedIdentity
     managedIdentityName: managedIdentityName
@@ -51,4 +53,4 @@ module helmAppInstalls 'br/public:deployment-scripts/aks-run-command:1.0.1' = [f
     existingManagedIdentityResourceGroupName: existingManagedIdentityResourceGroupName
     cleanupPreference: cleanupPreference
   }
-}]
+}

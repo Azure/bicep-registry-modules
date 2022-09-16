@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.9.1.41621",
-      "templateHash": "2465942561230693956"
+      "version": "0.10.61.36676",
+      "templateHash": "2640368943242167249"
     }
   },
   "parameters": {
@@ -91,15 +91,20 @@
       ]
     }
   },
+  "variables": {
+    "copy": [
+      {
+        "name": "commands",
+        "count": "[length(parameters('helmApps'))]",
+        "input": "[createArray(format('helm repo add {0} {1}; helm repo update; helm upgrade {2} {3} --install {4}', if(contains(parameters('helmApps')[copyIndex('commands')], 'helmRepo'), parameters('helmApps')[copyIndex('commands')].helmRepo, parameters('helmRepo')), if(contains(parameters('helmApps')[copyIndex('commands')], 'helmRepoURL'), parameters('helmApps')[copyIndex('commands')].helmRepoURL, parameters('helmRepoURL')), parameters('helmApps')[copyIndex('commands')].helmAppName, parameters('helmApps')[copyIndex('commands')].helmApp, if(contains(parameters('helmApps')[copyIndex('commands')], 'helmAppParams'), parameters('helmApps')[copyIndex('commands')].helmAppParams, '')))]"
+      }
+    ]
+  },
   "resources": [
     {
-      "copy": {
-        "name": "helmAppInstalls",
-        "count": "[length(parameters('helmApps'))]"
-      },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('helmInstall-{0}-{1}', parameters('helmApps')[copyIndex()].helmAppName, copyIndex())]",
+      "name": "helmInstallApps",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -113,10 +118,7 @@
             "value": "[parameters('location')]"
           },
           "commands": {
-            "value": [
-              "[format('helm repo add {0} {1}; helm repo update', parameters('helmRepo'), parameters('helmRepoURL'))]",
-              "[format('helm upgrade --install  {0} {1} {2}', parameters('helmApps')[copyIndex()].helmApp, parameters('helmApps')[copyIndex()].helmAppName, if(contains(parameters('helmApps')[copyIndex()], 'helmAppParams'), parameters('helmApps')[copyIndex()].helmAppParams, ''))]"
-            ]
+            "value": "[variables('commands')]"
           },
           "forceUpdateTag": {
             "value": "[parameters('forceUpdateTag')]"
