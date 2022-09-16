@@ -478,7 +478,7 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2021-05-01' = {
   }
 }
 
-module vnet 'br/public:network/virtual-network:1.0.2' = if (vnetNewOrExisting == 'new') {
+module vnet 'br/public:network/virtual-network:1.0' = if (vnetNewOrExisting == 'new') {
   name: '${vnetName}-${deployment().name}'  
   params: {
     name: vnetName
