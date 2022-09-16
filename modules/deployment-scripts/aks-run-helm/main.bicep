@@ -42,8 +42,7 @@ module helmAppInstalls 'br/public:deployment-scripts/aks-run-command:1.0.1' = [f
     aksName: aksName
     location: location
     commands: [
-      'helm repo add ${helmRepo} ${helmRepoURL}; helm repo update'
-      'helm upgrade --install  ${app.helmApp} ${app.helmAppName} ${contains(app, 'helmAppParams') ? app.helmAppParams : ''}'
+      'helm repo add ${helmRepo} ${helmRepoURL}; helm repo update; helm upgrade ${app.helmAppName} ${app.helmApp} --install ${contains(app, 'helmAppParams') ? app.helmAppParams : ''}'
     ]
     forceUpdateTag: forceUpdateTag
     useExistingManagedIdentity: useExistingManagedIdentity
