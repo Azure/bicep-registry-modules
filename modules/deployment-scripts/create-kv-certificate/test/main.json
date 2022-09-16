@@ -1,0 +1,65 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "metadata": {
+      "_generator": {
+        "name": "bicep",
+        "version": "0.9.1.41621",
+        "templateHash": "14744800690592416553"
+      }
+    },
+    "parameters": {
+      "location": {
+        "type": "string",
+        "defaultValue": "[resourceGroup().location]"
+      }
+    },
+    "resources": [
+      {
+        "type": "Microsoft.Resources/deployments",
+        "apiVersion": "2020-10-01",
+        "name": "ReproBug",
+        "properties": {
+          "expressionEvaluationOptions": {
+            "scope": "inner"
+          },
+          "mode": "Incremental",
+          "parameters": {
+            "location": {
+              "value": "[parameters('location')]"
+            }
+          },
+          "template": {
+            "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+            "contentVersion": "1.0.0.0",
+            "metadata": {
+              "_generator": {
+                "name": "bicep",
+                "version": "0.9.1.41621",
+                "templateHash": "17631695934308271008"
+              }
+            },
+            "parameters": {
+              "location": {
+                "type": "string",
+                "defaultValue": "[resourceGroup().location]"
+              }
+            },
+            "resources": [],
+            "outputs": {
+              "location": {
+                "type": "string",
+                "value": "[parameters('location')]"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outputs": {
+      "location": {
+        "type": "string",
+        "value": "[parameters('location')]"
+      }
+    }
+  }

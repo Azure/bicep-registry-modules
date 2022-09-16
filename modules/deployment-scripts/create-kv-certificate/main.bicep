@@ -104,6 +104,10 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
         value: initialScriptDelay
       }
       {
+        name: 'issuerName'
+        value: issuerName
+      }
+      {
         name: 'retryMax'
         value: '10'
       }

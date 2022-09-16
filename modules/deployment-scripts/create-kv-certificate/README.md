@@ -1,6 +1,13 @@
 # Key Vault Certificate Creation
 
-Create Key Vault self-signed certificates. Requires Key Vaults to be using RBAC Authorization, not Access Policies.
+Create Key Vault certificates. Requires Key Vaults to be using RBAC Authorization, not Access Policies.
+
+## Description
+
+Using this Bicep module, you can automate the creation of a certificate within an Azure Key Vault.
+To create a signed certificate first configure a certificate issuer within Key Vault. Then set the `issuerName` parameter.
+
+This module is based on the `az cli certificate` create command and more information can be found [here](https://docs.microsoft.com/en-us/cli/azure/keyvault/certificate?view=azure-cli-latest#az-keyvault-certificate-create)
 
 ## Parameters
 
@@ -18,6 +25,7 @@ Create Key Vault self-signed certificates. Requires Key Vaults to be using RBAC 
 | `certificateCommonName`                    | `string` | No       | The common name of the certificate to create                                                                  |
 | `initialScriptDelay`                       | `string` | No       | A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate |
 | `cleanupPreference`                        | `string` | No       | When the script resource is cleaned up                                                                        |
+| `issuerName`                               | `string` | No       | Unknown, Self, or {IssuerName} for certifcate signing                                                         |
 
 ## Outputs
 
@@ -40,7 +48,7 @@ param location string = resourceGroup().location
 param akvName string =  'yourAzureKeyVault'
 param certificateName string = 'myapp'
 
-module kvCert 'br/public:deployment-scripts/create-kv-certificate:1.1.1' = {
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:1.2.1' = {
   name: 'akvCertSingle'
   params: {
     akvName: akvName
@@ -63,7 +71,7 @@ param akvName string =  'yourAzureKeyVault'
 param certificateName string = 'myapp'
 param certificateCommonName string = '${certificateName}.mydomain.local'
 
-module kvCert 'br/public:deployment-scripts/create-kv-certificate:1.1.1' = {
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:1.2.1' = {
   name: 'akvCertSingle'
   params: {
     akvName: akvName
@@ -89,7 +97,7 @@ param certificateNames array = [
   'myotherapp'
 ]
 
-module kvCert 'br/public:deployment-scripts/create-kv-certificate:1.1.1' = [ for certificateName in certificateNames : {
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:1.2.1' = [ for certificateName in certificateNames : {
   name: 'akvCert-${certificateName}'
   params: {
     akvName:  akvName
