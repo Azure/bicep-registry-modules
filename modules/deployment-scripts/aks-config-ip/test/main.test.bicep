@@ -6,7 +6,7 @@ If you are using ...Azure CLI, you can force a refresh of your role assignment c
 */
 
 param location string = resourceGroup().location
-param aksName string =  'crtest${resourceGroup().name}'
+param aksName string = 'crtest${uniqueString(resourceGroup().name)}'
 
 //Prerequisites
 module prereq 'prereq.test.bicep' = {
