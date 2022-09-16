@@ -131,7 +131,7 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
         az keyvault certificate create \
           --vault-name $akvName \
           -n $certName \
-          -p "$(az keyvault certificate get-default-policy 
+          -p "$(az keyvault certificate get-default-policy \
             | sed -e s/Self/${issuerName}/g \
             | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g )" \
           && break
