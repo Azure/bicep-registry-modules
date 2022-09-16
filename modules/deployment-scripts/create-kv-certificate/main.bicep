@@ -39,6 +39,9 @@ param initialScriptDelay string = '0'
 @description('When the script resource is cleaned up')
 param cleanupPreference string = 'OnSuccess'
 
+@description('Unknown, Self, or {IssuerName} for certifcate signing')
+param issuerName string = 'Self'
+
 resource akv 'Microsoft.KeyVault/vaults@2021-11-01-preview' existing = {
   name: akvName
 }
@@ -121,7 +124,12 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
       until [ $retryLoopCount -ge $retryMax ]
       do
         echo "Creating AKV Cert $certName with CN $certCommonName (attempt $retryLoopCount)..."
-        az keyvault certificate create --vault-name $akvName -n $certName -p "$(az keyvault certificate get-default-policy | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g )" \
+        az keyvault certificate create \
+          --vault-name $akvName \
+          -n $certName \
+          -p "$(az keyvault certificate get-default-policy 
+            | sed -e s/Self/${issuerName}/g \
+            | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g )" \
           && break
 
         sleep $retrySleep
