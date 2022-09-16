@@ -42,7 +42,7 @@ module helmContour '../main.bicep' = {
       {
         helmApp: 'bitnami/contour'
         helmAppName: 'contour-ingress'
-        helmParams: '--version 7.7.1 --namespace ingress-basic --create_namespace --set envoy.kind=deployment --set contour.service.externalTrafficPolicy=cluster'
+        helmAppParams: '--version 7.7.1 --namespace ingress-basic --create_namespace --set envoy.kind=deployment --set contour.service.externalTrafficPolicy=cluster'
       }
     ]
   }
