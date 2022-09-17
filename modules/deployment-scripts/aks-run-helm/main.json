@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.10.61.36676",
-      "templateHash": "2640368943242167249"
+      "templateHash": "12539397820186207376"
     }
   },
   "parameters": {
@@ -57,27 +57,6 @@
         "description": "For an existing Managed Identity, the Resource Group it is located in"
       }
     },
-    "helmRepo": {
-      "type": "string",
-      "defaultValue": "azure-marketplace",
-      "metadata": {
-        "description": "Public Helm Repo Name"
-      }
-    },
-    "helmRepoURL": {
-      "type": "string",
-      "defaultValue": "https://marketplace.azurecr.io/helm/v1/repo",
-      "metadata": {
-        "description": "Public Helm Repo URL"
-      }
-    },
-    "helmApps": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Helm Apps {helmApp: 'azure-marketplace/wordpress', helmAppName: 'my-wordpress'}"
-      }
-    },
     "cleanupPreference": {
       "type": "string",
       "defaultValue": "OnSuccess",
@@ -89,22 +68,33 @@
         "OnExpiration",
         "Always"
       ]
+    },
+    "helmCharts": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Helm Charts {helmChart: azure-marketplace/wordpress, helmName: my-wordpress, helmNamespace: wordpress, helmValues: [], helmRepo: <>, helmRepoURL: <>}"
+      }
     }
   },
   "variables": {
     "copy": [
       {
         "name": "commands",
-        "count": "[length(parameters('helmApps'))]",
-        "input": "[createArray(format('helm repo add {0} {1}; helm repo update; helm upgrade {2} {3} --install {4}', if(contains(parameters('helmApps')[copyIndex('commands')], 'helmRepo'), parameters('helmApps')[copyIndex('commands')].helmRepo, parameters('helmRepo')), if(contains(parameters('helmApps')[copyIndex('commands')], 'helmRepoURL'), parameters('helmApps')[copyIndex('commands')].helmRepoURL, parameters('helmRepoURL')), parameters('helmApps')[copyIndex('commands')].helmAppName, parameters('helmApps')[copyIndex('commands')].helmApp, if(contains(parameters('helmApps')[copyIndex('commands')], 'helmAppParams'), parameters('helmApps')[copyIndex('commands')].helmAppParams, '')))]"
+        "count": "[length(parameters('helmCharts'))]",
+        "input": "[createArray(format('helm repo add {0} {1}', parameters('helmCharts')[copyIndex('commands')].helmRepo, parameters('helmCharts')[copyIndex('commands')].helmRepoURL), 'helm repo update', format('helm upgrade {0} {1} --install', parameters('helmCharts')[copyIndex('commands')].helmName, parameters('helmCharts')[copyIndex('commands')].helmChart), if(contains(parameters('helmCharts')[copyIndex('commands')], 'helmNamespace'), format('--create-namespace --namespace {0}', parameters('helmCharts')[copyIndex('commands')].helmNamespace), ''), if(contains(parameters('helmCharts')[copyIndex('commands')], 'helmValues'), parameters('helmCharts')[copyIndex('commands')].helmValues, ''), '|| exit 1')]"
       }
     ]
   },
   "resources": [
     {
+      "copy": {
+        "name": "helmAppInstalls",
+        "count": "[length(variables('commands'))]"
+      },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "helmInstallApps",
+      "name": "[format('helmInstallApps-{0}-{1}', uniqueString(parameters('aksName')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -118,7 +108,9 @@
             "value": "[parameters('location')]"
           },
           "commands": {
-            "value": "[variables('commands')]"
+            "value": [
+              "[format('{0} && {1} && {2} {3} {4} {5}', variables('commands')[copyIndex()][0], variables('commands')[copyIndex()][1], variables('commands')[copyIndex()][2], variables('commands')[copyIndex()][3], variables('commands')[copyIndex()][4], variables('commands')[copyIndex()][5])]"
+            ]
           },
           "forceUpdateTag": {
             "value": "[parameters('forceUpdateTag')]"

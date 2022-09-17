@@ -40,9 +40,9 @@ module helmContour '../main.bicep' = {
     helmRepoURL: 'https://charts.bitnami.com/bitnami'
     helmApps: [
       {
-        helmApp: 'bitnami/contour'
+        helmChart: 'bitnami/contour'
         helmAppName: 'contour-ingress'
-        helmParams: '--version 7.7.1 --namespace ingress-basic --create_namespace --set envoy.kind=deployment --set contour.service.externalTrafficPolicy=cluster'
+        helmAppParams: '--version 7.7.1 --namespace ingress-basic --create_namespace --set envoy.kind=deployment --set contour.service.externalTrafficPolicy=cluster'
       }
     ]
   }

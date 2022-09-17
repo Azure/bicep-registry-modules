@@ -12,19 +12,17 @@ More information about using Helm on Azure can be found [here](https://docs.micr
 
 ## Parameters
 
-| Name                                       | Type     | Required | Description                                                                     |
-| :----------------------------------------- | :------: | :------: | :------------------------------------------------------------------------------ |
-| `aksName`                                  | `string` | Yes      | The name of the Azure Kubernetes Service                                        |
-| `location`                                 | `string` | No       | The location to deploy the resources to                                         |
-| `forceUpdateTag`                           | `string` | No       | How the deployment script should be forced to execute                           |
-| `useExistingManagedIdentity`               | `bool`   | No       | Does the Managed Identity already exists, or should be created                  |
-| `managedIdentityName`                      | `string` | No       | Name of the Managed Identity resource                                           |
-| `existingManagedIdentitySubId`             | `string` | No       | For an existing Managed Identity, the Subscription Id it is located in          |
-| `existingManagedIdentityResourceGroupName` | `string` | No       | For an existing Managed Identity, the Resource Group it is located in           |
-| `helmRepo`                                 | `string` | No       | Public Helm Repo Name                                                           |
-| `helmRepoURL`                              | `string` | No       | Public Helm Repo URL                                                            |
-| `helmApps`                                 | `array`  | No       | Helm Apps {helmApp: 'azure-marketplace/wordpress', helmAppName: 'my-wordpress'} |
-| `cleanupPreference`                        | `string` | No       | When the script resource is cleaned up                                          |
+| Name                                       | Type     | Required | Description                                                                                                                                           |
+| :----------------------------------------- | :------: | :------: | :---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `aksName`                                  | `string` | Yes      | The name of the Azure Kubernetes Service                                                                                                              |
+| `location`                                 | `string` | No       | The location to deploy the resources to                                                                                                               |
+| `forceUpdateTag`                           | `string` | No       | How the deployment script should be forced to execute                                                                                                 |
+| `useExistingManagedIdentity`               | `bool`   | No       | Does the Managed Identity already exists, or should be created                                                                                        |
+| `managedIdentityName`                      | `string` | No       | Name of the Managed Identity resource                                                                                                                 |
+| `existingManagedIdentitySubId`             | `string` | No       | For an existing Managed Identity, the Subscription Id it is located in                                                                                |
+| `existingManagedIdentityResourceGroupName` | `string` | No       | For an existing Managed Identity, the Resource Group it is located in                                                                                 |
+| `cleanupPreference`                        | `string` | No       | When the script resource is cleaned up                                                                                                                |
+| `helmCharts`                               | `array`  | No       | Helm Charts {helmChart: azure-marketplace/wordpress, helmName: my-wordpress, helmNamespace: wordpress, helmValues: [], helmRepo: <>, helmRepoURL: <>} |
 
 ## Outputs
 
@@ -106,7 +104,8 @@ module helmInstallIngressController 'br/public:deployment-scripts/aks-run-helm:1
       {
         helmApp: 'bitnami/contour'
         helmAppName: 'contour-ingress'
-        helmParams: '--version 7.7.1 --namespace ingress-basic --create_namespace --set envoy.kind=deployment --set contour.service.externalTrafficPolicy=cluster'
+        helmNamespace: 'ingress-basic'
+        helmAppParams: '--version 7.7.1 --set envoy.kind=deployment,contour.service.externalTrafficPolicy=cluster'
       }
     ]
   }

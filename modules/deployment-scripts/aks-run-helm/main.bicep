@@ -19,15 +19,6 @@ param existingManagedIdentitySubId string = subscription().subscriptionId
 @description('For an existing Managed Identity, the Resource Group it is located in')
 param existingManagedIdentityResourceGroupName string = resourceGroup().name
 
-@description('Public Helm Repo Name')
-param helmRepo string = 'azure-marketplace'
-
-@description('Public Helm Repo URL')
-param helmRepoURL string = 'https://marketplace.azurecr.io/helm/v1/repo'
-
-@description('Helm Apps {helmApp: \'azure-marketplace/wordpress\', helmAppName: \'my-wordpress\'}')
-param helmApps array  = []
-
 @allowed([
   'OnSuccess'
   'OnExpiration'
@@ -36,16 +27,24 @@ param helmApps array  = []
 @description('When the script resource is cleaned up')
 param cleanupPreference string = 'OnSuccess'
 
-var commands =  [ for (app, i) in helmApps: [
-  'helm repo add ${contains(app, 'helmRepo') ? app.helmRepo: helmRepo} ${contains(app, 'helmRepoURL') ? app.helmRepoURL : helmRepoURL}; helm repo update; helm upgrade ${app.helmAppName} ${app.helmApp} --install ${contains(app, 'helmAppParams') ? app.helmAppParams : ''}'
+@description('Helm Charts {helmChart: azure-marketplace/wordpress, helmName: my-wordpress, helmNamespace: wordpress, helmValues: [], helmRepo: <>, helmRepoURL: <>}')
+param helmCharts array  = []
+
+var commands =  [ for (app, i) in helmCharts: [
+  'helm repo add ${app.helmRepo} ${app.helmRepoURL}'
+  'helm repo update'
+  'helm upgrade ${app.helmName} ${app.helmChart} --install'
+  contains(app, 'helmNamespace') ? '--create-namespace --namespace ${app.helmNamespace}' : ''
+  contains(app, 'helmValues') ? app.helmValues : ''
+  '|| exit 1'
 ]]
 
-module helmAppInstalls 'br/public:deployment-scripts/aks-run-command:1.0.1' = {
-  name: 'helmInstallApps'
+module helmChartInstall 'br/public:deployment-scripts/aks-run-command:1.0.1' = [ for (command, i) in commands: {
+  name: 'helmChartInstall-${helmCharts[i].helmName}'
   params: {
     aksName: aksName
     location: location
-    commands: commands
+    commands: [ '${command[0]} && ${command[1]} && ${command[2]} ${command[3]} ${command[4]} ${command[5]}' ]
     forceUpdateTag: forceUpdateTag
     useExistingManagedIdentity: useExistingManagedIdentity
     managedIdentityName: managedIdentityName
@@ -53,4 +52,4 @@ module helmAppInstalls 'br/public:deployment-scripts/aks-run-command:1.0.1' = {
     existingManagedIdentityResourceGroupName: existingManagedIdentityResourceGroupName
     cleanupPreference: cleanupPreference
   }
-}
+}]
