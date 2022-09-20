@@ -4,6 +4,12 @@ param location string
 @description('Used to name the Azure resources that are created')
 param nameseed string
 
+@description('Indicates if we should deploy the Dapr components to an existing environment')
+param environmentAlreadyExists bool = false
+
+@description('Specifies the name of the container app environment.')
+param containerAppEnvName string = 'env-${nameseed}'
+
 @maxLength(8)
 @description('The application relevant name for the dapr component you are implementing')
 param applicationEntityName string = nameseed
@@ -35,7 +41,7 @@ var autoDaprComponentNameMap  = {
 @description('Chooses a good default name for the dapr component')
 var autoDaprComponentName = empty(daprComponentName) ? autoDaprComponentNameMap[daprComponentType] : daprComponentName
 
-module containerAppEnv 'containerAppEnv.bicep' = {
+module containerAppEnv 'containerAppEnv.bicep' = if(!environmentAlreadyExists) {
   name: 'containerAppEnv-${nameseed}'
   params: {
     location: location
@@ -44,12 +50,16 @@ module containerAppEnv 'containerAppEnv.bicep' = {
   }
 }
 
+resource existingEnvironment 'Microsoft.App/managedEnvironments@2022-03-01' existing = if(environmentAlreadyExists) {
+  name: containerAppEnvName
+}
+
 module daprComponentSb 'daprComponent-sb.bicep' = if (daprComponentType=='pubsub.azure.servicebus') {
   name: 'dapr-sb-${nameseed}'
   params: {
     componentName: autoDaprComponentName
     location: location
-    containerAppEnvName: containerAppEnv.outputs.containerAppEnvironmentName
+    containerAppEnvName: environmentAlreadyExists ? existingEnvironment.name  : containerAppEnv.outputs.containerAppEnvironmentName
     entityName: applicationEntityName
   }
 }
@@ -59,17 +69,17 @@ module daprComponentStateStor 'daprComponent-stor.bicep' = if (daprComponentType
   params: {
     name: autoDaprComponentName
     location: location
-    containerAppEnvName: containerAppEnv.outputs.containerAppEnvironmentName
+    containerAppEnvName: environmentAlreadyExists ? existingEnvironment.name  : containerAppEnv.outputs.containerAppEnvironmentName
     entityName: applicationEntityName
     scopes: daprComponentScopes
   }
 }
 
-module daprComponentStateCosmoa 'daprComponent-cosmosdb.bicep' = if (daprComponentType=='state.azure.cosmosdb') {
+module daprComponentStateCosmos 'daprComponent-cosmosdb.bicep' = if (daprComponentType=='state.azure.cosmosdb') {
   name: 'dapr-state-cosmos-${nameseed}'
   params: {
     location: location
-    containerAppEnvName: containerAppEnv.outputs.containerAppEnvironmentName
+    containerAppEnvName: environmentAlreadyExists ? existingEnvironment.name  : containerAppEnv.outputs.containerAppEnvironmentName
     componentName: autoDaprComponentName
     entityName: applicationEntityName
     scopes: daprComponentScopes
@@ -77,7 +87,7 @@ module daprComponentStateCosmoa 'daprComponent-cosmosdb.bicep' = if (daprCompone
 }
 
 @description('The name of the created Azure Container Apps Environment')
-output containerAppEnvironmentName string = containerAppEnv.outputs.containerAppEnvironmentName
+output containerAppEnvironmentName string = environmentAlreadyExists ? existingEnvironment.name  : containerAppEnv.outputs.containerAppEnvironmentName
 
 @description('The Azure Applications Insights (telemetry) instrumentation key')
-output appInsightsInstrumentationKey string = containerAppEnv.outputs.appInsightsInstrumentationKey
+output appInsightsInstrumentationKey string = environmentAlreadyExists ? ''  : containerAppEnv.outputs.appInsightsInstrumentationKey

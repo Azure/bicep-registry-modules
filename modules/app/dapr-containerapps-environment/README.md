@@ -45,7 +45,7 @@ State CosmosDb | Azure CosmosDb | [dapr container apps api store](https://github
 ### Creation of Environment for ServiceBus PubSub apps
 
 ```bicep
-module myenv 'br/public:app/dapr-containerapps-environment:1.0.1' = {
+module myenv 'br/public:app/dapr-containerapps-environment:1.1.1' = {
   name: 'pubsub'
   params: {
     location: location
@@ -59,7 +59,7 @@ module myenv 'br/public:app/dapr-containerapps-environment:1.0.1' = {
 ### Creation of Environment for Blob based state
 
 ```bicep
-module myenv 'br/public:app/dapr-containerapps-environment:1.0.1' = {
+module myenv 'br/public:app/dapr-containerapps-environment:1.1.1' = {
   name: 'state'
   params: {
     location: location
@@ -76,7 +76,7 @@ module myenv 'br/public:app/dapr-containerapps-environment:1.0.1' = {
 ### Creation of Environment for CosmosDb based state
 
 ```bicep
-module myenv 'br/public:app/dapr-containerapps-environment:1.0.1' = {
+module myenv 'br/public:app/dapr-containerapps-environment:1.1.1' = {
   name: 'state'
   params: {
     location: location
@@ -86,6 +86,55 @@ module myenv 'br/public:app/dapr-containerapps-environment:1.0.1' = {
     daprComponentScopes: [
       'myapp'
     ]
+  }
+}
+```
+
+### Using an existing Container Apps Environment
+
+Create the Azure Service and Dapr component on an existing Container Apps Environment
+
+```bicep
+module envAndComponent1 'br/public:app/dapr-containerapps-environment:1.1.1' = {
+  name: 'multiComponentEnvPlusCosmos'
+  params: {
+    location: location
+    nameseed: 'myname'
+    daprComponentType: 'state.azure.cosmosdb'
+    environmentAlreadyExists: true
+    containerAppEnvName: 'env-MyEnvironment'
+  }
+}
+```
+
+### Creation of multiple dapr components in the environment
+
+When using multiple components, you can stack the deployments
+
+```bicep
+module envAndComponent1 'br/public:app/dapr-containerapps-environment:1.1.1' = {
+  name: 'multiComponentEnvPlusCosmos'
+  params: {
+    location: location
+    nameseed: 'myname'
+    daprComponentType: 'state.azure.cosmosdb'
+    daprComponentScopes: [
+      'myappDbComponent'
+    ]
+  }
+}
+
+module component2 'br/public:app/dapr-containerapps-environment:1.1.1' = {
+  name: 'multicomponentBlobAddToEnv'
+  params: {
+    location: location
+    nameseed: 'myname'
+    daprComponentType: 'state.azure.blobstorage'
+    daprComponentScopes: [
+      'myappLogComponent'
+    ]
+    environmentAlreadyExists: true
+    containerAppEnvName: envAndComponent1.outputs.containerAppEnvironmentName
   }
 }
 ```
