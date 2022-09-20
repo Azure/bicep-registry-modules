@@ -58,4 +58,3 @@ module multiComponentTestComponent2 '../main.bicep' = {
     containerAppEnvName: multiComponentTestComponent1.outputs.containerAppEnvironmentName
   }
 }
-
