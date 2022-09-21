@@ -22,6 +22,7 @@ module test1 '../main.bicep' = {
     vmssName: uniqueString(resourceGroup().name)
     communityGalleryImageId: communityGalleryImageId
     customData: customData
+    imageLocation: 'gallery'
   }
 }
 
