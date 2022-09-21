@@ -37,3 +37,24 @@ module test3 'test3-acr.bicep' = {
     location: location
   }
 }
+
+
+module multiComponentTestComponent1 '../main.bicep' = {
+  name: 'multicomponentEnvPlusCosmos'
+  params: {
+    location: location
+    daprComponentType: 'state.azure.cosmosdb'
+    nameseed: 'myapp44'
+  }
+}
+module multiComponentTestComponent2 '../main.bicep' = {
+  name: 'multicomponentBlobAddToEnv'
+  params: {
+    location: location
+    daprComponentType: 'state.azure.blobstorage'
+    nameseed: 'myapp48'
+    
+    environmentAlreadyExists: true
+    containerAppEnvName: multiComponentTestComponent1.outputs.containerAppEnvironmentName
+  }
+}

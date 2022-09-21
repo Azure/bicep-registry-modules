@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.9.1.41621",
-      "templateHash": "3435344949521712332"
+      "version": "0.10.61.36676",
+      "templateHash": "9551791862613733886"
     }
   },
   "parameters": {
@@ -19,6 +19,20 @@
       "type": "string",
       "metadata": {
         "description": "Used to name the Azure resources that are created"
+      }
+    },
+    "environmentAlreadyExists": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Indicates if we should deploy the Dapr components to an existing environment"
+      }
+    },
+    "containerAppEnvName": {
+      "type": "string",
+      "defaultValue": "[format('env-{0}', parameters('nameseed'))]",
+      "metadata": {
+        "description": "Specifies the name of the container app environment."
       }
     },
     "applicationEntityName": {
@@ -72,6 +86,7 @@
   },
   "resources": [
     {
+      "condition": "[not(parameters('environmentAlreadyExists'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('containerAppEnv-{0}', parameters('nameseed'))]",
@@ -97,8 +112,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "7113524258138135795"
+              "version": "0.10.61.36676",
+              "templateHash": "13228440297215219963"
             }
           },
           "parameters": {
@@ -214,8 +229,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.9.1.41621",
-                      "templateHash": "17491185132151222103"
+                      "version": "0.10.61.36676",
+                      "templateHash": "8889419084700317809"
                     }
                   },
                   "parameters": {
@@ -304,7 +319,7 @@
             "value": "[parameters('location')]"
           },
           "containerAppEnvName": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('containerAppEnv-{0}', parameters('nameseed')))).outputs.containerAppEnvironmentName.value]"
+            "value": "[if(parameters('environmentAlreadyExists'), parameters('containerAppEnvName'), reference(resourceId('Microsoft.Resources/deployments', format('containerAppEnv-{0}', parameters('nameseed'))), '2020-10-01').outputs.containerAppEnvironmentName.value)]"
           },
           "entityName": {
             "value": "[parameters('applicationEntityName')]"
@@ -316,8 +331,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "4951669750013197138"
+              "version": "0.10.61.36676",
+              "templateHash": "14239208731851583259"
             }
           },
           "parameters": {
@@ -438,7 +453,7 @@
             "value": "[parameters('location')]"
           },
           "containerAppEnvName": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('containerAppEnv-{0}', parameters('nameseed')))).outputs.containerAppEnvironmentName.value]"
+            "value": "[if(parameters('environmentAlreadyExists'), parameters('containerAppEnvName'), reference(resourceId('Microsoft.Resources/deployments', format('containerAppEnv-{0}', parameters('nameseed'))), '2020-10-01').outputs.containerAppEnvironmentName.value)]"
           },
           "entityName": {
             "value": "[parameters('applicationEntityName')]"
@@ -453,8 +468,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "11272959808670979133"
+              "version": "0.10.61.36676",
+              "templateHash": "6593902698492451851"
             }
           },
           "parameters": {
@@ -573,7 +588,7 @@
             "value": "[parameters('location')]"
           },
           "containerAppEnvName": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('containerAppEnv-{0}', parameters('nameseed')))).outputs.containerAppEnvironmentName.value]"
+            "value": "[if(parameters('environmentAlreadyExists'), parameters('containerAppEnvName'), reference(resourceId('Microsoft.Resources/deployments', format('containerAppEnv-{0}', parameters('nameseed'))), '2020-10-01').outputs.containerAppEnvironmentName.value)]"
           },
           "componentName": {
             "value": "[variables('autoDaprComponentName')]"
@@ -591,8 +606,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "9049349038582607649"
+              "version": "0.10.61.36676",
+              "templateHash": "14230411537407634911"
             }
           },
           "parameters": {
@@ -732,14 +747,14 @@
   "outputs": {
     "containerAppEnvironmentName": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('containerAppEnv-{0}', parameters('nameseed')))).outputs.containerAppEnvironmentName.value]",
+      "value": "[if(parameters('environmentAlreadyExists'), parameters('containerAppEnvName'), reference(resourceId('Microsoft.Resources/deployments', format('containerAppEnv-{0}', parameters('nameseed'))), '2020-10-01').outputs.containerAppEnvironmentName.value)]",
       "metadata": {
         "description": "The name of the created Azure Container Apps Environment"
       }
     },
     "appInsightsInstrumentationKey": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('containerAppEnv-{0}', parameters('nameseed')))).outputs.appInsightsInstrumentationKey.value]",
+      "value": "[if(parameters('environmentAlreadyExists'), '', reference(resourceId('Microsoft.Resources/deployments', format('containerAppEnv-{0}', parameters('nameseed'))), '2020-10-01').outputs.appInsightsInstrumentationKey.value)]",
       "metadata": {
         "description": "The Azure Applications Insights (telemetry) instrumentation key"
       }
