@@ -66,6 +66,13 @@ param metricsToEnable array = [
   'AllMetrics'
 ]
 
+@allowed([ 'new', 'existing', 'none' ])
+@description('Create a new, use an existing, or provide no default NSG.')
+param newOrExistingNSG string = 'none'
+
+@description('Name of default NSG to use for subnets.')
+param networkSecurityGroupName string = ''
+
 var diagnosticsLogs = [for log in logsToEnable: {
   category: log
   enabled: true
@@ -92,6 +99,17 @@ var ddosProtectionPlan = {
   id: ddosProtectionPlanId
 }
 
+resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2021-08-01' = if( newOrExistingNSG == 'new' ) {
+  name: networkSecurityGroupName
+  location: location
+}
+
+resource existingNetworkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2021-08-01' existing = if( newOrExistingNSG == 'existing' ) {
+  name: networkSecurityGroupName
+}
+
+var networkSecurityGroupId = newOrExistingNSG == 'new' ? networkSecurityGroup.id : existingNetworkSecurityGroup.id
+
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   name: name
   location: location
@@ -111,12 +129,8 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
         applicationGatewayIpConfigurations: contains(subnet, 'applicationGatewayIpConfigurations') ? subnet.applicationGatewayIpConfigurations : []
         delegations: contains(subnet, 'delegations') ? subnet.delegations : []
         ipAllocations: contains(subnet, 'ipAllocations') ? subnet.ipAllocations : []
-        natGateway: contains(subnet, 'natGatewayId') ? {
-          id: subnet.natGatewayId
-        } : json('null')
-        networkSecurityGroup: contains(subnet, 'networkSecurityGroupId') ? {
-          id: subnet.networkSecurityGroupId
-        } : json('null')
+        natGateway: contains(subnet, 'natGatewayId') ? { id: subnet.natGatewayId } : json('null')
+        networkSecurityGroup: contains(subnet, 'networkSecurityGroupId') ? { id: subnet.networkSecurityGroupId } : (  newOrExistingNSG != 'none' ? networkSecurityGroupId : json('null'))
         privateEndpointNetworkPolicies: contains(subnet, 'privateEndpointNetworkPolicies') ? subnet.privateEndpointNetworkPolicies : null
         privateLinkServiceNetworkPolicies: contains(subnet, 'privateLinkServiceNetworkPolicies') ? subnet.privateLinkServiceNetworkPolicies : null
         routeTable: contains(subnet, 'routeTableId') ? {
