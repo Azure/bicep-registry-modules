@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.9.1.41621",
-      "templateHash": "10893164274897986397"
+      "version": "0.10.61.36676",
+      "templateHash": "12558012161119681627"
     }
   },
   "parameters": {
@@ -142,6 +142,25 @@
       "metadata": {
         "description": "Optional. The name of metrics that will be streamed."
       }
+    },
+    "newOrExistingNSG": {
+      "type": "string",
+      "defaultValue": "none",
+      "metadata": {
+        "description": "Create a new, use an existing, or provide no default NSG."
+      },
+      "allowedValues": [
+        "new",
+        "existing",
+        "none"
+      ]
+    },
+    "networkSecurityGroupName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of default NSG to use for subnets."
+      }
     }
   },
   "variables": {
@@ -177,9 +196,19 @@
     },
     "ddosProtectionPlan": {
       "id": "[parameters('ddosProtectionPlanId')]"
+    },
+    "networkSecurityGroupId": {
+      "id": "[if(equals(parameters('newOrExistingNSG'), 'new'), resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName')), resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName')))]"
     }
   },
   "resources": [
+    {
+      "condition": "[equals(parameters('newOrExistingNSG'), 'new')]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2021-08-01",
+      "name": "[parameters('networkSecurityGroupName')]",
+      "location": "[parameters('location')]"
+    },
     {
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2021-05-01",
@@ -200,7 +229,7 @@
                 "delegations": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'delegations'), parameters('subnets')[copyIndex('subnets')].delegations, createArray())]",
                 "ipAllocations": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'ipAllocations'), parameters('subnets')[copyIndex('subnets')].ipAllocations, createArray())]",
                 "natGateway": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'natGatewayId'), createObject('id', parameters('subnets')[copyIndex('subnets')].natGatewayId), json('null'))]",
-                "networkSecurityGroup": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'networkSecurityGroupId'), createObject('id', parameters('subnets')[copyIndex('subnets')].networkSecurityGroupId), json('null'))]",
+                "networkSecurityGroup": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'networkSecurityGroupId'), createObject('id', parameters('subnets')[copyIndex('subnets')].networkSecurityGroupId), if(not(equals(parameters('newOrExistingNSG'), 'none')), variables('networkSecurityGroupId'), json('null')))]",
                 "privateEndpointNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'privateEndpointNetworkPolicies'), parameters('subnets')[copyIndex('subnets')].privateEndpointNetworkPolicies, null())]",
                 "privateLinkServiceNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'privateLinkServiceNetworkPolicies'), parameters('subnets')[copyIndex('subnets')].privateLinkServiceNetworkPolicies, null())]",
                 "routeTable": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'routeTableId'), createObject('id', parameters('subnets')[copyIndex('subnets')].routeTableId), json('null'))]",
@@ -216,7 +245,10 @@
         "ddosProtectionPlan": "[if(not(empty(parameters('ddosProtectionPlanId'))), variables('ddosProtectionPlan'), null())]",
         "dhcpOptions": "[if(not(empty(parameters('dnsServers'))), variables('dnsServers_var'), null())]",
         "enableDdosProtection": "[not(empty(parameters('ddosProtectionPlanId')))]"
-      }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]"
+      ]
     },
     {
       "condition": "[not(equals(parameters('lock'), 'NotSpecified'))]",
@@ -295,8 +327,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "7913383313645172292"
+              "version": "0.10.61.36676",
+              "templateHash": "3536286126773075823"
             }
           },
           "parameters": {
@@ -449,8 +481,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "7913383313645172292"
+              "version": "0.10.61.36676",
+              "templateHash": "3536286126773075823"
             }
           },
           "parameters": {
@@ -591,8 +623,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "6570518281545653594"
+              "version": "0.10.61.36676",
+              "templateHash": "3745169767620951291"
             }
           },
           "parameters": {

@@ -108,7 +108,7 @@ resource existingNetworkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2
   name: networkSecurityGroupName
 }
 
-var networkSecurityGroupId = newOrExistingNSG == 'new' ? networkSecurityGroup.id : existingNetworkSecurityGroup.id
+var networkSecurityGroupId = { id: newOrExistingNSG == 'new' ? networkSecurityGroup.id : existingNetworkSecurityGroup.id }
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   name: name
@@ -130,12 +130,10 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
         delegations: contains(subnet, 'delegations') ? subnet.delegations : []
         ipAllocations: contains(subnet, 'ipAllocations') ? subnet.ipAllocations : []
         natGateway: contains(subnet, 'natGatewayId') ? { id: subnet.natGatewayId } : json('null')
-        networkSecurityGroup: contains(subnet, 'networkSecurityGroupId') ? { id: subnet.networkSecurityGroupId } : (  newOrExistingNSG != 'none' ? networkSecurityGroupId : json('null'))
+        networkSecurityGroup: contains(subnet, 'networkSecurityGroupId') ? { id: subnet.networkSecurityGroupId } : ( newOrExistingNSG != 'none' ? networkSecurityGroupId : json('null'))
         privateEndpointNetworkPolicies: contains(subnet, 'privateEndpointNetworkPolicies') ? subnet.privateEndpointNetworkPolicies : null
         privateLinkServiceNetworkPolicies: contains(subnet, 'privateLinkServiceNetworkPolicies') ? subnet.privateLinkServiceNetworkPolicies : null
-        routeTable: contains(subnet, 'routeTableId') ? {
-          id: subnet.routeTableId
-        } : json('null')
+        routeTable: contains(subnet, 'routeTableId') ? { id: subnet.routeTableId } : json('null')
         serviceEndpoints: contains(subnet, 'serviceEndpoints') ? subnet.serviceEndpoints : []
         serviceEndpointPolicies: contains(subnet, 'serviceEndpointPolicies') ? subnet.serviceEndpointPolicies : []
       }
