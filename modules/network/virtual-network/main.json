@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.10.61.36676",
-      "templateHash": "12558012161119681627"
+      "templateHash": "15735508331013413401"
     }
   },
   "parameters": {
@@ -157,7 +157,7 @@
     },
     "networkSecurityGroupName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[uniqueString(resourceGroup().name, parameters('location'))]",
       "metadata": {
         "description": "Name of default NSG to use for subnets."
       }
