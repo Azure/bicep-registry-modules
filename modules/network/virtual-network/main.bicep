@@ -71,7 +71,7 @@ param metricsToEnable array = [
 param newOrExistingNSG string = 'none'
 
 @description('Name of default NSG to use for subnets.')
-param networkSecurityGroupName string = ''
+param networkSecurityGroupName string = uniqueString(resourceGroup().name, location)
 
 var diagnosticsLogs = [for log in logsToEnable: {
   category: log
