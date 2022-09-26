@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.5.6.12127",
-      "templateHash": "9962724588709099443"
+      "version": "0.10.61.36676",
+      "templateHash": "10364443651732971487"
     }
   },
   "parameters": {
@@ -97,6 +97,9 @@
       ]
     }
   },
+  "variables": {
+    "neededRBACRoles": "[if(not(empty(parameters('rbacRolesNeededOnKV'))), parameters('rbacRolesNeededOnKV'), 'a4417e6f-fecd-4de8-b567-7b0420556985')]"
+  },
   "resources": [
     {
       "condition": "[not(parameters('useExistingManagedIdentity'))]",
@@ -109,13 +112,12 @@
       }
     },
     {
-      "condition": "[not(empty(parameters('rbacRolesNeededOnKV')))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2020-08-01-preview",
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('akvName'))]",
       "name": "[guid(resourceId('Microsoft.KeyVault/vaults', parameters('akvName')), parameters('rbacRolesNeededOnKV'), if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]",
       "properties": {
-        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('rbacRolesNeededOnKV'))]",
+        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('neededRBACRoles'))]",
         "principalId": "[if(parameters('useExistingManagedIdentity'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId, reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId)]",
         "principalType": "ServicePrincipal"
       },
