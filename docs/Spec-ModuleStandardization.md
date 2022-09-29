@@ -67,6 +67,13 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = if (newOrExisting == 
 }
 ```
 
+```bicep
+resource keyVault 'Microsoft.StorageAccount/StorageAccount@2022-07-01' = if (newOrExisting == 'new') {
+  name: replace(lower(take('${prefix}${name}', 40)), '-', '')
+  location: location
+ properties: {}
+}
+```
 ## Default Outputs 
 - Outputs should include both name and ID. 
 ```bicep
