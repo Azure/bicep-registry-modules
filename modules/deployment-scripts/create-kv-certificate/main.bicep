@@ -39,6 +39,8 @@ param initialScriptDelay string = '0'
 @description('When the script resource is cleaned up')
 param cleanupPreference string = 'OnSuccess'
 
+var neededRBACRoles = !empty(rbacRolesNeededOnKV) ? rbacRolesNeededOnKV : 'a4417e6f-fecd-4de8-b567-7b0420556985'
+
 resource akv 'Microsoft.KeyVault/vaults@2021-11-01-preview' existing = {
   name: akvName
 }
@@ -55,11 +57,11 @@ resource existingDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2
   scope: resourceGroup(existingManagedIdentitySubId, existingManagedIdentityResourceGroupName)
 }
 
-resource rbacKv 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = if (!empty(rbacRolesNeededOnKV)) {
+resource rbacKv 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = {
   name: guid(akv.id, rbacRolesNeededOnKV, useExistingManagedIdentity ? existingDepScriptId.id : newDepScriptId.id)
   scope: akv
   properties: {
-    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', rbacRolesNeededOnKV)
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', neededRBACRoles)
     principalId: useExistingManagedIdentity ? existingDepScriptId.properties.principalId : newDepScriptId.properties.principalId
     principalType: 'ServicePrincipal'
   }
