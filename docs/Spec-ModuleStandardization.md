@@ -1,3 +1,4 @@
+This specification declares the standards for a Bicep module. This defines the standard input and output parameters, parameter naming, additional parameters, and resource declaration.
 
 # Inputs
 ## Single Resource Module
