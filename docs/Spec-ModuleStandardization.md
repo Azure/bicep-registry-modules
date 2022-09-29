@@ -1,69 +1,5 @@
 This specification declares the standards for a Bicep module. This defines the standard input and output parameters, parameter naming, additional parameters, and resource declaration.
 
-# Inputs
-## Single Resource Module
-```bicep
-param location string
-param isZoneRedundant bool = true
-@allowed([ 'new', 'existing' ])
-param newOrExisting string = 'new'
-param name string = 'keyVault${uniqueString(resourceGroup().id, subscription().id)}'
-```
-
-## Multiple Resource Module
-```bicep
-param location string
-param isZoneRedundant bool = true
-@allowed([ 'new', 'existing', 'none' ])
-param newOrExistingStorageAccount string = 'none'
-param storageAccountName string = 'store${uniqueString(resourceGroup().id, subscription().id)}'
-
-@allowed([ 'new', 'existing', 'none' ])
-param newOrExistingKeyVault string = 'none'
-param keyVaultName string = 'keyVault${uniqueString(resourceGroup().id, subscription().id)}'
-```
-
-# New Resource
-```bicep
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = if (newOrExisting == 'new') {
-  name: take(name, 24)
-  location: location
- properties: {}
-}
-```
-
-# Existing Resource
-```bicep
-resource existingKeyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = if (newOrExisting == 'existing') {
-  name: name
-}
-```
-
-# Output 
-## Single Resource
-```bicep
-@description('Key Vault Id')
-output id string = newOrExisting == 'new' ? keyVault.id : existingKeyVault.id
-
-@description('Key Vault Name')
-output name string = newOrExisting == 'new' ? keyVault.name : existingKeyVault.name
-```
-
-## Multi Resource
-```bicep
-@description('Key Vault Id')
-output keyVaultId string = newOrExisting == 'new' ? keyVault.id : existingKeyVault.id
-
-@description('Key Vault Name')
-output keyVaultName string = newOrExisting == 'new' ? keyVault.name : existingKeyVault.name
-
-@description('Key Vault Id')
-output storageAccountId string = newOrExisting == 'new' ? keyVault.id : existingKeyVault.id
-
-@description('Key Vault Name')
-output storageAccountName string = newOrExisting == 'new' ? storageAccount.name : existingStorageAccount.name
-```
-
 # Standardizations
 ## Toggle Defaults and Allowed Values
 - `new` is default in the basic basic.
@@ -125,4 +61,70 @@ output idKeyVault string = newOrExisting == 'new' ? keyVault.id : existingKeyVau
 output nameKeyVault string = newOrExisting == 'new' ? keyVault.name : existingKeyVault.name
 output idStorageAccount string = newOrExisting == 'new' ? storageAccount.id : existingStorageAccount.id
 output nameStorageAccount string = newOrExisting == 'new' ? storageAccount.name : existingStorageAccount.name
+```
+
+# Examples
+
+## Inputs
+### Single Resource Module
+```bicep
+param location string
+param isZoneRedundant bool = true
+@allowed([ 'new', 'existing' ])
+param newOrExisting string = 'new'
+param name string = 'keyVault${uniqueString(resourceGroup().id, subscription().id)}'
+```
+
+### Multiple Resource Module
+```bicep
+param location string
+param isZoneRedundant bool = true
+@allowed([ 'new', 'existing', 'none' ])
+param newOrExistingStorageAccount string = 'none'
+param storageAccountName string = 'store${uniqueString(resourceGroup().id, subscription().id)}'
+
+@allowed([ 'new', 'existing', 'none' ])
+param newOrExistingKeyVault string = 'none'
+param keyVaultName string = 'keyVault${uniqueString(resourceGroup().id, subscription().id)}'
+```
+
+## New Resource
+```bicep
+resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = if (newOrExisting == 'new') {
+  name: take(name, 24)
+  location: location
+ properties: {}
+}
+```
+
+## Existing Resource
+```bicep
+resource existingKeyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = if (newOrExisting == 'existing') {
+  name: name
+}
+```
+
+## Output 
+### Single Resource
+```bicep
+@description('Key Vault Id')
+output id string = newOrExisting == 'new' ? keyVault.id : existingKeyVault.id
+
+@description('Key Vault Name')
+output name string = newOrExisting == 'new' ? keyVault.name : existingKeyVault.name
+```
+
+### Multi Resource
+```bicep
+@description('Key Vault Id')
+output keyVaultId string = newOrExisting == 'new' ? keyVault.id : existingKeyVault.id
+
+@description('Key Vault Name')
+output keyVaultName string = newOrExisting == 'new' ? keyVault.name : existingKeyVault.name
+
+@description('Key Vault Id')
+output storageAccountId string = newOrExisting == 'new' ? keyVault.id : existingKeyVault.id
+
+@description('Key Vault Name')
+output storageAccountName string = newOrExisting == 'new' ? storageAccount.name : existingStorageAccount.name
 ```
