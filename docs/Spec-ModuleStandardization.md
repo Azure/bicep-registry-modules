@@ -1,6 +1,13 @@
 This specification declares the standards for a Bicep module. This defines the standard input and output parameters, parameter naming, additional parameters, and resource declaration.
 
 # Standardizations
+## Location
+- Every template should start with a location parameter, with no default value set.
+```bicep
+@description('Deployment Location')
+param location string
+```
+
 ## Toggle Defaults and Allowed Values
 - `new` is default in the basic basic.
 ```bicep
@@ -12,18 +19,21 @@ param newOrExisting string = 'new'
 @allowed([ 'new', 'existing', 'none' ])
 param newOrExisting string = 'none'
 ```
+
 ## Toggle Name
-- When a module has a single resource the flag should be 'newOrExisting' but when there are many resources that can be toggled they should be suffixed with the Resource Type.
+- When a module has a single resource the flag should be 'newOrExisting'
 ```bicep
 @allowed([ 'new', 'existing'])
 param newOrExisting string = 'new'
 ```
+- When there are many resources that can be toggled they should be suffixed with the Resource Type.
 ```bicep
 @allowed([ 'new', 'existing'])
 param newOrExistingStorageAccount string = 'new'
 @allowed([ 'new', 'existing'])
 param newOrExistingKeyVault string = 'new'
 ```
+
 ## Resource Name Parameter
 - Single Resource Default Name Appends `Name` to <ResourceType>
 ```bicep
@@ -33,11 +43,13 @@ param name string
 ```bicep
 param nameStorageAccount string
 ```
+
 ## Resource Name Default
 - The default name starts with a prefix such as "store" or "vault", and includes a unique string based on the prefix, resource group id, subscription id and location. The prefix value is not included in default value, but 
 ```bicep
 param prefix string = ''
 param name string = 'store${uniqueString(prefix, resourceGroup().id, subscription().id, location)}'
+```
 
 ## Functions applied to Resource Name
 - Functions applied to the resource name should be applied directly in the resource declaration so that both the default value, or a user provider value are transformed. Functions should ensure that a valid new name is provided, and prevent issues such as 'to many characters', 'can not contain caps', or 'invalid characters'. 
