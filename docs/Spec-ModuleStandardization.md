@@ -1,4 +1,4 @@
-This specification declares the standards for a Bicep module. This defines the standard input and output parameters, parameter naming, additional parameters, and resource declaration.
+This specification declares the standards for a Bicep module. This defines the standard input and output parameters, parameter naming, additional parameters, and resource declaration. Note, description annoations are ommited until the examples section, but should always be included for parameters and outputs.
 
 # Standardizations
 ## Location
@@ -6,6 +6,12 @@ This specification declares the standards for a Bicep module. This defines the s
 ```bicep
 @description('Deployment Location')
 param location string
+```
+
+## Location
+- Template may include a parameter to enable zone reduancy. 
+```bicep
+param isZoneRedundant bool = true
 ```
 
 ## Toggle Defaults and Allowed Values
@@ -67,7 +73,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = if (newOrExisting == 
 output id string = newOrExisting == 'new' ? keyVault.id : existingKeyVault.id
 output name string = newOrExisting == 'new' ? keyVault.name : existingKeyVault.name
 ```
--When multiple resources are returned, the Resource Type should be used as a suffix.
+- When multiple resources are returned, the Resource Type should be used as a suffix.
 ```bicep
 output idKeyVault string = newOrExisting == 'new' ? keyVault.id : existingKeyVault.id
 output nameKeyVault string = newOrExisting == 'new' ? keyVault.name : existingKeyVault.name
@@ -80,24 +86,40 @@ output nameStorageAccount string = newOrExisting == 'new' ? storageAccount.name 
 ## Inputs
 ### Single Resource Module
 ```bicep
+@description('Deployment Location')
 param location string
+
+@description('Enable Zonal Redunancy for supported regions (skipped for unsupported regions)')
 param isZoneRedundant bool = true
+
+@description('Deploy a new Key Vault or choose from existing Key Vaults)')
 @allowed([ 'new', 'existing' ])
 param newOrExisting string = 'new'
+
+@description('Key Vault Name)')
 param name string = 'keyVault${uniqueString(resourceGroup().id, subscription().id)}'
 ```
 
 ### Multiple Resource Module
 ```bicep
+@description('Deployment Location')
 param location string
+
+@description('Enable Zonal Redunancy for supported regions (skipped for unsupported regions)')
 param isZoneRedundant bool = true
+
+@description('Deploy a new Storage Account or choose from existing Storage Accounts)')
 @allowed([ 'new', 'existing', 'none' ])
 param newOrExistingStorageAccount string = 'none'
-param storageAccountName string = 'store${uniqueString(resourceGroup().id, subscription().id)}'
+@description('Storage Account Name)')
+param nameStorageAccount string = 'store${uniqueString(resourceGroup().id, subscription().id)}'
 
+@description('Deploy a new Key Vault or choose from existing Key Vaults)')
 @allowed([ 'new', 'existing', 'none' ])
 param newOrExistingKeyVault string = 'none'
-param keyVaultName string = 'keyVault${uniqueString(resourceGroup().id, subscription().id)}'
+
+@description('Key Vault Name)')
+param nameKeyVault string = 'keyVault${uniqueString(resourceGroup().id, subscription().id)}'
 ```
 
 ## New Resource
