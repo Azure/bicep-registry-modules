@@ -6,6 +6,7 @@ The main template should include the following parameters.
 | `location`                    | `string` |                                   |                                           | ^ |
 | `resourceGroupName`           | `string` | `resourceGroup().name`            |                                           | |
 | `name`                        | `string` | `uniqueString(resourceGroupName)` |                                           | |
+| `prefix`                      | `string` |                                   |                                           | |
 | `newOrExisting`               | `string` | `new`                             | `@allowed([ 'new', 'existing', 'none' ])` | Optional |
 | `isZoneRedundant`             | `bool`   | `true`                            |                                           | Optional |
 | `virtualNetworkName`          | `string` | `uniqueString(resourceGroupName)` |                                           | Optional |
@@ -21,6 +22,7 @@ In addition, the template should include the following parameters for each resou
 | `locationKeyVault`           | `string` | `location`             |                                           | |
 | `resourceGroupNameKeyVault`  | `string` | `resourceGroupName`    |                                           | |
 | `nameKeyVault`               | `string` | `name`                 |                                           | |
+| `prefixKeyVault`             | `string` | `prefix`               |                                           | |
 | `newOrExistingKeyVault`      | `string` | `newOrExisting`        | `@allowed([ 'new', 'existing', 'none' ])` | Optional |
 | `isZoneRedundantKeyVault`    | `bool`   | `isZoneRedundant`      |                                           | Optional |
 | `virtualNetworkNameKeyVault` | `string` | `virtualNetworkName`   |                                           | Optional |
