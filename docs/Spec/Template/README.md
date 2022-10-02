@@ -3,7 +3,7 @@ This specification declares the standards for a Bicep module. This defines the s
 The main template should include the following parameters.
 | Name                          | Type     | Default                | Allowed                                   | Notes |
 | ----------------------------- | -------- | ---------------------- | ----------------------------------------- | ----- |
-| `location`                    | `string` | *                      |                                           | |
+| `location`                    | `string` | ^                      |                                           | |
 | `resourceGroupName`           | `string` | `resourceGroup().name` |                                           | |
 | `name`                        | `string` | `uniqueString()`       |                                           | |
 | `newOrExisting`               | `string` | `new`                  | `@allowed([ 'new', 'existing', 'none' ])` | Optional |
@@ -14,7 +14,7 @@ The main template should include the following parameters.
 
 In addition, the template should include the following parameters for each resource in the template. This example shows the defaults for a `KeyVault` resource. The default values for each parameter should be set to the template parameter related above.
 
-* TODO: Insert link to ARM-TTK rule related to this value
+^ TODO: Insert link to ARM-TTK rule related to this value
 
 | Name                         | Type     | Default                | Allowed                                   | Notes |
 | ---------------------------- | -------- | ---------------------- | ----------------------------------------- | ----- |
