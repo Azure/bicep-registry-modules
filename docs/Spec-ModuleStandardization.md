@@ -173,29 +173,61 @@ output storageAccountName string = newOrExisting == 'new' ? storageAccount.name 
 ```
   
 # Samples
-## Sample Module
-```bicep
-// main.bicep
+// base-template.bicep
 @description('Deployment Location')
 param location string
+  
+@description('Resource Group Name')
+param resourceGroupName string = resourceGroup().name
+
+@description('Deployment Name')
+param name string = uniqueString(resourceGroup().id, subscription().id)
 
 @description('Deploy new or existing resource')
 @allowed([ 'new', 'existing', 'none' ])
 param newOrExisting string = 'none'
 
-module nestedModule 'nested-module.bicep' = {
+// Optional Parameters
+// @description('Enable Zonal Redunancy for supported regions (skipped for unsupported regions)')
+// param isZoneRedundant bool = true
+
+var configuration = {
+  location: location
+  resourceGroupName: resourceGroupName
   name: name
+  newOrExisting: newOrExisting
+  // isZoneRedundant: isZoneRedundant
+}
+
+module nestedModlue 'nested-template.bicep' = {
+  name: 'nestedModule'
+  scope: resourceGroup(resourceGroupName)
   params: {
-    name: name
-    newOrExisting: newOrExisting
+    location: configuration.location
+    resourceGroupName: configuration.resourceGroupName
+    name: configuration.name
+    newOrExisting: configuration.newOrExisting
+    // isZoneRedundant: isZoneRedundant
   }
 }
 
 @description('Deployed Location')
 output location string = location
 
+@description('Deployed Resource Group Name')
+output resourceGroupName string = resourceGroupName
+
+@description('Deployed Name')
+output name string = name
+
 @description('Deployed new or existing resource')
 output newOrExisting string = newOrExisting
+
+// @description('Zone Redundancy')
+// output isZoneRedundant string = isZoneRedundant
+
+@description('Deployment Configuration')
+output configuration object = nestedModlue.outputs.configuration
 ```
 
 ```bicep
@@ -226,21 +258,37 @@ param nameStorageAccount string = 'store${name}'
 @allowed([ 'new', 'existing', 'none' ])
 param newOrExistingStorageAccount string = newOrExisting
 
-param propertiesStorageAccount object = //Default Value
-...Additional Resource Parameters
+param propertiesStorageAccount object = {}
+// ...Additional Resource Parameters
 
-resource storageAccount 'Microsoft.StorageAccount/Account' = if (newOrExistingStorageAccount == 'new' ) {
-  name: name
-  scope: resourceGroupStorageAccountName
+var configuration = {
   location: location
+  resourceGroupName: resourceGroupName
+  name: name
+  newOrExisting: newOrExisting
+  resources: {
+    storageAccount: {
+      location: locationStorage
+      resourceGroupName: resourceGroupStorageAccountName
+      name: nameStorageAccount
+      newOrExisting: newOrExistingStorageAccount
+    }
+  }
+}
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = if (configuration.resources.storageAccount.newOrExisting == 'new' ) {
+  name: configuration.resources.storageAccount.name
+  location: configuration.resources.storageAccount.location
   properties: propertiesStorageAccount
 }
 
-resource existingStorageAccount 'Microsoft.StorageAccount/Account' existing = if (newOrExistingStorageAccount == 'existing' ) {
-  name: name
-  scope: resourceGroupStorageAccountName
+resource existingStorageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' existing = if (configuration.resources.storageAccount.newOrExisting == 'existing' ) {
+  name: configuration.resources.storageAccount.name
 }
-...Additional Resource Declarations
+// ...Additional Resource Declarations
+
+@description('Deployment Configuration')
+output configuration object = configuration
 
 @description('Deployed Location')
 output location string = location
@@ -255,13 +303,13 @@ output name string = name
 output newOrExisting string = newOrExisting
 
 @description('Deployed Location')
-output locationStorageAccount string = locationStorageAccount
+output locationStorageAccount string = locationStorage
 
-@description('Storage Account's Resource Group Name')
+@description('Resource Group Name of Storage Account')
 output resourceGroupStorageAccountName string = resourceGroupStorageAccountName
 
 @description('Storage Account Id')
-output idStorageAccount string = newOrExisting == 'new' ? keyVault.id : existingKeyVault.id
+output idStorageAccount string = newOrExisting == 'new' ? storageAccount.id : existingStorageAccount.id
 
 @description('Storage Account Name')
 output nameStorageAccount string = newOrExisting == 'new' ? storageAccount.name : existingStorageAccount.name
@@ -269,6 +317,6 @@ output nameStorageAccount string = newOrExisting == 'new' ? storageAccount.name 
 @description('Deployed new or existing resource')
 output newOrExistingStorageAccount string = newOrExistingStorageAccount
 
-...Additional Resource Outputs
+//...Additional Resource Outputs
 
 ```
