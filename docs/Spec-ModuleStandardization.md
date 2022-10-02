@@ -1,41 +1,27 @@
 This specification declares the standards for a Bicep module. This defines the standard input and output parameters, parameter naming, additional parameters, and resource declaration. Note, description annoations are ommited until the examples section, but should always be included for parameters and outputs.
 
+
+| Name              | Type     | Default          | Allowed                                   | Output           |
+| ----------------- | -------- | ---------------- | ----------------------------------------- | ---------------- | 
+| `location`        | `string` |                  |                                           | `location`       |
+| `name`            | `string` | `uniqueString()` |                                           | `newOrExisting`  | 
+| `newOrExisting`   | `string` | `new`            | `@allowed([ 'new', 'existing', 'none' ])` | `newOrExisting`  | 
+| `isZoneRedundant` | `bool`   | `true`           |                                           | `isZoneRedudant` |
+
 # Required Parameters
+
 ## Location
 - Every template should start with a location parameter, with no default value set.
+
 ```bicep
 @description('Deployment Location')
 param location string
+
+output location string = location 
 ```
 
-## New/Existing Toggle
-### Defaults and Allowed Values
-- `new` is default in the basic basic.
-```bicep
-@allowed([ 'new', 'existing'])
-param newOrExisting string = 'new'
-```
-- In some instances, `none` is an required option. In those cases, `none` is default.
-```bicep
-@allowed([ 'new', 'existing', 'none' ])
-param newOrExisting string = 'none'
-```
 
-### Parameter Naming
-- When a module has a single resource the flag should be 'newOrExisting'
-```bicep
-@allowed([ 'new', 'existing'])
-param newOrExisting string = 'new'
-```
-- When there are many resources that can be toggled they should be suffixed with the Resource Type.
-```bicep
-@allowed([ 'new', 'existing'])
-param newOrExistingStorageAccount string = 'new'
-@allowed([ 'new', 'existing'])
-param newOrExistingKeyVault string = 'new'
-```
-
-## Resource Name
+## Name
 ### Parameter Naming 
 - Single Resource Default Name Appends `Name` to <ResourceType>
 ```bicep
@@ -82,6 +68,33 @@ output idKeyVault string = newOrExisting == 'new' ? keyVault.id : existingKeyVau
 output nameKeyVault string = newOrExisting == 'new' ? keyVault.name : existingKeyVault.name
 output idStorageAccount string = newOrExisting == 'new' ? storageAccount.id : existingStorageAccount.id
 output nameStorageAccount string = newOrExisting == 'new' ? storageAccount.name : existingStorageAccount.name
+```
+
+## New or Existing
+### Defaults and Allowed Values
+- `new` is default in the basic basic.
+```bicep
+@allowed([ 'new', 'existing'])
+param newOrExisting string = 'new'
+```
+- In some instances, `none` is an required option. In those cases, `none` is default.
+```bicep
+@allowed([ 'new', 'existing', 'none' ])
+param newOrExisting string = 'none'
+```
+
+### Parameter Naming
+- When a module has a single resource the flag should be 'newOrExisting'
+```bicep
+@allowed([ 'new', 'existing'])
+param newOrExisting string = 'new'
+```
+- When there are many resources that can be toggled they should be suffixed with the Resource Type.
+```bicep
+@allowed([ 'new', 'existing'])
+param newOrExistingStorageAccount string = 'new'
+@allowed([ 'new', 'existing'])
+param newOrExistingKeyVault string = 'new'
 ```
 
 # Optional Parameter Conventions
