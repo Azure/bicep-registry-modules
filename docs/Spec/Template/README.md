@@ -19,9 +19,9 @@ In addition, the template should include the following parameters for each resou
 
 | Name                         | Type     | Default                | Notes |
 | ---------------------------- | -------- | ---------------------- | ----- |
-| `locationKeyVault`           | `string` | `location`             | |
-| `resourceGroupNameKeyVault`  | `string` | `resourceGroupName`    | |
-| `nameKeyVault`               | `string` | `name`                 | |
+| `locationKeyVault`           | `string` | `location`             | Required in Nested Template |
+| `resourceGroupNameKeyVault`  | `string` | `resourceGroupName`    | Required in Nested Template |
+| `nameKeyVault`               | `string` | `name`                 | Required in Nested Template |
 | `prefixKeyVault`             | `string` | `prefix`               | Optional |
 | `newOrExistingKeyVault`      | `string` | `newOrExisting`        | Optional |
 | `isZoneRedundantKeyVault`    | `bool`   | `isZoneRedundant`      | Optional |
@@ -31,7 +31,7 @@ In addition, the template should include the following parameters for each resou
 
 
 # Samples
-This base template Sample shows the standard for a Bicep template with one resource or module.
+This base template Sample shows the standard for a Bicep template with one resource or module. The author may decide to include additional paramaters in the base-template depending on the configuration of the application. 
 
 - [base-template.bicep](base-template.bicep)
 - [nested-template.bicep](nested-template.bicep)
