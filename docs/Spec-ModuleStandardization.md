@@ -171,8 +171,9 @@ output storageAccountId string = newOrExisting == 'new' ? keyVault.id : existing
 @description('Storage Account Name')
 output storageAccountName string = newOrExisting == 'new' ? storageAccount.name : existingStorageAccount.name
 ```
-  
+
 # Samples
+```bicep
 // base-template.bicep
 @description('Deployment Location')
 param location string
