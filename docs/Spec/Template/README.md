@@ -3,7 +3,7 @@ This specification declares the standards for a Bicep module. This defines the s
 The main template should include the following parameters.
 | Name                          | Type     | Default                | Allowed                                   | Notes |
 | ----------------------------- | -------- | ---------------------- | ----------------------------------------- | ----- |
-| `location`                    | `string` | ^                      |                                           | |
+| `location`                    | `string` |                        |                                           | ^ |
 | `resourceGroupName`           | `string` | `resourceGroup().name` |                                           | |
 | `name`                        | `string` | `uniqueString()`       |                                           | |
 | `newOrExisting`               | `string` | `new`                  | `@allowed([ 'new', 'existing', 'none' ])` | Optional |
