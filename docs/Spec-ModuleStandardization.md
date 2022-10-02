@@ -27,6 +27,8 @@ In addition, the template should include the following parameters for each resou
 
 
 # Samples
+This base template Sample shows the standard for a Bicep template with one resource or module.
+
 ## base-template.bicep
 ```bicep
 @description('Deployment Location')
@@ -86,6 +88,8 @@ output configuration object = newOrExisting != 'none' ? configuration : {}
 ```
 
 ## nested-module.bicep
+The nested module Sample shows the standard for a template which contains multipule resources (but only the Storage Account resorce is show).
+
 ```bicep
 @description('Deployment Location')
 param location string
