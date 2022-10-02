@@ -12,7 +12,7 @@ The main template should include the following parameters.
 | `subnetName`                  | `string` | `uniqueString()`       |                                           | Optional |
 | `tags`                        | `object` | `{}`                   |                                           | Optional |
 
-In addition, the template should include the following parameters for each resource in the template. This example shows the defaults for a `KeyVault` resource.
+In addition, the template should include the following parameters for each resource in the template. This example shows the defaults for a `KeyVault` resource. The default values for each parameter should be set to the template parameter related above.
 
 | Name                         | Type     | Default                | Allowed                                   | Notes |
 | ---------------------------- | -------- | ---------------------- | ----------------------------------------- | ----- |
