@@ -165,9 +165,110 @@ output keyVaultId string = newOrExisting == 'new' ? keyVault.id : existingKeyVau
 @description('Key Vault Name')
 output keyVaultName string = newOrExisting == 'new' ? keyVault.name : existingKeyVault.name
 
-@description('Key Vault Id')
+@description('Storage Account Id')
 output storageAccountId string = newOrExisting == 'new' ? keyVault.id : existingKeyVault.id
 
-@description('Key Vault Name')
+@description('Storage Account Name')
 output storageAccountName string = newOrExisting == 'new' ? storageAccount.name : existingStorageAccount.name
+```
+  
+# Samples
+## Sample Module
+```bicep
+// main.bicep
+@description('Deployment Location')
+param location string
+
+@description('Deploy new or existing resource')
+@allowed([ 'new', 'existing', 'none' ])
+param newOrExisting string = 'none'
+
+module nestedModule 'nested-module.bicep' = {
+  name: name
+  params: {
+    name: name
+    newOrExisting: newOrExisting
+  }
+}
+
+@description('Deployed Location')
+output location string = location
+
+@description('Deployed new or existing resource')
+output newOrExisting string = newOrExisting
+```
+
+```bicep
+// nested-module.bicep
+@description('Deployment Location')
+param location string
+  
+@description('Resource Group Name')
+param resourceGroupName string = resourceGroup().name
+
+@description('Deployment Name')
+param name string = uniqueString(resourceGroup().id, subscription().id)
+
+@description('Deploy new or existing resource')
+@allowed([ 'new', 'existing', 'none' ])
+param newOrExisting string = 'none'
+
+@description('Storage Account Location')
+param locationStorage string = location
+
+@description('Resource Group Name')
+param resourceGroupStorageAccountName string = resourceGroupName
+
+@description('Deployment Name')
+param nameStorageAccount string = 'store${name}'
+
+@description('Deploy new or existing resource')
+@allowed([ 'new', 'existing', 'none' ])
+param newOrExistingStorageAccount string = newOrExisting
+
+param propertiesStorageAccount object = //Default Value
+...Additional Resource Parameters
+
+resource storageAccount 'Microsoft.StorageAccount/Account' = if (newOrExistingStorageAccount == 'new' ) {
+  name: name
+  scope: resourceGroupStorageAccountName
+  location: location
+  properties: propertiesStorageAccount
+}
+
+resource existingStorageAccount 'Microsoft.StorageAccount/Account' existing = if (newOrExistingStorageAccount == 'existing' ) {
+  name: name
+  scope: resourceGroupStorageAccountName
+}
+...Additional Resource Declarations
+
+@description('Deployed Location')
+output location string = location
+
+@description('Deployed Resource Group Name')
+output resourceGroupName string = resourceGroupName
+
+@description('Deployed Name')
+output name string = name
+
+@description('Deployed new or existing resource')
+output newOrExisting string = newOrExisting
+
+@description('Deployed Location')
+output locationStorageAccount string = locationStorageAccount
+
+@description('Storage Account's Resource Group Name')
+output resourceGroupStorageAccountName string = resourceGroupStorageAccountName
+
+@description('Storage Account Id')
+output idStorageAccount string = newOrExisting == 'new' ? keyVault.id : existingKeyVault.id
+
+@description('Storage Account Name')
+output nameStorageAccount string = newOrExisting == 'new' ? storageAccount.name : existingStorageAccount.name
+
+@description('Deployed new or existing resource')
+output newOrExistingStorageAccount string = newOrExistingStorageAccount
+
+...Additional Resource Outputs
+
 ```
