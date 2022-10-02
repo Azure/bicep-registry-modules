@@ -200,7 +200,7 @@ var configuration = {
   // isZoneRedundant: isZoneRedundant
 }
 
-module nestedModlue 'nested-template.bicep' = {
+module nestedModlue 'nested-template.bicep' = if( newOrExisting != 'none' )  {
   name: 'nestedModule'
   scope: resourceGroup(resourceGroupName)
   params: {
