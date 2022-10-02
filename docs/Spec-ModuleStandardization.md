@@ -24,50 +24,36 @@ output location string = location
 ## Name
 ### Parameter Naming 
 - Single Resource Default Name Appends `Name` to <ResourceType>
-```bicep
-param name string
-```
 - Multi-resource Default Name Appends <ResourceType> to `Name`
+- The default name starts with a prefix such as "store" or "vault", and includes a unique string based on the prefix, resource group id, subscription id and location. The prefix value is not included in default value, but 
+- Functions applied to the resource name should be applied directly in the resource declaration so that both the default value, or a user provider value are transformed. Functions should ensure that a valid new name is provided, and prevent issues such as 'to many characters', 'can not contain caps', or 'invalid characters'.
+#### Module
 ```bicep
-param nameStorageAccount string
+param name string = uniqueString(resourceGroup().name, location)
+
+module resource 'nested-module.bicep' = {
+  name: name
+  params: {
+    name: name
+  }
+}
+
+output string name = name
 ```
 
-### Defaults and Allowed Values
-- The default name starts with a prefix such as "store" or "vault", and includes a unique string based on the prefix, resource group id, subscription id and location. The prefix value is not included in default value, but 
+#### Resource
 ```bicep
 param prefix string = ''
-param name string = 'store${uniqueString(prefix, resourceGroup().id, subscription().id, location)}'
-```
+param nameStorageAccount string = 'store${uniqueString(subscription().id, resourceGroup().id, location, prefix)}'
 
-### Functions applied to Resource Name
-- Functions applied to the resource name should be applied directly in the resource declaration so that both the default value, or a user provider value are transformed. Functions should ensure that a valid new name is provided, and prevent issues such as 'to many characters', 'can not contain caps', or 'invalid characters'. 
-```bicep
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = if (newOrExisting == 'new') {
-  name: take('${prefix}${name}', 24)
+resource storageAccount 'Microsoft.StorageAccount/StorageAccount@2022-07-01' = {
+  name: replace(lower(take('${prefix}${nameStorageAccount}', 40)), '-', '')
   location: location
  properties: {}
 }
-```
 
-```bicep
-resource keyVault 'Microsoft.StorageAccount/StorageAccount@2022-07-01' = if (newOrExisting == 'new') {
-  name: replace(lower(take('${prefix}${name}', 40)), '-', '')
-  location: location
- properties: {}
-}
-```
-### Outputs 
-- Outputs should include both name and ID. 
-```bicep
-output id string = newOrExisting == 'new' ? keyVault.id : existingKeyVault.id
-output name string = newOrExisting == 'new' ? keyVault.name : existingKeyVault.name
-```
-- When multiple resources are returned, the Resource Type should be used as a suffix.
-```bicep
-output idKeyVault string = newOrExisting == 'new' ? keyVault.id : existingKeyVault.id
-output nameKeyVault string = newOrExisting == 'new' ? keyVault.name : existingKeyVault.name
-output idStorageAccount string = newOrExisting == 'new' ? storageAccount.id : existingStorageAccount.id
-output nameStorageAccount string = newOrExisting == 'new' ? storageAccount.name : existingStorageAccount.name
+output idStorageAccount string = storageAccount.id
+output nameStorageAccount string = storageAccount.name
 ```
 
 ## New or Existing
