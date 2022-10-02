@@ -12,6 +12,7 @@ The main template should include the following parameters.
 | `virtualNetworkName`          | `string` | `uniqueString(resourceGroupName)` | Optional |
 | `subnetName`                  | `string` | `uniqueString(resourceGroupName)` | Optional |
 | `tags`                        | `object` | `{}`                              | Optional |
+
 ^ TODO: Insert link to ARM-TTK rule related to this value
 
 In addition, the template should include the following parameters for each resource in the template. This example shows the defaults for a `KeyVault` resource. The default values for each parameter should be set to the template parameter related above.
