@@ -89,6 +89,14 @@ param newOrExistingKeyVault string = 'new'
 ```bicep
 param isZoneRedundant bool = true
 ```
+## Virtual Network with Subnet
+```bicep
+@description('Specifies the name of the existing virtual network.')
+param virtualNetworkName string
+
+@description('Specifies the name of the existing subnet.')
+param subnetName string
+```
 
 # Examples
 
