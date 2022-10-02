@@ -15,7 +15,7 @@ The main template should include the following parameters.
 
 ^ TODO: Insert link to ARM-TTK rule related to this value
 
-In addition, the template should include the following parameters for each resource in the template. This example shows the defaults for a `KeyVault` resource. The default values for each parameter should be set to the template parameter related above.
+In addition, the template should include the following parameters for each resource in the template. This example shows the parmaters declared for a `KeyVault` resource. The default values for each parameter should be set to the template parameter related above.
 
 | Name                         | Type     | Default                | Notes |
 | ---------------------------- | -------- | ---------------------- | ----- |
