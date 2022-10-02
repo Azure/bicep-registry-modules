@@ -10,6 +10,7 @@ This specification declares the standards for a Bicep module. This defines the s
 | `isZoneRedundant`    | `bool`   | `true`                 |                                           | Optional |
 | `virtualNetworkName` | `string` | `uniqueString()`       |                                           | Optional |
 | `subnetName`         | `string` | `uniqueString()`       |                                           | Optional |
+| `tags`               | `object` | `{}`                   |                                           | Optional |
 
 # Required Parameters
 
