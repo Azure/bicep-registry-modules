@@ -1,12 +1,15 @@
 This specification declares the standards for a Bicep module. This defines the standard input and output parameters, parameter naming, additional parameters, and resource declaration. Note, description annoations are ommited until the examples section, but should always be included for parameters and outputs.
 
 
-| Name              | Type     | Default          | Allowed                                   | Output           |
-| ----------------- | -------- | ---------------- | ----------------------------------------- | ---------------- | 
-| `location`        | `string` |                  |                                           | `location`       |
-| `name`            | `string` | `uniqueString()` |                                           | `newOrExisting`  | 
-| `newOrExisting`   | `string` | `new`            | `@allowed([ 'new', 'existing', 'none' ])` | `newOrExisting`  | 
-| `isZoneRedundant` | `bool`   | `true`           |                                           | `isZoneRedudant` |
+| Name                 | Type     | Default              | Allowed                                   | Output               | Notes |
+| -------------------- | -------- | -------------------- | ----------------------------------------- | -------------------- | |
+| `location`           | `string` |                      |                                           | `location`           | |
+| `resourceGroupName`  | `string` | resourceGroup().name |                                           | `location`           | |
+| `name`               | `string` | `uniqueString()`     |                                           | `newOrExisting`      | |
+| `newOrExisting`      | `string` | `new`                | `@allowed([ 'new', 'existing', 'none' ])` | `newOrExisting`      | |
+| `isZoneRedundant`    | `bool`   | `true`               |                                           | `isZoneRedudant`     | Optional |
+| `virtualNetworkName` | `string` | `uniqueString()`     |                                           | `virtualNetworkName` | Optional |
+| `subnetName`         | `string` | `uniqueString()`     |                                           | `subnetName`         | Optional |
 
 # Required Parameters
 
@@ -89,6 +92,7 @@ param newOrExistingKeyVault string = 'new'
 ```bicep
 param isZoneRedundant bool = true
 ```
+
 ## Virtual Network with Subnet
 ```bicep
 @description('Specifies the name of the existing virtual network.')
@@ -96,6 +100,12 @@ param virtualNetworkName string
 
 @description('Specifies the name of the existing subnet.')
 param subnetName string
+```
+
+## Tags
+```bicep
+@description('Specifies the resource tags.')
+param tags object
 ```
 
 # Examples
