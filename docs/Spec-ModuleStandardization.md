@@ -243,8 +243,8 @@ param resourceGroupName string = resourceGroup().name
 param name string = uniqueString(resourceGroup().id, subscription().id)
 
 @description('Deploy new or existing resource')
-@allowed([ 'new', 'existing', 'none' ])
-param newOrExisting string = 'none'
+@allowed([ 'new', 'existing' ])
+param newOrExisting string = 'new'
 
 @description('Storage Account Location')
 param locationStorage string = location
@@ -256,7 +256,7 @@ param resourceGroupStorageAccountName string = resourceGroupName
 param nameStorageAccount string = 'store${name}'
 
 @description('Deploy new or existing resource')
-@allowed([ 'new', 'existing', 'none' ])
+@allowed([ 'new', 'existing' ])
 param newOrExistingStorageAccount string = newOrExisting
 
 param propertiesStorageAccount object = {}
