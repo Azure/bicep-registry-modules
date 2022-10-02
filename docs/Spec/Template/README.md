@@ -1,16 +1,16 @@
 This specification declares the standards for a Bicep module. This defines the standard input and output parameters, parameter naming, additional parameters, and resource declaration. Note, description annotation are ommited from some examples, but should always be included for parameters and outputs.
 
 The main template should include the following parameters.
-| Name                          | Type     | Default                | Allowed                                   | Notes |
-| ----------------------------- | -------- | ---------------------- | ----------------------------------------- | ----- |
-| `location`                    | `string` |                        |                                           | ^ |
-| `resourceGroupName`           | `string` | `resourceGroup().name` |                                           | |
-| `name`                        | `string` | `uniqueString()`       |                                           | |
-| `newOrExisting`               | `string` | `new`                  | `@allowed([ 'new', 'existing', 'none' ])` | Optional |
-| `isZoneRedundant`             | `bool`   | `true`                 |                                           | Optional |
-| `virtualNetworkName`          | `string` | `uniqueString()`       |                                           | Optional |
-| `subnetName`                  | `string` | `uniqueString()`       |                                           | Optional |
-| `tags`                        | `object` | `{}`                   |                                           | Optional |
+| Name                          | Type     | Default                           | Allowed                                   | Notes |
+| ----------------------------- | -------- | --------------------------------- | ----------------------------------------- | ----- |
+| `location`                    | `string` |                                   |                                           | ^ |
+| `resourceGroupName`           | `string` | `resourceGroup().name`            |                                           | |
+| `name`                        | `string` | `uniqueString(resourceGroupName)` |                                           | |
+| `newOrExisting`               | `string` | `new`                             | `@allowed([ 'new', 'existing', 'none' ])` | Optional |
+| `isZoneRedundant`             | `bool`   | `true`                            |                                           | Optional |
+| `virtualNetworkName`          | `string` | `uniqueString(resourceGroupName)` |                                           | Optional |
+| `subnetName`                  | `string` | `uniqueString(resourceGroupName)` |                                           | Optional |
+| `tags`                        | `object` | `{}`                              |                                           | Optional |
 
 In addition, the template should include the following parameters for each resource in the template. This example shows the defaults for a `KeyVault` resource. The default values for each parameter should be set to the template parameter related above.
 
