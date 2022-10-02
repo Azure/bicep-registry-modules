@@ -1,0 +1,306 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.10.61.36676",
+      "templateHash": "6441903352580025159"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Deployment Location"
+      }
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().name]",
+      "metadata": {
+        "description": "Resource Group Name"
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "[uniqueString(resourceGroup().id, subscription().id)]",
+      "metadata": {
+        "description": "Deployment Name"
+      }
+    },
+    "newOrExisting": {
+      "type": "string",
+      "defaultValue": "none",
+      "allowedValues": [
+        "new",
+        "existing",
+        "none"
+      ],
+      "metadata": {
+        "description": "Deploy new or existing resource"
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[not(equals(parameters('newOrExisting'), 'none'))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "nestedModule",
+      "resourceGroup": "[parameters('resourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "resourceGroupName": {
+            "value": "[parameters('resourceGroupName')]"
+          },
+          "name": {
+            "value": "[parameters('name')]"
+          },
+          "newOrExisting": {
+            "value": "[if(equals(parameters('newOrExisting'), 'new'), 'new', 'existing')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.10.61.36676",
+              "templateHash": "1313270751045581630"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Deployment Location"
+              }
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().name]",
+              "metadata": {
+                "description": "Resource Group Name"
+              }
+            },
+            "name": {
+              "type": "string",
+              "defaultValue": "[uniqueString(resourceGroup().id, subscription().id)]",
+              "metadata": {
+                "description": "Deployment Name"
+              }
+            },
+            "prefix": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Deployment Name Prefix"
+              }
+            },
+            "newOrExisting": {
+              "type": "string",
+              "defaultValue": "new",
+              "allowedValues": [
+                "new",
+                "existing"
+              ],
+              "metadata": {
+                "description": "Deploy new or existing resource"
+              }
+            },
+            "locationStorage": {
+              "type": "string",
+              "defaultValue": "[parameters('location')]",
+              "metadata": {
+                "description": "Storage Account Location"
+              }
+            },
+            "resourceGroupStorageAccountName": {
+              "type": "string",
+              "defaultValue": "[parameters('resourceGroupName')]",
+              "metadata": {
+                "description": "Resource Group Name"
+              }
+            },
+            "nameStorageAccount": {
+              "type": "string",
+              "defaultValue": "[parameters('name')]",
+              "metadata": {
+                "description": "Storage Account Name"
+              }
+            },
+            "prefixStorageAccount": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Storage Account Name Prefix"
+              }
+            },
+            "newOrExistingStorageAccount": {
+              "type": "string",
+              "defaultValue": "[parameters('newOrExisting')]",
+              "allowedValues": [
+                "new",
+                "existing"
+              ],
+              "metadata": {
+                "description": "Deploy new or existing resource"
+              }
+            },
+            "propertiesStorageAccount": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Example of Storage Account parameters"
+              }
+            }
+          },
+          "variables": {
+            "configuration": {
+              "location": "[parameters('location')]",
+              "resourceGroupName": "[parameters('resourceGroupName')]",
+              "name": "[format('{0}{1}', parameters('prefix'), parameters('name'))]",
+              "newOrExisting": "[parameters('newOrExisting')]",
+              "resources": {
+                "storageAccount": {
+                  "location": "[parameters('locationStorage')]",
+                  "resourceGroupName": "[parameters('resourceGroupStorageAccountName')]",
+                  "name": "[take(toLower(format('{0}{1}', parameters('prefixStorageAccount'), parameters('nameStorageAccount'))), 30)]",
+                  "newOrExisting": "[parameters('newOrExistingStorageAccount')]"
+                }
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[equals(variables('configuration').resources.storageAccount.newOrExisting, 'new')]",
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2022-05-01",
+              "name": "[variables('configuration').resources.storageAccount.name]",
+              "location": "[variables('configuration').resources.storageAccount.location]",
+              "properties": "[parameters('propertiesStorageAccount')]"
+            }
+          ],
+          "outputs": {
+            "location": {
+              "type": "string",
+              "value": "[parameters('location')]",
+              "metadata": {
+                "description": "Deployed Location"
+              }
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "value": "[parameters('resourceGroupName')]",
+              "metadata": {
+                "description": "Deployed Resource Group Name"
+              }
+            },
+            "name": {
+              "type": "string",
+              "value": "[parameters('name')]",
+              "metadata": {
+                "description": "Deployed Name"
+              }
+            },
+            "newOrExisting": {
+              "type": "string",
+              "value": "[parameters('newOrExisting')]",
+              "metadata": {
+                "description": "Deployed new or existing resource"
+              }
+            },
+            "locationStorageAccount": {
+              "type": "string",
+              "value": "[variables('configuration').resources.storageAccount.location]",
+              "metadata": {
+                "description": "Deployed Location"
+              }
+            },
+            "resourceGroupStorageAccountName": {
+              "type": "string",
+              "value": "[variables('configuration').resources.storageAccount.resourceGroupName]",
+              "metadata": {
+                "description": "Resource Group Name of Storage Account"
+              }
+            },
+            "nameStorageAccount": {
+              "type": "string",
+              "value": "[variables('configuration').resources.storageAccount.name]",
+              "metadata": {
+                "description": "Storage Account Name"
+              }
+            },
+            "idStorageAccount": {
+              "type": "string",
+              "value": "[if(equals(parameters('newOrExistingStorageAccount'), 'new'), resourceId('Microsoft.Storage/storageAccounts', variables('configuration').resources.storageAccount.name), resourceId('Microsoft.Storage/storageAccounts', variables('configuration').resources.storageAccount.name))]",
+              "metadata": {
+                "description": "Storage Account ID"
+              }
+            },
+            "newOrExistingStorageAccount": {
+              "type": "string",
+              "value": "[variables('configuration').resources.storageAccount.newOrExisting]",
+              "metadata": {
+                "description": "Deployed new or existing resource"
+              }
+            },
+            "configuration": {
+              "type": "object",
+              "value": "[variables('configuration')]",
+              "metadata": {
+                "description": "Deployment Configuration"
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "location": {
+      "type": "string",
+      "value": "[parameters('location')]",
+      "metadata": {
+        "description": "Deployed Location"
+      }
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "value": "[parameters('resourceGroupName')]",
+      "metadata": {
+        "description": "Deployed Resource Group Name"
+      }
+    },
+    "name": {
+      "type": "string",
+      "value": "[parameters('name')]",
+      "metadata": {
+        "description": "Deployed Name"
+      }
+    },
+    "newOrExisting": {
+      "type": "string",
+      "value": "[parameters('newOrExisting')]",
+      "metadata": {
+        "description": "Deployed new or existing resource"
+      }
+    },
+    "configuration": {
+      "type": "object",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', 'nestedModule'), '2020-10-01').outputs.configuration.value]",
+      "metadata": {
+        "description": "Deployment Configuration"
+      }
+    }
+  }
+}
