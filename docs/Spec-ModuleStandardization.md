@@ -228,7 +228,7 @@ output newOrExisting string = newOrExisting
 // output isZoneRedundant string = isZoneRedundant
 
 @description('Deployment Configuration')
-output configuration object = nestedModlue.outputs.configuration
+output configuration object = newOrExisting != 'none' ? configuration : {}
 ```
 
 ## nested-module.bicep
