@@ -1,4 +1,4 @@
-This specification declares the standards for a Bicep module. This defines the standard input and output parameters, parameter naming, additional parameters, and resource declaration. Note, description annoations are ommited until the examples section, but should always be included for parameters and outputs.
+This specification declares the standards for a Bicep module. This defines the standard input and output parameters, parameter naming, additional parameters, and resource declaration. Note, description annoations are ommited until the examples section, but should always be included for parameters and outputs. All parameters must include a `Description` annotation.
 
 The main template should include the following parameters.
 | Name                          | Type     | Default                | Allowed                                   | Notes |
