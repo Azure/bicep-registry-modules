@@ -7,7 +7,7 @@ The main template should include the following parameters.
 | `resourceGroupName`           | `string` | `resourceGroup().name`            | |
 | `name`                        | `string` | `uniqueString(resourceGroupName)` | |
 | `prefix`                      | `string` |                                   | Optional |
-| `newOrExisting`               | `string` | `new`                             | Optional |
+| `newOrExisting`               | `string` | `new` or `none`                   | Optional |
 | `isZoneRedundant`             | `bool`   | `true`                            | Optional |
 | `virtualNetworkName`          | `string` | `uniqueString(resourceGroupName)` | Optional |
 | `subnetName`                  | `string` | `uniqueString(resourceGroupName)` | Optional |
