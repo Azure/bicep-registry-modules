@@ -2,7 +2,7 @@ This specification declares the standards for a Bicep module. This defines the s
 
 
 | Name                 | Type     | Default              | Allowed                                   | Output               | Notes |
-| -------------------- | -------- | -------------------- | ----------------------------------------- | -------------------- | |
+| -------------------- | -------- | -------------------- | ----------------------------------------- | -------------------- | ----- |
 | `location`           | `string` |                      |                                           | `location`           | |
 | `resourceGroupName`  | `string` | resourceGroup().name |                                           | `location`           | |
 | `name`               | `string` | `uniqueString()`     |                                           | `newOrExisting`      | |
