@@ -58,7 +58,7 @@ output nameStorageAccount string = storageAccount.name
 
 ## New or Existing
 ### Defaults and Allowed Values
-- `new` is default in the basic basic.
+- `new` is default in the basic case.
 ```bicep
 @allowed([ 'new', 'existing'])
 param newOrExisting string = 'new'
