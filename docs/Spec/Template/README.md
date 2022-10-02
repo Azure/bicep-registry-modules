@@ -1,11 +1,15 @@
 This specification declares the standards for a Bicep module. This defines the standard input and output parameters, parameter naming, additional parameters, and resource declaration. Note, description annotation are ommited from some examples, but should always be included for parameters and outputs.
 
-The main template should include the following parameters.
+The main template must include the following parameters.
 | Name                          | Type     | Default                           | Notes |
 | ----------------------------- | -------- | --------------------------------- | ----- |
 | `location`                    | `string` |                                   | ^ |
 | `resourceGroupName`           | `string` | `resourceGroup().name`            | |
 | `name`                        | `string` | `uniqueString(resourceGroupName)` | |
+
+The main template may also include the follow parameters. Additional parameters may be included if required.
+| Name                          | Type     | Default                           | Notes |
+| ----------------------------- | -------- | --------------------------------- | ----- |
 | `prefix`                      | `string` |                                   | Optional |
 | `newOrExisting`               | `string` | `new` or `none`                   | Optional |
 | `isZoneRedundant`             | `bool`   | `true`                            | Optional |
@@ -15,6 +19,7 @@ The main template should include the following parameters.
 
 ^ TODO: Insert link to ARM-TTK rule related to this value
 
+## Nested
 In addition, the template should include the following parameters for each resource in the template. This example shows the parmaters declared for a `KeyVault` resource. The default values for each parameter should be set to the template parameter related above.
 
 | Name                         | Type     | Default                | Notes |
