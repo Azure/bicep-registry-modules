@@ -88,6 +88,7 @@ output idStorageAccount string = storageAccount.id
 output nameStorageAccount string = storageAccount.name
 ```
 
+# Optional Parameter Conventions
 ## New or Existing
 ### Defaults and Allowed Values
 - `new` is default in the basic case.
@@ -115,7 +116,6 @@ param newOrExistingStorageAccount string = 'new'
 param newOrExistingKeyVault string = 'new'
 ```
 
-# Optional Parameter Conventions
 ## Zone Redundancy
 - Template may include a parameter to enable zone redundancy. 
 ```bicep
