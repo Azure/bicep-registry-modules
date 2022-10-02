@@ -1,15 +1,15 @@
 This specification declares the standards for a Bicep module. This defines the standard input and output parameters, parameter naming, additional parameters, and resource declaration. Note, description annoations are ommited until the examples section, but should always be included for parameters and outputs.
 
 
-| Name                 | Type     | Default              | Allowed                                   | Output               | Notes |
-| -------------------- | -------- | -------------------- | ----------------------------------------- | -------------------- | ----- |
-| `location`           | `string` |                      |                                           | `location`           | |
-| `resourceGroupName`  | `string` | resourceGroup().name |                                           | `location`           | |
-| `name`               | `string` | `uniqueString()`     |                                           | `newOrExisting`      | |
-| `newOrExisting`      | `string` | `new`                | `@allowed([ 'new', 'existing', 'none' ])` | `newOrExisting`      | |
-| `isZoneRedundant`    | `bool`   | `true`               |                                           | `isZoneRedudant`     | Optional |
-| `virtualNetworkName` | `string` | `uniqueString()`     |                                           | `virtualNetworkName` | Optional |
-| `subnetName`         | `string` | `uniqueString()`     |                                           | `subnetName`         | Optional |
+| Name                 | Type     | Default              | Allowed                                   | Output               |
+| -------------------- | -------- | -------------------- | ----------------------------------------- | -------------------- |
+| `location`           | `string` |                      |                                           | `location`           |
+| `resourceGroupName`  | `string` | resourceGroup().name |                                           | `location`           |
+| `name`               | `string` | `uniqueString()`     |                                           | `newOrExisting`      |
+| `newOrExisting`      | `string` | `new`                | `@allowed([ 'new', 'existing', 'none' ])` | `newOrExisting`      |
+| `isZoneRedundant`    | `bool`   | `true`               |                                           | `isZoneRedudant`     |
+| `virtualNetworkName` | `string` | `uniqueString()`     |                                           | `virtualNetworkName` |
+| `subnetName`         | `string` | `uniqueString()`     |                                           | `subnetName`         |
 
 # Required Parameters
 
