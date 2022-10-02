@@ -19,8 +19,7 @@ The main template may also include the follow parameters. Additional parameters 
 
 ^ TODO: Insert link to ARM-TTK rule related to this value
 
-## Nested
-In addition, the template should include the following parameters for each resource in the template. This example shows the parmaters declared for a `KeyVault` resource. The default values for each parameter should be set to the template parameter related above.
+In addition, a nested template should include the following parameters for each resource in the template. This example shows the parmaters declared for a `KeyVault` resource. The default values for each parameter should be set to the template parameter related above. The module author may decide to include some of these paramaters in the base-template depending on the configuration of the application. 
 
 | Name                         | Type     | Default                | Notes |
 | ---------------------------- | -------- | ---------------------- | ----- |
@@ -36,7 +35,7 @@ In addition, the template should include the following parameters for each resou
 
 
 # Samples
-This base template Sample shows the standard for a Bicep template with one resource or module. The author may decide to include additional paramaters in the base-template depending on the configuration of the application. 
+This base template Sample shows the standard for a Bicep template with one resource or module.
 
 - [base-template.bicep](base-template.bicep)
 - [nested-template.bicep](nested-template.bicep)
