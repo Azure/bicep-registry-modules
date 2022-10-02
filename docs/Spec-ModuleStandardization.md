@@ -1,6 +1,6 @@
 This specification declares the standards for a Bicep module. This defines the standard input and output parameters, parameter naming, additional parameters, and resource declaration. Note, description annoations are ommited until the examples section, but should always be included for parameters and outputs.
 
-
+The main template should include the following parameters.
 | Name                 | Type     | Default                | Allowed                                   | Notes |
 | -------------------- | -------- | ---------------------- | ----------------------------------------- | ----- |
 | `location`           | `string` |                        |                                           | |
@@ -11,6 +11,20 @@ This specification declares the standards for a Bicep module. This defines the s
 | `virtualNetworkName` | `string` | `uniqueString()`       |                                           | Optional |
 | `subnetName`         | `string` | `uniqueString()`       |                                           | Optional |
 | `tags`               | `object` | `{}`                   |                                           | Optional |
+
+In addition, the template should include the following parameters for each resource in the template. This example shows the defaults for a `KeyVault` resource.
+
+| Name                         | Type     | Default              | Allowed                                   | Notes |
+| ---------------------------- | -------- | -------------------- | ----------------------------------------- | ----- |
+| `locationKeyVault`           | `string` | location             |                                           | |
+| `resourceGroupNameKeyVault`  | `string` | `resourceGroupName`  |                                           | |
+| `nameKeyVault`               | `string` | `name`               |                                           | |
+| `newOrExistingKeyVault`      | `string` | `newOrExisting`      | `@allowed([ 'new', 'existing', 'none' ])` | Optional |
+| `isZoneRedundantKeyVault`    | `bool`   | `isZoneRedundant`    |                                           | Optional |
+| `virtualNetworkName`KeyVault | `string` | `virtualNetworkName` |                                           | Optional |
+| `subnetNameKeyVault`         | `string` | `subnetName`         |                                           | Optional |
+| `tagsKeyVault`               | `object` | `tags`               |                                           | Optional |
+
 
 # Required Parameters
 
