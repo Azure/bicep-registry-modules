@@ -173,8 +173,8 @@ output storageAccountName string = newOrExisting == 'new' ? storageAccount.name 
 ```
 
 # Samples
+## base-template.bicep
 ```bicep
-// base-template.bicep
 @description('Deployment Location')
 param location string
   
@@ -231,8 +231,8 @@ output newOrExisting string = newOrExisting
 output configuration object = nestedModlue.outputs.configuration
 ```
 
+## nested-module.bicep
 ```bicep
-// nested-module.bicep
 @description('Deployment Location')
 param location string
   
