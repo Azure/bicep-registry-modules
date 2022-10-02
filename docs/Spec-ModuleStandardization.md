@@ -1,15 +1,16 @@
 This specification declares the standards for a Bicep module. This defines the standard input and output parameters, parameter naming, additional parameters, and resource declaration. Note, description annoations are ommited until the examples section, but should always be included for parameters and outputs.
 
 # Standardizations
-## Location
+## Required Parameters
+### Location
 - Every template should start with a location parameter, with no default value set.
 ```bicep
 @description('Deployment Location')
 param location string
 ```
 
-## New/Existing Toggle
-### Defaults and Allowed Values
+### New/Existing Toggle
+#### Defaults and Allowed Values
 - `new` is default in the basic basic.
 ```bicep
 @allowed([ 'new', 'existing'])
@@ -21,7 +22,7 @@ param newOrExisting string = 'new'
 param newOrExisting string = 'none'
 ```
 
-### Parameter Naming
+#### Parameter Naming
 - When a module has a single resource the flag should be 'newOrExisting'
 ```bicep
 @allowed([ 'new', 'existing'])
@@ -35,8 +36,8 @@ param newOrExistingStorageAccount string = 'new'
 param newOrExistingKeyVault string = 'new'
 ```
 
-## Resource Name
-## Parameter Naming 
+### Resource Name
+#### Parameter Naming 
 - Single Resource Default Name Appends `Name` to <ResourceType>
 ```bicep
 param name string
@@ -46,14 +47,14 @@ param name string
 param nameStorageAccount string
 ```
 
-### Defaults and Allowed Values
+#### Defaults and Allowed Values
 - The default name starts with a prefix such as "store" or "vault", and includes a unique string based on the prefix, resource group id, subscription id and location. The prefix value is not included in default value, but 
 ```bicep
 param prefix string = ''
 param name string = 'store${uniqueString(prefix, resourceGroup().id, subscription().id, location)}'
 ```
 
-### Functions applied to Resource Name
+#### Functions applied to Resource Name
 - Functions applied to the resource name should be applied directly in the resource declaration so that both the default value, or a user provider value are transformed. Functions should ensure that a valid new name is provided, and prevent issues such as 'to many characters', 'can not contain caps', or 'invalid characters'. 
 ```bicep
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = if (newOrExisting == 'new') {
@@ -70,7 +71,7 @@ resource keyVault 'Microsoft.StorageAccount/StorageAccount@2022-07-01' = if (new
  properties: {}
 }
 ```
-### Outputs 
+#### Outputs 
 - Outputs should include both name and ID. 
 ```bicep
 output id string = newOrExisting == 'new' ? keyVault.id : existingKeyVault.id
