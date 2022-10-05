@@ -601,7 +601,7 @@ resource virtualMachine_GDVMCustomization 'Microsoft.Compute/virtualMachines/ext
     typeHandlerVersion     : '1.10'
     autoUpgradeMinorVersion: true
     protectedSettings: {
-      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -encodedCommand "${loadFileAsBase64('./scripts/Controller-Initialization.ps1')"'
+      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -encodedCommand "${loadFileAsBase64('./scripts/Controller-Initialization.ps1')}"'
     }
   }
 }
