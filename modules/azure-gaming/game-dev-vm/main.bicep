@@ -33,6 +33,12 @@ param gdkVersion string = 'June_2021_Update_9'
 @secure()
 param ibLicenseKey string = ''
 
+@description('The URL to a TeamCity server (including port number)')
+param tcServerUrl string = ''
+
+@description('The Game Development VM local port to use by the TeamCity Agent listener')
+param tcAgentPort string = '9090'
+
 @description('Remote Access technology')
 @allowed([ 'RDP', 'Teradici', 'Parsec' ])
 param remoteAccessTechnology string = 'RDP'
@@ -583,6 +589,20 @@ resource virtualMachine_enableAAD 'Microsoft.Compute/virtualMachines/extensions@
     type: 'AADLoginForWindows'
     typeHandlerVersion: '1.0'
     autoUpgradeMinorVersion: true
+  }
+}
+
+resource virtualMachine_GDVMCustomization 'Microsoft.Compute/virtualMachines/extensions@2019-12-01' = {
+  name      : '${virtualMachine.name}/GDVMCustomization'
+  location  : location
+  properties: {
+    publisher              : 'Microsoft.Compute'
+    type                   : 'CustomScriptExtension'
+    typeHandlerVersion     : '1.10'
+    autoUpgradeMinorVersion: true
+    protectedSettings: {
+      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -encodedCommand "${loadFileAsBase64('./scripts/Controller-Initialization.ps1')"'
+    }
   }
 }
 
