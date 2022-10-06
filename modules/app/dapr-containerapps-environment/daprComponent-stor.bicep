@@ -9,7 +9,7 @@ param scopes array = []
 
 var daprComponent = 'state.azure.blobstorage'
 var rawStorageAccountName='st${name}${uniqueString(resourceGroup().id, name)}'
-var storageAccountName = length(rawStorageAccountName) > 24 ? substring(rawStorageAccountName, 0, 24) : rawStorageAccountName
+var storageAccountName = length(rawStorageAccountName) > 24 ? substring(toLower(rawStorageAccountName), 0, 24) : rawStorageAccountName
 
 resource containerAppEnv 'Microsoft.App/managedEnvironments@2022-01-01-preview' existing = {
   name: containerAppEnvName
