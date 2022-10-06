@@ -28,6 +28,12 @@ param daprComponentName string = ''
 @description('Names of container apps that can use this dapr component')
 param daprComponentScopes array = []
 
+@description('For deploying in your own Virtual Network, provide the Infrastructure Subnet Id')
+param infrastructureSubnetId string = ''
+
+@description('Zone Redundant (needs infrastructureSubnetId)')
+param zoneRedundant bool = false
+
 @description('Any tags that are to be applied to the Environment Components')
 param tags object = {}
 
@@ -46,6 +52,8 @@ module containerAppEnv 'containerAppEnv.bicep' = if(!environmentAlreadyExists) {
   params: {
     location: location
     nameseed: nameseed
+    infraSubnetId: infrastructureSubnetId
+    zoneRedundant: zoneRedundant
     tags: tags
   }
 }

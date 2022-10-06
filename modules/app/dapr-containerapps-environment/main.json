@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.10.61.36676",
-      "templateHash": "9551791862613733886"
+      "version": "0.11.1.770",
+      "templateHash": "1092508306754158920"
     }
   },
   "parameters": {
@@ -68,6 +68,20 @@
         "description": "Names of container apps that can use this dapr component"
       }
     },
+    "infrastructureSubnetId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "For deploying in your own Virtual Network, provide the Infrastructure Subnet Id"
+      }
+    },
+    "zoneRedundant": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Zone Redundant (needs infrastructureSubnetId)"
+      }
+    },
     "tags": {
       "type": "object",
       "defaultValue": {},
@@ -102,6 +116,12 @@
           "nameseed": {
             "value": "[parameters('nameseed')]"
           },
+          "infraSubnetId": {
+            "value": "[parameters('infrastructureSubnetId')]"
+          },
+          "zoneRedundant": {
+            "value": "[parameters('zoneRedundant')]"
+          },
           "tags": {
             "value": "[parameters('tags')]"
           }
@@ -112,8 +132,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.10.61.36676",
-              "templateHash": "13228440297215219963"
+              "version": "0.11.1.770",
+              "templateHash": "14259286611044200189"
             }
           },
           "parameters": {
@@ -133,6 +153,18 @@
               "metadata": {
                 "description": "Specifies the name of the log analytics workspace."
               }
+            },
+            "sku": {
+              "type": "string",
+              "defaultValue": "Consumption",
+              "allowedValues": [
+                "Consumption",
+                "Premium"
+              ]
+            },
+            "zoneRedundant": {
+              "type": "bool",
+              "defaultValue": false
             },
             "logRetentionDays": {
               "type": "int",
@@ -167,10 +199,14 @@
           "resources": [
             {
               "type": "Microsoft.App/managedEnvironments",
-              "apiVersion": "2022-03-01",
+              "apiVersion": "2022-06-01-preview",
               "name": "[parameters('containerAppEnvName')]",
               "location": "[parameters('location')]",
+              "sku": {
+                "name": "[parameters('sku')]"
+              },
               "properties": {
+                "zoneRedundant": "[parameters('zoneRedundant')]",
                 "appLogsConfiguration": {
                   "destination": "log-analytics",
                   "logAnalyticsConfiguration": {
@@ -229,8 +265,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.10.61.36676",
-                      "templateHash": "8889419084700317809"
+                      "version": "0.11.1.770",
+                      "templateHash": "12893374766320771628"
                     }
                   },
                   "parameters": {
@@ -331,8 +367,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.10.61.36676",
-              "templateHash": "14239208731851583259"
+              "version": "0.11.1.770",
+              "templateHash": "1490041037123059482"
             }
           },
           "parameters": {
@@ -468,8 +504,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.10.61.36676",
-              "templateHash": "6593902698492451851"
+              "version": "0.11.1.770",
+              "templateHash": "5948659503125673241"
             }
           },
           "parameters": {
@@ -606,8 +642,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.10.61.36676",
-              "templateHash": "14230411537407634911"
+              "version": "0.11.1.770",
+              "templateHash": "997573331547175945"
             }
           },
           "parameters": {
