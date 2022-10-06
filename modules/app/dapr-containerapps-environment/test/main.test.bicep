@@ -1,16 +1,17 @@
 param location string = resourceGroup().location
 
+var locationZoneRedundant = 'eastus' //Needing to hardcode for the moment ManagedEnvironmentZoneRedundantNotSupportedInRegion
 module prereqVnet 'vnet.bicep' = {
   name: 'vnet'
   params: {
-    location: location
+    location: locationZoneRedundant
   }
 }
 
 module zoneRedundantEnv '../main.bicep' = {
   name: 'zoneRedundantEnv'
   params: {
-    location: location
+    location: locationZoneRedundant
     nameseed: 'zoneRed'
     daprComponentType: 'state.azure.blobstorage'
     infrastructureSubnetId: prereqVnet.outputs.subnetId
