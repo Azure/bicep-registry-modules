@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "1092508306754158920"
+      "templateHash": "17011743786757601092"
     }
   },
   "parameters": {
@@ -505,7 +505,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.11.1.770",
-              "templateHash": "5948659503125673241"
+              "templateHash": "14110302568787774286"
             }
           },
           "parameters": {
@@ -533,7 +533,7 @@
           "variables": {
             "daprComponent": "state.azure.blobstorage",
             "rawStorageAccountName": "[format('st{0}{1}', parameters('name'), uniqueString(resourceGroup().id, parameters('name')))]",
-            "storageAccountName": "[if(greater(length(variables('rawStorageAccountName')), 24), substring(variables('rawStorageAccountName'), 0, 24), variables('rawStorageAccountName'))]"
+            "storageAccountName": "[if(greater(length(variables('rawStorageAccountName')), 24), substring(toLower(variables('rawStorageAccountName')), 0, 24), variables('rawStorageAccountName'))]"
           },
           "resources": [
             {
