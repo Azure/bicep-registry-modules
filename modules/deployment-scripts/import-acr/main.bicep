@@ -124,8 +124,8 @@ resource createImportImage 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
   }
 }]
 
-@description('An array of the imported imageUris')
-output images array = [for image in images: {
-  originalImageUri: image
-  acrHostedImageUri : '${acr.properties.loginServer}${skip(image, indexOf(image,'/'))}'
+@description('An array of the imported images')
+output importedImages array = [for image in images: {
+  originalImage : image
+  acrHostedImage : '${acr.properties.loginServer}${string(skip(image, indexOf(image,'/')))}'
 }]
