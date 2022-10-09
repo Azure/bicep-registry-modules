@@ -38,7 +38,7 @@ param acrName string =  'yourAzureContainerRegistry'
 
 var imageName = 'mcr.microsoft.com/azuredocs/azure-vote-front:v1'
 
-module acrImport 'br/public:deployment-scripts/import-acr:2.1.1' = {
+module acrImport 'br/public:deployment-scripts/import-acr:3.0.1' = {
   name: 'testAcrImportSingle'
   params: {
     acrName: acrName
@@ -60,7 +60,7 @@ var imageNames = [
   'docker.io/bitnami/redis:latest'
 ]
 
-module acrImport 'br/public:deployment-scripts/import-acr:2.1.1' = {
+module acrImport 'br/public:deployment-scripts/import-acr:3.0.1' = {
   name: 'testAcrImportMulti'
   params: {
     acrName: acrName
@@ -77,7 +77,7 @@ param location string = resourceGroup().location
 param acrName string =  'yourAzureContainerRegistry'
 param existingManagedIdName = 'yourExistingManagedIdentity'
 
-module acrImport 'br/public:deployment-scripts/import-acr:2.1.1' = {
+module acrImport 'br/public:deployment-scripts/import-acr:3.0.1' = {
   name: 'testAcrImport'
   params: {
     useExistingManagedIdentity: true
@@ -98,7 +98,7 @@ module acrImport 'br/public:deployment-scripts/import-acr:2.1.1' = {
 param location string = resourceGroup().location
 param acrName string =  'yourAzureContainerRegistry'
 
-module acrImport 'br/public:deployment-scripts/import-acr:2.1.1' = {
+module acrImport 'br/public:deployment-scripts/import-acr:3.0.1' = {
   name: 'testAcrImport'
   params: {
     initialScriptDelay: '60s'
