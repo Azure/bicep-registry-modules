@@ -1,6 +1,6 @@
 {
   "$schema": "https://aka.ms/bicep-registry-module-version-file-schema#",
-  "version": "v2.1",
+  "version": "v3.0",
   "pathFilters": [
     "./main.json",
     "./metadata.json"

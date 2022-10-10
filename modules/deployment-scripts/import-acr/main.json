@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.8.9.13224",
-      "templateHash": "15255844397914304046"
+      "version": "0.11.1.770",
+      "templateHash": "8432140579349303037"
     }
   },
   "parameters": {
@@ -166,17 +166,17 @@
     }
   ],
   "outputs": {
-    "images": {
+    "importedImages": {
       "type": "array",
       "copy": {
         "count": "[length(parameters('images'))]",
         "input": {
-          "originalImageUri": "[parameters('images')[copyIndex()]]",
-          "acrHostedImageUri": "[format('{0}{1}', reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), '2021-12-01-preview').loginServer, skip(parameters('images')[copyIndex()], indexOf(parameters('images')[copyIndex()], '/')))]"
+          "originalImage": "[parameters('images')[copyIndex()]]",
+          "acrHostedImage": "[format('{0}{1}', reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), '2021-12-01-preview').loginServer, string(skip(parameters('images')[copyIndex()], indexOf(parameters('images')[copyIndex()], '/'))))]"
         }
       },
       "metadata": {
-        "description": "An array of the imported imageUris"
+        "description": "An array of the imported images"
       }
     }
   }
