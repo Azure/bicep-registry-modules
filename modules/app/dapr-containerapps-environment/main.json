@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "16502907763567370296"
+      "templateHash": "9809383959603136428"
     }
   },
   "parameters": {
@@ -505,7 +505,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.11.1.770",
-              "templateHash": "14110302568787774286"
+              "templateHash": "5324293688587926095"
             }
           },
           "parameters": {
@@ -540,7 +540,7 @@
               "condition": "[and(parameters('createAzureServiceForComponent'), equals(variables('daprComponent'), 'state.azure.blobstorage'))]",
               "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
               "apiVersion": "2021-09-01",
-              "name": "[format('{0}/{1}/{2}', variables('storageAccountName'), 'default', parameters('entityName'))]",
+              "name": "[format('{0}/{1}/{2}', variables('storageAccountName'), 'default', toLower(parameters('entityName')))]",
               "properties": {
                 "publicAccess": "None"
               },
