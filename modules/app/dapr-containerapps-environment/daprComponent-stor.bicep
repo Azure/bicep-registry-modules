@@ -57,7 +57,7 @@ resource storageaccount 'Microsoft.Storage/storageAccounts@2021-09-01' = if(crea
     name: 'default'
     
     resource statec 'containers' = {
-      name: entityName
+      name: toLower(entityName)
       properties: {
         publicAccess: 'None'
       }
