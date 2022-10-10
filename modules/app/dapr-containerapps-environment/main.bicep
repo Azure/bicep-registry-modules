@@ -39,9 +39,9 @@ param tags object = {}
 
 @description('Provides a default name lookup for the different dapr components')
 var autoDaprComponentNameMap  = {
-  'pubsub.azure.servicebus' : '${applicationEntityName}pubsub'
-  'state.azure.blobstorage' : '${applicationEntityName}statestore'
-  'state.azure.cosmosdb' : '${applicationEntityName}statestore'
+  'pubsub.azure.servicebus' : '${toLower(applicationEntityName)}pubsub'
+  'state.azure.blobstorage' : '${toLower(applicationEntityName)}statestore'
+  'state.azure.cosmosdb' : '${toLower(applicationEntityName)}statestore'
 }
 
 @description('Chooses a good default name for the dapr component')

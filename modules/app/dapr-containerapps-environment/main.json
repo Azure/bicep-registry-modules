@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "17011743786757601092"
+      "templateHash": "16502907763567370296"
     }
   },
   "parameters": {
@@ -92,9 +92,9 @@
   },
   "variables": {
     "autoDaprComponentNameMap": {
-      "pubsub.azure.servicebus": "[format('{0}pubsub', parameters('applicationEntityName'))]",
-      "state.azure.blobstorage": "[format('{0}statestore', parameters('applicationEntityName'))]",
-      "state.azure.cosmosdb": "[format('{0}statestore', parameters('applicationEntityName'))]"
+      "pubsub.azure.servicebus": "[format('{0}pubsub', toLower(parameters('applicationEntityName')))]",
+      "state.azure.blobstorage": "[format('{0}statestore', toLower(parameters('applicationEntityName')))]",
+      "state.azure.cosmosdb": "[format('{0}statestore', toLower(parameters('applicationEntityName')))]"
     },
     "autoDaprComponentName": "[if(empty(parameters('daprComponentName')), variables('autoDaprComponentNameMap')[parameters('daprComponentType')], parameters('daprComponentName'))]"
   },
