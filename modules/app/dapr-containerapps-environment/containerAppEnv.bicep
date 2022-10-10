@@ -51,7 +51,7 @@ resource containerAppEnv 'Microsoft.App/managedEnvironments@2022-06-01-preview' 
   tags: tags
 }
 
-resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
+resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: containerAppLogAnalyticsName
   location: location
   properties: {
