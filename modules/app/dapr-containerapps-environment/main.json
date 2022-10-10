@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "9809383959603136428"
+      "templateHash": "17061185190568727130"
     }
   },
   "parameters": {
@@ -133,7 +133,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.11.1.770",
-              "templateHash": "14259286611044200189"
+              "templateHash": "15032274980026305573"
             }
           },
           "parameters": {
@@ -211,7 +211,7 @@
                   "destination": "log-analytics",
                   "logAnalyticsConfiguration": {
                     "customerId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', parameters('containerAppLogAnalyticsName'))).customerId]",
-                    "sharedKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', parameters('containerAppLogAnalyticsName')), '2020-10-01').primarySharedKey]"
+                    "sharedKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', parameters('containerAppLogAnalyticsName')), '2022-10-01').primarySharedKey]"
                   }
                 },
                 "vnetConfiguration": {
@@ -229,7 +229,7 @@
             },
             {
               "type": "Microsoft.OperationalInsights/workspaces",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2022-10-01",
               "name": "[parameters('containerAppLogAnalyticsName')]",
               "location": "[parameters('location')]",
               "properties": {
