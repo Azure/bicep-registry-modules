@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.11.1.770",
-      "templateHash": "12468099056700754944"
+      "version": "0.10.61.36676",
+      "templateHash": "9551791862613733886"
     }
   },
   "parameters": {
@@ -112,8 +112,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "14242380025107196559"
+              "version": "0.10.61.36676",
+              "templateHash": "13228440297215219963"
             }
           },
           "parameters": {
@@ -229,8 +229,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.11.1.770",
-                      "templateHash": "12893374766320771628"
+                      "version": "0.10.61.36676",
+                      "templateHash": "8889419084700317809"
                     }
                   },
                   "parameters": {
@@ -331,8 +331,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "1490041037123059482"
+              "version": "0.10.61.36676",
+              "templateHash": "14239208731851583259"
             }
           },
           "parameters": {
@@ -468,8 +468,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "5948659503125673241"
+              "version": "0.10.61.36676",
+              "templateHash": "6593902698492451851"
             }
           },
           "parameters": {
@@ -606,8 +606,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "997573331547175945"
+              "version": "0.10.61.36676",
+              "templateHash": "14230411537407634911"
             }
           },
           "parameters": {
