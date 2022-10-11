@@ -6,6 +6,13 @@ param containerAppEnvName string = 'env-${nameseed}'
 @description('Specifies the name of the log analytics workspace.')
 param containerAppLogAnalyticsName string = 'log-${nameseed}'
 
+@allowed([
+  'Consumption'
+  'Premium'
+])
+param sku string = 'Consumption'
+
+param zoneRedundant bool = false
 param logRetentionDays int = 30
 
 @description('Specifies the location for all resources.')
@@ -19,10 +26,14 @@ param tags object = {}
 @description('Sets the environment to only have a internal load balancer')
 param internalVirtualIp bool = false
 
-resource containerAppEnv 'Microsoft.App/managedEnvironments@2022-03-01' = {
+resource containerAppEnv 'Microsoft.App/managedEnvironments@2022-06-01-preview' = {
   name: containerAppEnvName
   location: location
+  sku: {
+    name: sku
+  }
   properties: {
+    zoneRedundant: zoneRedundant
     appLogsConfiguration: {
       destination: 'log-analytics'
       logAnalyticsConfiguration: {
@@ -40,7 +51,7 @@ resource containerAppEnv 'Microsoft.App/managedEnvironments@2022-03-01' = {
   tags: tags
 }
 
-resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2020-10-01' = {
+resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: containerAppLogAnalyticsName
   location: location
   properties: {

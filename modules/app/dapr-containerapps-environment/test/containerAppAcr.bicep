@@ -148,7 +148,7 @@ resource uai 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-previe
 }
 
 @description('This allows the managed identity of the container app to access the registry')
-resource uaiRbac 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = if(!empty(azureContainerRegistry)) {
+resource uaiRbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = if(!empty(azureContainerRegistry)) {
   name: guid(acr.id, uai.id, acrPullRole)
   scope: acr
   //name: guid(resourceGroup().id, uai.id, acrPullRole)

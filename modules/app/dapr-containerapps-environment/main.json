@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.10.61.36676",
-      "templateHash": "9551791862613733886"
+      "version": "0.11.1.770",
+      "templateHash": "17061185190568727130"
     }
   },
   "parameters": {
@@ -68,6 +68,20 @@
         "description": "Names of container apps that can use this dapr component"
       }
     },
+    "infrastructureSubnetId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "For deploying in your own Virtual Network, provide the Infrastructure Subnet Id"
+      }
+    },
+    "zoneRedundant": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Zone Redundant (needs infrastructureSubnetId)"
+      }
+    },
     "tags": {
       "type": "object",
       "defaultValue": {},
@@ -78,9 +92,9 @@
   },
   "variables": {
     "autoDaprComponentNameMap": {
-      "pubsub.azure.servicebus": "[format('{0}pubsub', parameters('applicationEntityName'))]",
-      "state.azure.blobstorage": "[format('{0}statestore', parameters('applicationEntityName'))]",
-      "state.azure.cosmosdb": "[format('{0}statestore', parameters('applicationEntityName'))]"
+      "pubsub.azure.servicebus": "[format('{0}pubsub', toLower(parameters('applicationEntityName')))]",
+      "state.azure.blobstorage": "[format('{0}statestore', toLower(parameters('applicationEntityName')))]",
+      "state.azure.cosmosdb": "[format('{0}statestore', toLower(parameters('applicationEntityName')))]"
     },
     "autoDaprComponentName": "[if(empty(parameters('daprComponentName')), variables('autoDaprComponentNameMap')[parameters('daprComponentType')], parameters('daprComponentName'))]"
   },
@@ -102,6 +116,12 @@
           "nameseed": {
             "value": "[parameters('nameseed')]"
           },
+          "infraSubnetId": {
+            "value": "[parameters('infrastructureSubnetId')]"
+          },
+          "zoneRedundant": {
+            "value": "[parameters('zoneRedundant')]"
+          },
           "tags": {
             "value": "[parameters('tags')]"
           }
@@ -112,8 +132,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.10.61.36676",
-              "templateHash": "13228440297215219963"
+              "version": "0.11.1.770",
+              "templateHash": "15032274980026305573"
             }
           },
           "parameters": {
@@ -133,6 +153,18 @@
               "metadata": {
                 "description": "Specifies the name of the log analytics workspace."
               }
+            },
+            "sku": {
+              "type": "string",
+              "defaultValue": "Consumption",
+              "allowedValues": [
+                "Consumption",
+                "Premium"
+              ]
+            },
+            "zoneRedundant": {
+              "type": "bool",
+              "defaultValue": false
             },
             "logRetentionDays": {
               "type": "int",
@@ -167,15 +199,19 @@
           "resources": [
             {
               "type": "Microsoft.App/managedEnvironments",
-              "apiVersion": "2022-03-01",
+              "apiVersion": "2022-06-01-preview",
               "name": "[parameters('containerAppEnvName')]",
               "location": "[parameters('location')]",
+              "sku": {
+                "name": "[parameters('sku')]"
+              },
               "properties": {
+                "zoneRedundant": "[parameters('zoneRedundant')]",
                 "appLogsConfiguration": {
                   "destination": "log-analytics",
                   "logAnalyticsConfiguration": {
                     "customerId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', parameters('containerAppLogAnalyticsName'))).customerId]",
-                    "sharedKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', parameters('containerAppLogAnalyticsName')), '2020-10-01').primarySharedKey]"
+                    "sharedKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', parameters('containerAppLogAnalyticsName')), '2022-10-01').primarySharedKey]"
                   }
                 },
                 "vnetConfiguration": {
@@ -193,7 +229,7 @@
             },
             {
               "type": "Microsoft.OperationalInsights/workspaces",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2022-10-01",
               "name": "[parameters('containerAppLogAnalyticsName')]",
               "location": "[parameters('location')]",
               "properties": {
@@ -229,8 +265,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.10.61.36676",
-                      "templateHash": "8889419084700317809"
+                      "version": "0.11.1.770",
+                      "templateHash": "12893374766320771628"
                     }
                   },
                   "parameters": {
@@ -331,8 +367,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.10.61.36676",
-              "templateHash": "14239208731851583259"
+              "version": "0.11.1.770",
+              "templateHash": "1490041037123059482"
             }
           },
           "parameters": {
@@ -468,8 +504,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.10.61.36676",
-              "templateHash": "6593902698492451851"
+              "version": "0.11.1.770",
+              "templateHash": "5324293688587926095"
             }
           },
           "parameters": {
@@ -497,14 +533,14 @@
           "variables": {
             "daprComponent": "state.azure.blobstorage",
             "rawStorageAccountName": "[format('st{0}{1}', parameters('name'), uniqueString(resourceGroup().id, parameters('name')))]",
-            "storageAccountName": "[if(greater(length(variables('rawStorageAccountName')), 24), substring(variables('rawStorageAccountName'), 0, 24), variables('rawStorageAccountName'))]"
+            "storageAccountName": "[if(greater(length(variables('rawStorageAccountName')), 24), substring(toLower(variables('rawStorageAccountName')), 0, 24), variables('rawStorageAccountName'))]"
           },
           "resources": [
             {
               "condition": "[and(parameters('createAzureServiceForComponent'), equals(variables('daprComponent'), 'state.azure.blobstorage'))]",
               "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
               "apiVersion": "2021-09-01",
-              "name": "[format('{0}/{1}/{2}', variables('storageAccountName'), 'default', parameters('entityName'))]",
+              "name": "[format('{0}/{1}/{2}', variables('storageAccountName'), 'default', toLower(parameters('entityName')))]",
               "properties": {
                 "publicAccess": "None"
               },
@@ -606,8 +642,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.10.61.36676",
-              "templateHash": "14230411537407634911"
+              "version": "0.11.1.770",
+              "templateHash": "997573331547175945"
             }
           },
           "parameters": {

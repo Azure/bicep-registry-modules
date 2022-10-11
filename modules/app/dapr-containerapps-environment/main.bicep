@@ -28,14 +28,20 @@ param daprComponentName string = ''
 @description('Names of container apps that can use this dapr component')
 param daprComponentScopes array = []
 
+@description('For deploying in your own Virtual Network, provide the Infrastructure Subnet Id')
+param infrastructureSubnetId string = ''
+
+@description('Zone Redundant (needs infrastructureSubnetId)')
+param zoneRedundant bool = false
+
 @description('Any tags that are to be applied to the Environment Components')
 param tags object = {}
 
 @description('Provides a default name lookup for the different dapr components')
 var autoDaprComponentNameMap  = {
-  'pubsub.azure.servicebus' : '${applicationEntityName}pubsub'
-  'state.azure.blobstorage' : '${applicationEntityName}statestore'
-  'state.azure.cosmosdb' : '${applicationEntityName}statestore'
+  'pubsub.azure.servicebus' : '${toLower(applicationEntityName)}pubsub'
+  'state.azure.blobstorage' : '${toLower(applicationEntityName)}statestore'
+  'state.azure.cosmosdb' : '${toLower(applicationEntityName)}statestore'
 }
 
 @description('Chooses a good default name for the dapr component')
@@ -46,6 +52,8 @@ module containerAppEnv 'containerAppEnv.bicep' = if(!environmentAlreadyExists) {
   params: {
     location: location
     nameseed: nameseed
+    infraSubnetId: infrastructureSubnetId
+    zoneRedundant: zoneRedundant
     tags: tags
   }
 }
