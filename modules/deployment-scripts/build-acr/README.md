@@ -1,6 +1,6 @@
 # ACR Image Build
 
-Builds an container image inside ACR
+Builds a container image inside ACR from source code
 
 ## Description
 
