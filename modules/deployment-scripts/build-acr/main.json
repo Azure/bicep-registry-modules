@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "3634457014931580773"
+      "templateHash": "622221379407494902"
     }
   },
   "parameters": {
@@ -195,7 +195,7 @@
             "value": "[parameters('initialScriptDelay')]"
           }
         ],
-        "scriptContent": "      #!/bin/bash\r\n      set -e\r\n      \r\n      echo \"Waiting on RBAC replication ($initialDelay)\"\r\n      sleep $initialDelay\r\n      \r\n      az acr build -g $acrResourceGroup -r $acrName -t $tag $repo --platform $platform\r\n    ",
+        "scriptContent": "      #!/bin/bash\n      set -e\n      \n      echo \"Waiting on RBAC replication ($initialDelay)\"\n      sleep $initialDelay\n      \n      az acr build -g $acrResourceGroup -r $acrName -t $tag $repo --platform $platform\n    ",
         "cleanupPreference": "[parameters('cleanupPreference')]"
       },
       "dependsOn": [
