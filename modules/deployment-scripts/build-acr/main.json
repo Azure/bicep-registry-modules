@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "13013804977858217824"
+      "templateHash": "3634457014931580773"
     }
   },
   "parameters": {
@@ -19,7 +19,7 @@
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "The location to deploy the resources to"
+        "description": "The location of the ACR and where to deploy the module resources to"
       }
     },
     "forceUpdateTag": {

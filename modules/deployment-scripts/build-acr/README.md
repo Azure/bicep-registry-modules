@@ -12,7 +12,7 @@ This bicep module leverages DeploymentScript to orchestrate the image build.
 | Name                                       | Type     | Required | Description                                                                                                   |
 | :----------------------------------------- | :------: | :------: | :------------------------------------------------------------------------------------------------------------ |
 | `AcrName`                                  | `string` | Yes      | The name of the Azure Container Registry                                                                      |
-| `location`                                 | `string` | No       | The location to deploy the resources to                                                                       |
+| `location`                                 | `string` | No       | The location of the ACR and where to deploy the module resources to                                           |
 | `forceUpdateTag`                           | `string` | No       | How the deployment script should be forced to execute                                                         |
 | `rbacRoleNeeded`                           | `string` | No       | Azure RoleId that are required for the DeploymentScript resource to import images                             |
 | `useExistingManagedIdentity`               | `bool`   | No       | Does the Managed Identity already exists, or should be created                                                |

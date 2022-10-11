@@ -1,7 +1,7 @@
 @description('The name of the Azure Container Registry')
 param AcrName string
 
-@description('The location to deploy the resources to')
+@description('The location of the ACR and where to deploy the module resources to')
 param location string = resourceGroup().location
 
 @description('How the deployment script should be forced to execute')
