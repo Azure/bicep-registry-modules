@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "3634457014931580773"
+      "templateHash": "7079940481832590428"
     }
   },
   "parameters": {
@@ -207,7 +207,7 @@
   "outputs": {
     "acrImage": {
       "type": "string",
-      "value": "[format('{0}/{1}:{2}', reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('AcrName')), '2021-12-01-preview').loginServer, variables('repo'), variables('tag'))]",
+      "value": "[format('{0}/{1}', reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('AcrName')), '2021-12-01-preview').loginServer, variables('tag'))]",
       "metadata": {
         "description": "The ACR uri the image can be accessed on if building was successful"
       }

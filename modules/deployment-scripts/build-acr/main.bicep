@@ -137,4 +137,4 @@ resource createImportImage 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
 }
 
 @description('The ACR uri the image can be accessed on if building was successful')
-output acrImage string = '${acr.properties.loginServer}/${repo}:${tag}'
+output acrImage string = '${acr.properties.loginServer}/${tag}'

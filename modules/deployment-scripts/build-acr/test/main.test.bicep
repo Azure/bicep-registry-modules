@@ -37,3 +37,24 @@ module buildDaprImage '../main.bicep' = {
     imageName: 'aca/dapr'
   }
 }
+
+// Output test
+module myenv 'br/public:app/dapr-containerapps-environment:1.2.1' = {
+  name: 'state'
+  params: {
+    location: location
+    nameseed: 'stateSt1'
+    applicationEntityName: 'appdata'
+    daprComponentType: 'state.azure.blobstorage'
+  }
+}
+
+module aca 'br/public:app/dapr-containerapp:1.0.1' = {
+  name: 'stateNodeApp'
+  params: {
+    location: location
+    containerAppName: 'pyservice'
+    containerAppEnvName: myenv.outputs.containerAppEnvironmentName
+    containerImage: buildDaprImage.outputs.acrImage
+  }
+}
