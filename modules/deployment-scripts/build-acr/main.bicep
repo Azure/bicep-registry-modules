@@ -53,7 +53,7 @@ param acrBuildPlatform string = 'linux'
 
 var repo = '${gitRepositoryUrl}#${gitBranch}:${gitRepoDirectory}'
 var cleanRepoName = last(split(gitRepositoryUrl, '/'))
-var tag = '${imageName}:${imageTag}'
+var taggedImageName = '${imageName}:${imageTag}'
 
 resource acr 'Microsoft.ContainerRegistry/registries@2021-12-01-preview' existing = {
   name: AcrName
@@ -107,8 +107,8 @@ resource createImportImage 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
         value: resourceGroup().name
       }
       {
-        name: 'tag'
-        value: tag
+        name: 'taggedImageName'
+        value: taggedImageName
       }
       {
         name: 'repo'
@@ -123,18 +123,10 @@ resource createImportImage 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
         value: initialScriptDelay
       }
     ]
-    scriptContent: '''
-      #!/bin/bash
-      set -e
-      
-      echo "Waiting on RBAC replication ($initialDelay)"
-      sleep $initialDelay
-      
-      az acr build -g $acrResourceGroup -r $acrName -t $tag $repo --platform $platform
-    '''
+    scriptContent: loadTextContent('azAcrBuild.sh')
     cleanupPreference: cleanupPreference
   }
 }
 
 @description('The ACR uri the image can be accessed on if building was successful')
-output acrImage string = '${acr.properties.loginServer}/${tag}'
+output acrImage string = '${acr.properties.loginServer}/${taggedImageName}'
