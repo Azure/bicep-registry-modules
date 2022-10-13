@@ -38,7 +38,7 @@ module buildDaprImage '../main.bicep' = {
   }
 }
 
-// Output test
+// Output test, lets stand up a Container App!
 module myenv 'br/public:app/dapr-containerapps-environment:1.2.1' = {
   name: 'state'
   params: {
@@ -49,12 +49,13 @@ module myenv 'br/public:app/dapr-containerapps-environment:1.2.1' = {
   }
 }
 
-module aca 'br/public:app/dapr-containerapp:1.0.1' = {
+module aca 'br/public:app/dapr-containerapp:1.0.2' = {
   name: 'stateNodeApp'
   params: {
     location: location
     containerAppName: 'pyservice'
     containerAppEnvName: myenv.outputs.containerAppEnvironmentName
     containerImage: buildDaprImage.outputs.acrImage
+    azureContainerRegistry: acr.name
   }
 }

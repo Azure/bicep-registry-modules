@@ -39,10 +39,13 @@ This bicep module leverages DeploymentScript to orchestrate the image build.
 ### Building a linux container image
 
 ```bicep
+param acrName string
+param location string
+
 module buildDaprImage 'br/public:deployment-scripts/build-acr:1.0.1' = {
   name: 'buildAcrImage-linux-dapr'
   params: {
-    AcrName: acr.name
+    AcrName: acrName
     location: location
     gitRepositoryUrl:  'https://github.com/Azure-Samples/container-apps-store-api-microservice.git'
     gitRepoDirectory:  'python-service'
@@ -54,16 +57,49 @@ module buildDaprImage 'br/public:deployment-scripts/build-acr:1.0.1' = {
 ### Building a Windows container image
 
 ```bicep
+param acrName string
+param location string
+
 module buildWinAcrImage 'br/public:deployment-scripts/build-acr:1.0.1' = {
   name: 'buildAcrImage-win-eshop'
   params: {
-    AcrName: acr.name
+    AcrName: acrName
     location: location
     gitRepositoryUrl:  'https://github.com/Azure-Samples/DotNet47WinContainerModernize.git'
     gitRepoDirectory:  'eShopLegacyWebFormsSolution'
     imageName: 'dotnet/framework/aspnet'
     imageTag: '4.8-windowsservercore-ltsc2019'
     acrBuildPlatform: 'windows'
+  }
+}
+```
+
+### Building and creating a Dapr Container App
+
+```bicep
+param acrName string
+param acaEnvName string
+param location string
+
+module buildDaprImage 'br/public:deployment-scripts/build-acr:1.0.1' = {
+  name: 'buildAcrImage-linux-dapr'
+  params: {
+    AcrName: acrName
+    location: location
+    gitRepositoryUrl:  'https://github.com/Azure-Samples/container-apps-store-api-microservice.git'
+    gitRepoDirectory:  'python-service'
+    imageName: 'aca/dapr'
+  }
+}
+
+module aca 'br/public:app/dapr-containerapp:1.0.2' = {
+  name: 'stateNodeApp'
+  params: {
+    location: location
+    containerAppName: 'pyservice'
+    containerAppEnvName: acaEnvName
+    containerImage: buildDaprImage.outputs.acrImage
+    azureContainerRegistry: acrName
   }
 }
 ```
