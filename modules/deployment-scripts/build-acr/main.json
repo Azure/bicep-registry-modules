@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "7079940481832590428"
+      "templateHash": "13642411578150246430"
     }
   },
   "parameters": {
@@ -125,9 +125,10 @@
     }
   },
   "variables": {
+    "$fxv#0": "#!/bin/bash\nset -e\n\necho \"Waiting on RBAC replication ($initialDelay)\"\nsleep $initialDelay\n\naz acr build --resource-group $acrResourceGroup \\\n  --registry $acrName \\\n  --image $taggedImageName $repo \\\n  --platform $platform",
     "repo": "[format('{0}#{1}:{2}', parameters('gitRepositoryUrl'), parameters('gitBranch'), parameters('gitRepoDirectory'))]",
     "cleanRepoName": "[last(split(parameters('gitRepositoryUrl'), '/'))]",
-    "tag": "[format('{0}:{1}', parameters('imageName'), parameters('imageTag'))]"
+    "taggedImageName": "[format('{0}:{1}', parameters('imageName'), parameters('imageTag'))]"
   },
   "resources": [
     {
@@ -179,8 +180,8 @@
             "value": "[resourceGroup().name]"
           },
           {
-            "name": "tag",
-            "value": "[variables('tag')]"
+            "name": "taggedImageName",
+            "value": "[variables('taggedImageName')]"
           },
           {
             "name": "repo",
@@ -195,7 +196,7 @@
             "value": "[parameters('initialScriptDelay')]"
           }
         ],
-        "scriptContent": "      #!/bin/bash\r\n      set -e\r\n      \r\n      echo \"Waiting on RBAC replication ($initialDelay)\"\r\n      sleep $initialDelay\r\n      \r\n      az acr build -g $acrResourceGroup -r $acrName -t $tag $repo --platform $platform\r\n    ",
+        "scriptContent": "[variables('$fxv#0')]",
         "cleanupPreference": "[parameters('cleanupPreference')]"
       },
       "dependsOn": [
@@ -207,7 +208,7 @@
   "outputs": {
     "acrImage": {
       "type": "string",
-      "value": "[format('{0}/{1}', reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('AcrName')), '2021-12-01-preview').loginServer, variables('tag'))]",
+      "value": "[format('{0}/{1}', reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('AcrName')), '2021-12-01-preview').loginServer, variables('taggedImageName'))]",
       "metadata": {
         "description": "The ACR uri the image can be accessed on if building was successful"
       }
