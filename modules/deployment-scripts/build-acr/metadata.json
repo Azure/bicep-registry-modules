@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
+  "name": "ACR Image Build",
+  "summary": "Builds a container image inside ACR from source code",
+  "owner": "gordonby"
+}
