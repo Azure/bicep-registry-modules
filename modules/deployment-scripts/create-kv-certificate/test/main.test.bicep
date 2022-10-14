@@ -55,3 +55,18 @@ output createdCertificates array = [for (certificateName, i) in certificateNames
   certificateSecretId: akvCertMultiple[i].outputs.certificateSecretId
   certificateThumbprint: akvCertMultiple[i].outputs.certificateThumbprintHex
 }]
+
+//Test 3. Signed certificate
+module akvCertSingle '../main.bicep' = {
+  name: 'akvCertSingle'
+  params: {
+    akvName: akv.name
+    location: location
+    certificateName: 'mysingleapp'
+    certificateCommonName: 'mysingleapp.mydomain.local'
+    issuerName: 'AzureCert'
+    issuerProvider: 'OneCertV2-PublicCA' //This can only be used internally by Microsoft, public options include DigiCert or GlobalSign
+  }
+}
+output singleSecretId string = akvCertSingle.outputs.certificateSecretId
+output singleThumbprint string = akvCertSingle.outputs.certificateThumbprintHex
