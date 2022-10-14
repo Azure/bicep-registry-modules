@@ -62,8 +62,8 @@ module akvCertSingle '../main.bicep' = {
   params: {
     akvName: akv.name
     location: location
-    certificateName: 'mysingleapp'
-    certificateCommonName: 'mysingleapp.mydomain.local'
+    certificateName: 'signedcert'
+    certificateCommonName: 'bicep-testing.azure.com'
     issuerName: 'AzureCert'
     issuerProvider: 'OneCertV2-PublicCA' //This can only be used internally by Microsoft, public options include DigiCert or GlobalSign
   }
