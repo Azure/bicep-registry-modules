@@ -42,7 +42,7 @@ param cleanupPreference string = 'OnSuccess'
 @description('Unknown, Self, or {IssuerName} for certificate signing')
 param issuerName string = 'Self'
 
-@description('Certificate Issuer Provider')
+@description('Certificate Issuer Provider, public options include DigiCert and GlobalSign. Additional private options may be available.')
 param issuerProvider string = ''
 
 resource akv 'Microsoft.KeyVault/vaults@2021-11-01-preview' existing = {
