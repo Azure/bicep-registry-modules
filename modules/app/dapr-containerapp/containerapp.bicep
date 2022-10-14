@@ -70,11 +70,11 @@ param tags object = {}
 
 //var acrPullRole = resourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')
 
-resource containerAppEnv 'Microsoft.App/managedEnvironments@2022-03-01' existing = {
+resource containerAppEnv 'Microsoft.App/managedEnvironments@2022-06-01-preview' existing = {
   name: containerAppEnvName
 }
 
-resource containerApp 'Microsoft.App/containerApps@2022-03-01' = {
+resource containerApp 'Microsoft.App/containerApps@2022-06-01-preview' = {
   name: containerAppName
   location: location
   identity: createUserManagedId ? {
@@ -106,7 +106,6 @@ resource containerApp 'Microsoft.App/containerApps@2022-03-01' = {
         enabled: true
       }
       activeRevisionsMode: revisionMode
-      registries: []
     }
     template: {
       revisionSuffix: revisionSuffix
@@ -143,7 +142,7 @@ resource uai 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-previe
 }
 
 // @description('This allows the managed identity of the container app to access the registry')
-// resource uaiRbac 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = if(createUserManagedId && !empty(azureContainerRegistry)) {
+// resource uaiRbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = if(createUserManagedId && !empty(azureContainerRegistry)) {
 //   //name: guid(acr.id, uai.id, acrPullRole)
 //   //scope: acr
 //   name: guid(resourceGroup().id, uai.id, acrPullRole)

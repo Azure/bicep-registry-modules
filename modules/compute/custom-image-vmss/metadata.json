@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
+  "name": "Azure VMSS with Custom Image",
+  "summary": "Create an Azure VMSS Cluster with a Custom Image to simplify creation of Marketplace Applications",
+  "owner": "dciborow"
+}

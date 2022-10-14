@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.9.1.41621",
-      "templateHash": "7966047607025495492"
+      "version": "0.11.1.770",
+      "templateHash": "18066693510890011191"
     }
   },
   "parameters": {
@@ -228,8 +228,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "13090141787330058627"
+              "version": "0.11.1.770",
+              "templateHash": "7009689267588982199"
             }
           },
           "parameters": {
@@ -374,7 +374,7 @@
           "resources": [
             {
               "type": "Microsoft.App/containerApps",
-              "apiVersion": "2022-03-01",
+              "apiVersion": "2022-06-01-preview",
               "name": "[parameters('containerAppName')]",
               "location": "[parameters('location')]",
               "identity": "[if(parameters('createUserManagedId'), createObject('type', 'UserAssigned', 'userAssignedIdentities', createObject(format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-{0}', parameters('containerAppName')))), createObject())), createObject('type', 'None'))]",
@@ -388,8 +388,7 @@
                     "appPort": "[if(equals(parameters('enableIngress'), true()), parameters('daprAppPort'), null())]",
                     "enabled": true
                   },
-                  "activeRevisionsMode": "[parameters('revisionMode')]",
-                  "registries": []
+                  "activeRevisionsMode": "[parameters('revisionMode')]"
                 },
                 "template": {
                   "revisionSuffix": "[parameters('revisionSuffix')]",
@@ -517,8 +516,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "3502482138940038235"
+              "version": "0.11.1.770",
+              "templateHash": "1021504825763956878"
             }
           },
           "parameters": {
@@ -673,7 +672,7 @@
           "resources": [
             {
               "type": "Microsoft.App/containerApps",
-              "apiVersion": "2022-03-01",
+              "apiVersion": "2022-06-01-preview",
               "name": "[parameters('containerAppName')]",
               "location": "[parameters('location')]",
               "identity": "[if(parameters('createUserManagedId'), createObject('type', 'UserAssigned', 'userAssignedIdentities', createObject(format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-{0}', parameters('containerAppName')))), createObject())), createObject('type', 'None'))]",
@@ -730,7 +729,7 @@
             {
               "condition": "[and(parameters('createUserManagedId'), not(empty(parameters('azureContainerRegistry'))))]",
               "type": "Microsoft.Authorization/roleAssignments",
-              "apiVersion": "2020-10-01-preview",
+              "apiVersion": "2022-04-01",
               "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('azureContainerRegistry'))]",
               "name": "[guid(resourceId('Microsoft.ContainerRegistry/registries', parameters('azureContainerRegistry')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-{0}', parameters('containerAppName'))), variables('acrPullRole'))]",
               "properties": {

@@ -9,6 +9,13 @@ To create a signed certificate first configure a certificate issuer within Key V
 
 This module is based on the `az cli certificate` create command and more information can be found [here](https://docs.microsoft.com/en-us/cli/azure/keyvault/certificate?view=azure-cli-latest#az-keyvault-certificate-create)
 
+## Description
+
+Using this Bicep module, you can automate the creation of a certificate within an Azure Key Vault.
+To create a signed certificate first configure a certificate issuer within Key Vault. Then set the `issuerName` parameter.
+
+This module is based on the `az cli certificate` create command and more information can be found [here](https://docs.microsoft.com/en-us/cli/azure/keyvault/certificate?view=azure-cli-latest#az-keyvault-certificate-create)
+
 ## Parameters
 
 | Name                                       | Type     | Required | Description                                                                                                   |
