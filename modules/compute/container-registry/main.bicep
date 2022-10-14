@@ -230,12 +230,12 @@ module containerRegistry_rbac '.bicep/nested_rbac.bicep' = [for (roleAssignment,
   }
 }]
 
-module containerRegistry_privateEndpoint '.bicep/nested_privateEndpoint.bicep' = [for (privateEndpoint, index) in privateEndpoints: {
-  name: '${uniqueString(deployment().name, location)}-acr-pep-${index}'
+module containerRegistry_privateEndpoint '.bicep/nested_privateEndpoint.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-acr-private-endpoints'
   params: {
     location: location
     privateEndpoints: varPrivateEndpoints
     tags: tags
     manualApprovalEnabled: privateEndpointsApprovalEnabled
   }
-}]
+}

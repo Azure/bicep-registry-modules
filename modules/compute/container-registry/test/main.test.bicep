@@ -9,40 +9,11 @@ param serviceShort string = 'acr'
 // Dependencies //
 // ============ //
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
-  name: 'adpsxxazsa${serviceShort}01'
-  kind: 'StorageV2'
-  sku: {
-    name: 'Standard_LRS'
-  }
-  location: location
-  properties: {
-    allowBlobPublicAccess: false
-  }
-}
-
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' = {
-  name: 'adp-sxx-law-${serviceShort}-01'
-  location: location
-}
-
-resource eventHubNamespace 'Microsoft.EventHub/namespaces@2021-11-01' = {
-  name: 'adp-sxx-evhns-${serviceShort}-01'
-  location: location
-
-  resource eventHub 'eventhubs@2021-11-01' = {
-    name: 'adp-sxx-evh-${serviceShort}-01'
-  }
-
-  resource authorizationRule 'authorizationRules@2021-06-01-preview' = {
-    name: 'RootManageSharedAccessKey'
-    properties: {
-      rights: [
-        'Listen'
-        'Manage'
-        'Send'
-      ]
-    }
+module dependencies 'dependencies.test.bicep' = {
+  name: 'test-dependencies'
+  params: {
+    name: serviceShort
+    location: location
   }
 }
 
@@ -59,7 +30,7 @@ module test_01 '../main.bicep' = {
   }
 }
 
-// Test 02 - Standard SKU - Some basic parmas
+// Test 02 - Standard SKU - Basic params, RBAC and Diagnostic Settings
 module test_02 '../main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-02'
   params: {
@@ -71,6 +42,10 @@ module test_02 '../main.bicep' = {
       tag1: 'tag1value'
       tag2: 'tag2value'
     }
+    diagnosticStorageAccountId: dependencies.outputs.storageAccountId
+    diagnosticWorkspaceId: dependencies.outputs.workspaceId
+    diagnosticEventHubAuthorizationRuleId: dependencies.outputs.authorizationRuleId
+    diagnosticEventHubName: dependencies.outputs.eventHubNamespaceId
   }
 }
 
@@ -97,17 +72,16 @@ module test_04 '../main.bicep' = {
     name: 'test04${uniqueString(deployment().name, location)}'
     location: location
     skuName: 'Premium'
-
-  }
-}
-
-// Test 05 - Premium Test - Diagnostic Settings
-module test_05 '../main.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-test-05'
-  params: {
-    name: 'test05${uniqueString(deployment().name, location)}'
-    location: location
-    skuName: 'Premium'
-
+    privateEndpoints: [
+      {
+        name: 'endpoint1'
+        subnetId: dependencies.outputs.subnetIds[0]
+      }
+      {
+        name: 'endpoint2'
+        subnetId: dependencies.outputs.subnetIds[1]
+        privateDnsZoneId: dependencies.outputs.privateDNSZoneId
+      }
+    ]
   }
 }
