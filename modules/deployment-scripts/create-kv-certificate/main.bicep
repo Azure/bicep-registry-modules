@@ -120,7 +120,7 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
         value: '5s'
       }
     ]
-    scriptContent: loadTextContent('create-kv.sh')
+    scriptContent: loadTextContent('scripts/create-cert.sh')
     cleanupPreference: cleanupPreference
   }
 }
