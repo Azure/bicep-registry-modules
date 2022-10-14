@@ -1,15 +1,15 @@
 @minLength(5)
 @maxLength(50)
-@description('Required. The name of the Azure Container Registry.')
+@description('The name of the Azure Container Registry.')
 param name string
 
-@description('Optional. Location for all resources.')
+@description('Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. Tags for all resource(s).')
+@description('Tags for all resource(s).')
 param tags object = {}
 
-@description('Optional. The SKU of the Azure Container Registry.')
+@description('The SKU of the Azure Container Registry.')
 @allowed([
   'Basic'
   'Premium'
@@ -17,26 +17,26 @@ param tags object = {}
 ])
 param skuName string = 'Basic'
 
-@description('Optional. Toggle the Azure Container Registry admin user.')
+@description('Toggle the Azure Container Registry admin user.')
 param adminUserEnabled bool = false
 
-@description('Optional. Toggle public network access to Azure Container Registry.')
+@description('Toggle public network access to Azure Container Registry.')
 param publicNetworkAccessEnabled bool = true
 
-@description('Optional. When public network access is disabled, toggle this to allow Azure serices to bypass the public network access rule.')
+@description('When public network access is disabled, toggle this to allow Azure serices to bypass the public network access rule.')
 param publicAzureAccessEnabled bool = true
 
-@description('Optional. A list of IP or IP ranges in CIDR format, that should be allowed access to Azure Container Registry.')
+@description('A list of IP or IP ranges in CIDR format, that should be allowed access to Azure Container Registry.')
 param networkAllowedIpRanges array = []
 
-@description('Optional. The default action to take when no network rule match is found for accessing Azure Container Registry.')
+@description('The default action to take when no network rule match is found for accessing Azure Container Registry.')
 @allowed([
   'Allow'
   'Deny'
 ])
 param networkDefaultAction string = 'Deny'
 
-@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'')
+@description('Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'')
 param roleAssignments array = []
 
 @allowed([
@@ -44,63 +44,63 @@ param roleAssignments array = []
   'NotSpecified'
   'ReadOnly'
 ])
-@description('Optional. Specify the type of lock.')
+@description('Specify the type of lock.')
 param lock string = 'NotSpecified'
 
-@description('Optional. Define Private Endpoints that should be created for Azure Container Registry.')
+@description('Define Private Endpoints that should be created for Azure Container Registry.')
 param privateEndpoints array = []
 
-@description('Optional. Toggle if Private Endpoints manual approval for Azure Container Registry should be enabled.')
+@description('Toggle if Private Endpoints manual approval for Azure Container Registry should be enabled.')
 param privateEndpointsApprovalEnabled bool = false
 
-@description('Optional. Toggle if Zone Redudancy should be enabled on Azure Container Registry.')
+@description('Toggle if Zone Redudancy should be enabled on Azure Container Registry.')
 param zoneRedundancyEnabled bool = false
 
-@description('Optional. Toggle if a single data endpoint per region for serving data from Azure Container Registry should be enabled.')
+@description('Toggle if a single data endpoint per region for serving data from Azure Container Registry should be enabled.')
 param dataEndpointEnabled bool = false
 
-@description('Optional. Toggle if encryption should be enabled on Azure Container Registry.')
+@description('Toggle if encryption should be enabled on Azure Container Registry.')
 param encryptionEnabled bool = false
 
-@description('Optional. Toggle if export policy should be enabled on Azure Container Registry.')
+@description('Toggle if export policy should be enabled on Azure Container Registry.')
 param exportPolicyEnabled bool = false
 
-@description('Optional. Toggle if quarantine policy should be enabled on Azure Container Registry.')
+@description('Toggle if quarantine policy should be enabled on Azure Container Registry.')
 param quarantinePolicyEnabled bool = false
 
-@description('Optional. Toggle if retention policy should be enabled on Azure Container Registry.')
+@description('Toggle if retention policy should be enabled on Azure Container Registry.')
 param retentionPolicyEnabled bool = false
 
-@description('Optional. Configure the retention policy in days for Azure Container Registry. Only effective is \'retentionPolicyEnabled\' is \'true\'.')
+@description('Configure the retention policy in days for Azure Container Registry. Only effective is \'retentionPolicyEnabled\' is \'true\'.')
 param retentionPolicyInDays int = 10
 
-@description('Optional. Toggle if trust policy should be enabled on Azure Container Registry.')
+@description('Toggle if trust policy should be enabled on Azure Container Registry.')
 param trustPolicyEnabled bool = false
 
-@description('Optional. The client ID of the identity which will be used to access Key Vault.')
+@description('The client ID of the identity which will be used to access Key Vault.')
 param encryptionKeyVaultIdentity string = ''
 
-@description('Optional. The Key Vault URI to access the encryption key.')
+@description('The Key Vault URI to access the encryption key.')
 param encryptionKeyVaultKeyIdentifier string = ''
 
-@description('Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely.')
+@description('Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely.')
 @minValue(0)
 @maxValue(365)
 param diagnosticLogsRetentionInDays int = 365
 
-@description('Optional. Resource ID of the diagnostic storage account.')
+@description('Resource ID of the diagnostic storage account.')
 param diagnosticStorageAccountId string = ''
 
-@description('Optional. Resource ID of the diagnostic log analytics workspace.')
+@description('Resource ID of the diagnostic log analytics workspace.')
 param diagnosticWorkspaceId string = ''
 
-@description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
+@description('Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
 param diagnosticEventHubAuthorizationRuleId string = ''
 
-@description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category.')
+@description('Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category.')
 param diagnosticEventHubName string = ''
 
-@description('Optional. The name of logs that will be streamed.')
+@description('The name of logs that will be streamed.')
 @allowed([
   'ContainerRegistryRepositoryEvents'
   'ContainerRegistryLoginEvents'
@@ -110,7 +110,7 @@ param logsToEnable array = [
   'ContainerRegistryLoginEvents'
 ]
 
-@description('Optional. The name of metrics that will be streamed.')
+@description('The name of metrics that will be streamed.')
 @allowed([
   'AllMetrics'
 ])
@@ -239,3 +239,12 @@ module containerRegistry_privateEndpoint '.bicep/nested_privateEndpoint.bicep' =
     manualApprovalEnabled: privateEndpointsApprovalEnabled
   }
 }
+
+@description('The resource group the Azure Container Registry was deployed into.')
+output resourceGroupName string = resourceGroup().name
+
+@description('The resource ID of the Azure Container Registry.')
+output resourceId string = containerRegistry.id
+
+@description('The name of the Azure Container Registry.')
+output name string = containerRegistry.name
