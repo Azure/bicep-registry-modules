@@ -53,6 +53,7 @@ param acrBuildPlatform string = 'linux'
 
 var repo = '${gitRepositoryUrl}#${gitBranch}:${gitRepoDirectory}'
 var cleanRepoName = last(split(gitRepositoryUrl, '/'))
+var cleanImageName = replace(imageName,'/','')
 var taggedImageName = '${imageName}:${imageTag}'
 
 resource acr 'Microsoft.ContainerRegistry/registries@2021-12-01-preview' existing = {
@@ -80,7 +81,7 @@ resource rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!empty(
 }
 
 resource createImportImage 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-  name: 'ACR-Build-${imageName}-${cleanRepoName}'
+  name: 'ACR-Build-${cleanImageName}-${cleanRepoName}'
   location: location
   identity: {
     type: 'UserAssigned'

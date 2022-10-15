@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "6911180040708541168"
+      "templateHash": "12363648850858759275"
     }
   },
   "parameters": {
@@ -128,6 +128,7 @@
     "$fxv#0": "#!/bin/bash\nset -e\n\necho \"Waiting on RBAC replication ($initialDelay)\"\nsleep $initialDelay\n\naz acr build --resource-group $acrResourceGroup \\\n  --registry $acrName \\\n  --image $taggedImageName $repo \\\n  --platform $platform",
     "repo": "[format('{0}#{1}:{2}', parameters('gitRepositoryUrl'), parameters('gitBranch'), parameters('gitRepoDirectory'))]",
     "cleanRepoName": "[last(split(parameters('gitRepositoryUrl'), '/'))]",
+    "cleanImageName": "[replace(parameters('imageName'), '/', '')]",
     "taggedImageName": "[format('{0}:{1}', parameters('imageName'), parameters('imageTag'))]"
   },
   "resources": [
@@ -156,7 +157,7 @@
     {
       "type": "Microsoft.Resources/deploymentScripts",
       "apiVersion": "2020-10-01",
-      "name": "[format('ACR-Build-{0}-{1}', parameters('imageName'), variables('cleanRepoName'))]",
+      "name": "[format('ACR-Build-{0}-{1}', variables('cleanImageName'), variables('cleanRepoName'))]",
       "location": "[parameters('location')]",
       "identity": {
         "type": "UserAssigned",
