@@ -80,7 +80,7 @@ resource rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!empty(
 }
 
 resource createImportImage 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-  name: 'ACR-Build-${cleanRepoName}'
+  name: 'ACR-Build-${imageName}-${cleanRepoName}'
   location: location
   identity: {
     type: 'UserAssigned'
