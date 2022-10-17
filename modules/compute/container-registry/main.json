@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "15742518866038354728"
+      "templateHash": "15884501083814053243"
     }
   },
   "parameters": {
@@ -36,8 +36,8 @@
       "defaultValue": "Basic",
       "allowedValues": [
         "Basic",
-        "Premium",
-        "Standard"
+        "Standard",
+        "Premium"
       ],
       "metadata": {
         "description": "The SKU of the Azure Container Registry."
@@ -277,6 +277,14 @@
         }
       },
       {
+        "name": "varNetworkAllowedIpRanges",
+        "count": "[length(parameters('networkAllowedIpRanges'))]",
+        "input": {
+          "value": "[parameters('networkAllowedIpRanges')[copyIndex('varNetworkAllowedIpRanges')]]",
+          "action": "Allow"
+        }
+      },
+      {
         "name": "varPrivateEndpoints",
         "count": "[length(parameters('privateEndpoints'))]",
         "input": {
@@ -289,7 +297,8 @@
           "privateDnsZones": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'privateDnsZoneId'), createArray(createObject('name', 'default', 'zoneId', parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].privateDnsZoneId)), createArray())]"
         }
       }
-    ]
+    ],
+    "SKU_PREMIUM": "Premium"
   },
   "resources": [
     {
@@ -297,38 +306,25 @@
       "apiVersion": "2021-09-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
       "sku": {
         "name": "[parameters('skuName')]"
       },
       "properties": {
         "adminUserEnabled": "[parameters('adminUserEnabled')]",
-        "publicNetworkAccess": "[if(parameters('publicNetworkAccessEnabled'), 'Enabled', 'Disabled')]",
-        "networkRuleBypassOptions": "[if(parameters('publicAzureAccessEnabled'), 'AzureServices', 'None')]",
-        "networkRuleSet": {
-          "copy": [
-            {
-              "name": "ipRules",
-              "count": "[length(parameters('networkAllowedIpRanges'))]",
-              "input": {
-                "value": "[parameters('networkAllowedIpRanges')[copyIndex('ipRules')]]",
-                "action": "Allow"
-              }
-            }
-          ],
-          "defaultAction": "[parameters('networkDefaultAction')]"
-        },
+        "publicNetworkAccess": "[if(equals(parameters('skuName'), variables('SKU_PREMIUM')), if(parameters('publicNetworkAccessEnabled'), 'Enabled', 'Disabled'), null())]",
+        "networkRuleBypassOptions": "[if(equals(parameters('skuName'), variables('SKU_PREMIUM')), if(parameters('publicAzureAccessEnabled'), 'AzureServices', 'None'), null())]",
+        "networkRuleSet": "[if(equals(parameters('skuName'), variables('SKU_PREMIUM')), createObject('defaultAction', parameters('networkDefaultAction'), 'ipRules', variables('varNetworkAllowedIpRanges')), null())]",
         "dataEndpointEnabled": "[parameters('dataEndpointEnabled')]",
-        "encryption": "[if(parameters('encryptionEnabled'), createObject('keyVaultProperties', createObject('identity', parameters('encryptionKeyVaultIdentity'), 'keyIdentifier', parameters('encryptionKeyVaultKeyIdentifier')), 'status', 'enabled'), null())]",
-        "zoneRedundancy": "[if(parameters('zoneRedundancyEnabled'), 'Enabled', 'Disabled')]",
+        "encryption": "[if(equals(parameters('skuName'), variables('SKU_PREMIUM')), if(parameters('encryptionEnabled'), createObject('keyVaultProperties', createObject('identity', parameters('encryptionKeyVaultIdentity'), 'keyIdentifier', parameters('encryptionKeyVaultKeyIdentifier')), 'status', 'enabled'), null()), null())]",
+        "zoneRedundancy": "[if(equals(parameters('skuName'), variables('SKU_PREMIUM')), if(parameters('zoneRedundancyEnabled'), 'Enabled', 'Disabled'), null())]",
         "policies": {
-          "exportPolicy": {
-            "status": "[if(parameters('exportPolicyEnabled'), 'enabled', 'disabled')]"
-          },
+          "exportPolicy": "[if(equals(parameters('publicAzureAccessEnabled'), 'false'), createObject('status', if(parameters('exportPolicyEnabled'), 'enabled', 'disabled')), null())]",
           "quarantinePolicy": {
             "status": "[if(parameters('quarantinePolicyEnabled'), 'enabled', 'disabled')]"
           },
-          "retentionPolicy": "[if(parameters('retentionPolicyEnabled'), createObject('days', parameters('retentionPolicyInDays'), 'status', 'enabled'), null())]",
-          "trustPolicy": "[if(parameters('trustPolicyEnabled'), createObject('status', 'enabled', 'type', 'Notary'), null())]"
+          "retentionPolicy": "[if(equals(parameters('skuName'), variables('SKU_PREMIUM')), if(parameters('retentionPolicyEnabled'), createObject('days', parameters('retentionPolicyInDays'), 'status', 'enabled'), null()), null())]",
+          "trustPolicy": "[if(equals(parameters('skuName'), variables('SKU_PREMIUM')), if(parameters('trustPolicyEnabled'), createObject('status', 'enabled', 'type', 'Notary'), null()), null())]"
         }
       }
     },
