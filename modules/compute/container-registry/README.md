@@ -92,7 +92,7 @@ module containerRegistry 'br/public:compute/container-registry:1.0' = {
 }
 ```
 
-### Example 2
+### Example 3
 
 An example of how to deploy a 'Premium' SKU instance of Azure Container Registry with replication to multiple Azure Locations.
 
