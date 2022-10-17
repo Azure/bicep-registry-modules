@@ -6,6 +6,7 @@ targetScope = 'resourceGroup'
 
 param location string = resourceGroup().location
 param serviceShort string = 'acr'
+var uniqueName = uniqueString(resourceGroup().id, deployment().name, location)
 
 // ============ //
 // Dependencies //
@@ -16,6 +17,7 @@ module dependencies 'dependencies.test.bicep' = {
   params: {
     name: serviceShort
     location: location
+    prefix: uniqueName
   }
 }
 
@@ -25,18 +27,18 @@ module dependencies 'dependencies.test.bicep' = {
 
 // Test 01 - Basic SKU - Minimal Parameters
 module test_01 '../main.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-test-01'
+  name: '${uniqueName}-test-01'
   params: {
-    name: 'test01${uniqueString(deployment().name, location)}'
+    name: 'test01${uniqueName}'
     location: location
   }
 }
 
 // Test 02 - Standard SKU - Parameters, RBAC and Diagnostic Settings
 module test_02 '../main.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-test-02'
+  name: '${uniqueName}-test-02'
   params: {
-    name: 'test02${uniqueString(deployment().name, location)}'
+    name: 'test02${uniqueName}'
     location: location
     skuName: 'Standard'
     adminUserEnabled: true
@@ -57,9 +59,9 @@ module test_02 '../main.bicep' = {
 
 // Test 03 - Standard SKU - Parameters, RBAC and Diagnostic Settings
 module test_03 '../main.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-test-03'
+  name: '${uniqueName}-test-03'
   params: {
-    name: 'test03${uniqueString(deployment().name, location)}'
+    name: 'test03${uniqueName}'
     location: location
     skuName: 'Standard'
     adminUserEnabled: false
@@ -76,9 +78,9 @@ module test_03 '../main.bicep' = {
 
 // Test 04 - Premium Test - Network Rules & Zone Redundancy
 module test_04 '../main.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-test-04'
+  name: '${uniqueName}-test-04'
   params: {
-    name: 'test04${uniqueString(deployment().name, location)}'
+    name: 'test04${uniqueName}'
     location: location
     skuName: 'Premium'
     publicAzureAccessEnabled: false
@@ -92,9 +94,9 @@ module test_04 '../main.bicep' = {
 
 // Test 05 - Premium Test - Private Endpoint
 module test_05 '../main.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-test-05'
+  name: '${uniqueName}-test-05'
   params: {
-    name: 'test05${uniqueString(deployment().name, location)}'
+    name: 'test05${uniqueName}'
     location: location
     skuName: 'Premium'
     publicNetworkAccessEnabled: false
@@ -114,9 +116,9 @@ module test_05 '../main.bicep' = {
 
 // Test 06 - Premium Test - Private Endpoint
 module test_06 '../main.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-test-06'
+  name: '${uniqueName}-test-06'
   params: {
-    name: 'test06${uniqueString(deployment().name, location)}'
+    name: 'test06${uniqueName}'
     location: location
     skuName: 'Premium'
     publicNetworkAccessEnabled: false
