@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "4838124582811133825"
+      "templateHash": "11551060089621230368"
     }
   },
   "parameters": {
@@ -61,7 +61,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "When public network access is disabled, toggle this to allow Azure serices to bypass the public network access rule."
+        "description": "When public network access is disabled, toggle this to allow Azure services to bypass the public network access rule."
       }
     },
     "networkAllowedIpRanges": {
@@ -119,7 +119,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Toggle if Zone Redudancy should be enabled on Azure Container Registry."
+        "description": "Toggle if Zone Redundancy should be enabled on Azure Container Registry."
       }
     },
     "dataEndpointEnabled": {
@@ -513,7 +513,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.11.1.770",
-              "templateHash": "16606961319663148377"
+              "templateHash": "15991841577347853697"
             }
           },
           "parameters": {
@@ -577,7 +577,7 @@
               },
               "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
               "apiVersion": "2022-05-01",
-              "name": "[format('{0}/default', format('{0}-{1}', variables('varPrivateEndpoints')[copyIndex()].name, uniqueString(variables('varPrivateEndpoints')[copyIndex()].name, variables('varPrivateEndpoints')[copyIndex()].subnetId, variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId)))]",
+              "name": "[format('{0}/{1}', format('{0}-{1}', variables('varPrivateEndpoints')[copyIndex()].name, uniqueString(variables('varPrivateEndpoints')[copyIndex()].name, variables('varPrivateEndpoints')[copyIndex()].subnetId, variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId)), 'default')]",
               "properties": {
                 "copy": [
                   {
@@ -624,6 +624,13 @@
       "value": "[parameters('name')]",
       "metadata": {
         "description": "The name of the Azure Container Registry."
+      }
+    },
+    "loginServer": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('name'))).loginServer]",
+      "metadata": {
+        "description": "The login server URL of the Azure Container Registry."
       }
     }
   }

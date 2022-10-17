@@ -45,7 +45,8 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-05-01' = [for 
 
 @batchSize(1)
 resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-05-01' = [for (endpoint, i) in varPrivateEndpoints: {
-  name: '${privateEndpoint[i].name}/default'
+  name: 'default'
+  parent: privateEndpoint[i]
   properties: {
     privateDnsZoneConfigs: [for privateDnsZone in endpoint.privateDnsZones: {
       name: contains(privateDnsZone, 'name') ? privateDnsZone.name : 'default'

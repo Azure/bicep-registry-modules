@@ -23,7 +23,7 @@ param adminUserEnabled bool = false
 @description('Toggle public network access to Azure Container Registry.')
 param publicNetworkAccessEnabled bool = true
 
-@description('When public network access is disabled, toggle this to allow Azure serices to bypass the public network access rule.')
+@description('When public network access is disabled, toggle this to allow Azure services to bypass the public network access rule.')
 param publicAzureAccessEnabled bool = true
 
 @description('A list of IP or IP ranges in CIDR format, that should be allowed access to Azure Container Registry.')
@@ -53,7 +53,7 @@ param privateEndpoints array = []
 @description('Toggle if Private Endpoints manual approval for Azure Container Registry should be enabled.')
 param privateEndpointsApprovalEnabled bool = false
 
-@description('Toggle if Zone Redudancy should be enabled on Azure Container Registry.')
+@description('Toggle if Zone Redundancy should be enabled on Azure Container Registry.')
 param zoneRedundancyEnabled bool = false
 
 @description('Toggle if a single data endpoint per region for serving data from Azure Container Registry should be enabled.')
@@ -253,3 +253,6 @@ output resourceId string = containerRegistry.id
 
 @description('The name of the Azure Container Registry.')
 output name string = containerRegistry.name
+
+@description('The login server URL of the Azure Container Registry.')
+output loginServer string = containerRegistry.properties.loginServer
