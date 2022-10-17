@@ -4,7 +4,7 @@ targetScope = 'resourceGroup'
 // Parameters //
 // ========== //
 
-param location string = resourceGroup().location
+param location string = 'westus2'
 param serviceShort string = 'acr'
 var uniqueName = uniqueString(resourceGroup().id, deployment().name, location)
 
