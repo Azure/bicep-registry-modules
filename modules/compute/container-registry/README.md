@@ -24,6 +24,7 @@ This module deploys Container Registry (Microsoft.ContainerRegistry/registries) 
 | `privateEndpoints`                      | `array`  | No       | Define Private Endpoints that should be created for Azure Container Registry.                                                                                                                                                                                                                                                                                                                        |
 | `privateEndpointsApprovalEnabled`       | `bool`   | No       | Toggle if Private Endpoints manual approval for Azure Container Registry should be enabled.                                                                                                                                                                                                                                                                                                          |
 | `zoneRedundancyEnabled`                 | `bool`   | No       | Toggle if Zone Redundancy should be enabled on Azure Container Registry.                                                                                                                                                                                                                                                                                                                             |
+| `replicationLocations`                  | `array`  | No       | Array of Azure Location configurations that this Azure Container Registry should replicate too.                                                                                                                                                                                                                                                                                                      |
 | `dataEndpointEnabled`                   | `bool`   | No       | Toggle if a single data endpoint per region for serving data from Azure Container Registry should be enabled.                                                                                                                                                                                                                                                                                        |
 | `encryptionEnabled`                     | `bool`   | No       | Toggle if encryption should be enabled on Azure Container Registry.                                                                                                                                                                                                                                                                                                                                  |
 | `exportPolicyEnabled`                   | `bool`   | No       | Toggle if export policy should be enabled on Azure Container Registry.                                                                                                                                                                                                                                                                                                                               |
@@ -85,6 +86,31 @@ module containerRegistry 'br/public:compute/container-registry:1.0' = {
         name: 'endpoint1'
         subnetId: subnetId
         privateDnsZoneId: privateDnsZoneId
+      }
+    ]
+  }
+}
+```
+
+### Example 2
+
+An example of how to deploy a 'Premium' SKU instance of Azure Container Registry with replication to multiple Azure Locations.
+
+```bicep
+module containerRegistry 'br/public:compute/container-registry:1.0' = {
+  name: '${uniqueString(deployment().name, 'eastus')}-container-registry'
+  params: {
+    name: 'acr${uniqueString(deployment().name, location)}'
+    location: 'eastus'
+    skuName: 'Premium'
+    replicationLocations: [
+      {
+        location: 'eastus2'
+      }
+      {
+        location: 'northeurope'
+        regionEndpointEnabled: true
+        zoneRedundancy: true
       }
     ]
   }

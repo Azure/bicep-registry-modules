@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "11551060089621230368"
+      "templateHash": "397196419372984749"
     }
   },
   "parameters": {
@@ -120,6 +120,13 @@
       "defaultValue": false,
       "metadata": {
         "description": "Toggle if Zone Redundancy should be enabled on Azure Container Registry."
+      }
+    },
+    "replicationLocations": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Array of Azure Location configurations that this Azure Container Registry should replicate too."
       }
     },
     "dataEndpointEnabled": {
@@ -296,6 +303,15 @@
           "subnetId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].subnetId]",
           "privateDnsZones": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'privateDnsZoneId'), createArray(createObject('name', 'default', 'zoneId', parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].privateDnsZoneId)), createArray())]"
         }
+      },
+      {
+        "name": "varReplicationLocations",
+        "count": "[length(parameters('replicationLocations'))]",
+        "input": {
+          "location": "[parameters('replicationLocations')[copyIndex('varReplicationLocations')].location]",
+          "regionEndpointEnabled": "[if(contains(parameters('replicationLocations')[copyIndex('varReplicationLocations')], 'regionEndpointEnabled'), parameters('replicationLocations')[copyIndex('varReplicationLocations')].regionEndpointEnabled, false())]",
+          "zoneRedundancy": "[if(contains(parameters('replicationLocations')[copyIndex('varReplicationLocations')], 'zoneRedundancy'), parameters('replicationLocations')[copyIndex('varReplicationLocations')].zoneRedundancy, false())]"
+        }
       }
     ],
     "SKU_PREMIUM": "Premium"
@@ -327,6 +343,25 @@
           "trustPolicy": "[if(equals(parameters('skuName'), variables('SKU_PREMIUM')), if(parameters('trustPolicyEnabled'), createObject('status', 'enabled', 'type', 'Notary'), null()), null())]"
         }
       }
+    },
+    {
+      "condition": "[equals(parameters('skuName'), variables('SKU_PREMIUM'))]",
+      "copy": {
+        "name": "replications",
+        "count": "[length(variables('varReplicationLocations'))]"
+      },
+      "type": "Microsoft.ContainerRegistry/registries/replications",
+      "apiVersion": "2021-09-01",
+      "name": "[format('{0}/{1}', parameters('name'), variables('varReplicationLocations')[copyIndex()].location)]",
+      "location": "[variables('varReplicationLocations')[copyIndex()].location]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "regionEndpointEnabled": "[variables('varReplicationLocations')[copyIndex()].regionEndpointEnabled]",
+        "zoneRedundancy": "[if(variables('varReplicationLocations')[copyIndex()].zoneRedundancy, 'Enabled', 'Disabled')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ContainerRegistry/registries', parameters('name'))]"
+      ]
     },
     {
       "condition": "[not(equals(parameters('lock'), 'NotSpecified'))]",

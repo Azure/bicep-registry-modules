@@ -129,3 +129,23 @@ module test_06 '../main.bicep' = {
     trustPolicyEnabled: true
   }
 }
+
+// Test 07 - Premium Test - Replication
+module test_07 '../main.bicep' = {
+  name: '${uniqueName}-test-07'
+  params: {
+    name: 'test07${uniqueName}'
+    location: location
+    skuName: 'Premium'
+    replicationLocations: [
+      {
+        location: 'eastus2'
+      }
+      {
+        location: 'northeurope'
+        regionEndpointEnabled: true
+        zoneRedundancy: true
+      }
+    ]
+  }
+}

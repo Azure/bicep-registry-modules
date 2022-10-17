@@ -56,6 +56,9 @@ param privateEndpointsApprovalEnabled bool = false
 @description('Toggle if Zone Redundancy should be enabled on Azure Container Registry.')
 param zoneRedundancyEnabled bool = false
 
+@description('Array of Azure Location configurations that this Azure Container Registry should replicate too.')
+param replicationLocations array = []
+
 @description('Toggle if a single data endpoint per region for serving data from Azure Container Registry should be enabled.')
 param dataEndpointEnabled bool = false
 
@@ -159,6 +162,12 @@ var varPrivateEndpoints = [for privateEndpoint in privateEndpoints: {
   ] : []
 }]
 
+var varReplicationLocations = [for replicationLocation in replicationLocations: {
+  location: replicationLocation.location
+  regionEndpointEnabled: contains(replicationLocation, 'regionEndpointEnabled') ? replicationLocation.regionEndpointEnabled : false
+  zoneRedundancy: contains(replicationLocation, 'zoneRedundancy') ? replicationLocation.zoneRedundancy : false
+}]
+
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2021-09-01' = {
   name: name
   location: location
@@ -201,6 +210,17 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2021-09-01' =
     }
   }
 }
+
+resource replications 'Microsoft.ContainerRegistry/registries/replications@2021-09-01' = [for replicationLocation in varReplicationLocations: if (skuName == SKU_PREMIUM) {
+  name: replicationLocation.location
+  parent: containerRegistry
+  location: replicationLocation.location
+  tags: tags
+  properties: {
+    regionEndpointEnabled: replicationLocation.regionEndpointEnabled
+    zoneRedundancy: replicationLocation.zoneRedundancy ? 'Enabled' : 'Disabled'
+  }
+}]
 
 resource containerRegistry_lock 'Microsoft.Authorization/locks@2020-05-01' = if (lock != 'NotSpecified') {
   name: '${containerRegistry.name}-${lock}-lock'
