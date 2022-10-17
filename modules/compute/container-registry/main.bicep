@@ -12,8 +12,8 @@ param tags object = {}
 @description('The SKU of the Azure Container Registry.')
 @allowed([
   'Basic'
-  'Premium'
   'Standard'
+  'Premium'
 ])
 param skuName string = 'Basic'
 
@@ -137,6 +137,13 @@ var diagnosticsMetrics = [for metric in metricsToEnable: {
   }
 }]
 
+var varNetworkAllowedIpRanges = [for item in networkAllowedIpRanges: {
+  value: item
+  action: 'Allow'
+}]
+
+var SKU_PREMIUM = 'Premium'
+
 var varPrivateEndpoints = [for privateEndpoint in privateEndpoints: {
   name: '${privateEndpoint.name}-${containerRegistry.name}'
   privateLinkServiceId: containerRegistry.id
@@ -155,44 +162,42 @@ var varPrivateEndpoints = [for privateEndpoint in privateEndpoints: {
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2021-09-01' = {
   name: name
   location: location
+  tags: tags
   sku: {
     name: skuName
   }
   properties: {
     adminUserEnabled: adminUserEnabled
-    publicNetworkAccess: publicNetworkAccessEnabled ? 'Enabled' : 'Disabled'
-    networkRuleBypassOptions: publicAzureAccessEnabled ? 'AzureServices' : 'None'
-    networkRuleSet: {
+    publicNetworkAccess: skuName == SKU_PREMIUM ? publicNetworkAccessEnabled ? 'Enabled' : 'Disabled' : null
+    networkRuleBypassOptions: skuName == SKU_PREMIUM ? publicAzureAccessEnabled ? 'AzureServices' : 'None' : null
+    networkRuleSet: skuName == SKU_PREMIUM ? {
       defaultAction: networkDefaultAction
-      ipRules: [for item in networkAllowedIpRanges: {
-        value: item
-        action: 'Allow'
-      }]
-    }
+      ipRules: varNetworkAllowedIpRanges
+    } : null
     dataEndpointEnabled: dataEndpointEnabled
-    encryption: encryptionEnabled ? {
+    encryption: skuName == SKU_PREMIUM ? encryptionEnabled ? {
       keyVaultProperties: {
         identity: encryptionKeyVaultIdentity
         keyIdentifier: encryptionKeyVaultKeyIdentifier
       }
       status: 'enabled'
-    } : null
-    zoneRedundancy: zoneRedundancyEnabled ? 'Enabled' : 'Disabled'
+    } : null : null
+    zoneRedundancy: skuName == SKU_PREMIUM ? zoneRedundancyEnabled ? 'Enabled' : 'Disabled' : null
     policies: {
-      exportPolicy: {
+      exportPolicy: publicAzureAccessEnabled == 'false' ? {
         status: exportPolicyEnabled ? 'enabled' : 'disabled'
-      }
+      } : null
       quarantinePolicy: {
         status: quarantinePolicyEnabled ? 'enabled' : 'disabled'
       }
-      retentionPolicy: retentionPolicyEnabled ? {
+      retentionPolicy: skuName == SKU_PREMIUM ? retentionPolicyEnabled ? {
         days: retentionPolicyInDays
         status: 'enabled'
-      } : null
-      trustPolicy: trustPolicyEnabled ? {
+      } : null : null
+      trustPolicy: skuName == SKU_PREMIUM ? trustPolicyEnabled ? {
         status: 'enabled'
         type: 'Notary'
-      } : null
+      } : null : null
     }
   }
 }

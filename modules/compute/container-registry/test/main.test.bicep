@@ -23,7 +23,7 @@ module dependencies 'dependencies.test.bicep' = {
 // Tests //
 // ===== //
 
-// Test 01 - Basic SKU - Minimal Params
+// Test 01 - Basic SKU - Minimal Parameters
 module test_01 '../main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-01'
   params: {
@@ -32,7 +32,7 @@ module test_01 '../main.bicep' = {
   }
 }
 
-// Test 02 - Standard SKU - Basic params, RBAC and Diagnostic Settings
+// Test 02 - Standard SKU - Parameters, RBAC and Diagnostic Settings
 module test_02 '../main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-02'
   params: {
@@ -46,34 +46,58 @@ module test_02 '../main.bicep' = {
     }
     diagnosticStorageAccountId: dependencies.outputs.storageAccountId
     diagnosticWorkspaceId: dependencies.outputs.workspaceId
-    diagnosticEventHubAuthorizationRuleId: dependencies.outputs.authorizationRuleId
-    diagnosticEventHubName: dependencies.outputs.eventHubNamespaceId
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'AcrPull'
+        principalIds: [ dependencies.outputs.identityPrincipalIds[0] ]
+      }
+    ]
   }
 }
 
-// Test 03 - Premium Test - Network Rules
+// Test 03 - Standard SKU - Parameters, RBAC and Diagnostic Settings
 module test_03 '../main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-03'
   params: {
     name: 'test03${uniqueString(deployment().name, location)}'
     location: location
-    skuName: 'Premium'
-    publicNetworkAccessEnabled: false
-    publicAzureAccessEnabled: false
-    networkAllowedIpRanges: [
-      '20.112.52.29'
-      '20.53.203.50'
+    skuName: 'Standard'
+    adminUserEnabled: false
+    diagnosticEventHubAuthorizationRuleId: dependencies.outputs.authorizationRuleId
+    diagnosticEventHubName: dependencies.outputs.eventHubName
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d') // AcrPull
+        principalIds: [ dependencies.outputs.identityPrincipalIds[1] ]
+      }
     ]
   }
 }
 
-// Test 04 - Premium Test - Private Endpoint
+// Test 04 - Premium Test - Network Rules & Zone Redundancy
 module test_04 '../main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-04'
   params: {
     name: 'test04${uniqueString(deployment().name, location)}'
     location: location
     skuName: 'Premium'
+    publicAzureAccessEnabled: false
+    networkAllowedIpRanges: [
+      '20.112.52.29'
+      '20.53.204.50'
+    ]
+    zoneRedundancyEnabled: true
+  }
+}
+
+// Test 05 - Premium Test - Private Endpoint
+module test_05 '../main.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-test-05'
+  params: {
+    name: 'test05${uniqueString(deployment().name, location)}'
+    location: location
+    skuName: 'Premium'
+    publicNetworkAccessEnabled: false
     privateEndpoints: [
       {
         name: 'endpoint1'
@@ -85,5 +109,21 @@ module test_04 '../main.bicep' = {
         privateDnsZoneId: dependencies.outputs.privateDNSZoneId
       }
     ]
+  }
+}
+
+// Test 06 - Premium Test - Private Endpoint
+module test_06 '../main.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-test-06'
+  params: {
+    name: 'test06${uniqueString(deployment().name, location)}'
+    location: location
+    skuName: 'Premium'
+    publicNetworkAccessEnabled: false
+    exportPolicyEnabled: true
+    quarantinePolicyEnabled: true
+    retentionPolicyEnabled: true
+    retentionPolicyInDays: 5
+    trustPolicyEnabled: true
   }
 }

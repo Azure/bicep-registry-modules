@@ -86,6 +86,16 @@ resource virtualNetworkLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLi
   }
 }
 
+resource managedIdentity_01 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+  name: 'dep-${name}-01'
+  location: location
+}
+
+resource managedIdentity_02 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+  name: 'dep-${name}-02'
+  location: location
+}
+
 output storageAccountId string = storageAccount.id
 output workspaceId string = logAnalyticsWorkspace.id
 output vnetId string = virtualNetwork.id
@@ -95,4 +105,9 @@ output subnetIds array = [
 ]
 output privateDNSZoneId string = privateDNSZone.id
 output eventHubNamespaceId string = eventHubNamespace.id
+output eventHubName string = eventHub.name
 output authorizationRuleId string = authorizationRule.id
+output identityPrincipalIds array = [
+  managedIdentity_01.properties.principalId
+  managedIdentity_02.properties.principalId
+]
