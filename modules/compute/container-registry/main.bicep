@@ -145,7 +145,7 @@ var varNetworkAllowedIpRanges = [for item in networkAllowedIpRanges: {
   action: 'Allow'
 }]
 
-var SKU_PREMIUM = 'Premium'
+var IS_PREMIUM_SKU = skuName == 'Premium'
 
 var varPrivateEndpoints = [for privateEndpoint in privateEndpoints: {
   name: '${privateEndpoint.name}-${containerRegistry.name}'
@@ -177,21 +177,21 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2021-09-01' =
   }
   properties: {
     adminUserEnabled: adminUserEnabled
-    publicNetworkAccess: skuName == SKU_PREMIUM ? publicNetworkAccessEnabled ? 'Enabled' : 'Disabled' : null
-    networkRuleBypassOptions: skuName == SKU_PREMIUM ? publicAzureAccessEnabled ? 'AzureServices' : 'None' : null
-    networkRuleSet: skuName == SKU_PREMIUM ? {
+    publicNetworkAccess: IS_PREMIUM_SKU ? publicNetworkAccessEnabled ? 'Enabled' : 'Disabled' : null
+    networkRuleBypassOptions: IS_PREMIUM_SKU ? publicAzureAccessEnabled ? 'AzureServices' : 'None' : null
+    networkRuleSet: IS_PREMIUM_SKU ? {
       defaultAction: networkDefaultAction
       ipRules: varNetworkAllowedIpRanges
     } : null
     dataEndpointEnabled: dataEndpointEnabled
-    encryption: skuName == SKU_PREMIUM ? encryptionEnabled ? {
+    encryption: IS_PREMIUM_SKU ? encryptionEnabled ? {
       keyVaultProperties: {
         identity: encryptionKeyVaultIdentity
         keyIdentifier: encryptionKeyVaultKeyIdentifier
       }
       status: 'enabled'
     } : null : null
-    zoneRedundancy: skuName == SKU_PREMIUM ? zoneRedundancyEnabled ? 'Enabled' : 'Disabled' : null
+    zoneRedundancy: IS_PREMIUM_SKU ? zoneRedundancyEnabled ? 'Enabled' : 'Disabled' : null
     policies: {
       exportPolicy: publicAzureAccessEnabled == 'false' ? {
         status: exportPolicyEnabled ? 'enabled' : 'disabled'
@@ -199,11 +199,11 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2021-09-01' =
       quarantinePolicy: {
         status: quarantinePolicyEnabled ? 'enabled' : 'disabled'
       }
-      retentionPolicy: skuName == SKU_PREMIUM ? retentionPolicyEnabled ? {
+      retentionPolicy: IS_PREMIUM_SKU ? retentionPolicyEnabled ? {
         days: retentionPolicyInDays
         status: 'enabled'
       } : null : null
-      trustPolicy: skuName == SKU_PREMIUM ? trustPolicyEnabled ? {
+      trustPolicy: IS_PREMIUM_SKU ? trustPolicyEnabled ? {
         status: 'enabled'
         type: 'Notary'
       } : null : null
@@ -211,7 +211,7 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2021-09-01' =
   }
 }
 
-resource replications 'Microsoft.ContainerRegistry/registries/replications@2021-09-01' = [for replicationLocation in varReplicationLocations: if (skuName == SKU_PREMIUM) {
+resource replications 'Microsoft.ContainerRegistry/registries/replications@2021-09-01' = [for replicationLocation in varReplicationLocations: if (IS_PREMIUM_SKU) {
   name: replicationLocation.location
   parent: containerRegistry
   location: replicationLocation.location
