@@ -75,7 +75,7 @@ module daprComponentSb 'daprComponent-sb.bicep' = if (daprComponentType=='pubsub
 }
 
 module daprComponentStateStorBlob 'daprComponent-stor-blob.bicep' = if (daprComponentType=='state.azure.blobstorage') {
-  name: 'dapr-state-stor-${nameseed}'
+  name: 'dapr-state-stor-blob-${nameseed}'
   params: {
     name: autoDaprComponentName
     location: location
@@ -86,7 +86,7 @@ module daprComponentStateStorBlob 'daprComponent-stor-blob.bicep' = if (daprComp
 }
 
 module daprComponentStateStorTable 'daprComponent-stor-table.bicep' = if (daprComponentType=='state.azure.tablestorage') {
-  name: 'dapr-state-stor-${nameseed}'
+  name: 'dapr-state-stor-table-${nameseed}'
   params: {
     name: autoDaprComponentName
     location: location

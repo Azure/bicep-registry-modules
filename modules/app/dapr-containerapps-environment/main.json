@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "1289600119651297468"
+      "templateHash": "18050341796225925768"
     }
   },
   "parameters": {
@@ -476,7 +476,7 @@
       "condition": "[equals(parameters('daprComponentType'), 'state.azure.blobstorage')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('dapr-state-stor-{0}', parameters('nameseed'))]",
+      "name": "[format('dapr-state-stor-blob-{0}', parameters('nameseed'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -613,7 +613,7 @@
       "condition": "[equals(parameters('daprComponentType'), 'state.azure.tablestorage')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[format('dapr-state-stor-{0}', parameters('nameseed'))]",
+      "name": "[format('dapr-state-stor-table-{0}', parameters('nameseed'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -643,7 +643,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.11.1.770",
-              "templateHash": "10607302055437427651"
+              "templateHash": "4858207155962888822"
             }
           },
           "parameters": {
@@ -674,7 +674,7 @@
           },
           "resources": [
             {
-              "condition": "[and(parameters('createAzureServiceForComponent'), equals(variables('daprComponent'), 'state.azure.blobstorage'))]",
+              "condition": "[and(parameters('createAzureServiceForComponent'), equals(variables('daprComponent'), 'state.azure.tablestorage'))]",
               "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
               "apiVersion": "2022-05-01",
               "name": "[format('{0}/{1}/{2}', variables('storageAccountName'), 'default', parameters('entityName'))]",
@@ -683,7 +683,7 @@
               ]
             },
             {
-              "condition": "[and(parameters('createAzureServiceForComponent'), equals(variables('daprComponent'), 'state.azure.blobstorage'))]",
+              "condition": "[and(parameters('createAzureServiceForComponent'), equals(variables('daprComponent'), 'state.azure.tablestorage'))]",
               "type": "Microsoft.Storage/storageAccounts/tableServices",
               "apiVersion": "2022-05-01",
               "name": "[format('{0}/{1}', variables('storageAccountName'), 'default')]",
@@ -692,7 +692,7 @@
               ]
             },
             {
-              "condition": "[equals(variables('daprComponent'), 'state.azure.blobstorage')]",
+              "condition": "[equals(variables('daprComponent'), 'state.azure.tablestorage')]",
               "type": "Microsoft.App/managedEnvironments/daprComponents",
               "apiVersion": "2022-06-01-preview",
               "name": "[format('{0}/{1}', parameters('containerAppEnvName'), format('{0}-state', parameters('name')))]",
@@ -726,7 +726,7 @@
               ]
             },
             {
-              "condition": "[and(parameters('createAzureServiceForComponent'), equals(variables('daprComponent'), 'state.azure.blobstorage'))]",
+              "condition": "[and(parameters('createAzureServiceForComponent'), equals(variables('daprComponent'), 'state.azure.tablestorage'))]",
               "type": "Microsoft.Storage/storageAccounts",
               "apiVersion": "2022-05-01",
               "name": "[variables('storageAccountName')]",
