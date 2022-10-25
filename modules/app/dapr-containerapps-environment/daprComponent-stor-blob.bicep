@@ -8,14 +8,13 @@ param createAzureServiceForComponent bool = true
 param scopes array = []
 
 var daprComponent = 'state.azure.blobstorage'
-var rawStorageAccountName='st${name}${uniqueString(resourceGroup().id, name)}'
-var storageAccountName = length(rawStorageAccountName) > 24 ? substring(toLower(rawStorageAccountName), 0, 24) : rawStorageAccountName
+var storageAccountName = take(toLower('st${name}${uniqueString(resourceGroup().id, name)}'),24)
 
-resource containerAppEnv 'Microsoft.App/managedEnvironments@2022-01-01-preview' existing = {
+resource containerAppEnv 'Microsoft.App/managedEnvironments@2022-06-01-preview' existing = {
   name: containerAppEnvName
 }
 
-resource daprStorageAccStateStore 'Microsoft.App/managedEnvironments/daprComponents@2022-03-01'  = if(daprComponent=='state.azure.blobstorage') {
+resource daprStorageAccStateStore 'Microsoft.App/managedEnvironments/daprComponents@2022-06-01-preview'  = if(daprComponent=='state.azure.blobstorage') {
   name: '${name}-state'
   parent: containerAppEnv
   properties: {
@@ -45,7 +44,7 @@ resource daprStorageAccStateStore 'Microsoft.App/managedEnvironments/daprCompone
   }
 }
 
-resource storageaccount 'Microsoft.Storage/storageAccounts@2021-09-01' = if(createAzureServiceForComponent && daprComponent=='state.azure.blobstorage') {
+resource storageaccount 'Microsoft.Storage/storageAccounts@2022-05-01' = if(createAzureServiceForComponent && daprComponent=='state.azure.blobstorage') {
   name: storageAccountName
   kind: 'StorageV2'
   location: location

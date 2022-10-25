@@ -41,7 +41,9 @@ param tags object = {}
 var autoDaprComponentNameMap  = {
   'pubsub.azure.servicebus' : '${toLower(applicationEntityName)}pubsub'
   'state.azure.blobstorage' : '${toLower(applicationEntityName)}statestore'
+  'state.azure.tablestorage' : '${toLower(applicationEntityName)}statestore'
   'state.azure.cosmosdb' : '${toLower(applicationEntityName)}statestore'
+  //'state.sqlserver' : '${toLower(applicationEntityName)}statestore'
 }
 
 @description('Chooses a good default name for the dapr component')
@@ -72,7 +74,18 @@ module daprComponentSb 'daprComponent-sb.bicep' = if (daprComponentType=='pubsub
   }
 }
 
-module daprComponentStateStor 'daprComponent-stor.bicep' = if (daprComponentType=='state.azure.blobstorage') {
+module daprComponentStateStorBlob 'daprComponent-stor-blob.bicep' = if (daprComponentType=='state.azure.blobstorage') {
+  name: 'dapr-state-stor-${nameseed}'
+  params: {
+    name: autoDaprComponentName
+    location: location
+    containerAppEnvName: environmentAlreadyExists ? existingEnvironment.name  : containerAppEnv.outputs.containerAppEnvironmentName
+    entityName: applicationEntityName
+    scopes: daprComponentScopes
+  }
+}
+
+module daprComponentStateStorTable 'daprComponent-stor-table.bicep' = if (daprComponentType=='state.azure.tablestorage') {
   name: 'dapr-state-stor-${nameseed}'
   params: {
     name: autoDaprComponentName
