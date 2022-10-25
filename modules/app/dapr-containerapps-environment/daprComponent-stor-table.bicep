@@ -14,7 +14,7 @@ resource containerAppEnv 'Microsoft.App/managedEnvironments@2022-06-01-preview' 
   name: containerAppEnvName
 }
 
-resource daprStorageAccStateStore 'Microsoft.App/managedEnvironments/daprComponents@2022-06-01-preview'  = if(daprComponent=='state.azure.blobstorage') {
+resource daprStorageAccStateStore 'Microsoft.App/managedEnvironments/daprComponents@2022-06-01-preview'  = if(daprComponent=='state.azure.tablestorage') {
   name: '${name}-state'
   parent: containerAppEnv
   properties: {
@@ -44,7 +44,7 @@ resource daprStorageAccStateStore 'Microsoft.App/managedEnvironments/daprCompone
   }
 }
 
-resource storageaccount 'Microsoft.Storage/storageAccounts@2022-05-01' = if(createAzureServiceForComponent && daprComponent=='state.azure.blobstorage') {
+resource storageaccount 'Microsoft.Storage/storageAccounts@2022-05-01' = if(createAzureServiceForComponent && daprComponent=='state.azure.tablestorage') {
   name: storageAccountName
   kind: 'StorageV2'
   location: location
