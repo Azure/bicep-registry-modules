@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.11.1.770",
-      "templateHash": "17061185190568727130"
+      "templateHash": "1289600119651297468"
     }
   },
   "parameters": {
@@ -94,6 +94,7 @@
     "autoDaprComponentNameMap": {
       "pubsub.azure.servicebus": "[format('{0}pubsub', toLower(parameters('applicationEntityName')))]",
       "state.azure.blobstorage": "[format('{0}statestore', toLower(parameters('applicationEntityName')))]",
+      "state.azure.tablestorage": "[format('{0}statestore', toLower(parameters('applicationEntityName')))]",
       "state.azure.cosmosdb": "[format('{0}statestore', toLower(parameters('applicationEntityName')))]"
     },
     "autoDaprComponentName": "[if(empty(parameters('daprComponentName')), variables('autoDaprComponentNameMap')[parameters('daprComponentType')], parameters('daprComponentName'))]"
@@ -505,7 +506,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.11.1.770",
-              "templateHash": "5324293688587926095"
+              "templateHash": "14042911865950782559"
             }
           },
           "parameters": {
@@ -532,14 +533,13 @@
           },
           "variables": {
             "daprComponent": "state.azure.blobstorage",
-            "rawStorageAccountName": "[format('st{0}{1}', parameters('name'), uniqueString(resourceGroup().id, parameters('name')))]",
-            "storageAccountName": "[if(greater(length(variables('rawStorageAccountName')), 24), substring(toLower(variables('rawStorageAccountName')), 0, 24), variables('rawStorageAccountName'))]"
+            "storageAccountName": "[take(toLower(format('st{0}{1}', parameters('name'), uniqueString(resourceGroup().id, parameters('name')))), 24)]"
           },
           "resources": [
             {
               "condition": "[and(parameters('createAzureServiceForComponent'), equals(variables('daprComponent'), 'state.azure.blobstorage'))]",
               "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-              "apiVersion": "2021-09-01",
+              "apiVersion": "2022-05-01",
               "name": "[format('{0}/{1}/{2}', variables('storageAccountName'), 'default', toLower(parameters('entityName')))]",
               "properties": {
                 "publicAccess": "None"
@@ -551,7 +551,7 @@
             {
               "condition": "[and(parameters('createAzureServiceForComponent'), equals(variables('daprComponent'), 'state.azure.blobstorage'))]",
               "type": "Microsoft.Storage/storageAccounts/blobServices",
-              "apiVersion": "2021-09-01",
+              "apiVersion": "2022-05-01",
               "name": "[format('{0}/{1}', variables('storageAccountName'), 'default')]",
               "dependsOn": [
                 "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
@@ -560,7 +560,7 @@
             {
               "condition": "[equals(variables('daprComponent'), 'state.azure.blobstorage')]",
               "type": "Microsoft.App/managedEnvironments/daprComponents",
-              "apiVersion": "2022-03-01",
+              "apiVersion": "2022-06-01-preview",
               "name": "[format('{0}/{1}', parameters('containerAppEnvName'), format('{0}-state', parameters('name')))]",
               "properties": {
                 "componentType": "[variables('daprComponent')]",
@@ -568,7 +568,7 @@
                 "secrets": [
                   {
                     "name": "storageaccountkey",
-                    "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2021-09-01').keys[0].value]"
+                    "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2022-05-01').keys[0].value]"
                   }
                 ],
                 "metadata": [
@@ -594,7 +594,141 @@
             {
               "condition": "[and(parameters('createAzureServiceForComponent'), equals(variables('daprComponent'), 'state.azure.blobstorage'))]",
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2021-09-01",
+              "apiVersion": "2022-05-01",
+              "name": "[variables('storageAccountName')]",
+              "kind": "StorageV2",
+              "location": "[parameters('location')]",
+              "sku": {
+                "name": "Standard_LRS"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', format('containerAppEnv-{0}', parameters('nameseed')))]"
+      ]
+    },
+    {
+      "condition": "[equals(parameters('daprComponentType'), 'state.azure.tablestorage')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[format('dapr-state-stor-{0}', parameters('nameseed'))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[variables('autoDaprComponentName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "containerAppEnvName": {
+            "value": "[if(parameters('environmentAlreadyExists'), parameters('containerAppEnvName'), reference(resourceId('Microsoft.Resources/deployments', format('containerAppEnv-{0}', parameters('nameseed'))), '2020-10-01').outputs.containerAppEnvironmentName.value)]"
+          },
+          "entityName": {
+            "value": "[parameters('applicationEntityName')]"
+          },
+          "scopes": {
+            "value": "[parameters('daprComponentScopes')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.11.1.770",
+              "templateHash": "10607302055437427651"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "entityName": {
+              "type": "string"
+            },
+            "containerAppEnvName": {
+              "type": "string"
+            },
+            "createAzureServiceForComponent": {
+              "type": "bool",
+              "defaultValue": true
+            },
+            "scopes": {
+              "type": "array",
+              "defaultValue": []
+            }
+          },
+          "variables": {
+            "daprComponent": "state.azure.tablestorage",
+            "storageAccountName": "[take(toLower(format('st{0}{1}', parameters('name'), uniqueString(resourceGroup().id, parameters('name')))), 24)]"
+          },
+          "resources": [
+            {
+              "condition": "[and(parameters('createAzureServiceForComponent'), equals(variables('daprComponent'), 'state.azure.blobstorage'))]",
+              "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
+              "apiVersion": "2022-05-01",
+              "name": "[format('{0}/{1}/{2}', variables('storageAccountName'), 'default', parameters('entityName'))]",
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/tableServices', variables('storageAccountName'), 'default')]"
+              ]
+            },
+            {
+              "condition": "[and(parameters('createAzureServiceForComponent'), equals(variables('daprComponent'), 'state.azure.blobstorage'))]",
+              "type": "Microsoft.Storage/storageAccounts/tableServices",
+              "apiVersion": "2022-05-01",
+              "name": "[format('{0}/{1}', variables('storageAccountName'), 'default')]",
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+              ]
+            },
+            {
+              "condition": "[equals(variables('daprComponent'), 'state.azure.blobstorage')]",
+              "type": "Microsoft.App/managedEnvironments/daprComponents",
+              "apiVersion": "2022-06-01-preview",
+              "name": "[format('{0}/{1}', parameters('containerAppEnvName'), format('{0}-state', parameters('name')))]",
+              "properties": {
+                "componentType": "[variables('daprComponent')]",
+                "version": "v1",
+                "secrets": [
+                  {
+                    "name": "storageaccountkey",
+                    "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2022-05-01').keys[0].value]"
+                  }
+                ],
+                "metadata": [
+                  {
+                    "name": "accountKey",
+                    "secretRef": "storageaccountkey"
+                  },
+                  {
+                    "name": "accountName",
+                    "value": "[variables('storageAccountName')]"
+                  },
+                  {
+                    "name": "tableName",
+                    "value": "[parameters('entityName')]"
+                  }
+                ],
+                "scopes": "[parameters('scopes')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+              ]
+            },
+            {
+              "condition": "[and(parameters('createAzureServiceForComponent'), equals(variables('daprComponent'), 'state.azure.blobstorage'))]",
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2022-05-01",
               "name": "[variables('storageAccountName')]",
               "kind": "StorageV2",
               "location": "[parameters('location')]",
