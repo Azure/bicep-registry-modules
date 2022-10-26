@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
+  "name": "Container Registry",
+  "summary": "This module deploys Container Registry (Microsoft.ContainerRegistry/registries) and optionally available integrations.",
+  "owner": "thomasriley"
+}
