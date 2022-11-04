@@ -39,7 +39,7 @@ param initialScriptDelay string = '120s'
 @description('When the script resource is cleaned up')
 param cleanupPreference string = 'OnSuccess'
 
-resource aks 'Microsoft.ContainerService/managedClusters@2022-01-02-preview' existing = {
+resource aks 'Microsoft.ContainerService/managedClusters@2022-09-01' existing = {
   name: aksName
 }
 
@@ -53,7 +53,7 @@ resource existingDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2
   scope: resourceGroup(existingManagedIdentitySubId, existingManagedIdentityResourceGroupName)
 }
 
-resource rbac 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = [for roleDefId in rbacRolesNeeded: {
+resource rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefId in rbacRolesNeeded: {
   name: guid(aks.id, roleDefId, useExistingManagedIdentity ? existingDepScriptId.id : newDepScriptId.id)
   scope: aks
   properties: {
