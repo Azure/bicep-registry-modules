@@ -1,8 +1,11 @@
 # AKS Run Command Script
 
+An Azure CLI Deployment Script that allows you to run a command on a Kubernetes cluster.
+
 ## Description
 
-{{ Add detailed description for the module. }}
+In order to run commands target AKS, a Custom Script Action must be used.
+This module configures the required permissions so that you do not have to configure the identity.
 
 ## Parameters
 
