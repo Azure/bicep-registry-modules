@@ -2,6 +2,11 @@
 
 An Azure CLI Deployment Script that allows you to run a command on a Kubernetes cluster.
 
+## Description
+
+AKS run command allows you to remotely invoke commands in an AKS cluster through the AKS API. This module makes use of a custom script to expose this capability in a Bicep accessible module.
+This module configures the required permissions so that you do not have to configure the identity.
+
 ## Parameters
 
 | Name                                       | Type     | Required | Description                                                                                                   |
