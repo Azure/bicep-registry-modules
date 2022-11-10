@@ -1,12 +1,9 @@
 name: Get module names and tags
 
 on:
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: "The git tag of the module to publish."
-        required: true
-        type: string
+  pull_request:
+    branches:
+      - main
 
 jobs:
   main:
