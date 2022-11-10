@@ -40,7 +40,7 @@ async function getModuleNamesWithTags({ require, core }) {
   }
 }
 
-export class ModuleNameWithTags {
+class ModuleNameWithTags {
   constructor(name, tags) {
     this.name = name;
     this.tags = tags;
