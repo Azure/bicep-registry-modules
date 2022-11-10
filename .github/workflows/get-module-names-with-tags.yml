@@ -24,7 +24,7 @@ jobs:
             await script({ require, core })
 
       - name: Upload module names and tags file
-        run: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3
         with:
           name: moduleNamesWithTags.json
           path: moduleNamesWithTags.json
