@@ -37,6 +37,9 @@ async function getModuleNamesWithTags({ require, core }) {
     }
 
     console.log(result);
+
+    const myString = JSON.stringify(result);
+    console.log(myString);
   }
 }
 
