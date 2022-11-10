@@ -35,9 +35,9 @@ async function getModuleNamesWithTags({ require, core }) {
         core.setFailed(error);
       }
     }
-
-    console.log(JSON.stringify(result));
   }
+
+  console.log(JSON.stringify(result));
 }
 
 class ModuleNameWithTags {
