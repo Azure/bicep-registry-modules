@@ -39,7 +39,7 @@ async function getModuleNamesWithTags({ require, core }) {
 
   fs.writeFile('moduleNamesWithTags.json', JSON.stringify(result), (err) => {
     if (err) throw err;
-   });
+  });
 }
 
 class ModuleNameWithTags {
