@@ -2,7 +2,7 @@
  * @param {typeof import("fs")} fs
  * @param {string} dir
  */
- function getSubdirNames(fs, dir) {
+function getSubdirNames(fs, dir) {
   return fs
     .readdirSync(dir, { withFileTypes: true })
     .filter((x) => x.isDirectory())
@@ -29,7 +29,7 @@ async function getModuleNamesWithTags({ require, core }) {
         const versionListResponse = await axios.get(versionListUrl);
         const tags = versionListResponse.data.tags.sort();
         const moduleNameWithTag = new ModuleNameWithTags(moduleName, tags);
-        
+
         result.push(moduleNameWithTag);
       } catch (error) {
         core.setFailed(error);
