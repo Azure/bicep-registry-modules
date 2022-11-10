@@ -36,7 +36,9 @@ async function getModuleNamesWithTags({ require, core }) {
       }
     }
 
-    fs.writeFile("moduleNamesWithTags.json", result, function (errWrite) {
+    const obj = JSON.parse(result);
+
+    fs.writeFile("moduleNamesWithTags.json", JSON.stringify(obj, null, 4), function (errWrite) {
       if (errWrite) {
           return console.log(errWrite);
       }
