@@ -1,7 +1,9 @@
 name: Get module names and tags
 
 on:
-  workflow_dispatch:
+  pull_request:
+    branches:
+      - dev/bhsubra/CollectModuleNamesAndTags
 
 jobs:
   main:
