@@ -1,4 +1,4 @@
-name: Refresh module table
+name: Get module names and tags
 
 on:
   workflow_dispatch:
