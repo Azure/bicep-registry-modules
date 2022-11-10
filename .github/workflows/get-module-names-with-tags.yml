@@ -13,7 +13,7 @@ jobs:
       - name: Install packages
         run: npm ci
 
-      - name: Refresh modules table
+      - name: Get module names with tags
         uses: actions/github-script@v6
         with:
           result-encoding: string
