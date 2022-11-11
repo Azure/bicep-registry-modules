@@ -17,6 +17,8 @@ async function getModuleNamesWithTags({ require, core }) {
   const moduleGroups = getSubdirNames(fs, "modules");
   const result = [];
 
+  var  dict = {}; 
+
   for (const moduleGroup of moduleGroups) {
     var moduleGroupPath = path.join("modules", moduleGroup);
     var moduleNames = getSubdirNames(fs, moduleGroupPath);
@@ -30,6 +32,8 @@ async function getModuleNamesWithTags({ require, core }) {
         const tags = versionListResponse.data.tags.sort();
         const moduleNameWithTag = new ModuleNameWithTags(moduleName, tags);
 
+        dict[modulePath] = tags;
+
         result.push(moduleNameWithTag);
       } catch (error) {
         core.setFailed(error);
@@ -37,7 +41,7 @@ async function getModuleNamesWithTags({ require, core }) {
     }
   }
 
-  fs.writeFile("moduleNamesWithTags.json", JSON.stringify(result), (err) => {
+  fs.writeFile("moduleNamesWithTags.json", JSON.stringify(dict), (err) => {
     if (err) throw err;
   });
 }
