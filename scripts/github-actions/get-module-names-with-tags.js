@@ -15,9 +15,7 @@ async function getModuleNamesWithTags({ require, core }) {
   const axios = require("axios").default;
 
   const moduleGroups = getSubdirNames(fs, "modules");
-  const result = [];
-
-  var  dict = {}; 
+  var  result = {}; 
 
   for (const moduleGroup of moduleGroups) {
     var moduleGroupPath = path.join("modules", moduleGroup);
@@ -30,27 +28,17 @@ async function getModuleNamesWithTags({ require, core }) {
       try {
         const versionListResponse = await axios.get(versionListUrl);
         const tags = versionListResponse.data.tags.sort();
-        const moduleNameWithTag = new ModuleNameWithTags(moduleName, tags);
 
-        dict[modulePath] = tags;
-
-        result.push(moduleNameWithTag);
+        result[modulePath] = tags;
       } catch (error) {
         core.setFailed(error);
       }
     }
   }
 
-  fs.writeFile("moduleNamesWithTags.json", JSON.stringify(dict), (err) => {
+  fs.writeFile("moduleNamesWithTags.json", JSON.stringify(result), (err) => {
     if (err) throw err;
   });
-}
-
-class ModuleNameWithTags {
-  constructor(name, tags) {
-    this.name = name;
-    this.tags = tags;
-  }
 }
 
 module.exports = getModuleNamesWithTags;
