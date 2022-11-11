@@ -27,7 +27,7 @@ param gameEngine string = 'ue_4_27_2'
 
 @description('GDK Version')
 @allowed([ 'June_2022_Update_1', 'March_2022_Update_1', 'October_2021_Update_5', 'June_2021_Update_9' ])
-param gdkVersion string = 'June_2021_Update_9'
+param gdkVersion string = 'March_2022_Update_1'
 
 @description('Incredibuild License Key')
 @secure()
