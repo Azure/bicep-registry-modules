@@ -106,16 +106,4 @@ jobs:
           message: Update Version to ${{ steps.tag_version.outputs.new_version }}
           committer_name: GitHub Actions
           committer_email: actions@github.com
-          add: setup.py
-
-      - name: Commit Changes
-        run: |
-          git config --global user.email "auto-brm@noreply.github.com"
-          git config --global user.name "Auto brm"
-
-          git add modules
-
-          if ! git diff-index --quiet HEAD --; then
-            git commit -m "Autoformat with BRM"
-            git push
-          fi
+          add: modules
