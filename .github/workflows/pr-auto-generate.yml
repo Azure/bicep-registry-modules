@@ -15,13 +15,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Sync main
-        uses: actions/checkout@v2.3.4
-        with:
-          ref: main
-          fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
-          token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }} # A PAT must be used to re-trigger workflows after commit
-
       - uses: actions/checkout@v2.3.4
         with:
           fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
