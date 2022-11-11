@@ -24,6 +24,7 @@ jobs:
           token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }} # A PAT must be used to re-trigger workflows after commit
 
       - name: Find Changed Folder
+        id: changed_folders
         run: |
           git status
           # Get path of last file checked in
@@ -56,6 +57,12 @@ jobs:
           echo "SAMPLEFOLDER_PATH=$FOUNDFOLDER_PATH" >> $GITHUB_ENV
           echo "MAINBICEP_PATH=$MAINBICEP_PATH" >> $GITHUB_ENV
           echo "AZDEPLOYJSON_PATH=$AZDEPLOYJSON_PATH" >> $GITHUB_ENV
+          echo "SAMPLEFOLDER_PATH=$FOUNDFOLDER_PATH" >> $GITHUB_OUTPUT
+          echo "MAINBICEP_PATH=$MAINBICEP_PATH" >> $GITHUB_OUTPUT
+          echo "AZDEPLOYJSON_PATH=$AZDEPLOYJSON_PATH" >> $GITHUB_OUTPUT
+          
+          OLD_TAG=$(cut -d/ -f2-3 <<< $FOUNDFOLDER_PATH)
+          echo "OLD_TAG=$OLD_TAG" >> $GITHUB_OUTPUT
 
       # Adding a step to explicitly install the latest Bicep CLI because there is
       # always a delay in updating Bicep CLI in the job runner environments.
@@ -83,6 +90,34 @@ jobs:
 
       - name: Check formatting
         run: npm run prettier --write .
+
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag_prefix:  ${{ steps.changed_folders.outputs.OLD_TAG }}
+          dry_run: true
+          default_bump: false
+
+      - name: Set Configurations
+        if: steps.tag_version.outputs.release_type
+        shell: bash
+        env:
+          OLD_VERSION: ${{ steps.tag_version.outputs.previous_version }}
+          VERSION: ${{ steps.tag_version.outputs.new_version }}
+        run: |
+          OLD_VERSION=$(cut -d. -f1-2 <<< $OLD_VERSION)
+          VERSION=$(cut -d. -f1-2 <<< $VERSION)
+          sed -ri "s/$OLD_VERSION/$VERSION/" "$SAMPLEFOLDER_PATH/version.json" || exit 1
+
+      - uses: EndBug/add-and-commit@v9
+        if: steps.tag_version.outputs.release_type
+        with:
+          message: Update Version to ${{ steps.tag_version.outputs.new_version }}
+          committer_name: GitHub Actions
+          committer_email: actions@github.com
+          add: setup.py
 
       - name: Commit Changes
         run: |
