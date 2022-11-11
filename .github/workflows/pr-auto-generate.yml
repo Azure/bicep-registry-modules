@@ -113,7 +113,7 @@ jobs:
           git config --global user.email "auto-brm@noreply.github.com"
           git config --global user.name "Auto brm"
 
-          git add .
+          git add modules
 
           if ! git diff-index --quiet HEAD --; then
             git commit -m "Autoformat with BRM"
