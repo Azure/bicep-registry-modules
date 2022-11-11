@@ -72,6 +72,17 @@ jobs:
 
         cd $SAMPLEFOLDER_PATH
         brm generate
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: "16"
+
+    - name: Install packages
+      run: npm ci
+
+    - name: Check formatting
+      run: npm run prettier --write .
 
     - name: Commit Changes
       run: |
