@@ -29,15 +29,15 @@ We would like feedback on what's missing in the module. Please raise an [issue](
 
 ## Change Log/Releases
 
-Please see this repositories [GitHub releases](https://github.com/Azure/bicep-lz-vending/releases) for information on the latest changes and releases.
+Please see this modules home GitHub repository's [GitHub releases](https://github.com/Azure/bicep-lz-vending/releases) for information on the latest changes and releases.
 
 ## Wiki
 
-Please see the content in the [wiki](https://github.com/Azure/bicep-lz-vending/wiki) for more detailed information about the module and various other pieces of documentation.
+Please see the content in this modules home GitHub repository's [wiki](https://github.com/Azure/bicep-lz-vending/wiki) for more detailed information about the module and various other pieces of documentation.
 
 ## Known Issues
 
-Please see the [Known Issues in the wiki](https://github.com/Azure/bicep-lz-vending/wiki/knownissues).
+Please see this modules home GitHub repository's [Known Issues in the wiki](https://github.com/Azure/bicep-lz-vending/wiki/knownissues).
 
 ## Telemetry
 
