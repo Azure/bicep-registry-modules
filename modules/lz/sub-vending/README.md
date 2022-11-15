@@ -98,3 +98,147 @@ If you don't wish to send usage data to Microsoft, details on how to turn it off
 
 ```bicep
 ```
+
+### Example JSON Parameter File
+
+```json
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "metadata": {
+        "template": "main.json"
+    },
+    "parameters": {
+        "subscriptionAliasEnabled": {
+            "value": true
+        },
+        "subscriptionDisplayName": {
+            "value": "sub-bicep-lz-vending-example-001"
+        },
+        "subscriptionAliasName": {
+            "value": "sub-bicep-lz-vending-example-001"
+        },
+        "subscriptionBillingScope": {
+            "value": "providers/Microsoft.Billing/billingAccounts/1234567/enrollmentAccounts/123456"
+        },
+        "subscriptionWorkload": {
+            "value": "Production"
+        },
+        "existingSubscriptionId": {
+            "value": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+        },
+        "subscriptionManagementGroupAssociationEnabled": {
+            "value": true
+        },
+        "subscriptionManagementGroupId": {
+            "value": "alz-landingzones-corp"
+        },
+        "subscriptionTags": {
+            "value": {
+                "tagKey1": "value",
+                "tag-key-2": "value"
+            }
+        },
+        "virtualNetworkEnabled": {
+            "value": true
+        },
+        "virtualNetworkResourceGroupName": {
+            "value": "rg-networking-001"
+        },
+        "virtualNetworkResourceGroupTags": {
+            "value": {
+                "tagKey1": "value",
+                "tag-key-2": "value"
+            }
+        },
+        "virtualNetworkResourceGroupLockEnabled": {
+            "value": true
+        },
+        "virtualNetworkLocation": {
+            "value": "uksouth"
+        },
+        "virtualNetworkName": {
+            "value": "vnet-example-001"
+        },
+        "virtualNetworkTags": {
+            "value": {
+                "tagKey1": "value",
+                "tag-key-2": "value"
+            }
+        },
+        "virtualNetworkAddressSpace": {
+            "value": [
+                "10.0.0.0/16"
+            ]
+        },
+        "virtualNetworkDnsServers": {
+            "value": [
+                "10.4.1.4",
+                "10.2.1.5"
+            ]
+        },
+        "virtualNetworkDdosPlanId": {
+            "value": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/ddosProtectionPlans/xxxxxxxxxx"
+        },
+        "virtualNetworkPeeringEnabled": {
+            "value": true
+        },
+        "hubNetworkResourceId": {
+            "value": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualNetworks/xxxxxxxxxx"
+        },
+        "virtualNetworkUseRemoteGateways": {
+            "value": true
+        },
+        "virtualNetworkVwanAssociatedRouteTableResourceId": {
+            "value": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualHubs/xxxxxxxxx/hubRouteTables/xxxxxxxxx"
+        },
+        "virtualNetworkVwanPropagatedRouteTablesResourceIds": {
+            "value": [
+                {
+                    "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualHubs/xxxxxxxxx/hubRouteTables/defaultRouteTable"
+                },
+                {
+                    "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualHubs/xxxxxxxxx/hubRouteTables/xxxxxxxxx"
+                }
+            ]
+        },
+        "virtualNetworkVwanPropagatedLabels": {
+            "value": [
+                "default",
+                "anotherLabel"
+            ]
+        },
+        "roleAssignmentEnabled": {
+            "value": true
+        },
+        "roleAssignments": {
+            "value": [
+                {
+                    "principalId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+                    "definition": "Contributor",
+                    "relativeScope": ""
+                },
+                {
+                    "principalId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+                    "definition": "/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+                    "relativeScope": ""
+                },
+                {
+                    "principalId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+                    "definition": "Reader",
+                    "relativeScope": "/resourceGroups/rsg-networking-001"
+                },
+                {
+                    "principalId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+                    "definition": "/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+                    "relativeScope": "/resourceGroups/rsg-networking-001"
+                }
+            ]
+        },
+        "disableTelemetry": {
+            "value": false
+        }
+    }
+}
+```
+
