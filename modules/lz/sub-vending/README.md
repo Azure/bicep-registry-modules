@@ -4,7 +4,46 @@ This module is designed to accelerate deployment of landing zones (aka Subscript
 
 ## Description
 
-{{ Add detailed description for the module. }}
+> ℹ️ This module requires the usage of Bicep version `v0.11.1` or later. For details on installing/upgrading Bicep see: [Install Bicep tools](https://learn.microsoft.com/azure/azure-resource-manager/bicep/install) ℹ️
+
+The landing zone Bicep modules are designed to accelerate deployment of the individual landing zones (aka Subscriptions) within an Azure AD Tenant.
+
+> See the different types of landing zones in the Azure Landing Zones documentation here: [What is an Azure landing zone? - Platform vs. application landing zones](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/#platform-vs-application-landing-zones)
+
+The modules are designed to be instantiated many times, once for each desired landing zone.
+
+This is currently split logically into the following capabilities:
+
+- Subscription creation and management group placement
+- Networking - deploy a Virtual Network with, optional:
+  - Hub & spoke connectivity (peering to a hub Virtual Network)
+  - Virtual WAN connectivity (peering to a Virtual Hub via a Virtual Hub Connection)
+  - Link to existing DDoS Network Protection Plan
+  - Specify Custom DNS Servers
+- Role assignments
+- Tags
+
+> When creating Virtual Network peerings, be aware of the [limit of peerings per Virtual Network.](https://learn.microsoft.com/azure/azure-resource-manager/management/azure-subscription-service-limits?toc=%2Fazure%2Fvirtual-network%2Ftoc.json#azure-resource-manager-virtual-networking-limits)
+
+We would like feedback on what's missing in the module. Please raise an [issue](https://github.com/Azure/bicep-lz-vending/issues) on this modules home GitHub repository if you have any suggestions.
+
+## Change Log/Releases
+
+Please see this repositories [GitHub releases](https://github.com/Azure/bicep-lz-vending/releases) for information on the latest changes and releases.
+
+## Wiki
+
+Please see the content in the [wiki](https://github.com/Azure/bicep-lz-vending/wiki) for more detailed information about the module and various other pieces of documentation.
+
+## Known Issues
+
+Please see the [Known Issues in the wiki](https://github.com/Azure/bicep-lz-vending/wiki/knownissues).
+
+## Telemetry
+
+When you deploy the Bicep landing zone vending module for Azure module, Microsoft can identify the installation of said module/s with the deployed Azure resources. Microsoft can correlate these resources used to support the software. Microsoft collects this information to provide the best experiences with their products and to operate their business. The telemetry is collected through customer usage attribution. The data is collected and governed by [Microsoft's privacy policies](https://www.microsoft.com/trustcenter).
+
+If you don't wish to send usage data to Microsoft, details on how to turn it off can be found [here.](https://github.com/azure/bicep-lz-vending/wiki/telemetry).
 
 ## Parameters
 
@@ -47,6 +86,8 @@ This module is designed to accelerate deployment of landing zones (aka Subscript
 | subscriptionResourceId | string | The Subscription Resource ID that has been created or provided. |
 
 ## Examples
+
+> More examples can be found in this modules home GitHub repository wiki here: [https://github.com/azure/bicep-lz-vending/wiki/examples](https://github.com/azure/bicep-lz-vending/wiki/examples)
 
 ### Example 1
 
