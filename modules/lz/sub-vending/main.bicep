@@ -18,7 +18,7 @@ This is the orchestration module that is used and called by a consumer of the mo
 })
 @sys.description('''Whether to create a new Subscription using the Subscription Alias resource. If `false`, supply an existing Subscription's ID in the parameter named `existingSubscriptionId` instead to deploy resources to an existing Subscription.
 
-- Type: Boolean
+- Default value: `true`
 ''')
 param subscriptionAliasEnabled bool = true
 
@@ -34,7 +34,6 @@ The string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). T
 
 > **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**
 
-- Type: String
 - Default value: `''` *(empty string)*
 ''')
 param subscriptionDisplayName string = ''
@@ -49,7 +48,6 @@ The string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). T
 
 > **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**
 
-- Type: String
 - Default value: `''` *(empty string)*
 ''')
 param subscriptionAliasName string = ''
@@ -65,7 +63,6 @@ A valid Billing Scope starts with `/providers/Microsoft.Billing/billingAccounts/
 
 > **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**
 
-- Type: String
 - Default value: `''` *(empty string)*
 ''')
 param subscriptionBillingScope string = ''
@@ -81,7 +78,7 @@ param subscriptionBillingScope string = ''
 
 > **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**
 
-- Type: String
+- Default value: `Production`
 ''')
 param subscriptionWorkload string = 'Production'
 
@@ -91,7 +88,6 @@ param subscriptionWorkload string = 'Production'
 @maxLength(36)
 @sys.description('''An existing subscription ID. Use this when you do not want the module to create a new subscription. But do want to manage the management group membership. A subscription ID should be provided in the example format `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`.
 
-- Type: String
 - Default value: `''` *(empty string)*
 ''')
 param existingSubscriptionId string = ''
@@ -102,7 +98,7 @@ param existingSubscriptionId string = ''
 })
 @sys.description('''Whether to move the Subscription to the specified Management Group supplied in the parameter `subscriptionManagementGroupId`.
 
-- Type: Boolean
+- Default value: `true`
 ''')
 param subscriptionManagementGroupAssociationEnabled bool = true
 
@@ -115,7 +111,6 @@ param subscriptionManagementGroupAssociationEnabled bool = true
 
 > See below [example in parameter file](#parameter-file) for an example
 
-- Type: String
 - Default value: `''` *(empty string)*
 ''')
 param subscriptionManagementGroupId string = ''
@@ -130,7 +125,6 @@ param subscriptionManagementGroupId string = ''
 
 > **NOTE:** Tags will only be overwritten if existing tag exists with same key as provided in this parameter; values provided here win.
 
-- Type: `{}` Object
 - Default value: `{}` *(empty object)*
 ''')
 param subscriptionTags object = {}
@@ -150,7 +144,7 @@ If set to `true` ensure you also provide values for the following parameters at 
 
 > Other parameters may need to be set based on other parameters that you enable that are listed above. Check each parameters documentation for further information.
 
-- Type: Boolean
+- Default value: `false`
 ''')
 param virtualNetworkEnabled bool = false
 
@@ -160,7 +154,6 @@ param virtualNetworkEnabled bool = false
 @maxLength(90)
 @sys.description('''The name of the Resource Group to create the Virtual Network in that is created by this module.
 
-- Type: String
 - Default value: `''` *(empty string)*
 ''')
 param virtualNetworkResourceGroupName string = ''
@@ -175,7 +168,6 @@ param virtualNetworkResourceGroupName string = ''
 
 > **NOTE:** Tags will only be overwritten if existing tag exists with same key as provided in this parameter; values provided here win.
 
-- Type: `{}` Object
 - Default value: `{}` *(empty object)*
 ''')
 param virtualNetworkResourceGroupTags object = {}
@@ -185,7 +177,7 @@ param virtualNetworkResourceGroupTags object = {}
 })
 @sys.description('''Enables the deployment of a `CanNotDelete` resource locks to the Virtual Networks Resource Group that is created by this module.
 
-- Type: Boolean
+- Default value: `true`
 ''')
 param virtualNetworkResourceGroupLockEnabled bool = true
 
@@ -194,7 +186,7 @@ param virtualNetworkResourceGroupLockEnabled bool = true
 })
 @sys.description('''The location of the virtual network. Use region shortnames e.g. `uksouth`, `eastus`, etc. Defaults to the region where the ARM/Bicep deployment is targeted to unless overridden.
 
-- Type: String
+- Default value: `deployment().location`
 ''')
 param virtualNetworkLocation string = deployment().location
 
@@ -204,7 +196,6 @@ param virtualNetworkLocation string = deployment().location
 @maxLength(64)
 @sys.description('''The name of the virtual network. The string must consist of a-z, A-Z, 0-9, -, _, and . (period) and be between 2 and 64 characters in length.
 
-- Type: String
 - Default value: `''` *(empty string)*
 ''')
 param virtualNetworkName string = ''
@@ -219,7 +210,6 @@ param virtualNetworkName string = ''
 
 > **NOTE:** Tags will be overwritten on resource if any exist already.
 
-- Type: `{}` Object
 - Default value: `{}` *(empty object)*
 ''')
 param virtualNetworkTags object = {}
@@ -231,7 +221,6 @@ param virtualNetworkTags object = {}
 })
 @sys.description('''The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `["10.0.0.0/16","172.16.0.0/12"]`
 
-- Type: `[]` Array
 - Default value: `[]` *(empty array)*
 ''')
 param virtualNetworkAddressSpace array = []
@@ -244,7 +233,6 @@ param virtualNetworkAddressSpace array = []
 })
 @sys.description('''The custom DNS servers to use on the Virtual Network, e.g. `["10.4.1.4", "10.2.1.5"]`. If left empty (default) then Azure DNS will be used for the Virtual Network.
 
-- Type: `[]` Array
 - Default value: `[]` *(empty array)*
 ''')
 param virtualNetworkDnsServers array = []
@@ -258,7 +246,6 @@ param virtualNetworkDnsServers array = []
 - `''` (empty string)
 - DDoS Netowrk Protection Plan Resource ID: `/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/ddosProtectionPlans/xxxxxxxxxx`
 
-- Type: String
 - Default value: `''` *(empty string)*
 ''')
 param virtualNetworkDdosPlanId string = ''
@@ -268,7 +255,7 @@ param virtualNetworkDdosPlanId string = ''
 })
 @sys.description('''Whether to enable peering/connection with the supplied hub Virtual Network or Virtual WAN Virtual Hub.
 
-- Type: Boolean
+- Default value: `false`
 ''')
 param virtualNetworkPeeringEnabled bool = false
 
@@ -282,7 +269,6 @@ param virtualNetworkPeeringEnabled bool = false
 - Hub Virtual Network Resource ID: `/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualNetworks/xxxxxxxxxx`
 - Virtual WAN Virtual Hub Resource ID: `/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualHubs/xxxxxxxxxx`
 
-- Type: String
 - Default value: `''` *(empty string)*
 ''')
 param hubNetworkResourceId string = ''
@@ -294,7 +280,7 @@ param hubNetworkResourceId string = ''
 
 > **IMPORTANT:** If no gateways exist in the hub virtual network, set this to `false`, otherwise peering will fail to create.
 
-- Type: Boolean
+- Default value: `true`
 ''')
 param virtualNetworkUseRemoteGateways bool = true
 
@@ -303,7 +289,6 @@ param virtualNetworkUseRemoteGateways bool = true
 })
 @sys.description('''The resource ID of the virtual hub route table to associate to the virtual hub connection (this virtual network). If left blank/empty the `defaultRouteTable` will be associated.
 
-- Type: String
 - Default value: `''` *(empty string)* = Which means if the parameter `virtualNetworkPeeringEnabled` is `true` and also the parameter `hubNetworkResourceId` is not empty then the `defaultRouteTable` will be associated of the provided Virtual Hub in the parameter `hubNetworkResourceId`.
     - e.g. `/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualHubs/xxxxxxxxx/hubRouteTables/defaultRouteTable`
 ''')
@@ -328,7 +313,6 @@ Each object must contain the following `key`:
 
 > **IMPORTANT:** If you provide any Route Tables in this array of objects you must ensure you include also the `defaultRouteTable` Resource ID as an object in the array as it is not added by default when a value is provided for this parameter.
 
-- Type: `[]` Array
 - Default value: `[]` *(empty array)*
 ''')
 param virtualNetworkVwanPropagatedRouteTablesResourceIds array = []
@@ -341,7 +325,6 @@ param virtualNetworkVwanPropagatedRouteTablesResourceIds array = []
 })
 @sys.description('''An array of virtual hub route table labels to propagate routes to. If left blank/empty the default label will be propagated to only.
 
-- Type: `[]` Array
 - Default value: `[]` *(empty array)*
 ''')
 param virtualNetworkVwanPropagatedLabels array = []
@@ -351,7 +334,7 @@ param virtualNetworkVwanPropagatedLabels array = []
 })
 @sys.description('''Whether to create role assignments or not. If true, supply the array of role assignment objects in the parameter called `roleAssignments`.
 
-- Type: Boolean
+- Default value: `false`
 ''')
 param roleAssignmentEnabled bool = false
 
@@ -390,7 +373,6 @@ Each object must contain the following `keys`:
 
 > See below [example in parameter file](#parameter-file) of various combinations
 
-- Type: `[]` Array
 - Default value: `[]` *(empty array)*
 ''')
 param roleAssignments array = []
