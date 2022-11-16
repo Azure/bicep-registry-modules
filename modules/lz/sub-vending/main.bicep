@@ -59,7 +59,7 @@ param subscriptionAliasName string = ''
 
 A valid Billing Scope starts with `/providers/Microsoft.Billing/billingAccounts/` and is case sensitive.
 
-> See below [example in parameter file](#parameter-file) for an example
+> See below [example in parameter file](#example-json-parameter-file) for an example
 
 > **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**
 
@@ -109,7 +109,7 @@ param subscriptionManagementGroupAssociationEnabled bool = true
 
 **IMPORTANT:** Do not supply the display name of the Management Group. The Management Group ID forms part of the Azure Resource ID. e.g., `/providers/Microsoft.Management/managementGroups/{managementGroupId}`.
 
-> See below [example in parameter file](#parameter-file) for an example
+> See below [example in parameter file](#example-json-parameter-file) for an example
 
 - Default value: `''` *(empty string)*
 ''')
@@ -309,7 +309,7 @@ param virtualNetworkVwanAssociatedRouteTableResourceId string = ''
 Each object must contain the following `key`:
 - `id` = The Resource ID of the Virtual WAN Virtual Hub Route Table IDs you wish to propagate too
 
-> See below [example in parameter file](#parameter-file)
+> See below [example in parameter file](#example-json-parameter-file)
 
 > **IMPORTANT:** If you provide any Route Tables in this array of objects you must ensure you include also the `defaultRouteTable` Resource ID as an object in the array as it is not added by default when a value is provided for this parameter.
 
@@ -371,7 +371,7 @@ Each object must contain the following `keys`:
     1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope
     2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group
 
-> See below [example in parameter file](#parameter-file) of various combinations
+> See below [example in parameter file](#example-json-parameter-file) of various combinations
 
 - Default value: `[]` *(empty array)*
 ''')

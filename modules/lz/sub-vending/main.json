@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "1420209799810732129"
+      "templateHash": "5293721915906497941"
     },
     "name": "`main.bicep` Parameters",
     "description": "These are the input parameters for the Bicep module: [`main.bicep`](./main.bicep)\n\nThis is the orchestration module that is used and called by a consumer of the module to deploy a Landing Zone Subscription and its associated resources, based on the parameter input values that are provided to it at deployment time.\n\n> For more information and examples please see the [wiki](https://github.com/Azure/bicep-lz-vending/wiki)"
@@ -41,7 +41,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "The Billing Scope for the new Subscription alias, that will be created by this module.\n\nA valid Billing Scope starts with `/providers/Microsoft.Billing/billingAccounts/` and is case sensitive.\n\n> See below [example in parameter file](#parameter-file) for an example\n\n> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**\n\n- Default value: `''` *(empty string)*\n",
+        "description": "The Billing Scope for the new Subscription alias, that will be created by this module.\n\nA valid Billing Scope starts with `/providers/Microsoft.Billing/billingAccounts/` and is case sensitive.\n\n> See below [example in parameter file](#example-json-parameter-file) for an example\n\n> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**\n\n- Default value: `''` *(empty string)*\n",
         "example": "/providers/Microsoft.Billing/billingAccounts/1234567/enrollmentAccounts/123456"
       }
     },
@@ -78,7 +78,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "The destination Management Group ID for the new Subscription that will be created by this module (or the existing one provided in the parameter `existingSubscriptionId`).\n\n**IMPORTANT:** Do not supply the display name of the Management Group. The Management Group ID forms part of the Azure Resource ID. e.g., `/providers/Microsoft.Management/managementGroups/{managementGroupId}`.\n\n> See below [example in parameter file](#parameter-file) for an example\n\n- Default value: `''` *(empty string)*\n",
+        "description": "The destination Management Group ID for the new Subscription that will be created by this module (or the existing one provided in the parameter `existingSubscriptionId`).\n\n**IMPORTANT:** Do not supply the display name of the Management Group. The Management Group ID forms part of the Azure Resource ID. e.g., `/providers/Microsoft.Management/managementGroups/{managementGroupId}`.\n\n> See below [example in parameter file](#example-json-parameter-file) for an example\n\n- Default value: `''` *(empty string)*\n",
         "example": "alz-landingzones-corp"
       }
     },
@@ -222,7 +222,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "An array of of objects of virtual hub route table resource IDs to propagate routes to. If left blank/empty the `defaultRouteTable` will be propagated to only.\n\nEach object must contain the following `key`:\n- `id` = The Resource ID of the Virtual WAN Virtual Hub Route Table IDs you wish to propagate too\n\n> See below [example in parameter file](#parameter-file)\n\n> **IMPORTANT:** If you provide any Route Tables in this array of objects you must ensure you include also the `defaultRouteTable` Resource ID as an object in the array as it is not added by default when a value is provided for this parameter.\n\n- Default value: `[]` *(empty array)*\n",
+        "description": "An array of of objects of virtual hub route table resource IDs to propagate routes to. If left blank/empty the `defaultRouteTable` will be propagated to only.\n\nEach object must contain the following `key`:\n- `id` = The Resource ID of the Virtual WAN Virtual Hub Route Table IDs you wish to propagate too\n\n> See below [example in parameter file](#example-json-parameter-file)\n\n> **IMPORTANT:** If you provide any Route Tables in this array of objects you must ensure you include also the `defaultRouteTable` Resource ID as an object in the array as it is not added by default when a value is provided for this parameter.\n\n- Default value: `[]` *(empty array)*\n",
         "example": [
           {
             "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualHubs/xxxxxxxxx/hubRouteTables/defaultRouteTable"
@@ -256,7 +256,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Supply an array of objects containing the details of the role assignments to create.\n\nEach object must contain the following `keys`:\n- `principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.\n- `definition` = The Name of built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition.\n- `relativeScope` = 2 options can be provided for input value:\n    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope\n    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group\n\n> See below [example in parameter file](#parameter-file) of various combinations\n\n- Default value: `[]` *(empty array)*\n",
+        "description": "Supply an array of objects containing the details of the role assignments to create.\n\nEach object must contain the following `keys`:\n- `principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.\n- `definition` = The Name of built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition.\n- `relativeScope` = 2 options can be provided for input value:\n    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope\n    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group\n\n> See below [example in parameter file](#example-json-parameter-file) of various combinations\n\n- Default value: `[]` *(empty array)*\n",
         "example": [
           {
             "principalId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
