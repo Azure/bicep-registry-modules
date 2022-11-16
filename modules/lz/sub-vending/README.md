@@ -71,14 +71,129 @@ We would like feedback on what's missing in the module. Please raise an [issue](
 
 > More examples can be found in this modules home GitHub repository wiki here: [https://github.com/azure/bicep-lz-vending/wiki/examples](https://github.com/azure/bicep-lz-vending/wiki/examples)
 
-### Example 1
+### Example 1 - Subscription Creation & Management Group Placement, No Networking
 
 ```bicep
+targetScope = 'managementGroup'
+
+module sub001 'br/public:lz/sub-vending:1.1.0' = {
+  name: 'sub001'
+  params: {
+    subscriptionAliasEnabled: true
+    subscriptionBillingScope: '/providers/Microsoft.Billing/billingAccounts/1234567/enrollmentAccounts/123456'
+    subscriptionAliasName: 'sub-test-001'
+    subscriptionDisplayName: 'sub-test-001'
+    subscriptionTags: {
+      example: 'true'
+    }
+    subscriptionWorkload: 'Production'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'corp'
+  }
+}
 ```
 
-### Example 2
+### Example 2 - Subscription Creation & Management Group Placement And Create Virtual Network, No Peering
 
 ```bicep
+targetScope = 'managementGroup'
+
+@description('Specifies the location for resources.')
+param location string = 'uksouth'
+
+module sub002 'br/public:lz/sub-vending:1.1.0' = {
+  name: 'sub002'
+  params: {
+    subscriptionAliasEnabled: true
+    subscriptionBillingScope: '/providers/Microsoft.Billing/billingAccounts/1234567/enrollmentAccounts/123456'
+    subscriptionAliasName: 'sub-test-002'
+    subscriptionDisplayName: 'sub-test-002'
+    subscriptionTags: {
+      example: 'true'
+    }
+    subscriptionWorkload: 'Production'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'corp'
+    virtualNetworkEnabled: true
+    virtualNetworkLocation: location
+    virtualNetworkResourceGroupName: 'rsg-${location}-net-001'
+    virtualNetworkName: 'vnet-${location}-001'
+    virtualNetworkAddressSpace: [
+      '10.0.0.0/24'
+    ]
+    virtualNetworkResourceGroupLockEnabled: false
+  }
+}
+```
+
+### Example 3 - Subscription Creation & Management Group Placement And Create Virtual Network And Peering To Virtual Network
+
+```bicep
+targetScope = 'managementGroup'
+
+@description('Specifies the location for resources.')
+param location string = 'uksouth'
+
+module sub003 'br/public:lz/sub-vending:1.1.0' = {
+  name: 'sub003'
+  params: {
+    subscriptionAliasEnabled: true
+    subscriptionBillingScope: '/providers/Microsoft.Billing/billingAccounts/1234567/enrollmentAccounts/123456'
+    subscriptionAliasName: 'sub-test-003'
+    subscriptionDisplayName: 'sub-test-003'
+    subscriptionTags: {
+      test: 'true'
+    }
+    subscriptionWorkload: 'Production'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'corp'
+    virtualNetworkEnabled: true
+    virtualNetworkLocation: location
+    virtualNetworkResourceGroupName: 'rsg-${location}-net-001'
+    virtualNetworkName: 'vnet-${location}-001'
+    virtualNetworkAddressSpace: [
+      '10.3.0.0/24'
+    ]
+    virtualNetworkResourceGroupLockEnabled: false
+    virtualNetworkPeeringEnabled: true
+    hubNetworkResourceId: '/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/rsg-uks-net-hub-001/providers/Microsoft.Network/virtualNetworks/vnet-uks-hub-001'
+  }
+}
+```
+
+### Example 4 - Subscription Creation & Management Group Placement And Create Virtual Network And Peering To Virtual WAN Hub (Virtual Hub Connection)
+
+```bicep
+targetScope = 'managementGroup'
+
+@description('Specifies the location for resources.')
+param location string = 'uksouth'
+
+module sub003 'br/public:lz/sub-vending:1.1.0' = {
+  name: 'sub004'
+  params: {
+    subscriptionAliasEnabled: true
+    subscriptionBillingScope: '/providers/Microsoft.Billing/billingAccounts/1234567/enrollmentAccounts/123456'
+    subscriptionAliasName: 'sub-test-004'
+    subscriptionDisplayName: 'sub-test-004'
+    subscriptionTags: {
+      test: 'true'
+    }
+    subscriptionWorkload: 'Production'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'corp'
+    virtualNetworkEnabled: true
+    virtualNetworkLocation: location
+    virtualNetworkResourceGroupName: 'rsg-${location}-net-001'
+    virtualNetworkName: 'vnet-${location}-001'
+    virtualNetworkAddressSpace: [
+      '10.4.0.0/24'
+    ]
+    virtualNetworkResourceGroupLockEnabled: false
+    virtualNetworkPeeringEnabled: true
+    hubNetworkResourceId: '/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/rsg-uks-net-vwan-001/providers/Microsoft.Network/virtualHubs/vhub-uks-001'
+  }
+}
 ```
 
 ### Example JSON Parameter File
@@ -101,7 +216,7 @@ We would like feedback on what's missing in the module. Please raise an [issue](
             "value": "sub-bicep-lz-vending-example-001"
         },
         "subscriptionBillingScope": {
-            "value": "providers/Microsoft.Billing/billingAccounts/1234567/enrollmentAccounts/123456"
+            "value": "/providers/Microsoft.Billing/billingAccounts/1234567/enrollmentAccounts/123456"
         },
         "subscriptionWorkload": {
             "value": "Production"

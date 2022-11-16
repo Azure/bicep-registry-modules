@@ -53,7 +53,7 @@ The string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). T
 param subscriptionAliasName string = ''
 
 @metadata({
-  example: 'providers/Microsoft.Billing/billingAccounts/1234567/enrollmentAccounts/123456'
+  example: '/providers/Microsoft.Billing/billingAccounts/1234567/enrollmentAccounts/123456'
 })
 @sys.description('''The Billing Scope for the new Subscription alias, that will be created by this module.
 

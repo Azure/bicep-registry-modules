@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "649787664709368198"
+      "templateHash": "1420209799810732129"
     },
     "name": "`main.bicep` Parameters",
     "description": "These are the input parameters for the Bicep module: [`main.bicep`](./main.bicep)\n\nThis is the orchestration module that is used and called by a consumer of the module to deploy a Landing Zone Subscription and its associated resources, based on the parameter input values that are provided to it at deployment time.\n\n> For more information and examples please see the [wiki](https://github.com/Azure/bicep-lz-vending/wiki)"
@@ -42,7 +42,7 @@
       "defaultValue": "",
       "metadata": {
         "description": "The Billing Scope for the new Subscription alias, that will be created by this module.\n\nA valid Billing Scope starts with `/providers/Microsoft.Billing/billingAccounts/` and is case sensitive.\n\n> See below [example in parameter file](#parameter-file) for an example\n\n> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**\n\n- Default value: `''` *(empty string)*\n",
-        "example": "providers/Microsoft.Billing/billingAccounts/1234567/enrollmentAccounts/123456"
+        "example": "/providers/Microsoft.Billing/billingAccounts/1234567/enrollmentAccounts/123456"
       }
     },
     "subscriptionWorkload": {
