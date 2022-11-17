@@ -26,10 +26,10 @@ param diagnosticCategories array = [
 
 @description('Which Automation Schedules to create')
 param schedulesToCreate array = [
-  'Daily9am'
-  'Weekday9am'
-  'DailyMidnight'
-  'WeekdayMidnight'
+  'Daily - 9am'
+  'Weekday - 9am'
+  'Daily - Midnight'
+  'Weekday - Midnight'
 ]
 
 @description('The Runbook-Schedule Jobs to create')
@@ -39,7 +39,7 @@ param runbookJobSchedule array = [
     parameters: {}
   }
   {
-    Schedule: 'WeekdayMidnight'
+    schedule: 'Weekday - Midnight'
     parameters: {}
   }
 ]
@@ -47,11 +47,18 @@ param runbookJobSchedule array = [
 @description('The name of the runbook to create')
 param runbookName string
 
+@allowed([
+  'GraphPowerShell'
+  'Script'
+])
 @description('The type of runbook that is being imported')
 param runbookType string = 'Script'
 
 @description('The URI to import the runbook code from')
 param runbookUri string = ''
+
+@description('A description of what the runbook does')
+param runbookDescription string = ''
 
 var runbookVersion = '1.0.0.0'
 var tomorrow = dateTimeAdd(today, 'P1D','yyyy-MM-dd')
@@ -102,63 +109,87 @@ resource runbook 'Microsoft.Automation/automationAccounts/runbooks@2022-08-08' =
       uri: runbookUri
       version: runbookVersion
     }
-    description: 'Deletes the resources in tagged resource groups'
+    description: runbookDescription
   }
 }
 
-resource automationScheduleNight 'Microsoft.Automation/automationAccounts/schedules@2022-08-08' = {
-  parent: automationAccount
-  name: 'Midnight - Daily'
-  properties: {
-    startTime: '${take(tomorrow,10)}T00:01:00+00:00'
-    expiryTime: scheduleNoExpiry
-    interval: 1
-    frequency: 'Day'
-    timeZone: timezone
-    description: 'Daily out of hours schedule'
-  }
-}
+// resource DailyMidnight 'Microsoft.Automation/automationAccounts/schedules@2022-08-08' = if(contains(schedulesToCreate,'DailyMidnight'))  {
+//   parent: automationAccount
+//   name: 'Daily - Midnight'
+//   properties: {
+//     startTime: '${take(tomorrow,10)}T00:01:00+00:00'
+//     expiryTime: scheduleNoExpiry
+//     interval: 1
+//     frequency: 'Day'
+//     timeZone: timezone
+//   }
+// }
 
-resource Daily9am 'Microsoft.Automation/automationAccounts/schedules@2022-08-08' = if(contains(schedulesToCreate,'Daily9am')) {
-  parent: automationAccount
-  name: 'Daily - 9am'
-  properties: {
-    startTime: '${take(tomorrow,10)}T09:00:00+00:00'
-    expiryTime: scheduleNoExpiry
-    interval: 1
-    frequency: 'Day'
-    timeZone: timezone
-    description: 'Daily out of hours schedule'
-  }
-}
+// resource WeekdayMidnight 'Microsoft.Automation/automationAccounts/schedules@2022-08-08' = if(contains(schedulesToCreate,'Weekday - Midnight'))  {
+//   parent: automationAccount
+//   name: 'Weekday - Midnight'
+//   properties: {
+//     startTime: '${take(tomorrow,10)}T00:01:00+00:00'
+//     expiryTime: scheduleNoExpiry
+//     interval: 1
+//     frequency:  'Week'
+//     timeZone: timezone
+//     advancedSchedule: workWeek
+//   }
+// }
 
-resource Weekday9am 'Microsoft.Automation/automationAccounts/schedules@2022-08-08' = if(contains(schedulesToCreate,'Weekday9am')) {
-  parent: automationAccount
-  name: 'Weekday - 9am'
-  properties: {
-    startTime: '${take(tomorrow,10)}T09:00:00+00:00'
-    expiryTime: scheduleNoExpiry
-    interval: 1
-    frequency: 'Week'
-    timeZone: timezone
-    description: 'Daily out of hours schedule'
-    advancedSchedule: workWeek
-  }
-}
+// resource Daily9am 'Microsoft.Automation/automationAccounts/schedules@2022-08-08' = if(contains(schedulesToCreate,'Daily9am')) {
+//   parent: automationAccount
+//   name: 'Daily - 9am'
+//   properties: {
+//     startTime: '${take(tomorrow,10)}T09:00:00+00:00'
+//     expiryTime: scheduleNoExpiry
+//     interval: 1
+//     frequency: 'Day'
+//     timeZone: timezone
+//   }
+// }
+
+// resource Weekday9am 'Microsoft.Automation/automationAccounts/schedules@2022-08-08' = if(contains(schedulesToCreate,'Weekday - 9am')) {
+//   parent: automationAccount
+//   name: 'Weekday - 9am'
+//   properties: {
+//     startTime: '${take(tomorrow,10)}T09:00:00+00:00'
+//     expiryTime: scheduleNoExpiry
+//     interval: 1
+//     frequency: 'Week'
+//     timeZone: timezone
+//     advancedSchedule: workWeek
+//   }
+// }
+
 
 resource automationJobs 'Microsoft.Automation/automationAccounts/jobSchedules@2022-08-08' = [for job in runbookJobSchedule : if(!empty(runbookName)) {
   parent: automationAccount
-  name: guid(automationAccount.id, runbookName, job.schedule)
+  name: guid(automationAccount.id, runbook.name, job.schedule)
   properties: {
     schedule: {
       name: job.schedule
     }
     runbook: {
-      name: runbookName
+      name: runbook.name
     }
     parameters: job.parameters
   }
-  dependsOn: [Daily9am,Weekday9am] //All of the possible schedules
+  dependsOn: [schedules] //All of the possible schedules
+}]
+
+resource schedules 'Microsoft.Automation/automationAccounts/schedules@2022-08-08' = [for schedule in schedulesToCreate : {
+  parent: automationAccount
+  name: schedule
+  properties: {
+    startTime: '${take(tomorrow,10)}T${endsWith(schedule, '9am') ? '09:00:00' : endsWith(schedule, 'Midnight') ? '23:59:59' : '12:00:00'}+00:00'
+    expiryTime: scheduleNoExpiry
+    interval: 1
+    frequency: startsWith(schedule,'Weekday') ? 'Week' : 'Day'
+    timeZone: timezone
+    advancedSchedule: startsWith(schedule,'Weekday') ?  workWeek : {}
+  }
 }]
 
 @description('The Automation Account Principal Id')

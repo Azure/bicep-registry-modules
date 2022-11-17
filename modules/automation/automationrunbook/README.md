@@ -31,6 +31,7 @@ Several common schedules are created, which can then optionally be linked to a R
 | `runbookName`             | `string` | Yes      | The name of the runbook to create                                                                                        |
 | `runbookType`             | `string` | No       | The type of runbook that is being imported                                                                               |
 | `runbookUri`              | `string` | No       | The URI to import the runbook code from                                                                                  |
+| `runbookDescription`      | `string` | No       | A description of what the runbook does                                                                                   |
 
 ## Outputs
 

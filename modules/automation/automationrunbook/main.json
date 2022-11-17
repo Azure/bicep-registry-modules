@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "3920758371474859918"
+      "templateHash": "10526413696210357258"
     }
   },
   "parameters": {
@@ -68,10 +68,10 @@
     "schedulesToCreate": {
       "type": "array",
       "defaultValue": [
-        "Daily9am",
-        "Weekday9am",
-        "DailyMidnight",
-        "WeekdayMidnight"
+        "Daily - 9am",
+        "Weekday - 9am",
+        "Daily - Midnight",
+        "Weekday - Midnight"
       ],
       "metadata": {
         "description": "Which Automation Schedules to create"
@@ -85,7 +85,7 @@
           "parameters": {}
         },
         {
-          "Schedule": "WeekdayMidnight",
+          "schedule": "Weekday - Midnight",
           "parameters": {}
         }
       ],
@@ -104,13 +104,24 @@
       "defaultValue": "Script",
       "metadata": {
         "description": "The type of runbook that is being imported"
-      }
+      },
+      "allowedValues": [
+        "GraphPowerShell",
+        "Script"
+      ]
     },
     "runbookUri": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
         "description": "The URI to import the runbook code from"
+      }
+    },
+    "runbookDescription": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "A description of what the runbook does"
       }
     }
   },
@@ -180,58 +191,7 @@
           "uri": "[parameters('runbookUri')]",
           "version": "[variables('runbookVersion')]"
         },
-        "description": "Deletes the resources in tagged resource groups"
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
-      ]
-    },
-    {
-      "type": "Microsoft.Automation/automationAccounts/schedules",
-      "apiVersion": "2022-08-08",
-      "name": "[format('{0}/{1}', parameters('automationAccountName'), 'Midnight - Daily')]",
-      "properties": {
-        "startTime": "[format('{0}T00:01:00+00:00', take(variables('tomorrow'), 10))]",
-        "expiryTime": "[variables('scheduleNoExpiry')]",
-        "interval": 1,
-        "frequency": "Day",
-        "timeZone": "[parameters('timezone')]",
-        "description": "Daily out of hours schedule"
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
-      ]
-    },
-    {
-      "condition": "[contains(parameters('schedulesToCreate'), 'Daily9am')]",
-      "type": "Microsoft.Automation/automationAccounts/schedules",
-      "apiVersion": "2022-08-08",
-      "name": "[format('{0}/{1}', parameters('automationAccountName'), 'Daily - 9am')]",
-      "properties": {
-        "startTime": "[format('{0}T09:00:00+00:00', take(variables('tomorrow'), 10))]",
-        "expiryTime": "[variables('scheduleNoExpiry')]",
-        "interval": 1,
-        "frequency": "Day",
-        "timeZone": "[parameters('timezone')]",
-        "description": "Daily out of hours schedule"
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
-      ]
-    },
-    {
-      "condition": "[contains(parameters('schedulesToCreate'), 'Weekday9am')]",
-      "type": "Microsoft.Automation/automationAccounts/schedules",
-      "apiVersion": "2022-08-08",
-      "name": "[format('{0}/{1}', parameters('automationAccountName'), 'Weekday - 9am')]",
-      "properties": {
-        "startTime": "[format('{0}T09:00:00+00:00', take(variables('tomorrow'), 10))]",
-        "expiryTime": "[variables('scheduleNoExpiry')]",
-        "interval": 1,
-        "frequency": "Week",
-        "timeZone": "[parameters('timezone')]",
-        "description": "Daily out of hours schedule",
-        "advancedSchedule": "[variables('workWeek')]"
+        "description": "[parameters('runbookDescription')]"
       },
       "dependsOn": [
         "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
@@ -245,20 +205,40 @@
       },
       "type": "Microsoft.Automation/automationAccounts/jobSchedules",
       "apiVersion": "2022-08-08",
-      "name": "[format('{0}/{1}', parameters('automationAccountName'), guid(resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName')), parameters('runbookName'), parameters('runbookJobSchedule')[copyIndex()].schedule))]",
+      "name": "[format('{0}/{1}', parameters('automationAccountName'), guid(resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName')), if(not(empty(parameters('runbookName'))), parameters('runbookName'), 'armtemplatevalidationissue'), parameters('runbookJobSchedule')[copyIndex()].schedule))]",
       "properties": {
         "schedule": {
           "name": "[parameters('runbookJobSchedule')[copyIndex()].schedule]"
         },
         "runbook": {
-          "name": "[parameters('runbookName')]"
+          "name": "[if(not(empty(parameters('runbookName'))), parameters('runbookName'), 'armtemplatevalidationissue')]"
         },
         "parameters": "[parameters('runbookJobSchedule')[copyIndex()].parameters]"
       },
       "dependsOn": [
         "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]",
-        "[resourceId('Microsoft.Automation/automationAccounts/schedules', parameters('automationAccountName'), 'Daily - 9am')]",
-        "[resourceId('Microsoft.Automation/automationAccounts/schedules', parameters('automationAccountName'), 'Weekday - 9am')]"
+        "[resourceId('Microsoft.Automation/automationAccounts/runbooks', parameters('automationAccountName'), if(not(empty(parameters('runbookName'))), parameters('runbookName'), 'armtemplatevalidationissue'))]",
+        "schedules"
+      ]
+    },
+    {
+      "copy": {
+        "name": "schedules",
+        "count": "[length(parameters('schedulesToCreate'))]"
+      },
+      "type": "Microsoft.Automation/automationAccounts/schedules",
+      "apiVersion": "2022-08-08",
+      "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('schedulesToCreate')[copyIndex()])]",
+      "properties": {
+        "startTime": "[format('{0}T{1}+00:00', take(variables('tomorrow'), 10), if(endsWith(parameters('schedulesToCreate')[copyIndex()], '9am'), '09:00:00', if(endsWith(parameters('schedulesToCreate')[copyIndex()], 'Midnight'), '23:59:59', '12:00:00')))]",
+        "expiryTime": "[variables('scheduleNoExpiry')]",
+        "interval": 1,
+        "frequency": "[if(startsWith(parameters('schedulesToCreate')[copyIndex()], 'Weekday'), 'Week', 'Day')]",
+        "timeZone": "[parameters('timezone')]",
+        "advancedSchedule": "[if(startsWith(parameters('schedulesToCreate')[copyIndex()], 'Weekday'), variables('workWeek'), createObject())]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
       ]
     }
   ],
