@@ -28,6 +28,8 @@ param diagnosticCategories array = [
 param schedulesToCreate array = [
   'Daily - 9am'
   'Weekday - 9am'
+  'Daily - 7pm'
+  'Weekday - 7pm'
   'Daily - Midnight'
   'Weekday - Midnight'
 ]
@@ -35,7 +37,7 @@ param schedulesToCreate array = [
 @description('The Runbook-Schedule Jobs to create')
 param runbookJobSchedule array = [
   {
-    schedule: 'Weekday9am'
+    schedule: 'Weekday - 9am'
     parameters: {}
   }
   {
@@ -97,6 +99,19 @@ resource automationAccountDiagLogging 'Microsoft.Insights/diagnosticSettings@202
   } 
 }
 
+resource schedules 'Microsoft.Automation/automationAccounts/schedules@2022-08-08' = [for schedule in schedulesToCreate : {
+  parent: automationAccount
+  name: schedule
+  properties: {
+    startTime: '${take(tomorrow,10)}T${endsWith(schedule, '9am') ? '09:00:00' : endsWith(schedule, '7pm') ? '19:00:00' : endsWith(schedule, 'Midnight') ? '23:59:59' : '12:00:00'}+00:00'
+    expiryTime: scheduleNoExpiry
+    interval: 1
+    frequency: startsWith(schedule,'Weekday') ? 'Week' : 'Day'
+    timeZone: timezone
+    advancedSchedule: startsWith(schedule,'Weekday') ?  workWeek : {}
+  }
+}]
+
 resource runbook 'Microsoft.Automation/automationAccounts/runbooks@2022-08-08' = if(!empty(runbookName)) {
   parent: automationAccount
   name: !empty(runbookName) ? runbookName : 'armtemplatevalidationissue'
@@ -113,57 +128,6 @@ resource runbook 'Microsoft.Automation/automationAccounts/runbooks@2022-08-08' =
   }
 }
 
-// resource DailyMidnight 'Microsoft.Automation/automationAccounts/schedules@2022-08-08' = if(contains(schedulesToCreate,'DailyMidnight'))  {
-//   parent: automationAccount
-//   name: 'Daily - Midnight'
-//   properties: {
-//     startTime: '${take(tomorrow,10)}T00:01:00+00:00'
-//     expiryTime: scheduleNoExpiry
-//     interval: 1
-//     frequency: 'Day'
-//     timeZone: timezone
-//   }
-// }
-
-// resource WeekdayMidnight 'Microsoft.Automation/automationAccounts/schedules@2022-08-08' = if(contains(schedulesToCreate,'Weekday - Midnight'))  {
-//   parent: automationAccount
-//   name: 'Weekday - Midnight'
-//   properties: {
-//     startTime: '${take(tomorrow,10)}T00:01:00+00:00'
-//     expiryTime: scheduleNoExpiry
-//     interval: 1
-//     frequency:  'Week'
-//     timeZone: timezone
-//     advancedSchedule: workWeek
-//   }
-// }
-
-// resource Daily9am 'Microsoft.Automation/automationAccounts/schedules@2022-08-08' = if(contains(schedulesToCreate,'Daily9am')) {
-//   parent: automationAccount
-//   name: 'Daily - 9am'
-//   properties: {
-//     startTime: '${take(tomorrow,10)}T09:00:00+00:00'
-//     expiryTime: scheduleNoExpiry
-//     interval: 1
-//     frequency: 'Day'
-//     timeZone: timezone
-//   }
-// }
-
-// resource Weekday9am 'Microsoft.Automation/automationAccounts/schedules@2022-08-08' = if(contains(schedulesToCreate,'Weekday - 9am')) {
-//   parent: automationAccount
-//   name: 'Weekday - 9am'
-//   properties: {
-//     startTime: '${take(tomorrow,10)}T09:00:00+00:00'
-//     expiryTime: scheduleNoExpiry
-//     interval: 1
-//     frequency: 'Week'
-//     timeZone: timezone
-//     advancedSchedule: workWeek
-//   }
-// }
-
-
 resource automationJobs 'Microsoft.Automation/automationAccounts/jobSchedules@2022-08-08' = [for job in runbookJobSchedule : if(!empty(runbookName)) {
   parent: automationAccount
   name: guid(automationAccount.id, runbook.name, job.schedule)
@@ -177,19 +141,6 @@ resource automationJobs 'Microsoft.Automation/automationAccounts/jobSchedules@20
     parameters: job.parameters
   }
   dependsOn: [schedules] //All of the possible schedules
-}]
-
-resource schedules 'Microsoft.Automation/automationAccounts/schedules@2022-08-08' = [for schedule in schedulesToCreate : {
-  parent: automationAccount
-  name: schedule
-  properties: {
-    startTime: '${take(tomorrow,10)}T${endsWith(schedule, '9am') ? '09:00:00' : endsWith(schedule, 'Midnight') ? '23:59:59' : '12:00:00'}+00:00'
-    expiryTime: scheduleNoExpiry
-    interval: 1
-    frequency: startsWith(schedule,'Weekday') ? 'Week' : 'Day'
-    timeZone: timezone
-    advancedSchedule: startsWith(schedule,'Weekday') ?  workWeek : {}
-  }
 }]
 
 @description('The Automation Account Principal Id')

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "10526413696210357258"
+      "templateHash": "6239784836867879358"
     }
   },
   "parameters": {
@@ -70,6 +70,8 @@
       "defaultValue": [
         "Daily - 9am",
         "Weekday - 9am",
+        "Daily - 7pm",
+        "Weekday - 7pm",
         "Daily - Midnight",
         "Weekday - Midnight"
       ],
@@ -81,7 +83,7 @@
       "type": "array",
       "defaultValue": [
         {
-          "schedule": "Weekday9am",
+          "schedule": "Weekday - 9am",
           "parameters": {}
         },
         {
