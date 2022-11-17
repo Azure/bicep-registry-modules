@@ -1,0 +1,274 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.12.40.16777",
+      "templateHash": "3920758371474859918"
+    }
+  },
+  "parameters": {
+    "automationAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Automation Account"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Deployment Location"
+      }
+    },
+    "today": {
+      "type": "string",
+      "defaultValue": "[utcNow('yyyyMMddTHHmmssZ')]",
+      "metadata": {
+        "description": "Used to reference todays date"
+      }
+    },
+    "timezone": {
+      "type": "string",
+      "defaultValue": "Etc/UTC",
+      "metadata": {
+        "description": "The timezone to align schedules to. (Eg. \"Europe/London\" or \"America/Los_Angeles\")"
+      }
+    },
+    "accountSku": {
+      "type": "string",
+      "defaultValue": "Basic",
+      "metadata": {
+        "description": "The Automation Account SKU. See https://learn.microsoft.com/en-us/azure/automation/overview#pricing-for-azure-automation"
+      },
+      "allowedValues": [
+        "Basic",
+        "Free"
+      ]
+    },
+    "loganalyticsWorkspaceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "For Automation job logging"
+      }
+    },
+    "diagnosticCategories": {
+      "type": "array",
+      "defaultValue": [
+        "JobLogs",
+        "JobStreams",
+        "AuditEvent"
+      ],
+      "metadata": {
+        "description": "Which logging categeories to log"
+      }
+    },
+    "schedulesToCreate": {
+      "type": "array",
+      "defaultValue": [
+        "Daily9am",
+        "Weekday9am",
+        "DailyMidnight",
+        "WeekdayMidnight"
+      ],
+      "metadata": {
+        "description": "Which Automation Schedules to create"
+      }
+    },
+    "runbookJobSchedule": {
+      "type": "array",
+      "defaultValue": [
+        {
+          "schedule": "Weekday9am",
+          "parameters": {}
+        },
+        {
+          "Schedule": "WeekdayMidnight",
+          "parameters": {}
+        }
+      ],
+      "metadata": {
+        "description": "The Runbook-Schedule Jobs to create"
+      }
+    },
+    "runbookName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the runbook to create"
+      }
+    },
+    "runbookType": {
+      "type": "string",
+      "defaultValue": "Script",
+      "metadata": {
+        "description": "The type of runbook that is being imported"
+      }
+    },
+    "runbookUri": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The URI to import the runbook code from"
+      }
+    }
+  },
+  "variables": {
+    "runbookVersion": "1.0.0.0",
+    "tomorrow": "[dateTimeAdd(parameters('today'), 'P1D', 'yyyy-MM-dd')]",
+    "scheduleNoExpiry": "9999-12-31T23:59:00+00:00",
+    "workWeek": {
+      "weekDays": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ]
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Automation/automationAccounts",
+      "apiVersion": "2022-08-08",
+      "name": "[parameters('automationAccountName')]",
+      "location": "[parameters('location')]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "sku": {
+          "name": "[parameters('accountSku')]"
+        }
+      }
+    },
+    {
+      "condition": "[not(empty(parameters('loganalyticsWorkspaceId')))]",
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[format('Microsoft.Automation/automationAccounts/{0}', parameters('automationAccountName'))]",
+      "name": "diags",
+      "properties": {
+        "copy": [
+          {
+            "name": "logs",
+            "count": "[length(parameters('diagnosticCategories'))]",
+            "input": {
+              "category": "[parameters('diagnosticCategories')[copyIndex('logs')]]",
+              "enabled": true
+            }
+          }
+        ],
+        "workspaceId": "[parameters('loganalyticsWorkspaceId')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
+      ]
+    },
+    {
+      "condition": "[not(empty(parameters('runbookName')))]",
+      "type": "Microsoft.Automation/automationAccounts/runbooks",
+      "apiVersion": "2022-08-08",
+      "name": "[format('{0}/{1}', parameters('automationAccountName'), if(not(empty(parameters('runbookName'))), parameters('runbookName'), 'armtemplatevalidationissue'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "logVerbose": true,
+        "logProgress": true,
+        "runbookType": "[parameters('runbookType')]",
+        "publishContentLink": {
+          "uri": "[parameters('runbookUri')]",
+          "version": "[variables('runbookVersion')]"
+        },
+        "description": "Deletes the resources in tagged resource groups"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Automation/automationAccounts/schedules",
+      "apiVersion": "2022-08-08",
+      "name": "[format('{0}/{1}', parameters('automationAccountName'), 'Midnight - Daily')]",
+      "properties": {
+        "startTime": "[format('{0}T00:01:00+00:00', take(variables('tomorrow'), 10))]",
+        "expiryTime": "[variables('scheduleNoExpiry')]",
+        "interval": 1,
+        "frequency": "Day",
+        "timeZone": "[parameters('timezone')]",
+        "description": "Daily out of hours schedule"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
+      ]
+    },
+    {
+      "condition": "[contains(parameters('schedulesToCreate'), 'Daily9am')]",
+      "type": "Microsoft.Automation/automationAccounts/schedules",
+      "apiVersion": "2022-08-08",
+      "name": "[format('{0}/{1}', parameters('automationAccountName'), 'Daily - 9am')]",
+      "properties": {
+        "startTime": "[format('{0}T09:00:00+00:00', take(variables('tomorrow'), 10))]",
+        "expiryTime": "[variables('scheduleNoExpiry')]",
+        "interval": 1,
+        "frequency": "Day",
+        "timeZone": "[parameters('timezone')]",
+        "description": "Daily out of hours schedule"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
+      ]
+    },
+    {
+      "condition": "[contains(parameters('schedulesToCreate'), 'Weekday9am')]",
+      "type": "Microsoft.Automation/automationAccounts/schedules",
+      "apiVersion": "2022-08-08",
+      "name": "[format('{0}/{1}', parameters('automationAccountName'), 'Weekday - 9am')]",
+      "properties": {
+        "startTime": "[format('{0}T09:00:00+00:00', take(variables('tomorrow'), 10))]",
+        "expiryTime": "[variables('scheduleNoExpiry')]",
+        "interval": 1,
+        "frequency": "Week",
+        "timeZone": "[parameters('timezone')]",
+        "description": "Daily out of hours schedule",
+        "advancedSchedule": "[variables('workWeek')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
+      ]
+    },
+    {
+      "condition": "[not(empty(parameters('runbookName')))]",
+      "copy": {
+        "name": "automationJobs",
+        "count": "[length(parameters('runbookJobSchedule'))]"
+      },
+      "type": "Microsoft.Automation/automationAccounts/jobSchedules",
+      "apiVersion": "2022-08-08",
+      "name": "[format('{0}/{1}', parameters('automationAccountName'), guid(resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName')), parameters('runbookName'), parameters('runbookJobSchedule')[copyIndex()].schedule))]",
+      "properties": {
+        "schedule": {
+          "name": "[parameters('runbookJobSchedule')[copyIndex()].schedule]"
+        },
+        "runbook": {
+          "name": "[parameters('runbookName')]"
+        },
+        "parameters": "[parameters('runbookJobSchedule')[copyIndex()].parameters]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]",
+        "[resourceId('Microsoft.Automation/automationAccounts/schedules', parameters('automationAccountName'), 'Daily - 9am')]",
+        "[resourceId('Microsoft.Automation/automationAccounts/schedules', parameters('automationAccountName'), 'Weekday - 9am')]"
+      ]
+    }
+  ],
+  "outputs": {
+    "automationAccountPrincipalId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName')), '2022-08-08', 'full').identity.principalId]",
+      "metadata": {
+        "description": "The Automation Account Principal Id"
+      }
+    }
+  }
+}
