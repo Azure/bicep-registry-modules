@@ -26,8 +26,8 @@ Several common schedules are created, which can then optionally be linked to a R
 | `accountSku`              | `string` | No       | The Automation Account SKU. See https://learn.microsoft.com/en-us/azure/automation/overview#pricing-for-azure-automation |
 | `loganalyticsWorkspaceId` | `string` | No       | For Automation job logging                                                                                               |
 | `diagnosticCategories`    | `array`  | No       | Which logging categeories to log                                                                                         |
-| `schedulesToCreate`       | `array`  | No       | Which Automation Schedules to create                                                                                     |
-| `runbookJobSchedule`      | `array`  | No       | The Runbook-Schedule Jobs to create                                                                                      |
+| `schedulesToCreate`       | `array`  | No       | Automation Schedules to create                                                                                           |
+| `runbookJobSchedule`      | `array`  | Yes      | The Runbook-Schedule Jobs to create with workflow specific parameters                                                    |
 | `runbookName`             | `string` | Yes      | The name of the runbook to create                                                                                        |
 | `runbookType`             | `string` | No       | The type of runbook that is being imported                                                                               |
 | `runbookUri`              | `string` | No       | The URI to import the runbook code from                                                                                  |

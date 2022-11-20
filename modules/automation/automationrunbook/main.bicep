@@ -32,6 +32,7 @@ type schedule = {
   minute : int
 }
 
+@description('Automation Schedules to create')
 param schedulesToCreate schedule[] = [
   {
     dayType:'Daily'
