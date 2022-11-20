@@ -11,6 +11,15 @@ module justAccount '../main.bicep' = {
     location: location
     automationAccountName: 'justaccount-${uniqueString(resourceGroup().id, deployment().name)}'
     runbookName: ''
+    runbookJobSchedule: [
+      {
+        scheduleName: 'Weekday - 09:00'
+        parameters: {
+            ResourceGroupName : 'myRG'
+            VMName : 'myVM'
+        }
+      }
+    ]
   }
 }
 
@@ -25,10 +34,10 @@ module VmStartStop '../main.bicep' = {
     runbookDescription: 'This Graphical PowerShell runbook connects to Azure using an Automation Run As account and starts all V2 VMs in an Azure subscription or in a resource group or a single named V2 VM. You can attach a recurring schedule to this runbook to run it at a specific time.'
     runbookJobSchedule: [
       {
-        schedule: 'Weekday - Midnight'
+        scheduleName: 'Weekday - 19:00'
         parameters: {
-          ResourceGroupName : 'myRG'
-          VMName : 'myVM'
+            ResourceGroupName : 'myRG'
+            VMName : 'myVM'
         }
       }
     ]
@@ -45,7 +54,7 @@ module AksStartStop '../main.bicep' = {
     runbookType: 'Script'
     runbookJobSchedule: [
       {
-        Schedule: 'Weekday - 9am'
+        scheduleName: 'Weekday - 09:00'
         parameters: {
           ResourceGroupName : 'myRG'
           AksClusterName : 'myVM'
@@ -53,7 +62,7 @@ module AksStartStop '../main.bicep' = {
         }
       }
       {
-        Schedule: 'Weekday - 7pm'
+        scheduleName: 'Weekday - 19:00'  
         parameters: {
           ResourceGroupName : 'myRG'
           AksClusterName : 'myVM'

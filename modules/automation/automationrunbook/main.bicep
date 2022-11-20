@@ -24,27 +24,54 @@ param diagnosticCategories array = [
   'AuditEvent'
 ]
 
-@description('Which Automation Schedules to create')
-param schedulesToCreate array = [
-  'Daily - 9am'
-  'Weekday - 9am'
-  'Daily - 7pm'
-  'Weekday - 7pm'
-  'Daily - Midnight'
-  'Weekday - Midnight'
+type schedule = {
+  @description('Can be "Day" or "Weekday"')
+  dayType : string
+  
+  hour : int
+  minute : int
+}
+
+param schedulesToCreate schedule[] = [
+  {
+    dayType:'Daily'
+    hour:9
+    minute:0
+  }
+  {
+    dayType:'Weekday'
+    hour:9
+    minute:0
+  }
+  {
+    dayType:'Daily'
+    hour:19
+    minute:0
+  }
+  {
+    dayType:'Weekday'
+    hour:19
+    minute:0
+  }
+  {
+    dayType:'Daily'
+    hour:0
+    minute:0
+  }
+  {
+    dayType:'Weekday'
+    hour:0
+    minute:0
+  }
 ]
 
-@description('The Runbook-Schedule Jobs to create')
-param runbookJobSchedule array = [
-  {
-    schedule: 'Weekday - 9am'
-    parameters: {}
-  }
-  {
-    schedule: 'Weekday - Midnight'
-    parameters: {}
-  }
-]
+type runbookJob = {
+  scheduleName: string
+  parameters?: object
+}
+
+@description('The Runbook-Schedule Jobs to create with workflow specific parameters')
+param runbookJobSchedule runbookJob[]
 
 @description('The name of the runbook to create')
 param runbookName string
@@ -101,14 +128,16 @@ resource automationAccountDiagLogging 'Microsoft.Insights/diagnosticSettings@202
 
 resource schedules 'Microsoft.Automation/automationAccounts/schedules@2022-08-08' = [for schedule in schedulesToCreate : {
   parent: automationAccount
-  name: schedule
+  name: '${schedule.dayType} - ${dateTimeAdd('1970-01-01','P${schedule.hour}H','HH')}:${dateTimeAdd('1970-01-01','P${schedule.hour}H','mm')}'
   properties: {
-    startTime: '${take(tomorrow,10)}T${endsWith(schedule, '9am') ? '09:00:00' : endsWith(schedule, '7pm') ? '19:00:00' : endsWith(schedule, 'Midnight') ? '23:59:59' : '12:00:00'}+00:00'
+    startTime: dateTimeAdd(dateTimeAdd(tomorrow,'P${schedule.hour}H'), 'P${schedule.minute}M','yyyy-MM-ddTHH:mm:00+00:00')
+    //startTime: '${take(tomorrow,10)}T${schedule.hour}:${schedule.minute}}+00:00'
+    //startTime: '${take(tomorrow,10)}T${endsWith(schedule, '9am') ? '09:00:00' : endsWith(schedule, '7pm') ? '19:00:00' : endsWith(schedule, 'Midnight') ? '23:59:59' : '12:00:00'}+00:00'
     expiryTime: scheduleNoExpiry
     interval: 1
-    frequency: startsWith(schedule,'Weekday') ? 'Week' : 'Day'
+    frequency: schedule.dayType == 'Daily' ? 'Day' : 'Week'
     timeZone: timezone
-    advancedSchedule: startsWith(schedule,'Weekday') ?  workWeek : {}
+    advancedSchedule: schedule.dayType == 'Weekday' ?  workWeek : {}
   }
 }]
 
