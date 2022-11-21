@@ -11,7 +11,7 @@
   "postStartCommand": "az bicep install",
 
   "remoteEnv": {
-    "PATH": "${containerEnv:PATH}:/root/.dotnet/tools:/root/.azure/bin"
+    "PATH": "${containerEnv:PATH}:/home/vscode/.dotnet/tools:/home/vscode/.azure/bin"
   },
 
   "features": {
