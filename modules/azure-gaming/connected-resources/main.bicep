@@ -14,8 +14,14 @@ param newOrExistingKubernetes string = 'none'
 
 @description('AKS Resource Name')
 param aksName string = 'aks-${take(uniqueString(resourceGroup().id), 6)}'
+
+@description('Count of AKS Nodes')
 param agentPoolCount int = 3
+
+@description('AKS Pool Name')
 param agentPoolName string = 'k8agent'
+
+@description('AKS VM Size')
 param vmSize string = 'Standard_L16s_v2'
 
 @allowed([
