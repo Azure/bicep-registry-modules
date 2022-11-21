@@ -8,9 +8,21 @@ on:
       - modules/**.bicep
 
 jobs:
+  check-secret:
+      runs-on: ubuntu-latest
+      outputs:
+        my-key: ${{ steps.my-key.outputs.defined }}
+      steps:
+          - id: my-key
+            if: "${{ env.MY_KEY != '' }}"
+            run: echo "::set-output name=defined::true"
+            env:
+                MY_KEY: ${{ secrets.PAT }}
+
   deploy:
     runs-on: ubuntu-latest
-    if: ${{ secrets.PAT }}
+    needs: [check-secret]
+    if: needs.check-secret.outputs.my-key == 'true'
     steps:
       - uses: actions/checkout@v2.3.4
         with:
