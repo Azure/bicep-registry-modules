@@ -76,7 +76,7 @@ jobs:
       - uses: EndBug/add-and-commit@v9
         if: steps.tag_version.outputs.release_type
         with:
-          message: Update Version to ${{ steps.tag_version.outputs.new_version }}
+          message: Autogenerate Bicep Files
           committer_name: GitHub Actions
           committer_email: actions@github.com
-          add: modules
+          add: modules README.md
