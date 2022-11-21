@@ -4,10 +4,7 @@ param name string = 'traffic-mp-${uniqueString(resourceGroup().id, subscription(
 @description('Relative DNS name for the traffic manager profile, must be globally unique.')
 param trafficManagerDnsName string = 'tmp-${uniqueString(resourceGroup().id, subscription().id)}'
 
-@allowed([
-  'new'
-  'existing'
-])
+@allowed([ 'new', 'existing' ])
 param newOrExisting string = 'new'
 
 @description('An array of objects that represent the endpoints in the Traffic Manager profile. {name: string, target: string, endpointStatus: string, endpointLocation: string}')
@@ -67,15 +64,5 @@ resource trafficManagerEndpoints 'Microsoft.Network/TrafficManagerProfiles/Exter
 }]
 
 resource existingTrafficManagerProfile 'Microsoft.Network/trafficmanagerprofiles@2018-08-01' existing = { name: name }
-
-// resource existingTrafficManagerEndpoints 'Microsoft.Network/TrafficManagerProfiles/ExternalEndpoints@2018-08-01' = [for endpoint in endpoints: if (!empty(endpoint)) {
-//   parent: existingTrafficManagerProfile
-//   name: endpoint.name
-//   properties: {
-//     target: endpoint.target
-//     endpointStatus: endpoint.endpointStatus
-//     endpointLocation: endpoint.endpointLocation
-//   }
-// }]
 
 output name string = newOrExisting == 'new' ? trafficManagerProfile.name : existingTrafficManagerProfile.name
