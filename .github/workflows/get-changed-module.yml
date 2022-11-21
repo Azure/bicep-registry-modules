@@ -15,6 +15,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        
+      - name: Get base and head versions
+        id: get-versions
+        env:
+          PublicRelease: true
+        run: |
+          echo :: :$(nbgv --version)
 
       - name: Get changed module
         uses: actions/github-script@v6
