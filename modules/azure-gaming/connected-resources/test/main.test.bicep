@@ -18,5 +18,6 @@ module basicResources '../main.bicep' = {
     newOrExistingPublicIp: 'new'
     newOrExistingTrafficManager: 'new'
     newOrExistingCosmosDB: 'new'
+    vmSize: 'standard_a2_v2'
   }
 }
