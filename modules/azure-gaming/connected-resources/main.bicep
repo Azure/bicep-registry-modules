@@ -1,9 +1,6 @@
 @description('Deployment Location')
 param location string = resourceGroup().location
 
-@description('Resource Group Name')
-param resourceGroupName string = resourceGroup().name
-
 @description('Secondary Deployment Locations')
 param secondaryLocations array = []
 
@@ -25,7 +22,6 @@ param vmSize string = 'Standard_L16s_v2'
 ])
 param newOrExistingStorageAccount string = 'none'
 param storageAccountName string = 'data${uniqueString(resourceGroup().id, subscription().subscriptionId)}'
-param storageResourceGroupName string = resourceGroupName
 
 @allowed([
   'new'
@@ -60,7 +56,6 @@ param trafficManagerDnsName string = 'tmp-${uniqueString(resourceGroup().id, sub
 ])
 param newOrExistingCosmosDB string = 'none'
 param cosmosDBName string = 'cosmos-${uniqueString(resourceGroup().id, subscription().subscriptionId)}'
-param cosmosDBRG string = resourceGroupName
 
 @description('Running this template requires roleAssignment permission on the Resource Group, which require an Owner role. Set this to false to deploy some of the resources')
 param assignRole bool = true
