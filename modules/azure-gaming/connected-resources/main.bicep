@@ -4,7 +4,7 @@ param location string
 @description('Secondary Deployment Locations')
 param secondaryLocations array = []
 
-@allowed([ 'new' 'existing' 'none' ])
+@allowed([ 'new', 'existing', 'none' ])
 @description('Set to create a new or use an existing AKS')
 param newOrExistingKubernetes string = 'none'
 
