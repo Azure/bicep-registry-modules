@@ -158,9 +158,9 @@ The `brm validate` command mentioned in the above step does not deploy the `test
 
 Once the module files are validated locally, you can commit your changes and open a pull request. You must link the new module proposal in the pull request description if you are trying to add a new module. Adding or updating multiple modules is not supported and will cause a failure in the pull request validation CI, so please only add or change one module at a time.
 
-### Enable Auto Generation with GitHub Actions
+### Optional: Enable Auto Generation with GitHub Actions
 
-Enable GitHub Worksflows in your fork to enable auto-generation of assets with our [GitHub Action](/.github/workflows/push-auto-generate.yml).
+Enable optional GitHub Worksflows in your fork to enable auto-generation of assets with our [GitHub Action](/.github/workflows/push-auto-generate.yml).
 To trigger GitHub Actions after auto-generation, [add a GitHub PAT](https://stackoverflow.com/a/69063453/1341806) as a secret in your forked repository called `PAT`.
 This `PAT` should NOT inclucde the `workflow` scope.
 
