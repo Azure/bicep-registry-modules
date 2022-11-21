@@ -164,8 +164,6 @@ Enable GitHub Worksflows in your fork to enable auto-generation of assets with o
 To trigger GitHub Actions after auto-generation, [add a GitHub PAT](https://stackoverflow.com/a/69063453/1341806) as a secret in your forked repository called `PAT`.
 This `PAT` should NOT inclucde the `workflow` scope.
 
-To autoformat files in the `.github` directory, an dedicated token named `WORKSPACE_PAT` should be used for this [GitHub Action](/.github/workflows/push-workflow-format.yml).
-
 ## Publishing a module
 
 Once your pull request is approved and merged to the `main` branch, a GitHub workflow will be triggered to publish the module to the Bicep registry automatically.
