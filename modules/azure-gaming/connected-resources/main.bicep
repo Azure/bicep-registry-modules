@@ -13,7 +13,7 @@ param secondaryLocations array = []
 param newOrExistingKubernetes string = 'none'
 
 @description('AKS Resource Name')
-param aksName string = 'aks-${take(uniqueString(resourceGroup().id), 6)}'
+param aksName string = 'aks-${take(uniqueString(resourceGroup().id, subscription().subscriptionId, location), 6)}'
 
 @description('Count of AKS Nodes')
 param agentPoolCount int = 3
