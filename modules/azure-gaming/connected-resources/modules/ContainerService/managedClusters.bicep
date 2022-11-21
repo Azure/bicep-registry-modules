@@ -8,15 +8,9 @@ param nodeLabels string = 'horde-storage'
 param assignRole bool = false
 param dnsPrefix string = 'k8-${take(uniqueString(name), 5)}'
 param kubernetesVersion string = '1.22.11'
-param availabilityZones array = [
-  '1'
-  '2'
-  '3'
-]
-@allowed([
-  'new'
-  'existing'
-])
+param availabilityZones array = [ '1', '2', '3' ]
+
+@allowed([ 'new', 'existing' ])
 param newOrExisting string = 'new'
 
 @description('Toggle to enable or disable zone redudance.')
