@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - .github/**
+      - CONTRIBUTING.md
 
 jobs:
   deploy:
