@@ -9,6 +9,7 @@ param assignRole bool = false
 param dnsPrefix string = 'k8-${take(uniqueString(name), 5)}'
 param kubernetesVersion string = '1.22.11'
 param availabilityZones array = [ '1', '2', '3' ]
+param nodeResourceGroup string = take('MC_${resourceGroup().name}', 70)
 
 @allowed([ 'new', 'existing' ])
 param newOrExisting string = 'new'
@@ -40,6 +41,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-07-02-previ
     }
     dnsPrefix: dnsPrefix
     enableRBAC: true
+    nodeResourceGroup: take(nodeResourceGroup, 70)
     agentPoolProfiles: [
       {
         name: agentPoolName
