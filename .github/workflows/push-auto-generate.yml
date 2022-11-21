@@ -5,16 +5,17 @@ on:
     branches-ignore:
       - main
     paths:
-      - modules/**
+      - modules/**.bicep
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    if: ${{ secrets.PAT }}
     steps:
       - uses: actions/checkout@v2.3.4
         with:
           fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
-          token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }} # A PAT must be used to re-trigger workflows after commit. This PAT should NOT have the workflow scope.
+          token: ${{ secrets.PAT }} # A PAT must be used to re-trigger workflows after commit. This PAT should NOT have the workflow scope.
 
       - name: Find Changed Folder
         id: changed_folders
