@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "18114631017328692427"
+      "templateHash": "2236683701632464784"
     }
   },
   "parameters": {
@@ -14,13 +14,6 @@
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "description": "Deployment Location"
-      }
-    },
-    "resourceGroupName": {
-      "type": "string",
-      "defaultValue": "[resourceGroup().name]",
-      "metadata": {
-        "description": "Resource Group Name"
       }
     },
     "secondaryLocations": {
@@ -67,10 +60,6 @@
     "storageAccountName": {
       "type": "string",
       "defaultValue": "[format('data{0}', uniqueString(resourceGroup().id, subscription().subscriptionId))]"
-    },
-    "storageResourceGroupName": {
-      "type": "string",
-      "defaultValue": "[parameters('resourceGroupName')]"
     },
     "newOrExistingKeyVault": {
       "type": "string",
@@ -130,10 +119,6 @@
     "cosmosDBName": {
       "type": "string",
       "defaultValue": "[format('cosmos-{0}', uniqueString(resourceGroup().id, subscription().subscriptionId))]"
-    },
-    "cosmosDBRG": {
-      "type": "string",
-      "defaultValue": "[parameters('resourceGroupName')]"
     },
     "assignRole": {
       "type": "bool",
