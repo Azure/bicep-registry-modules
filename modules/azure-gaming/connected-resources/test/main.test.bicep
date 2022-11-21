@@ -7,3 +7,16 @@ module noDeployment '../main.bicep' = {
     location: location
   }
 }
+
+module basicResources '../main.bicep' = {
+  name: 'basicResources'
+  params: {
+    location: location
+    newOrExistingKubernetes: 'new'
+    newOrExistingStorageAccount: 'new'
+    newOrExistingKeyVault: 'new'
+    newOrExistingPublicIp: 'new'
+    newOrExistingTrafficManager: 'new'
+    newOrExistingCosmosDB: 'new'
+  }
+}
