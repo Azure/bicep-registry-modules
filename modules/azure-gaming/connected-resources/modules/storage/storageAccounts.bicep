@@ -3,10 +3,7 @@ param location string
 
 param name string = uniqueString(resourceGroup().id)
 
-@allowed([
-  'new'
-  'existing'
-])
+@allowed([ 'new', 'existing' ])
 param newOrExisting string = 'new'
 
 @description('Resource Group')
