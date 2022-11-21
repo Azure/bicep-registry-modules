@@ -74,7 +74,6 @@ jobs:
           brm generate
 
       - uses: EndBug/add-and-commit@v9
-        if: steps.tag_version.outputs.release_type
         with:
           message: Autogenerate Bicep Files
           committer_name: GitHub Actions
