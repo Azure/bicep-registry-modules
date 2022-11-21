@@ -53,7 +53,7 @@ jobs:
           echo "SAMPLEFOLDER_PATH=$FOUNDFOLDER_PATH" >> $GITHUB_OUTPUT
           echo "MAINBICEP_PATH=$MAINBICEP_PATH" >> $GITHUB_OUTPUT
           echo "AZDEPLOYJSON_PATH=$AZDEPLOYJSON_PATH" >> $GITHUB_OUTPUT
-          
+
           OLD_TAG=$(cut -d/ -f2-3 <<< $FOUNDFOLDER_PATH)
           echo "OLD_TAG=$OLD_TAG" >> $GITHUB_OUTPUT
 
