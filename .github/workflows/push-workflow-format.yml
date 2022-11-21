@@ -5,7 +5,7 @@ on:
     branches-ignore:
       - main
     paths:
-      - modules/**
+      - .github/**
 
 jobs:
   deploy:
