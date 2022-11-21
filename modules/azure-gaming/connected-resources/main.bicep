@@ -12,7 +12,7 @@ param secondaryLocations array = []
   'existing'
 ])
 param newOrExistingKubernetes string = 'new'
-param aksName string = 'horde-storage-${take(uniqueString(resourceGroup().id), 6)}'
+param aksName string = 'aks-${take(uniqueString(resourceGroup().id), 6)}'
 param agentPoolCount int = 3
 param agentPoolName string = 'k8agent'
 param vmSize string = 'Standard_L16s_v2'
@@ -22,7 +22,7 @@ param vmSize string = 'Standard_L16s_v2'
   'existing'
 ])
 param newOrExistingStorageAccount string = 'new'
-param storageAccountName string = 'horde${uniqueString(resourceGroup().id, subscription().subscriptionId)}'
+param storageAccountName string = 'data${uniqueString(resourceGroup().id, subscription().subscriptionId)}'
 param storageResourceGroupName string = resourceGroupName
 
 @allowed([
@@ -30,21 +30,21 @@ param storageResourceGroupName string = resourceGroupName
   'existing'
 ])
 param newOrExistingKeyVault string = 'new'
-param keyVaultName string = take('hordeKeyVault${uniqueString(resourceGroup().id, subscription().subscriptionId, location)}', 24)
+param keyVaultName string = take('keyVault${uniqueString(resourceGroup().id, subscription().subscriptionId, location)}', 24)
 
 @allowed([
   'new'
   'existing'
 ])
 param newOrExistingPublicIp string = 'new'
-param publicIpName string = 'hordePublicIP${uniqueString(resourceGroup().id, subscription().subscriptionId)}'
+param publicIpName string = 'publicIP${uniqueString(resourceGroup().id, subscription().subscriptionId)}'
 
 @allowed([
   'new'
   'existing'
 ])
 param newOrExistingTrafficManager string = 'new'
-param trafficManagerName string = 'hordePublicIP${uniqueString(resourceGroup().id, subscription().subscriptionId)}'
+param trafficManagerName string = 'publicIP${uniqueString(resourceGroup().id, subscription().subscriptionId)}'
 @description('Relative DNS name for the traffic manager profile, must be globally unique.')
 param trafficManagerDnsName string = 'tmp-${uniqueString(resourceGroup().id, subscription().id)}'
 
@@ -53,7 +53,7 @@ param trafficManagerDnsName string = 'tmp-${uniqueString(resourceGroup().id, sub
   'existing'
 ])
 param newOrExistingCosmosDB string = 'new'
-param cosmosDBName string = 'hordeDB-${uniqueString(resourceGroup().id, subscription().subscriptionId)}'
+param cosmosDBName string = 'cosmos-${uniqueString(resourceGroup().id, subscription().subscriptionId)}'
 param cosmosDBRG string = resourceGroupName
 
 @description('Running this template requires roleAssignment permission on the Resource Group, which require an Owner role. Set this to false to deploy some of the resources')
@@ -88,10 +88,9 @@ module deployResources 'modules/resources.bicep' = {
     trafficManagerDnsName: trafficManagerDnsName
     storageAccountName: '${take(location, 8)}${storageAccountName}'
     storageResourceGroupName: storageResourceGroupName
-    storageSecretName: 'horde-storage-connection-string'
-    cassandraSecretName: 'horde-db-connection-string'
+    storageSecretName: 'storage-connection-string'
+    cassandraSecretName: 'db-connection-string'
     assignRole: assignRole
     isZoneRedundant: isZoneRedundant
-    subject: 'system:serviceaccount:horde-tests:workload-identity-sa'
   }
 }
