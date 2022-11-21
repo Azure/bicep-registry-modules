@@ -1,5 +1,5 @@
 @description('Deployment Location')
-param location string = resourceGroup().location
+param location string
 
 @description('Secondary Deployment Locations')
 param secondaryLocations array = []
