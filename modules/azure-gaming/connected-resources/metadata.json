@@ -1,6 +1,6 @@
 {
   "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
-  "name": "",
-  "summary": "",
-  "owner": ""
+  "name": "Azure Gaming: Connected Resources",
+  "summary": "This module is used by other Azure Gaming modules and applications to create core Azure services",
+  "owner": "dciborow"
 }
