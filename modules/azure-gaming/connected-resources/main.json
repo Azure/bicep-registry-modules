@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "2744681732740279272"
+      "templateHash": "18114631017328692427"
     }
   },
   "parameters": {
@@ -32,10 +32,11 @@
     },
     "newOrExistingKubernetes": {
       "type": "string",
-      "defaultValue": "new",
+      "defaultValue": "none",
       "allowedValues": [
         "new",
-        "existing"
+        "existing",
+        "none"
       ]
     },
     "aksName": {
@@ -56,10 +57,11 @@
     },
     "newOrExistingStorageAccount": {
       "type": "string",
-      "defaultValue": "new",
+      "defaultValue": "none",
       "allowedValues": [
         "new",
-        "existing"
+        "existing",
+        "none"
       ]
     },
     "storageAccountName": {
@@ -72,10 +74,11 @@
     },
     "newOrExistingKeyVault": {
       "type": "string",
-      "defaultValue": "new",
+      "defaultValue": "none",
       "allowedValues": [
         "new",
-        "existing"
+        "existing",
+        "none"
       ]
     },
     "keyVaultName": {
@@ -84,10 +87,11 @@
     },
     "newOrExistingPublicIp": {
       "type": "string",
-      "defaultValue": "new",
+      "defaultValue": "none",
       "allowedValues": [
         "new",
-        "existing"
+        "existing",
+        "none"
       ]
     },
     "publicIpName": {
@@ -96,10 +100,11 @@
     },
     "newOrExistingTrafficManager": {
       "type": "string",
-      "defaultValue": "new",
+      "defaultValue": "none",
       "allowedValues": [
         "new",
-        "existing"
+        "existing",
+        "none"
       ]
     },
     "trafficManagerName": {
@@ -115,10 +120,11 @@
     },
     "newOrExistingCosmosDB": {
       "type": "string",
-      "defaultValue": "new",
+      "defaultValue": "none",
       "allowedValues": [
         "new",
-        "existing"
+        "existing",
+        "none"
       ]
     },
     "cosmosDBName": {
