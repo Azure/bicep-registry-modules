@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "2236683701632464784"
+      "templateHash": "14983829747362766723"
     }
   },
   "parameters": {
@@ -26,6 +26,9 @@
     "newOrExistingKubernetes": {
       "type": "string",
       "defaultValue": "none",
+      "metadata": {
+        "description": "Set to create a new or use an existing AKS"
+      },
       "allowedValues": [
         "new",
         "existing",
@@ -34,7 +37,10 @@
     },
     "aksName": {
       "type": "string",
-      "defaultValue": "[format('aks-{0}', take(uniqueString(resourceGroup().id), 6))]"
+      "defaultValue": "[format('aks-{0}', take(uniqueString(resourceGroup().id), 6))]",
+      "metadata": {
+        "description": "AKS Resource Name"
+      }
     },
     "agentPoolCount": {
       "type": "int",
@@ -51,6 +57,9 @@
     "newOrExistingStorageAccount": {
       "type": "string",
       "defaultValue": "none",
+      "metadata": {
+        "description": "Set to create a new or use an existing Storage Account"
+      },
       "allowedValues": [
         "new",
         "existing",
@@ -59,11 +68,17 @@
     },
     "storageAccountName": {
       "type": "string",
-      "defaultValue": "[format('data{0}', uniqueString(resourceGroup().id, subscription().subscriptionId))]"
+      "defaultValue": "[format('data{0}', uniqueString(resourceGroup().id, subscription().subscriptionId))]",
+      "metadata": {
+        "description": "Storage Account Resource Name"
+      }
     },
     "newOrExistingKeyVault": {
       "type": "string",
       "defaultValue": "none",
+      "metadata": {
+        "description": "Set to create a new or use an existing Key Vault"
+      },
       "allowedValues": [
         "new",
         "existing",
@@ -72,11 +87,17 @@
     },
     "keyVaultName": {
       "type": "string",
-      "defaultValue": "[take(format('keyVault{0}', uniqueString(resourceGroup().id, subscription().subscriptionId, parameters('location'))), 24)]"
+      "defaultValue": "[take(format('keyVault{0}', uniqueString(resourceGroup().id, subscription().subscriptionId, parameters('location'))), 24)]",
+      "metadata": {
+        "description": "Key Vault Resource Name"
+      }
     },
     "newOrExistingPublicIp": {
       "type": "string",
       "defaultValue": "none",
+      "metadata": {
+        "description": "Set to create a new or use an existing Public IP"
+      },
       "allowedValues": [
         "new",
         "existing",
@@ -85,11 +106,17 @@
     },
     "publicIpName": {
       "type": "string",
-      "defaultValue": "[format('publicIP{0}', uniqueString(resourceGroup().id, subscription().subscriptionId))]"
+      "defaultValue": "[format('publicIP{0}', uniqueString(resourceGroup().id, subscription().subscriptionId))]",
+      "metadata": {
+        "description": "Public IP Resource Name"
+      }
     },
     "newOrExistingTrafficManager": {
       "type": "string",
       "defaultValue": "none",
+      "metadata": {
+        "description": "Set to create a new or use an existing Traffic Manager Profile"
+      },
       "allowedValues": [
         "new",
         "existing",
@@ -98,7 +125,10 @@
     },
     "trafficManagerName": {
       "type": "string",
-      "defaultValue": "[format('publicIP{0}', uniqueString(resourceGroup().id, subscription().subscriptionId))]"
+      "defaultValue": "[format('publicIP{0}', uniqueString(resourceGroup().id, subscription().subscriptionId))]",
+      "metadata": {
+        "description": "Traffic Manager Resource Name"
+      }
     },
     "trafficManagerDnsName": {
       "type": "string",
@@ -110,6 +140,9 @@
     "newOrExistingCosmosDB": {
       "type": "string",
       "defaultValue": "none",
+      "metadata": {
+        "description": "Set to create a new or use an existing Cosmos DB"
+      },
       "allowedValues": [
         "new",
         "existing",
@@ -118,7 +151,10 @@
     },
     "cosmosDBName": {
       "type": "string",
-      "defaultValue": "[format('cosmos-{0}', uniqueString(resourceGroup().id, subscription().subscriptionId))]"
+      "defaultValue": "[format('cosmos-{0}', uniqueString(resourceGroup().id, subscription().subscriptionId))]",
+      "metadata": {
+        "description": "Cosmos DB Resource Name"
+      }
     },
     "assignRole": {
       "type": "bool",
