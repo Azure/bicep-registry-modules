@@ -3,10 +3,7 @@ param location string
 
 param name string = 'cosmos-${uniqueString(resourceGroup().id, location)}'
 
-@allowed([
-  'new'
-  'existing'
-])
+@allowed([ 'new', 'existing' ])
 param newOrExisting string = 'new'
 
 @description('Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 2147483647. Multi Region: 100000 to 2147483647.')
@@ -19,13 +16,7 @@ param maxStalenessPrefix int = 100000
 @maxValue(86400)
 param maxIntervalInSeconds int = 300
 
-@allowed([
-  'Eventual'
-  'ConsistentPrefix'
-  'Session'
-  'BoundedStaleness'
-  'Strong'
-])
+@allowed([ 'Eventual', 'ConsistentPrefix', 'Session', 'BoundedStaleness', 'Strong' ])
 @description('The default consistency level of the Cosmos DB account.')
 param defaultConsistencyLevel string = 'Session'
 
