@@ -5,8 +5,1442 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "17666925374910611943"
+      "templateHash": "2744681732740279272"
     }
   },
-  "resources": []
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Deployment Location"
+      }
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().name]",
+      "metadata": {
+        "description": "Resource Group Name"
+      }
+    },
+    "secondaryLocations": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Secondary Deployment Locations"
+      }
+    },
+    "newOrExistingKubernetes": {
+      "type": "string",
+      "defaultValue": "new",
+      "allowedValues": [
+        "new",
+        "existing"
+      ]
+    },
+    "aksName": {
+      "type": "string",
+      "defaultValue": "[format('aks-{0}', take(uniqueString(resourceGroup().id), 6))]"
+    },
+    "agentPoolCount": {
+      "type": "int",
+      "defaultValue": 3
+    },
+    "agentPoolName": {
+      "type": "string",
+      "defaultValue": "k8agent"
+    },
+    "vmSize": {
+      "type": "string",
+      "defaultValue": "Standard_L16s_v2"
+    },
+    "newOrExistingStorageAccount": {
+      "type": "string",
+      "defaultValue": "new",
+      "allowedValues": [
+        "new",
+        "existing"
+      ]
+    },
+    "storageAccountName": {
+      "type": "string",
+      "defaultValue": "[format('data{0}', uniqueString(resourceGroup().id, subscription().subscriptionId))]"
+    },
+    "storageResourceGroupName": {
+      "type": "string",
+      "defaultValue": "[parameters('resourceGroupName')]"
+    },
+    "newOrExistingKeyVault": {
+      "type": "string",
+      "defaultValue": "new",
+      "allowedValues": [
+        "new",
+        "existing"
+      ]
+    },
+    "keyVaultName": {
+      "type": "string",
+      "defaultValue": "[take(format('keyVault{0}', uniqueString(resourceGroup().id, subscription().subscriptionId, parameters('location'))), 24)]"
+    },
+    "newOrExistingPublicIp": {
+      "type": "string",
+      "defaultValue": "new",
+      "allowedValues": [
+        "new",
+        "existing"
+      ]
+    },
+    "publicIpName": {
+      "type": "string",
+      "defaultValue": "[format('publicIP{0}', uniqueString(resourceGroup().id, subscription().subscriptionId))]"
+    },
+    "newOrExistingTrafficManager": {
+      "type": "string",
+      "defaultValue": "new",
+      "allowedValues": [
+        "new",
+        "existing"
+      ]
+    },
+    "trafficManagerName": {
+      "type": "string",
+      "defaultValue": "[format('publicIP{0}', uniqueString(resourceGroup().id, subscription().subscriptionId))]"
+    },
+    "trafficManagerDnsName": {
+      "type": "string",
+      "defaultValue": "[format('tmp-{0}', uniqueString(resourceGroup().id, subscription().id))]",
+      "metadata": {
+        "description": "Relative DNS name for the traffic manager profile, must be globally unique."
+      }
+    },
+    "newOrExistingCosmosDB": {
+      "type": "string",
+      "defaultValue": "new",
+      "allowedValues": [
+        "new",
+        "existing"
+      ]
+    },
+    "cosmosDBName": {
+      "type": "string",
+      "defaultValue": "[format('cosmos-{0}', uniqueString(resourceGroup().id, subscription().subscriptionId))]"
+    },
+    "cosmosDBRG": {
+      "type": "string",
+      "defaultValue": "[parameters('resourceGroupName')]"
+    },
+    "assignRole": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Running this template requires roleAssignment permission on the Resource Group, which require an Owner role. Set this to false to deploy some of the resources"
+      }
+    },
+    "isZoneRedundant": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enable Zonal Redunancy for supported regions"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[guid(parameters('keyVaultName'), parameters('publicIpName'), parameters('cosmosDBName'), parameters('storageAccountName'))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "newOrExistingKubernetes": {
+            "value": "[parameters('newOrExistingKubernetes')]"
+          },
+          "newOrExistingKeyVault": {
+            "value": "[parameters('newOrExistingKeyVault')]"
+          },
+          "newOrExistingPublicIp": {
+            "value": "[parameters('newOrExistingPublicIp')]"
+          },
+          "newOrExistingStorageAccount": {
+            "value": "[parameters('newOrExistingStorageAccount')]"
+          },
+          "newOrExistingTrafficManager": {
+            "value": "[parameters('newOrExistingTrafficManager')]"
+          },
+          "newOrExistingCosmosDB": {
+            "value": "[parameters('newOrExistingCosmosDB')]"
+          },
+          "kubernetesParams": {
+            "value": {
+              "name": "[format('{0}-{1}', parameters('aksName'), take(parameters('location'), 8))]",
+              "agentPoolCount": "[parameters('agentPoolCount')]",
+              "agentPoolName": "[parameters('agentPoolName')]",
+              "vmSize": "[parameters('vmSize')]",
+              "clusterUserName": "[format('id-{0}-{1}', parameters('aksName'), parameters('location'))]"
+            }
+          },
+          "secondaryLocations": {
+            "value": "[parameters('secondaryLocations')]"
+          },
+          "keyVaultName": {
+            "value": "[take(format('{0}-{1}', parameters('location'), parameters('keyVaultName')), 24)]"
+          },
+          "publicIpName": {
+            "value": "[format('{0}-{1}', parameters('publicIpName'), parameters('location'))]"
+          },
+          "cosmosDBName": {
+            "value": "[parameters('cosmosDBName')]"
+          },
+          "trafficManagerName": {
+            "value": "[parameters('trafficManagerName')]"
+          },
+          "trafficManagerDnsName": {
+            "value": "[parameters('trafficManagerDnsName')]"
+          },
+          "storageAccountName": {
+            "value": "[format('{0}{1}', take(parameters('location'), 8), parameters('storageAccountName'))]"
+          },
+          "storageSecretName": {
+            "value": "storage-connection-string"
+          },
+          "cassandraSecretName": {
+            "value": "db-connection-string"
+          },
+          "assignRole": {
+            "value": "[parameters('assignRole')]"
+          },
+          "isZoneRedundant": {
+            "value": "[parameters('isZoneRedundant')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.12.40.16777",
+              "templateHash": "15428517821967034453"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Deployment Location"
+              }
+            },
+            "isZoneRedundant": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Toggle to enable or disable zone redudance."
+              }
+            },
+            "newOrExistingStorageAccount": {
+              "type": "string",
+              "defaultValue": "none",
+              "allowedValues": [
+                "new",
+                "existing",
+                "none"
+              ]
+            },
+            "storageAccountName": {
+              "type": "string",
+              "defaultValue": "[format('store{0}', uniqueString(resourceGroup().id, subscription().id))]"
+            },
+            "newOrExistingKeyVault": {
+              "type": "string",
+              "defaultValue": "none",
+              "allowedValues": [
+                "new",
+                "existing",
+                "none"
+              ]
+            },
+            "keyVaultName": {
+              "type": "string",
+              "defaultValue": "[format('keyVault{0}', uniqueString(resourceGroup().id, subscription().id))]"
+            },
+            "newOrExistingPublicIp": {
+              "type": "string",
+              "defaultValue": "none",
+              "allowedValues": [
+                "new",
+                "existing",
+                "none"
+              ]
+            },
+            "publicIpName": {
+              "type": "string",
+              "defaultValue": "[format('pubip{0}', uniqueString(resourceGroup().id, subscription().id))]"
+            },
+            "newOrExistingCosmosDB": {
+              "type": "string",
+              "defaultValue": "none",
+              "allowedValues": [
+                "new",
+                "existing",
+                "none"
+              ]
+            },
+            "cosmosDBName": {
+              "type": "string",
+              "defaultValue": "[format('cosmos{0}', uniqueString(resourceGroup().id, subscription().id))]"
+            },
+            "secondaryLocations": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "array of region objects or regions: [{locationName: string, failoverPriority: int, isZoneRedundant: bool}] or [region: string]"
+              }
+            },
+            "newOrExistingTrafficManager": {
+              "type": "string",
+              "defaultValue": "none",
+              "allowedValues": [
+                "new",
+                "existing",
+                "none"
+              ]
+            },
+            "trafficManagerName": {
+              "type": "string",
+              "defaultValue": "[format('traffic-mp-{0}', uniqueString(resourceGroup().id))]"
+            },
+            "trafficManagerDnsName": {
+              "type": "string",
+              "defaultValue": "[format('tmp-{0}', uniqueString(resourceGroup().id, subscription().id))]",
+              "metadata": {
+                "description": "Relative DNS name for the traffic manager profile, must be globally unique."
+              }
+            },
+            "newOrExistingKubernetes": {
+              "type": "string",
+              "defaultValue": "none",
+              "allowedValues": [
+                "new",
+                "existing",
+                "none"
+              ]
+            },
+            "kubernetesParams": {
+              "type": "object",
+              "defaultValue": {
+                "name": "[format('aks-{0}', uniqueString(resourceGroup().id))]",
+                "agentPoolCount": 3,
+                "agentPoolName": "agentpool",
+                "vmSize": "Standard_D2_v2",
+                "assignRole": true
+              }
+            },
+            "assignRole": {
+              "type": "bool",
+              "defaultValue": true
+            },
+            "storageSecretName": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "cassandraSecretName": {
+              "type": "string",
+              "defaultValue": ""
+            }
+          },
+          "variables": {
+            "newOrExisting": {
+              "new": "new",
+              "existing": "existing"
+            },
+            "enableKubernetes": "[not(equals(parameters('newOrExistingKubernetes'), 'none'))]",
+            "enableKeyVault": "[not(equals(parameters('newOrExistingKeyVault'), 'none'))]",
+            "enableComosDB": "[not(equals(parameters('newOrExistingCosmosDB'), 'none'))]",
+            "enableStorage": "[not(equals(parameters('newOrExistingStorageAccount'), 'none'))]",
+            "enablePublicIP": "[not(equals(parameters('newOrExistingPublicIp'), 'none'))]",
+            "enableTrafficManager": "[not(equals(parameters('newOrExistingTrafficManager'), 'none'))]",
+            "noAvailabilityZones": [
+              "northcentralus",
+              "westus",
+              "jioindiawest",
+              "westcentralus",
+              "australiacentral",
+              "australiacentral2",
+              "australiasoutheast",
+              "japanwest",
+              "jioindiacentral",
+              "koreasouth",
+              "southindia",
+              "francesouth",
+              "germanynorth",
+              "norwayeast",
+              "switzerlandwest",
+              "ukwest",
+              "uaecentral",
+              "brazilsoutheast"
+            ]
+          },
+          "resources": [
+            {
+              "condition": "[variables('enableKubernetes')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2020-10-01",
+              "name": "[format('create_cluster-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[if(contains(parameters('kubernetesParams'), 'name'), parameters('kubernetesParams').name, format('aks-{0}', uniqueString(resourceGroup().id)))]"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "agentPoolCount": {
+                    "value": "[if(contains(parameters('kubernetesParams'), 'agentPoolCount'), parameters('kubernetesParams').agentPoolCount, 3)]"
+                  },
+                  "agentPoolName": {
+                    "value": "[if(contains(parameters('kubernetesParams'), 'agentPoolName'), parameters('kubernetesParams').agentPoolName, 'agentpool')]"
+                  },
+                  "vmSize": {
+                    "value": "[if(contains(parameters('kubernetesParams'), 'vmSize'), parameters('kubernetesParams').vmSize, 'Standard_D2_v2')]"
+                  },
+                  "assignRole": {
+                    "value": "[parameters('assignRole')]"
+                  },
+                  "newOrExisting": {
+                    "value": "[variables('newOrExisting')[parameters('newOrExistingKubernetes')]]"
+                  },
+                  "isZoneRedundant": {
+                    "value": "[and(parameters('isZoneRedundant'), not(contains(variables('noAvailabilityZones'), parameters('location'))))]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.12.40.16777",
+                      "templateHash": "9111897746265209168"
+                    }
+                  },
+                  "parameters": {
+                    "location": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Deployment Location"
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "defaultValue": "horde-storage-k8-cluster"
+                    },
+                    "agentPoolCount": {
+                      "type": "int",
+                      "defaultValue": 3
+                    },
+                    "agentPoolName": {
+                      "type": "string",
+                      "defaultValue": "k8agent"
+                    },
+                    "vmSize": {
+                      "type": "string",
+                      "defaultValue": "Standard_L16s_v2"
+                    },
+                    "nodeLabels": {
+                      "type": "string",
+                      "defaultValue": "horde-storage"
+                    },
+                    "assignRole": {
+                      "type": "bool",
+                      "defaultValue": false
+                    },
+                    "dnsPrefix": {
+                      "type": "string",
+                      "defaultValue": "[format('k8-{0}', take(uniqueString(parameters('name')), 5))]"
+                    },
+                    "kubernetesVersion": {
+                      "type": "string",
+                      "defaultValue": "1.22.11"
+                    },
+                    "availabilityZones": {
+                      "type": "array",
+                      "defaultValue": [
+                        "1",
+                        "2",
+                        "3"
+                      ]
+                    },
+                    "newOrExisting": {
+                      "type": "string",
+                      "defaultValue": "new",
+                      "allowedValues": [
+                        "new",
+                        "existing"
+                      ]
+                    },
+                    "isZoneRedundant": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Toggle to enable or disable zone redudance."
+                      }
+                    },
+                    "subject": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Subject for Federated Credential. Ex: system:serviceaccount:ucddc-tests:workload-identity-sa"
+                      }
+                    },
+                    "clusterUserName": {
+                      "type": "string",
+                      "defaultValue": "[format('k8-{0}', take(uniqueString(parameters('location'), parameters('name')), 15))]"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "condition": "[equals(parameters('newOrExisting'), 'new')]",
+                      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+                      "apiVersion": "2018-11-30",
+                      "name": "[parameters('clusterUserName')]",
+                      "location": "[parameters('location')]"
+                    },
+                    {
+                      "condition": "[equals(parameters('newOrExisting'), 'new')]",
+                      "type": "Microsoft.ContainerService/managedClusters",
+                      "apiVersion": "2022-07-02-preview",
+                      "name": "[take(parameters('name'), 80)]",
+                      "location": "[parameters('location')]",
+                      "identity": {
+                        "type": "UserAssigned",
+                        "userAssignedIdentities": {
+                          "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('clusterUserName')))]": {}
+                        }
+                      },
+                      "properties": {
+                        "kubernetesVersion": "[parameters('kubernetesVersion')]",
+                        "oidcIssuerProfile": {
+                          "enabled": true
+                        },
+                        "dnsPrefix": "[parameters('dnsPrefix')]",
+                        "enableRBAC": true,
+                        "agentPoolProfiles": [
+                          {
+                            "name": "[parameters('agentPoolName')]",
+                            "count": "[parameters('agentPoolCount')]",
+                            "vmSize": "[parameters('vmSize')]",
+                            "osType": "Linux",
+                            "mode": "System",
+                            "nodeLabels": {
+                              "type": "[parameters('nodeLabels')]"
+                            },
+                            "availabilityZones": "[if(parameters('isZoneRedundant'), parameters('availabilityZones'), null())]"
+                          }
+                        ],
+                        "identityProfile": {
+                          "assignedIdentity": {
+                            "clientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('clusterUserName')), '2018-11-30').clientId]",
+                            "resourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('clusterUserName'))]",
+                            "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('clusterUserName')), '2018-11-30').principalId]"
+                          },
+                          "kubeletAssignedIdentity": {
+                            "clientId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('clusterUserName')), '2018-11-30').clientId]",
+                            "resourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('clusterUserName'))]",
+                            "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('clusterUserName')), '2018-11-30').principalId]"
+                          }
+                        }
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('clusterUserName'))]"
+                      ]
+                    },
+                    {
+                      "condition": "[and(equals(parameters('newOrExisting'), 'new'), not(equals(parameters('subject'), '')))]",
+                      "type": "Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials",
+                      "apiVersion": "2022-01-31-preview",
+                      "name": "[format('{0}/{1}', parameters('clusterUserName'), format('federated-k8-{0}', take(uniqueString(parameters('location'), parameters('name')), 15)))]",
+                      "properties": {
+                        "audiences": [
+                          "api://AzureADTokenExchange"
+                        ],
+                        "issuer": "[reference(resourceId('Microsoft.ContainerService/managedClusters', take(parameters('name'), 80)), '2022-07-02-preview').oidcIssuerProfile.issuerURL]",
+                        "subject": "[parameters('subject')]"
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.ContainerService/managedClusters', take(parameters('name'), 80))]",
+                        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('clusterUserName'))]"
+                      ]
+                    },
+                    {
+                      "condition": "[parameters('assignRole')]",
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2020-04-01-preview",
+                      "name": "[guid(resourceGroup().id, resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('clusterUserName')), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7'))]",
+                      "properties": {
+                        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
+                        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('clusterUserName')), '2018-11-30').principalId]",
+                        "principalType": "ServicePrincipal"
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('clusterUserName'))]"
+                      ]
+                    }
+                  ],
+                  "outputs": {
+                    "nodeResourceGroup": {
+                      "type": "string",
+                      "value": "[if(equals(parameters('newOrExisting'), 'new'), reference(resourceId('Microsoft.ContainerService/managedClusters', take(parameters('name'), 80)), '2022-07-02-preview').nodeResourceGroup, reference(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), '2021-03-01').nodeResourceGroup)]"
+                    },
+                    "clusterUserObjectId": {
+                      "type": "string",
+                      "value": "[if(equals(parameters('newOrExisting'), 'new'), reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('clusterUserName')), '2018-11-30').principalId, reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('k8-{0}', take(uniqueString(parameters('location'), parameters('name')), 15))), '2018-11-30').principalId)]"
+                    },
+                    "clusterUrl": {
+                      "type": "string",
+                      "value": "[if(equals(parameters('newOrExisting'), 'new'), reference(resourceId('Microsoft.ContainerService/managedClusters', take(parameters('name'), 80)), '2022-07-02-preview').fqdn, reference(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), '2021-03-01').fqdn)]"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "condition": "[variables('enableKeyVault')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2020-10-01",
+              "name": "[format('keyVault-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "name": {
+                    "value": "[parameters('keyVaultName')]"
+                  },
+                  "newOrExisting": {
+                    "value": "[variables('newOrExisting')[parameters('newOrExistingKeyVault')]]"
+                  },
+                  "rbacPolicies": {
+                    "value": [
+                      "[if(variables('enableKubernetes'), createObject('objectId', reference(resourceId('Microsoft.Resources/deployments', format('create_cluster-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.clusterUserObjectId.value), createObject())]"
+                    ]
+                  },
+                  "assignRole": {
+                    "value": "[parameters('assignRole')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.12.40.16777",
+                      "templateHash": "17325428612397129204"
+                    }
+                  },
+                  "parameters": {
+                    "location": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Deployment Location"
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "defaultValue": "[format('keyvault-{0}', uniqueString(resourceGroup().id))]"
+                    },
+                    "subnetID": {
+                      "type": "string",
+                      "defaultValue": ""
+                    },
+                    "tenantId": {
+                      "type": "string",
+                      "defaultValue": "[subscription().tenantId]"
+                    },
+                    "enableVNet": {
+                      "type": "bool",
+                      "defaultValue": false
+                    },
+                    "rbacPolicies": {
+                      "type": "array",
+                      "defaultValue": []
+                    },
+                    "newOrExisting": {
+                      "type": "string",
+                      "defaultValue": "new",
+                      "allowedValues": [
+                        "new",
+                        "existing"
+                      ]
+                    },
+                    "assignRole": {
+                      "type": "bool",
+                      "defaultValue": true
+                    }
+                  },
+                  "variables": {
+                    "rbacSecretsReaderRole": "4633458b-17de-408a-b874-0445c86b69e6",
+                    "rbacCertificateOfficerRole": "a4417e6f-fecd-4de8-b567-7b0420556985",
+                    "networkAcls": "[if(parameters('enableVNet'), createObject('defaultAction', 'Deny', 'virtualNetworkRules', createArray(createObject('action', 'Allow', 'id', parameters('subnetID')))), createObject())]"
+                  },
+                  "resources": [
+                    {
+                      "condition": "[equals(parameters('newOrExisting'), 'new')]",
+                      "type": "Microsoft.KeyVault/vaults",
+                      "apiVersion": "2022-07-01",
+                      "name": "[take(parameters('name'), 24)]",
+                      "location": "[parameters('location')]",
+                      "properties": {
+                        "enableSoftDelete": true,
+                        "softDeleteRetentionInDays": 7,
+                        "sku": {
+                          "family": "A",
+                          "name": "standard"
+                        },
+                        "enableRbacAuthorization": true,
+                        "tenantId": "[parameters('tenantId')]",
+                        "networkAcls": "[variables('networkAcls')]"
+                      }
+                    },
+                    {
+                      "condition": "[parameters('assignRole')]",
+                      "copy": {
+                        "name": "identityRoleAssignDeployment",
+                        "count": "[length(parameters('rbacPolicies'))]"
+                      },
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "scope": "[format('Microsoft.KeyVault/vaults/{0}', take(parameters('name'), 24))]",
+                      "name": "[guid(variables('rbacSecretsReaderRole'), parameters('rbacPolicies')[copyIndex()].objectId)]",
+                      "properties": {
+                        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('rbacSecretsReaderRole'))]",
+                        "principalId": "[parameters('rbacPolicies')[copyIndex()].objectId]",
+                        "principalType": "ServicePrincipal"
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.KeyVault/vaults', take(parameters('name'), 24))]"
+                      ]
+                    },
+                    {
+                      "condition": "[parameters('assignRole')]",
+                      "copy": {
+                        "name": "rbacCertsReader",
+                        "count": "[length(parameters('rbacPolicies'))]"
+                      },
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "scope": "[format('Microsoft.KeyVault/vaults/{0}', take(parameters('name'), 24))]",
+                      "name": "[guid(variables('rbacCertificateOfficerRole'), parameters('rbacPolicies')[copyIndex()].objectId)]",
+                      "properties": {
+                        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('rbacCertificateOfficerRole'))]",
+                        "principalId": "[parameters('rbacPolicies')[copyIndex()].objectId]",
+                        "principalType": "ServicePrincipal"
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.KeyVault/vaults', take(parameters('name'), 24))]"
+                      ]
+                    }
+                  ],
+                  "outputs": {
+                    "id": {
+                      "type": "string",
+                      "value": "[if(equals(parameters('newOrExisting'), 'new'), resourceId('Microsoft.KeyVault/vaults', take(parameters('name'), 24)), resourceId('Microsoft.KeyVault/vaults', parameters('name')))]",
+                      "metadata": {
+                        "description": "Key Vault Id"
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "value": "[if(equals(parameters('newOrExisting'), 'new'), take(parameters('name'), 24), parameters('name'))]",
+                      "metadata": {
+                        "description": "Key Vault Name"
+                      }
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', format('create_cluster-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name)))]"
+              ]
+            },
+            {
+              "condition": "[variables('enableComosDB')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2020-10-01",
+              "name": "[format('cosmosDB-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "name": {
+                    "value": "[parameters('cosmosDBName')]"
+                  },
+                  "newOrExisting": {
+                    "value": "[variables('newOrExisting')[parameters('newOrExistingCosmosDB')]]"
+                  },
+                  "secondaryLocations": {
+                    "value": "[parameters('secondaryLocations')]"
+                  },
+                  "isZoneRedundant": {
+                    "value": "[and(parameters('isZoneRedundant'), not(contains(variables('noAvailabilityZones'), parameters('location'))))]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.12.40.16777",
+                      "templateHash": "5037960921830172278"
+                    }
+                  },
+                  "parameters": {
+                    "location": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Deployment Location"
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "defaultValue": "[format('cosmos-{0}', uniqueString(resourceGroup().id, parameters('location')))]"
+                    },
+                    "newOrExisting": {
+                      "type": "string",
+                      "defaultValue": "new",
+                      "allowedValues": [
+                        "new",
+                        "existing"
+                      ]
+                    },
+                    "maxStalenessPrefix": {
+                      "type": "int",
+                      "defaultValue": 100000,
+                      "maxValue": 2147483647,
+                      "minValue": 10,
+                      "metadata": {
+                        "description": "Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 2147483647. Multi Region: 100000 to 2147483647."
+                      }
+                    },
+                    "maxIntervalInSeconds": {
+                      "type": "int",
+                      "defaultValue": 300,
+                      "maxValue": 86400,
+                      "minValue": 5,
+                      "metadata": {
+                        "description": "Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400."
+                      }
+                    },
+                    "defaultConsistencyLevel": {
+                      "type": "string",
+                      "defaultValue": "Session",
+                      "metadata": {
+                        "description": "The default consistency level of the Cosmos DB account."
+                      },
+                      "allowedValues": [
+                        "Eventual",
+                        "ConsistentPrefix",
+                        "Session",
+                        "BoundedStaleness",
+                        "Strong"
+                      ]
+                    },
+                    "systemManagedFailover": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Enable system managed failover for regions"
+                      }
+                    },
+                    "secondaryLocations": {
+                      "type": "array",
+                      "defaultValue": [],
+                      "metadata": {
+                        "description": "array of region objects or regions: [{locationName: string, failoverPriority: int, isZoneRedundant: bool}] or [region: string]"
+                      }
+                    },
+                    "enableMultipleWriteLocations": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Multi-region writes capability allows you to take advantage of the provisioned throughput for your databases and containers across the globe."
+                      }
+                    },
+                    "EnableServerless": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Enable Serverless for consumption-based usage."
+                      }
+                    },
+                    "isZoneRedundant": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Toggle to enable or disable zone redudance."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "copy": [
+                      {
+                        "name": "secondaryRegions",
+                        "count": "[length(parameters('secondaryLocations'))]",
+                        "input": {
+                          "locationName": "[if(contains(parameters('secondaryLocations')[copyIndex('secondaryRegions')], 'locationName'), parameters('secondaryLocations')[copyIndex('secondaryRegions')].locationName, parameters('secondaryLocations')[copyIndex('secondaryRegions')])]",
+                          "failoverPriority": "[if(contains(parameters('secondaryLocations')[copyIndex('secondaryRegions')], 'failoverPriority'), parameters('secondaryLocations')[copyIndex('secondaryRegions')].failoverPriority, add(copyIndex('secondaryRegions'), 1))]",
+                          "isZoneRedundant": "[if(contains(parameters('secondaryLocations')[copyIndex('secondaryRegions')], 'isZoneRedundant'), parameters('secondaryLocations')[copyIndex('secondaryRegions')].isZoneRedundant, parameters('isZoneRedundant'))]"
+                        }
+                      },
+                      {
+                        "name": "unwind",
+                        "count": "[length(variables('locations'))]",
+                        "input": "[format('{0}-{1}.cassandra.cosmos.azure.com', toLower(parameters('name')), variables('locations')[copyIndex('unwind')].locationName)]"
+                      }
+                    ],
+                    "consistencyPolicy": {
+                      "Eventual": {
+                        "defaultConsistencyLevel": "Eventual"
+                      },
+                      "ConsistentPrefix": {
+                        "defaultConsistencyLevel": "ConsistentPrefix"
+                      },
+                      "Session": {
+                        "defaultConsistencyLevel": "Session"
+                      },
+                      "BoundedStaleness": {
+                        "defaultConsistencyLevel": "BoundedStaleness",
+                        "maxStalenessPrefix": "[parameters('maxStalenessPrefix')]",
+                        "maxIntervalInSeconds": "[parameters('maxIntervalInSeconds')]"
+                      },
+                      "Strong": {
+                        "defaultConsistencyLevel": "Strong"
+                      }
+                    },
+                    "locations": "[union(createArray(createObject('locationName', parameters('location'), 'failoverPriority', 0, 'isZoneRedundant', parameters('isZoneRedundant'))), variables('secondaryRegions'))]",
+                    "locationString": "[replace(substring(string(variables('unwind')), 1, sub(length(string(variables('unwind'))), 2)), '\"', '')]"
+                  },
+                  "resources": [
+                    {
+                      "condition": "[equals(parameters('newOrExisting'), 'new')]",
+                      "type": "Microsoft.DocumentDB/databaseAccounts",
+                      "apiVersion": "2022-05-15",
+                      "name": "[toLower(parameters('name'))]",
+                      "location": "[parameters('location')]",
+                      "kind": "GlobalDocumentDB",
+                      "properties": {
+                        "consistencyPolicy": "[variables('consistencyPolicy')[parameters('defaultConsistencyLevel')]]",
+                        "locations": "[variables('locations')]",
+                        "databaseAccountOfferType": "Standard",
+                        "enableAutomaticFailover": "[parameters('systemManagedFailover')]",
+                        "enableMultipleWriteLocations": "[parameters('enableMultipleWriteLocations')]",
+                        "capabilities": "[union(createArray(createObject('name', 'EnableCassandra')), if(parameters('EnableServerless'), createArray(createObject('name', 'EnableServerless')), createArray()))]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "connectionString": {
+                      "type": "string",
+                      "value": "[if(equals(parameters('newOrExisting'), 'new'), listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name'))), '2022-05-15'), listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name'))), '2022-05-15')).connectionStrings[0].connectionString]",
+                      "metadata": {
+                        "description": "Key to connect with Cosmos DB"
+                      }
+                    },
+                    "cassandraConnectionString": {
+                      "type": "string",
+                      "value": "[format('Contact Points={0}.cassandra.cosmos.azure.com,{1};Username={2};Password={3};Port=10350', toLower(parameters('name')), variables('locationString'), toLower(parameters('name')), if(equals(parameters('newOrExisting'), 'new'), listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name'))), '2022-05-15'), listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name'))), '2022-05-15')).primaryMasterKey)]",
+                      "metadata": {
+                        "description": "Key to connect with Cosmos DB"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "condition": "[variables('enableStorage')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2020-10-01",
+              "name": "[format('storageAccount-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "name": {
+                    "value": "[take(parameters('storageAccountName'), 24)]"
+                  },
+                  "newOrExisting": {
+                    "value": "[variables('newOrExisting')[parameters('newOrExistingStorageAccount')]]"
+                  },
+                  "isZoneRedundant": {
+                    "value": "[and(parameters('isZoneRedundant'), not(contains(variables('noAvailabilityZones'), parameters('location'))))]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.12.40.16777",
+                      "templateHash": "4174138019532092580"
+                    }
+                  },
+                  "parameters": {
+                    "location": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Deployment Location"
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "defaultValue": "[uniqueString(resourceGroup().id)]"
+                    },
+                    "newOrExisting": {
+                      "type": "string",
+                      "defaultValue": "new",
+                      "allowedValues": [
+                        "new",
+                        "existing"
+                      ]
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().name]",
+                      "metadata": {
+                        "description": "Resource Group"
+                      }
+                    },
+                    "subnetID": {
+                      "type": "string",
+                      "defaultValue": ""
+                    },
+                    "enableVNET": {
+                      "type": "bool",
+                      "defaultValue": false
+                    },
+                    "isZoneRedundant": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Toggle to enable or disable zone redudance."
+                      }
+                    },
+                    "storageAccountType": {
+                      "type": "string",
+                      "defaultValue": "[if(parameters('isZoneRedundant'), 'Standard_ZRS', 'Standard_LRS')]",
+                      "metadata": {
+                        "description": "Storage Account Type. Use Zonal Redundant Storage when able."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "networkAcls": "[if(parameters('enableVNET'), createObject('defaultAction', 'Deny', 'virtualNetworkRules', createArray(createObject('action', 'Allow', 'id', parameters('subnetID')))), createObject())]"
+                  },
+                  "resources": [
+                    {
+                      "condition": "[equals(parameters('newOrExisting'), 'new')]",
+                      "type": "Microsoft.Storage/storageAccounts",
+                      "apiVersion": "2019-06-01",
+                      "name": "[parameters('name')]",
+                      "location": "[parameters('location')]",
+                      "sku": {
+                        "name": "[parameters('storageAccountType')]"
+                      },
+                      "kind": "StorageV2",
+                      "properties": {
+                        "encryption": {
+                          "keySource": "Microsoft.Storage",
+                          "services": {
+                            "blob": {
+                              "enabled": true
+                            },
+                            "file": {
+                              "enabled": true
+                            }
+                          }
+                        },
+                        "supportsHttpsTrafficOnly": true,
+                        "allowBlobPublicAccess": false,
+                        "networkAcls": "[variables('networkAcls')]",
+                        "minimumTlsVersion": "TLS1_2"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "id": {
+                      "type": "string",
+                      "value": "[if(equals(parameters('newOrExisting'), 'new'), resourceId('Microsoft.Storage/storageAccounts', parameters('name')), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Storage/storageAccounts', parameters('name')))]"
+                    },
+                    "blobStorageConnectionString": {
+                      "type": "string",
+                      "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', parameters('name'), environment().suffixes.storage, if(equals(parameters('newOrExisting'), 'new'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2019-06-01'), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Storage/storageAccounts', parameters('name')), '2021-09-01')).keys[0].value)]"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "condition": "[variables('enablePublicIP')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2020-10-01",
+              "name": "[format('publicIp-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "name": {
+                    "value": "[parameters('publicIpName')]"
+                  },
+                  "newOrExisting": {
+                    "value": "[variables('newOrExisting')[parameters('newOrExistingPublicIp')]]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.12.40.16777",
+                      "templateHash": "16706958326520087338"
+                    }
+                  },
+                  "parameters": {
+                    "location": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Deployment Location"
+                      }
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().name]",
+                      "metadata": {
+                        "description": "Resource Group Name"
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "defaultValue": "[format('pubip{0}', uniqueString(resourceGroup().id))]",
+                      "metadata": {
+                        "description": "PublicIP Resource Name"
+                      }
+                    },
+                    "newOrExisting": {
+                      "type": "string",
+                      "defaultValue": "new",
+                      "metadata": {
+                        "description": "Create new or use existing resource selection. new/existing"
+                      },
+                      "allowedValues": [
+                        "new",
+                        "existing"
+                      ]
+                    },
+                    "publicIpSku": {
+                      "type": "object",
+                      "defaultValue": {
+                        "name": "Standard",
+                        "tier": "Regional"
+                      }
+                    },
+                    "publicIpAllocationMethod": {
+                      "type": "string",
+                      "defaultValue": "Static"
+                    },
+                    "publicIpDns": {
+                      "type": "string",
+                      "defaultValue": "[format('dns-{0}', uniqueString(resourceGroup().id, parameters('name')))]"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "condition": "[equals(parameters('newOrExisting'), 'new')]",
+                      "type": "Microsoft.Network/publicIPAddresses",
+                      "apiVersion": "2021-03-01",
+                      "name": "[parameters('name')]",
+                      "sku": "[parameters('publicIpSku')]",
+                      "location": "[parameters('location')]",
+                      "properties": {
+                        "publicIPAllocationMethod": "[parameters('publicIpAllocationMethod')]",
+                        "dnsSettings": {
+                          "domainNameLabel": "[toLower(parameters('publicIpDns'))]"
+                        }
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "value": "[if(equals(parameters('newOrExisting'), 'new'), parameters('name'), parameters('name'))]"
+                    },
+                    "id": {
+                      "type": "string",
+                      "value": "[if(equals(parameters('newOrExisting'), 'new'), resourceId('Microsoft.Network/publicIPAddresses', parameters('name')), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Network/publicIPAddresses', parameters('name')))]"
+                    },
+                    "ipAddress": {
+                      "type": "string",
+                      "value": "[if(equals(parameters('newOrExisting'), 'new'), reference(resourceId('Microsoft.Network/publicIPAddresses', parameters('name')), '2021-03-01').ipAddress, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Network/publicIPAddresses', parameters('name')), '2021-03-01').ipAddress)]"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "condition": "[variables('enableTrafficManager')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2020-10-01",
+              "name": "[format('trafficManager-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[parameters('trafficManagerName')]"
+                  },
+                  "newOrExisting": {
+                    "value": "[variables('newOrExisting')[parameters('newOrExistingTrafficManager')]]"
+                  },
+                  "trafficManagerDnsName": {
+                    "value": "[parameters('trafficManagerDnsName')]"
+                  },
+                  "endpoints": {
+                    "value": [
+                      "[if(variables('enablePublicIP'), createObject('name', format('publicip{0}', parameters('location')), 'target', reference(resourceId('Microsoft.Resources/deployments', format('publicIp-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.ipAddress.value, 'endpointStatus', 'Enabled', 'endpointLocation', parameters('location')), createObject())]"
+                    ]
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.12.40.16777",
+                      "templateHash": "7041877789547974297"
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "defaultValue": "[format('traffic-mp-{0}', uniqueString(resourceGroup().id, subscription().id))]",
+                      "metadata": {
+                        "description": "Traffic Manager Profile Resource Name"
+                      }
+                    },
+                    "trafficManagerDnsName": {
+                      "type": "string",
+                      "defaultValue": "[format('tmp-{0}', uniqueString(resourceGroup().id, subscription().id))]",
+                      "metadata": {
+                        "description": "Relative DNS name for the traffic manager profile, must be globally unique."
+                      }
+                    },
+                    "newOrExisting": {
+                      "type": "string",
+                      "defaultValue": "new",
+                      "allowedValues": [
+                        "new",
+                        "existing"
+                      ]
+                    },
+                    "endpoints": {
+                      "type": "array",
+                      "defaultValue": [],
+                      "metadata": {
+                        "description": "An array of objects that represent the endpoints in the Traffic Manager profile. {name: string, target: string, endpointStatus: string, endpointLocation: string}"
+                      }
+                    },
+                    "monitorConfig": {
+                      "type": "object",
+                      "defaultValue": {
+                        "protocol": "HTTPS",
+                        "port": 443,
+                        "path": "/",
+                        "expectedStatusCodeRanges": [
+                          {
+                            "min": 200,
+                            "max": 202
+                          },
+                          {
+                            "min": 301,
+                            "max": 302
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "condition": "[equals(parameters('newOrExisting'), 'new')]",
+                      "type": "Microsoft.Network/trafficmanagerprofiles",
+                      "apiVersion": "2018-08-01",
+                      "name": "[parameters('name')]",
+                      "location": "global",
+                      "properties": {
+                        "profileStatus": "Enabled",
+                        "trafficRoutingMethod": "Performance",
+                        "dnsConfig": {
+                          "relativeName": "[toLower(parameters('trafficManagerDnsName'))]",
+                          "ttl": 30
+                        },
+                        "monitorConfig": {
+                          "protocol": "[if(contains(parameters('monitorConfig'), 'protocol'), parameters('monitorConfig').protocol, 'HTTPS')]",
+                          "port": "[if(contains(parameters('monitorConfig'), 'port'), parameters('monitorConfig').port, 443)]",
+                          "path": "[if(contains(parameters('monitorConfig'), 'path'), parameters('monitorConfig').path, '/')]",
+                          "expectedStatusCodeRanges": "[if(contains(parameters('monitorConfig'), 'expectedStatusCodeRanges'), parameters('monitorConfig').expectedStatusCodeRanges, createArray(createObject('min', 200, 'max', 202), createObject('min', 301, 'max', 302)))]"
+                        }
+                      }
+                    },
+                    {
+                      "condition": "[and(equals(parameters('newOrExisting'), 'new'), not(empty(parameters('endpoints')[copyIndex()])))]",
+                      "copy": {
+                        "name": "trafficManagerEndpoints",
+                        "count": "[length(parameters('endpoints'))]"
+                      },
+                      "type": "Microsoft.Network/trafficmanagerprofiles/ExternalEndpoints",
+                      "apiVersion": "2018-08-01",
+                      "name": "[format('{0}/{1}', parameters('name'), parameters('endpoints')[copyIndex()].name)]",
+                      "properties": {
+                        "target": "[parameters('endpoints')[copyIndex()].target]",
+                        "endpointStatus": "[if(contains(parameters('endpoints')[copyIndex()], 'endpointStatus'), parameters('endpoints')[copyIndex()].endpointStatus, 'Enabled')]",
+                        "endpointLocation": "[parameters('endpoints')[copyIndex()].endpointLocation]"
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.Network/trafficmanagerprofiles', parameters('name'))]"
+                      ]
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "value": "[if(equals(parameters('newOrExisting'), 'new'), parameters('name'), parameters('name'))]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', format('publicIp-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name)))]"
+              ]
+            },
+            {
+              "condition": "[and(and(parameters('assignRole'), variables('enableKeyVault')), or(variables('enableComosDB'), variables('enableStorage')))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2020-10-01",
+              "name": "[format('secrets-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "keyVaultName": {
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', format('keyVault-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.name.value]"
+                  },
+                  "secrets": {
+                    "value": "[union(if(variables('enableStorage'), createArray(createObject('secretName', parameters('storageSecretName'), 'secretValue', reference(resourceId('Microsoft.Resources/deployments', format('storageAccount-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.blobStorageConnectionString.value)), createArray()), if(variables('enableComosDB'), createArray(createObject('secretName', parameters('cassandraSecretName'), 'secretValue', reference(resourceId('Microsoft.Resources/deployments', format('cosmosDB-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.cassandraConnectionString.value)), createArray()))]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.12.40.16777",
+                      "templateHash": "2573195836007238735"
+                    }
+                  },
+                  "parameters": {
+                    "keyVaultName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Specifies the name of the key vault."
+                      }
+                    },
+                    "secrets": {
+                      "type": "array",
+                      "metadata": {
+                        "description": "Specifies the name of the secret that you want to create."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "copy": {
+                        "name": "secret",
+                        "count": "[length(parameters('secrets'))]"
+                      },
+                      "type": "Microsoft.KeyVault/vaults/secrets",
+                      "apiVersion": "2021-11-01-preview",
+                      "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secrets')[copyIndex()].secretName)]",
+                      "properties": {
+                        "value": "[parameters('secrets')[copyIndex()].secretValue]"
+                      }
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Resources/deployments', format('cosmosDB-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name)))]",
+                "[resourceId('Microsoft.Resources/deployments', format('keyVault-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name)))]",
+                "[resourceId('Microsoft.Resources/deployments', format('storageAccount-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name)))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "keyVaultName": {
+              "type": "string",
+              "value": "[if(variables('enableKeyVault'), reference(resourceId('Microsoft.Resources/deployments', format('keyVault-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.name.value, '')]"
+            },
+            "cassandraConnectionString": {
+              "type": "string",
+              "value": "[if(variables('enableComosDB'), reference(resourceId('Microsoft.Resources/deployments', format('cosmosDB-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.cassandraConnectionString.value, '')]"
+            },
+            "blobStorageConnectionString": {
+              "type": "string",
+              "value": "[if(variables('enableStorage'), reference(resourceId('Microsoft.Resources/deployments', format('storageAccount-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.blobStorageConnectionString.value, '')]"
+            },
+            "ipAddress": {
+              "type": "string",
+              "value": "[if(variables('enablePublicIP'), reference(resourceId('Microsoft.Resources/deployments', format('publicIp-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.ipAddress.value, '')]"
+            }
+          }
+        }
+      }
+    }
+  ]
 }
