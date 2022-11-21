@@ -5,13 +5,12 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "14983829747362766723"
+      "templateHash": "17756245853070086147"
     }
   },
   "parameters": {
     "location": {
       "type": "string",
-      "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "description": "Deployment Location"
       }
@@ -37,22 +36,31 @@
     },
     "aksName": {
       "type": "string",
-      "defaultValue": "[format('aks-{0}', take(uniqueString(resourceGroup().id), 6))]",
+      "defaultValue": "[format('aks-{0}', take(uniqueString(resourceGroup().id, subscription().subscriptionId, parameters('location')), 6))]",
       "metadata": {
         "description": "AKS Resource Name"
       }
     },
     "agentPoolCount": {
       "type": "int",
-      "defaultValue": 3
+      "defaultValue": 3,
+      "metadata": {
+        "description": "Count of AKS Nodes"
+      }
     },
     "agentPoolName": {
       "type": "string",
-      "defaultValue": "k8agent"
+      "defaultValue": "k8agent",
+      "metadata": {
+        "description": "AKS Pool Name"
+      }
     },
     "vmSize": {
       "type": "string",
-      "defaultValue": "Standard_L16s_v2"
+      "defaultValue": "Standard_L16s_v2",
+      "metadata": {
+        "description": "AKS VM Size"
+      }
     },
     "newOrExistingStorageAccount": {
       "type": "string",

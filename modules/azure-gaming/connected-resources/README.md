@@ -11,13 +11,13 @@ These resources can be configured to use availability zones in available regions
 
 | Name                          | Type     | Required | Description                                                                                                                                                    |
 | :---------------------------- | :------: | :------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `location`                    | `string` | No       | Deployment Location                                                                                                                                            |
+| `location`                    | `string` | Yes      | Deployment Location                                                                                                                                            |
 | `secondaryLocations`          | `array`  | No       | Secondary Deployment Locations                                                                                                                                 |
 | `newOrExistingKubernetes`     | `string` | No       | Set to create a new or use an existing AKS                                                                                                                     |
 | `aksName`                     | `string` | No       | AKS Resource Name                                                                                                                                              |
-| `agentPoolCount`              | `int`    | No       |                                                                                                                                                                |
-| `agentPoolName`               | `string` | No       |                                                                                                                                                                |
-| `vmSize`                      | `string` | No       |                                                                                                                                                                |
+| `agentPoolCount`              | `int`    | No       | Count of AKS Nodes                                                                                                                                             |
+| `agentPoolName`               | `string` | No       | AKS Pool Name                                                                                                                                                  |
+| `vmSize`                      | `string` | No       | AKS VM Size                                                                                                                                                    |
 | `newOrExistingStorageAccount` | `string` | No       | Set to create a new or use an existing Storage Account                                                                                                         |
 | `storageAccountName`          | `string` | No       | Storage Account Resource Name                                                                                                                                  |
 | `newOrExistingKeyVault`       | `string` | No       | Set to create a new or use an existing Key Vault                                                                                                               |
