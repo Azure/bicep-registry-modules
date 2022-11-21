@@ -83,11 +83,9 @@ module deployResources 'modules/resources.bicep' = {
     keyVaultName: take('${location}-${keyVaultName}', 24)
     publicIpName: '${publicIpName}-${location}'
     cosmosDBName: cosmosDBName
-    cosmosDBRG: cosmosDBRG
     trafficManagerName: trafficManagerName
     trafficManagerDnsName: trafficManagerDnsName
     storageAccountName: '${take(location, 8)}${storageAccountName}'
-    storageResourceGroupName: storageResourceGroupName
     storageSecretName: 'storage-connection-string'
     cassandraSecretName: 'db-connection-string'
     assignRole: assignRole
