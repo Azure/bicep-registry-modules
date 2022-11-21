@@ -9,7 +9,10 @@ param secondaryLocations array = []
   'existing'
   'none'
 ])
+@description('Set to create a new or use an existing AKS')
 param newOrExistingKubernetes string = 'none'
+
+@description('AKS Resource Name')
 param aksName string = 'aks-${take(uniqueString(resourceGroup().id), 6)}'
 param agentPoolCount int = 3
 param agentPoolName string = 'k8agent'
@@ -20,7 +23,10 @@ param vmSize string = 'Standard_L16s_v2'
   'existing'
   'none'
 ])
+@description('Set to create a new or use an existing Storage Account')
 param newOrExistingStorageAccount string = 'none'
+
+@description('Storage Account Resource Name')
 param storageAccountName string = 'data${uniqueString(resourceGroup().id, subscription().subscriptionId)}'
 
 @allowed([
@@ -28,7 +34,10 @@ param storageAccountName string = 'data${uniqueString(resourceGroup().id, subscr
   'existing'
   'none'
 ])
+@description('Set to create a new or use an existing Key Vault')
 param newOrExistingKeyVault string = 'none'
+
+@description('Key Vault Resource Name')
 param keyVaultName string = take('keyVault${uniqueString(resourceGroup().id, subscription().subscriptionId, location)}', 24)
 
 @allowed([
@@ -36,7 +45,10 @@ param keyVaultName string = take('keyVault${uniqueString(resourceGroup().id, sub
   'existing'
   'none'
 ])
+@description('Set to create a new or use an existing Public IP')
 param newOrExistingPublicIp string = 'none'
+
+@description('Public IP Resource Name')
 param publicIpName string = 'publicIP${uniqueString(resourceGroup().id, subscription().subscriptionId)}'
 
 @allowed([
@@ -44,8 +56,12 @@ param publicIpName string = 'publicIP${uniqueString(resourceGroup().id, subscrip
   'existing'
   'none'
 ])
+@description('Set to create a new or use an existing Traffic Manager Profile')
 param newOrExistingTrafficManager string = 'none'
+
+@description('Traffic Manager Resource Name')
 param trafficManagerName string = 'publicIP${uniqueString(resourceGroup().id, subscription().subscriptionId)}'
+
 @description('Relative DNS name for the traffic manager profile, must be globally unique.')
 param trafficManagerDnsName string = 'tmp-${uniqueString(resourceGroup().id, subscription().id)}'
 
@@ -54,7 +70,10 @@ param trafficManagerDnsName string = 'tmp-${uniqueString(resourceGroup().id, sub
   'existing'
   'none'
 ])
+@description('Set to create a new or use an existing Cosmos DB')
 param newOrExistingCosmosDB string = 'none'
+
+@description('Cosmos DB Resource Name')
 param cosmosDBName string = 'cosmos-${uniqueString(resourceGroup().id, subscription().subscriptionId)}'
 
 @description('Running this template requires roleAssignment permission on the Resource Group, which require an Owner role. Set this to false to deploy some of the resources')
