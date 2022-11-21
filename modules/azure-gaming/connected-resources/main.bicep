@@ -1,6 +1,9 @@
 @description('Deployment Location')
 param location string = resourceGroup().location
 
+@description('Resource Group Name')
+param resourceGroupName string = resourceGroup().name
+
 @description('Secondary Deployment Locations')
 param secondaryLocations array = []
 
@@ -20,7 +23,7 @@ param vmSize string = 'Standard_L16s_v2'
 ])
 param newOrExistingStorageAccount string = 'new'
 param storageAccountName string = 'horde${uniqueString(resourceGroup().id, subscription().subscriptionId)}'
-param storageResourceGroupName string = resourceGroup().name
+param storageResourceGroupName string = resourceGroupName
 
 @allowed([
   'new'
@@ -51,7 +54,7 @@ param trafficManagerDnsName string = 'tmp-${uniqueString(resourceGroup().id, sub
 ])
 param newOrExistingCosmosDB string = 'new'
 param cosmosDBName string = 'hordeDB-${uniqueString(resourceGroup().id, subscription().subscriptionId)}'
-param cosmosDBRG string = resourceGroup().name
+param cosmosDBRG string = resourceGroupName
 
 @description('Running this template requires roleAssignment permission on the Resource Group, which require an Owner role. Set this to false to deploy some of the resources')
 param assignRole bool = true
@@ -68,6 +71,7 @@ module deployResources '../../bicep-templates/resources.bicep' = {
     newOrExistingPublicIp: newOrExistingPublicIp
     newOrExistingStorageAccount: newOrExistingStorageAccount
     newOrExistingTrafficManager: newOrExistingTrafficManager
+    newOrExistingCosmosDB: newOrExistingCosmosDB
     kubernetesParams: {
       name: '${aksName}-${take(location, 8)}'
       agentPoolCount: agentPoolCount
@@ -78,6 +82,8 @@ module deployResources '../../bicep-templates/resources.bicep' = {
     secondaryLocations: secondaryLocations
     keyVaultName: take('${location}-${keyVaultName}', 24)
     publicIpName: '${publicIpName}-${location}'
+    cosmosDBName: cosmosDBName
+    cosmosDBRG: cosmosDBRG
     trafficManagerName: trafficManagerName
     trafficManagerDnsName: trafficManagerDnsName
     storageAccountName: '${take(location, 8)}${storageAccountName}'
