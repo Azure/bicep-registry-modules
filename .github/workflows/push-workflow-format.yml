@@ -10,11 +10,12 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    if: ${{ secrets.WORKFLOW_PAT }}
     steps:
       - uses: actions/checkout@v2.3.4
         with:
           fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
-          token: ${{ secrets.WORKFLOW_PAT || secrets.GITHUB_TOKEN }} # A WORKFLOW_PAT must be used to re-trigger workflows after commit. This PAT must have the workflow scope. This is not generally recommended.
+          token: ${{ secrets.WORKFLOW_PAT }} # A WORKFLOW_PAT must be used to re-trigger workflows after commit. This PAT must have the workflow scope. This is not generally recommended.
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
