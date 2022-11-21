@@ -89,6 +89,7 @@ resource newAccount 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = if (new
     capabilities: union([ { name: 'EnableCassandra' } ], EnableServerless ? [ { name: 'EnableServerless' } ] : [])
   }
 }
+
 resource account 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' existing = { name: toLower(name) }
 
 @description('Key to connect with Cosmos DB')
