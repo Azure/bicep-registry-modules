@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "17756245853070086147"
+      "templateHash": "13221345107417354678"
     }
   },
   "parameters": {
@@ -261,7 +261,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.12.40.16777",
-              "templateHash": "15428517821967034453"
+              "templateHash": "8748179758106679903"
             }
           },
           "parameters": {
@@ -1389,70 +1389,6 @@
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Resources/deployments', format('publicIp-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name)))]"
-              ]
-            },
-            {
-              "condition": "[and(and(parameters('assignRole'), variables('enableKeyVault')), or(variables('enableComosDB'), variables('enableStorage')))]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2020-10-01",
-              "name": "[format('secrets-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "keyVaultName": {
-                    "value": "[reference(resourceId('Microsoft.Resources/deployments', format('keyVault-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.name.value]"
-                  },
-                  "secrets": {
-                    "value": "[union(if(variables('enableStorage'), createArray(createObject('secretName', parameters('storageSecretName'), 'secretValue', reference(resourceId('Microsoft.Resources/deployments', format('storageAccount-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.blobStorageConnectionString.value)), createArray()), if(variables('enableComosDB'), createArray(createObject('secretName', parameters('cassandraSecretName'), 'secretValue', reference(resourceId('Microsoft.Resources/deployments', format('cosmosDB-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.cassandraConnectionString.value)), createArray()))]"
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "2573195836007238735"
-                    }
-                  },
-                  "parameters": {
-                    "keyVaultName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Specifies the name of the key vault."
-                      }
-                    },
-                    "secrets": {
-                      "type": "array",
-                      "metadata": {
-                        "description": "Specifies the name of the secret that you want to create."
-                      }
-                    }
-                  },
-                  "resources": [
-                    {
-                      "copy": {
-                        "name": "secret",
-                        "count": "[length(parameters('secrets'))]"
-                      },
-                      "type": "Microsoft.KeyVault/vaults/secrets",
-                      "apiVersion": "2021-11-01-preview",
-                      "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secrets')[copyIndex()].secretName)]",
-                      "properties": {
-                        "value": "[parameters('secrets')[copyIndex()].secretValue]"
-                      }
-                    }
-                  ]
-                }
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', format('cosmosDB-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name)))]",
-                "[resourceId('Microsoft.Resources/deployments', format('keyVault-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name)))]",
-                "[resourceId('Microsoft.Resources/deployments', format('storageAccount-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name)))]"
               ]
             }
           ],
