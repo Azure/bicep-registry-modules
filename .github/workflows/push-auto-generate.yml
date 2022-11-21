@@ -9,15 +9,15 @@ on:
 
 jobs:
   check-secret:
-      runs-on: ubuntu-latest
-      outputs:
-        my-key: ${{ steps.my-key.outputs.defined }}
-      steps:
-          - id: my-key
-            if: "${{ env.MY_KEY != '' }}"
-            run: echo "::set-output name=defined::true"
-            env:
-                MY_KEY: ${{ secrets.PAT }}
+    runs-on: ubuntu-latest
+    outputs:
+      my-key: ${{ steps.my-key.outputs.defined }}
+    steps:
+      - id: my-key
+        if: "${{ env.MY_KEY != '' }}"
+        run: echo "::set-output name=defined::true"
+        env:
+          MY_KEY: ${{ secrets.PAT }}
 
   deploy:
     runs-on: ubuntu-latest
