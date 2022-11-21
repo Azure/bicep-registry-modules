@@ -5,10 +5,8 @@ param subnetID string = ''
 param tenantId string = subscription().tenantId
 param enableVNet bool = false
 param rbacPolicies array = []
-@allowed([
-  'new'
-  'existing'
-])
+
+@allowed([ 'new', 'existing'])
 param newOrExisting string = 'new'
 param assignRole bool = true
 
