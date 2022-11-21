@@ -4,11 +4,7 @@ param location string
 @description('Secondary Deployment Locations')
 param secondaryLocations array = []
 
-@allowed([
-  'new'
-  'existing'
-  'none'
-])
+@allowed([ 'new' 'existing' 'none' ])
 @description('Set to create a new or use an existing AKS')
 param newOrExistingKubernetes string = 'none'
 
@@ -24,44 +20,28 @@ param agentPoolName string = 'k8agent'
 @description('AKS VM Size')
 param vmSize string = 'Standard_L16s_v2'
 
-@allowed([
-  'new'
-  'existing'
-  'none'
-])
+@allowed([ 'new', 'existing', 'none' ])
 @description('Set to create a new or use an existing Storage Account')
 param newOrExistingStorageAccount string = 'none'
 
 @description('Storage Account Resource Name')
 param storageAccountName string = 'data${uniqueString(resourceGroup().id, subscription().subscriptionId)}'
 
-@allowed([
-  'new'
-  'existing'
-  'none'
-])
+@allowed([ 'new', 'existing', 'none' ])
 @description('Set to create a new or use an existing Key Vault')
 param newOrExistingKeyVault string = 'none'
 
 @description('Key Vault Resource Name')
 param keyVaultName string = take('keyVault${uniqueString(resourceGroup().id, subscription().subscriptionId, location)}', 24)
 
-@allowed([
-  'new'
-  'existing'
-  'none'
-])
+@allowed([ 'new', 'existing', 'none' ])
 @description('Set to create a new or use an existing Public IP')
 param newOrExistingPublicIp string = 'none'
 
 @description('Public IP Resource Name')
 param publicIpName string = 'publicIP${uniqueString(resourceGroup().id, subscription().subscriptionId)}'
 
-@allowed([
-  'new'
-  'existing'
-  'none'
-])
+@allowed([ 'new', 'existing', 'none' ])
 @description('Set to create a new or use an existing Traffic Manager Profile')
 param newOrExistingTrafficManager string = 'none'
 
@@ -71,11 +51,7 @@ param trafficManagerName string = 'publicIP${uniqueString(resourceGroup().id, su
 @description('Relative DNS name for the traffic manager profile, must be globally unique.')
 param trafficManagerDnsName string = 'tmp-${uniqueString(resourceGroup().id, subscription().id)}'
 
-@allowed([
-  'new'
-  'existing'
-  'none'
-])
+@allowed([ 'new', 'existing', 'none' ])
 @description('Set to create a new or use an existing Cosmos DB')
 param newOrExistingCosmosDB string = 'none'
 
