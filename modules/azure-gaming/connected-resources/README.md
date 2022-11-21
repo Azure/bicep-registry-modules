@@ -1,4 +1,6 @@
-# 
+# Azure Gaming: Connected Resources
+
+This module is used by other Azure Gaming modules and applications to create core Azure services
 
 ## Description
 
