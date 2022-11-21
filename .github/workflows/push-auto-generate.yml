@@ -73,26 +73,6 @@ jobs:
           cd $SAMPLEFOLDER_PATH
           brm generate
 
-      - name: Bump version and push tag
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v6.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag_prefix: "${{ steps.changed_folders.outputs.OLD_TAG }}/"
-          dry_run: true
-          default_bump: false
-
-      - name: Set Configurations
-        if: steps.tag_version.outputs.release_type
-        shell: bash
-        env:
-          OLD_VERSION: ${{ steps.tag_version.outputs.previous_version }}
-          VERSION: ${{ steps.tag_version.outputs.new_version }}
-        run: |
-          OLD_VERSION=$(cut -d. -f1-2 <<< $OLD_VERSION)
-          VERSION=$(cut -d. -f1-2 <<< $VERSION)
-          sed -ri "s/$OLD_VERSION/$VERSION/" "$SAMPLEFOLDER_PATH/version.json" || exit 1
-
       - uses: EndBug/add-and-commit@v9
         if: steps.tag_version.outputs.release_type
         with:
