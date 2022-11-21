@@ -4,7 +4,7 @@
 
 If you haven't already, read the full [contribution guide](../CONTRIBUTING.md). The guide may have changed since the last time you read it, so please double-check. Once you are done and ready to submit your PR, edit the PR description and run through the relevant checklist below.
 
-Select `Allow edits and access to secrets by maintainers` in your Pull Request to enable auto-generation of assets with our [GitHub Action](/.github/workflows/pr-auto-generate.yml).
+Enable GitHub Worksflows in your fork to enable auto-generation of assets with our [GitHub Action](/.github/workflows/pr-auto-generate.yml).
 
 ## Adding a new module
 
