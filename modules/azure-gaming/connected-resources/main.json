@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "1453222643107042279"
+      "templateHash": "18115311635948206907"
     }
   },
   "parameters": {
@@ -261,7 +261,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.12.40.16777",
-              "templateHash": "11770319356755653097"
+              "templateHash": "7695920056284667175"
             }
           },
           "parameters": {
@@ -465,7 +465,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.12.40.16777",
-                      "templateHash": "1575134085952782812"
+                      "templateHash": "10884513482652179779"
                     }
                   },
                   "parameters": {
@@ -514,6 +514,10 @@
                         "2",
                         "3"
                       ]
+                    },
+                    "nodeResourceGroup": {
+                      "type": "string",
+                      "defaultValue": "[take(format('MC_{0}', resourceGroup().name), 70)]"
                     },
                     "newOrExisting": {
                       "type": "string",
@@ -569,6 +573,7 @@
                         },
                         "dnsPrefix": "[parameters('dnsPrefix')]",
                         "enableRBAC": true,
+                        "nodeResourceGroup": "[take(parameters('nodeResourceGroup'), 70)]",
                         "agentPoolProfiles": [
                           {
                             "name": "[parameters('agentPoolName')]",
