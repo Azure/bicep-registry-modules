@@ -10,8 +10,9 @@ param secondaryLocations array = []
 @allowed([
   'new'
   'existing'
+  'none'
 ])
-param newOrExistingKubernetes string = 'new'
+param newOrExistingKubernetes string = 'none'
 param aksName string = 'aks-${take(uniqueString(resourceGroup().id), 6)}'
 param agentPoolCount int = 3
 param agentPoolName string = 'k8agent'
@@ -20,30 +21,34 @@ param vmSize string = 'Standard_L16s_v2'
 @allowed([
   'new'
   'existing'
+  'none'
 ])
-param newOrExistingStorageAccount string = 'new'
+param newOrExistingStorageAccount string = 'none'
 param storageAccountName string = 'data${uniqueString(resourceGroup().id, subscription().subscriptionId)}'
 param storageResourceGroupName string = resourceGroupName
 
 @allowed([
   'new'
   'existing'
+  'none'
 ])
-param newOrExistingKeyVault string = 'new'
+param newOrExistingKeyVault string = 'none'
 param keyVaultName string = take('keyVault${uniqueString(resourceGroup().id, subscription().subscriptionId, location)}', 24)
 
 @allowed([
   'new'
   'existing'
+  'none'
 ])
-param newOrExistingPublicIp string = 'new'
+param newOrExistingPublicIp string = 'none'
 param publicIpName string = 'publicIP${uniqueString(resourceGroup().id, subscription().subscriptionId)}'
 
 @allowed([
   'new'
   'existing'
+  'none'
 ])
-param newOrExistingTrafficManager string = 'new'
+param newOrExistingTrafficManager string = 'none'
 param trafficManagerName string = 'publicIP${uniqueString(resourceGroup().id, subscription().subscriptionId)}'
 @description('Relative DNS name for the traffic manager profile, must be globally unique.')
 param trafficManagerDnsName string = 'tmp-${uniqueString(resourceGroup().id, subscription().id)}'
@@ -51,8 +56,9 @@ param trafficManagerDnsName string = 'tmp-${uniqueString(resourceGroup().id, sub
 @allowed([
   'new'
   'existing'
+  'none'
 ])
-param newOrExistingCosmosDB string = 'new'
+param newOrExistingCosmosDB string = 'none'
 param cosmosDBName string = 'cosmos-${uniqueString(resourceGroup().id, subscription().subscriptionId)}'
 param cosmosDBRG string = resourceGroupName
 
