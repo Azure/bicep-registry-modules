@@ -4,7 +4,8 @@ This module is used by other Azure Gaming modules and applications to create cor
 
 ## Description
 
-{{ Add detailed description for the module. }}
+This module is used to deploy core Azure services in Azure Gaming deployments.
+These resources can be configured to use availability zones in available regions.
 
 ## Parameters
 
