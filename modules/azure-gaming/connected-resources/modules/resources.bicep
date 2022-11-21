@@ -151,17 +151,6 @@ module trafficManager 'network/trafficManagerProfiles.bicep' = if (enableTraffic
   }
 }
 
-module secretsBatch 'keyvault/vaults/secretsBatch.bicep' = if (assignRole && enableKeyVault && (enableComosDB || enableStorage)) {
-  name: 'secrets-${uniqueString(location, resourceGroup().id, deployment().name)}'
-  params: {
-    keyVaultName: keyVault.outputs.name
-    secrets: union(
-      enableStorage ? [ { secretName: storageSecretName, secretValue: storageAccount.outputs.blobStorageConnectionString } ] : [],
-      enableComosDB ? [ { secretName: cassandraSecretName, secretValue: cosmosDB.outputs.cassandraConnectionString } ] : []
-    )
-  }
-}
-
 output keyVaultName string = enableKeyVault ? keyVault.outputs.name : ''
 output cassandraConnectionString string = enableComosDB ? cosmosDB.outputs.cassandraConnectionString : ''
 output blobStorageConnectionString string = enableStorage ? storageAccount.outputs.blobStorageConnectionString : ''
