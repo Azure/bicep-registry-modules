@@ -1,6 +1,6 @@
 @description('Deployment Location')
 param location string
-param name string = 'horde-storage-k8-cluster'
+param name string = 'k8-cluster'
 param agentPoolCount int = 3
 param agentPoolName string = 'k8agent'
 param vmSize string = 'Standard_L16s_v2'
@@ -33,7 +33,7 @@ resource clusterUser 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-3
 }
 
 resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-07-02-preview' = if (newOrExisting == 'new') {
-  name: take(name, 80)
+  name: take(name, 70)
   location: location
   identity: {
     type: 'UserAssigned'
