@@ -79,4 +79,4 @@ jobs:
           message: Autogenerate Bicep Files
           committer_name: GitHub Actions
           committer_email: actions@github.com
-          add: modules README.md
+          add: main.json README.md
