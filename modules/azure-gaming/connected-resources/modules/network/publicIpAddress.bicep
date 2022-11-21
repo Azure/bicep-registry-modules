@@ -7,10 +7,7 @@ param resourceGroupName string = resourceGroup().name
 @description('PublicIP Resource Name')
 param name string = 'pubip${uniqueString(resourceGroup().id)}'
 
-@allowed([
-  'new'
-  'existing'
-])
+@allowed([ 'new', 'existing' ])
 @description('Create new or use existing resource selection. new/existing')
 param newOrExisting string = 'new'
 
