@@ -62,7 +62,7 @@ param assignRole bool = true
 @description('Enable Zonal Redunancy for supported regions')
 param isZoneRedundant bool = true
 
-module deployResources '../../bicep-templates/resources.bicep' = {
+module deployResources 'modules/resources.bicep' = {
   name: guid(keyVaultName, publicIpName, cosmosDBName, storageAccountName)
   params: {
     location: location
