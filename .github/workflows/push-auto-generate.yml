@@ -16,7 +16,7 @@ jobs:
     steps:
       - id: my-key
         if: "${{ env.MY_KEY != '' }}"
-        run: echo "::set-output name=defined::true"
+        run: echo "name=true" >> $GITHUB_OUTPUT
         env:
           MY_KEY: ${{ secrets.PAT }}
 
