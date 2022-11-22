@@ -162,7 +162,7 @@ Once the module files are validated locally, you can commit your changes and ope
 
 Enable optional GitHub Worksflows in your fork to enable auto-generation of assets with our [GitHub Action](/.github/workflows/push-auto-generate.yml).
 To trigger GitHub Actions after auto-generation, [add a GitHub PAT](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) as a secret in your forked repository called `PAT`.
-This `PAT` should NOT inclucde the `workflow` scope.
+This `PAT` should NOT include the `workflow` scope.
 
 ## Publishing a module
 
