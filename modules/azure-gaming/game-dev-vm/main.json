@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "15234992745606983542"
+      "templateHash": "17995087159106556983"
     }
   },
   "parameters": {
@@ -52,10 +52,10 @@
     },
     "osType": {
       "type": "string",
-      "defaultValue": "win11",
+      "defaultValue": "win10",
       "allowedValues": [
-        "win11",
-        "ws2020"
+        "win10",
+        "ws2019"
       ],
       "metadata": {
         "description": "Operating System type"
