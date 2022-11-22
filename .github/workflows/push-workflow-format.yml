@@ -20,7 +20,7 @@ jobs:
         env:
           MY_KEY: ${{ secrets.WORKFLOW_PAT }}
 
-  deploy:
+  push-prettier:
     runs-on: ubuntu-latest
     needs: [check-secret]
     if: needs.check-secret.outputs.my-key == 'true'
