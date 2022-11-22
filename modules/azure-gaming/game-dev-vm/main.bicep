@@ -18,7 +18,7 @@ param adminName string
 param adminPass string
 
 @description('Operating System type')
-@allowed([ 'win11', 'ws2019' ])
+@allowed([ 'win11', 'ws2020' ])
 param osType string = 'win11'
 
 @description('Game Engine')
