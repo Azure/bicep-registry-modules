@@ -5,7 +5,8 @@ on:
     branches-ignore:
       - main
     paths:
-      - modules/**.bicep
+      - modules/**/*.bicep
+      - modules/**/metadata.json
 
 jobs:
   check-secret:
