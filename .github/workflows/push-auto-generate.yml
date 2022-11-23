@@ -1,0 +1,60 @@
+name: BRM / Automaticly Triggered BRM Generation
+
+on:
+  push:
+    branches-ignore:
+      - main
+    paths:
+      - modules/**/*.bicep
+      - modules/**/metadata.json
+
+jobs:
+  check-secret:
+    runs-on: ubuntu-latest
+    outputs:
+      my-key: ${{ steps.my-key.outputs.defined }}
+    steps:
+      - id: my-key
+        if: "${{ env.MY_KEY != '' }}"
+        run: echo "defined=true" >> $GITHUB_OUTPUT
+        env:
+          MY_KEY: ${{ secrets.PAT }}
+
+  get-module-to-validate:
+    needs: [check-secret]
+    if: needs.check-secret.outputs.my-key == 'true'
+    uses: ./.github/workflows/get-changed-module.yml
+
+  push-brm-generate:
+    runs-on: ubuntu-latest
+    needs: get-module-to-validate
+    if: needs.get-module-to-validate.outputs.module_dir
+    steps:
+      - uses: actions/checkout@v2.3.4
+        with:
+          token: ${{ secrets.PAT }} # A PAT must be used to re-trigger workflows after commit. This PAT should NOT have the workflow scope.
+
+      # Adding a step to explicitly install the latest Bicep CLI because there is
+      # always a delay in updating Bicep CLI in the job runner environments.
+      - name: Install the latest Bicep CLI
+        run: |
+          curl -Lo bicep https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64
+          chmod +x ./bicep
+          sudo mv ./bicep /usr/local/bin/bicep
+          bicep --version
+
+      - name: Run brm generate
+        env:
+          SAMPLEFOLDER_PATH: ${{ needs.get-module-to-validate.outputs.module_dir }}
+        run: |
+          dotnet tool install --global Azure.Bicep.RegistryModuleTool
+
+          cd $SAMPLEFOLDER_PATH
+          brm generate
+
+      - uses: EndBug/add-and-commit@v9
+        with:
+          message: Autogenerate Bicep Files
+          committer_name: GitHub Actions
+          committer_email: actions@github.com
+          add: modules
