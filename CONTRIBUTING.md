@@ -17,9 +17,7 @@ The following instructions are created to help with the development of Bicep pub
 
 ### Making a proposal
 
-<!-- TODO: update the issue link once the repo is public -->
-
-Before creating a new module, you must fill out this [issue template](https://github.com/Azure/bicep-registry-modules/issues/new) to make a proposal. Each module needs to have its own proposal. Please avoid including multiple modules in one issue. Once the proposal is approved, proceed with the following steps. You should not send out a pull request to add a module without an associated approval as the pull request will be rejected.
+Before creating a new module, you must fill out this [issue template](https://github.com/Azure/bicep-registry-modules/issues/new?assignees=&labels=Module+Proposal&template=module_proposal.yml&title=%5BModule+Proposal%5D%3A+) to make a proposal. Each module needs to have its own proposal. Please avoid including multiple modules in one issue. Once the proposal is approved, proceed with the following steps. You should not send out a pull request to add a module without an associated approval as the pull request will be rejected.
 
 ### Creating a directory for the new module
 
