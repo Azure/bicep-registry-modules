@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "13451674322997212012"
+      "templateHash": "1770697343864214818"
     }
   },
   "definitions": {
@@ -21,9 +21,10 @@
       "properties": {
         "dayType": {
           "type": "string",
-          "metadata": {
-            "description": "Can be \"Day\" or \"Weekday\""
-          }
+          "allowedValues": [
+            "Day",
+            "Weekday"
+          ]
         },
         "hour": {
           "type": "int"
@@ -128,7 +129,7 @@
       },
       "defaultValue": [
         {
-          "dayType": "Daily",
+          "dayType": "Day",
           "hour": 9,
           "minute": 0
         },
@@ -138,7 +139,7 @@
           "minute": 0
         },
         {
-          "dayType": "Daily",
+          "dayType": "Day",
           "hour": 19,
           "minute": 0
         },
@@ -148,7 +149,7 @@
           "minute": 0
         },
         {
-          "dayType": "Daily",
+          "dayType": "Day",
           "hour": 0,
           "minute": 0
         },
