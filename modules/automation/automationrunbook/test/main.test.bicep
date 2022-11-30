@@ -62,7 +62,7 @@ module AksStartStop '../main.bicep' = {
         }
       }
       {
-        scheduleName: 'Weekday - 19:00'  
+        scheduleName: 'Day - 19:00'  
         parameters: {
           ResourceGroupName : 'myRG'
           AksClusterName : 'myVM'

@@ -25,8 +25,7 @@ param diagnosticCategories array = [
 ]
 
 type schedule = {
-  @description('Can be "Day" or "Weekday"')
-  dayType : string
+  dayType : 'Day' | 'Weekday'
   
   hour : int
   minute : int
@@ -35,7 +34,7 @@ type schedule = {
 @description('Automation Schedules to create')
 param schedulesToCreate schedule[] = [
   {
-    dayType:'Daily'
+    dayType:'Day'
     hour:9
     minute:0
   }
@@ -45,7 +44,7 @@ param schedulesToCreate schedule[] = [
     minute:0
   }
   {
-    dayType:'Daily'
+    dayType:'Day'
     hour:19
     minute:0
   }
@@ -55,7 +54,7 @@ param schedulesToCreate schedule[] = [
     minute:0
   }
   {
-    dayType:'Daily'
+    dayType:'Day'
     hour:0
     minute:0
   }
