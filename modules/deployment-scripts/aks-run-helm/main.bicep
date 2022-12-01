@@ -5,7 +5,7 @@ param aksName string
 param location string = resourceGroup().location
 
 @description('How the deployment script should be forced to execute')
-param forceUpdateTag  string = utcNow()
+param forceUpdateTag string = utcNow()
 
 @description('Does the Managed Identity already exists, or should be created')
 param useExistingManagedIdentity bool = false
@@ -26,7 +26,7 @@ param helmRepo string = 'azure-marketplace'
 param helmRepoURL string = 'https://marketplace.azurecr.io/helm/v1/repo'
 
 @description('Helm Apps {helmApp: \'azure-marketplace/wordpress\', helmAppName: \'my-wordpress\'}')
-param helmApps array  = []
+param helmApps array = []
 
 @allowed([
   'OnSuccess'
@@ -43,7 +43,7 @@ module helmAppInstalls 'br/public:deployment-scripts/aks-run-command:1.0.1' = [f
     location: location
     commands: [
       'helm repo add ${helmRepo} ${helmRepoURL}; helm repo update'
-      'helm upgrade --install  ${app.helmApp} ${app.helmAppName} ${contains(app, 'helmAppParams') ? app.helmAppParams : ''}'
+      'helm upgrade --install ${app.helmAppName} ${app.helmApp} ${contains(app, 'helmAppParams') ? app.helmAppParams : ''}'
     ]
     forceUpdateTag: forceUpdateTag
     useExistingManagedIdentity: useExistingManagedIdentity
