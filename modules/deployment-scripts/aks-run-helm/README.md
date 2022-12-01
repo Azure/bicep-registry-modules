@@ -55,9 +55,7 @@ module runCmd 'br/public:deployment-scripts/aks-run-helm:1.0.1' = {
   name: 'kubectlGetNodes'
   params: {
     useExistingManagedIdentity: true
-    initialScriptDelay: '0'
     managedIdentityName: managedIdentityName
-    rbacRolesNeeded:[]
     aksName: aksName
     location: location
     helmApps: [{helmApp: 'azure-marketplace/wordpress', helmAppName: 'my-wordpress'}]
