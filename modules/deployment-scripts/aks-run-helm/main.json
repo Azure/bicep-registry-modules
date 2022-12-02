@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "16688079330702350385"
+      "templateHash": "17889908750769342776"
     }
   },
   "parameters": {
@@ -114,8 +114,7 @@
           },
           "commands": {
             "value": [
-              "[format('helm repo add {0} {1}; helm repo update', parameters('helmRepo'), parameters('helmRepoURL'))]",
-              "[format('helm upgrade --install {0} {1} {2}', parameters('helmApps')[copyIndex()].helmAppName, parameters('helmApps')[copyIndex()].helmApp, if(contains(parameters('helmApps')[copyIndex()], 'helmAppParams'), parameters('helmApps')[copyIndex()].helmAppParams, ''))]"
+              "[format('helm repo add {0} {1} && helm repo update && helm upgrade --install {2} {3} {4}', parameters('helmRepo'), parameters('helmRepoURL'), parameters('helmApps')[copyIndex()].helmAppName, parameters('helmApps')[copyIndex()].helmApp, if(contains(parameters('helmApps')[copyIndex()], 'helmAppParams'), parameters('helmApps')[copyIndex()].helmAppParams, ''))]"
             ]
           },
           "forceUpdateTag": {
