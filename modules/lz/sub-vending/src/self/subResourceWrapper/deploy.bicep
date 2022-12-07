@@ -114,7 +114,7 @@ var virtualWanHubConnectionPropogatedRouteTables = !empty(virtualNetworkVwanProp
 var virtualWanHubConnectionPropogatedLabels = !empty(virtualNetworkVwanPropagatedLabels) ? virtualNetworkVwanPropagatedLabels : [ 'default' ]
 
 // Telemetry for CARML flip
-var enableTelemetryForCarml = disableTelemetry == true ? false : true
+var enableTelemetryForCarml = !disableTelemetry
 
 // RESOURCES & MODULES
 
