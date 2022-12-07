@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.12.40.16777",
-      "templateHash": "5293721915906497941"
+      "version": "0.13.1.58284",
+      "templateHash": "2522354157288334433"
     },
     "name": "`main.bicep` Parameters",
     "description": "These are the input parameters for the Bicep module: [`main.bicep`](./main.bicep)\n\nThis is the orchestration module that is used and called by a consumer of the module to deploy a Landing Zone Subscription and its associated resources, based on the parameter input values that are provided to it at deployment time.\n\n> For more information and examples please see the [wiki](https://github.com/Azure/bicep-lz-vending/wiki)"
@@ -346,8 +346,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.12.40.16777",
-              "templateHash": "14033276867683865875"
+              "version": "0.13.1.58284",
+              "templateHash": "2863848454015947304"
             }
           },
           "parameters": {
@@ -409,7 +409,7 @@
       }
     },
     {
-      "condition": "[and(and(or(parameters('subscriptionAliasEnabled'), not(empty(parameters('existingSubscriptionId')))), parameters('virtualNetworkEnabled')), not(empty(parameters('virtualNetworkResourceGroupName'))))]",
+      "condition": "[or(parameters('subscriptionAliasEnabled'), not(empty(parameters('existingSubscriptionId'))))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[variables('deploymentNames').createSubscriptionResources]",
@@ -420,9 +420,7 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "subscriptionId": {
-            "value": "[if(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), reference(tenantResourceId('Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2020-10-01').outputs.subscriptionId.value, parameters('existingSubscriptionId'))]"
-          },
+          "subscriptionId": "[if(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), createObject('value', reference(tenantResourceId('Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2020-10-01').outputs.subscriptionId.value), createObject('value', parameters('existingSubscriptionId')))]",
           "subscriptionManagementGroupAssociationEnabled": {
             "value": "[parameters('subscriptionManagementGroupAssociationEnabled')]"
           },
@@ -485,6 +483,9 @@
           },
           "roleAssignments": {
             "value": "[parameters('roleAssignments')]"
+          },
+          "disableTelemetry": {
+            "value": "[parameters('disableTelemetry')]"
           }
         },
         "template": {
@@ -493,8 +494,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.12.40.16777",
-              "templateHash": "14275410227386190033"
+              "version": "0.13.1.58284",
+              "templateHash": "4915823913617299463"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "These are the input parameters for the Bicep module: [`deploy.bicep`](./deploy.bicep)\n\nThis is the sub-orchestration module that is used and called by the [`main.bicep`](../../../main.bicep)  module to deploy the resources into the subscription that has been created (or an existing one provided), based on the parameter input values that are provided to it at deployment time from the `main.bicep` orchestration module.\n\n> ⚠️ It is not intended for this module to be called outside of being a sub-orchestration module for the `main.bicep` module ⚠️"
@@ -534,6 +535,7 @@
             },
             "virtualNetworkResourceGroupName": {
               "type": "string",
+              "defaultValue": "",
               "metadata": {
                 "description": "The name of the resource group to create the virtual network in."
               },
@@ -651,6 +653,13 @@
               "metadata": {
                 "description": "Supply an array of objects containing the details of the role assignments to create."
               }
+            },
+            "disableTelemetry": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Disable telemetry collection by this module.\n\nFor more information on the telemetry collected by this module, that is controlled by this parameter, see this page in the wiki: [Telemetry Tracking Using Customer Usage Attribution (PID)](https://github.com/Azure/bicep-lz-vending/wiki/Telemetry)\n"
+              }
             }
           },
           "variables": {
@@ -674,7 +683,8 @@
               "id": "[format('{0}/hubRouteTables/defaultRouteTable', variables('virtualHubResourceIdChecked'))]"
             },
             "virtualWanHubConnectionPropogatedRouteTables": "[if(not(empty(parameters('virtualNetworkVwanPropagatedRouteTablesResourceIds'))), parameters('virtualNetworkVwanPropagatedRouteTablesResourceIds'), array(variables('virutalWanHubDefaultRouteTableId')))]",
-            "virtualWanHubConnectionPropogatedLabels": "[if(not(empty(parameters('virtualNetworkVwanPropagatedLabels'))), parameters('virtualNetworkVwanPropagatedLabels'), createArray('default'))]"
+            "virtualWanHubConnectionPropogatedLabels": "[if(not(empty(parameters('virtualNetworkVwanPropagatedLabels'))), parameters('virtualNetworkVwanPropagatedLabels'), createArray('default'))]",
+            "carmlTelemetryFlip": "[if(equals(parameters('disableTelemetry'), true()), false(), true())]"
           },
           "resources": [
             {
@@ -703,8 +713,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "16007341334401561095"
+                      "version": "0.13.1.58284",
+                      "templateHash": "18242212352398593919"
                     }
                   },
                   "parameters": {
@@ -756,6 +766,9 @@
                   },
                   "tags": {
                     "value": "[parameters('subscriptionTags')]"
+                  },
+                  "enableDefaultTelemetry": {
+                    "value": "[variables('carmlTelemetryFlip')]"
                   }
                 },
                 "template": {
@@ -764,8 +777,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "17123512995485255606"
+                      "version": "0.13.1.58284",
+                      "templateHash": "2031197592466863763"
                     }
                   },
                   "parameters": {
@@ -862,8 +875,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.12.40.16777",
-                              "templateHash": "17311223252758598680"
+                              "version": "0.13.1.58284",
+                              "templateHash": "5658256922016655918"
                             }
                           },
                           "parameters": {
@@ -947,8 +960,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.12.40.16777",
-                                      "templateHash": "15702944172598660749"
+                                      "version": "0.13.1.58284",
+                                      "templateHash": "12771816053208228273"
                                     }
                                   },
                                   "parameters": {
@@ -1028,8 +1041,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.12.40.16777",
-                              "templateHash": "3131413630539032070"
+                              "version": "0.13.1.58284",
+                              "templateHash": "7224662153254903556"
                             }
                           },
                           "parameters": {
@@ -1104,8 +1117,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.12.40.16777",
-                                      "templateHash": "7790055285924796654"
+                                      "version": "0.13.1.58284",
+                                      "templateHash": "10085828695555767678"
                                     }
                                   },
                                   "parameters": {
@@ -1210,8 +1223,9 @@
                   "location": {
                     "value": "[parameters('virtualNetworkLocation')]"
                   },
-                  "lock": {
-                    "value": "[if(parameters('virtualNetworkResourceGroupLockEnabled'), 'CanNotDelete', '')]"
+                  "lock": "[if(parameters('virtualNetworkResourceGroupLockEnabled'), createObject('value', 'CanNotDelete'), createObject('value', ''))]",
+                  "enableDefaultTelemetry": {
+                    "value": "[variables('carmlTelemetryFlip')]"
                   }
                 },
                 "template": {
@@ -1220,8 +1234,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "11481222231970209655"
+                      "version": "0.13.1.58284",
+                      "templateHash": "8983022572658422879"
                     }
                   },
                   "parameters": {
@@ -1321,8 +1335,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.12.40.16777",
-                              "templateHash": "15042095271343529149"
+                              "version": "0.13.1.58284",
+                              "templateHash": "1976857291441538770"
                             }
                           },
                           "parameters": {
@@ -1434,15 +1448,11 @@
                         },
                         "mode": "Incremental",
                         "parameters": {
-                          "description": {
-                            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), parameters('roleAssignments')[copyIndex()].description, '')]"
-                          },
+                          "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
                           "principalIds": {
                             "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
                           },
-                          "principalType": {
-                            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), parameters('roleAssignments')[copyIndex()].principalType, '')]"
-                          },
+                          "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
                           "roleDefinitionIdOrName": {
                             "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
                           },
@@ -1456,8 +1466,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.12.40.16777",
-                              "templateHash": "4916468743904711018"
+                              "version": "0.13.1.58284",
+                              "templateHash": "2867756607581281924"
                             }
                           },
                           "parameters": {
@@ -1753,6 +1763,9 @@
                   },
                   "tags": {
                     "value": "[parameters('virtualNetworkResourceGroupTags')]"
+                  },
+                  "enableDefaultTelemetry": {
+                    "value": "[variables('carmlTelemetryFlip')]"
                   }
                 },
                 "template": {
@@ -1761,8 +1774,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "17123512995485255606"
+                      "version": "0.13.1.58284",
+                      "templateHash": "2031197592466863763"
                     }
                   },
                   "parameters": {
@@ -1859,8 +1872,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.12.40.16777",
-                              "templateHash": "17311223252758598680"
+                              "version": "0.13.1.58284",
+                              "templateHash": "5658256922016655918"
                             }
                           },
                           "parameters": {
@@ -1944,8 +1957,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.12.40.16777",
-                                      "templateHash": "15702944172598660749"
+                                      "version": "0.13.1.58284",
+                                      "templateHash": "12771816053208228273"
                                     }
                                   },
                                   "parameters": {
@@ -2025,8 +2038,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.12.40.16777",
-                              "templateHash": "3131413630539032070"
+                              "version": "0.13.1.58284",
+                              "templateHash": "7224662153254903556"
                             }
                           },
                           "parameters": {
@@ -2101,8 +2114,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.12.40.16777",
-                                      "templateHash": "7790055285924796654"
+                                      "version": "0.13.1.58284",
+                                      "templateHash": "10085828695555767678"
                                     }
                                   },
                                   "parameters": {
@@ -2222,8 +2235,9 @@
                   "ddosProtectionPlanId": {
                     "value": "[parameters('virtualNetworkDdosPlanId')]"
                   },
-                  "virtualNetworkPeerings": {
-                    "value": "[if(and(parameters('virtualNetworkPeeringEnabled'), not(empty(variables('hubVirtualNetworkResourceIdChecked')))), createArray(createObject('allowForwardedTraffic', true(), 'allowVirtualNetworkAccess', true(), 'allowGatewayTransit', false(), 'useRemoteGateways', parameters('virtualNetworkUseRemoteGateways'), 'remotePeeringEnabled', parameters('virtualNetworkPeeringEnabled'), 'remoteVirtualNetworkId', variables('hubVirtualNetworkResourceIdChecked'), 'remotePeeringAllowForwardedTraffic', true(), 'remotePeeringAllowVirtualNetworkAccess', true(), 'remotePeeringAllowGatewayTransit', true(), 'remotePeeringUseRemoteGateways', false())), createArray())]"
+                  "virtualNetworkPeerings": "[if(and(and(and(and(and(and(parameters('virtualNetworkEnabled'), parameters('virtualNetworkPeeringEnabled')), not(empty(variables('hubVirtualNetworkResourceIdChecked')))), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), createObject('value', createArray(createObject('allowForwardedTraffic', true(), 'allowVirtualNetworkAccess', true(), 'allowGatewayTransit', false(), 'useRemoteGateways', parameters('virtualNetworkUseRemoteGateways'), 'remotePeeringEnabled', parameters('virtualNetworkPeeringEnabled'), 'remoteVirtualNetworkId', variables('hubVirtualNetworkResourceIdChecked'), 'remotePeeringAllowForwardedTraffic', true(), 'remotePeeringAllowVirtualNetworkAccess', true(), 'remotePeeringAllowGatewayTransit', true(), 'remotePeeringUseRemoteGateways', false()))), createObject('value', createArray()))]",
+                  "enableDefaultTelemetry": {
+                    "value": "[variables('carmlTelemetryFlip')]"
                   }
                 },
                 "template": {
@@ -2232,8 +2246,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "11298452766598386958"
+                      "version": "0.13.1.58284",
+                      "templateHash": "11436101453241644931"
                     }
                   },
                   "parameters": {
@@ -2356,10 +2370,10 @@
                     },
                     "diagnosticLogCategoriesToEnable": {
                       "type": "array",
-                      "allowedValues": [
+                      "defaultValue": [
                         "VMProtectionAlerts"
                       ],
-                      "defaultValue": [
+                      "allowedValues": [
                         "VMProtectionAlerts"
                       ],
                       "metadata": {
@@ -2368,10 +2382,10 @@
                     },
                     "diagnosticMetricsToEnable": {
                       "type": "array",
-                      "allowedValues": [
+                      "defaultValue": [
                         "AllMetrics"
                       ],
-                      "defaultValue": [
+                      "allowedValues": [
                         "AllMetrics"
                       ],
                       "metadata": {
@@ -2530,42 +2544,18 @@
                           "addressPrefix": {
                             "value": "[parameters('subnets')[copyIndex()].addressPrefix]"
                           },
-                          "addressPrefixes": {
-                            "value": "[if(contains(parameters('subnets')[copyIndex()], 'addressPrefixes'), parameters('subnets')[copyIndex()].addressPrefixes, createArray())]"
-                          },
-                          "applicationGatewayIpConfigurations": {
-                            "value": "[if(contains(parameters('subnets')[copyIndex()], 'applicationGatewayIpConfigurations'), parameters('subnets')[copyIndex()].applicationGatewayIpConfigurations, createArray())]"
-                          },
-                          "delegations": {
-                            "value": "[if(contains(parameters('subnets')[copyIndex()], 'delegations'), parameters('subnets')[copyIndex()].delegations, createArray())]"
-                          },
-                          "ipAllocations": {
-                            "value": "[if(contains(parameters('subnets')[copyIndex()], 'ipAllocations'), parameters('subnets')[copyIndex()].ipAllocations, createArray())]"
-                          },
-                          "natGatewayId": {
-                            "value": "[if(contains(parameters('subnets')[copyIndex()], 'natGatewayId'), parameters('subnets')[copyIndex()].natGatewayId, '')]"
-                          },
-                          "networkSecurityGroupId": {
-                            "value": "[if(contains(parameters('subnets')[copyIndex()], 'networkSecurityGroupId'), parameters('subnets')[copyIndex()].networkSecurityGroupId, '')]"
-                          },
-                          "privateEndpointNetworkPolicies": {
-                            "value": "[if(contains(parameters('subnets')[copyIndex()], 'privateEndpointNetworkPolicies'), parameters('subnets')[copyIndex()].privateEndpointNetworkPolicies, '')]"
-                          },
-                          "privateLinkServiceNetworkPolicies": {
-                            "value": "[if(contains(parameters('subnets')[copyIndex()], 'privateLinkServiceNetworkPolicies'), parameters('subnets')[copyIndex()].privateLinkServiceNetworkPolicies, '')]"
-                          },
-                          "roleAssignments": {
-                            "value": "[if(contains(parameters('subnets')[copyIndex()], 'roleAssignments'), parameters('subnets')[copyIndex()].roleAssignments, createArray())]"
-                          },
-                          "routeTableId": {
-                            "value": "[if(contains(parameters('subnets')[copyIndex()], 'routeTableId'), parameters('subnets')[copyIndex()].routeTableId, '')]"
-                          },
-                          "serviceEndpointPolicies": {
-                            "value": "[if(contains(parameters('subnets')[copyIndex()], 'serviceEndpointPolicies'), parameters('subnets')[copyIndex()].serviceEndpointPolicies, createArray())]"
-                          },
-                          "serviceEndpoints": {
-                            "value": "[if(contains(parameters('subnets')[copyIndex()], 'serviceEndpoints'), parameters('subnets')[copyIndex()].serviceEndpoints, createArray())]"
-                          },
+                          "addressPrefixes": "[if(contains(parameters('subnets')[copyIndex()], 'addressPrefixes'), createObject('value', parameters('subnets')[copyIndex()].addressPrefixes), createObject('value', createArray()))]",
+                          "applicationGatewayIpConfigurations": "[if(contains(parameters('subnets')[copyIndex()], 'applicationGatewayIpConfigurations'), createObject('value', parameters('subnets')[copyIndex()].applicationGatewayIpConfigurations), createObject('value', createArray()))]",
+                          "delegations": "[if(contains(parameters('subnets')[copyIndex()], 'delegations'), createObject('value', parameters('subnets')[copyIndex()].delegations), createObject('value', createArray()))]",
+                          "ipAllocations": "[if(contains(parameters('subnets')[copyIndex()], 'ipAllocations'), createObject('value', parameters('subnets')[copyIndex()].ipAllocations), createObject('value', createArray()))]",
+                          "natGatewayId": "[if(contains(parameters('subnets')[copyIndex()], 'natGatewayId'), createObject('value', parameters('subnets')[copyIndex()].natGatewayId), createObject('value', ''))]",
+                          "networkSecurityGroupId": "[if(contains(parameters('subnets')[copyIndex()], 'networkSecurityGroupId'), createObject('value', parameters('subnets')[copyIndex()].networkSecurityGroupId), createObject('value', ''))]",
+                          "privateEndpointNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex()], 'privateEndpointNetworkPolicies'), createObject('value', parameters('subnets')[copyIndex()].privateEndpointNetworkPolicies), createObject('value', ''))]",
+                          "privateLinkServiceNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex()], 'privateLinkServiceNetworkPolicies'), createObject('value', parameters('subnets')[copyIndex()].privateLinkServiceNetworkPolicies), createObject('value', ''))]",
+                          "roleAssignments": "[if(contains(parameters('subnets')[copyIndex()], 'roleAssignments'), createObject('value', parameters('subnets')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
+                          "routeTableId": "[if(contains(parameters('subnets')[copyIndex()], 'routeTableId'), createObject('value', parameters('subnets')[copyIndex()].routeTableId), createObject('value', ''))]",
+                          "serviceEndpointPolicies": "[if(contains(parameters('subnets')[copyIndex()], 'serviceEndpointPolicies'), createObject('value', parameters('subnets')[copyIndex()].serviceEndpointPolicies), createObject('value', createArray()))]",
+                          "serviceEndpoints": "[if(contains(parameters('subnets')[copyIndex()], 'serviceEndpoints'), createObject('value', parameters('subnets')[copyIndex()].serviceEndpoints), createObject('value', createArray()))]",
                           "enableDefaultTelemetry": {
                             "value": "[variables('enableReferencedModulesTelemetry')]"
                           }
@@ -2576,8 +2566,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.12.40.16777",
-                              "templateHash": "3006663688280952968"
+                              "version": "0.13.1.58284",
+                              "templateHash": "3724941521492464970"
                             }
                           },
                           "parameters": {
@@ -2749,15 +2739,11 @@
                                 },
                                 "mode": "Incremental",
                                 "parameters": {
-                                  "description": {
-                                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), parameters('roleAssignments')[copyIndex()].description, '')]"
-                                  },
+                                  "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
                                   "principalIds": {
                                     "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
                                   },
-                                  "principalType": {
-                                    "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), parameters('roleAssignments')[copyIndex()].principalType, '')]"
-                                  },
+                                  "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
                                   "roleDefinitionIdOrName": {
                                     "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
                                   },
@@ -2771,8 +2757,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.12.40.16777",
-                                      "templateHash": "15943897999839926582"
+                                      "version": "0.13.1.58284",
+                                      "templateHash": "4959218830278473322"
                                     }
                                   },
                                   "parameters": {
@@ -2939,24 +2925,12 @@
                           "remoteVirtualNetworkId": {
                             "value": "[parameters('virtualNetworkPeerings')[copyIndex()].remoteVirtualNetworkId]"
                           },
-                          "name": {
-                            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'name'), parameters('virtualNetworkPeerings')[copyIndex()].name, format('{0}-{1}', parameters('name'), last(split(parameters('virtualNetworkPeerings')[copyIndex()].remoteVirtualNetworkId, '/'))))]"
-                          },
-                          "allowForwardedTraffic": {
-                            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'allowForwardedTraffic'), parameters('virtualNetworkPeerings')[copyIndex()].allowForwardedTraffic, true())]"
-                          },
-                          "allowGatewayTransit": {
-                            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'allowGatewayTransit'), parameters('virtualNetworkPeerings')[copyIndex()].allowGatewayTransit, false())]"
-                          },
-                          "allowVirtualNetworkAccess": {
-                            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'allowVirtualNetworkAccess'), parameters('virtualNetworkPeerings')[copyIndex()].allowVirtualNetworkAccess, true())]"
-                          },
-                          "doNotVerifyRemoteGateways": {
-                            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'doNotVerifyRemoteGateways'), parameters('virtualNetworkPeerings')[copyIndex()].doNotVerifyRemoteGateways, true())]"
-                          },
-                          "useRemoteGateways": {
-                            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'useRemoteGateways'), parameters('virtualNetworkPeerings')[copyIndex()].useRemoteGateways, false())]"
-                          },
+                          "name": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'name'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].name), createObject('value', format('{0}-{1}', parameters('name'), last(split(parameters('virtualNetworkPeerings')[copyIndex()].remoteVirtualNetworkId, '/')))))]",
+                          "allowForwardedTraffic": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'allowForwardedTraffic'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].allowForwardedTraffic), createObject('value', true()))]",
+                          "allowGatewayTransit": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'allowGatewayTransit'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].allowGatewayTransit), createObject('value', false()))]",
+                          "allowVirtualNetworkAccess": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'allowVirtualNetworkAccess'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].allowVirtualNetworkAccess), createObject('value', true()))]",
+                          "doNotVerifyRemoteGateways": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'doNotVerifyRemoteGateways'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].doNotVerifyRemoteGateways), createObject('value', true()))]",
+                          "useRemoteGateways": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'useRemoteGateways'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].useRemoteGateways), createObject('value', false()))]",
                           "enableDefaultTelemetry": {
                             "value": "[variables('enableReferencedModulesTelemetry')]"
                           }
@@ -2967,8 +2941,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.12.40.16777",
-                              "templateHash": "18425777834087631738"
+                              "version": "0.13.1.58284",
+                              "templateHash": "14296380749917664855"
                             }
                           },
                           "parameters": {
@@ -3117,24 +3091,12 @@
                           "remoteVirtualNetworkId": {
                             "value": "[resourceId('Microsoft.Network/virtualNetworks', parameters('name'))]"
                           },
-                          "name": {
-                            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringName'), parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringName, format('{0}-{1}', last(split(parameters('virtualNetworkPeerings')[copyIndex()].remoteVirtualNetworkId, '/')), parameters('name')))]"
-                          },
-                          "allowForwardedTraffic": {
-                            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringAllowForwardedTraffic'), parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringAllowForwardedTraffic, true())]"
-                          },
-                          "allowGatewayTransit": {
-                            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringAllowGatewayTransit'), parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringAllowGatewayTransit, false())]"
-                          },
-                          "allowVirtualNetworkAccess": {
-                            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringAllowVirtualNetworkAccess'), parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringAllowVirtualNetworkAccess, true())]"
-                          },
-                          "doNotVerifyRemoteGateways": {
-                            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringDoNotVerifyRemoteGateways'), parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringDoNotVerifyRemoteGateways, true())]"
-                          },
-                          "useRemoteGateways": {
-                            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringUseRemoteGateways'), parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringUseRemoteGateways, false())]"
-                          },
+                          "name": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringName'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringName), createObject('value', format('{0}-{1}', last(split(parameters('virtualNetworkPeerings')[copyIndex()].remoteVirtualNetworkId, '/')), parameters('name'))))]",
+                          "allowForwardedTraffic": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringAllowForwardedTraffic'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringAllowForwardedTraffic), createObject('value', true()))]",
+                          "allowGatewayTransit": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringAllowGatewayTransit'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringAllowGatewayTransit), createObject('value', false()))]",
+                          "allowVirtualNetworkAccess": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringAllowVirtualNetworkAccess'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringAllowVirtualNetworkAccess), createObject('value', true()))]",
+                          "doNotVerifyRemoteGateways": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringDoNotVerifyRemoteGateways'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringDoNotVerifyRemoteGateways), createObject('value', true()))]",
+                          "useRemoteGateways": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringUseRemoteGateways'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringUseRemoteGateways), createObject('value', false()))]",
                           "enableDefaultTelemetry": {
                             "value": "[variables('enableReferencedModulesTelemetry')]"
                           }
@@ -3145,8 +3107,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.12.40.16777",
-                              "templateHash": "18425777834087631738"
+                              "version": "0.13.1.58284",
+                              "templateHash": "14296380749917664855"
                             }
                           },
                           "parameters": {
@@ -3286,15 +3248,11 @@
                         },
                         "mode": "Incremental",
                         "parameters": {
-                          "description": {
-                            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), parameters('roleAssignments')[copyIndex()].description, '')]"
-                          },
+                          "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
                           "principalIds": {
                             "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
                           },
-                          "principalType": {
-                            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), parameters('roleAssignments')[copyIndex()].principalType, '')]"
-                          },
+                          "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
                           "roleDefinitionIdOrName": {
                             "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
                           },
@@ -3308,8 +3266,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.12.40.16777",
-                              "templateHash": "4214663360612688009"
+                              "version": "0.13.1.58284",
+                              "templateHash": "9564454532443653731"
                             }
                           },
                           "parameters": {
@@ -3470,7 +3428,7 @@
               ]
             },
             {
-              "condition": "[and(and(parameters('virtualNetworkEnabled'), parameters('virtualNetworkPeeringEnabled')), not(empty(variables('virtualHubResourceIdChecked'))))]",
+              "condition": "[and(and(and(and(and(and(and(and(parameters('virtualNetworkEnabled'), parameters('virtualNetworkPeeringEnabled')), not(empty(variables('virtualHubResourceIdChecked')))), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), not(empty(variables('virtualWanHubResourceGroupName')))), not(empty(variables('virtualWanHubSubscriptionId'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2020-10-01",
               "name": "[variables('deploymentNames').createLzVirtualWanConnection]",
@@ -3489,7 +3447,7 @@
                     "value": "[variables('virtualWanHubName')]"
                   },
                   "remoteVirtualNetworkId": {
-                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createLzVnet), '2020-10-01').outputs.resourceId.value]"
+                    "value": "[format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Network/virtualNetworks/{2}', parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), parameters('virtualNetworkName'))]"
                   },
                   "routingConfiguration": {
                     "value": {
@@ -3501,6 +3459,9 @@
                         "labels": "[variables('virtualWanHubConnectionPropogatedLabels')]"
                       }
                     }
+                  },
+                  "enableDefaultTelemetry": {
+                    "value": "[variables('carmlTelemetryFlip')]"
                   }
                 },
                 "template": {
@@ -3509,8 +3470,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "7246444806683627966"
+                      "version": "0.13.1.58284",
+                      "templateHash": "7154337294625207216"
                     }
                   },
                   "parameters": {
@@ -3608,7 +3569,6 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName')), 'Microsoft.Resources/deployments', variables('deploymentNames').createLzVnet)]",
                 "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', variables('deploymentNames').createResourceGroupForLzNetworking)]"
               ]
             },
@@ -3642,6 +3602,9 @@
                   },
                   "resourceGroupName": {
                     "value": "[if(contains(parameters('roleAssignments')[copyIndex()].relativeScope, '/resourceGroups/'), split(parameters('roleAssignments')[copyIndex()].relativeScope, '/')[2], '')]"
+                  },
+                  "enableDefaultTelemetry": {
+                    "value": "[variables('carmlTelemetryFlip')]"
                   }
                 },
                 "template": {
@@ -3650,8 +3613,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "9724818159291986307"
+                      "version": "0.13.1.58284",
+                      "templateHash": "5204750237862852775"
                     }
                   },
                   "parameters": {
@@ -3790,21 +3753,13 @@
                           "managementGroupId": {
                             "value": "[parameters('managementGroupId')]"
                           },
-                          "description": {
-                            "value": "[if(not(empty(parameters('description'))), parameters('description'), '')]"
-                          },
-                          "principalType": {
-                            "value": "[if(not(empty(parameters('principalType'))), parameters('principalType'), '')]"
-                          },
-                          "delegatedManagedIdentityResourceId": {
-                            "value": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), parameters('delegatedManagedIdentityResourceId'), '')]"
-                          },
+                          "description": "[if(not(empty(parameters('description'))), createObject('value', parameters('description')), createObject('value', ''))]",
+                          "principalType": "[if(not(empty(parameters('principalType'))), createObject('value', parameters('principalType')), createObject('value', ''))]",
+                          "delegatedManagedIdentityResourceId": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), createObject('value', parameters('delegatedManagedIdentityResourceId')), createObject('value', ''))]",
                           "conditionVersion": {
                             "value": "[parameters('conditionVersion')]"
                           },
-                          "condition": {
-                            "value": "[if(not(empty(parameters('condition'))), parameters('condition'), '')]"
-                          },
+                          "condition": "[if(not(empty(parameters('condition'))), createObject('value', parameters('condition')), createObject('value', ''))]",
                           "location": {
                             "value": "[parameters('location')]"
                           },
@@ -3818,8 +3773,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.12.40.16777",
-                              "templateHash": "6700591587586196701"
+                              "version": "0.13.1.58284",
+                              "templateHash": "4394973066927696008"
                             }
                           },
                           "parameters": {
@@ -4268,21 +4223,13 @@
                           "subscriptionId": {
                             "value": "[parameters('subscriptionId')]"
                           },
-                          "description": {
-                            "value": "[if(not(empty(parameters('description'))), parameters('description'), '')]"
-                          },
-                          "principalType": {
-                            "value": "[if(not(empty(parameters('principalType'))), parameters('principalType'), '')]"
-                          },
-                          "delegatedManagedIdentityResourceId": {
-                            "value": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), parameters('delegatedManagedIdentityResourceId'), '')]"
-                          },
+                          "description": "[if(not(empty(parameters('description'))), createObject('value', parameters('description')), createObject('value', ''))]",
+                          "principalType": "[if(not(empty(parameters('principalType'))), createObject('value', parameters('principalType')), createObject('value', ''))]",
+                          "delegatedManagedIdentityResourceId": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), createObject('value', parameters('delegatedManagedIdentityResourceId')), createObject('value', ''))]",
                           "conditionVersion": {
                             "value": "[parameters('conditionVersion')]"
                           },
-                          "condition": {
-                            "value": "[if(not(empty(parameters('condition'))), parameters('condition'), '')]"
-                          },
+                          "condition": "[if(not(empty(parameters('condition'))), createObject('value', parameters('condition')), createObject('value', ''))]",
                           "location": {
                             "value": "[parameters('location')]"
                           },
@@ -4296,8 +4243,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.12.40.16777",
-                              "templateHash": "3331272156377269624"
+                              "version": "0.13.1.58284",
+                              "templateHash": "15182468759309400920"
                             }
                           },
                           "parameters": {
@@ -4749,21 +4696,13 @@
                           "resourceGroupName": {
                             "value": "[parameters('resourceGroupName')]"
                           },
-                          "description": {
-                            "value": "[if(not(empty(parameters('description'))), parameters('description'), '')]"
-                          },
-                          "principalType": {
-                            "value": "[if(not(empty(parameters('principalType'))), parameters('principalType'), '')]"
-                          },
-                          "delegatedManagedIdentityResourceId": {
-                            "value": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), parameters('delegatedManagedIdentityResourceId'), '')]"
-                          },
+                          "description": "[if(not(empty(parameters('description'))), createObject('value', parameters('description')), createObject('value', ''))]",
+                          "principalType": "[if(not(empty(parameters('principalType'))), createObject('value', parameters('principalType')), createObject('value', ''))]",
+                          "delegatedManagedIdentityResourceId": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), createObject('value', parameters('delegatedManagedIdentityResourceId')), createObject('value', ''))]",
                           "conditionVersion": {
                             "value": "[parameters('conditionVersion')]"
                           },
-                          "condition": {
-                            "value": "[if(not(empty(parameters('condition'))), parameters('condition'), '')]"
-                          },
+                          "condition": "[if(not(empty(parameters('condition'))), createObject('value', parameters('condition')), createObject('value', ''))]",
                           "enableDefaultTelemetry": {
                             "value": "[variables('enableReferencedModulesTelemetry')]"
                           }
@@ -4774,8 +4713,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.12.40.16777",
-                              "templateHash": "5375900324223541027"
+                              "version": "0.13.1.58284",
+                              "templateHash": "12403073490320235002"
                             }
                           },
                           "parameters": {
