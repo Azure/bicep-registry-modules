@@ -29,7 +29,7 @@ param virtualNetworkEnabled bool = false
 
 @maxLength(90)
 @sys.description('The name of the resource group to create the virtual network in.')
-param virtualNetworkResourceGroupName string
+param virtualNetworkResourceGroupName string = ''
 
 @sys.description('Enables the deployment of a `CanNotDelete` resource locks to the virtual networks resource group.')
 param virtualNetworkResourceGroupLockEnabled bool = true
@@ -80,6 +80,9 @@ param roleAssignmentEnabled bool = false
 @sys.description('Supply an array of objects containing the details of the role assignments to create.')
 param roleAssignments array = []
 
+@sys.description('Disable telemetry collection by this module. For more information on the telemetry collected by this module, that is controlled by this parameter, see this page in the wiki: [Telemetry Tracking Using Customer Usage Attribution (PID)](https://github.com/Azure/bicep-lz-vending/wiki/Telemetry)')
+param disableTelemetry bool = false
+
 // VARIABLES
 
 // Deployment name variables
@@ -110,6 +113,9 @@ var virutalWanHubDefaultRouteTableId = {
 var virtualWanHubConnectionPropogatedRouteTables = !empty(virtualNetworkVwanPropagatedRouteTablesResourceIds) ? virtualNetworkVwanPropagatedRouteTablesResourceIds : array(virutalWanHubDefaultRouteTableId)
 var virtualWanHubConnectionPropogatedLabels = !empty(virtualNetworkVwanPropagatedLabels) ? virtualNetworkVwanPropagatedLabels : [ 'default' ]
 
+// Telemetry for CARML flip
+var enableTelemetryForCarml = !disableTelemetry
+
 // RESOURCES & MODULES
 
 module moveSubscriptionToManagementGroup '../Microsoft.Management/managementGroups/subscriptions/deploy.bicep' = if (subscriptionManagementGroupAssociationEnabled && !empty(subscriptionManagementGroupId)) {
@@ -129,6 +135,7 @@ module tagSubscription '../../carml/v0.6.0/Microsoft.Resources/tags/deploy.bicep
     location: virtualNetworkLocation
     onlyUpdate: true
     tags: subscriptionTags
+    enableDefaultTelemetry: enableTelemetryForCarml
   }
 }
 
@@ -139,6 +146,7 @@ module createResourceGroupForLzNetworking '../../carml/v0.6.0/Microsoft.Resource
     name: virtualNetworkResourceGroupName
     location: virtualNetworkLocation
     lock: virtualNetworkResourceGroupLockEnabled ? 'CanNotDelete' : ''
+    enableDefaultTelemetry: enableTelemetryForCarml
   }
 }
 
@@ -153,6 +161,7 @@ module tagResourceGroup '../../carml/v0.6.0/Microsoft.Resources/tags/deploy.bice
     resourceGroupName: virtualNetworkResourceGroupName
     onlyUpdate: true
     tags: virtualNetworkResourceGroupTags
+    enableDefaultTelemetry: enableTelemetryForCarml
   }
 }
 
@@ -169,7 +178,7 @@ module createLzVnet '../../carml/v0.6.0/Microsoft.Network/virtualNetworks/deploy
     addressPrefixes: virtualNetworkAddressSpace
     dnsServers: virtualNetworkDnsServers
     ddosProtectionPlanId: virtualNetworkDdosPlanId
-    virtualNetworkPeerings: (virtualNetworkPeeringEnabled && !empty(hubVirtualNetworkResourceIdChecked)) ? [
+    virtualNetworkPeerings: (virtualNetworkEnabled && virtualNetworkPeeringEnabled && !empty(hubVirtualNetworkResourceIdChecked) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) ? [
       {
         allowForwardedTraffic: true
         allowVirtualNetworkAccess: true
@@ -183,10 +192,11 @@ module createLzVnet '../../carml/v0.6.0/Microsoft.Network/virtualNetworks/deploy
         remotePeeringUseRemoteGateways: false
       }
     ] : []
+    enableDefaultTelemetry: enableTelemetryForCarml
   }
 }
 
-module createLzVirtualWanConnection '../../carml/v0.6.0/Microsoft.Network/virtualHubs/hubVirtualNetworkConnections/deploy.bicep' = if (virtualNetworkEnabled && virtualNetworkPeeringEnabled && !empty(virtualHubResourceIdChecked)) {
+module createLzVirtualWanConnection '../../carml/v0.6.0/Microsoft.Network/virtualHubs/hubVirtualNetworkConnections/deploy.bicep' = if (virtualNetworkEnabled && virtualNetworkPeeringEnabled && !empty(virtualHubResourceIdChecked) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName) && !empty(virtualWanHubResourceGroupName) && !empty(virtualWanHubSubscriptionId)) {
   dependsOn: [
     createResourceGroupForLzNetworking
   ]
@@ -195,7 +205,7 @@ module createLzVirtualWanConnection '../../carml/v0.6.0/Microsoft.Network/virtua
   params: {
     name: virtualWanHubConnectionName
     virtualHubName: virtualWanHubName
-    remoteVirtualNetworkId: createLzVnet.outputs.resourceId
+    remoteVirtualNetworkId: '/subscriptions/${subscriptionId}/resourceGroups/${virtualNetworkResourceGroupName}/providers/Microsoft.Network/virtualNetworks/${virtualNetworkName}'
     routingConfiguration: {
       associatedRouteTable: {
         id: virtualWanHubConnectionAssociatedRouteTable
@@ -205,6 +215,7 @@ module createLzVirtualWanConnection '../../carml/v0.6.0/Microsoft.Network/virtua
         labels: virtualWanHubConnectionPropogatedLabels
       }
     }
+    enableDefaultTelemetry: enableTelemetryForCarml
   }
 }
 
@@ -219,6 +230,7 @@ module createLzRoleAssignments '../../carml/v0.6.0/Microsoft.Authorization/roleA
     roleDefinitionIdOrName: assignment.definition
     subscriptionId: subscriptionId
     resourceGroupName: (contains(assignment.relativeScope, '/resourceGroups/') ? split(assignment.relativeScope, '/')[2] : '')
+    enableDefaultTelemetry: enableTelemetryForCarml
   }
 }]
 

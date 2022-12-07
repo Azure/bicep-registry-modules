@@ -15,7 +15,7 @@ subscriptionManagementGroupAssociationEnabled | No       | Whether to move the s
 subscriptionManagementGroupId | No       | The destination management group ID for the new subscription. Note: Do not supply the display name. The management group ID forms part of the Azure resource ID. e.g., `/providers/Microsoft.Management/managementGroups/{managementGroupId}`.
 subscriptionTags | No       | An object of tag key/value pairs to be appended to a subscription. NOTE: Tags will only be overwriten if existing tag exists with same key; values provided here win.
 virtualNetworkEnabled | No       | Whether to create a virtual network or not.
-virtualNetworkResourceGroupName | Yes      | The name of the resource group to create the virtual network in.
+virtualNetworkResourceGroupName | No       | The name of the resource group to create the virtual network in.
 virtualNetworkResourceGroupLockEnabled | No       | Enables the deployment of a `CanNotDelete` resource locks to the virtual networks resource group.
 virtualNetworkResourceGroupTags | No       | An object of tag key/value pairs to be appended to the Resource Group that the Virtual Network is created in. NOTE: Tags will only be overwriten if existing tag exists with same key; values provided here win.
 virtualNetworkLocation | No       | The location of the virtual network. Use region shortnames e.g. uksouth, eastus, etc.
@@ -32,6 +32,7 @@ virtualNetworkVwanPropagatedRouteTablesResourceIds | No       | An array of virt
 virtualNetworkVwanPropagatedLabels | No       | An array of virtual hub route table labels to propogate routes to. If left blank/empty default label will be propogated to only.
 roleAssignmentEnabled | No       | Whether to create role assignments or not. If true, supply the array of role assignment objects in the parameter called `roleAssignments`.
 roleAssignments | No       | Supply an array of objects containing the details of the role assignments to create.
+disableTelemetry | No       | Disable telemetry collection by this module. For more information on the telemetry collected by this module, that is controlled by this parameter, see this page in the wiki: [Telemetry Tracking Using Customer Usage Attribution (PID)](https://github.com/Azure/bicep-lz-vending/wiki/Telemetry)
 
 ### subscriptionId
 
@@ -69,7 +70,7 @@ Whether to create a virtual network or not.
 
 ### virtualNetworkResourceGroupName
 
-![Parameter Setting](https://img.shields.io/badge/parameter-required-orange?style=flat-square)
+![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
 The name of the resource group to create the virtual network in.
 
@@ -179,6 +180,14 @@ Whether to create role assignments or not. If true, supply the array of role ass
 
 Supply an array of objects containing the details of the role assignments to create.
 
+### disableTelemetry
+
+![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
+
+Disable telemetry collection by this module. For more information on the telemetry collected by this module, that is controlled by this parameter, see this page in the wiki: [Telemetry Tracking Using Customer Usage Attribution (PID)](https://github.com/Azure/bicep-lz-vending/wiki/Telemetry)
+
+- Default value: `False`
+
 ## Snippets
 
 ### Parameter file
@@ -256,6 +265,9 @@ Supply an array of objects containing the details of the role assignments to cre
         },
         "roleAssignments": {
             "value": []
+        },
+        "disableTelemetry": {
+            "value": false
         }
     }
 }
