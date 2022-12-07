@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.13.1.58284",
-      "templateHash": "4231243769622367692"
+      "templateHash": "3110129629791778392"
     },
     "name": "`main.bicep` Parameters",
     "description": "These are the input parameters for the Bicep module: [`main.bicep`](./main.bicep)\n\nThis is the orchestration module that is used and called by a consumer of the module to deploy a Landing Zone Subscription and its associated resources, based on the parameter input values that are provided to it at deployment time.\n\n> For more information and examples please see the [wiki](https://github.com/Azure/bicep-lz-vending/wiki)"
@@ -495,7 +495,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.13.1.58284",
-              "templateHash": "2342707876943791475"
+              "templateHash": "15554599716615550911"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "These are the input parameters for the Bicep module: [`deploy.bicep`](./deploy.bicep)\n\nThis is the sub-orchestration module that is used and called by the [`main.bicep`](../../../main.bicep)  module to deploy the resources into the subscription that has been created (or an existing one provided), based on the parameter input values that are provided to it at deployment time from the `main.bicep` orchestration module.\n\n> ⚠️ It is not intended for this module to be called outside of being a sub-orchestration module for the `main.bicep` module ⚠️"
@@ -684,7 +684,7 @@
             },
             "virtualWanHubConnectionPropogatedRouteTables": "[if(not(empty(parameters('virtualNetworkVwanPropagatedRouteTablesResourceIds'))), parameters('virtualNetworkVwanPropagatedRouteTablesResourceIds'), array(variables('virutalWanHubDefaultRouteTableId')))]",
             "virtualWanHubConnectionPropogatedLabels": "[if(not(empty(parameters('virtualNetworkVwanPropagatedLabels'))), parameters('virtualNetworkVwanPropagatedLabels'), createArray('default'))]",
-            "carmlTelemetryFlip": "[if(equals(parameters('disableTelemetry'), true()), false(), true())]"
+            "enableTelemetryForCarml": "[if(equals(parameters('disableTelemetry'), true()), false(), true())]"
           },
           "resources": [
             {
@@ -768,7 +768,7 @@
                     "value": "[parameters('subscriptionTags')]"
                   },
                   "enableDefaultTelemetry": {
-                    "value": "[variables('carmlTelemetryFlip')]"
+                    "value": "[variables('enableTelemetryForCarml')]"
                   }
                 },
                 "template": {
@@ -1225,7 +1225,7 @@
                   },
                   "lock": "[if(parameters('virtualNetworkResourceGroupLockEnabled'), createObject('value', 'CanNotDelete'), createObject('value', ''))]",
                   "enableDefaultTelemetry": {
-                    "value": "[variables('carmlTelemetryFlip')]"
+                    "value": "[variables('enableTelemetryForCarml')]"
                   }
                 },
                 "template": {
@@ -1765,7 +1765,7 @@
                     "value": "[parameters('virtualNetworkResourceGroupTags')]"
                   },
                   "enableDefaultTelemetry": {
-                    "value": "[variables('carmlTelemetryFlip')]"
+                    "value": "[variables('enableTelemetryForCarml')]"
                   }
                 },
                 "template": {
@@ -2237,7 +2237,7 @@
                   },
                   "virtualNetworkPeerings": "[if(and(and(and(and(and(and(parameters('virtualNetworkEnabled'), parameters('virtualNetworkPeeringEnabled')), not(empty(variables('hubVirtualNetworkResourceIdChecked')))), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), createObject('value', createArray(createObject('allowForwardedTraffic', true(), 'allowVirtualNetworkAccess', true(), 'allowGatewayTransit', false(), 'useRemoteGateways', parameters('virtualNetworkUseRemoteGateways'), 'remotePeeringEnabled', parameters('virtualNetworkPeeringEnabled'), 'remoteVirtualNetworkId', variables('hubVirtualNetworkResourceIdChecked'), 'remotePeeringAllowForwardedTraffic', true(), 'remotePeeringAllowVirtualNetworkAccess', true(), 'remotePeeringAllowGatewayTransit', true(), 'remotePeeringUseRemoteGateways', false()))), createObject('value', createArray()))]",
                   "enableDefaultTelemetry": {
-                    "value": "[variables('carmlTelemetryFlip')]"
+                    "value": "[variables('enableTelemetryForCarml')]"
                   }
                 },
                 "template": {
@@ -3461,7 +3461,7 @@
                     }
                   },
                   "enableDefaultTelemetry": {
-                    "value": "[variables('carmlTelemetryFlip')]"
+                    "value": "[variables('enableTelemetryForCarml')]"
                   }
                 },
                 "template": {
@@ -3604,7 +3604,7 @@
                     "value": "[if(contains(parameters('roleAssignments')[copyIndex()].relativeScope, '/resourceGroups/'), split(parameters('roleAssignments')[copyIndex()].relativeScope, '/')[2], '')]"
                   },
                   "enableDefaultTelemetry": {
-                    "value": "[variables('carmlTelemetryFlip')]"
+                    "value": "[variables('enableTelemetryForCarml')]"
                   }
                 },
                 "template": {

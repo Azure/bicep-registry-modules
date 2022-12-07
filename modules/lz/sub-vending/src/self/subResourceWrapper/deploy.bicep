@@ -114,7 +114,7 @@ var virtualWanHubConnectionPropogatedRouteTables = !empty(virtualNetworkVwanProp
 var virtualWanHubConnectionPropogatedLabels = !empty(virtualNetworkVwanPropagatedLabels) ? virtualNetworkVwanPropagatedLabels : [ 'default' ]
 
 // Telemetry for CARML flip
-var carmlTelemetryFlip = disableTelemetry == true ? false : true
+var enableTelemetryForCarml = disableTelemetry == true ? false : true
 
 // RESOURCES & MODULES
 
@@ -135,7 +135,7 @@ module tagSubscription '../../carml/v0.6.0/Microsoft.Resources/tags/deploy.bicep
     location: virtualNetworkLocation
     onlyUpdate: true
     tags: subscriptionTags
-    enableDefaultTelemetry: carmlTelemetryFlip
+    enableDefaultTelemetry: enableTelemetryForCarml
   }
 }
 
@@ -146,7 +146,7 @@ module createResourceGroupForLzNetworking '../../carml/v0.6.0/Microsoft.Resource
     name: virtualNetworkResourceGroupName
     location: virtualNetworkLocation
     lock: virtualNetworkResourceGroupLockEnabled ? 'CanNotDelete' : ''
-    enableDefaultTelemetry: carmlTelemetryFlip
+    enableDefaultTelemetry: enableTelemetryForCarml
   }
 }
 
@@ -161,7 +161,7 @@ module tagResourceGroup '../../carml/v0.6.0/Microsoft.Resources/tags/deploy.bice
     resourceGroupName: virtualNetworkResourceGroupName
     onlyUpdate: true
     tags: virtualNetworkResourceGroupTags
-    enableDefaultTelemetry: carmlTelemetryFlip
+    enableDefaultTelemetry: enableTelemetryForCarml
   }
 }
 
@@ -192,7 +192,7 @@ module createLzVnet '../../carml/v0.6.0/Microsoft.Network/virtualNetworks/deploy
         remotePeeringUseRemoteGateways: false
       }
     ] : []
-    enableDefaultTelemetry: carmlTelemetryFlip
+    enableDefaultTelemetry: enableTelemetryForCarml
   }
 }
 
@@ -215,7 +215,7 @@ module createLzVirtualWanConnection '../../carml/v0.6.0/Microsoft.Network/virtua
         labels: virtualWanHubConnectionPropogatedLabels
       }
     }
-    enableDefaultTelemetry: carmlTelemetryFlip
+    enableDefaultTelemetry: enableTelemetryForCarml
   }
 }
 
@@ -230,7 +230,7 @@ module createLzRoleAssignments '../../carml/v0.6.0/Microsoft.Authorization/roleA
     roleDefinitionIdOrName: assignment.definition
     subscriptionId: subscriptionId
     resourceGroupName: (contains(assignment.relativeScope, '/resourceGroups/') ? split(assignment.relativeScope, '/')[2] : '')
-    enableDefaultTelemetry: carmlTelemetryFlip
+    enableDefaultTelemetry: enableTelemetryForCarml
   }
 }]
 
