@@ -1,0 +1,24 @@
+name: Get module names and tags
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install packages
+        run: npm ci
+
+      - name: Get module names and tags
+        uses: actions/github-script@v6
+        with:
+          result-encoding: string
+          script: |
+            const script = require("./scripts/github-actions/get-module-names-with-tags.js")
+            await script({ require, github, context, core })

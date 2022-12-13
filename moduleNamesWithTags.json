@@ -1,0 +1,18 @@
+{
+  "app/dapr-containerapp": ["1.0.1", "1.0.2"],
+  "app/dapr-containerapps-environment": ["1.0.1", "1.1.1", "1.2.1"],
+  "azure-gaming/game-dev-vm": ["1.0.1", "1.0.2"],
+  "azure-gaming/game-dev-vmss": ["1.0.1", "1.1.1"],
+  "compute/availability-set": ["1.0.1"],
+  "compute/container-registry": ["1.0.1"],
+  "compute/custom-image-vmss": ["1.0.1"],
+  "deployment-scripts/aks-run-command": ["1.0.1", "1.0.2", "1.0.3"],
+  "deployment-scripts/aks-run-helm": ["1.0.1"],
+  "deployment-scripts/build-acr": ["1.0.1", "1.0.2"],
+  "deployment-scripts/create-kv-certificate": ["1.0.1", "1.1.1", "1.1.2"],
+  "deployment-scripts/import-acr": ["1.0.1", "2.0.1", "2.1.1", "3.0.1"],
+  "deployment-scripts/wait": ["1.0.1"],
+  "network/virtual-network": ["1.0.1", "1.0.2", "1.0.3", "1.1.1"],
+  "samples/array-loop": ["1.0.1"],
+  "samples/hello-world": ["1.0.1", "1.0.2"]
+}
