@@ -40,7 +40,7 @@ async function getModuleMetadata({ require, github, context, core }) {
   const oldModuleMetadata = fs.readFileSync("moduleMetadata.json", {
     encoding: "utf-8",
   });
-  const newModuleMetadata = prettier.format(JSON.stringify(result));
+  const newModuleMetadata = JSON.stringify(result, null, 2);
 
   if (oldModuleMetadata === newModuleMetadata) {
     core.info("The module names with tags information is up to date.");
