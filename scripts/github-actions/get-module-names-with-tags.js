@@ -36,7 +36,15 @@ async function getModuleNamesWithTags({ require, core }) {
     }
   }
 
-  fs.writeFile("moduleNamesWithTags.json", JSON.stringify(result), (err) => {
+  const oldModuleNamesWithTags = fs.readFileSync("moduleNamesWithTags.json", { encoding: "utf-8" });
+  const newModuleNamesWithTags = JSON.stringify(result);
+
+  if (oldModuleNamesWithTags === newModuleNamesWithTags) {
+    core.info("The module names with tags information is up to date.");
+    return;
+  }
+
+  fs.writeFileSync("moduleNamesWithTags.json", newModuleNamesWithTags, (err) => {
     if (err) throw err;
   });
 }

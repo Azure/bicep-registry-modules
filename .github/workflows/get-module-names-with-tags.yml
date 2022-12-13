@@ -23,6 +23,10 @@ jobs:
             const script = require("./scripts/github-actions/get-module-names-with-tags.js")
             await script({ require, core })
 
+       ## Install a community package that adds the azcopy tool
+      - name: Install azcopy
+        uses: kheiakiyama/install-azcopy-action@v1.0.3
+
       - name: Upload module names and tags file
         uses: actions/upload-artifact@v3
         with:
