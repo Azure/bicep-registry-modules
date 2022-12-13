@@ -61,7 +61,11 @@ async function getModuleMetadata({ require, github, context, core }) {
  * @param {typeof import("@actions/github").context} context
  * @param {string} newModuleMetadata
  */
-async function createPullRequestToUpdateBicepModuleRegistryReferences(github, context, newModuleMetadata) {
+async function createPullRequestToUpdateBicepModuleRegistryReferences(
+  github,
+  context,
+  newModuleMetadata
+) {
   const branch = `refresh-module-metadata-${getTimestamp()}`;
 
   // Create a new branch.
