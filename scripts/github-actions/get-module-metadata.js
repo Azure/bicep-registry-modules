@@ -13,6 +13,7 @@ async function getModuleMetadata({ require, github, context, core }) {
   const fs = require("fs");
   const path = require("path");
   const axios = require("axios").default;
+  const prettier = require("prettier");
 
   const moduleGroups = getSubdirNames(fs, "modules");
   var result = {};
@@ -39,7 +40,7 @@ async function getModuleMetadata({ require, github, context, core }) {
   const oldModuleMetadata = fs.readFileSync("moduleMetadata.json", {
     encoding: "utf-8",
   });
-  const newModuleMetadata = JSON.stringify(result);
+  const newModuleMetadata = prettier.format(JSON.stringify(result));
 
   if (oldModuleMetadata === newModuleMetadata) {
     core.info("The module names with tags information is up to date.");
