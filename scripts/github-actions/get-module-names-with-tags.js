@@ -15,7 +15,7 @@ async function getModuleNamesWithTags({ require, core }) {
   const axios = require("axios").default;
 
   const moduleGroups = getSubdirNames(fs, "modules");
-  var  result = {}; 
+  var result = {};
 
   for (const moduleGroup of moduleGroups) {
     var moduleGroupPath = path.join("modules", moduleGroup);
@@ -36,7 +36,9 @@ async function getModuleNamesWithTags({ require, core }) {
     }
   }
 
-  const oldModuleNamesWithTags = fs.readFileSync("moduleNamesWithTags.json", { encoding: "utf-8" });
+  const oldModuleNamesWithTags = fs.readFileSync("moduleNamesWithTags.json", {
+    encoding: "utf-8",
+  });
   const newModuleNamesWithTags = JSON.stringify(result);
 
   if (oldModuleNamesWithTags === newModuleNamesWithTags) {
@@ -44,9 +46,13 @@ async function getModuleNamesWithTags({ require, core }) {
     return;
   }
 
-  fs.writeFileSync("moduleNamesWithTags.json", newModuleNamesWithTags, (err) => {
-    if (err) throw err;
-  });
+  fs.writeFileSync(
+    "moduleNamesWithTags.json",
+    newModuleNamesWithTags,
+    (err) => {
+      if (err) throw err;
+    }
+  );
 }
 
 module.exports = getModuleNamesWithTags;
