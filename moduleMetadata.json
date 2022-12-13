@@ -1,0 +1,29 @@
+{
+  "name": "bicep-registry-modules",
+  "version": "1.0.0",
+  "description": "Bicep registry modules",
+  "private": true,
+  "repository": "Azure/bicep-registry-modules",
+  "keywords": [
+    "Bicep"
+  ],
+  "author": "The Bicep Registry Module Authors (https://github.com/Azure/bicep-registry-modules/graphs/contributors)",
+  "license": "MIT",
+  "bugs": "https://github.com/azure/bicep-registry-modules/issues",
+  "homepage": "https://github.com/azure/bicep-registry-modules#readme",
+  "scripts": {
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "prettier:check": "prettier --check .",
+    "prettier": "prettier --write ."
+  },
+  "devDependencies": {
+    "@actions/core": "^1.9.1",
+    "@actions/github": "^5.0.0",
+    "axios": "^0.27.2",
+    "eslint": "^8.9.0",
+    "eslint-config-prettier": "^8.3.0",
+    "markdown-table": "^3.0.2",
+    "prettier": "^2.5.1"
+  }
+}
