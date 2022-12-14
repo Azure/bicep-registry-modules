@@ -47,7 +47,7 @@ async function getModuleMetadata({ require, github, context, core }) {
     return;
   }
 
-  const createPullRequestHelper = await new CreatePullRequestHelper(
+  const createPRHelper = new CreatePullRequestHelper(
     "dev/bhsubra/CreateBicepRegistryModuleReferences", 
     "refresh-module-metadata",
     newModuleMetadata,
@@ -57,7 +57,7 @@ async function getModuleMetadata({ require, github, context, core }) {
     "moduleMetadata.json",
     "Refresh bicep registry module references"
     );
-    const url = createPullRequestHelper.createPullRequest();
+    const url = await createPRHelper.createPullRequest();
 
   core.info(
     `The module metadata is outdated. A pull request ${url} was created to update it.`

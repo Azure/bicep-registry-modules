@@ -92,7 +92,7 @@ async function refreshModuleTable({ require, github, context, core }) {
     return;
   }
 
-  const createPullRequestHelper = await new CreatePullRequestHelper(
+  const createPRHelper = new CreatePullRequestHelper(
     "dev/bhsubra/CreateBicepRegistryModuleReferences",
     "refresh-module-metadata",
     newReadmeFormatted,
@@ -102,7 +102,7 @@ async function refreshModuleTable({ require, github, context, core }) {
     "README.md",
     "🤖 Refresh module table"
   );
-  const prUrl = createPullRequestHelper.createPullRequest();
+  const prUrl = await createPRHelper.createPullRequest();
 
   core.info(
     `The module table is outdated. A pull request ${prUrl} was created to update it.`
