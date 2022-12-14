@@ -1,4 +1,7 @@
 import { CreatePullRequestHelper } from "./create-pull-request-helper.js";
+import fs from "fs";
+import path from "path";
+import axios from "axios";
 /**
  * @param {typeof import("fs")} fs
  * @param {string} dir
@@ -11,9 +14,6 @@ function getSubdirNames(fs, dir) {
 }
 
 async function getModuleMetadata({ require, github, context, core }) {
-  const fs = require("fs");
-  const path = require("path");
-  const axios = require("axios").default;
 
   const moduleGroups = getSubdirNames(fs, "modules");
   var result = {};
@@ -27,7 +27,7 @@ async function getModuleMetadata({ require, github, context, core }) {
       const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${modulePath}/tags/list`;
 
       try {
-        const versionListResponse = await axios.get(versionListUrl);
+        const versionListResponse = await axios.default.get(versionListUrl);
         const tags = versionListResponse.data.tags.sort();
 
         result[modulePath] = tags;
