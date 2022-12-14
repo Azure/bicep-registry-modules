@@ -1,5 +1,4 @@
 {
-  "type": "module",
   "name": "bicep-registry-modules",
   "version": "1.0.0",
   "description": "Bicep registry modules",
