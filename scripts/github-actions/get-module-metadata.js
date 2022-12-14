@@ -13,7 +13,7 @@ function getSubdirNames(fs, dir) {
     .map((x) => x.name);
 }
 
-async function getModuleMetadata({ require, github, context, core }) {
+async function getModuleMetadata({ github, context, core }) {
 
   const moduleGroups = getSubdirNames(fs, "modules");
   var result = {};
