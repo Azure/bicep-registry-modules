@@ -1,3 +1,4 @@
+import { createPullRequest } from "./create-pull-request-helper";
 /**
  * @param {typeof import("fs")} fs
  * @param {string} dir
@@ -13,7 +14,6 @@ async function getModuleMetadata({ require, github, context, core }) {
   const fs = require("fs");
   const path = require("path");
   const axios = require("axios").default;
-  const createPR = require("create-pull-request-helper.js");
 
   const moduleGroups = getSubdirNames(fs, "modules");
   var result = {};
@@ -47,7 +47,7 @@ async function getModuleMetadata({ require, github, context, core }) {
     return;
   }
 
-  const prUrl = await createPR.createPullRequest(
+  const prUrl = await createPullRequest(
     "dev/bhsubra/CreateBicepRegistryModuleReferences", 
     "refresh-module-metadata",
     newModuleMetadata,
