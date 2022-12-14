@@ -13,7 +13,7 @@ async function getModuleMetadata({ require, github, context, core }) {
   const fs = require("fs");
   const path = require("path");
   const axios = require("axios").default;
-  const createPR = require("./create-pull-request-helper.js");
+  const createPR = require("create-pull-request-helper.js");
 
   const moduleGroups = getSubdirNames(fs, "modules");
   var result = {};
