@@ -1,4 +1,3 @@
-import { createPullRequest } from "./create-pull-request-helper";
 /**
  * @param {typeof import("fs")} fs
  * @param {string} dir
@@ -47,7 +46,8 @@ async function getModuleMetadata({ require, github, context, core }) {
     return;
   }
 
-  const prUrl = await createPullRequest(
+  let createPRHelperExport = await import('./create-pull-request-helper');
+  const prUrl = await createPRHelperExport.createPullRequest(
     "dev/bhsubra/CreateBicepRegistryModuleReferences", 
     "refresh-module-metadata",
     newModuleMetadata,
