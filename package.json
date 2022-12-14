@@ -25,5 +25,6 @@
     "eslint-config-prettier": "^8.3.0",
     "markdown-table": "^3.0.2",
     "prettier": "^2.5.1"
-  }
+  },
+  "type": "module"
 }
