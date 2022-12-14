@@ -4,6 +4,7 @@ module.exports = {
     es2021: true,
   },
   parserOptions: {
+    "sourceType": "module",
     ecmaVersion: "latest",
   },
   extends: ["eslint:recommended", "prettier"],

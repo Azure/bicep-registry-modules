@@ -1,14 +1,4 @@
-function getTimestamp() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = (now.getMonth() + 1).toString().padStart(2, "0");
-  const date = now.getDate().toString().padStart(2, "0");
-  const hours = now.getHours();
-  const minutes = now.getMinutes();
-  const seconds = now.getSeconds();
-
-  return `${year}${month}${date}${hours}${minutes}${seconds}`;
-}
+import { CreatePullRequestHelper } from "./create-pull-request-helper.js";
 
 /**
  * @param {typeof import("fs")} fs
@@ -67,63 +57,6 @@ async function generateModulesTable(axios, fs, path, core) {
 }
 
 /**
- * @param {ReturnType<typeof import("@actions/github").getOctokit>} github
- * @param {typeof import("@actions/github").context} context
- * @param {string} newReadme
- */
-async function createPullRequestToUpdateReadme(github, context, newReadme) {
-  const branch = `refresh-module-table-${getTimestamp()}`;
-
-  // Create a new branch.
-  await github.rest.git.createRef({
-    ...context.repo,
-    ref: `refs/heads/${branch}`,
-    sha: context.sha,
-  });
-
-  // Update README.md.
-  const { data: treeData } = await github.rest.git.createTree({
-    ...context.repo,
-    tree: [
-      {
-        type: "blob",
-        mode: "100644",
-        path: "README.md",
-        content: newReadme,
-      },
-    ],
-    base_tree: context.sha,
-  });
-
-  // Create a commit.
-  const { data: commitData } = await github.rest.git.createCommit({
-    ...context.repo,
-    message: "Refresh module table",
-    tree: treeData.sha,
-    parents: [context.sha],
-  });
-
-  // Update HEAD of the new branch.
-  await github.rest.git.updateRef({
-    ...context.repo,
-    // The ref parameter for updateRef is not the same as createRef.
-    ref: `heads/${branch}`,
-    sha: commitData.sha,
-  });
-
-  // Create a pull request.
-  const { data: prData } = await github.rest.pulls.create({
-    ...context.repo,
-    title: "🤖 Refresh module table",
-    head: branch,
-    base: "main",
-    maintainer_can_modify: true,
-  });
-
-  return prData.html_url;
-}
-
-/**
  * @typedef Params
  * @property {typeof require} require
  * @property {ReturnType<typeof import("@actions/github").getOctokit>} github
@@ -159,11 +92,18 @@ async function refreshModuleTable({ require, github, context, core }) {
     return;
   }
 
-  const prUrl = await createPullRequestToUpdateReadme(
-    github,
+  const createPullRequestHelper = await new CreatePullRequestHelper(
+    "dev/bhsubra/CreateBicepRegistryModuleReferences",
+    "refresh-module-metadata",
+    newReadmeFormatted,
     context,
-    newReadmeFormatted
+    github,
+    "Refresh module table",
+    "README.md",
+    "🤖 Refresh module table"
   );
+  const prUrl = createPullRequestHelper.createPullRequest();
+
   core.info(
     `The module table is outdated. A pull request ${prUrl} was created to update it.`
   );
