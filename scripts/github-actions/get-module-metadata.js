@@ -1,7 +1,3 @@
-import { CreatePullRequestHelper } from "./create-pull-request-helper.js";
-import fs from "fs";
-import path from "path";
-import axios from "axios";
 /**
  * @param {typeof import("fs")} fs
  * @param {string} dir
@@ -13,7 +9,11 @@ function getSubdirNames(fs, dir) {
     .map((x) => x.name);
 }
 
-async function getModuleMetadata({ github, context, core }) {
+async function getModuleMetadata({ require, github, context, core }) {
+  const fs = require("fs");
+  const path = require("path");
+  const axios = require("axios").default;
+  const createPR = require("./create-pull-request-helper.js");
 
   const moduleGroups = getSubdirNames(fs, "modules");
   var result = {};
@@ -47,7 +47,7 @@ async function getModuleMetadata({ github, context, core }) {
     return;
   }
 
-  const createPRHelper = new CreatePullRequestHelper(
+  const prUrl = await createPR.createPullRequest(
     "dev/bhsubra/CreateBicepRegistryModuleReferences", 
     "refresh-module-metadata",
     newModuleMetadata,
@@ -57,10 +57,9 @@ async function getModuleMetadata({ github, context, core }) {
     "moduleMetadata.json",
     "Refresh bicep registry module references"
     );
-    const url = await createPRHelper.createPullRequest();
 
   core.info(
-    `The module metadata is outdated. A pull request ${url} was created to update it.`
+    `The module metadata is outdated. A pull request ${prUrl} was created to update it.`
   );
 }
 

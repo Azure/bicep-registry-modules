@@ -1,34 +1,4 @@
-export class CreatePullRequestHelper {
-  base;
-  branchPrefix;
-  contents;
-  context;
-  github;
-  message;
-  path;
-  title;
-
-  constructor(
-    base,
-    branchPrefix,
-    contents,
-    context,
-    github,
-    message,
-    path,
-    title
-  ) {
-    this.base = base;
-    this.branchPrefix = branchPrefix;
-    this.contents = contents;
-    this.context = context;
-    this.github = github;
-    this.message = message;
-    this.path = path;
-    this.title = title;
-  }
-
-  async createPullRequest() {
+  async function createPullRequest(base, branchPrefix, contents, context, github, message, path, title) {
     const branch = `${this.branchPrefix}-${this.getTimestamp()}`;
 
     // Create a new branch.
@@ -91,4 +61,5 @@ export class CreatePullRequestHelper {
 
     return `${year}${month}${date}${hours}${minutes}${seconds}`;
   }
-}
+
+  module.exports = createPullRequest;
