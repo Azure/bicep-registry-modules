@@ -46,7 +46,7 @@ async function getModuleMetadata({ require, github, context, core }) {
     return;
   }
 
-  const script = require("./create-pull-request-helper.js")
+  const script = require("./scripts/github-actions/create-pull-request-helper.js")
   const prUrl = await script("dev/bhsubra/CreateBicepRegistryModuleReferences", "refresh-module-metadata", newModuleMetadata, context, github, "Refresh module metadata", "moduleMetadata.json", "Refresh bicep registry module references");
 
   core.info(
