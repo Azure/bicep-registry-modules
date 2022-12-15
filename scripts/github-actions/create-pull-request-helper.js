@@ -1,3 +1,15 @@
+function getTimestamp() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = (now.getMonth() + 1).toString().padStart(2, "0");
+  const date = now.getDate().toString().padStart(2, "0");
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+  const seconds = now.getSeconds();
+
+  return `${year}${month}${date}${hours}${minutes}${seconds}`;
+}
+
   async function createPullRequest(base, branchPrefix, contents, context, github, message, path, title) {
     const branch = `${this.branchPrefix}-${this.getTimestamp()}`;
 
@@ -48,18 +60,6 @@
     });
 
     return prData.html_url;
-  }
-
-  getTimestamp() {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = (now.getMonth() + 1).toString().padStart(2, "0");
-    const date = now.getDate().toString().padStart(2, "0");
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const seconds = now.getSeconds();
-
-    return `${year}${month}${date}${hours}${minutes}${seconds}`;
   }
 
   module.exports = createPullRequest;
