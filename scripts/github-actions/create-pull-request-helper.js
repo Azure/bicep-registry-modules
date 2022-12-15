@@ -1,4 +1,4 @@
-  export async function createPullRequest(base, branchPrefix, contents, context, github, message, path, title) {
+  async function createPullRequest(base, branchPrefix, contents, context, github, message, path, title) {
     const branch = `${this.branchPrefix}-${this.getTimestamp()}`;
 
     // Create a new branch.
@@ -61,3 +61,5 @@
 
     return `${year}${month}${date}${hours}${minutes}${seconds}`;
   }
+
+  module.exports = createPullRequest;
