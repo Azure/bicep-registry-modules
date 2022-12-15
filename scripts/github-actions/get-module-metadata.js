@@ -46,7 +46,7 @@ async function getModuleMetadata({ require, github, context, core }) {
     return;
   }
 
-  let createPRHelperExport = await import('./create-pull-request-helper');
+  let createPRHelperExport = await import('./create-pull-request-helper.js');
   const prUrl = await createPRHelperExport.createPullRequest(
     "dev/bhsubra/CreateBicepRegistryModuleReferences", 
     "refresh-module-metadata",
