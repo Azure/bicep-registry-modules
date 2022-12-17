@@ -65,6 +65,9 @@ param hubNetworkResourceId string = ''
 @sys.description('Enables the use of remote gateways in the spefcified hub virtual network. If no gateways exsit in the hub virtual network, set this to `false`, otherwise peering will fail to create. Set this to `false` for virtual wan hub connections.')
 param virtualNetworkUseRemoteGateways bool = true
 
+@sys.description('Enables the ability for the Virtual WAN Hub Connection to learn the default route 0.0.0.0/0 from the Hub.')
+param virtualNetworkVwanEnableInternetSecurity bool = true
+
 @sys.description('The resource ID of the virtual hub route table to associate to the virtual hub connection (this virtual network). If left blank/empty default route table will be associated.')
 param virtualNetworkVwanAssociatedRouteTableResourceId string = ''
 
@@ -206,6 +209,7 @@ module createLzVirtualWanConnection '../../carml/v0.6.0/Microsoft.Network/virtua
     name: virtualWanHubConnectionName
     virtualHubName: virtualWanHubName
     remoteVirtualNetworkId: '/subscriptions/${subscriptionId}/resourceGroups/${virtualNetworkResourceGroupName}/providers/Microsoft.Network/virtualNetworks/${virtualNetworkName}'
+    enableInternetSecurity: virtualNetworkVwanEnableInternetSecurity
     routingConfiguration: {
       associatedRouteTable: {
         id: virtualWanHubConnectionAssociatedRouteTable
