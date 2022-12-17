@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.13.1.58284",
-      "templateHash": "2160255471090301540"
+      "templateHash": "10362427080728582777"
     },
     "name": "`main.bicep` Parameters",
     "description": "These are the input parameters for the Bicep module: [`main.bicep`](./main.bicep)\n\nThis is the orchestration module that is used and called by a consumer of the module to deploy a Landing Zone Subscription and its associated resources, based on the parameter input values that are provided to it at deployment time.\n\n> For more information and examples please see the [wiki](https://github.com/Azure/bicep-lz-vending/wiki)"
@@ -207,6 +207,14 @@
       "defaultValue": true,
       "metadata": {
         "description": "Enables the use of remote gateways in the specified hub virtual network.\n\n> **IMPORTANT:** If no gateways exist in the hub virtual network, set this to `false`, otherwise peering will fail to create.\n\n- Default value: `true`\n",
+        "example": true
+      }
+    },
+    "virtualNetworkVwanEnableInternetSecurity": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enables the ability for the Virtual WAN Hub Connection to learn the default route 0.0.0.0/0 from the Hub.\n\n",
         "example": true
       }
     },
@@ -469,6 +477,9 @@
           "virtualNetworkUseRemoteGateways": {
             "value": "[parameters('virtualNetworkUseRemoteGateways')]"
           },
+          "virtualNetworkVwanEnableInternetSecurity": {
+            "value": "[parameters('virtualNetworkVwanEnableInternetSecurity')]"
+          },
           "virtualNetworkVwanAssociatedRouteTableResourceId": {
             "value": "[parameters('virtualNetworkVwanAssociatedRouteTableResourceId')]"
           },
@@ -495,7 +506,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.13.1.58284",
-              "templateHash": "17457418095340965108"
+              "templateHash": "18265955099954003874"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "These are the input parameters for the Bicep module: [`deploy.bicep`](./deploy.bicep)\n\nThis is the sub-orchestration module that is used and called by the [`main.bicep`](../../../main.bicep)  module to deploy the resources into the subscription that has been created (or an existing one provided), based on the parameter input values that are provided to it at deployment time from the `main.bicep` orchestration module.\n\n> ⚠️ It is not intended for this module to be called outside of being a sub-orchestration module for the `main.bicep` module ⚠️"
@@ -617,6 +628,13 @@
               "defaultValue": true,
               "metadata": {
                 "description": "Enables the use of remote gateways in the spefcified hub virtual network. If no gateways exsit in the hub virtual network, set this to `false`, otherwise peering will fail to create. Set this to `false` for virtual wan hub connections."
+              }
+            },
+            "virtualNetworkVwanEnableInternetSecurity": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Enables the ability for the Virtual WAN Hub Connection to learn the default route 0.0.0.0/0 from the Hub."
               }
             },
             "virtualNetworkVwanAssociatedRouteTableResourceId": {
@@ -3448,6 +3466,9 @@
                   },
                   "remoteVirtualNetworkId": {
                     "value": "[format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Network/virtualNetworks/{2}', parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), parameters('virtualNetworkName'))]"
+                  },
+                  "enableInternetSecurity": {
+                    "value": "[parameters('virtualNetworkVwanEnableInternetSecurity')]"
                   },
                   "routingConfiguration": {
                     "value": {
