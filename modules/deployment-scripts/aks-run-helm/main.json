@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.12.40.16777",
-      "templateHash": "17889908750769342776"
+      "templateHash": "3029187388790019340"
     }
   },
   "parameters": {
@@ -330,5 +330,17 @@
         }
       }
     }
-  ]
+  ],
+  "outputs": {
+    "helmOutputs": {
+      "type": "array",
+      "copy": {
+        "count": "[length(parameters('helmApps'))]",
+        "input": {
+          "appName": "[parameters('helmApps')[copyIndex()].helmAppName]",
+          "outputs": "[reference(resourceId('Microsoft.Resources/deployments', format('helmInstall-{0}-{1}', parameters('helmApps')[copyIndex()].helmAppName, copyIndex())), '2020-10-01').outputs.commandOutput.value]"
+        }
+      }
+    }
+  }
 }

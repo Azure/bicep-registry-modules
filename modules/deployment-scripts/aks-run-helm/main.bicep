@@ -52,3 +52,8 @@ module helmAppInstalls 'br/public:deployment-scripts/aks-run-command:1.0.1' = [f
     cleanupPreference: cleanupPreference
   }
 }]
+
+output helmOutputs array = [for (app, i) in helmApps: {
+  appName: app.helmAppName
+  outputs: helmAppInstalls[i].outputs.commandOutput
+}]
