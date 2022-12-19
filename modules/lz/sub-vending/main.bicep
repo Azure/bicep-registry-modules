@@ -285,6 +285,14 @@ param hubNetworkResourceId string = ''
 param virtualNetworkUseRemoteGateways bool = true
 
 @metadata({
+  example: true
+})
+@sys.description('''Enables the ability for the Virtual WAN Hub Connection to learn the default route 0.0.0.0/0 from the Hub.
+
+''')
+param virtualNetworkVwanEnableInternetSecurity bool = true
+
+@metadata({
   example: '/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxxxxxxxx/providers/Microsoft.Network/virtualHubs/xxxxxxxxx/hubRouteTables/xxxxxxxxx'
 })
 @sys.description('''The resource ID of the virtual hub route table to associate to the virtual hub connection (this virtual network). If left blank/empty the `defaultRouteTable` will be associated.
@@ -444,6 +452,7 @@ module createSubscriptionResources 'src/self/subResourceWrapper/deploy.bicep' = 
     virtualNetworkPeeringEnabled: virtualNetworkPeeringEnabled
     hubNetworkResourceId: hubNetworkResourceId
     virtualNetworkUseRemoteGateways: virtualNetworkUseRemoteGateways
+    virtualNetworkVwanEnableInternetSecurity: virtualNetworkVwanEnableInternetSecurity
     virtualNetworkVwanAssociatedRouteTableResourceId: virtualNetworkVwanAssociatedRouteTableResourceId
     virtualNetworkVwanPropagatedRouteTablesResourceIds: virtualNetworkVwanPropagatedRouteTablesResourceIds
     virtualNetworkVwanPropagatedLabels: virtualNetworkVwanPropagatedLabels
