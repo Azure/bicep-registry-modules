@@ -53,6 +53,7 @@ module helmAppInstalls 'br/public:deployment-scripts/aks-run-command:1.0.1' = [f
   }
 }]
 
+@description('Helm Command Output Values')
 output helmOutputs array = [for (app, i) in helmApps: {
   appName: app.helmAppName
   outputs: helmAppInstalls[i].outputs.commandOutput
