@@ -1,0 +1,61 @@
+name: Get module metadata
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_call:
+    secrets:
+      # Secrets must be passed from the caller workflow explicitly.
+      ACCOUNT_NAME:
+        required: true      
+      CLIENT_ID:
+        required: true
+      CONTAINER_NAME:
+        required: true    
+      FILE_NAME:
+        required: true            
+      TENANT_ID:
+        required: true
+      SUBSCRIPTION_ID:
+        required: true
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install packages
+        run: npm ci
+
+      - name: Get module metadata
+        uses: actions/github-script@v6
+        with:
+          result-encoding: string
+          script: |
+            const script = require("./scripts/github-actions/get-module-metadata.js")
+            await script({ require, core })
+
+      - name: Upload module names and tags file
+        uses: actions/upload-artifact@v3
+        with:
+          name: moduleNamesWithTags.json
+          path: moduleNamesWithTags.json
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.CLIENT_ID }}
+          tenant-id: ${{ secrets.TENANT_ID }}
+          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+
+      - name: Upload to blob storage
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az storage blob upload --account-name ${{ secrets.ACCOUNT_NAME }} --container-name ${{ secrets.CONTAINER_NAME }} --name ${{ secrets.FILE_NAME }} --file ${{ secrets.FILE_NAME }} --auth-mode login --overwrite
