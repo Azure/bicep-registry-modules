@@ -25,7 +25,7 @@ async function getModuleMetadata({ require, core }) {
         result.push({
           moduleName: modulePath,
           tags: tags,
-          readmeLink: readmeLink,
+          readmeLink: readmeLink
         });
       } catch (error) {
         core.setFailed(error);
