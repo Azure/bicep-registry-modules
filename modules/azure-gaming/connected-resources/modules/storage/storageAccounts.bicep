@@ -63,4 +63,3 @@ var keys = newOrExisting == 'new' ? listKeys(newStorageAccount.id, newStorageAcc
 var blobStorageConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${keys.keys[0].value}'
 
 output id string = newOrExisting == 'new' ? newStorageAccount.id : storageAccount.id
-output blobStorageConnectionString string = blobStorageConnectionString
