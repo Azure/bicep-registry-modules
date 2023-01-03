@@ -57,7 +57,7 @@ resource rbacCertsReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = 
   name: guid(rbacCertificateOfficerRole, rbacPolicy.objectId)
   scope: keyVault
   properties: {
-    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', rbacCertificateOfficerRole)
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', rbacCertificateOfficerRole)
     principalId: rbacPolicy.objectId
     principalType: 'ServicePrincipal'
   }
