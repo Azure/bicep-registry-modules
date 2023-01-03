@@ -1,6 +1,6 @@
 @description('Deployment Location')
 param location string
-param name string = 'k8-cluster'
+param name string = 'aks-${uniqueString(resourceGroup().id, subscription().id)}'
 param agentPoolCount int = 3
 param agentPoolName string = 'k8agent'
 param vmSize string = 'Standard_L16s_v2'
