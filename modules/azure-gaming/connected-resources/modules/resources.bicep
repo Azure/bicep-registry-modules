@@ -76,6 +76,8 @@ var noAvailabilityZones = [
   'brazilsoutheast'
 ]
 
+var locationHasAzSupport = !contains(noAvailabilityZones, location)
+
 module clusterModule 'ContainerService/managedClusters.bicep' = if (enableKubernetes) {
   name: 'create_cluster-${uniqueString(location, resourceGroup().id, deployment().name)}'
   params: {
@@ -86,7 +88,7 @@ module clusterModule 'ContainerService/managedClusters.bicep' = if (enableKubern
     vmSize: contains(kubernetesParams, 'vmSize') ? kubernetesParams.vmSize : 'Standard_D2_v2'
     assignRole: assignRole
     newOrExisting: newOrExisting[newOrExistingKubernetes]
-    isZoneRedundant: isZoneRedundant && !contains(noAvailabilityZones, location)
+    isZoneRedundant: isZoneRedundant && locationHasAzSupport
   }
 }
 var rbacPolicies = [
@@ -111,7 +113,7 @@ module cosmosDB 'documentDB/databaseAccounts.bicep' = if (enableComosDB) {
     name: cosmosDBName
     newOrExisting: newOrExisting[newOrExistingCosmosDB]
     secondaryLocations: secondaryLocations
-    isZoneRedundant: isZoneRedundant && !contains(noAvailabilityZones, location)
+    isZoneRedundant: isZoneRedundant && locationHasAzSupport
   }
 }
 
@@ -121,7 +123,7 @@ module storageAccount 'storage/storageAccounts.bicep' = if (enableStorage) {
     location: location
     name: take(storageAccountName, 24)
     newOrExisting: newOrExisting[newOrExistingStorageAccount]
-    isZoneRedundant: isZoneRedundant && !contains(noAvailabilityZones, location)
+    isZoneRedundant: isZoneRedundant && locationHasAzSupport
   }
 }
 
