@@ -25,7 +25,7 @@ param vmSize string = 'Standard_L16s_v2'
 param newOrExistingStorageAccount string = 'none'
 
 @description('Storage Account Resource Name')
-param storageAccountName string = 'data${uniqueString(resourceGroup().id, subscription().subscriptionId)}'
+param storageAccountName string = 'st${uniqueString(resourceGroup().id, subscription().id)}'
 
 @allowed([ 'new', 'existing', 'none' ])
 @description('Set to create a new or use an existing Key Vault')

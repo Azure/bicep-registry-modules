@@ -1,7 +1,7 @@
 @description('Deployment Location')
 param location string
 
-param name string = uniqueString(resourceGroup().id)
+param name string = 'st${uniqueString(resourceGroup().id, subscription().id)}'
 
 @allowed([ 'new', 'existing' ])
 param newOrExisting string = 'new'

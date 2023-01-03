@@ -6,7 +6,7 @@ param isZoneRedundant bool = true
 
 @allowed([ 'new', 'existing', 'none' ])
 param newOrExistingStorageAccount string = 'none'
-param storageAccountName string = 'store${uniqueString(resourceGroup().id, subscription().id)}'
+param storageAccountName string = 'st${uniqueString(resourceGroup().id, subscription().id)}'
 
 @allowed([ 'new', 'existing', 'none' ])
 param newOrExistingKeyVault string = 'none'
