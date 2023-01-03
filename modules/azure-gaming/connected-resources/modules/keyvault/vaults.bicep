@@ -47,7 +47,7 @@ resource identityRoleAssignDeployment 'Microsoft.Authorization/roleAssignments@2
   name: guid(rbacSecretsReaderRole, rbacPolicy.objectId)
   scope: keyVault
   properties: {
-    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', rbacSecretsReaderRole)
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', rbacSecretsReaderRole)
     principalId: rbacPolicy.objectId
     principalType: 'ServicePrincipal'
   }
