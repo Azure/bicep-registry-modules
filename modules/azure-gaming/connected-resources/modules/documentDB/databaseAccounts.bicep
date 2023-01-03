@@ -1,7 +1,11 @@
 @description('Deployment Location')
 param location string
 
-param name string = 'cosmos-${uniqueString(resourceGroup().id, location)}'
+@description('Resource Name Prefix based on Database Account Type')
+param prefix string = enableCassandra ? 'coscas' : 'cosmos'
+
+@description('Name of Cosmos DB')
+param name string = '$prefix-${uniqueString(resourceGroup().id, location)}'
 
 @allowed([ 'new', 'existing' ])
 param newOrExisting string = 'new'
@@ -29,8 +33,11 @@ param secondaryLocations array = []
 @description('Multi-region writes capability allows you to take advantage of the provisioned throughput for your databases and containers across the globe.')
 param enableMultipleWriteLocations bool = true
 
+@description('Enable Cassandra Backend.')
+param enableCassandra bool = false
+
 @description('Enable Serverless for consumption-based usage.')
-param EnableServerless bool = false
+param enableServerless bool = false
 
 @description('Toggle to enable or disable zone redudance.')
 param isZoneRedundant bool = false
@@ -69,13 +76,10 @@ var locations = union([
     }
   ], secondaryRegions)
 
-var unwind = [for location in locations: '${toLower(name)}-${location.locationName}.cassandra.cosmos.azure.com']
-var locationString = replace(substring(string(unwind), 1, length(string(unwind))-2), '"', '')
-
-var connectionStrings = newOrExisting == 'new' ? newAccount.listConnectionStrings() : account.listConnectionStrings()
-var keys = newOrExisting == 'new' ? newAccount.listKeys() : account.listKeys()
-var cassandraConnectionString = 'Contact Points=${toLower(name)}.cassandra.cosmos.azure.com,${locationString};Username=${toLower(name)};Password=${keys.primaryMasterKey};Port=10350'
-
+var capabilities = union(
+  enableCassandra ? [ { name: 'EnableCassandra' } ] : [],
+  enableServerless ? [ { name: 'EnableServerless' } ] : []
+)
 resource newAccount 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = if (newOrExisting == 'new') {
   name: toLower(name)
   location: location
@@ -86,14 +90,8 @@ resource newAccount 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = if (new
     databaseAccountOfferType: 'Standard'
     enableAutomaticFailover: systemManagedFailover
     enableMultipleWriteLocations: enableMultipleWriteLocations
-    capabilities: union([ { name: 'EnableCassandra' } ], EnableServerless ? [ { name: 'EnableServerless' } ] : [])
+    capabilities: capabilities
   }
 }
 
 resource account 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' existing = { name: toLower(name) }
-
-@description('Key to connect with Cosmos DB')
-output connectionString string = connectionStrings.connectionStrings[0].connectionString
-
-@description('Key to connect with Cosmos DB')
-output cassandraConnectionString string = cassandraConnectionString
