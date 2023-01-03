@@ -54,7 +54,6 @@ var enableStorage = newOrExistingStorageAccount != 'none'
 var enablePublicIP = newOrExistingPublicIp != 'none'
 var enableTrafficManager = newOrExistingTrafficManager != 'none'
 
-
 var noAvailabilityZones = [
   'northcentralus'
   'westus'
@@ -154,6 +153,4 @@ module trafficManager 'network/trafficManagerProfiles.bicep' = if (enableTraffic
 }
 
 output keyVaultName string = enableKeyVault ? keyVault.outputs.name : ''
-output cassandraConnectionString string = enableComosDB ? cosmosDB.outputs.cassandraConnectionString : ''
-output blobStorageConnectionString string = enableStorage ? storageAccount.outputs.blobStorageConnectionString : ''
 output ipAddress string = enablePublicIP ? publicIp.outputs.ipAddress : ''
