@@ -7,7 +7,7 @@ param vmSize string = 'Standard_L16s_v2'
 param nodeLabels string = 'horde-storage'
 param assignRole bool = false
 param dnsPrefix string = 'k8-${take(uniqueString(name), 5)}'
-param kubernetesVersion string = '1.22.11'
+param kubernetesVersion string = '1.23.8'
 param availabilityZones array = [ '1', '2', '3' ]
 param nodeResourceGroup string = take('MC_${resourceGroup().name}', 70)
 
