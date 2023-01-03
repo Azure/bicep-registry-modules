@@ -1,12 +1,13 @@
 @description('Deployment Location')
 param location string
 
+@description('Name of Storage Account')
 param name string = 'st${uniqueString(resourceGroup().id, subscription().id)}'
 
 @allowed([ 'new', 'existing' ])
 param newOrExisting string = 'new'
 
-@description('Resource Group')
+@description('Name of Resource Group')
 param resourceGroupName string = resourceGroup().name
 
 param subnetID string = ''
@@ -58,8 +59,5 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' existing 
   scope: resourceGroup(resourceGroupName)
   name: name
 }
-
-var keys = newOrExisting == 'new' ? listKeys(newStorageAccount.id, newStorageAccount.apiVersion) : listKeys(storageAccount.id, storageAccount.apiVersion)
-var blobStorageConnectionString = 'DefaultEndpointsProtocol=https;AccountName=${name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${keys.keys[0].value}'
 
 output id string = newOrExisting == 'new' ? newStorageAccount.id : storageAccount.id
