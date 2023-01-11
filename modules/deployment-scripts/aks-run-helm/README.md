@@ -28,8 +28,9 @@ More information about using Helm on Azure can be found [here](https://docs.micr
 
 ## Outputs
 
-| Name | Type | Description |
-| :--- | :--: | :---------- |
+| Name        | Type  | Description                |
+| :---------- | :---: | :------------------------- |
+| helmOutputs | array | Helm Command Output Values |
 
 ## Examples
 
