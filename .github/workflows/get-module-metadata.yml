@@ -6,14 +6,8 @@ on:
   workflow_call:
     secrets:
       # Secrets must be passed from the caller workflow explicitly.
-      ACCOUNT_NAME:
-        required: true
-      BLOB_NAME:
-        required: true          
       CLIENT_ID:
         required: true
-      CONTAINER_NAME:
-        required: true         
       TENANT_ID:
         required: true
       SUBSCRIPTION_ID:
@@ -58,4 +52,4 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az storage blob upload --account-name ${{ secrets.ACCOUNT_NAME }} --container-name ${{ secrets.CONTAINER_NAME }} --name ${{ secrets.BLOB_NAME }} --file moduleNamesWithTags.json --auth-mode login --overwrite
+            az storage blob upload --account-name biceplivedatasadf --container-name bicep-cdn-live-data-container --name moduleMetadata --file moduleNamesWithTags.json --auth-mode login --overwrite
