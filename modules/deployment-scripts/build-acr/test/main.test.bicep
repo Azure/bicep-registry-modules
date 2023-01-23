@@ -2,7 +2,7 @@ param location string = resourceGroup().location
 param AcrName string = 'cr${uniqueString(resourceGroup().id)}'
 
 // Pre-reqs
-resource acr 'Microsoft.ContainerRegistry/registries@2021-12-01-preview' = {
+resource acr 'Microsoft.ContainerRegistry/registries@2022-02-01-preview' = {
   name: AcrName
   location: location
   sku: {
@@ -18,7 +18,7 @@ module buildWinAcrImage '../main.bicep' = {
     AcrName: acr.name
     location: location
     gitRepositoryUrl:  'https://github.com/Azure-Samples/DotNet47WinContainerModernize.git'
-    gitRepoDirectory:  'eShopLegacyWebFormsSolution'
+    buildWorkingDirectory: 'eShopLegacyWebFormsSolution'
     imageName: 'dotnet/framework/aspnet'
     imageTag: '4.8-windowsservercore-ltsc2019'
     acrBuildPlatform: 'windows'
@@ -33,7 +33,7 @@ module buildDaprImage '../main.bicep' = {
     AcrName: acr.name
     location: location
     gitRepositoryUrl:  'https://github.com/Azure-Samples/container-apps-store-api-microservice.git'
-    gitRepoDirectory:  'python-service'
+    buildWorkingDirectory:  'python-service'
     imageName: 'aca/dapr'
   }
 }
@@ -57,5 +57,19 @@ module aca 'br/public:app/dapr-containerapp:1.0.2' = {
     containerAppEnvName: myenv.outputs.containerAppEnvironmentName
     containerImage: buildDaprImage.outputs.acrImage
     azureContainerRegistry: acr.name
+  }
+}
+
+@description('This test uses a dockerfile in a subdirectory, but sets the build context at the root because of copy folder structure')
+module producer '../main.bicep' = {
+  name: 'differentbuildcontext'
+  params: {
+    AcrName: acr.name
+    location: location
+    gitRepositoryUrl:  'https://github.com/Gordonby/dapr-kafka-csharp.git'
+    dockerfileDirectory: 'producer'
+    buildWorkingDirectory: '.' //Explicitly setting this as Dockerfile uses files in parent directory structure. Working directory needs to be root.
+    imageName: 'daprkafka/producer'
+    gitBranch: 'master'
   }
 }
