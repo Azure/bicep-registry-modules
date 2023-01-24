@@ -14,7 +14,7 @@ This module is based on the `az cli certificate` create command and more informa
 | Name                                       | Type     | Required | Description                                                                                                   |
 | :----------------------------------------- | :------: | :------: | :------------------------------------------------------------------------------------------------------------ |
 | `akvName`                                  | `string` | Yes      | The name of the Azure Key Vault                                                                               |
-| `location`                                 | `string` | No       | The location to deploy the resources to                                                                       |
+| `location`                                 | `string` | Yes      | The location to deploy the resources to                                                                       |
 | `forceUpdateTag`                           | `string` | No       | How the deployment script should be forced to execute                                                         |
 | `rbacRolesNeededOnKV`                      | `string` | No       | The RoleDefinitionId required for the DeploymentScript resource to interact with KeyVault                     |
 | `useExistingManagedIdentity`               | `bool`   | No       | Does the Managed Identity already exists, or should be created                                                |
@@ -25,6 +25,8 @@ This module is based on the `az cli certificate` create command and more informa
 | `certificateCommonName`                    | `string` | No       | The common name of the certificate to create                                                                  |
 | `initialScriptDelay`                       | `string` | No       | A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate |
 | `cleanupPreference`                        | `string` | No       | When the script resource is cleaned up                                                                        |
+| `issuerName`                               | `string` | No       | Unknown, Self, or {IssuerName} for certificate signing                                                        |
+| `issuerProvider`                           | `string` | No       | Certificate Issuer Provider                                                                                   |
 
 ## Outputs
 
