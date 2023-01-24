@@ -87,38 +87,14 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
     timeout: 'PT10M'
     retentionInterval: 'P1D'
     environmentVariables: [
-      {
-        name: 'akvName'
-        value: akvName
-      }
-      {
-        name: 'certName'
-        value: certificateName
-      }
-      {
-        name: 'certCommonName'
-        value: certificateCommonName
-      }
-      {
-        name: 'initialDelay'
-        value: initialScriptDelay
-      }
-      {
-        name: 'issuerName'
-        value: issuerName
-      }
-      {
-        name: 'issuerProvider'
-        value: issuerProvider
-      }
-      {
-        name: 'retryMax'
-        value: '10'
-      }
-      {
-        name: 'retrySleep'
-        value: '5s'
-      }
+      { name: 'akvName', value: akvName }
+      { name: 'certName', value: certificateName }
+      { name: 'certCommonName', value: certificateCommonName }
+      { name: 'initialDelay', value: initialScriptDelay }
+      { name: 'issuerName', value: issuerName }
+      { name: 'issuerProvider', value: issuerProvider }
+      { name: 'retryMax', value: '10' }
+      { name: 'retrySleep', value: '5s' }
     ]
     scriptContent: loadTextContent('create-kv.sh')
     cleanupPreference: cleanupPreference
