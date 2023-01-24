@@ -14,7 +14,7 @@ param rbacRolesNeededOnKV string = 'a4417e6f-fecd-4de8-b567-7b0420556985' //KeyV
 param useExistingManagedIdentity bool = false
 
 @description('Name of the Managed Identity resource')
-param managedIdentityName string = 'id-KeyVaultCertificateCreator-${uniqueString(akvName, location, resourceGroup().name)}'
+param managedIdentityName string = 'id-KeyVaultCertificateCreator-${location}'
 
 @description('For an existing Managed Identity, the Subscription Id it is located in')
 param existingManagedIdentitySubId string = subscription().subscriptionId
