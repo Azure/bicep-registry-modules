@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.13.1.58284",
-      "templateHash": "16635553495797758101"
+      "templateHash": "3775204537850696649"
     }
   },
   "parameters": {
@@ -44,7 +44,7 @@
     },
     "managedIdentityName": {
       "type": "string",
-      "defaultValue": "[format('id-KeyVaultCertificateCreator-{0}', uniqueString(parameters('akvName'), parameters('location'), resourceGroup().name))]",
+      "defaultValue": "[format('id-KeyVaultCertificateCreator-{0}', parameters('location'))]",
       "metadata": {
         "description": "Name of the Managed Identity resource"
       }
