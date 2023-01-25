@@ -39,7 +39,7 @@ param initialScriptDelay string = '0'
 @description('When the script resource is cleaned up')
 param cleanupPreference string = 'OnSuccess'
 
-@description('Unknown, Self, or {IssuerName} for certificate signing')
+@description('Self, or {IssuerName} for certificate signing')
 param issuerName string = 'Self'
 
 @description('Certificate Issuer Provider')
