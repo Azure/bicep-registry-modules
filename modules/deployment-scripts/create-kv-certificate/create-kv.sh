@@ -10,7 +10,7 @@ until [ $retryLoopCount -ge $retryMax ]
 do
     echo "Creating AKV Cert $certName with CN $certCommonName (attempt $retryLoopCount)..."
 
-    if [ "$issuerName" != "" ] || [ "$issuerProvider" != "" ]; then
+    if [ -z "$issuerName" ] || [ -z "$issuerProvider" ]; then
         az keyvault certificate issuer create \
             --vault-name $akvName \
             --issuer-name $issuerName \
