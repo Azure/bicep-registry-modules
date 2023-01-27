@@ -16,6 +16,7 @@ do
             --issuer-name $issuerName \
             --provider-name $issuerProvider
     fi
+
     az keyvault certificate create \
         --vault-name $akvName \
         -n $certName \
