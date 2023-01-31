@@ -20,7 +20,7 @@ do
           --issuer-name $issuerName \
           --provider-name $issuerProvider \
           --account-id $accountId \
-          --password $digicertPassword \
+          --password $issuerPassword \
           --organizatiion-id $organizationId
       else
         az keyvault certificate issuer create \
