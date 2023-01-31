@@ -25,7 +25,7 @@ This module is based on the `az cli certificate` create command and more informa
 | `certificateCommonName`                    | `string`       | No       | The common name of the certificate to create                                                                  |
 | `initialScriptDelay`                       | `string`       | No       | A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate |
 | `cleanupPreference`                        | `string`       | No       | When the script resource is cleaned up                                                                        |
-| `issuerName`                               | `string`       | No       | Self, or {IssuerName} for certificate signing                                                                 |
+| `issuerName`                               | `string`       | No       | Self, or user defined {IssuerName} for certificate signing                                                    |
 | `issuerProvider`                           | `string`       | No       | Certificate Issuer Provider, DigiCert, GlobalSign, or internal options may be used.                           |
 | `accountId`                                | `string`       | No       | Account ID of Certificate Issuer Account                                                                      |
 | `issuerPassword`                           | `secureString` | No       | Password of Certificate Issuer Account                                                                        |

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.13.1.58284",
-      "templateHash": "11033818970092112344"
+      "templateHash": "15671131131533087492"
     }
   },
   "parameters": {
@@ -99,7 +99,7 @@
       "type": "string",
       "defaultValue": "Self",
       "metadata": {
-        "description": "Self, or {IssuerName} for certificate signing"
+        "description": "Self, or user defined {IssuerName} for certificate signing"
       }
     },
     "issuerProvider": {
