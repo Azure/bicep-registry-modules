@@ -49,6 +49,7 @@ param issuerProvider string = ''
 param accountId string = ''
 
 @description('Password of Certificate Issuer Account')
+@secure()
 param digicertPassword string = ''
 
 @description('Organization ID of Certificate Issuer Account')
