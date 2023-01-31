@@ -50,8 +50,8 @@ module akvCertMultiple '../main.bicep' = [ for certificateName in certificateNam
 }]
 
 //Test 3. Test a signed cert
-module akvCertSingle '../main.bicep' = {
-  name: 'akvCertSingle'
+module akvCertSigned '../main.bicep' = {
+  name: 'akvCertSigned'
   params: {
     akvName: akv.name
     location: location
