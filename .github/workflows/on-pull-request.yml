@@ -38,13 +38,6 @@ jobs:
         run: brm validate
         working-directory: ${{ needs.get-module-to-validate.outputs.module_dir }}
 
-      - name: Publish Bicep Compile Results
-        uses: actions/upload-artifact@v3
-        with:
-          name: BicepResults
-          path: ./bicep.txt
-        if: always()
-
       - name: Run ARM-TTK
         uses: ./.github/actions/run-armttk
         with:
