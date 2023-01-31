@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.13.1.58284",
-      "templateHash": "7604064238547145173"
+      "templateHash": "18212026303321486101"
     }
   },
   "parameters": {
@@ -109,9 +109,30 @@
         "description": "Certificate Issuer Provider, DigiCert, GlobalSign, or internal options may be used."
       }
     },
-    "isArm": {
+    "accountId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Account ID of Certificate Issuer Account"
+      }
+    },
+    "digicertPassword": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Password of Certificate Issuer Account"
+      }
+    },
+    "organizationId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Organization ID of Certificate Issuer Account"
+      }
+    },
+    "isCrossTenant": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Override this parameter if using this in a managed application"
       }
@@ -141,7 +162,7 @@
         "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('rbacRolesNeededOnKV'))]",
         "principalId": "[if(parameters('useExistingManagedIdentity'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId, reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId)]",
         "principalType": "ServicePrincipal",
-        "delegatedManagedIdentityResourceId": "[if(parameters('isArm'), null(), variables('delegatedManagedIdentityResourceId'))]"
+        "delegatedManagedIdentityResourceId": "[if(parameters('isCrossTenant'), variables('delegatedManagedIdentityResourceId'), null())]"
       },
       "dependsOn": [
         "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]"
@@ -196,6 +217,18 @@
           {
             "name": "retrySleep",
             "value": "5s"
+          },
+          {
+            "name": "accountId",
+            "value": "[parameters('accountId')]"
+          },
+          {
+            "name": "digicertPassword",
+            "value": "[parameters('digicertPassword')]"
+          },
+          {
+            "name": "organizationId",
+            "value": "[parameters('organizationId')]"
           }
         ],
         "scriptContent": "[variables('$fxv#0')]",
