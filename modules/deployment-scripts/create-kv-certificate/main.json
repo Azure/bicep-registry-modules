@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.13.1.58284",
-      "templateHash": "2596027608940793799"
+      "templateHash": "10747446472534214199"
     }
   },
   "parameters": {
@@ -106,7 +106,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Certificate Issuer Provider"
+        "description": "Certificate Issuer Provider, DigiCert, GlobalSign, or internal options may be used."
       }
     },
     "isArm": {
