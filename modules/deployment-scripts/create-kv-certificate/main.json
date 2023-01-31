@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.13.1.58284",
-      "templateHash": "8518286622922964872"
+      "templateHash": "1349161468674195736"
     }
   },
   "parameters": {
@@ -141,7 +141,7 @@
         "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('rbacRolesNeededOnKV'))]",
         "principalId": "[if(parameters('useExistingManagedIdentity'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId, reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId)]",
         "principalType": "ServicePrincipal",
-        "delegatedManagedIdentityResourceId": "[if(parameters('isArm'), createObject(), variables('delegatedManagedIdentityResourceId'))]"
+        "delegatedManagedIdentityResourceId": "[if(parameters('isArm'), null(), variables('delegatedManagedIdentityResourceId'))]"
       },
       "dependsOn": [
         "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]"
