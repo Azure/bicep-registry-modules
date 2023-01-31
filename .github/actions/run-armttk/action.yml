@@ -11,8 +11,8 @@ inputs:
     description: Version of ARM-TTK to use
     default: aka.ms/arm-ttk-marketplace
     options:
-    - aka.ms/arm-ttk-latest
-    - aka.ms/arm-ttk-marketplace
+      - aka.ms/arm-ttk-latest
+      - aka.ms/arm-ttk-marketplace
 runs:
   using: composite
   steps:
