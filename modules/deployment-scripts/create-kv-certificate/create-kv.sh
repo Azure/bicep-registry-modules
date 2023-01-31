@@ -14,12 +14,22 @@ do
         policy=$(az keyvault certificate get-default-policy \
             | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g )
     else
+      if [ "$issuerProvider" == "DigiCert" ] || [ "$issuerProvider" == "GlobalCert"]; then
         az keyvault certificate issuer create \
-            --vault-name $akvName \
-            --issuer-name $issuerName \
-            --provider-name $issuerProvider
-        policy=$(az keyvault certificate get-default-policy \
-            | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g )
+          --vault-name $akvName \
+          --issuer-name $issuerName \
+          --provider-name $issuerProvider \
+          --account-id $accountId \
+          --password $digicertPassword \
+          --organizatiion-id $organizationId
+      else
+        az keyvault certificate issuer create \
+          --vault-name $akvName \
+          --issuer-name $issuerName \
+          --provider-name $issuerProvider
+      fi
+      policy=$(az keyvault certificate get-default-policy \
+        | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g )
     fi
     az keyvault certificate create \
         --vault-name $akvName \
