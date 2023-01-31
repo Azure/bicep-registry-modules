@@ -58,7 +58,7 @@ module akvCertSigned '../main.bicep' = {
     certificateName: 'mysignedcert'
     certificateCommonName: 'sample-cert.gaming.azure.com'
     issuerName: 'Signed'
-    issuerName: 'OneCert'
+    issuerProvider: 'OneCert'
   }
 }
 
