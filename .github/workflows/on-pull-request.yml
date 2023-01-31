@@ -39,7 +39,7 @@ jobs:
         working-directory: ${{ needs.get-module-to-validate.outputs.module_dir }}
 
   shellcheck:
-    name: runner / shellcheck
+    name: runner
     runs-on: ubuntu-latest
     needs: get-module-to-validate
     if: needs.get-module-to-validate.outputs.module_dir
