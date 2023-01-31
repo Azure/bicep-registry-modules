@@ -27,6 +27,7 @@ This module is based on the `az cli certificate` create command and more informa
 | `cleanupPreference`                        | `string` | No       | When the script resource is cleaned up                                                                        |
 | `issuerName`                               | `string` | No       | Self, or {IssuerName} for certificate signing                                                                 |
 | `issuerProvider`                           | `string` | No       | Certificate Issuer Provider                                                                                   |
+| `isArm`                                    | `bool`   | No       | Override this parameter if using this in a managed application                                                |
 
 ## Outputs
 
