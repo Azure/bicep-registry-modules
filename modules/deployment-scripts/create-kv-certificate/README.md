@@ -121,6 +121,11 @@ output createdCertificates array = [for (certificateName, i) in certificateNames
 Using `DigiCert` or `GlobalSign` first requires account setup described [here](https://learn.microsoft.com/en-us/azure/key-vault/certificates/how-to-integrate-certificate-authority)
 
 ```bicep
+param accountId
+@secure
+param digicertPassword
+param organizationId
+
 module signedCert 'br/public:deployment-scripts/create-kv-certificate:1.1.1' = {
   name: 'akvCert-${certificateName}'
   params: {
@@ -128,8 +133,11 @@ module signedCert 'br/public:deployment-scripts/create-kv-certificate:1.1.1' = {
     location: location
     certificateName: certificateName
     certificateCommonName: 'customdomain.com'
-    issuerName: 'MySignedCert'
+    issuerName: 'MyCert'
     issuerProvider: 'DigiCert'
+    accountId: accountId
+    digicertPassword: digicertPassword
+    organizationId: organizationId
   }
 }]
 ```
