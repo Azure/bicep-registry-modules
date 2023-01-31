@@ -67,7 +67,7 @@ resource existingDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2
 var delegatedManagedIdentityResourceId = useExistingManagedIdentity ? existingDepScriptId.id : newDepScriptId.id
 
 resource rbacKv 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(akv.id, rbacRolesNeededOnKV, string(useExistingManagedIdentity))
+  name: guid(akv.id, rbacRolesNeededOnKV, managedIdentityName, string(useExistingManagedIdentity))
   scope: akv
   properties: {
     roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', rbacRolesNeededOnKV)
