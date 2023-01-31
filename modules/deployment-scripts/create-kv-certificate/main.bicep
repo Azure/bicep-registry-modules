@@ -115,7 +115,7 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
       { name: 'retryMax', value: '10' }
       { name: 'retrySleep', value: '5s' }
       { name: 'accountId', value: accountId }
-      { name: 'digicertPassword', value: digicertPassword }
+      { name: 'digicertPassword', secureValue: digicertPassword }
       { name: 'organizationId', value: organizationId }
     ]
     scriptContent: loadTextContent('create-kv.sh')
