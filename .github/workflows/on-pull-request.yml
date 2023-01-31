@@ -39,9 +39,9 @@ jobs:
         working-directory: ${{ needs.get-module-to-validate.outputs.module_dir }}
 
       - name: Run ARM-TTK
-        uses: ./.github/actions/run-armttk
+        uses: microsoft/action-armttk@v1
         with:
-          templatesFolderPath: "${{ needs.get-module-to-validate.outputs.module_dir }}"
+          workdir: "${{ needs.get-module-to-validate.outputs.module_dir }}"
           # armttkVersion: aka.ms/arm-ttk-marketplace
 
   validate-non-module-files:
