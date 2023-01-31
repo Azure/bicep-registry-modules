@@ -45,8 +45,17 @@ param issuerName string = 'Self'
 @description('Certificate Issuer Provider, DigiCert, GlobalSign, or internal options may be used.')
 param issuerProvider string = ''
 
+@descsription('Account ID of Certificate Issuer Account')
+param accountId string = ''
+
+@descsription('Password of Certificate Issuer Account')
+param digicertPassword string = ''
+
+@descsription('Organization ID of Certificate Issuer Account')
+param organizationId string = ''
+
 @description('Override this parameter if using this in a managed application')
-param isArm bool = true
+param isCrossTenant bool = false
 
 resource akv 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: akvName
@@ -73,7 +82,7 @@ resource rbacKv 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
     roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', rbacRolesNeededOnKV)
     principalId: useExistingManagedIdentity ? existingDepScriptId.properties.principalId : newDepScriptId.properties.principalId
     principalType: 'ServicePrincipal'
-    delegatedManagedIdentityResourceId: isArm ? null : delegatedManagedIdentityResourceId
+    delegatedManagedIdentityResourceId: isCrossTenant ? delegatedManagedIdentityResourceId : null 
   }
 }
 
@@ -104,6 +113,9 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
       { name: 'issuerProvider', value: issuerProvider }
       { name: 'retryMax', value: '10' }
       { name: 'retrySleep', value: '5s' }
+      { name: 'accountId', value: accountId }
+      { name: 'digicertPassword', value: digicertPassword }
+      { name: 'organizationId', value: organizationId }
     ]
     scriptContent: loadTextContent('create-kv.sh')
     cleanupPreference: cleanupPreference
