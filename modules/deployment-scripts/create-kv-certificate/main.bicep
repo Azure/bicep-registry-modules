@@ -81,6 +81,9 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
     }
   }
   kind: 'AzureCLI'
+  dependsOn: [
+    rbacKv
+  ]
   properties: {
     forceUpdateTag: forceUpdateTag
     azCliVersion: '2.35.0'
