@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.13.1.58284",
-      "templateHash": "10747446472534214199"
+      "templateHash": "7293759697878656050"
     }
   },
   "parameters": {
@@ -136,7 +136,7 @@
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('akvName'))]",
-      "name": "[guid(resourceId('Microsoft.KeyVault/vaults', parameters('akvName')), parameters('rbacRolesNeededOnKV'), string(parameters('useExistingManagedIdentity')))]",
+      "name": "[guid(resourceId('Microsoft.KeyVault/vaults', parameters('akvName')), parameters('rbacRolesNeededOnKV'), parameters('managedIdentityName'), string(parameters('useExistingManagedIdentity')))]",
       "properties": {
         "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('rbacRolesNeededOnKV'))]",
         "principalId": "[if(parameters('useExistingManagedIdentity'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId, reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId)]",
@@ -203,7 +203,7 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]",
-        "[extensionResourceId(resourceId('Microsoft.KeyVault/vaults', parameters('akvName')), 'Microsoft.Authorization/roleAssignments', guid(resourceId('Microsoft.KeyVault/vaults', parameters('akvName')), parameters('rbacRolesNeededOnKV'), string(parameters('useExistingManagedIdentity'))))]"
+        "[extensionResourceId(resourceId('Microsoft.KeyVault/vaults', parameters('akvName')), 'Microsoft.Authorization/roleAssignments', guid(resourceId('Microsoft.KeyVault/vaults', parameters('akvName')), parameters('rbacRolesNeededOnKV'), parameters('managedIdentityName'), string(parameters('useExistingManagedIdentity'))))]"
       ]
     }
   ],
