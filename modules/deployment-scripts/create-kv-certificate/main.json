@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.13.1.58284",
-      "templateHash": "6181149945779911190"
+      "templateHash": "15268245623304327564"
     }
   },
   "parameters": {
@@ -224,7 +224,7 @@
           },
           {
             "name": "digicertPassword",
-            "value": "[parameters('digicertPassword')]"
+            "secureValue": "[parameters('digicertPassword')]"
           },
           {
             "name": "organizationId",
