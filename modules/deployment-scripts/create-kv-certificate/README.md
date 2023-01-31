@@ -126,7 +126,7 @@ Using `DigiCert` or `GlobalSign` first requires account setup described [here](h
 ```bicep
 param accountId
 @secure
-param digicertPassword
+param issuerPassword
 param organizationId
 
 module signedCert 'br/public:deployment-scripts/create-kv-certificate:1.1.1' = {
@@ -139,7 +139,7 @@ module signedCert 'br/public:deployment-scripts/create-kv-certificate:1.1.1' = {
     issuerName: 'MyCert'
     issuerProvider: 'DigiCert'
     accountId: accountId
-    digicertPassword: digicertPassword
+    issuerPassword: issuerPassword
     organizationId: organizationId
   }
 }]
