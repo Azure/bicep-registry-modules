@@ -50,7 +50,7 @@ param accountId string = ''
 
 @description('Password of Certificate Issuer Account')
 @secure()
-param digicertPassword string = ''
+param issuerPassword string = ''
 
 @description('Organization ID of Certificate Issuer Account')
 param organizationId string = ''
@@ -115,7 +115,7 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
       { name: 'retryMax', value: '10' }
       { name: 'retrySleep', value: '5s' }
       { name: 'accountId', value: accountId }
-      { name: 'digicertPassword', secureValue: digicertPassword }
+      { name: 'issuerPassword', secureValue: issuerPassword }
       { name: 'organizationId', value: organizationId }
     ]
     scriptContent: loadTextContent('create-kv.sh')
