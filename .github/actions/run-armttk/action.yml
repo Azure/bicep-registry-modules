@@ -1,0 +1,37 @@
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the MIT License.
+name: Run ARM-TTK
+description: Run ARM-TTK on all files in the folder
+inputs:
+  templatesFolderPath:
+    description: ARM templates folder
+    required: true
+  armttkVersion:
+    type: choice
+    description: Version of ARM-TTK to use
+    default: aka.ms/arm-ttk-marketplace
+    options:
+    - aka.ms/arm-ttk-latest
+    - aka.ms/arm-ttk-marketplace
+runs:
+  using: composite
+  steps:
+    - name: Run ARM-TTK
+      shell: pwsh
+      run: |
+        Install-Module -Name Pester -RequiredVersion 4.10.1 -Force
+        Import-Module -Name Pester -RequiredVersion 4.10.1 -Force
+
+        Invoke-WebRequest -Uri ${{ inputs.armttkVersion }} -OutFile arm-template-toolkit.zip
+        Expand-Archive -LiteralPath arm-template-toolkit.zip -DestinationPath arm-ttk
+
+        Import-Module ./arm-ttk/arm-ttk/arm-ttk.psd1
+
+        echo "Test-AzTemplate -TemplatePath ${{ inputs.templatesFolderPath }} -Pester -Skip Secure-Params-In-Nested-Deployments" | Out-File -FilePath ./armttk.ps1
+        Invoke-Pester -Script ./armttk.ps1 -EnableExit -OutputFormat NUnitXml -OutputFile ./armttk.xml
+    - name: Publish Test Results
+      uses: actions/upload-artifact@v3
+      with:
+        name: ARMTTKResults
+        path: ./armttk.xml
+      if: ${{ always() }}
