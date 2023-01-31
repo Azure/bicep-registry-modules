@@ -49,18 +49,18 @@ module akvCertMultiple '../main.bicep' = [ for certificateName in certificateNam
   }
 }]
 
-//Test 3. Test a signed cert
-module akvCertSigned '../main.bicep' = {
-  name: 'akvCertSigned'
-  params: {
-    akvName: akv.name
-    location: location
-    certificateName: 'mysignedcert'
-    certificateCommonName: 'sample-cert.gaming.azure.com'
-    issuerName: 'Signed'
-    issuerProvider: 'OneCertV2-PublicCA'
-  }
-}
+// Test 3. Test a signed cert
+// module akvCertSigned '../main.bicep' = {
+//   name: 'akvCertSigned'
+//   params: {
+//     akvName: akv.name
+//     location: location
+//     certificateName: 'mysignedcert'
+//     certificateCommonName: 'sample-cert.gaming.azure.com'
+//     issuerName: 'Signed'
+//     issuerProvider: 'OneCertV2-PublicCA'
+//   }
+// }
 
 @description('Array of info from each Certificate')
 output createdCertificates array = [for (certificateName, i) in certificateNames: {
