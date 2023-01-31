@@ -28,7 +28,7 @@ This module is based on the `az cli certificate` create command and more informa
 | `issuerName`                               | `string`       | No       | Self, or {IssuerName} for certificate signing                                                                 |
 | `issuerProvider`                           | `string`       | No       | Certificate Issuer Provider, DigiCert, GlobalSign, or internal options may be used.                           |
 | `accountId`                                | `string`       | No       | Account ID of Certificate Issuer Account                                                                      |
-| `digicertPassword`                         | `secureString` | No       | Password of Certificate Issuer Account                                                                        |
+| `issuerPassword`                           | `secureString` | No       | Password of Certificate Issuer Account                                                                        |
 | `organizationId`                           | `string`       | No       | Organization ID of Certificate Issuer Account                                                                 |
 | `isCrossTenant`                            | `bool`         | No       | Override this parameter if using this in a managed application                                                |
 
