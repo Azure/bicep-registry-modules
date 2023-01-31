@@ -45,13 +45,13 @@ param issuerName string = 'Self'
 @description('Certificate Issuer Provider, DigiCert, GlobalSign, or internal options may be used.')
 param issuerProvider string = ''
 
-@descsription('Account ID of Certificate Issuer Account')
+@description('Account ID of Certificate Issuer Account')
 param accountId string = ''
 
-@descsription('Password of Certificate Issuer Account')
+@description('Password of Certificate Issuer Account')
 param digicertPassword string = ''
 
-@descsription('Organization ID of Certificate Issuer Account')
+@description('Organization ID of Certificate Issuer Account')
 param organizationId string = ''
 
 @description('Override this parameter if using this in a managed application')
