@@ -26,7 +26,8 @@ runs:
         Expand-Archive -LiteralPath arm-template-toolkit.zip -DestinationPath arm-ttk
 
         Import-Module ./arm-ttk/arm-ttk/arm-ttk.psd1
-
+        
+        Copy-Item "${{ inputs.templatesFolderPath }}\main.json" "${{ inputs.templatesFolderPath }}\mainTemplate.json"
         echo "Test-AzTemplate -TemplatePath ${{ inputs.templatesFolderPath }} -Pester -Skip Secure-Params-In-Nested-Deployments" | Out-File -FilePath ./armttk.ps1
         Invoke-Pester -Script ./armttk.ps1 -EnableExit -OutputFormat NUnitXml -OutputFile ./armttk.xml
     - name: Publish Test Results
