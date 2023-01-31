@@ -73,7 +73,7 @@ resource rbacKv 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
     roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', rbacRolesNeededOnKV)
     principalId: useExistingManagedIdentity ? existingDepScriptId.properties.principalId : newDepScriptId.properties.principalId
     principalType: 'ServicePrincipal'
-    delegatedManagedIdentityResourceId: isArm ? {} : delegatedManagedIdentityResourceId
+    delegatedManagedIdentityResourceId: isArm ? null : delegatedManagedIdentityResourceId
   }
 }
 
