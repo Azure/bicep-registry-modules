@@ -42,7 +42,7 @@ param cleanupPreference string = 'OnSuccess'
 @description('Self, or {IssuerName} for certificate signing')
 param issuerName string = 'Self'
 
-@description('Certificate Issuer Provider')
+@description('Certificate Issuer Provider, DigiCert, GlobalSign, or internal options may be used.')
 param issuerProvider string = ''
 
 @description('Override this parameter if using this in a managed application')
