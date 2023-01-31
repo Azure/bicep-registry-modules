@@ -117,6 +117,7 @@ output createdCertificates array = [for (certificateName, i) in certificateNames
 ```
 
 ### Create Signed Certificate
+
 Using `DigiCert` or `GlobalSign` first requires account setup described [here](https://learn.microsoft.com/en-us/azure/key-vault/certificates/how-to-integrate-certificate-authority)
 
 ```bicep
