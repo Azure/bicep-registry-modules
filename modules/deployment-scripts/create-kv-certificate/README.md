@@ -115,3 +115,20 @@ output createdCertificates array = [for (certificateName, i) in certificateNames
   certificateThumbprint: akvCertMultiple[i].outputs.certificateThumbprintHex
 }]
 ```
+
+### Create Signed Certificate
+Using `DigiCert` or `GlobalSign` first requires account setup described [here](https://learn.microsoft.com/en-us/azure/key-vault/certificates/how-to-integrate-certificate-authority)
+
+```bicep
+module signedCert 'br/public:deployment-scripts/create-kv-certificate:1.1.1' = {
+  name: 'akvCert-${certificateName}'
+  params: {
+    akvName:  akvName
+    location: location
+    certificateName: certificateName
+    certificateCommonName: 'customdomain.com'
+    issuerName: 'MySignedCert'
+    issuerProvider: 'DigiCert'
+  }
+}]
+```
