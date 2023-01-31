@@ -45,6 +45,9 @@ param issuerName string = 'Self'
 @description('Certificate Issuer Provider')
 param issuerProvider string = ''
 
+@description('Override this parameter if using this in a managed application')
+param isArm bool = true
+
 resource akv 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: akvName
 }
@@ -61,13 +64,16 @@ resource existingDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2
   scope: resourceGroup(existingManagedIdentitySubId, existingManagedIdentityResourceGroupName)
 }
 
+var delegatedManagedIdentityResourceId = useExistingManagedIdentity ? existingDepScriptId.id : newDepScriptId.id
+
 resource rbacKv 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(akv.id, rbacRolesNeededOnKV, useExistingManagedIdentity ? existingDepScriptId.id : newDepScriptId.id)
+  name: guid(akv.id, rbacRolesNeededOnKV, string(useExistingManagedIdentity))
   scope: akv
   properties: {
     roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', rbacRolesNeededOnKV)
     principalId: useExistingManagedIdentity ? existingDepScriptId.properties.principalId : newDepScriptId.properties.principalId
     principalType: 'ServicePrincipal'
+    delegatedManagedIdentityResourceId: isArm ? {} : delegatedManagedIdentityResourceId
   }
 }
 
