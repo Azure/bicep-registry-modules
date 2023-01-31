@@ -38,6 +38,9 @@ jobs:
         run: brm validate
         working-directory: ${{ needs.get-module-to-validate.outputs.module_dir }}
 
+      - name: Install Bicep registry module tool
+        run: mv ${{ needs.get-module-to-validate.outputs.module_dir }}/main.json ${{ needs.get-module-to-validate.outputs.module_dir }}/mainTemplate.json
+
       - name: Run ARM-TTK
         uses: microsoft/action-armttk@v1
         with:
