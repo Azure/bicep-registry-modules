@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.13.1.58284",
-      "templateHash": "18212026303321486101"
+      "templateHash": "6181149945779911190"
     }
   },
   "parameters": {
@@ -117,7 +117,7 @@
       }
     },
     "digicertPassword": {
-      "type": "string",
+      "type": "secureString",
       "defaultValue": "",
       "metadata": {
         "description": "Password of Certificate Issuer Account"
