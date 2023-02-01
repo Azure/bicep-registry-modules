@@ -1,0 +1,43 @@
+name: Get modules metadata
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_call:
+    secrets:
+      # Secrets must be passed from the caller workflow explicitly.
+      CLIENT_ID:
+        required: true
+      TENANT_ID:
+        required: true
+      SUBSCRIPTION_ID:
+        required: true
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install packages
+        run: npm ci
+
+      - name: Get modules metadata
+        uses: actions/github-script@v6
+        with:
+          result-encoding: string
+          script: |
+            const script = require("./scripts/github-actions/get-modules-metadata.js")
+            await script({ require, core })
+
+      - name: Upload modules metadata
+        uses: actions/upload-artifact@v3
+        with:
+          name: modulesMetadata.json
+          path: modulesMetadata.json

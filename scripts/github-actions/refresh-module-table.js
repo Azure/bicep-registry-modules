@@ -11,17 +11,6 @@ function getTimestamp() {
 }
 
 /**
- * @param {typeof import("fs")} fs
- * @param {string} dir
- */
-function getSubdirNames(fs, dir) {
-  return fs
-    .readdirSync(dir, { withFileTypes: true })
-    .filter((x) => x.isDirectory())
-    .map((x) => x.name);
-}
-
-/**
  * @param {typeof import("axios").default} axios
  * @param {typeof import("fs")} fs
  * @param {typeof import("path")} path
@@ -29,11 +18,12 @@ function getSubdirNames(fs, dir) {
  */
 async function generateModulesTable(axios, fs, path, core) {
   const tableData = [["Module", "Version", "Docs"]];
-  const moduleGroups = getSubdirNames(fs, "modules");
+  const getSubdirNames = require("./scripts/github-actions/get-sub-directory-names.js");
+  const moduleGroups = getSubdirNames("modules");
 
   for (const moduleGroup of moduleGroups) {
     var moduleGroupPath = path.join("modules", moduleGroup);
-    var moduleNames = getSubdirNames(fs, moduleGroupPath);
+    var moduleNames = getSubdirNames(moduleGroupPath);
 
     for (const moduleName of moduleNames) {
       const modulePath = `${moduleGroup}/${moduleName}`;
