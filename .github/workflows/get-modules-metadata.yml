@@ -1,8 +1,5 @@
 name: Get modules metadata
 on:
-  pull_request:
-    branches:
-      - main
   workflow_call:
     secrets:
       # Secrets must be passed from the caller workflow explicitly.
@@ -12,6 +9,7 @@ on:
         required: true
       SUBSCRIPTION_ID:
         required: true
+  workflow_dispatch:       
 
 permissions:
   id-token: write
