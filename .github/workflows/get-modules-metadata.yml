@@ -52,4 +52,4 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az storage blob upload --account-name biceplivedatasadf --container-name bicep-cdn-live-data-container --name modulesMetadata --file moduleNamesWithTags.json --auth-mode login --overwrite
+            az storage blob upload --account-name biceplivedatasadf --container-name bicep-cdn-live-data-container --name modulesMetadata --file modulesMetadata.json --auth-mode login --overwrite
