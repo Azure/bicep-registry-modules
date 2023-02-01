@@ -1,4 +1,4 @@
-async function getModuleMetadata({ require, core }) {
+async function getModulesMetadata({ require, core }) {
   const fs = require("fs");
   const getSubdirNames = require("./scripts/github-actions/get-sub-directory-names.js");
   const moduleGroups = getSubdirNames("modules");
@@ -15,8 +15,6 @@ async function getModuleMetadata({ require, core }) {
     for (const moduleName of moduleNames) {
       const modulePath = `${moduleGroup}/${moduleName}`;
       const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${modulePath}/tags/list`;
-      const moduleRootUrl = `https://github.com/Azure/bicep-registry-modules/tree/main/modules/${modulePath}`;
-      const readmeLink = `${moduleRootUrl}/README.md`;
 
       try {
         const versionListResponse = await axios.default.get(versionListUrl);
@@ -24,8 +22,7 @@ async function getModuleMetadata({ require, core }) {
 
         result.push({
           moduleName: modulePath,
-          tags: tags,
-          readmeLink: readmeLink
+          tags: tags
         });
       } catch (error) {
         core.setFailed(error);
@@ -33,11 +30,11 @@ async function getModuleMetadata({ require, core }) {
     }
   }
 
-  const newModuleMetadata = JSON.stringify(result, null, 2);
+  const newModulesMetadata = JSON.stringify(result, null, 2);
 
-  fs.writeFileSync("moduleNamesWithTags.json", newModuleMetadata, (err) => {
+  fs.writeFileSync("modulesMetadata.json", newModulesMetadata, (err) => {
     if (err) throw err;
   });
 }
 
-module.exports = getModuleMetadata;
+module.exports = getModulesMetadata;

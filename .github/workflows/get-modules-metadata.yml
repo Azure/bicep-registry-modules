@@ -1,4 +1,4 @@
-name: Get module metadata
+name: Get modules metadata
 on:
   pull_request:
     branches:
@@ -27,12 +27,12 @@ jobs:
       - name: Install packages
         run: npm ci
 
-      - name: Get module metadata
+      - name: Get modules metadata
         uses: actions/github-script@v6
         with:
           result-encoding: string
           script: |
-            const script = require("./scripts/github-actions/get-module-metadata.js")
+            const script = require("./scripts/github-actions/get-modules-metadata.js")
             await script({ require, core })
 
       - name: Upload module names and tags file
