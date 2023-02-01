@@ -31,7 +31,7 @@ jobs:
           result-encoding: string
           script: |
             const script = require("./scripts/github-actions/get-modules-metadata.js")
-            await script({ require, core })
+            await script(core)
 
       - name: Upload modules metadata
         uses: actions/upload-artifact@v3

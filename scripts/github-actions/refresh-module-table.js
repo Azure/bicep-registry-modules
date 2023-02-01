@@ -19,11 +19,11 @@ function getTimestamp() {
 async function generateModulesTable(axios, fs, path, core) {
   const tableData = [["Module", "Version", "Docs"]];
   const getSubdirNames = require("./scripts/github-actions/get-sub-directory-names.js");
-  const moduleGroups = getSubdirNames("modules");
+  const moduleGroups = getSubdirNames(fs, "modules");
 
   for (const moduleGroup of moduleGroups) {
     var moduleGroupPath = path.join("modules", moduleGroup);
-    var moduleNames = getSubdirNames(moduleGroupPath);
+    var moduleNames = getSubdirNames(fs, moduleGroupPath);
 
     for (const moduleName of moduleNames) {
       const modulePath = `${moduleGroup}/${moduleName}`;
