@@ -62,7 +62,7 @@ jobs:
       PUBLISH_SUBSCRIPTION_ID: ${{ secrets.PUBLISH_SUBSCRIPTION_ID }}
       PUBLISH_REGISTRY_SERVER: ${{ secrets.PUBLISH_REGISTRY_SERVER }}
 
-  update-modules-metadata:
+  upload-modules-metadata:
     uses: ./.github/workflows/upload-modules-metadata.yml
     secrets:
       PUBLISH_CLIENT_ID: ${{ secrets.PUBLISH_CLIENT_ID }}
