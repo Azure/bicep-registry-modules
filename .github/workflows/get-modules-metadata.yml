@@ -9,7 +9,7 @@ on:
         required: true
       SUBSCRIPTION_ID:
         required: true
-  workflow_dispatch:       
+  workflow_dispatch:
 
 permissions:
   id-token: write
