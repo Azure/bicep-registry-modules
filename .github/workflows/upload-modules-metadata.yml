@@ -38,3 +38,16 @@ jobs:
         with:
           name: modulesMetadata.json
           path: modulesMetadata.json
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.CLIENT_ID }}
+          tenant-id: ${{ secrets.TENANT_ID }}
+          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+
+      - name: Upload to blob storage
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az storage blob upload --account-name biceplivedatasaprod --container-name bicep-cdn-live-data-container --name modulesMetadata --file modulesMetadata.json --auth-mode login --overwrite
