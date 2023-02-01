@@ -33,7 +33,7 @@ jobs:
             const script = require("./scripts/github-actions/get-modules-metadata.js")
             await script({ require, core })
 
-      - name: Upload module names and tags file
+      - name: Upload modules metadata
         uses: actions/upload-artifact@v3
         with:
           name: modulesMetadata.json
