@@ -22,7 +22,7 @@ async function getModulesMetadata({ require, core }) {
 
         result.push({
           moduleName: modulePath,
-          tags: tags
+          tags: tags,
         });
       } catch (error) {
         core.setFailed(error);
