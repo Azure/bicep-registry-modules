@@ -38,8 +38,8 @@ jobs:
       - name: Upload module names and tags file
         uses: actions/upload-artifact@v3
         with:
-          name: moduleNamesWithTags.json
-          path: moduleNamesWithTags.json
+          name: modulesMetadata.json
+          path: modulesMetadata.json
 
       - name: Log in to Azure
         uses: azure/login@v1
