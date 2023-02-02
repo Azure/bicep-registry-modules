@@ -65,6 +65,6 @@ jobs:
   upload-modules-metadata:
     uses: ./.github/workflows/upload-modules-metadata.yml
     secrets:
-      PUBLISH_CLIENT_ID: ${{ secrets.PUBLISH_CLIENT_ID }}
-      PUBLISH_TENANT_ID: ${{ secrets.PUBLISH_TENANT_ID }}
-      PUBLISH_SUBSCRIPTION_ID: ${{ secrets.PUBLISH_SUBSCRIPTION_ID }}
+      CLIENT_ID: ${{ secrets.PUBLISH_CLIENT_ID }}
+      TENANT_ID: ${{ secrets.PUBLISH_TENANT_ID }}
+      SUBSCRIPTION_ID: ${{ secrets.PUBLISH_SUBSCRIPTION_ID }}
