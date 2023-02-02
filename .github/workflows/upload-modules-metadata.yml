@@ -1,4 +1,4 @@
-name: Get modules metadata
+name: Upload modules metadata
 on:
   workflow_call:
     secrets:
@@ -25,12 +25,12 @@ jobs:
       - name: Install packages
         run: npm ci
 
-      - name: Get modules metadata
+      - name: Upload modules metadata
         uses: actions/github-script@v6
         with:
           result-encoding: string
           script: |
-            const script = require("./scripts/github-actions/get-modules-metadata.js")
+            const script = require("./scripts/github-actions/upload-modules-metadata.js")
             await script(core)
 
       - name: Upload modules metadata

@@ -1,7 +1,7 @@
 /**
  * @param {typeof import("@actions/core")} core
  */
-async function getModulesMetadata(core) {
+async function uploadModulesMetadata(core) {
   const fs = require("fs");
   const getSubdirNames = require("./scripts/github-actions/get-sub-directory-names.js");
   const moduleGroups = getSubdirNames(fs, "modules");
@@ -40,4 +40,4 @@ async function getModulesMetadata(core) {
   });
 }
 
-module.exports = getModulesMetadata;
+module.exports = uploadModulesMetadata;
