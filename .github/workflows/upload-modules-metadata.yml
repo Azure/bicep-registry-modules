@@ -1,5 +1,8 @@
 name: Upload modules metadata
 on:
+  pull_request:
+    branches:
+      - main
   workflow_call:
     secrets:
       # Secrets must be passed from the caller workflow explicitly.
@@ -31,7 +34,7 @@ jobs:
           result-encoding: string
           script: |
             const script = require("./scripts/github-actions/upload-modules-metadata.js")
-            await script(core)
+            await script({ require, core })
 
       - name: Upload modules metadata
         uses: actions/upload-artifact@v3

@@ -1,7 +1,7 @@
 /**
  * @param {typeof import("@actions/core")} core
  */
-async function uploadModulesMetadata(core) {
+async function uploadModulesMetadata({ require, core }) {
   const fs = require("fs");
   const getSubdirNames = require("./scripts/github-actions/get-sub-directory-names.js");
   const moduleGroups = getSubdirNames(fs, "modules");
