@@ -1,7 +1,11 @@
 /**
- * @param {typeof import("@actions/core")} core
+ * @typedef Params
+ * @property {typeof require} require
+ * @property {typeof import("@actions/core")} core
+ *
+ * @param {Params} params
  */
-async function uploadModulesMetadata(core) {
+async function uploadModulesMetadata({ require, core }) {
   const fs = require("fs");
   const getSubdirNames = require("./scripts/github-actions/get-sub-directory-names.js");
   const moduleGroups = getSubdirNames(fs, "modules");
