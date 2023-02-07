@@ -39,8 +39,14 @@ param gitRepositoryUrl string
 @description('The name of the repository branch to use')
 param gitBranch string = 'main'
 
-@description('The directory in the repo that contains the dockerfile')
-param gitRepoDirectory string = ''
+@description('The docker context working directory, change this when your Dockerfile and source files are ALL located in a repo subdirectory')
+param buildWorkingDirectory string = '.'
+
+@description('The subdirectory relative to the working directory that contains the Dockerfile')
+param dockerfileDirectory string = ''
+
+@description('The name of the dockerfile')
+param dockerfileName string = 'Dockerfile'
 
 @description('The image name/path you want to create in ACR')
 param imageName string
@@ -51,10 +57,11 @@ param imageTag string = string(dateTimeToEpoch(utcNow()))
 @description('The ACR compute platform needed to build the image')
 param acrBuildPlatform string = 'linux'
 
-var repo = '${gitRepositoryUrl}#${gitBranch}:${gitRepoDirectory}'
+var repo = '${gitRepositoryUrl}#${gitBranch}:${buildWorkingDirectory}'
 var cleanRepoName = last(split(gitRepositoryUrl, '/'))
 var cleanImageName = replace(imageName,'/','')
 var taggedImageName = '${imageName}:${imageTag}'
+var dockerfilePath = !empty(dockerfileDirectory) ? '${dockerfileDirectory}/${dockerfileName}' : dockerfileName
 
 resource acr 'Microsoft.ContainerRegistry/registries@2021-12-01-preview' existing = {
   name: AcrName
@@ -114,6 +121,10 @@ resource createImportImage 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
       {
         name: 'repo'
         value: repo
+      }
+      {
+        name: 'dockerfilePath'
+        value: dockerfilePath
       }
       {
         name: 'platform'
