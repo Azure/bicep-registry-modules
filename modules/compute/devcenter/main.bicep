@@ -10,6 +10,10 @@ param projectTeamName string = 'developers'
 param catalogName string = 'dcc'
 param catalogRepoUri string = 'https://github.com/Gordonby/dev-center-catalog.git'
 
+@secure()
+@description('A PAT token is required, even for public repos')
+param catalogRepoPat string
+
 module devdeploy 'modules/ade.bicep' = {
   name: '${deployment().name}-DevCenter'
   params: {
@@ -23,5 +27,6 @@ module devdeploy 'modules/ade.bicep' = {
     projectTeamName: projectTeamName
     catalogName: catalogName
     catalogRepoUri: catalogRepoUri
+    catalogRepoPat: catalogRepoPat
   }
 }
