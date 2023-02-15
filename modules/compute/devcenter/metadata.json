@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
+  "name": "Azure Dev Center",
+  "summary": "Quickly create a complete Dev Center deployment, including projets and Dev Boxes",
+  "owner": "dciborow"
+}
