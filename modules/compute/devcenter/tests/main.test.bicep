@@ -5,8 +5,8 @@ module file is a deployment test. Make sure at least one test is added.
 @description('Deployment Location')
 param location string = 'eastus'
 
-module test1 '../main.bicep' = {
-  name: 'Test1'
+module test0 '../main.bicep' = {
+  name: 'Test0'
   params: {
     location: location
   }
