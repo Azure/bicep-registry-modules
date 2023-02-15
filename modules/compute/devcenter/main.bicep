@@ -8,7 +8,7 @@ param devcenterName string
 param environmentName string = 'sandbox'
 param projectTeamName string = 'developers'
 param catalogName string = 'dcc'
-param catalogRepoUri string
+param catalogRepoUri string = 'https://github.com/Gordonby/dev-center-catalog.git'
 
 module devdeploy 'modules/ade.bicep' = {
   name: '${deployment().name}-DevCenter'
