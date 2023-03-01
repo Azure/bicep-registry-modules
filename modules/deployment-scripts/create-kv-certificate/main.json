@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.13.1.58284",
-      "templateHash": "15671131131533087492"
+      "version": "0.14.85.62628",
+      "templateHash": "16310029410115595606"
     }
   },
   "parameters": {
@@ -117,7 +117,7 @@
       }
     },
     "issuerPassword": {
-      "type": "secureString",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "Password of Certificate Issuer Account"
@@ -134,7 +134,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Override this parameter if using this in a managed application"
+        "description": "Override this parameter if using this in cross tenant scenarios"
       }
     }
   },
