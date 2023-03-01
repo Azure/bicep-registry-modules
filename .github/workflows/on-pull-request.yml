@@ -38,6 +38,14 @@ jobs:
         run: brm validate
         working-directory: ${{ needs.get-module-to-validate.outputs.module_dir }}
 
+      - run: mv ${{ needs.get-module-to-validate.outputs.module_dir }}/main.json ${{ needs.get-module-to-validate.outputs.module_dir }}/mainTemplate.json
+
+      - name: Run ARM-TTK
+        uses: microsoft/action-armttk@v1
+        with:
+          workdir: "${{ needs.get-module-to-validate.outputs.module_dir }}"
+          # armttkVersion: aka.ms/arm-ttk-marketplace
+
   validate-non-module-files:
     runs-on: ubuntu-latest
     steps:

@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.10.61.36676",
-      "templateHash": "10364443651732971487"
+      "version": "0.14.85.62628",
+      "templateHash": "16310029410115595606"
     }
   },
   "parameters": {
@@ -17,7 +17,6 @@
     },
     "location": {
       "type": "string",
-      "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "description": "The location to deploy the resources to"
       }
@@ -45,7 +44,7 @@
     },
     "managedIdentityName": {
       "type": "string",
-      "defaultValue": "id-KeyVaultCertificateCreator",
+      "defaultValue": "[format('id-KeyVaultCertificateCreator-{0}', parameters('location'))]",
       "metadata": {
         "description": "Name of the Managed Identity resource"
       }
@@ -95,10 +94,53 @@
         "OnExpiration",
         "Always"
       ]
+    },
+    "issuerName": {
+      "type": "string",
+      "defaultValue": "Self",
+      "metadata": {
+        "description": "Self, or user defined {IssuerName} for certificate signing"
+      }
+    },
+    "issuerProvider": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Certificate Issuer Provider, DigiCert, GlobalSign, or internal options may be used."
+      }
+    },
+    "accountId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Account ID of Certificate Issuer Account"
+      }
+    },
+    "issuerPassword": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Password of Certificate Issuer Account"
+      }
+    },
+    "organizationId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Organization ID of Certificate Issuer Account"
+      }
+    },
+    "isCrossTenant": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Override this parameter if using this in cross tenant scenarios"
+      }
     }
   },
   "variables": {
-    "neededRBACRoles": "[if(not(empty(parameters('rbacRolesNeededOnKV'))), parameters('rbacRolesNeededOnKV'), 'a4417e6f-fecd-4de8-b567-7b0420556985')]"
+    "$fxv#0": "#!/bin/bash\nset -e\n\necho \"Waiting on Identity RBAC replication ($initialDelay)\"\nsleep $initialDelay\n\n#Retry loop to catch errors (usually RBAC delays)\nretryLoopCount=0\nuntil [ $retryLoopCount -ge $retryMax ]\ndo\n    echo \"Creating AKV Cert $certName with CN $certCommonName (attempt $retryLoopCount)...\"\n\n    if [ -z \"$issuerName\" ] || [ -z \"$issuerProvider\" ]; then\n        policy=$(az keyvault certificate get-default-policy \\\n            | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g )\n    else\n      if [ \"$issuerProvider\" == \"DigiCert\" ] || [ \"$issuerProvider\" == \"GlobalCert\"]; then\n        az keyvault certificate issuer create \\\n          --vault-name $akvName \\\n          --issuer-name $issuerName \\\n          --provider-name $issuerProvider \\\n          --account-id $accountId \\\n          --password $issuerPassword \\\n          --organizatiion-id $organizationId\n      else\n        az keyvault certificate issuer create \\\n          --vault-name $akvName \\\n          --issuer-name $issuerName \\\n          --provider-name $issuerProvider\n      fi\n      policy=$(az keyvault certificate get-default-policy \\\n        | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g )\n    fi\n    az keyvault certificate create \\\n        --vault-name $akvName \\\n        -n $certName \\\n        -p \"$policy\" \\\n        && break\n\n    sleep $retrySleep\n    retryLoopCount=$((retryLoopCount+1))\ndone\n\necho \"Getting Certificate $certName\";\nretryLoopCount=0\ncreatedCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)\nwhile [ -z \"$(echo $createdCert | jq -r '.x509ThumbprintHex')\" ] && [ $retryLoopCount -lt $retryMax ]\ndo\n    echo \"Waiting for cert creation (attempt $retryLoopCount)...\"\n    sleep $retrySleep\n    createdCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)\n    retryLoopCount=$((retryLoopCount+1))\ndone\n\nunversionedSecretId=$(echo $createdCert | jq -r \".sid\" | cut -d'/' -f-5) # remove the version from the url;\njsonOutputString=$(echo $createdCert | jq --arg usid $unversionedSecretId '{name: .name ,certSecretId: {versioned: .sid, unversioned: $usid }, thumbprint: .x509Thumbprint, thumbprintHex: .x509ThumbprintHex}')\necho $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n",
+    "delegatedManagedIdentityResourceId": "[if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))]"
   },
   "resources": [
     {
@@ -113,13 +155,14 @@
     },
     {
       "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2020-08-01-preview",
+      "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('akvName'))]",
-      "name": "[guid(resourceId('Microsoft.KeyVault/vaults', parameters('akvName')), parameters('rbacRolesNeededOnKV'), if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]",
+      "name": "[guid(resourceId('Microsoft.KeyVault/vaults', parameters('akvName')), parameters('rbacRolesNeededOnKV'), parameters('managedIdentityName'), string(parameters('useExistingManagedIdentity')))]",
       "properties": {
-        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('neededRBACRoles'))]",
+        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('rbacRolesNeededOnKV'))]",
         "principalId": "[if(parameters('useExistingManagedIdentity'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId, reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId)]",
-        "principalType": "ServicePrincipal"
+        "principalType": "ServicePrincipal",
+        "delegatedManagedIdentityResourceId": "[if(parameters('isCrossTenant'), variables('delegatedManagedIdentityResourceId'), null())]"
       },
       "dependsOn": [
         "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]"
@@ -160,55 +203,75 @@
             "value": "[parameters('initialScriptDelay')]"
           },
           {
+            "name": "issuerName",
+            "value": "[parameters('issuerName')]"
+          },
+          {
+            "name": "issuerProvider",
+            "value": "[parameters('issuerProvider')]"
+          },
+          {
             "name": "retryMax",
             "value": "10"
           },
           {
             "name": "retrySleep",
             "value": "5s"
+          },
+          {
+            "name": "accountId",
+            "value": "[parameters('accountId')]"
+          },
+          {
+            "name": "issuerPassword",
+            "secureValue": "[parameters('issuerPassword')]"
+          },
+          {
+            "name": "organizationId",
+            "value": "[parameters('organizationId')]"
           }
         ],
-        "scriptContent": "      #!/bin/bash\n      set -e\n\n      echo \"Waiting on Identity RBAC replication ($initialDelay)\"\n      sleep $initialDelay\n\n      #Retry loop to catch errors (usually RBAC delays)\n      retryLoopCount=0\n      until [ $retryLoopCount -ge $retryMax ]\n      do\n        echo \"Creating AKV Cert $certName with CN $certCommonName (attempt $retryLoopCount)...\"\n        az keyvault certificate create --vault-name $akvName -n $certName -p \"$(az keyvault certificate get-default-policy | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g )\" \\\n          && break\n\n        sleep $retrySleep\n        retryLoopCount=$((retryLoopCount+1))\n      done\n\n      echo \"Getting Certificate $certName\";\n      retryLoopCount=0\n      createdCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)\n      while [ -z \"$(echo $createdCert | jq -r '.x509ThumbprintHex')\" ] && [ $retryLoopCount -lt $retryMax ]\n      do\n        echo \"Waiting for cert creation (attempt $retryLoopCount)...\"\n        sleep $retrySleep\n        createdCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)\n        retryLoopCount=$((retryLoopCount+1))\n      done\n\n      unversionedSecretId=$(echo $createdCert | jq -r \".sid\" | cut -d'/' -f-5) # remove the version from the url;\n      jsonOutputString=$(echo $createdCert | jq --arg usid $unversionedSecretId '{name: .name ,certSecretId: {versioned: .sid, unversioned: $usid }, thumbprint: .x509Thumbprint, thumbprintHex: .x509ThumbprintHex}')\n      echo $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n    ",
+        "scriptContent": "[variables('$fxv#0')]",
         "cleanupPreference": "[parameters('cleanupPreference')]"
       },
       "dependsOn": [
         "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]",
-        "[extensionResourceId(resourceId('Microsoft.KeyVault/vaults', parameters('akvName')), 'Microsoft.Authorization/roleAssignments', guid(resourceId('Microsoft.KeyVault/vaults', parameters('akvName')), parameters('rbacRolesNeededOnKV'), if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))))]"
+        "[extensionResourceId(resourceId('Microsoft.KeyVault/vaults', parameters('akvName')), 'Microsoft.Authorization/roleAssignments', guid(resourceId('Microsoft.KeyVault/vaults', parameters('akvName')), parameters('rbacRolesNeededOnKV'), parameters('managedIdentityName'), string(parameters('useExistingManagedIdentity'))))]"
       ]
     }
   ],
   "outputs": {
     "certificateName": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateName'), ':', ''), '/', '-')))).outputs.name]",
+      "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateName'), ':', ''), '/', '-'))), '2020-10-01').outputs.name]",
       "metadata": {
         "description": "Certificate name"
       }
     },
     "certificateSecretId": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateName'), ':', ''), '/', '-')))).outputs.certSecretId.versioned]",
+      "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateName'), ':', ''), '/', '-'))), '2020-10-01').outputs.certSecretId.versioned]",
       "metadata": {
         "description": "KeyVault secret id to the created version"
       }
     },
     "certificateSecretIdUnversioned": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateName'), ':', ''), '/', '-')))).outputs.certSecretId.unversioned]",
+      "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateName'), ':', ''), '/', '-'))), '2020-10-01').outputs.certSecretId.unversioned]",
       "metadata": {
         "description": "KeyVault secret id which uses the unversioned uri"
       }
     },
     "certificateThumbprint": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateName'), ':', ''), '/', '-')))).outputs.thumbprint]",
+      "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateName'), ':', ''), '/', '-'))), '2020-10-01').outputs.thumbprint]",
       "metadata": {
         "description": "Certificate Thumbprint"
       }
     },
     "certificateThumbprintHex": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateName'), ':', ''), '/', '-')))).outputs.thumbprintHex]",
+      "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateName'), ':', ''), '/', '-'))), '2020-10-01').outputs.thumbprintHex]",
       "metadata": {
         "description": "Certificate Thumbprint (in hex)"
       }
