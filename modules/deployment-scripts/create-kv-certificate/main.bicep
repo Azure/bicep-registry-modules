@@ -55,7 +55,7 @@ param issuerPassword string = ''
 @description('Organization ID of Certificate Issuer Account')
 param organizationId string = ''
 
-@description('Override this parameter if using this in a managed application')
+@description('Override this parameter if using this in cross tenant scenarios')
 param isCrossTenant bool = false
 
 resource akv 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
