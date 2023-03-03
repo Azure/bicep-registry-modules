@@ -87,7 +87,7 @@ var virtualNetworkRules = vnetId != null ? [
     id: vnetId
     ignoreMissingVNetServiceEndpoint: false
   }
-] : []
+] : null
 
 resource newAccount 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = if (newOrExisting == 'new') {
   name: toLower(name)

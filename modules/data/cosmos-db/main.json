@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.14.85.62628",
-      "templateHash": "10204767500856403005"
+      "templateHash": "8290913950483775091"
     }
   },
   "parameters": {
@@ -148,7 +148,7 @@
     },
     "locations": "[union(createArray(createObject('locationName', parameters('location'), 'failoverPriority', 0, 'isZoneRedundant', parameters('isZoneRedundant'))), variables('secondaryRegions'))]",
     "capabilities": "[union(if(parameters('enableCassandra'), createArray(createObject('name', 'EnableCassandra')), createArray()), if(parameters('enableServerless'), createArray(createObject('name', 'EnableServerless')), createArray()))]",
-    "virtualNetworkRules": "[if(not(equals(parameters('vnetId'), null())), createArray(createObject('id', parameters('vnetId'), 'ignoreMissingVNetServiceEndpoint', false())), createArray())]"
+    "virtualNetworkRules": "[if(not(equals(parameters('vnetId'), null())), createArray(createObject('id', parameters('vnetId'), 'ignoreMissingVNetServiceEndpoint', false())), null())]"
   },
   "resources": [
     {
