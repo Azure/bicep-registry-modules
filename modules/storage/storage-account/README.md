@@ -49,14 +49,13 @@ module storageAccount 'br/public:storage/storage-acount:0.0.1' = {
 }
 
 output storageAccountID string = storageAccount.outputs.id
-
 ```
 
 ### Example 2
+
 This example creates a new Storage Account with the name "mystorageaccount" in the "myresourcegroup" resource group located in the East US region. The Storage Account is configured to use zone-redundancy and virtual network access. The module output is the ID of the created or existing Storage Account, which can be used in other Azure resource deployments.
 
 ```bicep
-
 param location string = 'eastus'
 param name string = 'mystorageaccount'
 param newOrExisting string = 'new'
@@ -75,5 +74,4 @@ module storageAccount 'br/public:storage/storage-acount:0.0.1' = {
 }
 
 output storageAccountID string = storageAccount.outputs.id
-
 ```
