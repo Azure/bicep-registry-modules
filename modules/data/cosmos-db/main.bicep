@@ -41,7 +41,7 @@ param enableServerless bool = false
 param isZoneRedundant bool = false
 
 @description('The ID of the virtual network to which the Cosmos DB account should be attached. If not specified, the Cosmos DB account will not be attached to a virtual network.')
-param vnetId string = ''
+param vnetName string = ''
 
 var consistencyPolicy = {
   Eventual: {
@@ -82,12 +82,16 @@ var capabilities = union(
   enableServerless ? [ { name: 'EnableServerless' } ] : []
 )
 
-var virtualNetworkRules = vnetId != null ? [
+var virtualNetworkRules = vnetName != null ? [
   {
-    id: vnetId
+    id: vnet.id
     ignoreMissingVNetServiceEndpoint: false
   }
 ] : null
+
+resource vnet 'Microsoft.Network/virtualNetworks@2022-07-01' = if( vnetName != null) {
+  name: vnetName
+}
 
 resource newAccount 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = if (newOrExisting == 'new') {
   name: toLower(name)

@@ -24,7 +24,7 @@ The module also allows for the attachment of the Cosmos DB account to a virtual 
 | `enableCassandra`              | `bool`   | No       | Enable Cassandra Backend.                                                                                                                                           |
 | `enableServerless`             | `bool`   | No       | Enable Serverless for consumption-based usage.                                                                                                                      |
 | `isZoneRedundant`              | `bool`   | No       | Toggle to enable or disable zone redudance.                                                                                                                         |
-| `vnetId`                       | `string` | No       | The ID of the virtual network to which the Cosmos DB account should be attached. If not specified, the Cosmos DB account will not be attached to a virtual network. |
+| `vnetName`                     | `string` | No       | The ID of the virtual network to which the Cosmos DB account should be attached. If not specified, the Cosmos DB account will not be attached to a virtual network. |
 
 ## Outputs
 
@@ -73,12 +73,12 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-02-01' = {
   }
 }
 
-module cosmosDb './cosmosDb.bicep' = {
+module cosmosDb 'br/public:data/cosmos-db:0.0.1' = {
   name: 'cosmosDbDeployment'
   params: {
     location: location
     name: name
-    vnetId: virtualNetwork.id
+    vnetName: virtualNetwork.name
   }
 }
 
@@ -119,7 +119,7 @@ param secondaryRegions = [
   'centralus'
 ]
 
-module cosmosDb './cosmosDb.bicep' = {
+module cosmosDb 'br/public:data/cosmos-db:0.0.1' = {
   name: 'cosmosDbDeployment'
   params: {
     location: location

@@ -39,7 +39,7 @@ module test2 '../main.bicep' = {
   params: {
     location: location
     name: vnet_name
-    vnetId: prereq.outputs.resourceId
+    vnetName: prereq.outputs.vnetName
   }
 }
 

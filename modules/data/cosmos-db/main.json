@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.14.85.62628",
-      "templateHash": "8290913950483775091"
+      "templateHash": "2354328354965471746"
     }
   },
   "parameters": {
@@ -107,7 +107,7 @@
         "description": "Toggle to enable or disable zone redudance."
       }
     },
-    "vnetId": {
+    "vnetName": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -148,9 +148,15 @@
     },
     "locations": "[union(createArray(createObject('locationName', parameters('location'), 'failoverPriority', 0, 'isZoneRedundant', parameters('isZoneRedundant'))), variables('secondaryRegions'))]",
     "capabilities": "[union(if(parameters('enableCassandra'), createArray(createObject('name', 'EnableCassandra')), createArray()), if(parameters('enableServerless'), createArray(createObject('name', 'EnableServerless')), createArray()))]",
-    "virtualNetworkRules": "[if(not(equals(parameters('vnetId'), null())), createArray(createObject('id', parameters('vnetId'), 'ignoreMissingVNetServiceEndpoint', false())), null())]"
+    "virtualNetworkRules": "[if(not(equals(parameters('vnetName'), null())), createArray(createObject('id', resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName')), 'ignoreMissingVNetServiceEndpoint', false())), null())]"
   },
   "resources": [
+    {
+      "condition": "[not(equals(parameters('vnetName'), null()))]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2022-07-01",
+      "name": "[parameters('vnetName')]"
+    },
     {
       "condition": "[equals(parameters('newOrExisting'), 'new')]",
       "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -166,7 +172,10 @@
         "enableMultipleWriteLocations": "[parameters('enableMultipleWriteLocations')]",
         "capabilities": "[variables('capabilities')]",
         "virtualNetworkRules": "[variables('virtualNetworkRules')]"
-      }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
+      ]
     }
   ],
   "outputs": {
