@@ -83,6 +83,13 @@ var capabilities = union(
 )
 var vnetResource = vnetId != '' ? az.resourceId(subscription().id, 'Microsoft.Network/virtualNetworks', vnetId) : null
 
+var virtualNetworkRules = vnetResource != null ? [
+  {
+    id: vnetResource
+    ignoreMissingVNetServiceEndpoint: false
+  }
+] : []
+
 resource newAccount 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = if (newOrExisting == 'new') {
   name: toLower(name)
   location: location
@@ -94,12 +101,7 @@ resource newAccount 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = if (new
     enableAutomaticFailover: systemManagedFailover
     enableMultipleWriteLocations: enableMultipleWriteLocations
     capabilities: capabilities
-    virtualNetworkRules: [
-      {
-        id: vnetResource
-        ignoreMissingVNetServiceEndpoint: false
-      }
-    ]
+    virtualNetworkRules: virtualNetworkRules
   }
 }
 

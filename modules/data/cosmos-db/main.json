@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.14.85.62628",
-      "templateHash": "2461767825051356017"
+      "templateHash": "14915593046206831605"
     }
   },
   "parameters": {
@@ -148,7 +148,8 @@
     },
     "locations": "[union(createArray(createObject('locationName', parameters('location'), 'failoverPriority', 0, 'isZoneRedundant', parameters('isZoneRedundant'))), variables('secondaryRegions'))]",
     "capabilities": "[union(if(parameters('enableCassandra'), createArray(createObject('name', 'EnableCassandra')), createArray()), if(parameters('enableServerless'), createArray(createObject('name', 'EnableServerless')), createArray()))]",
-    "vnetResource": "[if(not(equals(parameters('vnetId'), '')), resourceId(subscription().id, 'Microsoft.Network/virtualNetworks', parameters('vnetId')), null())]"
+    "vnetResource": "[if(not(equals(parameters('vnetId'), '')), resourceId(subscription().id, 'Microsoft.Network/virtualNetworks', parameters('vnetId')), null())]",
+    "virtualNetworkRules": "[if(not(equals(variables('vnetResource'), null())), createArray(createObject('id', variables('vnetResource'), 'ignoreMissingVNetServiceEndpoint', false())), createArray())]"
   },
   "resources": [
     {
@@ -165,12 +166,7 @@
         "enableAutomaticFailover": "[parameters('systemManagedFailover')]",
         "enableMultipleWriteLocations": "[parameters('enableMultipleWriteLocations')]",
         "capabilities": "[variables('capabilities')]",
-        "virtualNetworkRules": [
-          {
-            "id": "[variables('vnetResource')]",
-            "ignoreMissingVNetServiceEndpoint": false
-          }
-        ]
+        "virtualNetworkRules": "[variables('virtualNetworkRules')]"
       }
     }
   ],
