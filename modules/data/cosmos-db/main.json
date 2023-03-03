@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.14.85.62628",
-      "templateHash": "1398185110747768437"
+      "templateHash": "2461767825051356017"
     }
   },
   "parameters": {
@@ -177,7 +177,10 @@
   "outputs": {
     "resourceId": {
       "type": "string",
-      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name')))]"
+      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name')))]",
+      "metadata": {
+        "description": "The resource ID of the Cosmos DB account."
+      }
     }
   }
 }

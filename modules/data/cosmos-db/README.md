@@ -28,9 +28,9 @@ The module also allows for the attachment of the Cosmos DB account to a virtual 
 
 ## Outputs
 
-| Name       | Type   | Description |
-| :--------- | :----: | :---------- |
-| resourceId | string |             |
+| Name       | Type   | Description                               |
+| :--------- | :----: | :---------------------------------------- |
+| resourceId | string | The resource ID of the Cosmos DB account. |
 
 ## Examples
 
@@ -61,19 +61,15 @@ The cosmosDb module is then deployed into this virtual network by passing the id
 ```bicep
 param location string = 'eastus'
 param name string = 'myvnetcosmosdb'
-param newOrExisting string = 'new'
+
+var subnet = {name: 'default', properties: { addressPrefix: '10.0.0.0/24' }}
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-02-01' = {
   name: '${name}-vnet'
   location: location
   properties: {
     addressSpace: { addressPrefixes: ['10.0.0.0/16'] }
-    subnets: [
-      {
-        name: 'default'
-        properties: { addressPrefix: '10.0.0.0/24' }
-      }
-    ]
+    subnets: [subnet]
   }
 }
 
@@ -82,7 +78,6 @@ module cosmosDb './cosmosDb.bicep' = {
   params: {
     location: location
     name: name
-    newOrExisting: newOrExisting
     vnetId: virtualNetwork.id
   }
 }
@@ -108,4 +103,30 @@ module cassandraDb 'br/public:data/cosmos-db:0.0.1' = {
 }
 
 output cassandraDbResourceId string = cassandraDb.outputs.resourceId
+```
+
+### Example 4
+
+In this example, secondaryRegions is an array of strings representing the additional regions where the Cosmos DB account will be deployed.
+The secondaryLocations parameter in the cosmosDb module is set to this array of regions using the secondaryRegions variable.
+
+```bicep
+param location string = 'eastus'
+param name string = 'mycosmosdb'
+
+param secondaryRegions = [
+  'westus',
+  'centralus'
+]
+
+module cosmosDb './cosmosDb.bicep' = {
+  name: 'cosmosDbDeployment'
+  params: {
+    location: location
+    name: name
+    secondaryLocations: secondaryRegions
+  }
+}
+
+output cosmosDbResourceId string = cosmosDb.outputs.resourceId
 ```

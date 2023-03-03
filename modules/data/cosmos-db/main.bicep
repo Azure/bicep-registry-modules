@@ -107,4 +107,5 @@ resource account 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' existing = {
   name: toLower(name)
 }
 
+@description('The resource ID of the Cosmos DB account.')
 output resourceId string = account.id
