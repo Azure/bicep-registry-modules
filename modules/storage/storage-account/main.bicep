@@ -65,4 +65,4 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing 
 }
 
 @description('The ID of the created or existing Storage Account. Use this ID to reference the Storage Account in other Azure resource deployments.')
-output id string = newOrExisting == 'new' ? newStorageAccount.id : storageAccount.id
+output id string = storageAccount.id

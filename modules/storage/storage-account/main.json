@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.14.85.62628",
-      "templateHash": "5626427085445788632"
+      "templateHash": "16328299649151847293"
     }
   },
   "parameters": {
@@ -105,7 +105,7 @@
   "outputs": {
     "id": {
       "type": "string",
-      "value": "[if(equals(parameters('newOrExisting'), 'new'), resourceId('Microsoft.Storage/storageAccounts', parameters('name')), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Storage/storageAccounts', parameters('name')))]",
+      "value": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Storage/storageAccounts', parameters('name'))]",
       "metadata": {
         "description": "The ID of the created or existing Storage Account. Use this ID to reference the Storage Account in other Azure resource deployments."
       }
