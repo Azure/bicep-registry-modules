@@ -1,0 +1,116 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.14.85.62628",
+      "templateHash": "3228543150666602315"
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "defaultValue": "[format('traffic-mp-{0}', uniqueString(resourceGroup().id, subscription().id))]",
+      "metadata": {
+        "description": "Traffic Manager Profile Resource Name"
+      }
+    },
+    "trafficManagerDnsName": {
+      "type": "string",
+      "defaultValue": "[format('tmp-{0}', uniqueString(resourceGroup().id, subscription().id))]",
+      "metadata": {
+        "description": "Relative DNS name for the traffic manager profile, must be globally unique."
+      }
+    },
+    "newOrExisting": {
+      "type": "string",
+      "defaultValue": "new",
+      "metadata": {
+        "description": "Specifies whether to create a new Traffic Manager or use an existing one. Use \"new\" to create a new account or \"existing\" to use an existing one."
+      },
+      "allowedValues": [
+        "new",
+        "existing"
+      ]
+    },
+    "endpoints": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "An array of objects that represent the endpoints in the Traffic Manager profile. {name: string, target: string, endpointStatus: string, endpointLocation: string}"
+      }
+    },
+    "monitorConfig": {
+      "type": "object",
+      "defaultValue": {
+        "protocol": "HTTPS",
+        "port": 443,
+        "path": "/",
+        "expectedStatusCodeRanges": [
+          {
+            "min": 200,
+            "max": 202
+          },
+          {
+            "min": 301,
+            "max": 302
+          }
+        ]
+      },
+      "metadata": {
+        "description": "An object that represents the monitoring configuration for the Traffic Manager profile."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[equals(parameters('newOrExisting'), 'new')]",
+      "type": "Microsoft.Network/trafficmanagerprofiles",
+      "apiVersion": "2018-08-01",
+      "name": "[parameters('name')]",
+      "location": "global",
+      "properties": {
+        "profileStatus": "Enabled",
+        "trafficRoutingMethod": "Performance",
+        "dnsConfig": {
+          "relativeName": "[toLower(parameters('trafficManagerDnsName'))]",
+          "ttl": 30
+        },
+        "monitorConfig": {
+          "protocol": "[if(contains(parameters('monitorConfig'), 'protocol'), parameters('monitorConfig').protocol, 'HTTPS')]",
+          "port": "[if(contains(parameters('monitorConfig'), 'port'), parameters('monitorConfig').port, 443)]",
+          "path": "[if(contains(parameters('monitorConfig'), 'path'), parameters('monitorConfig').path, '/')]",
+          "expectedStatusCodeRanges": "[if(contains(parameters('monitorConfig'), 'expectedStatusCodeRanges'), parameters('monitorConfig').expectedStatusCodeRanges, createArray(createObject('min', 200, 'max', 202), createObject('min', 301, 'max', 302)))]"
+        }
+      }
+    },
+    {
+      "copy": {
+        "name": "trafficManagerEndpoints",
+        "count": "[length(parameters('endpoints'))]"
+      },
+      "condition": "[and(equals(parameters('newOrExisting'), 'new'), not(empty(parameters('endpoints')[copyIndex()])))]",
+      "type": "Microsoft.Network/trafficmanagerprofiles/ExternalEndpoints",
+      "apiVersion": "2018-08-01",
+      "name": "[format('{0}/{1}', parameters('name'), parameters('endpoints')[copyIndex()].name)]",
+      "properties": {
+        "target": "[parameters('endpoints')[copyIndex()].target]",
+        "endpointStatus": "[if(contains(parameters('endpoints')[copyIndex()], 'endpointStatus'), parameters('endpoints')[copyIndex()].endpointStatus, 'Enabled')]",
+        "endpointLocation": "[parameters('endpoints')[copyIndex()].endpointLocation]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/trafficmanagerprofiles', parameters('name'))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "value": "[if(equals(parameters('newOrExisting'), 'new'), parameters('name'), parameters('name'))]",
+      "metadata": {
+        "description": "Traffic Manager Profile Resource Name"
+      }
+    }
+  }
+}
