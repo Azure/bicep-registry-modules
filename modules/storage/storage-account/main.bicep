@@ -8,8 +8,8 @@ param name string = 'st${uniqueString(resourceGroup().id, subscription().id)}'
 @description('Specifies whether to create a new Storage Account or use an existing one.')
 param newOrExisting string = 'new'
 
-@description('Name of Resource Group where the Storage Account will be deployed.')
-param resourceGroupName string = resourceGroup().name
+@description('Name of Resource Group where the Storage Account is deployed when using an existing resource.')
+param existingResourceGroupName string = resourceGroup().name
 
 @description('ID of the subnet where the Storage Account will be deployed, if virtual network access is enabled.')
 param subnetID string = ''
@@ -60,7 +60,7 @@ resource newStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = if (
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
-  scope: resourceGroup(resourceGroupName)
+  scope: resourceGroup(existingResourceGroupName)
   name: name
 }
 

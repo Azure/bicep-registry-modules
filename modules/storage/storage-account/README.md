@@ -17,16 +17,16 @@ The output of the module is the ID of the created or existing Storage Account, w
 
 ## Parameters
 
-| Name                 | Type     | Required | Description                                                                                        |
-| :------------------- | :------: | :------: | :------------------------------------------------------------------------------------------------- |
-| `location`           | `string` | Yes      | Deployment Location                                                                                |
-| `name`               | `string` | No       | Name of Storage Account. Must be unique within Azure.                                              |
-| `newOrExisting`      | `string` | No       | Specifies whether to create a new Storage Account or use an existing one.                          |
-| `resourceGroupName`  | `string` | No       | Name of Resource Group where the Storage Account will be deployed.                                 |
-| `subnetID`           | `string` | No       | ID of the subnet where the Storage Account will be deployed, if virtual network access is enabled. |
-| `enableVNET`         | `bool`   | No       | Toggle to enable or disable virtual network access for the Storage Account.                        |
-| `isZoneRedundant`    | `bool`   | No       | Toggle to enable or disable zone redundancy for the Storage Account.                               |
-| `storageAccountType` | `string` | No       | Storage Account Type. Use Zonal Redundant Storage when able.                                       |
+| Name                        | Type     | Required | Description                                                                                        |
+| :-------------------------- | :------: | :------: | :------------------------------------------------------------------------------------------------- |
+| `location`                  | `string` | Yes      | Deployment Location                                                                                |
+| `name`                      | `string` | No       | Name of Storage Account. Must be unique within Azure.                                              |
+| `newOrExisting`             | `string` | No       | Specifies whether to create a new Storage Account or use an existing one.                          |
+| `existingResourceGroupName` | `string` | No       | Name of Resource Group where the Storage Account is deployed when using an existing resource.      |
+| `subnetID`                  | `string` | No       | ID of the subnet where the Storage Account will be deployed, if virtual network access is enabled. |
+| `enableVNET`                | `bool`   | No       | Toggle to enable or disable virtual network access for the Storage Account.                        |
+| `isZoneRedundant`           | `bool`   | No       | Toggle to enable or disable zone redundancy for the Storage Account.                               |
+| `storageAccountType`        | `string` | No       | Storage Account Type. Use Zonal Redundant Storage when able.                                       |
 
 ## Outputs
 
