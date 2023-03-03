@@ -3,9 +3,9 @@ Write deployment tests in this file. Any module that references the main
 module file is a deployment test. Make sure at least one test is added.
 */
 param location string = resourceGroup().location
-param name string = 'mycosmosdb'
-param vnet_name string = 'myvnetcosmosdb'
-param cassandra_name string = 'mycassandradb'
+param name string = 'mycosmosdb${uniqueString(resourceGroup().id, location)}'
+param vnet_name string = 'myvnetcosmosdb${uniqueString(resourceGroup().id, location)}
+param cassandra_name string = 'mycassandradb${uniqueString(resourceGroup().id, location)}'
 
 // Prerequisites
 module prereq 'prereq.test.bicep' = {

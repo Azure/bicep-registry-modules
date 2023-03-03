@@ -2,7 +2,7 @@
 param location string
 
 @description('Name of Cosmos DB')
-param name string = '$prefix-${uniqueString(resourceGroup().id, location)}'
+param name string = 'cosmos${uniqueString(resourceGroup().id, location)}'
 
 @allowed([ 'new', 'existing' ])
 @description('Specifies whether to create a new Cosmos DB account or use an existing one. Use "new" to create a new account or "existing" to use an existing one.')
@@ -25,7 +25,7 @@ param defaultConsistencyLevel string = 'Session'
 @description('Enable system managed failover for regions')
 param systemManagedFailover bool = true
 
-@description('array of region objects or regions: [{locationName: string, failoverPriority: int, isZoneRedundant: bool}] or [region: string]')
+@description('array of region objects or regions: [region: string]')
 param secondaryLocations array = []
 
 @description('Multi-region writes capability allows you to take advantage of the provisioned throughput for your databases and containers across the globe.')
@@ -81,11 +81,10 @@ var capabilities = union(
   enableCassandra ? [ { name: 'EnableCassandra' } ] : [],
   enableServerless ? [ { name: 'EnableServerless' } ] : []
 )
-var vnetResource = vnetId != '' ? az.resourceId(subscription().id, 'Microsoft.Network/virtualNetworks', vnetId) : null
 
-var virtualNetworkRules = vnetResource != null ? [
+var virtualNetworkRules = vnetId != null ? [
   {
-    id: vnetResource
+    id: vnetId
     ignoreMissingVNetServiceEndpoint: false
   }
 ] : []
