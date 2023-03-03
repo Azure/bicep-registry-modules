@@ -108,4 +108,4 @@ module cassandraDb 'br/public:data/cosmos-db:0.0.1' = {
 }
 
 output cassandraDbResourceId string = cassandraDb.outputs.resourceId
-```gi
+```
