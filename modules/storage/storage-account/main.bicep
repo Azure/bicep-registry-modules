@@ -33,7 +33,7 @@ var networkAcls = enableVNET ? {
   ]
 } : {}
 
-resource newStorageAccount 'Microsoft.Storage/storageAccounts@2019-06-01' = if (newOrExisting == 'new') {
+resource newStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = if (newOrExisting == 'new') {
   name: name
   location: location
   sku: {
@@ -59,7 +59,7 @@ resource newStorageAccount 'Microsoft.Storage/storageAccounts@2019-06-01' = if (
   }
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
   scope: resourceGroup(resourceGroupName)
   name: name
 }

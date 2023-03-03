@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.14.85.62628",
-      "templateHash": "1512860343460434315"
+      "templateHash": "5626427085445788632"
     }
   },
   "parameters": {
@@ -76,7 +76,7 @@
     {
       "condition": "[equals(parameters('newOrExisting'), 'new')]",
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2019-06-01",
+      "apiVersion": "2022-09-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "sku": {
