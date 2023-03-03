@@ -8,13 +8,13 @@ param vnet_name string = 'myvnetcosmosdb${uniqueString(resourceGroup().id, locat
 param cassandra_name string = 'mycassandradb${uniqueString(resourceGroup().id, location)}'
 
 // Prerequisites
-module prereq 'prereq.test.bicep' = {
-  name: 'test-prereqs'
-  params: {
-    location: location
-    name: 'test-prereqs'
-  }
-}
+// module prereq 'prereq.test.bicep' = {
+//   name: 'test-prereqs'
+//   params: {
+//     location: location
+//     name: 'test-prereqs'
+//   }
+// }
 
 //Test 0. Basic Deployment
 module test0 '../main.bicep' = {
@@ -33,18 +33,8 @@ module test1 '../main.bicep' = {
   }
 }
 
-//Test 2. - Deploy with vnet 
+//Test 2. - Deploy Cassandra
 module test2 '../main.bicep' = {
-  name: 'test2'
-  params: {
-    location: location
-    name: vnet_name
-    vnetName: prereq.outputs.vnetName
-  }
-}
-
-// Test 3 - Deploy Cassandra
-module test3 '../main.bicep' = {
   name: 'test3'
   params: {
     location: location

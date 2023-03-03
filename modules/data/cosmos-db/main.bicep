@@ -40,9 +40,6 @@ param enableServerless bool = false
 @description('Toggle to enable or disable zone redudance.')
 param isZoneRedundant bool = false
 
-@description('The ID of the virtual network to which the Cosmos DB account should be attached. If not specified, the Cosmos DB account will not be attached to a virtual network.')
-param vnetName string = ''
-
 var consistencyPolicy = {
   Eventual: {
     defaultConsistencyLevel: 'Eventual'
@@ -82,17 +79,6 @@ var capabilities = union(
   enableServerless ? [ { name: 'EnableServerless' } ] : []
 )
 
-var virtualNetworkRules = vnetName != null ? [
-  {
-    id: vnet.id
-    ignoreMissingVNetServiceEndpoint: false
-  }
-] : null
-
-resource vnet 'Microsoft.Network/virtualNetworks@2022-07-01' = if( vnetName != null) {
-  name: vnetName
-}
-
 resource newAccount 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = if (newOrExisting == 'new') {
   name: toLower(name)
   location: location
@@ -104,7 +90,6 @@ resource newAccount 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = if (new
     enableAutomaticFailover: systemManagedFailover
     enableMultipleWriteLocations: enableMultipleWriteLocations
     capabilities: capabilities
-    virtualNetworkRules: virtualNetworkRules
   }
 }
 

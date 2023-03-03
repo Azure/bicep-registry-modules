@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.14.85.62628",
-      "templateHash": "2354328354965471746"
+      "templateHash": "7801263477565555122"
     }
   },
   "parameters": {
@@ -106,13 +106,6 @@
       "metadata": {
         "description": "Toggle to enable or disable zone redudance."
       }
-    },
-    "vnetName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "The ID of the virtual network to which the Cosmos DB account should be attached. If not specified, the Cosmos DB account will not be attached to a virtual network."
-      }
     }
   },
   "variables": {
@@ -147,16 +140,9 @@
       }
     },
     "locations": "[union(createArray(createObject('locationName', parameters('location'), 'failoverPriority', 0, 'isZoneRedundant', parameters('isZoneRedundant'))), variables('secondaryRegions'))]",
-    "capabilities": "[union(if(parameters('enableCassandra'), createArray(createObject('name', 'EnableCassandra')), createArray()), if(parameters('enableServerless'), createArray(createObject('name', 'EnableServerless')), createArray()))]",
-    "virtualNetworkRules": "[if(not(equals(parameters('vnetName'), null())), createArray(createObject('id', resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName')), 'ignoreMissingVNetServiceEndpoint', false())), null())]"
+    "capabilities": "[union(if(parameters('enableCassandra'), createArray(createObject('name', 'EnableCassandra')), createArray()), if(parameters('enableServerless'), createArray(createObject('name', 'EnableServerless')), createArray()))]"
   },
   "resources": [
-    {
-      "condition": "[not(equals(parameters('vnetName'), null()))]",
-      "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2022-07-01",
-      "name": "[parameters('vnetName')]"
-    },
     {
       "condition": "[equals(parameters('newOrExisting'), 'new')]",
       "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -170,12 +156,8 @@
         "databaseAccountOfferType": "Standard",
         "enableAutomaticFailover": "[parameters('systemManagedFailover')]",
         "enableMultipleWriteLocations": "[parameters('enableMultipleWriteLocations')]",
-        "capabilities": "[variables('capabilities')]",
-        "virtualNetworkRules": "[variables('virtualNetworkRules')]"
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
-      ]
+        "capabilities": "[variables('capabilities')]"
+      }
     }
   ],
   "outputs": {

@@ -10,21 +10,20 @@ The module also allows for the attachment of the Cosmos DB account to a virtual 
 
 ## Parameters
 
-| Name                           | Type     | Required | Description                                                                                                                                                         |
-| :----------------------------- | :------: | :------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `location`                     | `string` | Yes      | Deployment Location                                                                                                                                                 |
-| `name`                         | `string` | No       | Name of Cosmos DB                                                                                                                                                   |
-| `newOrExisting`                | `string` | No       | Specifies whether to create a new Cosmos DB account or use an existing one. Use "new" to create a new account or "existing" to use an existing one.                 |
-| `maxStalenessPrefix`           | `int`    | No       | Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 2147483647. Multi Region: 100000 to 2147483647.                               |
-| `maxIntervalInSeconds`         | `int`    | No       | Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400.                                         |
-| `defaultConsistencyLevel`      | `string` | No       | The default consistency level of the Cosmos DB account.                                                                                                             |
-| `systemManagedFailover`        | `bool`   | No       | Enable system managed failover for regions                                                                                                                          |
-| `secondaryLocations`           | `array`  | No       | array of region objects or regions: [region: string]                                                                                                                |
-| `enableMultipleWriteLocations` | `bool`   | No       | Multi-region writes capability allows you to take advantage of the provisioned throughput for your databases and containers across the globe.                       |
-| `enableCassandra`              | `bool`   | No       | Enable Cassandra Backend.                                                                                                                                           |
-| `enableServerless`             | `bool`   | No       | Enable Serverless for consumption-based usage.                                                                                                                      |
-| `isZoneRedundant`              | `bool`   | No       | Toggle to enable or disable zone redudance.                                                                                                                         |
-| `vnetName`                     | `string` | No       | The ID of the virtual network to which the Cosmos DB account should be attached. If not specified, the Cosmos DB account will not be attached to a virtual network. |
+| Name                           | Type     | Required | Description                                                                                                                                         |
+| :----------------------------- | :------: | :------: | :-------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `location`                     | `string` | Yes      | Deployment Location                                                                                                                                 |
+| `name`                         | `string` | No       | Name of Cosmos DB                                                                                                                                   |
+| `newOrExisting`                | `string` | No       | Specifies whether to create a new Cosmos DB account or use an existing one. Use "new" to create a new account or "existing" to use an existing one. |
+| `maxStalenessPrefix`           | `int`    | No       | Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 2147483647. Multi Region: 100000 to 2147483647.               |
+| `maxIntervalInSeconds`         | `int`    | No       | Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400.                         |
+| `defaultConsistencyLevel`      | `string` | No       | The default consistency level of the Cosmos DB account.                                                                                             |
+| `systemManagedFailover`        | `bool`   | No       | Enable system managed failover for regions                                                                                                          |
+| `secondaryLocations`           | `array`  | No       | array of region objects or regions: [region: string]                                                                                                |
+| `enableMultipleWriteLocations` | `bool`   | No       | Multi-region writes capability allows you to take advantage of the provisioned throughput for your databases and containers across the globe.       |
+| `enableCassandra`              | `bool`   | No       | Enable Cassandra Backend.                                                                                                                           |
+| `enableServerless`             | `bool`   | No       | Enable Serverless for consumption-based usage.                                                                                                      |
+| `isZoneRedundant`              | `bool`   | No       | Toggle to enable or disable zone redudance.                                                                                                         |
 
 ## Outputs
 
@@ -55,38 +54,6 @@ output cosmosDbResourceId string = cosmosDb.outputs.resourceId
 
 ### Example 2
 
-This will create a new virtual network with a single subnet named "default" with the address space 10.0.0.0/16 and subnet address range of 10.0.0.0/24.
-The cosmosDb module is then deployed into this virtual network by passing the id property of the virtualNetwork resource to the vnetId parameter of the module.
-
-```bicep
-param location string = 'eastus'
-param name string = 'myvnetcosmosdb'
-
-var subnet = {name: 'default', properties: { addressPrefix: '10.0.0.0/24' }}
-
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-02-01' = {
-  name: '${name}-vnet'
-  location: location
-  properties: {
-    addressSpace: { addressPrefixes: ['10.0.0.0/16'] }
-    subnets: [subnet]
-  }
-}
-
-module cosmosDb 'br/public:data/cosmos-db:0.0.1' = {
-  name: 'cosmosDbDeployment'
-  params: {
-    location: location
-    name: name
-    vnetName: virtualNetwork.name
-  }
-}
-
-output cosmosDbResourceId string = cosmosDb.outputs.resourceId
-```
-
-### Example 3
-
 In this example, we're using the data/cosmos-db module to deploy a new Cosmos DB account with the name ${prefix}-<unique string> in the location provided. We're also specifying enableCassandra to be true, which will enable Apache Cassandra as a backend for the account.
 
 ```bicep
@@ -105,7 +72,7 @@ module cassandraDb 'br/public:data/cosmos-db:0.0.1' = {
 output cassandraDbResourceId string = cassandraDb.outputs.resourceId
 ```
 
-### Example 4
+### Example 3
 
 In this example, secondaryRegions is an array of strings representing the additional regions where the Cosmos DB account will be deployed.
 The secondaryLocations parameter in the cosmosDb module is set to this array of regions using the secondaryRegions variable.
