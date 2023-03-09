@@ -6,7 +6,7 @@
       "extensions": [
         "ms-azuretools.vscode-bicep",
         "esbenp.prettier-vscode",
-		    "microsoft-dciborow.align-bicep"
+        "microsoft-dciborow.align-bicep"
       ]
     }
   },
