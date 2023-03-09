@@ -5,11 +5,7 @@
     "args": { "VARIANT": "focal" }
   },
 
-  "extensions": [
-	"ms-azuretools.vscode-bicep",
-	"esbenp.prettier-vscode",
-	"zokugun.explicit-folding"
-],
+  "extensions": ["ms-azuretools.vscode-bicep", "esbenp.prettier-vscode"],
 
   "postCreateCommand": "dotnet tool install -g Azure.Bicep.RegistryModuleTool",
   "postStartCommand": "az bicep install",
