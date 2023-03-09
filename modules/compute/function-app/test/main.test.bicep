@@ -87,7 +87,7 @@ module test '../main.bicep' = {
     ]
     functionsWorkerRuntime: 'node'
     storgeAccountName: dependencies.outputs.saAccountName
-    storgeAccountResourceGroup: dependencies.outputs.saResourceGroupName
+    storgeAccountResourceGroup: resourceGroup.name
   }
   scope: resourceGroup
 }
@@ -102,7 +102,7 @@ Dependency list:
 
 ''')
 
-module test2 '../module.bicep' = {
+module test2 '../main.bicep' = {
   name: 'test-azure-func2-${guid(name)}'
   dependsOn: [
     dependencies
@@ -119,14 +119,14 @@ module test2 '../module.bicep' = {
     }
     tags: tags
     storgeAccountName: dependencies.outputs.saAccountName
-    storgeAccountResourceGroup: dependencies.outputs.saResourceGroupName
+    storgeAccountResourceGroup: resourceGroup.name
   }
   scope: resourceGroup
 
 }
 
 // TODO: should add test case using sourcecontrol extension later
-module test3 '../module.bicep' = {
+module test3 '../main.bicep' = {
   name: 'test-azure-func3-${guid(name)}'
   scope: resourceGroup
   dependsOn: [
@@ -147,12 +147,12 @@ module test3 '../module.bicep' = {
     enableVnetIntegration: true
     enableInsights: true
     workspaceResourceId: dependencies.outputs.workspacesId
-    subnetId: dependencies.outputs.subnets[0].id
+    subnetId: dependencies.outputs.subnets
     functionsExtensionVersion: '~4'
     functionsWorkerRuntime: 'powershell'
     storgeAccountName: dependencies.outputs.saAccountName
-    storgeAccountResourceGroup: dependencies.outputs.saResourceGroupName
+    storgeAccountResourceGroup: resourceGroup.name
     enablePackageDeploy: true
-    functionPackageUri: dependencies.outputs.zipFileUri
+    //functionPackageUri: dependencies.outputs.zipFileUri
   }
 }
