@@ -24,7 +24,7 @@ resource daprStorageAccStateStore 'Microsoft.App/managedEnvironments/daprCompone
     secrets: [
       {
         name: 'storageaccountkey'
-        value: listKeys(storageaccount.id, storageaccount.apiVersion).keys[0].value
+        value: storageaccount.listKeys().keys[0].value
       }
     ]
     metadata: [
