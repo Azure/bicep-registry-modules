@@ -1,8 +1,11 @@
 ## Description
 
-<!--Why this PR? What is changed? What is the effect? etc.-->
+Update pull_request_template to...
+- Fix Broken Link
+- Include updating module's `README.md` in precommit checklist
 
-If you haven't already, read the full [contribution guide](../CONTRIBUTING.md). The guide may have changed since the last time you read it, so please double-check. Once you are done and ready to submit your PR, edit the PR description and run through the relevant checklist below.
+
+If you haven't already, read the full [contribution guide](https://github.com/Azure/bicep-registry-modules/blob/main/CONTRIBUTING.md). The guide may have changed since the last time you read it, so please double-check. Once you are done and ready to submit your PR, edit the PR description and run through the relevant checklist below.
 
 Enable GitHub Worksflows in your fork to enable auto-generation of assets with our [GitHub Action](/.github/workflows/push-auto-generate.yml).
 To trigger GitHub Actions after auto-generation, [add a GitHub PAT](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) as a secret in your forked repository called `PAT`.
@@ -29,3 +32,4 @@ To trigger GitHub Actions after auto-generation, [add a GitHub PAT](https://docs
   - [ ] The PR contains backwards compatible bug fixes, and I have NOT bumped the MAJOR or MINOR version in `version.json`.
   - [ ] The PR contains backwards compatible feature updates, and I have bumped the MINOR version in `version.json`.
   - [ ] The PR contains breaking changes, and I have bumped the MAJOR version in `version.json`.
+- [ ] I have updated the README with the latest version number.
