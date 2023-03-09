@@ -53,4 +53,15 @@ module keyVault 'br/public:security/keyvault:0.0.1' = {
 ### Example 2
 
 ```bicep
+param roleAssignments array = [
+  '4633458b-17de-408a-b874-0445c86b69e6' // rbacSecretsReaderRole
+]
+
+module keyVault 'br/public:security/keyvault:0.0.1' = {
+  name: 'myKeyVault'
+  params: {
+    location: location
+    name: name
+  }
+}
 ```
