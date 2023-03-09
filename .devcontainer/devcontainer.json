@@ -1,14 +1,15 @@
 {
   "name": "Ubuntu",
-  "image": "mcr.microsoft.com/vscode/devcontainers/base:0-focal",
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "ms-azuretools.vscode-bicep",
-        "esbenp.prettier-vscode"
-      ]
-    }
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": { "VARIANT": "focal" }
   },
+
+  "extensions": [
+	"ms-azuretools.vscode-bicep",
+	"esbenp.prettier-vscode",
+	"zokugun.explicit-folding"
+],
 
   "postCreateCommand": "dotnet tool install -g Azure.Bicep.RegistryModuleTool",
   "postStartCommand": "az bicep install",
@@ -19,6 +20,6 @@
 
   "features": {
     "azure-cli": "latest",
-    "dotnet": "7.0"
+    "dotnet": "6.0"
   }
 }
