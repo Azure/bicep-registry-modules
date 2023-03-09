@@ -4,13 +4,6 @@ param location string
 @description('Name of Storage Account. Must be unique within Azure.')
 param name string = 'st${uniqueString(resourceGroup().id, subscription().id)}'
 
-@allowed([ 'new', 'existing' ])
-@description('Specifies whether to create a new Storage Account or use an existing one.')
-param newOrExisting string = 'new'
-
-@description('Name of Resource Group where the Storage Account is deployed when using an existing resource.')
-param existingResourceGroupName string = resourceGroup().name
-
 @description('ID of the subnet where the Storage Account will be deployed, if virtual network access is enabled.')
 param subnetID string = ''
 
@@ -33,7 +26,7 @@ var networkAcls = enableVNET ? {
   ]
 } : {}
 
-resource newStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = if (newOrExisting == 'new') {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   name: name
   location: location
   sku: {
@@ -57,11 +50,6 @@ resource newStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = if (
     networkAcls: networkAcls
     minimumTlsVersion: 'TLS1_2'
   }
-}
-
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
-  scope: resourceGroup(existingResourceGroupName)
-  name: name
 }
 
 @description('The ID of the created or existing Storage Account. Use this ID to reference the Storage Account in other Azure resource deployments.')

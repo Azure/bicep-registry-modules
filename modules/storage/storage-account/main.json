@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.14.85.62628",
-      "templateHash": "2039762094896632270"
+      "version": "0.15.31.15270",
+      "templateHash": "6249334553241462209"
     }
   },
   "parameters": {
@@ -20,24 +20,6 @@
       "defaultValue": "[format('st{0}', uniqueString(resourceGroup().id, subscription().id))]",
       "metadata": {
         "description": "Name of Storage Account. Must be unique within Azure."
-      }
-    },
-    "newOrExisting": {
-      "type": "string",
-      "defaultValue": "new",
-      "metadata": {
-        "description": "Specifies whether to create a new Storage Account or use an existing one."
-      },
-      "allowedValues": [
-        "new",
-        "existing"
-      ]
-    },
-    "existingResourceGroupName": {
-      "type": "string",
-      "defaultValue": "[resourceGroup().name]",
-      "metadata": {
-        "description": "Name of Resource Group where the Storage Account is deployed when using an existing resource."
       }
     },
     "subnetID": {
@@ -74,7 +56,6 @@
   },
   "resources": [
     {
-      "condition": "[equals(parameters('newOrExisting'), 'new')]",
       "type": "Microsoft.Storage/storageAccounts",
       "apiVersion": "2022-09-01",
       "name": "[parameters('name')]",
@@ -105,7 +86,7 @@
   "outputs": {
     "id": {
       "type": "string",
-      "value": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('existingResourceGroupName')), 'Microsoft.Storage/storageAccounts', parameters('name'))]",
+      "value": "[resourceId('Microsoft.Storage/storageAccounts', parameters('name'))]",
       "metadata": {
         "description": "The ID of the created or existing Storage Account. Use this ID to reference the Storage Account in other Azure resource deployments."
       }
