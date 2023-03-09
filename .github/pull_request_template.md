@@ -1,9 +1,9 @@
 ## Description
 
 Update pull_request_template to...
+
 - Fix Broken Link
 - Include updating module's `README.md` in precommit checklist
-
 
 If you haven't already, read the full [contribution guide](https://github.com/Azure/bicep-registry-modules/blob/main/CONTRIBUTING.md). The guide may have changed since the last time you read it, so please double-check. Once you are done and ready to submit your PR, edit the PR description and run through the relevant checklist below.
 
