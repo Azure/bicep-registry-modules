@@ -23,8 +23,11 @@ param newOrExisting string = 'new'
 @description('Enable role assignment for the Key Vault')
 param assignRole bool = true
 
-var rbacSecretsReaderRole = '4633458b-17de-408a-b874-0445c86b69e6'
-var rbacCertificateOfficerRole = 'a4417e6f-fecd-4de8-b567-7b0420556985'
+@description('RBAC Role Assignments to apply to each RBAC policy')
+param roleAssignments array = [
+  '4633458b-17de-408a-b874-0445c86b69e6' // rbacSecretsReaderRole
+  'a4417e6f-fecd-4de8-b567-7b0420556985' // rbacCertificateOfficerRole
+]
 
 var networkAcls = enableVNet ? {
   defaultAction: 'Deny'
@@ -52,33 +55,18 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = if (newOrExisting == 
   }
 }
 
-resource existingKeyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = if (newOrExisting == 'existing') {
-  name: name
-}
-
-resource identityRoleAssignDeployment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for rbacPolicy in rbacPolicies: if (assignRole) {
-  name: guid(rbacSecretsReaderRole, rbacPolicy.objectId)
-  scope: keyVault
-  properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', rbacSecretsReaderRole)
-    principalId: rbacPolicy.objectId
-    principalType: 'ServicePrincipal'
-  }
-}]
-
-resource rbacCertsReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for rbacPolicy in rbacPolicies: if (assignRole) {
-  name: guid(rbacCertificateOfficerRole, rbacPolicy.objectId)
-  scope: keyVault
-  properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', rbacCertificateOfficerRole)
-    principalId: rbacPolicy.objectId
-    principalType: 'ServicePrincipal'
+module rbacRoleAssignments 'modules/roleAssignment.bicep' = [for rbacRole in roleAssignments: if (assignRole) {
+  name: guid(keyVault.name, rbacRole)
+  params: {
+    keyVaultName: keyVault.name
+    rbacPolicies: rbacPolicies
+    rbacRole: rbacRole
   }
 }]
 
 @description('Key Vault Id')
-output id string = newOrExisting == 'new' ? keyVault.id : existingKeyVault.id
+output id string = keyVault.id
 
 @description('Key Vault Name')
-output name string = newOrExisting == 'new' ? keyVault.name : existingKeyVault.name
+output name string = keyVault.name
 

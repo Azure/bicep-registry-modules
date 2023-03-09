@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.14.85.62628",
-      "templateHash": "9672951491274242172"
+      "version": "0.15.31.15270",
+      "templateHash": "16142032849940523008"
     }
   },
   "parameters": {
@@ -67,11 +67,19 @@
       "metadata": {
         "description": "Enable role assignment for the Key Vault"
       }
+    },
+    "roleAssignments": {
+      "type": "array",
+      "defaultValue": [
+        "4633458b-17de-408a-b874-0445c86b69e6",
+        "a4417e6f-fecd-4de8-b567-7b0420556985"
+      ],
+      "metadata": {
+        "description": "RBAC Role Assignments to apply to each RBAC policy"
+      }
     }
   },
   "variables": {
-    "rbacSecretsReaderRole": "4633458b-17de-408a-b874-0445c86b69e6",
-    "rbacCertificateOfficerRole": "a4417e6f-fecd-4de8-b567-7b0420556985",
     "networkAcls": "[if(parameters('enableVNet'), createObject('defaultAction', 'Deny', 'virtualNetworkRules', createArray(createObject('action', 'Allow', 'id', parameters('subnetID')))), createObject())]"
   },
   "resources": [
@@ -95,37 +103,68 @@
     },
     {
       "copy": {
-        "name": "identityRoleAssignDeployment",
-        "count": "[length(parameters('rbacPolicies'))]"
+        "name": "rbacRoleAssignments",
+        "count": "[length(parameters('roleAssignments'))]"
       },
       "condition": "[parameters('assignRole')]",
-      "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.KeyVault/vaults/{0}', take(parameters('name'), 24))]",
-      "name": "[guid(variables('rbacSecretsReaderRole'), parameters('rbacPolicies')[copyIndex()].objectId)]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[guid(take(parameters('name'), 24), parameters('roleAssignments')[copyIndex()])]",
       "properties": {
-        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('rbacSecretsReaderRole'))]",
-        "principalId": "[parameters('rbacPolicies')[copyIndex()].objectId]",
-        "principalType": "ServicePrincipal"
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.KeyVault/vaults', take(parameters('name'), 24))]"
-      ]
-    },
-    {
-      "copy": {
-        "name": "rbacCertsReader",
-        "count": "[length(parameters('rbacPolicies'))]"
-      },
-      "condition": "[parameters('assignRole')]",
-      "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.KeyVault/vaults/{0}', take(parameters('name'), 24))]",
-      "name": "[guid(variables('rbacCertificateOfficerRole'), parameters('rbacPolicies')[copyIndex()].objectId)]",
-      "properties": {
-        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('rbacCertificateOfficerRole'))]",
-        "principalId": "[parameters('rbacPolicies')[copyIndex()].objectId]",
-        "principalType": "ServicePrincipal"
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "keyVaultName": {
+            "value": "[take(parameters('name'), 24)]"
+          },
+          "rbacPolicies": {
+            "value": "[parameters('rbacPolicies')]"
+          },
+          "rbacRole": {
+            "value": "[parameters('roleAssignments')[copyIndex()]]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.15.31.15270",
+              "templateHash": "17993802942098338021"
+            }
+          },
+          "parameters": {
+            "keyVaultName": {
+              "type": "string"
+            },
+            "rbacPolicies": {
+              "type": "array"
+            },
+            "rbacRole": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "copy": {
+                "name": "rbac_certs_reader",
+                "count": "[length(parameters('rbacPolicies'))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2020-04-01-preview",
+              "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('keyVaultName'))]",
+              "name": "[guid(parameters('rbacRole'), parameters('rbacPolicies')[copyIndex()].objectId)]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('rbacRole'))]",
+                "principalId": "[parameters('rbacPolicies')[copyIndex()].objectId]",
+                "principalType": "ServicePrincipal"
+              }
+            }
+          ]
+        }
       },
       "dependsOn": [
         "[resourceId('Microsoft.KeyVault/vaults', take(parameters('name'), 24))]"
@@ -135,14 +174,14 @@
   "outputs": {
     "id": {
       "type": "string",
-      "value": "[if(equals(parameters('newOrExisting'), 'new'), resourceId('Microsoft.KeyVault/vaults', take(parameters('name'), 24)), resourceId('Microsoft.KeyVault/vaults', parameters('name')))]",
+      "value": "[resourceId('Microsoft.KeyVault/vaults', take(parameters('name'), 24))]",
       "metadata": {
         "description": "Key Vault Id"
       }
     },
     "name": {
       "type": "string",
-      "value": "[if(equals(parameters('newOrExisting'), 'new'), take(parameters('name'), 24), parameters('name'))]",
+      "value": "[take(parameters('name'), 24)]",
       "metadata": {
         "description": "Key Vault Name"
       }
