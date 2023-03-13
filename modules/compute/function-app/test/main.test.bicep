@@ -57,7 +57,7 @@ module test1 '../main.bicep' = {
     }
     tags: tags
     storgeAccountName: dependencies.outputs.saAccountName
-    storgeAccountResourceGroup: dependencies.outputs.saResourceGroupName
+    storgeAccountResourceGroup: resourceGroup.name
   }
   scope: resourceGroup
 
@@ -85,11 +85,11 @@ module test2 '../main.bicep' = {
     enableVnetIntegration: true
     enableInsights: true
     workspaceResourceId: dependencies.outputs.workspacesId
-    subnetId: dependencies.outputs.subnets[0].id
+    subnetId: dependencies.outputs.subnets
     functionsExtensionVersion: '~4'
     functionsWorkerRuntime: 'powershell'
     storgeAccountName: dependencies.outputs.saAccountName
-    storgeAccountResourceGroup: dependencies.outputs.saResourceGroupName
+    storgeAccountResourceGroup: resourceGroup.name
     enablePackageDeploy: true
   }
 }
