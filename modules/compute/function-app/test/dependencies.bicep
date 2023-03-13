@@ -56,14 +56,6 @@ module storageAccount 'br:nuanceenterpriseinfra.azurecr.io/bicep/storage-account
   }
 }
 
-module uploadZipFile './upload-file.bicep' = {
-  name: 'upload-zipfile'
-  params: {
-    storageAccountName: storageAccount.outputs.name
-    location: location
-    containerName: 'app'
-  }
-}
 
 resource userAssignedIdentities 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: 'test2-${uniqueString(resourceGroup().id)}'
@@ -100,5 +92,3 @@ output saAccountName string = storageAccount.outputs.name
 @description('Resource Group of storage account used by function app.')
 output saResourceGroupName string = storageAccount.outputs.resourcegroupName
 
-@description('The URI of the function app source code zip package uploaded earlier.')
-output zipFileUri string = uploadZipFile.outputs.zipFileUri

@@ -28,69 +28,7 @@ module dependencies 'dependencies.bicep' = {
   }
 }
 
-@description(''' 
-- This test setup the Azure Function with appInsights (Microsoft.Insights/components).
-- Make sure enableaInsights: true.
-- with functions of array
 
-Dependency list: 
-- Microsoft.ManagedIdentity/userAssignedIdentities
-- Microsoft.OperationalInsights/workspaces
-
-''')
-module test '../main.bicep' = {
-  name: 'test-azure-func-${guid(name)}'
-  dependsOn: [
-    dependencies
-  ]
-  params: {
-    name: 'test1-${name}'
-    location: location
-    sku: {
-      name: 'Y1'
-      tier: 'Dynamic'
-      size: 'Y1'
-      family: 'Y'
-      capacity: 0
-    }
-    tags: tags
-    identityType: 'UserAssigned'
-    userAssignedIdentityId: dependencies.outputs.userAssignedIdentitiesId
-    workspaceResourceId: dependencies.outputs.workspacesId
-    enableInsights: true
-    functions: [
-      {
-        name: 'function2'
-        config: {
-          bindings: [
-            {
-              name: 'myTimer'
-              type: 'timerTrigger'
-              direction: 'in'
-              schedule: '0 */1 * * * *'
-            }
-            {
-              name: 'outputBlob2'
-              direction: 'out'
-              type: 'blob'
-              path: 'outcontainer/{rand-guid}'
-              connection: 'AzureWebJobsStorage'
-            }
-          ]
-        }
-        enabled: true
-        files: {
-          'index.js': loadTextContent('functions_source_code/test_1_index.js', 'utf-8')
-        }
-        language: 'node'
-      }
-    ]
-    functionsWorkerRuntime: 'node'
-    storgeAccountName: dependencies.outputs.saAccountName
-    storgeAccountResourceGroup: dependencies.outputs.saResourceGroupName
-  }
-  scope: resourceGroup
-}
 
 @description(''' 
 - This test setup the Azure Function without appInsights (Microsoft.Insights/components).
@@ -102,7 +40,7 @@ Dependency list:
 
 ''')
 
-module test2 '../module.bicep' = {
+module test1 '../main.bicep' = {
   name: 'test-azure-func2-${guid(name)}'
   dependsOn: [
     dependencies
@@ -126,7 +64,7 @@ module test2 '../module.bicep' = {
 }
 
 // TODO: should add test case using sourcecontrol extension later
-module test3 '../module.bicep' = {
+module test2 '../main.bicep' = {
   name: 'test-azure-func3-${guid(name)}'
   scope: resourceGroup
   dependsOn: [
@@ -153,6 +91,5 @@ module test3 '../module.bicep' = {
     storgeAccountName: dependencies.outputs.saAccountName
     storgeAccountResourceGroup: dependencies.outputs.saResourceGroupName
     enablePackageDeploy: true
-    functionPackageUri: dependencies.outputs.zipFileUri
   }
 }
