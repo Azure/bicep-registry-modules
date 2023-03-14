@@ -14,12 +14,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
       ]
     }
   }
-  resource kvSubnet 'subnets' = {
-    name: 'kv'
-    properties: {
-      addressPrefix: '10.0.1.0/24'
-    }
-  }
+
   resource funcSubnet 'subnets' = {
     name: 'function-app'
     properties: {
@@ -63,27 +58,29 @@ var uniqueStoragename = length(uniqueString(name)) > maxNameLength ? substring(u
 var storgeAccountName = 'iep${uniqueStoragename}'
 
 
-module storageAccount 'br:nuanceenterpriseinfra.azurecr.io/bicep/storage-account:1.0.02024.18-2bf217a' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {
   name: storgeAccountName
-  params: {
-    name: storgeAccountName
-    location: location
-    skuName: 'Standard_LRS'
-    kind: 'StorageV2'
+  location: location
+  sku: {
+    name: 'Standard_LRS'
+  }
+  kind: 'StorageV2'
+
+  properties: {
     accessTier: 'Cool'
     minimumTlsVersion: 'TLS1_2'
     supportsHttpsTrafficOnly: true
     allowBlobPublicAccess: true
     allowSharedKeyAccess: true
-    networkAclsBypass: 'AzureServices'
-    networkAclsDefaultAction: 'Allow'
+    //networkAclsDefaultAction: 'Allow'
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Allow'
+  
+    }
     publicNetworkAccess: 'Enabled'
-    containers: [
-      {
-        name: 'app'
-        publicAccess: 'Blob'
-      }
-    ]
+  
+   
   }
 }
 
