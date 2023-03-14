@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "5556339378277845239"
+      "templateHash": "1003361592298163544"
     }
   },
   "parameters": {
@@ -371,7 +371,7 @@
       "properties": "[union(createObject('AzureWebJobsStorage', if(not(empty(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('storgeAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storgeAccountName')))), format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', parameters('storgeAccountName'), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('storgeAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storgeAccountName')), '2021-06-01').keys[0].value), null()), 'AzureWebJobsDashboard', if(not(empty(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('storgeAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storgeAccountName')))), format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', parameters('storgeAccountName'), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('storgeAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storgeAccountName')), '2021-06-01').keys[0].value), null()), 'WEBSITE_CONTENTSHARE', parameters('name'), 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING', if(not(empty(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('storgeAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storgeAccountName')))), format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', parameters('storgeAccountName'), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('storgeAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storgeAccountName')), '2021-06-01').keys[0].value), null()), 'FUNCTIONS_EXTENSION_VERSION', parameters('functionsExtensionVersion'), 'FUNCTIONS_WORKER_RUNTIME', if(and(equals(reference(resourceId('Microsoft.Web/sites', parameters('name')), '2022-03-01', 'full').kind, 'functionapp'), not(empty(parameters('functionsWorkerRuntime')))), parameters('functionsWorkerRuntime'), null()), 'WEBSITE_NODE_DEFAULT_VERSION', if(and(and(equals(reference(resourceId('Microsoft.Web/sites', parameters('name')), '2022-03-01', 'full').kind, 'functionapp'), equals(parameters('functionsWorkerRuntime'), 'node')), not(empty(parameters('functionsDefaultNodeversion')))), parameters('functionsDefaultNodeversion'), null()), 'APPINSIGHTS_INSTRUMENTATIONKEY', if(and(not(empty(resourceId('Microsoft.Insights/components', format('ai-{0}', parameters('name'))))), parameters('enableInsights')), reference(resourceId('Microsoft.Insights/components', format('ai-{0}', parameters('name'))), '2020-02-02').InstrumentationKey, null()), 'APPLICATIONINSIGHTS_CONNECTION_STRING', if(and(not(empty(resourceId('Microsoft.Insights/components', format('ai-{0}', parameters('name'))))), parameters('enableInsights')), reference(resourceId('Microsoft.Insights/components', format('ai-{0}', parameters('name'))), '2020-02-02').ConnectionString, null())), parameters('extraAppSettings'))]",
       "dependsOn": [
         "[resourceId('Microsoft.Insights/components', format('ai-{0}', parameters('name')))]",
-        "[resourceId('Microsoft.Web/sites/networkConfig', split(format('{0}/virtualNetwork', parameters('name')), '/')[0], split(format('{0}/virtualNetwork', parameters('name')), '/')[1])]",
+        "[resourceId('Microsoft.Web/sites/networkConfig', parameters('name'), 'virtualNetwork')]",
         "[resourceId('Microsoft.Web/sites', parameters('name'))]"
       ],
       "metadata": {
@@ -382,7 +382,7 @@
       "condition": "[equals(parameters('enableVnetIntegration'), true())]",
       "type": "Microsoft.Web/sites/networkConfig",
       "apiVersion": "2022-03-01",
-      "name": "[format('{0}/virtualNetwork', parameters('name'))]",
+      "name": "[format('{0}/{1}', parameters('name'), 'virtualNetwork')]",
       "properties": {
         "subnetResourceId": "[parameters('subnetId')]"
       },

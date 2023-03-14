@@ -243,7 +243,8 @@ resource config 'Microsoft.Web/sites/config@2021-02-01' = {
 
 
 resource networkConfig 'Microsoft.Web/sites/networkConfig@2022-03-01' = if (enableVnetIntegration == true) {
-  name: '${sites.name}/virtualNetwork'
+  parent: sites
+  name: 'virtualNetwork'
   properties: {
     subnetResourceId: subnetId
   }
