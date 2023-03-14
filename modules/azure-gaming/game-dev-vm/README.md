@@ -17,26 +17,26 @@ See our [documentation](https://docs.microsoft.com/en-us/gaming/azure/game-dev-v
 | `useVmToSysprepCustomImage`   | `bool`         | No       | Use VM to sysprep an image from                             |
 | `vmName`                      | `string`       | No       | Virtual Machine Name.                                       |
 | `adminName`                   | `string`       | Yes      | Virtual Machine User Name .                                 |
-| `adminPass`                   | `secureString` | Yes      | Admin password.                                             |
+| `adminPass`                   | `securestring` | Yes      | Admin password.                                             |
 | `osType`                      | `string`       | No       | Operating System type                                       |
 | `gameEngine`                  | `string`       | No       | Game Engine                                                 |
 | `gdkVersion`                  | `string`       | No       | GDK Version                                                 |
-| `ibLicenseKey`                | `secureString` | No       | Incredibuild License Key                                    |
+| `ibLicenseKey`                | `securestring` | No       | Incredibuild License Key                                    |
 | `remoteAccessTechnology`      | `string`       | No       | Remote Access technology                                    |
-| `teradiciRegKey`              | `secureString` | No       | Teradici Registration Key                                   |
+| `teradiciRegKey`              | `securestring` | No       | Teradici Registration Key                                   |
 | `parsec_teamId`               | `string`       | No       | Parsec Team ID                                              |
-| `parsec_teamKey`              | `secureString` | No       | Parsec Team Key                                             |
+| `parsec_teamKey`              | `securestring` | No       | Parsec Team Key                                             |
 | `parsec_host`                 | `string`       | No       | Parsec Hostname                                             |
 | `parsec_userEmail`            | `string`       | No       | Parsec User Email                                           |
 | `parsec_isGuestAccess`        | `bool`         | No       | Parsec Is Guest Access                                      |
 | `numDataDisks`                | `int`          | No       | Number of data disks                                        |
 | `dataDiskSize`                | `int`          | No       | Disk Performance Tier                                       |
 | `fileShareStorageAccount`     | `string`       | No       | File Share Storage Account name                             |
-| `fileShareStorageAccountKey`  | `secureString` | No       | File Share Storage Account key                              |
+| `fileShareStorageAccountKey`  | `securestring` | No       | File Share Storage Account key                              |
 | `fileShareName`               | `string`       | No       | File Share name                                             |
 | `p4Port`                      | `string`       | No       | Perforce Port address                                       |
 | `p4Username`                  | `string`       | No       | Perforce User                                               |
-| `p4Password`                  | `secureString` | No       | Perforce User password                                      |
+| `p4Password`                  | `securestring` | No       | Perforce User password                                      |
 | `p4Workspace`                 | `string`       | No       | Perforce Client Workspace                                   |
 | `p4Stream`                    | `string`       | No       | Perforce Stream                                             |
 | `p4ClientViews`               | `string`       | No       | Perforce Depot Client View mappings                         |

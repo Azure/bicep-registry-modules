@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.10.61.36676",
-      "templateHash": "1459696798853310609"
+      "version": "0.15.31.15270",
+      "templateHash": "17115700071849338050"
     }
   },
   "parameters": {
@@ -44,7 +44,7 @@
       }
     },
     "adminPass": {
-      "type": "secureString",
+      "type": "securestring",
       "metadata": {
         "type": "password",
         "description": "Admin password."
@@ -87,7 +87,7 @@
       }
     },
     "ibLicenseKey": {
-      "type": "secureString",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "Incredibuild License Key"
@@ -106,7 +106,7 @@
       }
     },
     "teradiciRegKey": {
-      "type": "secureString",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "Teradici Registration Key"
@@ -120,7 +120,7 @@
       }
     },
     "parsec_teamKey": {
-      "type": "secureString",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "Parsec Team Key"
@@ -169,7 +169,7 @@
       }
     },
     "fileShareStorageAccountKey": {
-      "type": "secureString",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "File Share Storage Account key"
@@ -197,7 +197,7 @@
       }
     },
     "p4Password": {
-      "type": "secureString",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "Perforce User password"
@@ -537,7 +537,7 @@
       "condition": "[parameters('enableAAD')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "apiVersion": "2021-11-01",
-      "name": "[format('{0}/AADLoginForWindows', parameters('vmName'))]",
+      "name": "[format('{0}/{1}', parameters('vmName'), 'AADLoginForWindows')]",
       "location": "[parameters('location')]",
       "properties": {
         "publisher": "Microsoft.Azure.ActiveDirectory",
