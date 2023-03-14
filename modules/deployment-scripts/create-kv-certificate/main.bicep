@@ -22,11 +22,17 @@ param existingManagedIdentitySubId string = subscription().subscriptionId
 @description('For an existing Managed Identity, the Resource Group it is located in')
 param existingManagedIdentityResourceGroupName string = resourceGroup().name
 
-@description('The name of the certificate to create')
+@description('The name of the certificate to create. Use when creating a single certificate.')
 param certificateName string
 
-@description('The common name of the certificate to create')
+@description('The names of the certificate to create. Use when creating many certificates.')
+param certificateNames array = [certificateName]
+
+@description('The common name of the certificate to create. Use when creating a single certificate.')
 param certificateCommonName string = certificateName
+
+@description('The common names of the certificate to create. Use when creating many certificates.')
+param certificateCommonNames array = [certificateCommonName]
 
 @description('A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate')
 param initialScriptDelay string = '0'
@@ -87,7 +93,7 @@ resource rbacKv 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = [for (certificateName, index) in certificateNames
   name: 'AKV-Cert-${akv.name}-${replace(replace(certificateName,':',''),'/','-')}'
   location: location
   identity: {
@@ -108,7 +114,7 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
     environmentVariables: [
       { name: 'akvName', value: akvName }
       { name: 'certName', value: certificateName }
-      { name: 'certCommonName', value: certificateCommonName }
+      { name: 'certCommonName', value: certificateCommonNames[index] }
       { name: 'initialDelay', value: initialScriptDelay }
       { name: 'issuerName', value: issuerName }
       { name: 'issuerProvider', value: issuerProvider }
@@ -118,22 +124,32 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
       { name: 'issuerPassword', secureValue: issuerPassword }
       { name: 'organizationId', value: organizationId }
     ]
-    scriptContent: loadTextContent('create-kv.sh')
+    scriptContent: loadTextContent('create-kv-cert.sh')
     cleanupPreference: cleanupPreference
   }
 }
 
 @description('Certificate name')
-output certificateName string = createImportCert.properties.outputs.name
+output certificateNames array = [for certificateName in certificateNames: {
+  createImportCert[index].properties.outputs.name
+}]
 
 @description('KeyVault secret id to the created version')
-output certificateSecretId string = createImportCert.properties.outputs.certSecretId.versioned
+output certificateSecretIds array = [for certificateName in certificateNames: {
+  createImportCert[index].properties.outputs.certSecretId.versioned
+}]
 
 @description('KeyVault secret id which uses the unversioned uri')
-output certificateSecretIdUnversioned string = createImportCert.properties.outputs.certSecretId.unversioned
+output certificateSecretIdUnversioneds array = [for certificateName in certificateNames: {
+  createImportCert[index].properties.outputs.certSecretId.unversioned
+}]
 
 @description('Certificate Thumbprint')
-output certificateThumbprint string = createImportCert.properties.outputs.thumbprint
+output certificateThumbprints array = [for certificateName in certificateNames: {
+  createImportCert[index].properties.outputs.thumbprint
+}]
 
 @description('Certificate Thumbprint (in hex)')
-output certificateThumbprintHex string = createImportCert.properties.outputs.thumbprintHex
+output certificateThumbprintHexs array = [for certificateName in certificateNames: {
+  createImportCert[index].properties.outputs.thumbprintHex
+}]
