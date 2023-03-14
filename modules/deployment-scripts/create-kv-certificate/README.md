@@ -21,8 +21,10 @@ This module is based on the `az cli certificate` create command and more informa
 | `managedIdentityName`                      | `string`       | No       | Name of the Managed Identity resource                                                                         |
 | `existingManagedIdentitySubId`             | `string`       | No       | For an existing Managed Identity, the Subscription Id it is located in                                        |
 | `existingManagedIdentityResourceGroupName` | `string`       | No       | For an existing Managed Identity, the Resource Group it is located in                                         |
-| `certificateName`                          | `string`       | Yes      | The name of the certificate to create                                                                         |
-| `certificateCommonName`                    | `string`       | No       | The common name of the certificate to create                                                                  |
+| `certificateName`                          | `string`       | Yes      | The name of the certificate to create. Use when creating a single certificate.                                |
+| `certificateNames`                         | `array`        | No       | The names of the certificate to create. Use when creating many certificates.                                  |
+| `certificateCommonName`                    | `string`       | No       | The common name of the certificate to create. Use when creating a single certificate.                         |
+| `certificateCommonNames`                   | `array`        | No       | The common names of the certificate to create. Use when creating many certificates.                           |
 | `initialScriptDelay`                       | `string`       | No       | A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate |
 | `cleanupPreference`                        | `string`       | No       | When the script resource is cleaned up                                                                        |
 | `issuerName`                               | `string`       | No       | Self, or user defined {IssuerName} for certificate signing                                                    |
@@ -34,13 +36,18 @@ This module is based on the `az cli certificate` create command and more informa
 
 ## Outputs
 
-| Name                           | Type   | Description                                       |
-| :----------------------------- | :----: | :------------------------------------------------ |
-| certificateName                | string | Certificate name                                  |
-| certificateSecretId            | string | KeyVault secret id to the created version         |
-| certificateSecretIdUnversioned | string | KeyVault secret id which uses the unversioned uri |
-| certificateThumbprint          | string | Certificate Thumbprint                            |
-| certificateThumbprintHex       | string | Certificate Thumbprint (in hex)                   |
+| Name                            | Type   | Description                                        |
+| :------------------------------ | :----: | :------------------------------------------------- |
+| certificateName                 | string | Certificate name                                   |
+| certificateSecretId             | string | KeyVault secret id to the created version          |
+| certificateSecretIdUnversioned  | string | KeyVault secret id which uses the unversioned uri  |
+| certificateThumbprint           | string | Certificate Thumbprint                             |
+| certificateThumbprintHex        | string | Certificate Thumbprint (in hex)                    |
+| certificateNames                | array  | Certificate names                                  |
+| certificateSecretIds            | array  | KeyVault secret ids to the created version         |
+| certificateSecretIdUnversioneds | array  | KeyVault secret ids which uses the unversioned uri |
+| certificateThumbpints           | array  | Certificate Thumbprints                            |
+| certificateThumbprintHexs       | array  | Certificate Thumbprints (in hex)                   |
 
 ## Examples
 

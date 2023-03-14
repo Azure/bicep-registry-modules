@@ -93,7 +93,7 @@ resource rbacKv 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = [for (certificateName, index) in certificateNames
+resource createImportCerts 'Microsoft.Resources/deploymentScripts@2020-10-01' = [for (certificateName, index) in certificateNames: {
   name: 'AKV-Cert-${akv.name}-${replace(replace(certificateName,':',''),'/','-')}'
   location: location
   identity: {
@@ -127,7 +127,7 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = [
     scriptContent: loadTextContent('create-kv-cert.sh')
     cleanupPreference: cleanupPreference
   }
-}
+}]
 
 @description('Certificate name')
 output certificateName string = createImportCerts[0].properties.outputs.name
@@ -145,26 +145,26 @@ output certificateThumbprint string = contains(createImportCerts[0].properties.o
 output certificateThumbprintHex string = contains(createImportCerts[0].properties.outputs, 'thumbprintHex') ? createImportCerts[0].properties.outputs.thumbprintHex : ''
 
 @description('Certificate names')
-output certificateNames array = [for certificateName in certificateNames: {
-  createImportCert[index].properties.outputs.name
-}]
+output certificateNames array = [for (certificateName, index) in certificateNames: [
+  createImportCerts[index].properties.outputs.name
+]]
 
 @description('KeyVault secret ids to the created version')
-output certificateSecretIds array = [for certificateName in certificateNames: {
-  createImportCert[index].properties.outputs.certSecretId.versioned
-}]
+output certificateSecretIds array = [for (certificateName, index) in certificateNames: [
+  createImportCerts[index].properties.outputs.certSecretId.versioned
+]]
 
 @description('KeyVault secret ids which uses the unversioned uri')
-output certificateSecretIdUnversioneds array = [for certificateName in certificateNames: {
-  createImportCert[index].properties.outputs.certSecretId.unversioned
-}]
+output certificateSecretIdUnversioneds array = [for (certificateName, index) in certificateNames: [
+  createImportCerts[index].properties.outputs.certSecretId.unversioned
+]]
 
 @description('Certificate Thumbprints')
-output certificateThumbprints array = [for certificateName in certificateNames: {
-  createImportCert[index].properties.outputs.thumbprint
-}]
+output certificateThumbpints array = [for (certificateName, index) in certificateNames: [
+  createImportCerts[index].properties.outputs.thumbprint
+]]
 
 @description('Certificate Thumbprints (in hex)')
-output certificateThumbprintHexs array = [for certificateName in certificateNames: {
-  createImportCert[index].properties.outputs.thumbprintHex
-}]
+output certificateThumbprintHexs array = [for (certificateName, index) in certificateNames: [
+  createImportCerts[index].properties.outputs.thumbprintHex
+]]
