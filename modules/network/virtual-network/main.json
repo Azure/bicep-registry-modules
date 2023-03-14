@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "17797040699481450122"
+      "version": "0.10.61.36676",
+      "templateHash": "15735508331013413401"
     }
   },
   "parameters": {
@@ -191,6 +191,9 @@
         }
       }
     ],
+    "dnsServers_var": {
+      "dnsServers": "[array(parameters('dnsServers'))]"
+    },
     "ddosProtectionPlan": {
       "id": "[parameters('ddosProtectionPlanId')]"
     },
@@ -225,11 +228,11 @@
                 "applicationGatewayIpConfigurations": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'applicationGatewayIpConfigurations'), parameters('subnets')[copyIndex('subnets')].applicationGatewayIpConfigurations, createArray())]",
                 "delegations": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'delegations'), parameters('subnets')[copyIndex('subnets')].delegations, createArray())]",
                 "ipAllocations": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'ipAllocations'), parameters('subnets')[copyIndex('subnets')].ipAllocations, createArray())]",
-                "natGateway": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'natGatewayId'), createObject('id', parameters('subnets')[copyIndex('subnets')].natGatewayId), null())]",
-                "networkSecurityGroup": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'networkSecurityGroupId'), createObject('id', parameters('subnets')[copyIndex('subnets')].networkSecurityGroupId), if(not(equals(parameters('newOrExistingNSG'), 'none')), variables('networkSecurityGroupId'), null()))]",
+                "natGateway": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'natGatewayId'), createObject('id', parameters('subnets')[copyIndex('subnets')].natGatewayId), json('null'))]",
+                "networkSecurityGroup": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'networkSecurityGroupId'), createObject('id', parameters('subnets')[copyIndex('subnets')].networkSecurityGroupId), if(not(equals(parameters('newOrExistingNSG'), 'none')), variables('networkSecurityGroupId'), json('null')))]",
                 "privateEndpointNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'privateEndpointNetworkPolicies'), parameters('subnets')[copyIndex('subnets')].privateEndpointNetworkPolicies, null())]",
                 "privateLinkServiceNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'privateLinkServiceNetworkPolicies'), parameters('subnets')[copyIndex('subnets')].privateLinkServiceNetworkPolicies, null())]",
-                "routeTable": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'routeTableId'), createObject('id', parameters('subnets')[copyIndex('subnets')].routeTableId), null())]",
+                "routeTable": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'routeTableId'), createObject('id', parameters('subnets')[copyIndex('subnets')].routeTableId), json('null'))]",
                 "serviceEndpoints": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'serviceEndpoints'), parameters('subnets')[copyIndex('subnets')].serviceEndpoints, createArray())]",
                 "serviceEndpointPolicies": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'serviceEndpointPolicies'), parameters('subnets')[copyIndex('subnets')].serviceEndpointPolicies, createArray())]"
               }
@@ -240,7 +243,7 @@
           "addressPrefixes": "[parameters('addressPrefixes')]"
         },
         "ddosProtectionPlan": "[if(not(empty(parameters('ddosProtectionPlanId'))), variables('ddosProtectionPlan'), null())]",
-        "dhcpOptions": "[if(not(empty(parameters('dnsServers'))), createObject('dnsServers', array(parameters('dnsServers'))), null())]",
+        "dhcpOptions": "[if(not(empty(parameters('dnsServers'))), variables('dnsServers_var'), null())]",
         "enableDdosProtection": "[not(empty(parameters('ddosProtectionPlanId')))]"
       },
       "dependsOn": [
@@ -299,12 +302,24 @@
           "remoteVirtualNetworkId": {
             "value": "[parameters('virtualNetworkPeerings')[copyIndex()].remoteVirtualNetworkId]"
           },
-          "name": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'name'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].name), createObject('value', format('{0}-{1}', parameters('name'), last(split(parameters('virtualNetworkPeerings')[copyIndex()].remoteVirtualNetworkId, '/')))))]",
-          "allowForwardedTraffic": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'allowForwardedTraffic'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].allowForwardedTraffic), createObject('value', true()))]",
-          "allowGatewayTransit": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'allowGatewayTransit'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].allowGatewayTransit), createObject('value', false()))]",
-          "allowVirtualNetworkAccess": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'allowVirtualNetworkAccess'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].allowVirtualNetworkAccess), createObject('value', true()))]",
-          "doNotVerifyRemoteGateways": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'doNotVerifyRemoteGateways'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].doNotVerifyRemoteGateways), createObject('value', true()))]",
-          "useRemoteGateways": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'useRemoteGateways'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].useRemoteGateways), createObject('value', false()))]"
+          "name": {
+            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'name'), parameters('virtualNetworkPeerings')[copyIndex()].name, format('{0}-{1}', parameters('name'), last(split(parameters('virtualNetworkPeerings')[copyIndex()].remoteVirtualNetworkId, '/'))))]"
+          },
+          "allowForwardedTraffic": {
+            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'allowForwardedTraffic'), parameters('virtualNetworkPeerings')[copyIndex()].allowForwardedTraffic, true())]"
+          },
+          "allowGatewayTransit": {
+            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'allowGatewayTransit'), parameters('virtualNetworkPeerings')[copyIndex()].allowGatewayTransit, false())]"
+          },
+          "allowVirtualNetworkAccess": {
+            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'allowVirtualNetworkAccess'), parameters('virtualNetworkPeerings')[copyIndex()].allowVirtualNetworkAccess, true())]"
+          },
+          "doNotVerifyRemoteGateways": {
+            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'doNotVerifyRemoteGateways'), parameters('virtualNetworkPeerings')[copyIndex()].doNotVerifyRemoteGateways, true())]"
+          },
+          "useRemoteGateways": {
+            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'useRemoteGateways'), parameters('virtualNetworkPeerings')[copyIndex()].useRemoteGateways, false())]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -312,8 +327,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "3529372638128239101"
+              "version": "0.10.61.36676",
+              "templateHash": "3536286126773075823"
             }
           },
           "parameters": {
@@ -419,11 +434,11 @@
       ]
     },
     {
+      "condition": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringEnabled'), equals(parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringEnabled, true()), false())]",
       "copy": {
         "name": "virtualNetwork_peering_remote",
         "count": "[length(parameters('virtualNetworkPeerings'))]"
       },
-      "condition": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringEnabled'), equals(parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringEnabled, true()), false())]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('{0}-virtualNetworkPeering-remote-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
@@ -441,12 +456,24 @@
           "remoteVirtualNetworkId": {
             "value": "[resourceId('Microsoft.Network/virtualNetworks', parameters('name'))]"
           },
-          "name": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringName'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringName), createObject('value', format('{0}-{1}', last(split(parameters('virtualNetworkPeerings')[copyIndex()].remoteVirtualNetworkId, '/')), parameters('name'))))]",
-          "allowForwardedTraffic": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringAllowForwardedTraffic'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringAllowForwardedTraffic), createObject('value', true()))]",
-          "allowGatewayTransit": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringAllowGatewayTransit'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringAllowGatewayTransit), createObject('value', false()))]",
-          "allowVirtualNetworkAccess": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringAllowVirtualNetworkAccess'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringAllowVirtualNetworkAccess), createObject('value', true()))]",
-          "doNotVerifyRemoteGateways": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringDoNotVerifyRemoteGateways'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringDoNotVerifyRemoteGateways), createObject('value', true()))]",
-          "useRemoteGateways": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringUseRemoteGateways'), createObject('value', parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringUseRemoteGateways), createObject('value', false()))]"
+          "name": {
+            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringName'), parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringName, format('{0}-{1}', last(split(parameters('virtualNetworkPeerings')[copyIndex()].remoteVirtualNetworkId, '/')), parameters('name')))]"
+          },
+          "allowForwardedTraffic": {
+            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringAllowForwardedTraffic'), parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringAllowForwardedTraffic, true())]"
+          },
+          "allowGatewayTransit": {
+            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringAllowGatewayTransit'), parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringAllowGatewayTransit, false())]"
+          },
+          "allowVirtualNetworkAccess": {
+            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringAllowVirtualNetworkAccess'), parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringAllowVirtualNetworkAccess, true())]"
+          },
+          "doNotVerifyRemoteGateways": {
+            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringDoNotVerifyRemoteGateways'), parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringDoNotVerifyRemoteGateways, true())]"
+          },
+          "useRemoteGateways": {
+            "value": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringUseRemoteGateways'), parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringUseRemoteGateways, false())]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -454,8 +481,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "3529372638128239101"
+              "version": "0.10.61.36676",
+              "templateHash": "3536286126773075823"
             }
           },
           "parameters": {
@@ -574,14 +601,18 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
+          "description": {
+            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), parameters('roleAssignments')[copyIndex()].description, '')]"
+          },
           "principalIds": {
             "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
           },
           "roleDefinitionIdOrName": {
             "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
           },
-          "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
+          "principalType": {
+            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), parameters('roleAssignments')[copyIndex()].principalType, '')]"
+          },
           "resourceId": {
             "value": "[resourceId('Microsoft.Network/virtualNetworks', parameters('name'))]"
           }
@@ -592,8 +623,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "18225818015861435918"
+              "version": "0.10.61.36676",
+              "templateHash": "3745169767620951291"
             }
           },
           "parameters": {

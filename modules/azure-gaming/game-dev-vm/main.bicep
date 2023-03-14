@@ -576,8 +576,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-11-01' = {
 }
 
 resource virtualMachine_enableAAD 'Microsoft.Compute/virtualMachines/extensions@2021-11-01' = if (enableAAD) {
-  parent: virtualMachine
-  name: 'AADLoginForWindows'
+  name: '${virtualMachine.name}/AADLoginForWindows'
   location: location
   properties: {
     publisher: 'Microsoft.Azure.ActiveDirectory'

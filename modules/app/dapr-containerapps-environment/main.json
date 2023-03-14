@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "1131087206267419097"
+      "version": "0.11.1.770",
+      "templateHash": "17061185190568727130"
     }
   },
   "parameters": {
@@ -132,8 +132,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "17962859295998104484"
+              "version": "0.11.1.770",
+              "templateHash": "15032274980026305573"
             }
           },
           "parameters": {
@@ -210,7 +210,7 @@
                 "appLogsConfiguration": {
                   "destination": "log-analytics",
                   "logAnalyticsConfiguration": {
-                    "customerId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', parameters('containerAppLogAnalyticsName')), '2022-10-01').customerId]",
+                    "customerId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', parameters('containerAppLogAnalyticsName'))).customerId]",
                     "sharedKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', parameters('containerAppLogAnalyticsName')), '2022-10-01').primarySharedKey]"
                   }
                 },
@@ -219,7 +219,7 @@
                   "runtimeSubnetId": "[parameters('runtimeSubnetId')]",
                   "internal": "[parameters('internalVirtualIp')]"
                 },
-                "daprAIInstrumentationKey": "[reference(resourceId('Microsoft.Resources/deployments', format('appInsights-{0}', parameters('nameseed'))), '2020-10-01').outputs.instrumentationKey.value]"
+                "daprAIInstrumentationKey": "[reference(resourceId('Microsoft.Resources/deployments', format('appInsights-{0}', parameters('nameseed')))).outputs.instrumentationKey.value]"
               },
               "tags": "[parameters('tags')]",
               "dependsOn": [
@@ -265,8 +265,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.15.31.15270",
-                      "templateHash": "4975339529296945177"
+                      "version": "0.11.1.770",
+                      "templateHash": "12893374766320771628"
                     }
                   },
                   "parameters": {
@@ -306,7 +306,7 @@
                     },
                     "instrumentationKey": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.Insights/components', format('ai-{0}', parameters('nameseed'))), '2020-02-02').InstrumentationKey]"
+                      "value": "[reference(resourceId('Microsoft.Insights/components', format('ai-{0}', parameters('nameseed')))).InstrumentationKey]"
                     }
                   }
                 }
@@ -331,7 +331,7 @@
             },
             "appInsightsInstrumentationKey": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.Resources/deployments', format('appInsights-{0}', parameters('nameseed'))), '2020-10-01').outputs.instrumentationKey.value]"
+              "value": "[reference(resourceId('Microsoft.Resources/deployments', format('appInsights-{0}', parameters('nameseed')))).outputs.instrumentationKey.value]"
             }
           }
         }
@@ -354,7 +354,9 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "containerAppEnvName": "[if(parameters('environmentAlreadyExists'), createObject('value', parameters('containerAppEnvName')), createObject('value', reference(resourceId('Microsoft.Resources/deployments', format('containerAppEnv-{0}', parameters('nameseed'))), '2020-10-01').outputs.containerAppEnvironmentName.value))]",
+          "containerAppEnvName": {
+            "value": "[if(parameters('environmentAlreadyExists'), parameters('containerAppEnvName'), reference(resourceId('Microsoft.Resources/deployments', format('containerAppEnv-{0}', parameters('nameseed'))), '2020-10-01').outputs.containerAppEnvironmentName.value)]"
+          },
           "entityName": {
             "value": "[parameters('applicationEntityName')]"
           }
@@ -365,8 +367,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "8562488172001937469"
+              "version": "0.11.1.770",
+              "templateHash": "1490041037123059482"
             }
           },
           "parameters": {
@@ -486,7 +488,9 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "containerAppEnvName": "[if(parameters('environmentAlreadyExists'), createObject('value', parameters('containerAppEnvName')), createObject('value', reference(resourceId('Microsoft.Resources/deployments', format('containerAppEnv-{0}', parameters('nameseed'))), '2020-10-01').outputs.containerAppEnvironmentName.value))]",
+          "containerAppEnvName": {
+            "value": "[if(parameters('environmentAlreadyExists'), parameters('containerAppEnvName'), reference(resourceId('Microsoft.Resources/deployments', format('containerAppEnv-{0}', parameters('nameseed'))), '2020-10-01').outputs.containerAppEnvironmentName.value)]"
+          },
           "entityName": {
             "value": "[parameters('applicationEntityName')]"
           },
@@ -500,8 +504,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "1287416814935305641"
+              "version": "0.11.1.770",
+              "templateHash": "5324293688587926095"
             }
           },
           "parameters": {
@@ -619,7 +623,9 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "containerAppEnvName": "[if(parameters('environmentAlreadyExists'), createObject('value', parameters('containerAppEnvName')), createObject('value', reference(resourceId('Microsoft.Resources/deployments', format('containerAppEnv-{0}', parameters('nameseed'))), '2020-10-01').outputs.containerAppEnvironmentName.value))]",
+          "containerAppEnvName": {
+            "value": "[if(parameters('environmentAlreadyExists'), parameters('containerAppEnvName'), reference(resourceId('Microsoft.Resources/deployments', format('containerAppEnv-{0}', parameters('nameseed'))), '2020-10-01').outputs.containerAppEnvironmentName.value)]"
+          },
           "componentName": {
             "value": "[variables('autoDaprComponentName')]"
           },
@@ -636,8 +642,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "1103977542213173034"
+              "version": "0.11.1.770",
+              "templateHash": "997573331547175945"
             }
           },
           "parameters": {

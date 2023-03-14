@@ -92,16 +92,19 @@ var diagnosticsMetrics = [for metric in metricsToEnable: {
   }
 }]
 
+var dnsServers_var = {
+  dnsServers: array(dnsServers)
+}
 var ddosProtectionPlan = {
   id: ddosProtectionPlanId
 }
 
-resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2021-08-01' = if (newOrExistingNSG == 'new') {
+resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2021-08-01' = if( newOrExistingNSG == 'new' ) {
   name: networkSecurityGroupName
   location: location
 }
 
-resource existingNetworkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2021-08-01' existing = if (newOrExistingNSG == 'existing') {
+resource existingNetworkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2021-08-01' existing = if( newOrExistingNSG == 'existing' ) {
   name: networkSecurityGroupName
 }
 
@@ -116,7 +119,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
       addressPrefixes: addressPrefixes
     }
     ddosProtectionPlan: !empty(ddosProtectionPlanId) ? ddosProtectionPlan : null
-    dhcpOptions: !empty(dnsServers) ? { dnsServers: array(dnsServers) } : null
+    dhcpOptions: !empty(dnsServers) ? dnsServers_var : null
     enableDdosProtection: !empty(ddosProtectionPlanId)
     subnets: [for subnet in subnets: {
       name: subnet.name
@@ -126,11 +129,11 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-05-01' = {
         applicationGatewayIpConfigurations: contains(subnet, 'applicationGatewayIpConfigurations') ? subnet.applicationGatewayIpConfigurations : []
         delegations: contains(subnet, 'delegations') ? subnet.delegations : []
         ipAllocations: contains(subnet, 'ipAllocations') ? subnet.ipAllocations : []
-        natGateway: contains(subnet, 'natGatewayId') ? { id: subnet.natGatewayId } : null
-        networkSecurityGroup: contains(subnet, 'networkSecurityGroupId') ? { id: subnet.networkSecurityGroupId } : (newOrExistingNSG != 'none' ? networkSecurityGroupId : null)
+        natGateway: contains(subnet, 'natGatewayId') ? { id: subnet.natGatewayId } : json('null')
+        networkSecurityGroup: contains(subnet, 'networkSecurityGroupId') ? { id: subnet.networkSecurityGroupId } : ( newOrExistingNSG != 'none' ? networkSecurityGroupId : json('null'))
         privateEndpointNetworkPolicies: contains(subnet, 'privateEndpointNetworkPolicies') ? subnet.privateEndpointNetworkPolicies : null
         privateLinkServiceNetworkPolicies: contains(subnet, 'privateLinkServiceNetworkPolicies') ? subnet.privateLinkServiceNetworkPolicies : null
-        routeTable: contains(subnet, 'routeTableId') ? { id: subnet.routeTableId } : null
+        routeTable: contains(subnet, 'routeTableId') ? { id: subnet.routeTableId } : json('null')
         serviceEndpoints: contains(subnet, 'serviceEndpoints') ? subnet.serviceEndpoints : []
         serviceEndpointPolicies: contains(subnet, 'serviceEndpointPolicies') ? subnet.serviceEndpointPolicies : []
       }
@@ -158,7 +161,7 @@ module virtualNetwork_peering_remote 'virtualNetworkPeerings/deploy.bicep' = [fo
   name: '${uniqueString(deployment().name, location)}-virtualNetworkPeering-remote-${index}'
   scope: resourceGroup(split(peering.remoteVirtualNetworkId, '/')[2], split(peering.remoteVirtualNetworkId, '/')[4])
   params: {
-    localVnetName: last(split(peering.remoteVirtualNetworkId, '/'))!
+    localVnetName: last(split(peering.remoteVirtualNetworkId, '/'))
     remoteVirtualNetworkId: virtualNetwork.id
     name: contains(peering, 'remotePeeringName') ? peering.remotePeeringName : '${last(split(peering.remoteVirtualNetworkId, '/'))}-${name}'
     allowForwardedTraffic: contains(peering, 'remotePeeringAllowForwardedTraffic') ? peering.remotePeeringAllowForwardedTraffic : true
