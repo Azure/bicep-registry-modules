@@ -53,7 +53,7 @@ param location string = resourceGroup().location
 param akvName string =  'yourAzureKeyVault'
 param certificateName string = 'myapp'
 
-module kvCert 'br/public:deployment-scripts/create-kv-certificate:1.1.1' = {
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.1.1' = {
   name: 'akvCertSingle'
   params: {
     akvName: akvName
@@ -76,7 +76,7 @@ param akvName string =  'yourAzureKeyVault'
 param certificateName string = 'myapp'
 param certificateCommonName string = '${certificateName}.mydomain.local'
 
-module kvCert 'br/public:deployment-scripts/create-kv-certificate:1.1.1' = {
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.1.1' = {
   name: 'akvCertSingle'
   params: {
     akvName: akvName
@@ -102,20 +102,20 @@ param certificateNames array = [
   'myotherapp'
 ]
 
-module kvCert 'br/public:deployment-scripts/create-kv-certificate:1.1.1' = [ for certificateName in certificateNames : {
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.1.1' = {
   name: 'akvCert-${certificateName}'
   params: {
     akvName:  akvName
     location: location
-    certificateName: certificateName
+    certificateNames: certificateNames
   }
-}]
+}
 
 @description('Array of info from each Certificate')
 output createdCertificates array = [for (certificateName, i) in certificateNames: {
-  certificateName: certificateName
-  certificateSecretId: akvCertMultiple[i].outputs.certificateSecretId
-  certificateThumbprint: akvCertMultiple[i].outputs.certificateThumbprintHex
+  certificateName: kvCert.outputs.certificateNames[i]
+  certificateSecretId: kvCert.outputs.certificateSecretIds[i]
+  certificateThumbprint: kvCert.outputs.certificateThumbprintHexs[i]
 }]
 ```
 
@@ -129,7 +129,7 @@ param accountId
 param issuerPassword
 param organizationId
 
-module signedCert 'br/public:deployment-scripts/create-kv-certificate:1.1.1' = {
+module signedCert 'br/public:deployment-scripts/create-kv-certificate:3.1.1' = {
   name: 'akvCert-${certificateName}'
   params: {
     akvName:  akvName
