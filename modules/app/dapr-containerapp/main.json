@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.11.1.770",
-      "templateHash": "18066693510890011191"
+      "version": "0.15.31.15270",
+      "templateHash": "6951622669174796695"
     }
   },
   "parameters": {
@@ -228,8 +228,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "7009689267588982199"
+              "version": "0.15.31.15270",
+              "templateHash": "1176571575159156409"
             }
           },
           "parameters": {
@@ -425,7 +425,7 @@
           "outputs": {
             "containerAppFQDN": {
               "type": "string",
-              "value": "[if(parameters('enableIngress'), reference(resourceId('Microsoft.App/containerApps', parameters('containerAppName'))).configuration.ingress.fqdn, '')]",
+              "value": "[if(parameters('enableIngress'), reference(resourceId('Microsoft.App/containerApps', parameters('containerAppName')), '2022-06-01-preview').configuration.ingress.fqdn, '')]",
               "metadata": {
                 "description": "If ingress is enabled, this is the FQDN that the Container App is exposed on"
               }
@@ -516,8 +516,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "1021504825763956878"
+              "version": "0.15.31.15270",
+              "templateHash": "3047821336758067249"
             }
           },
           "parameters": {
@@ -820,7 +820,7 @@
           "outputs": {
             "containerAppFQDN": {
               "type": "string",
-              "value": "[if(parameters('enableIngress'), reference(resourceId('Microsoft.App/containerApps', parameters('containerAppName'))).configuration.ingress.fqdn, '')]",
+              "value": "[if(parameters('enableIngress'), reference(resourceId('Microsoft.App/containerApps', parameters('containerAppName')), '2022-06-01-preview').configuration.ingress.fqdn, '')]",
               "metadata": {
                 "description": "If ingress is enabled, this is the FQDN that the Container App is exposed on"
               }
