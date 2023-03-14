@@ -130,26 +130,41 @@ resource createImportCert 'Microsoft.Resources/deploymentScripts@2020-10-01' = [
 }
 
 @description('Certificate name')
+output certificateName string = createImportCerts[0].properties.outputs.name
+
+@description('KeyVault secret id to the created version')
+output certificateSecretId string = contains(createImportCerts[0].properties.outputs, 'certSecretId') ? createImportCerts[0].properties.outputs.certSecretId.versioned : ''
+
+@description('KeyVault secret id which uses the unversioned uri')
+output certificateSecretIdUnversioned string = contains(createImportCerts[0].properties.outputs, 'certSecretId') ? createImportCerts[0].properties.outputs.certSecretId.unversioned : ''
+
+@description('Certificate Thumbprint')
+output certificateThumbprint string = contains(createImportCerts[0].properties.outputs, 'thumbprint') ? createImportCerts[0].properties.outputs.thumbprint : ''
+
+@description('Certificate Thumbprint (in hex)')
+output certificateThumbprintHex string = contains(createImportCerts[0].properties.outputs, 'thumbprintHex') ? createImportCerts[0].properties.outputs.thumbprintHex : ''
+
+@description('Certificate names')
 output certificateNames array = [for certificateName in certificateNames: {
   createImportCert[index].properties.outputs.name
 }]
 
-@description('KeyVault secret id to the created version')
+@description('KeyVault secret ids to the created version')
 output certificateSecretIds array = [for certificateName in certificateNames: {
   createImportCert[index].properties.outputs.certSecretId.versioned
 }]
 
-@description('KeyVault secret id which uses the unversioned uri')
+@description('KeyVault secret ids which uses the unversioned uri')
 output certificateSecretIdUnversioneds array = [for certificateName in certificateNames: {
   createImportCert[index].properties.outputs.certSecretId.unversioned
 }]
 
-@description('Certificate Thumbprint')
+@description('Certificate Thumbprints')
 output certificateThumbprints array = [for certificateName in certificateNames: {
   createImportCert[index].properties.outputs.thumbprint
 }]
 
-@description('Certificate Thumbprint (in hex)')
+@description('Certificate Thumbprints (in hex)')
 output certificateThumbprintHexs array = [for certificateName in certificateNames: {
   createImportCert[index].properties.outputs.thumbprintHex
 }]
