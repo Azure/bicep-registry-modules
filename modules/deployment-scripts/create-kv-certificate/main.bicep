@@ -22,17 +22,11 @@ param existingManagedIdentitySubId string = subscription().subscriptionId
 @description('For an existing Managed Identity, the Resource Group it is located in')
 param existingManagedIdentityResourceGroupName string = resourceGroup().name
 
-@description('The name of the certificate to create. Use when creating a single certificate.')
-param certificateName string
-
 @description('The names of the certificate to create. Use when creating many certificates.')
-param certificateNames array = [certificateName]
-
-@description('The common name of the certificate to create. Use when creating a single certificate.')
-param certificateCommonName string = certificateName
+param certificateNames array
 
 @description('The common names of the certificate to create. Use when creating many certificates.')
-param certificateCommonNames array = [certificateCommonName]
+param certificateCommonNames array = certificateNames
 
 @description('A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate')
 param initialScriptDelay string = '0'
@@ -128,21 +122,6 @@ resource createImportCerts 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
     cleanupPreference: cleanupPreference
   }
 }]
-
-@description('Certificate name')
-output certificateName string = createImportCerts[0].properties.outputs.name
-
-@description('KeyVault secret id to the created version')
-output certificateSecretId string = contains(createImportCerts[0].properties.outputs, 'certSecretId') ? createImportCerts[0].properties.outputs.certSecretId.versioned : ''
-
-@description('KeyVault secret id which uses the unversioned uri')
-output certificateSecretIdUnversioned string = contains(createImportCerts[0].properties.outputs, 'certSecretId') ? createImportCerts[0].properties.outputs.certSecretId.unversioned : ''
-
-@description('Certificate Thumbprint')
-output certificateThumbprint string = contains(createImportCerts[0].properties.outputs, 'thumbprint') ? createImportCerts[0].properties.outputs.thumbprint : ''
-
-@description('Certificate Thumbprint (in hex)')
-output certificateThumbprintHex string = contains(createImportCerts[0].properties.outputs, 'thumbprintHex') ? createImportCerts[0].properties.outputs.thumbprintHex : ''
 
 @description('Certificate names')
 output certificateNames array = [for (certificateName, index) in certificateNames: [

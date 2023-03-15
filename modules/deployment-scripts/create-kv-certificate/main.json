@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "9201622942996291161"
+      "templateHash": "12854429452572357298"
     }
   },
   "parameters": {
@@ -63,33 +63,15 @@
         "description": "For an existing Managed Identity, the Resource Group it is located in"
       }
     },
-    "certificateName": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the certificate to create. Use when creating a single certificate."
-      }
-    },
     "certificateNames": {
       "type": "array",
-      "defaultValue": [
-        "[parameters('certificateName')]"
-      ],
       "metadata": {
         "description": "The names of the certificate to create. Use when creating many certificates."
       }
     },
-    "certificateCommonName": {
-      "type": "string",
-      "defaultValue": "[parameters('certificateName')]",
-      "metadata": {
-        "description": "The common name of the certificate to create. Use when creating a single certificate."
-      }
-    },
     "certificateCommonNames": {
       "type": "array",
-      "defaultValue": [
-        "[parameters('certificateCommonName')]"
-      ],
+      "defaultValue": "[parameters('certificateNames')]",
       "metadata": {
         "description": "The common names of the certificate to create. Use when creating many certificates."
       }
@@ -263,41 +245,6 @@
     }
   ],
   "outputs": {
-    "certificateName": {
-      "type": "string",
-      "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[0], ':', ''), '/', '-'))), '2020-10-01').outputs.name]",
-      "metadata": {
-        "description": "Certificate name"
-      }
-    },
-    "certificateSecretId": {
-      "type": "string",
-      "value": "[if(contains(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[0], ':', ''), '/', '-'))), '2020-10-01').outputs, 'certSecretId'), reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[0], ':', ''), '/', '-'))), '2020-10-01').outputs.certSecretId.versioned, '')]",
-      "metadata": {
-        "description": "KeyVault secret id to the created version"
-      }
-    },
-    "certificateSecretIdUnversioned": {
-      "type": "string",
-      "value": "[if(contains(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[0], ':', ''), '/', '-'))), '2020-10-01').outputs, 'certSecretId'), reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[0], ':', ''), '/', '-'))), '2020-10-01').outputs.certSecretId.unversioned, '')]",
-      "metadata": {
-        "description": "KeyVault secret id which uses the unversioned uri"
-      }
-    },
-    "certificateThumbprint": {
-      "type": "string",
-      "value": "[if(contains(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[0], ':', ''), '/', '-'))), '2020-10-01').outputs, 'thumbprint'), reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[0], ':', ''), '/', '-'))), '2020-10-01').outputs.thumbprint, '')]",
-      "metadata": {
-        "description": "Certificate Thumbprint"
-      }
-    },
-    "certificateThumbprintHex": {
-      "type": "string",
-      "value": "[if(contains(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[0], ':', ''), '/', '-'))), '2020-10-01').outputs, 'thumbprintHex'), reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[0], ':', ''), '/', '-'))), '2020-10-01').outputs.thumbprintHex, '')]",
-      "metadata": {
-        "description": "Certificate Thumbprint (in hex)"
-      }
-    },
     "certificateNames": {
       "type": "array",
       "copy": {
