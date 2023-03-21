@@ -10,6 +10,8 @@ This technology implements horizontally scalable, cloud-ready services to provid
 
 In Unreal Engine 5 (UE5), ‘Unreal Cloud DDC’ is an optional service which users can enable and connect to cloud storage. Simplify provide the Unreal Cloud DDC URL and complete the authentication prompts to connect to your Unreal Cloud DDC deployment. By leveraging the ability to store smaller pre-computed elements, Unreal Cloud DDC makes it more efficient for sharing assets between developers.
 
+[Learn more about Unreal Cloud DDC on Azure.](https://learn.microsoft.com/en-us/gaming/azure/unreal-cloud-ddc/overview)
+
 ## Parameters
 
 | Name                                             | Type           | Required | Description                                                                                                                                                    |
