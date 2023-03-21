@@ -1,8 +1,11 @@
 @description('Deployment Location')
 param location string
 
+@description('Prefix of Cosmos DB Resource Name')
+param prefix string = enableCassandra ? 'coscas' : 'cosmos'
+
 @description('Name of Cosmos DB')
-param name string = 'cosmos${uniqueString(resourceGroup().id, location)}'
+param name string = '${prefix}${uniqueString(resourceGroup().id, location)}'
 
 @description('Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 2147483647. Multi Region: 100000 to 2147483647.')
 @minValue(10)
