@@ -12,6 +12,7 @@ It allows for the creation of a new Cosmos DB account or use of an existing one,
 | Name                           | Type     | Required | Description                                                                                                                                   |
 | :----------------------------- | :------: | :------: | :-------------------------------------------------------------------------------------------------------------------------------------------- |
 | `location`                     | `string` | Yes      | Deployment Location                                                                                                                           |
+| `prefix`                       | `string` | No       | Prefix of Cosmos DB Resource Name                                                                                                             |
 | `name`                         | `string` | No       | Name of Cosmos DB                                                                                                                             |
 | `maxStalenessPrefix`           | `int`    | No       | Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 2147483647. Multi Region: 100000 to 2147483647.         |
 | `maxIntervalInSeconds`         | `int`    | No       | Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400.                   |

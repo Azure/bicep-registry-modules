@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "12433211678799823746"
+      "templateHash": "3974587274503615235"
     }
   },
   "parameters": {
@@ -15,9 +15,16 @@
         "description": "Deployment Location"
       }
     },
+    "prefix": {
+      "type": "string",
+      "defaultValue": "[if(parameters('enableCassandra'), 'coscas', 'cosmos')]",
+      "metadata": {
+        "description": "Prefix of Cosmos DB Resource Name"
+      }
+    },
     "name": {
       "type": "string",
-      "defaultValue": "[format('cosmos{0}', uniqueString(resourceGroup().id, parameters('location')))]",
+      "defaultValue": "[format('{0}{1}', parameters('prefix'), uniqueString(resourceGroup().id, parameters('location')))]",
       "metadata": {
         "description": "Name of Cosmos DB"
       }
