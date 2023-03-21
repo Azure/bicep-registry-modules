@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "14183133624000769940"
+      "templateHash": "1212165296336474074"
     }
   },
   "parameters": {
@@ -509,7 +509,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.15.31.15270",
-              "templateHash": "17705413314802123411"
+              "templateHash": "4251649884428436457"
             }
           },
           "parameters": {
@@ -552,10 +552,6 @@
                   }
                 ]
               }
-            },
-            "trafficManagerDnsSuffix": {
-              "type": "string",
-              "defaultValue": "trafficmanager"
             }
           },
           "resources": [
@@ -582,13 +578,17 @@
             }
           ],
           "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Network/trafficmanagerprofiles', parameters('name'))]"
+            },
             "name": {
               "type": "string",
-              "value": "[if(equals(parameters('newOrExisting'), 'new'), parameters('name'), parameters('name'))]"
+              "value": "[parameters('name')]"
             },
             "fqdn": {
               "type": "string",
-              "value": "[format('{0}.{1}.net', if(equals(parameters('newOrExisting'), 'new'), reference(resourceId('Microsoft.Network/trafficmanagerprofiles', parameters('name')), '2018-08-01').dnsConfig.relativeName, reference(resourceId('Microsoft.Network/trafficmanagerprofiles', parameters('name')), '2018-08-01').dnsConfig.relativeName), parameters('trafficManagerDnsSuffix'))]"
+              "value": "[reference(resourceId('Microsoft.Network/trafficmanagerprofiles', parameters('name')), '2018-08-01').dnsConfig.fqdn]"
             }
           }
         }
