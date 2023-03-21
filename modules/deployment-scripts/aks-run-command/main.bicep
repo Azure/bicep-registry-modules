@@ -47,7 +47,7 @@ resource newDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-0
   location: location
 }
 
-resource existingDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (useExistingManagedIdentity ) {
+resource existingDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (useExistingManagedIdentity) {
   name: managedIdentityName
   scope: resourceGroup(existingManagedIdentitySubId, existingManagedIdentityResourceGroupName)
 }
