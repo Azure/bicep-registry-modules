@@ -1,8 +1,3 @@
-// Copyright (c) 2022 Microsoft Corporation. All rights reserved.
-// Deploy Azure Game Development VMSS
-
-//                                                    Parameters
-// ********************************************************************************************************************
 @description('Deployment Location')
 param location string = resourceGroup().location
 
@@ -142,10 +137,7 @@ param enableAnalyticsDashboard bool = false
 
 @description('Analytics Workspace Name')
 param analyticsWorkspaceName string = ''
-// End Parameters
 
-//                                                    Variables
-// ********************************************************************************************************************
 var customData = format('''
 fileShareStorageAccount={0}
 fileShareStorageAccountKey={1}
@@ -170,10 +162,7 @@ deployedFromSolutionTemplate={19}
 ''', fileShareStorageAccount, fileShareStorageAccountKey, fileShareName, p4Port, p4Username, p4Password, p4Workspace, p4Stream, p4ClientViews, ibLicenseKey, gdkVersion, useVmToSysprepCustomImage, remoteAccessTechnology, teradiciRegKey, parsecTeamId, parsecTeamKey, parsecHost, parsecUserEmail, parsecIsGuestAccess, false)
 
 var vmssImgProduct = 'game-dev-vm'
-// End Variables
 
-//                                                    Resources
-// ********************************************************************************************************************
 module vnet './modules/virtualNetworks.bicep'  = {
   name:                       '${vnetName}-${deployment().name}'
   params: {
@@ -290,13 +279,9 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
     overprovision: false
   }
 }
-// End Resources
 
-//                                                    Outputs
-// ********************************************************************************************************************
 @description('VMSS ID')
 output id string = vmss.id
 
 @description('VMSS Name')
 output name string = vmss.name
-// End Outputs

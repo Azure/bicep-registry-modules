@@ -1,8 +1,3 @@
-// Copyright (c) 2022 Microsoft Corporation. All rights reserved.
-// Deploy Azure Game Development Virtual Machine
-
-//                                                    Parameters
-// ********************************************************************************************************************
 @description('Resource Location.')
 param location string = resourceGroup().location
 
@@ -154,10 +149,8 @@ param enableAAD bool = false
 @description('Specifies the OS patching behavior.')
 @allowed([ 'AutomaticByOS', 'AutomaticByPlatform', 'Manual' ])
 param windowsUpdateOption string = 'AutomaticByOS'
-// End Parameters
 
-//                                                    Variables
-// ********************************************************************************************************************
+
 var environmentMapping = { no_engine: 'no_engine_1_0', ue_4_27_2: 'unreal_4_27_2', ue_5_0_1: 'unreal_5_0_1'}
 
 var environments = {
@@ -231,10 +224,7 @@ parsecIsGuestAccess={18}
 
 deployedFromSolutionTemplate={19}
 ''', fileShareStorageAccount, fileShareStorageAccountKey, fileShareName, p4Port, p4Username, p4Password, p4Workspace, p4Stream, p4ClientViews, ibLicenseKey, gdkVersion, useVmToSysprepCustomImage, remoteAccessTechnology, teradiciRegKey, parsec_teamId, parsec_teamKey, parsec_host, parsec_userEmail, parsec_isGuestAccess, false)
-// End Variables
 
-//                                                    Resources
-// ********************************************************************************************************************
 resource publicIp 'Microsoft.Network/publicIPAddresses@2021-05-01' = if (publicIpNewOrExisting == 'new') {
   name: publicIpName
   location: location
@@ -595,13 +585,9 @@ resource virtualMachine_enableAAD 'Microsoft.Compute/virtualMachines/extensions@
     autoUpgradeMinorVersion: true
   }
 }
-// End Resources
 
-//                                                    Outputs
-// ********************************************************************************************************************
 @description('Game Developer Virtual Machine Host Name')
 output Host_Name string = publicIp.properties.dnsSettings.fqdn
 
 @description('Game Developer Virtual Machine User Name')
 output UserName string = adminName
-// End Outputs
