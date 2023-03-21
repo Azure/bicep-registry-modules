@@ -1,8 +1,11 @@
 @description('Deployment Location')
 param location string
 
+@description('Prefix of Cosmos DB Resource Name')
+param prefix string = 'kv'
+
 @description('Name of the Key Vault')
-param name string = 'keyvault-${uniqueString(resourceGroup().id)}'
+param name string = '${prefix}-${uniqueString(resourceGroup().id)}'
 
 @description('Subnet ID for the Key Vault')
 param subnetID string = ''
