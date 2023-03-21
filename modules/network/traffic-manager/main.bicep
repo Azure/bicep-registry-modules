@@ -1,12 +1,11 @@
+@description('Prefix of Traffic Manager Profile Name')
+param prefix string = 'traf'
+
 @description('Traffic Manager Profile Resource Name')
-param name string = 'traffic-mp-${uniqueString(resourceGroup().id, subscription().id)}'
+param name string = '${prefix}-${uniqueString(resourceGroup().id, subscription().id)}'
 
 @description('Relative DNS name for the traffic manager profile, must be globally unique.')
 param trafficManagerDnsName string = 'tmp-${uniqueString(resourceGroup().id, subscription().id)}'
-
-@allowed([ 'new', 'existing' ])
-@description('Specifies whether to create a new Traffic Manager or use an existing one. Use "new" to create a new account or "existing" to use an existing one.')
-param newOrExisting string = 'new'
 
 @description('An array of objects that represent the endpoints in the Traffic Manager profile. {name: string, target: string, endpointStatus: string, endpointLocation: string}')
 param endpoints array = []
@@ -28,7 +27,7 @@ param monitorConfig object = {
   ]
 }
 
-resource trafficManagerProfile 'Microsoft.Network/trafficmanagerprofiles@2018-08-01' = if (newOrExisting == 'new') {
+resource trafficManagerProfile 'Microsoft.Network/trafficmanagerprofiles@2018-08-01' = {
   name: name
   location: 'global'
   properties: {
@@ -66,7 +65,8 @@ resource trafficManagerEndpoints 'Microsoft.Network/TrafficManagerProfiles/Exter
   }
 }]
 
-resource existingTrafficManagerProfile 'Microsoft.Network/trafficmanagerprofiles@2018-08-01' existing = { name: name }
+@description('Traffic Manager Profile Resource ID')
+output id string = trafficManagerProfile.id
 
 @description('Traffic Manager Profile Resource Name')
-output name string = newOrExisting == 'new' ? trafficManagerProfile.name : existingTrafficManagerProfile.name
+output name string = trafficManagerProfile.name
