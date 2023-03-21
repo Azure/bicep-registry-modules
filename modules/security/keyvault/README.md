@@ -17,6 +17,7 @@ The Bicep module outputs the ID and name of the Key Vault, which can be used by 
 | Name              | Type     | Required | Description                                        |
 | :---------------- | :------: | :------: | :------------------------------------------------- |
 | `location`        | `string` | Yes      | Deployment Location                                |
+| `prefix`          | `string` | No       | Prefix of Cosmos DB Resource Name                  |
 | `name`            | `string` | No       | Name of the Key Vault                              |
 | `subnetID`        | `string` | No       | Subnet ID for the Key Vault                        |
 | `tenantId`        | `string` | No       | The tenant ID where the Key Vault is deployed      |
