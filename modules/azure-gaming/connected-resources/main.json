@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.12.40.16777",
-      "templateHash": "18115311635948206907"
+      "version": "0.15.31.15270",
+      "templateHash": "11245146310987516635"
     }
   },
   "parameters": {
@@ -241,12 +241,6 @@
           "storageAccountName": {
             "value": "[format('{0}{1}', take(parameters('location'), 8), parameters('storageAccountName'))]"
           },
-          "storageSecretName": {
-            "value": "storage-connection-string"
-          },
-          "cassandraSecretName": {
-            "value": "db-connection-string"
-          },
           "assignRole": {
             "value": "[parameters('assignRole')]"
           },
@@ -260,71 +254,29 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.12.40.16777",
-              "templateHash": "7695920056284667175"
+              "version": "0.15.31.15270",
+              "templateHash": "3443180134944853752"
             }
           },
           "parameters": {
             "location": {
-              "type": "string",
-              "metadata": {
-                "description": "Deployment Location"
-              }
+              "type": "string"
             },
             "isZoneRedundant": {
               "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Toggle to enable or disable zone redudance."
-              }
-            },
-            "newOrExistingStorageAccount": {
-              "type": "string",
-              "defaultValue": "none",
-              "allowedValues": [
-                "new",
-                "existing",
-                "none"
-              ]
+              "defaultValue": true
             },
             "storageAccountName": {
               "type": "string",
               "defaultValue": "[format('store{0}', uniqueString(resourceGroup().id, subscription().id))]"
             },
-            "newOrExistingKeyVault": {
-              "type": "string",
-              "defaultValue": "none",
-              "allowedValues": [
-                "new",
-                "existing",
-                "none"
-              ]
-            },
             "keyVaultName": {
               "type": "string",
               "defaultValue": "[format('keyVault{0}', uniqueString(resourceGroup().id, subscription().id))]"
             },
-            "newOrExistingPublicIp": {
-              "type": "string",
-              "defaultValue": "none",
-              "allowedValues": [
-                "new",
-                "existing",
-                "none"
-              ]
-            },
             "publicIpName": {
               "type": "string",
               "defaultValue": "[format('pubip{0}', uniqueString(resourceGroup().id, subscription().id))]"
-            },
-            "newOrExistingCosmosDB": {
-              "type": "string",
-              "defaultValue": "none",
-              "allowedValues": [
-                "new",
-                "existing",
-                "none"
-              ]
             },
             "cosmosDBName": {
               "type": "string",
@@ -332,19 +284,7 @@
             },
             "secondaryLocations": {
               "type": "array",
-              "defaultValue": [],
-              "metadata": {
-                "description": "array of region objects or regions: [{locationName: string, failoverPriority: int, isZoneRedundant: bool}] or [region: string]"
-              }
-            },
-            "newOrExistingTrafficManager": {
-              "type": "string",
-              "defaultValue": "none",
-              "allowedValues": [
-                "new",
-                "existing",
-                "none"
-              ]
+              "defaultValue": []
             },
             "trafficManagerName": {
               "type": "string",
@@ -352,19 +292,11 @@
             },
             "trafficManagerDnsName": {
               "type": "string",
-              "defaultValue": "[format('tmp-{0}', uniqueString(resourceGroup().id, subscription().id))]",
-              "metadata": {
-                "description": "Relative DNS name for the traffic manager profile, must be globally unique."
-              }
+              "defaultValue": "[format('tmp-{0}', uniqueString(resourceGroup().id, subscription().id))]"
             },
-            "newOrExistingKubernetes": {
-              "type": "string",
-              "defaultValue": "none",
-              "allowedValues": [
-                "new",
-                "existing",
-                "none"
-              ]
+            "assignRole": {
+              "type": "bool",
+              "defaultValue": true
             },
             "kubernetesParams": {
               "type": "object",
@@ -376,30 +308,72 @@
                 "assignRole": true
               }
             },
-            "assignRole": {
-              "type": "bool",
-              "defaultValue": true
-            },
-            "storageSecretName": {
+            "newOrExistingStorageAccount": {
               "type": "string",
-              "defaultValue": ""
+              "defaultValue": "none",
+              "allowedValues": [
+                "new",
+                "existing",
+                "none"
+              ]
             },
-            "cassandraSecretName": {
+            "newOrExistingCosmosDB": {
               "type": "string",
-              "defaultValue": ""
+              "defaultValue": "none",
+              "allowedValues": [
+                "new",
+                "existing",
+                "none"
+              ]
+            },
+            "newOrExistingKubernetes": {
+              "type": "string",
+              "defaultValue": "none",
+              "allowedValues": [
+                "new",
+                "existing",
+                "none"
+              ]
+            },
+            "newOrExistingTrafficManager": {
+              "type": "string",
+              "defaultValue": "none",
+              "allowedValues": [
+                "new",
+                "existing",
+                "none"
+              ]
+            },
+            "newOrExistingPublicIp": {
+              "type": "string",
+              "defaultValue": "none",
+              "allowedValues": [
+                "new",
+                "existing",
+                "none"
+              ]
+            },
+            "newOrExistingKeyVault": {
+              "type": "string",
+              "defaultValue": "none",
+              "allowedValues": [
+                "new",
+                "existing",
+                "none"
+              ]
             }
           },
           "variables": {
-            "newOrExisting": {
-              "new": "new",
-              "existing": "existing"
-            },
             "enableKubernetes": "[not(equals(parameters('newOrExistingKubernetes'), 'none'))]",
             "enableKeyVault": "[not(equals(parameters('newOrExistingKeyVault'), 'none'))]",
             "enableComosDB": "[not(equals(parameters('newOrExistingCosmosDB'), 'none'))]",
             "enableStorage": "[not(equals(parameters('newOrExistingStorageAccount'), 'none'))]",
             "enablePublicIP": "[not(equals(parameters('newOrExistingPublicIp'), 'none'))]",
             "enableTrafficManager": "[not(equals(parameters('newOrExistingTrafficManager'), 'none'))]",
+            "newOrExisting": {
+              "new": "new",
+              "existing": "existing"
+            },
             "noAvailabilityZones": [
               "northcentralus",
               "westus",
@@ -433,21 +407,13 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "name": {
-                    "value": "[if(contains(parameters('kubernetesParams'), 'name'), parameters('kubernetesParams').name, format('aks-{0}', uniqueString(resourceGroup().id)))]"
-                  },
+                  "name": "[if(contains(parameters('kubernetesParams'), 'name'), createObject('value', parameters('kubernetesParams').name), createObject('value', format('aks-{0}', uniqueString(resourceGroup().id))))]",
                   "location": {
                     "value": "[parameters('location')]"
                   },
-                  "agentPoolCount": {
-                    "value": "[if(contains(parameters('kubernetesParams'), 'agentPoolCount'), parameters('kubernetesParams').agentPoolCount, 3)]"
-                  },
-                  "agentPoolName": {
-                    "value": "[if(contains(parameters('kubernetesParams'), 'agentPoolName'), parameters('kubernetesParams').agentPoolName, 'agentpool')]"
-                  },
-                  "vmSize": {
-                    "value": "[if(contains(parameters('kubernetesParams'), 'vmSize'), parameters('kubernetesParams').vmSize, 'Standard_D2_v2')]"
-                  },
+                  "agentPoolCount": "[if(contains(parameters('kubernetesParams'), 'agentPoolCount'), createObject('value', parameters('kubernetesParams').agentPoolCount), createObject('value', 3))]",
+                  "agentPoolName": "[if(contains(parameters('kubernetesParams'), 'agentPoolName'), createObject('value', parameters('kubernetesParams').agentPoolName), createObject('value', 'agentpool'))]",
+                  "vmSize": "[if(contains(parameters('kubernetesParams'), 'vmSize'), createObject('value', parameters('kubernetesParams').vmSize), createObject('value', 'Standard_D2_v2'))]",
                   "assignRole": {
                     "value": "[parameters('assignRole')]"
                   },
@@ -464,8 +430,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "10884513482652179779"
+                      "version": "0.15.31.15270",
+                      "templateHash": "5602466007549086427"
                     }
                   },
                   "parameters": {
@@ -688,16 +654,13 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "17325428612397129204"
+                      "version": "0.15.31.15270",
+                      "templateHash": "2970902814447994144"
                     }
                   },
                   "parameters": {
                     "location": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Deployment Location"
-                      }
+                      "type": "string"
                     },
                     "name": {
                       "type": "string",
@@ -719,6 +682,10 @@
                       "type": "array",
                       "defaultValue": []
                     },
+                    "assignRole": {
+                      "type": "bool",
+                      "defaultValue": true
+                    },
                     "newOrExisting": {
                       "type": "string",
                       "defaultValue": "new",
@@ -726,10 +693,6 @@
                         "new",
                         "existing"
                       ]
-                    },
-                    "assignRole": {
-                      "type": "bool",
-                      "defaultValue": true
                     }
                   },
                   "variables": {
@@ -757,11 +720,11 @@
                       }
                     },
                     {
-                      "condition": "[parameters('assignRole')]",
                       "copy": {
                         "name": "identityRoleAssignDeployment",
                         "count": "[length(parameters('rbacPolicies'))]"
                       },
+                      "condition": "[parameters('assignRole')]",
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
                       "scope": "[format('Microsoft.KeyVault/vaults/{0}', take(parameters('name'), 24))]",
@@ -776,11 +739,11 @@
                       ]
                     },
                     {
-                      "condition": "[parameters('assignRole')]",
                       "copy": {
                         "name": "rbacCertsReader",
                         "count": "[length(parameters('rbacPolicies'))]"
                       },
+                      "condition": "[parameters('assignRole')]",
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
                       "scope": "[format('Microsoft.KeyVault/vaults/{0}', take(parameters('name'), 24))]",
@@ -850,20 +813,37 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "5037960921830172278"
+                      "version": "0.15.31.15270",
+                      "templateHash": "5693845110133126077"
                     }
                   },
                   "parameters": {
                     "location": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Deployment Location"
-                      }
+                      "type": "string"
                     },
                     "name": {
                       "type": "string",
                       "defaultValue": "[format('cosmos-{0}', uniqueString(resourceGroup().id, parameters('location')))]"
+                    },
+                    "systemManagedFailover": {
+                      "type": "bool",
+                      "defaultValue": true
+                    },
+                    "secondaryLocations": {
+                      "type": "array",
+                      "defaultValue": []
+                    },
+                    "enableMultipleWriteLocations": {
+                      "type": "bool",
+                      "defaultValue": true
+                    },
+                    "EnableServerless": {
+                      "type": "bool",
+                      "defaultValue": false
+                    },
+                    "isZoneRedundant": {
+                      "type": "bool",
+                      "defaultValue": false
                     },
                     "newOrExisting": {
                       "type": "string",
@@ -873,30 +853,9 @@
                         "existing"
                       ]
                     },
-                    "maxStalenessPrefix": {
-                      "type": "int",
-                      "defaultValue": 100000,
-                      "maxValue": 2147483647,
-                      "minValue": 10,
-                      "metadata": {
-                        "description": "Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 2147483647. Multi Region: 100000 to 2147483647."
-                      }
-                    },
-                    "maxIntervalInSeconds": {
-                      "type": "int",
-                      "defaultValue": 300,
-                      "maxValue": 86400,
-                      "minValue": 5,
-                      "metadata": {
-                        "description": "Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400."
-                      }
-                    },
                     "defaultConsistencyLevel": {
                       "type": "string",
                       "defaultValue": "Session",
-                      "metadata": {
-                        "description": "The default consistency level of the Cosmos DB account."
-                      },
                       "allowedValues": [
                         "Eventual",
                         "ConsistentPrefix",
@@ -905,40 +864,17 @@
                         "Strong"
                       ]
                     },
-                    "systemManagedFailover": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Enable system managed failover for regions"
-                      }
+                    "maxIntervalInSeconds": {
+                      "type": "int",
+                      "defaultValue": 300,
+                      "maxValue": 86400,
+                      "minValue": 5
                     },
-                    "secondaryLocations": {
-                      "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "array of region objects or regions: [{locationName: string, failoverPriority: int, isZoneRedundant: bool}] or [region: string]"
-                      }
-                    },
-                    "enableMultipleWriteLocations": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Multi-region writes capability allows you to take advantage of the provisioned throughput for your databases and containers across the globe."
-                      }
-                    },
-                    "EnableServerless": {
-                      "type": "bool",
-                      "defaultValue": false,
-                      "metadata": {
-                        "description": "Enable Serverless for consumption-based usage."
-                      }
-                    },
-                    "isZoneRedundant": {
-                      "type": "bool",
-                      "defaultValue": false,
-                      "metadata": {
-                        "description": "Toggle to enable or disable zone redudance."
-                      }
+                    "maxStalenessPrefix": {
+                      "type": "int",
+                      "defaultValue": 100000,
+                      "maxValue": 2147483647,
+                      "minValue": 10
                     }
                   },
                   "variables": {
@@ -1001,17 +937,11 @@
                   "outputs": {
                     "connectionString": {
                       "type": "string",
-                      "value": "[if(equals(parameters('newOrExisting'), 'new'), listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name'))), '2022-05-15'), listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name'))), '2022-05-15')).connectionStrings[0].connectionString]",
-                      "metadata": {
-                        "description": "Key to connect with Cosmos DB"
-                      }
+                      "value": "[if(equals(parameters('newOrExisting'), 'new'), listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name'))), '2022-05-15'), listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name'))), '2022-05-15')).connectionStrings[0].connectionString]"
                     },
                     "cassandraConnectionString": {
                       "type": "string",
-                      "value": "[format('Contact Points={0}.cassandra.cosmos.azure.com,{1};Username={2};Password={3};Port=10350', toLower(parameters('name')), variables('locationString'), toLower(parameters('name')), if(equals(parameters('newOrExisting'), 'new'), listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name'))), '2022-05-15'), listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name'))), '2022-05-15')).primaryMasterKey)]",
-                      "metadata": {
-                        "description": "Key to connect with Cosmos DB"
-                      }
+                      "value": "[format('Contact Points={0}.cassandra.cosmos.azure.com,{1};Username={2};Password={3};Port=10350', toLower(parameters('name')), variables('locationString'), toLower(parameters('name')), if(equals(parameters('newOrExisting'), 'new'), listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name'))), '2022-05-15'), listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name'))), '2022-05-15')).primaryMasterKey)]"
                     }
                   }
                 }
@@ -1047,35 +977,21 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "4174138019532092580"
+                      "version": "0.15.31.15270",
+                      "templateHash": "14218889712610886885"
                     }
                   },
                   "parameters": {
                     "location": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Deployment Location"
-                      }
+                      "type": "string"
                     },
                     "name": {
                       "type": "string",
                       "defaultValue": "[uniqueString(resourceGroup().id)]"
                     },
-                    "newOrExisting": {
-                      "type": "string",
-                      "defaultValue": "new",
-                      "allowedValues": [
-                        "new",
-                        "existing"
-                      ]
-                    },
                     "resourceGroupName": {
                       "type": "string",
-                      "defaultValue": "[resourceGroup().name]",
-                      "metadata": {
-                        "description": "Resource Group"
-                      }
+                      "defaultValue": "[resourceGroup().name]"
                     },
                     "subnetID": {
                       "type": "string",
@@ -1087,17 +1003,19 @@
                     },
                     "isZoneRedundant": {
                       "type": "bool",
-                      "defaultValue": false,
-                      "metadata": {
-                        "description": "Toggle to enable or disable zone redudance."
-                      }
+                      "defaultValue": false
                     },
                     "storageAccountType": {
                       "type": "string",
-                      "defaultValue": "[if(parameters('isZoneRedundant'), 'Standard_ZRS', 'Standard_LRS')]",
-                      "metadata": {
-                        "description": "Storage Account Type. Use Zonal Redundant Storage when able."
-                      }
+                      "defaultValue": "[if(parameters('isZoneRedundant'), 'Standard_ZRS', 'Standard_LRS')]"
+                    },
+                    "newOrExisting": {
+                      "type": "string",
+                      "defaultValue": "new",
+                      "allowedValues": [
+                        "new",
+                        "existing"
+                      ]
                     }
                   },
                   "variables": {
@@ -1173,48 +1091,21 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "16706958326520087338"
+                      "version": "0.15.31.15270",
+                      "templateHash": "14466902597381203067"
                     }
                   },
                   "parameters": {
                     "location": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Deployment Location"
-                      }
+                      "type": "string"
                     },
                     "resourceGroupName": {
                       "type": "string",
-                      "defaultValue": "[resourceGroup().name]",
-                      "metadata": {
-                        "description": "Resource Group Name"
-                      }
+                      "defaultValue": "[resourceGroup().name]"
                     },
                     "name": {
                       "type": "string",
-                      "defaultValue": "[format('pubip{0}', uniqueString(resourceGroup().id))]",
-                      "metadata": {
-                        "description": "PublicIP Resource Name"
-                      }
-                    },
-                    "newOrExisting": {
-                      "type": "string",
-                      "defaultValue": "new",
-                      "metadata": {
-                        "description": "Create new or use existing resource selection. new/existing"
-                      },
-                      "allowedValues": [
-                        "new",
-                        "existing"
-                      ]
-                    },
-                    "publicIpSku": {
-                      "type": "object",
-                      "defaultValue": {
-                        "name": "Standard",
-                        "tier": "Regional"
-                      }
+                      "defaultValue": "[format('pubip{0}', uniqueString(resourceGroup().id))]"
                     },
                     "publicIpAllocationMethod": {
                       "type": "string",
@@ -1223,6 +1114,21 @@
                     "publicIpDns": {
                       "type": "string",
                       "defaultValue": "[format('dns-{0}', uniqueString(resourceGroup().id, parameters('name')))]"
+                    },
+                    "publicIpSku": {
+                      "type": "object",
+                      "defaultValue": {
+                        "name": "Standard",
+                        "tier": "Regional"
+                      }
+                    },
+                    "newOrExisting": {
+                      "type": "string",
+                      "defaultValue": "new",
+                      "allowedValues": [
+                        "new",
+                        "existing"
+                      ]
                     }
                   },
                   "resources": [
@@ -1290,39 +1196,22 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.12.40.16777",
-                      "templateHash": "7041877789547974297"
+                      "version": "0.15.31.15270",
+                      "templateHash": "335409465049777394"
                     }
                   },
                   "parameters": {
                     "name": {
                       "type": "string",
-                      "defaultValue": "[format('traffic-mp-{0}', uniqueString(resourceGroup().id, subscription().id))]",
-                      "metadata": {
-                        "description": "Traffic Manager Profile Resource Name"
-                      }
+                      "defaultValue": "[format('traffic-mp-{0}', uniqueString(resourceGroup().id, subscription().id))]"
                     },
                     "trafficManagerDnsName": {
                       "type": "string",
-                      "defaultValue": "[format('tmp-{0}', uniqueString(resourceGroup().id, subscription().id))]",
-                      "metadata": {
-                        "description": "Relative DNS name for the traffic manager profile, must be globally unique."
-                      }
-                    },
-                    "newOrExisting": {
-                      "type": "string",
-                      "defaultValue": "new",
-                      "allowedValues": [
-                        "new",
-                        "existing"
-                      ]
+                      "defaultValue": "[format('tmp-{0}', uniqueString(resourceGroup().id, subscription().id))]"
                     },
                     "endpoints": {
                       "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "An array of objects that represent the endpoints in the Traffic Manager profile. {name: string, target: string, endpointStatus: string, endpointLocation: string}"
-                      }
+                      "defaultValue": []
                     },
                     "monitorConfig": {
                       "type": "object",
@@ -1341,6 +1230,14 @@
                           }
                         ]
                       }
+                    },
+                    "newOrExisting": {
+                      "type": "string",
+                      "defaultValue": "new",
+                      "allowedValues": [
+                        "new",
+                        "existing"
+                      ]
                     }
                   },
                   "resources": [
@@ -1366,11 +1263,11 @@
                       }
                     },
                     {
-                      "condition": "[and(equals(parameters('newOrExisting'), 'new'), not(empty(parameters('endpoints')[copyIndex()])))]",
                       "copy": {
                         "name": "trafficManagerEndpoints",
                         "count": "[length(parameters('endpoints'))]"
                       },
+                      "condition": "[and(equals(parameters('newOrExisting'), 'new'), not(empty(parameters('endpoints')[copyIndex()])))]",
                       "type": "Microsoft.Network/trafficmanagerprofiles/ExternalEndpoints",
                       "apiVersion": "2018-08-01",
                       "name": "[format('{0}/{1}', parameters('name'), parameters('endpoints')[copyIndex()].name)]",
