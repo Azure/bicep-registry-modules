@@ -2,7 +2,7 @@
 param aksName string
 
 @description('The location to deploy the resources to')
-param location string = resourceGroup().location
+param location string
 
 @description('How the deployment script should be forced to execute')
 param forceUpdateTag  string = utcNow()
@@ -17,7 +17,7 @@ param rbacRolesNeeded array = [
 param useExistingManagedIdentity bool = false
 
 @description('Name of the Managed Identity resource')
-param managedIdentityName string = 'id-AksRunCommandProxy'
+param managedIdentityName string = 'id-AksRunCommandProxy-${location}'
 
 @description('For an existing Managed Identity, the Subscription Id it is located in')
 param existingManagedIdentitySubId string = subscription().subscriptionId
@@ -39,7 +39,10 @@ param initialScriptDelay string = '120s'
 @description('When the script resource is cleaned up')
 param cleanupPreference string = 'OnSuccess'
 
-resource aks 'Microsoft.ContainerService/managedClusters@2022-09-01' existing = {
+@description('Set to true when deploying template across tenants') 
+param isCrossTenant bool = false
+
+resource aks 'Microsoft.ContainerService/managedClusters@2022-01-02-preview' existing = {
   name: aksName
 }
 
@@ -53,13 +56,16 @@ resource existingDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2
   scope: resourceGroup(existingManagedIdentitySubId, existingManagedIdentityResourceGroupName)
 }
 
+var delegatedManagedIdentityResourceId = useExistingManagedIdentity ? existingDepScriptId.id : newDepScriptId.id
+
 resource rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for roleDefId in rbacRolesNeeded: {
   name: guid(aks.id, roleDefId, useExistingManagedIdentity ? existingDepScriptId.id : newDepScriptId.id)
   scope: aks
   properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefId)
+    roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', roleDefId)
     principalId: useExistingManagedIdentity ? existingDepScriptId.properties.principalId : newDepScriptId.properties.principalId
     principalType: 'ServicePrincipal'
+    delegatedManagedIdentityResourceId: isCrossTenant ? delegatedManagedIdentityResourceId : null
   }
 }]
 
@@ -83,48 +89,13 @@ resource runAksCommand 'Microsoft.Resources/deploymentScripts@2020-10-01' = [for
     timeout: 'PT10M'
     retentionInterval: 'P1D'
     environmentVariables: [
-      {
-        name: 'RG'
-        value: resourceGroup().name
-      }
-      {
-        name: 'aksName'
-        value: aksName
-      }
-      {
-        name: 'command'
-        value: command
-      }
-      {
-        name: 'initialDelay'
-        value: initialScriptDelay
-      }
-      {
-        name: 'loopIndex'
-        value: string(i)
-      }
+      { name: 'RG', value: resourceGroup().name }
+      { name: 'aksName', value: aksName }
+      { name: 'command', value: command }
+      { name: 'initialDelay', value: initialScriptDelay}
+      { name: 'loopIndex', value: string(i) }
     ]
-    scriptContent: '''
-      #!/bin/bash
-      set -e
-
-      if [ "$loopIndex" == "0" ] && [ "$initialDelay" != "0" ]
-      then
-        echo "Waiting on RBAC replication ($initialDelay)"
-        sleep $initialDelay
-
-        #Force RBAC refresh
-        az logout
-        az login --identity
-      fi
-
-      echo "Sending command $command to AKS Cluster $aksName in $RG"
-      cmdOut=$(az aks command invoke -g $RG -n $aksName -o json --command "${command}")
-      echo $cmdOut
-
-      jsonOutputString=$cmdOut
-      echo $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH
-    '''
+    scriptContent: loadTextContent('aks-run-command.sh')
     cleanupPreference: cleanupPreference
   }
 }]

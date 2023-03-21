@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.12.40.16777",
-      "templateHash": "2740228506911784447"
+      "version": "0.15.31.15270",
+      "templateHash": "7646499074179755680"
     }
   },
   "parameters": {
@@ -17,7 +17,6 @@
     },
     "location": {
       "type": "string",
-      "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "description": "The location to deploy the resources to"
       }
@@ -48,7 +47,7 @@
     },
     "managedIdentityName": {
       "type": "string",
-      "defaultValue": "id-AksRunCommandProxy",
+      "defaultValue": "[format('id-AksRunCommandProxy-{0}', parameters('location'))]",
       "metadata": {
         "description": "Name of the Managed Identity resource"
       }
@@ -91,7 +90,18 @@
         "OnExpiration",
         "Always"
       ]
+    },
+    "isCrossTenant": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Set to true when deploying template across tenants"
+      }
     }
+  },
+  "variables": {
+    "$fxv#0": "#!/bin/bash\n\nset -e +H\n# -e to exit on error\n# +H to prevent history expansion\n\nif [ \"$loopIndex\" == \"0\" ] && [ \"$initialDelay\" != \"0\" ]\nthen\n    echo \"Waiting on RBAC replication ($initialDelay)\"\n    sleep $initialDelay\n\n    #Force RBAC refresh\n    az logout\n    az login --identity\nfi\n\necho \"Sending command $command to AKS Cluster $aksName in $RG\"\ncmdOut=$(az aks command invoke -g $RG -n $aksName -o json --command \"${command}\")\necho $cmdOut\n\njsonOutputString=$cmdOut\necho $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n",
+    "delegatedManagedIdentityResourceId": "[if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))]"
   },
   "resources": [
     {
@@ -111,9 +121,10 @@
       "scope": "[format('Microsoft.ContainerService/managedClusters/{0}', parameters('aksName'))]",
       "name": "[guid(resourceId('Microsoft.ContainerService/managedClusters', parameters('aksName')), parameters('rbacRolesNeeded')[copyIndex()], if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]",
       "properties": {
-        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('rbacRolesNeeded')[copyIndex()])]",
+        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('rbacRolesNeeded')[copyIndex()])]",
         "principalId": "[if(parameters('useExistingManagedIdentity'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId, reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2018-11-30').principalId)]",
-        "principalType": "ServicePrincipal"
+        "principalType": "ServicePrincipal",
+        "delegatedManagedIdentityResourceId": "[if(parameters('isCrossTenant'), variables('delegatedManagedIdentityResourceId'), null())]"
       },
       "dependsOn": [
         "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]"
@@ -164,7 +175,7 @@
             "value": "[string(copyIndex())]"
           }
         ],
-        "scriptContent": "      #!/bin/bash\n      set -e\n\n      if [ \"$loopIndex\" == \"0\" ] && [ \"$initialDelay\" != \"0\" ]\n      then\n        echo \"Waiting on RBAC replication ($initialDelay)\"\n        sleep $initialDelay\n\n        #Force RBAC refresh\n        az logout\n        az login --identity\n      fi\n\n      echo \"Sending command $command to AKS Cluster $aksName in $RG\"\n      cmdOut=$(az aks command invoke -g $RG -n $aksName -o json --command \"${command}\")\n      echo $cmdOut\n\n      jsonOutputString=$cmdOut\n      echo $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n    ",
+        "scriptContent": "[variables('$fxv#0')]",
         "cleanupPreference": "[parameters('cleanupPreference')]"
       },
       "dependsOn": [

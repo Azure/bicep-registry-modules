@@ -12,7 +12,7 @@ This module configures the required permissions so that you do not have to confi
 | Name                                       | Type     | Required | Description                                                                                                   |
 | :----------------------------------------- | :------: | :------: | :------------------------------------------------------------------------------------------------------------ |
 | `aksName`                                  | `string` | Yes      | The name of the Azure Kubernetes Service                                                                      |
-| `location`                                 | `string` | No       | The location to deploy the resources to                                                                       |
+| `location`                                 | `string` | Yes      | The location to deploy the resources to                                                                       |
 | `forceUpdateTag`                           | `string` | No       | How the deployment script should be forced to execute                                                         |
 | `rbacRolesNeeded`                          | `array`  | No       | An array of Azure RoleIds that are required for the DeploymentScript resource                                 |
 | `useExistingManagedIdentity`               | `bool`   | No       | Does the Managed Identity already exists, or should be created                                                |
@@ -22,6 +22,7 @@ This module configures the required permissions so that you do not have to confi
 | `commands`                                 | `array`  | Yes      | An array of commands to run                                                                                   |
 | `initialScriptDelay`                       | `string` | No       | A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate |
 | `cleanupPreference`                        | `string` | No       | When the script resource is cleaned up                                                                        |
+| `isCrossTenant`                            | `bool`   | No       | Set to true when deploying template across tenants                                                            |
 
 ## Outputs
 
