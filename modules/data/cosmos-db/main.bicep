@@ -4,10 +4,6 @@ param location string
 @description('Name of Cosmos DB')
 param name string = 'cosmos${uniqueString(resourceGroup().id, location)}'
 
-@allowed([ 'new', 'existing' ])
-@description('Specifies whether to create a new Cosmos DB account or use an existing one. Use "new" to create a new account or "existing" to use an existing one.')
-param newOrExisting string = 'new'
-
 @description('Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 2147483647. Multi Region: 100000 to 2147483647.')
 @minValue(10)
 @maxValue(2147483647)
@@ -79,7 +75,7 @@ var capabilities = union(
   enableServerless ? [ { name: 'EnableServerless' } ] : []
 )
 
-resource newAccount 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = if (newOrExisting == 'new') {
+resource account 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
   name: toLower(name)
   location: location
   kind: 'GlobalDocumentDB'
@@ -91,10 +87,6 @@ resource newAccount 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = if (new
     enableMultipleWriteLocations: enableMultipleWriteLocations
     capabilities: capabilities
   }
-}
-
-resource account 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' existing = {
-  name: toLower(name)
 }
 
 @description('The resource ID of the Cosmos DB account.')
