@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "16142032849940523008"
+      "templateHash": "3490199862190483647"
     }
   },
   "parameters": {
@@ -50,17 +50,6 @@
         "description": "List of RBAC policies to assign to the Key Vault"
       }
     },
-    "newOrExisting": {
-      "type": "string",
-      "defaultValue": "new",
-      "metadata": {
-        "description": "Specifies whether to create a new Key Vault or use an existing one. Use \"new\" to create a new Key Vault or \"existing\" to use an existing one."
-      },
-      "allowedValues": [
-        "new",
-        "existing"
-      ]
-    },
     "assignRole": {
       "type": "bool",
       "defaultValue": true,
@@ -84,7 +73,6 @@
   },
   "resources": [
     {
-      "condition": "[equals(parameters('newOrExisting'), 'new')]",
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2022-07-01",
       "name": "[take(parameters('name'), 24)]",

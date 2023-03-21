@@ -14,17 +14,16 @@ The Bicep module outputs the ID and name of the Key Vault, which can be used by 
 
 ## Parameters
 
-| Name              | Type     | Required | Description                                                                                                                                   |
-| :---------------- | :------: | :------: | :-------------------------------------------------------------------------------------------------------------------------------------------- |
-| `location`        | `string` | Yes      | Deployment Location                                                                                                                           |
-| `name`            | `string` | No       | Name of the Key Vault                                                                                                                         |
-| `subnetID`        | `string` | No       | Subnet ID for the Key Vault                                                                                                                   |
-| `tenantId`        | `string` | No       | The tenant ID where the Key Vault is deployed                                                                                                 |
-| `enableVNet`      | `bool`   | No       | Enable VNet Service Endpoints for Key Vault                                                                                                   |
-| `rbacPolicies`    | `array`  | No       | List of RBAC policies to assign to the Key Vault                                                                                              |
-| `newOrExisting`   | `string` | No       | Specifies whether to create a new Key Vault or use an existing one. Use "new" to create a new Key Vault or "existing" to use an existing one. |
-| `assignRole`      | `bool`   | No       | Enable role assignment for the Key Vault                                                                                                      |
-| `roleAssignments` | `array`  | No       | RBAC Role Assignments to apply to each RBAC policy                                                                                            |
+| Name              | Type     | Required | Description                                        |
+| :---------------- | :------: | :------: | :------------------------------------------------- |
+| `location`        | `string` | Yes      | Deployment Location                                |
+| `name`            | `string` | No       | Name of the Key Vault                              |
+| `subnetID`        | `string` | No       | Subnet ID for the Key Vault                        |
+| `tenantId`        | `string` | No       | The tenant ID where the Key Vault is deployed      |
+| `enableVNet`      | `bool`   | No       | Enable VNet Service Endpoints for Key Vault        |
+| `rbacPolicies`    | `array`  | No       | List of RBAC policies to assign to the Key Vault   |
+| `assignRole`      | `bool`   | No       | Enable role assignment for the Key Vault           |
+| `roleAssignments` | `array`  | No       | RBAC Role Assignments to apply to each RBAC policy |
 
 ## Outputs
 
