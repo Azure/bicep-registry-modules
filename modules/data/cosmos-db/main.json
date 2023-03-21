@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.14.85.62628",
-      "templateHash": "7801263477565555122"
+      "version": "0.15.31.15270",
+      "templateHash": "12433211678799823746"
     }
   },
   "parameters": {
@@ -21,17 +21,6 @@
       "metadata": {
         "description": "Name of Cosmos DB"
       }
-    },
-    "newOrExisting": {
-      "type": "string",
-      "defaultValue": "new",
-      "metadata": {
-        "description": "Specifies whether to create a new Cosmos DB account or use an existing one. Use \"new\" to create a new account or \"existing\" to use an existing one."
-      },
-      "allowedValues": [
-        "new",
-        "existing"
-      ]
     },
     "maxStalenessPrefix": {
       "type": "int",
@@ -144,7 +133,6 @@
   },
   "resources": [
     {
-      "condition": "[equals(parameters('newOrExisting'), 'new')]",
       "type": "Microsoft.DocumentDB/databaseAccounts",
       "apiVersion": "2022-05-15",
       "name": "[toLower(parameters('name'))]",

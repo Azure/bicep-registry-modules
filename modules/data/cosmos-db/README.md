@@ -9,20 +9,19 @@ It allows for the creation of a new Cosmos DB account or use of an existing one,
 
 ## Parameters
 
-| Name                           | Type     | Required | Description                                                                                                                                         |
-| :----------------------------- | :------: | :------: | :-------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `location`                     | `string` | Yes      | Deployment Location                                                                                                                                 |
-| `name`                         | `string` | No       | Name of Cosmos DB                                                                                                                                   |
-| `newOrExisting`                | `string` | No       | Specifies whether to create a new Cosmos DB account or use an existing one. Use "new" to create a new account or "existing" to use an existing one. |
-| `maxStalenessPrefix`           | `int`    | No       | Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 2147483647. Multi Region: 100000 to 2147483647.               |
-| `maxIntervalInSeconds`         | `int`    | No       | Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400.                         |
-| `defaultConsistencyLevel`      | `string` | No       | The default consistency level of the Cosmos DB account.                                                                                             |
-| `systemManagedFailover`        | `bool`   | No       | Enable system managed failover for regions                                                                                                          |
-| `secondaryLocations`           | `array`  | No       | array of region objects or regions: [region: string]                                                                                                |
-| `enableMultipleWriteLocations` | `bool`   | No       | Multi-region writes capability allows you to take advantage of the provisioned throughput for your databases and containers across the globe.       |
-| `enableCassandra`              | `bool`   | No       | Enable Cassandra Backend.                                                                                                                           |
-| `enableServerless`             | `bool`   | No       | Enable Serverless for consumption-based usage.                                                                                                      |
-| `isZoneRedundant`              | `bool`   | No       | Toggle to enable or disable zone redudance.                                                                                                         |
+| Name                           | Type     | Required | Description                                                                                                                                   |
+| :----------------------------- | :------: | :------: | :-------------------------------------------------------------------------------------------------------------------------------------------- |
+| `location`                     | `string` | Yes      | Deployment Location                                                                                                                           |
+| `name`                         | `string` | No       | Name of Cosmos DB                                                                                                                             |
+| `maxStalenessPrefix`           | `int`    | No       | Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 2147483647. Multi Region: 100000 to 2147483647.         |
+| `maxIntervalInSeconds`         | `int`    | No       | Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400.                   |
+| `defaultConsistencyLevel`      | `string` | No       | The default consistency level of the Cosmos DB account.                                                                                       |
+| `systemManagedFailover`        | `bool`   | No       | Enable system managed failover for regions                                                                                                    |
+| `secondaryLocations`           | `array`  | No       | array of region objects or regions: [region: string]                                                                                          |
+| `enableMultipleWriteLocations` | `bool`   | No       | Multi-region writes capability allows you to take advantage of the provisioned throughput for your databases and containers across the globe. |
+| `enableCassandra`              | `bool`   | No       | Enable Cassandra Backend.                                                                                                                     |
+| `enableServerless`             | `bool`   | No       | Enable Serverless for consumption-based usage.                                                                                                |
+| `isZoneRedundant`              | `bool`   | No       | Toggle to enable or disable zone redudance.                                                                                                   |
 
 ## Outputs
 
