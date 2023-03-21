@@ -16,10 +16,6 @@ param enableVNet bool = false
 @description('List of RBAC policies to assign to the Key Vault')
 param rbacPolicies array = []
 
-@allowed([ 'new', 'existing'])
-@description('Specifies whether to create a new Key Vault or use an existing one. Use "new" to create a new Key Vault or "existing" to use an existing one.')
-param newOrExisting string = 'new'
-
 @description('Enable role assignment for the Key Vault')
 param assignRole bool = true
 
@@ -39,7 +35,7 @@ var networkAcls = enableVNet ? {
   ]
 } : {}
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = if (newOrExisting == 'new') {
+resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   name: take(name, 24)
   location: location
   properties: {
