@@ -31,27 +31,23 @@ param commands array
 @description('A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate')
 param initialScriptDelay string = '120s'
 
-@allowed([
-  'OnSuccess'
-  'OnExpiration'
-  'Always'
-])
+@allowed([ 'OnSuccess', 'OnExpiration', 'Always' ])
 @description('When the script resource is cleaned up')
 param cleanupPreference string = 'OnSuccess'
 
 @description('Set to true when deploying template across tenants') 
 param isCrossTenant bool = false
 
-resource aks 'Microsoft.ContainerService/managedClusters@2022-01-02-preview' existing = {
+resource aks 'Microsoft.ContainerService/managedClusters@2022-11-01' existing = {
   name: aksName
 }
 
-resource newDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = if (!useExistingManagedIdentity) {
+resource newDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = if (!useExistingManagedIdentity) {
   name: managedIdentityName
   location: location
 }
 
-resource existingDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = if (useExistingManagedIdentity ) {
+resource existingDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (useExistingManagedIdentity ) {
   name: managedIdentityName
   scope: resourceGroup(existingManagedIdentitySubId, existingManagedIdentityResourceGroupName)
 }
