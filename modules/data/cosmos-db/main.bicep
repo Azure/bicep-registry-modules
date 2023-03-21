@@ -78,7 +78,7 @@ var capabilities = union(
   enableServerless ? [ { name: 'EnableServerless' } ] : []
 )
 
-resource account 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
+resource cosmosDB 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
   name: toLower(name)
   location: location
   kind: 'GlobalDocumentDB'
@@ -92,5 +92,8 @@ resource account 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' = {
   }
 }
 
-@description('The resource ID of the Cosmos DB account.')
-output resourceId string = account.id
+@description('Cosmos DB Resource ID')
+output id string = cosmosDB.id
+
+@description('Cosmos DB Resource Name')
+output name string = cosmosDB.name
