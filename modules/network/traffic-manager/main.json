@@ -4,14 +4,21 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.14.85.62628",
-      "templateHash": "3228543150666602315"
+      "version": "0.15.31.15270",
+      "templateHash": "11741624788643185086"
     }
   },
   "parameters": {
+    "prefix": {
+      "type": "string",
+      "defaultValue": "traf",
+      "metadata": {
+        "description": "Prefix of Traffic Manager Profile Name"
+      }
+    },
     "name": {
       "type": "string",
-      "defaultValue": "[format('traffic-mp-{0}', uniqueString(resourceGroup().id, subscription().id))]",
+      "defaultValue": "[format('{0}-{1}', parameters('prefix'), uniqueString(resourceGroup().id, subscription().id))]",
       "metadata": {
         "description": "Traffic Manager Profile Resource Name"
       }
@@ -22,17 +29,6 @@
       "metadata": {
         "description": "Relative DNS name for the traffic manager profile, must be globally unique."
       }
-    },
-    "newOrExisting": {
-      "type": "string",
-      "defaultValue": "new",
-      "metadata": {
-        "description": "Specifies whether to create a new Traffic Manager or use an existing one. Use \"new\" to create a new account or \"existing\" to use an existing one."
-      },
-      "allowedValues": [
-        "new",
-        "existing"
-      ]
     },
     "endpoints": {
       "type": "array",
@@ -65,7 +61,6 @@
   },
   "resources": [
     {
-      "condition": "[equals(parameters('newOrExisting'), 'new')]",
       "type": "Microsoft.Network/trafficmanagerprofiles",
       "apiVersion": "2018-08-01",
       "name": "[parameters('name')]",
@@ -90,7 +85,7 @@
         "name": "trafficManagerEndpoints",
         "count": "[length(parameters('endpoints'))]"
       },
-      "condition": "[and(equals(parameters('newOrExisting'), 'new'), not(empty(parameters('endpoints')[copyIndex()])))]",
+      "condition": "[not(empty(parameters('endpoints')[copyIndex()]))]",
       "type": "Microsoft.Network/trafficmanagerprofiles/ExternalEndpoints",
       "apiVersion": "2018-08-01",
       "name": "[format('{0}/{1}', parameters('name'), parameters('endpoints')[copyIndex()].name)]",
@@ -105,9 +100,16 @@
     }
   ],
   "outputs": {
+    "id": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Network/trafficmanagerprofiles', parameters('name'))]",
+      "metadata": {
+        "description": "Traffic Manager Profile Resource ID"
+      }
+    },
     "name": {
       "type": "string",
-      "value": "[if(equals(parameters('newOrExisting'), 'new'), parameters('name'), parameters('name'))]",
+      "value": "[parameters('name')]",
       "metadata": {
         "description": "Traffic Manager Profile Resource Name"
       }

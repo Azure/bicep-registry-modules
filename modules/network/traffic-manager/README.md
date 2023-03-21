@@ -17,9 +17,9 @@ The module also allows for the configuration of monitor settings such as protoco
 
 | Name                    | Type     | Required | Description                                                                                                                                                       |
 | :---------------------- | :------: | :------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `prefix`                | `string` | No       | Prefix of Traffic Manager Profile Name                                                                                                                            |
 | `name`                  | `string` | No       | Traffic Manager Profile Resource Name                                                                                                                             |
 | `trafficManagerDnsName` | `string` | No       | Relative DNS name for the traffic manager profile, must be globally unique.                                                                                       |
-| `newOrExisting`         | `string` | No       | Specifies whether to create a new Traffic Manager or use an existing one. Use "new" to create a new account or "existing" to use an existing one.                 |
 | `endpoints`             | `array`  | No       | An array of objects that represent the endpoints in the Traffic Manager profile. {name: string, target: string, endpointStatus: string, endpointLocation: string} |
 | `monitorConfig`         | `object` | No       | An object that represents the monitoring configuration for the Traffic Manager profile.                                                                           |
 
@@ -27,6 +27,7 @@ The module also allows for the configuration of monitor settings such as protoco
 
 | Name | Type   | Description                           |
 | :--- | :----: | :------------------------------------ |
+| id   | string | Traffic Manager Profile Resource ID   |
 | name | string | Traffic Manager Profile Resource Name |
 
 ## Examples
