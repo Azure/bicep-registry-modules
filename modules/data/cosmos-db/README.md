@@ -26,9 +26,10 @@ It allows for the creation of a new Cosmos DB account or use of an existing one,
 
 ## Outputs
 
-| Name       | Type   | Description                               |
-| :--------- | :----: | :---------------------------------------- |
-| resourceId | string | The resource ID of the Cosmos DB account. |
+| Name | Type   | Description             |
+| :--- | :----: | :---------------------- |
+| id   | string | Cosmos DB Resource ID   |
+| name | string | Cosmos DB Resource Name |
 
 ## Examples
 
