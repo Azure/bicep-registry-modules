@@ -4,17 +4,17 @@
   "customizations": {
     "vscode": {
       "extensions": [
-		"cschleiden.vscode-github-actions",
-		"esbenp.prettier-vscode",
-		"GitHub.copilot",
-		"github.vscode-pull-request-github",
-		"microsoft-dciborow.align-bicep",
-		"ms-azuretools.vscode-bicep",
-		"ms-vsliveshare.vsliveshare",
-		"ms-vscode-remote.remote-containers",
-		"zokugun.explicit-folding",
-		"GitHub.copilot-labs"
-	]
+        "cschleiden.vscode-github-actions",
+        "esbenp.prettier-vscode",
+        "GitHub.copilot",
+        "github.vscode-pull-request-github",
+        "microsoft-dciborow.align-bicep",
+        "ms-azuretools.vscode-bicep",
+        "ms-vsliveshare.vsliveshare",
+        "ms-vscode-remote.remote-containers",
+        "zokugun.explicit-folding",
+        "GitHub.copilot-labs"
+      ]
     }
   },
   "postCreateCommand": "npm install -g prettier && dotnet tool install -g Azure.Bicep.RegistryModuleTool",
