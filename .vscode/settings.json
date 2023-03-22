@@ -7,5 +7,5 @@
     "githubPullRequests.pullBranch": "always",
     "[json]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
-    }
+    },
 }
