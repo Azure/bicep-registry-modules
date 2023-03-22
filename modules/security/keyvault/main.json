@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "9302593438004273673"
+      "templateHash": "11062603258316570816"
     }
   },
   "parameters": {
@@ -147,7 +147,7 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[take(parameters('name'), 24)]",
+      "name": "[guid(parameters('name'), 'deploy')]",
       "subscriptionId": "[parameters('subscriptionId')]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
@@ -343,7 +343,9 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[guid(take(parameters('name'), 24), parameters('roleAssignments')[copyIndex()])]",
+      "name": "[guid(guid(parameters('name'), 'deploy'), parameters('roleAssignments')[copyIndex()])]",
+      "subscriptionId": "[parameters('subscriptionId')]",
+      "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -351,7 +353,7 @@
         "mode": "Incremental",
         "parameters": {
           "keyVaultName": {
-            "value": "[take(parameters('name'), 24)]"
+            "value": "[guid(parameters('name'), 'deploy')]"
           },
           "rbacPolicies": {
             "value": "[parameters('rbacPolicies')]"
@@ -401,13 +403,15 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', take(parameters('name'), 24))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', guid(parameters('name'), 'deploy'))]"
       ]
     },
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
-      "name": "[guid(take(parameters('name'), 24), 'secrets')]",
+      "name": "[guid(guid(parameters('name'), 'deploy'), 'secrets')]",
+      "subscriptionId": "[parameters('subscriptionId')]",
+      "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -415,7 +419,7 @@
         "mode": "Incremental",
         "parameters": {
           "keyVaultName": {
-            "value": "[take(parameters('name'), 24)]"
+            "value": "[guid(parameters('name'), 'deploy')]"
           },
           "secrets": {
             "value": "[parameters('secrets')]"
@@ -463,21 +467,21 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', take(parameters('name'), 24))]"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', guid(parameters('name'), 'deploy'))]"
       ]
     }
   ],
   "outputs": {
     "id": {
       "type": "string",
-      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', take(parameters('name'), 24)), '2020-10-01').outputs.id.value]",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', guid(parameters('name'), 'deploy')), '2020-10-01').outputs.id.value]",
       "metadata": {
         "description": "Key Vault Id"
       }
     },
     "name": {
       "type": "string",
-      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', take(parameters('name'), 24)), '2020-10-01').outputs.name.value]",
+      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', guid(parameters('name'), 'deploy')), '2020-10-01').outputs.name.value]",
       "metadata": {
         "description": "Key Vault Name"
       }
