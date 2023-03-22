@@ -6,7 +6,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: keyVaultName
 }
 
-resource rbac_certs_reader 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = [for rbacPolicy in rbacPolicies: {
+resource rbac_certs_reader 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for rbacPolicy in rbacPolicies: {
   name: guid(rbacRole, rbacPolicy.objectId)
   scope: keyVault
   properties: {

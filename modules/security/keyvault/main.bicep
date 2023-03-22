@@ -7,11 +7,17 @@ param prefix string = 'kv'
 @description('Name of the Key Vault')
 param name string = '${prefix}-${uniqueString(resourceGroup().id)}'
 
-@description('Subnet ID for the Key Vault')
-param subnetID string = ''
-
 @description('The tenant ID where the Key Vault is deployed')
 param tenantId string = subscription().tenantId
+
+@description('For an existing Managed Identity, the Subscription Id it is located in')
+param subscriptionId string = subscription().subscriptionId
+
+@description('For an existing Managed Identity, the Resource Group it is located in')
+param resourceGroupName string = resourceGroup().name
+
+@description('Subnet ID for the Key Vault')
+param subnetID string = ''
 
 @description('Enable VNet Service Endpoints for Key Vault')
 param enableVNet bool = false
@@ -32,12 +38,6 @@ param newOrExisting string = 'new'
 @description('List of secrets to create in the Key Vault [ { secretName: string, secretValue: string }]')
 param secrets array = []
 
-@description('For an existing Managed Identity, the Subscription Id it is located in')
-param existingSubscriptionId string = subscription().subscriptionId
-
-@description('For an existing Managed Identity, the Resource Group it is located in')
-param existingResourceGroupName string = resourceGroup().name
-
 @description('Specifies whether soft delete should be enabled for the Key Vault.')
 param enableSoftDelete bool = true
 
@@ -55,35 +55,21 @@ param skuFamily string = 'A'
 @description('Specifies whether RBAC authorization should be enabled for the Key Vault.')
 param enableRbacAuthorization bool = true
 
-var networkAcls = enableVNet ? {
-  defaultAction: 'Deny'
-  virtualNetworkRules: [
-    {
-      action: 'Allow'
-      id: subnetID
-    }
-  ]
-} : {}
-
-resource newKeyVault 'Microsoft.KeyVault/vaults@2022-07-01' = if (newOrExisting == 'new') {
+module keyVault 'modules/vaults.bicep' = {
   name: take(name, 24)
-  location: location
-  properties: {
+  scope: resourceGroup(subscriptionId, resourceGroupName)
+  params: {
+    location: location
+    newOrExisting: newOrExisting
     enableSoftDelete: enableSoftDelete
     softDeleteRetentionInDays: softDeleteRetentionInDays
-    sku: {
-      family: skuFamily
-      name: skuName
-    }
+    skuFamily: skuFamily
+    skuName: skuName
     enableRbacAuthorization: enableRbacAuthorization
     tenantId: tenantId
-    networkAcls: networkAcls
+    subnetID: subnetID
+    enableVNet: enableVNet
   }
-}
-
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
-  name: take(name, 24)
-  scope: resourceGroup(existingSubscriptionId, existingResourceGroupName)
 }
 
 module rbacRoleAssignments 'modules/roleAssignment.bicep' = [for rbacRole in roleAssignments: {
@@ -104,7 +90,7 @@ module secret 'modules/secrets.bicep' = {
 }
 
 @description('Key Vault Id')
-output id string = keyVault.id
+output id string = keyVault.outputs.id
 
 @description('Key Vault Name')
-output name string = keyVault.name
+output name string = keyVault.outputs.name
