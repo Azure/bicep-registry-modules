@@ -77,7 +77,7 @@ We would like feedback on what's missing in the module. Please raise an [issue](
 ```bicep
 targetScope = 'managementGroup'
 
-module sub001 'br/public:lz/sub-vending:1.2.1' = {
+module sub001 'br/public:lz/sub-vending:1.2.2' = {
   name: 'sub001'
   params: {
     subscriptionAliasEnabled: true
@@ -102,7 +102,7 @@ targetScope = 'managementGroup'
 @description('Specifies the location for resources.')
 param location string = 'uksouth'
 
-module sub002 'br/public:lz/sub-vending:1.2.1' = {
+module sub002 'br/public:lz/sub-vending:1.2.2' = {
   name: 'sub002'
   params: {
     subscriptionAliasEnabled: true
@@ -135,7 +135,7 @@ targetScope = 'managementGroup'
 @description('Specifies the location for resources.')
 param location string = 'uksouth'
 
-module sub003 'br/public:lz/sub-vending:1.2.1' = {
+module sub003 'br/public:lz/sub-vending:1.2.2' = {
   name: 'sub003'
   params: {
     subscriptionAliasEnabled: true
@@ -170,7 +170,7 @@ targetScope = 'managementGroup'
 @description('Specifies the location for resources.')
 param location string = 'uksouth'
 
-module sub003 'br/public:lz/sub-vending:1.2.1' = {
+module sub003 'br/public:lz/sub-vending:1.2.2' = {
   name: 'sub004'
   params: {
     subscriptionAliasEnabled: true
