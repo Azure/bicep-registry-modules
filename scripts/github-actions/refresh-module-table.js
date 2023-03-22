@@ -62,7 +62,7 @@ async function generateModulesTable(require, axios, fs, path, core) {
  * @param {typeof import("@actions/github").context} context
  * @param {string} newReadme
  */
-async function createPullRequestToUpdateReadme(github, context, newReadme) {
+async function createBranchToUpdateReadme(github, context, newReadme) {
   const branch = `refresh-module-table-${getTimestamp()}`;
 
   // Create a new branch.
@@ -103,15 +103,16 @@ async function createPullRequestToUpdateReadme(github, context, newReadme) {
   });
 
   // Create a pull request.
-  const { data: prData } = await github.rest.pulls.create({
-    ...context.repo,
-    title: "🤖 Refresh module table",
-    head: branch,
-    base: "main",
-    maintainer_can_modify: true,
-  });
+  // const { data: prData } = await github.rest.pulls.create({
+  //   ...context.repo,
+  //   title: "🤖 Refresh module table",
+  //   head: branch,
+  //   base: "main",
+  //   maintainer_can_modify: true,
+  // });
 
-  return prData.html_url;
+  // return prData.html_url;
+  return branch;
 }
 
 /**
@@ -150,13 +151,13 @@ async function refreshModuleTable({ require, github, context, core }) {
     return;
   }
 
-  const prUrl = await createPullRequestToUpdateReadme(
+  const branch = await createBranchToUpdateReadme(
     github,
     context,
     newReadmeFormatted
   );
   core.info(
-    `The module table is outdated. A pull request ${prUrl} was created to update it.`
+    `The module table is outdated. A branch ${branch} was created to update it.`
   );
 }
 
