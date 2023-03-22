@@ -14,7 +14,8 @@ param rbacRolesNeeded array = [
 ]
 
 @description('Does the Managed Identity already exists, or should be created')
-param useExistingManagedIdentity bool = false
+@allowed([ 'new', 'existing' ])
+param newOrExistingManagedIdentity string = 'new'
 
 @description('Name of the Managed Identity resource')
 param managedIdentityName string = 'id-AksRunCommandProxy-${location}'
@@ -37,6 +38,8 @@ param cleanupPreference string = 'OnSuccess'
 
 @description('Set to true when deploying template across tenants') 
 param isCrossTenant bool = false
+
+var useExistingManagedIdentity = newOrExistingManagedIdentity == 'new'
 
 resource aks 'Microsoft.ContainerService/managedClusters@2022-11-01' existing = {
   name: aksName
