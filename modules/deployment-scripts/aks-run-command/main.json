@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "10776808044617681443"
+      "templateHash": "17544908814437581068"
     }
   },
   "parameters": {
@@ -46,7 +46,7 @@
         "existing"
       ],
       "metadata": {
-        "description": "Does the Managed Identity already exists, or should be created"
+        "description": "Create \"new\" or use \"existing\" Managed Identity. Default: new"
       }
     },
     "managedIdentityName": {
@@ -105,7 +105,7 @@
   },
   "variables": {
     "$fxv#0": "#!/bin/bash\n\nset -e +H\n# -e to exit on error\n# +H to prevent history expansion\n\nif [ \"$loopIndex\" == \"0\" ] && [ \"$initialDelay\" != \"0\" ]\nthen\n    echo \"Waiting on RBAC replication ($initialDelay)\"\n    sleep $initialDelay\n\n    #Force RBAC refresh\n    az logout\n    az login --identity\nfi\n\necho \"Sending command $command to AKS Cluster $aksName in $RG\"\ncmdOut=$(az aks command invoke -g $RG -n $aksName -o json --command \"${command}\")\necho $cmdOut\n\njsonOutputString=$cmdOut\necho $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n",
-    "useExistingManagedIdentity": "[equals(parameters('newOrExistingManagedIdentity'), 'new')]",
+    "useExistingManagedIdentity": "[equals(parameters('newOrExistingManagedIdentity'), 'existing')]",
     "delegatedManagedIdentityResourceId": "[if(variables('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))]"
   },
   "resources": [
