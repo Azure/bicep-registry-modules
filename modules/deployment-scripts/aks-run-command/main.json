@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "14920452678055923221"
+      "templateHash": "10776808044617681443"
     }
   },
   "parameters": {
@@ -38,9 +38,13 @@
         "description": "An array of Azure RoleIds that are required for the DeploymentScript resource"
       }
     },
-    "useExistingManagedIdentity": {
-      "type": "bool",
-      "defaultValue": false,
+    "newOrExistingManagedIdentity": {
+      "type": "string",
+      "defaultValue": "new",
+      "allowedValues": [
+        "new",
+        "existing"
+      ],
       "metadata": {
         "description": "Does the Managed Identity already exists, or should be created"
       }
@@ -101,11 +105,12 @@
   },
   "variables": {
     "$fxv#0": "#!/bin/bash\n\nset -e +H\n# -e to exit on error\n# +H to prevent history expansion\n\nif [ \"$loopIndex\" == \"0\" ] && [ \"$initialDelay\" != \"0\" ]\nthen\n    echo \"Waiting on RBAC replication ($initialDelay)\"\n    sleep $initialDelay\n\n    #Force RBAC refresh\n    az logout\n    az login --identity\nfi\n\necho \"Sending command $command to AKS Cluster $aksName in $RG\"\ncmdOut=$(az aks command invoke -g $RG -n $aksName -o json --command \"${command}\")\necho $cmdOut\n\njsonOutputString=$cmdOut\necho $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n",
-    "delegatedManagedIdentityResourceId": "[if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))]"
+    "useExistingManagedIdentity": "[equals(parameters('newOrExistingManagedIdentity'), 'new')]",
+    "delegatedManagedIdentityResourceId": "[if(variables('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))]"
   },
   "resources": [
     {
-      "condition": "[not(parameters('useExistingManagedIdentity'))]",
+      "condition": "[not(variables('useExistingManagedIdentity'))]",
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2023-01-31",
       "name": "[parameters('managedIdentityName')]",
@@ -119,10 +124,10 @@
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.ContainerService/managedClusters/{0}', parameters('aksName'))]",
-      "name": "[guid(resourceId('Microsoft.ContainerService/managedClusters', parameters('aksName')), parameters('rbacRolesNeeded')[copyIndex()], if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]",
+      "name": "[guid(resourceId('Microsoft.ContainerService/managedClusters', parameters('aksName')), parameters('rbacRolesNeeded')[copyIndex()], if(variables('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]",
       "properties": {
         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('rbacRolesNeeded')[copyIndex()])]",
-        "principalId": "[if(parameters('useExistingManagedIdentity'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2023-01-31').principalId, reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2023-01-31').principalId)]",
+        "principalId": "[if(variables('useExistingManagedIdentity'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2023-01-31').principalId, reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2023-01-31').principalId)]",
         "principalType": "ServicePrincipal",
         "delegatedManagedIdentityResourceId": "[if(parameters('isCrossTenant'), variables('delegatedManagedIdentityResourceId'), null())]"
       },
@@ -144,7 +149,7 @@
       "identity": {
         "type": "UserAssigned",
         "userAssignedIdentities": {
-          "[format('{0}', if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]": {}
+          "[format('{0}', if(variables('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]": {}
         }
       },
       "kind": "AzureCLI",

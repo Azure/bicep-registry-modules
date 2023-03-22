@@ -15,7 +15,7 @@ This module configures the required permissions so that you do not have to confi
 | `location`                                 | `string` | Yes      | The location to deploy the resources to                                                                       |
 | `forceUpdateTag`                           | `string` | No       | How the deployment script should be forced to execute                                                         |
 | `rbacRolesNeeded`                          | `array`  | No       | An array of Azure RoleIds that are required for the DeploymentScript resource                                 |
-| `useExistingManagedIdentity`               | `bool`   | No       | Does the Managed Identity already exists, or should be created                                                |
+| `newOrExistingManagedIdentity`             | `string` | No       | Does the Managed Identity already exists, or should be created                                                |
 | `managedIdentityName`                      | `string` | No       | Name of the Managed Identity resource                                                                         |
 | `existingManagedIdentitySubId`             | `string` | No       | For an existing Managed Identity, the Subscription Id it is located in                                        |
 | `existingManagedIdentityResourceGroupName` | `string` | No       | For an existing Managed Identity, the Resource Group it is located in                                         |
