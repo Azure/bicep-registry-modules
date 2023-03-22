@@ -56,7 +56,7 @@ param skuFamily string = 'A'
 param enableRbacAuthorization bool = true
 
 module keyVault 'modules/vaults.bicep' = {
-  name: take(name, 24)
+  name: guid(name, 'deploy')
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     location: location
@@ -74,6 +74,7 @@ module keyVault 'modules/vaults.bicep' = {
 
 module rbacRoleAssignments 'modules/roleAssignment.bicep' = [for rbacRole in roleAssignments: {
   name: guid(keyVault.name, rbacRole)
+  scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     keyVaultName: keyVault.name
     rbacPolicies: rbacPolicies
@@ -83,6 +84,7 @@ module rbacRoleAssignments 'modules/roleAssignment.bicep' = [for rbacRole in rol
 
 module secret 'modules/secrets.bicep' = {
   name: guid(keyVault.name, 'secrets')
+  scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     keyVaultName: keyVault.name
     secrets: secrets

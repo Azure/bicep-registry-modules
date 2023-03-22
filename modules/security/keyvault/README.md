@@ -19,15 +19,15 @@ The Bicep module outputs the ID and name of the Key Vault, which can be used by 
 | `location`                  | `string` | Yes      | Deployment Location                                                                       |
 | `prefix`                    | `string` | No       | Prefix of Cosmos DB Resource Name                                                         |
 | `name`                      | `string` | No       | Name of the Key Vault                                                                     |
-| `subnetID`                  | `string` | No       | Subnet ID for the Key Vault                                                               |
 | `tenantId`                  | `string` | No       | The tenant ID where the Key Vault is deployed                                             |
+| `subscriptionId`            | `string` | No       | For an existing Managed Identity, the Subscription Id it is located in                    |
+| `resourceGroupName`         | `string` | No       | For an existing Managed Identity, the Resource Group it is located in                     |
+| `subnetID`                  | `string` | No       | Subnet ID for the Key Vault                                                               |
 | `enableVNet`                | `bool`   | No       | Enable VNet Service Endpoints for Key Vault                                               |
 | `rbacPolicies`              | `array`  | No       | List of RBAC policies to assign to the Key Vault                                          |
 | `roleAssignments`           | `array`  | No       | RBAC Role Assignments to apply to each RBAC policy                                        |
 | `newOrExisting`             | `string` | No       | Whether to create a new Key Vault or use an existing one                                  |
 | `secrets`                   | `array`  | No       | List of secrets to create in the Key Vault [ { secretName: string, secretValue: string }] |
-| `existingSubscriptionId`    | `string` | No       | For an existing Managed Identity, the Subscription Id it is located in                    |
-| `existingResourceGroupName` | `string` | No       | For an existing Managed Identity, the Resource Group it is located in                     |
 | `enableSoftDelete`          | `bool`   | No       | Specifies whether soft delete should be enabled for the Key Vault.                        |
 | `softDeleteRetentionInDays` | `int`    | No       | The number of days to retain deleted data in the Key Vault.                               |
 | `skuName`                   | `string` | No       | The SKU name of the Key Vault.                                                            |
