@@ -73,3 +73,76 @@ module keyVault 'br/public:security/keyvault:0.0.1' = {
   }
 }
 ```
+
+### Example 3
+
+This example deploys a Virtual Network with the specified parameters and a subnet with the desired address space.
+
+```bicep
+param location string
+param vnetName string = 'myVNet'
+param vnetAddressSpace string = '10.0.0.0/16'
+param subnetName string = 'kvSubnet'
+param subnetAddressSpace string = '10.0.0.0/24'
+param enableVNet bool = true
+
+resource vnet 'Microsoft.Network/virtualNetworks@2020-07-01' = {
+  name: vnetName
+  location: location
+  properties: {
+    addressSpace: {
+      addressPrefixes: [
+        vnetAddressSpace
+      ]
+    }
+    subnets: [
+      {
+        name: subnetName
+        properties: {
+          addressPrefix: subnetAddressSpace
+          serviceEndpoints: enableVNet ? [
+            {
+              service: 'Microsoft.KeyVault'
+            }
+          ] : []
+        }
+      }
+    ]
+  }
+}
+
+module keyVaultModule 'br/public:security/keyvault:0.0.1' = {
+  name: 'keyVault-in-vnet'
+  params: {
+    location: location
+    prefix: prefix
+    subnetID: vnet.outputs.subnets[0].id
+    enableVNet: enableVNet
+  }
+}
+```
+
+### Example 4
+
+This example is a module deployment that adds a secret to an existing Key Vault.
+
+```bicep
+param subscriptionId string = subscription().subscriptionId
+param resourceGroupName string = resourceGroup().name
+param keyVaultName string
+param storageSecretName string
+
+@secure()
+param storageAccountSecret string
+
+module secretsBatch 'br/public:security/keyvault:0.0.1' = {
+  name: 'secrets-${uniqueString(location, resourceGroup().id, deployment().name)}'
+  params: {
+    subscriptionId: subscriptionId
+    resourceGroupName: resourceGroupName
+    keyVaultName: keyVaultName
+    newOrExisting: 'existing'
+    secrets: [ { secretName: storageSecretName, secretValue: storageAccountSecret } ]
+  }
+}
+```
