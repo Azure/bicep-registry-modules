@@ -1,12 +1,15 @@
 {
   "name": "Ubuntu",
-  "image": "mcr.microsoft.com/vscode/devcontainers/base:0-focal",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:0-18-bullseye",
   "customizations": {
     "vscode": {
       "extensions": [
         "ms-azuretools.vscode-bicep",
         "esbenp.prettier-vscode",
-        "microsoft-dciborow.align-bicep"
+        "microsoft-dciborow.align-bicep",
+        "zokugun.explicit-folding",
+        "GitHub.copilot",
+        "dbaeumer.vscode-eslint"
       ]
     }
   },
@@ -18,6 +21,7 @@
   "features": {
     "azure-cli": "latest",
     "dotnet": "7.0",
-    "ghcr.io/devcontainers/features/node:1": "none"
+    "ghcr.io/devcontainers/features/node:1": "none",
+    "ghcr.io/devcontainers-contrib/features/jshint:2": {}
   }
 }
