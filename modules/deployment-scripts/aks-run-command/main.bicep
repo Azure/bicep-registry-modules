@@ -13,7 +13,7 @@ param rbacRolesNeeded array = [
   '7f6c6a51-bcf8-42ba-9220-52d62157d7db' //Azure Kubernetes Service RBAC Reader
 ]
 
-@description('Does the Managed Identity already exists, or should be created')
+@description('Create "new" or use "existing" Managed Identity. Default: new')
 @allowed([ 'new', 'existing' ])
 param newOrExistingManagedIdentity string = 'new'
 
@@ -39,7 +39,7 @@ param cleanupPreference string = 'OnSuccess'
 @description('Set to true when deploying template across tenants') 
 param isCrossTenant bool = false
 
-var useExistingManagedIdentity = newOrExistingManagedIdentity == 'new'
+var useExistingManagedIdentity = newOrExistingManagedIdentity == 'existing'
 
 resource aks 'Microsoft.ContainerService/managedClusters@2022-11-01' existing = {
   name: aksName
