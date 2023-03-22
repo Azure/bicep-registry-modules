@@ -43,6 +43,9 @@ param consumerGroups object = {}
 @description('Optional. The disaster recovery config for the namespace.')
 param disasterRecoveryConfigs object = {}
 
+@description('Optional. The Diagnostics Settings config for the namespace.')
+param diagnosticSettings object = {}
+
 var varEventHubNamespaces = [for eventHubnamespace in items(eventHubNamespaces): {
   eventHubNamespaceName: eventHubnamespace.key
   sku: contains(eventHubnamespace.value, 'sku')? eventHubnamespace.value.sku : 'Standard'
@@ -95,6 +98,17 @@ var varConsumerGroups =  [for consumerGroup in items(consumerGroups): {
   eventHubNamespaceName: consumerGroup.value.eventHubNamespaceName
   eventHubName: consumerGroup.value.eventHubName
   userMetadata: contains(consumerGroup.value, 'userMetadata') ? consumerGroup.value.userMetadata : ''
+}]
+
+var varDiagnosticSettings = [for diagnosticSetting in items(diagnosticSettings): {
+  diagnosticSettingName: diagnosticSetting.key
+  diagnosticEnableNamespaceName: diagnosticSetting.value.diagnosticEnablenamespaceName
+  diagnosticStorageAccountId: contains(diagnosticSetting.value, 'diagnosticStorageAccountId') ? diagnosticSetting.value.diagnosticStorageAccountId : ''
+  diagnosticWorkspaceId: contains(diagnosticSetting.value, 'diagnosticWorkspaceId') ? diagnosticSetting.value.diagnosticWorkspaceId : ''
+  diagnosticEventHubAuthorizationRuleId: contains(diagnosticSetting.value, 'diagnosticEventHubAuthorizationRuleId') ? diagnosticSetting.value.diagnosticEventHubAuthorizationRuleId : ''
+  diagnosticEventHubName: contains(diagnosticSetting.value, 'diagnosticEventHubName') ? diagnosticSetting.value.diagnosticEventHubName : ''
+  diagnosticsMetrics: contains(diagnosticSetting.value, 'diagnosticsMetrics') ? diagnosticSetting.value.diagnosticsMetrics : []
+  diagnosticsLogs: contains(diagnosticSetting.value, 'diagnosticsLogs') ? diagnosticSetting.value.diagnosticsLogs : []
 }]
 
 resource cluster 'Microsoft.EventHub/clusters@2021-11-01' = if (clusterName != 'null' )  {
@@ -200,6 +214,23 @@ module eventHub_consumerGroup 'eventHubs/consumerGroups/deploy.bicep' = [for (va
   }
   dependsOn: [
     eventHubNamespace_eventHubs
+  ]
+}]
+
+module eventHubNamespace_diagnosticSettings 'diagnosticSettings/deploy.bicep' = [for (varDiagnosticSetting, index) in varDiagnosticSettings: if (!empty(diagnosticSettings)) {
+  name: '${deployment().name}-diagnosticSettings-${index}'
+  params: {
+    namespaceName: varDiagnosticSetting.diagnosticEnableNamespaceName
+    name: varDiagnosticSetting.diagnosticSettingName
+    diagnosticStorageAccountId: varDiagnosticSetting.diagnosticStorageAccountId
+    diagnosticWorkspaceId: varDiagnosticSetting.diagnosticWorkspaceId
+    diagnosticEventHubAuthorizationRuleId: varDiagnosticSetting.diagnosticEventHubAuthorizationRuleId
+    diagnosticEventHubName:varDiagnosticSetting.diagnosticEventHubName
+    diagnosticsMetrics: varDiagnosticSetting.diagnosticsMetrics
+    diagnosticsLogs: varDiagnosticSetting.diagnosticsLogs
+  }
+  dependsOn: [
+    eventHubNamespace
   ]
 }]
 

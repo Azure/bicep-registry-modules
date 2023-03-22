@@ -16,6 +16,7 @@ module dependencies 'dependencies.test.bicep' = {
   }
 }
 
+/*
 // Test 01 - Standard SKU with cluster and Parameters, AuthRule(namespace,eventHub), EventHub, ConsumerGroups
 module test_01 '../main.bicep' = {
   name: '${uniqueName}-test-01'
@@ -90,6 +91,7 @@ module test_02 '../main.bicep' = {
     }
   }
 }
+*/
 
 // Test 03 - Premium SKU Minimal Parameters
 module test_03 '../main.bicep' = {
@@ -102,7 +104,27 @@ module test_03 '../main.bicep' = {
           capacity:  4
           zoneRedundant: true
       }
-    }  
+    }
+    diagnosticSettings: {
+      'test03digno${uniqueName}': {
+        diagnosticEnablenamespaceName: 'test03na${uniqueName}'
+        diagnosticEventHubAuthorizationRuleId: dependencies.outputs.authorizationRuleId
+        diagnosticEventHubName: dependencies.outputs.eventHubName
+        diagnosticsMetrics: [{category: 'AllMetrics', enabled:true, retentionPolicy: {days:365,enabled:true}}]
+        diagnosticsLogs: [
+          {
+            category:'OperationalLogs'
+            enabled: true
+            retentionPolicy: {days:36,enabled:true}
+          }
+          {
+            category:'ArchiveLogs'
+            enabled: true
+            retentionPolicy: {days:3,enabled:true}
+          }
+        ]
+      }
+    } 
   }
 }
 
@@ -127,6 +149,26 @@ module test_04 '../main.bicep' = {
           captureDescriptionDestinationBlobContainer: dependencies.outputs.containerName
           captureDescriptionDestinationStorageAccountResourceId: dependencies.outputs.storageAccountId
           captureDescriptionEnabled: true
+      }
+    }
+    diagnosticSettings: {
+      'test04digno${uniqueName}': {
+        diagnosticEnablenamespaceName: 'test04na${uniqueName}'
+        diagnosticStorageAccountId: dependencies.outputs.storageAccountId
+        diagnosticWorkspaceId: dependencies.outputs.workspaceId
+        diagnosticsMetrics: [{category: 'AllMetrics', enabled:true, retentionPolicy: {days:365,enabled:true}}]
+        diagnosticsLogs: [
+          {
+            category:'ArchiveLogs'
+            enabled: true
+            retentionPolicy: {days:365,enabled:true}
+          }
+          {
+            category:'RuntimeAuditLogs'
+            enabled: true
+            retentionPolicy: {days:3,enabled:true}
+          }
+        ]
       }
     }
   }

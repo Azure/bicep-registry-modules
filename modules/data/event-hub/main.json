@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "15082155413559039166"
+      "templateHash": "9441434972547291147"
     }
   },
   "parameters": {
@@ -77,6 +77,13 @@
       "defaultValue": {},
       "metadata": {
         "description": "Optional. The disaster recovery config for the namespace."
+      }
+    },
+    "diagnosticSettings": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The Diagnostics Settings config for the namespace."
       }
     }
   },
@@ -152,6 +159,20 @@
           "eventHubNamespaceName": "[items(parameters('consumerGroups'))[copyIndex('varConsumerGroups')].value.eventHubNamespaceName]",
           "eventHubName": "[items(parameters('consumerGroups'))[copyIndex('varConsumerGroups')].value.eventHubName]",
           "userMetadata": "[if(contains(items(parameters('consumerGroups'))[copyIndex('varConsumerGroups')].value, 'userMetadata'), items(parameters('consumerGroups'))[copyIndex('varConsumerGroups')].value.userMetadata, '')]"
+        }
+      },
+      {
+        "name": "varDiagnosticSettings",
+        "count": "[length(items(parameters('diagnosticSettings')))]",
+        "input": {
+          "diagnosticSettingName": "[items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].key]",
+          "diagnosticEnableNamespaceName": "[items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value.diagnosticEnablenamespaceName]",
+          "diagnosticStorageAccountId": "[if(contains(items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value, 'diagnosticStorageAccountId'), items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value.diagnosticStorageAccountId, '')]",
+          "diagnosticWorkspaceId": "[if(contains(items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value, 'diagnosticWorkspaceId'), items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value.diagnosticWorkspaceId, '')]",
+          "diagnosticEventHubAuthorizationRuleId": "[if(contains(items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value, 'diagnosticEventHubAuthorizationRuleId'), items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value.diagnosticEventHubAuthorizationRuleId, '')]",
+          "diagnosticEventHubName": "[if(contains(items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value, 'diagnosticEventHubName'), items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value.diagnosticEventHubName, '')]",
+          "diagnosticsMetrics": "[if(contains(items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value, 'diagnosticsMetrics'), items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value.diagnosticsMetrics, createArray())]",
+          "diagnosticsLogs": "[if(contains(items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value, 'diagnosticsLogs'), items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value.diagnosticsLogs, createArray())]"
         }
       }
     ]
@@ -625,6 +646,104 @@
       },
       "dependsOn": [
         "eventHubNamespace_eventHubs"
+      ]
+    },
+    {
+      "copy": {
+        "name": "eventHubNamespace_diagnosticSettings",
+        "count": "[length(variables('varDiagnosticSettings'))]"
+      },
+      "condition": "[not(empty(parameters('diagnosticSettings')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[format('{0}-diagnosticSettings-{1}', deployment().name, copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "namespaceName": {
+            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticEnableNamespaceName]"
+          },
+          "name": {
+            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticSettingName]"
+          },
+          "diagnosticStorageAccountId": {
+            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticStorageAccountId]"
+          },
+          "diagnosticWorkspaceId": {
+            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticWorkspaceId]"
+          },
+          "diagnosticEventHubAuthorizationRuleId": {
+            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticEventHubAuthorizationRuleId]"
+          },
+          "diagnosticEventHubName": {
+            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticEventHubName]"
+          },
+          "diagnosticsMetrics": {
+            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticsMetrics]"
+          },
+          "diagnosticsLogs": {
+            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticsLogs]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.15.31.15270",
+              "templateHash": "14495540543207388439"
+            }
+          },
+          "parameters": {
+            "namespaceName": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "diagnosticStorageAccountId": {
+              "type": "string"
+            },
+            "diagnosticWorkspaceId": {
+              "type": "string"
+            },
+            "diagnosticEventHubAuthorizationRuleId": {
+              "type": "string"
+            },
+            "diagnosticEventHubName": {
+              "type": "string"
+            },
+            "diagnosticsMetrics": {
+              "type": "array"
+            },
+            "diagnosticsLogs": {
+              "type": "array"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.EventHub/namespaces/{0}', parameters('namespaceName'))]",
+              "name": "[parameters('name')]",
+              "properties": {
+                "storageAccountId": "[if(not(equals(parameters('diagnosticStorageAccountId'), '')), parameters('diagnosticStorageAccountId'), null())]",
+                "workspaceId": "[if(not(equals(parameters('diagnosticWorkspaceId'), '')), parameters('diagnosticWorkspaceId'), null())]",
+                "eventHubAuthorizationRuleId": "[if(not(equals(parameters('diagnosticEventHubAuthorizationRuleId'), '')), parameters('diagnosticEventHubAuthorizationRuleId'), null())]",
+                "eventHubName": "[if(not(equals(parameters('diagnosticEventHubName'), '')), parameters('diagnosticEventHubName'), null())]",
+                "metrics": "[parameters('diagnosticsMetrics')]",
+                "logs": "[parameters('diagnosticsLogs')]"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "eventHubNamespace"
       ]
     }
   ],
