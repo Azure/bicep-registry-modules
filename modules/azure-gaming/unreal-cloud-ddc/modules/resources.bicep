@@ -155,7 +155,7 @@ module trafficManagerEndpoint 'network/trafficManagerEndpoints.bicep' = if (enab
   }
 }
 
-module secretsBatch 'keyvault/vaults/secretsBatch.bicep' = if (assignRole && enableKeyVault ) {
+module secrets 'keyvault/vaults/secrets.bicep' = if (assignRole && enableKeyVault ) {
   name: 'secrets-${uniqueString(location, resourceGroup().id, deployment().name)}'
   params: {
     keyVaultName: keyVault.outputs.name

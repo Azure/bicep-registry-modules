@@ -312,8 +312,7 @@ module buildApp 'modules/keyvault/vaults/secrets.bicep' = [for location in union
   ]
   params: {
     keyVaultName: take('${location}-${keyVaultName}', 24)
-    secretName: 'build-app-secret'
-    secretValue: workerServicePrincipalSecret
+    secrets: [{ secretName: 'build-app-secret', secretValue: workerServicePrincipalSecret }]
   }
 }]
 
@@ -338,8 +337,7 @@ module cassandraKeys 'modules/keyvault/vaults/secrets.bicep' = [for location in 
   ]
   params: {
     keyVaultName: take('${location}-${keyVaultName}', 24)
-    secretName: 'ddc-db-connection-string'
-    secretValue: newOrExistingCosmosDB == 'new' ? cosmosDB.outputs.cassandraConnectionString : cassandraConnectionString
+    secrets: [{ secretName: 'ddc-db-connection-string', secretValue: newOrExistingCosmosDB == 'new' ? cosmosDB.outputs.cassandraConnectionString : cassandraConnectionString }]
   }
 }]
 

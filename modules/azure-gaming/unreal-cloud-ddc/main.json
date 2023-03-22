@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "1212165296336474074"
+      "templateHash": "4057145463197865920"
     }
   },
   "parameters": {
@@ -2285,11 +2285,13 @@
           "keyVaultName": {
             "value": "[take(format('{0}-{1}', union(createArray(parameters('location')), parameters('secondaryLocations'))[copyIndex()], parameters('keyVaultName')), 24)]"
           },
-          "secretName": {
-            "value": "build-app-secret"
-          },
-          "secretValue": {
-            "value": "[parameters('workerServicePrincipalSecret')]"
+          "secrets": {
+            "value": [
+              {
+                "secretName": "build-app-secret",
+                "secretValue": "[parameters('workerServicePrincipalSecret')]"
+              }
+            ]
           }
         },
         "template": {
@@ -2299,7 +2301,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.15.31.15270",
-              "templateHash": "16096833141374438874"
+              "templateHash": "13849631961526341763"
             }
           },
           "parameters": {
@@ -2309,26 +2311,24 @@
                 "description": "Specifies the name of the key vault."
               }
             },
-            "secretName": {
-              "type": "string",
+            "secrets": {
+              "type": "array",
               "metadata": {
                 "description": "Specifies the name of the secret that you want to create."
-              }
-            },
-            "secretValue": {
-              "type": "securestring",
-              "metadata": {
-                "description": "Specifies the value of the secret that you want to create."
               }
             }
           },
           "resources": [
             {
+              "copy": {
+                "name": "secret",
+                "count": "[length(parameters('secrets'))]"
+              },
               "type": "Microsoft.KeyVault/vaults/secrets",
               "apiVersion": "2022-07-01",
-              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretName'))]",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secrets')[copyIndex()].secretName)]",
               "properties": {
-                "value": "[parameters('secretValue')]"
+                "value": "[parameters('secrets')[copyIndex()].secretValue]"
               }
             }
           ]
@@ -2563,10 +2563,14 @@
           "keyVaultName": {
             "value": "[take(format('{0}-{1}', union(createArray(parameters('location')), parameters('secondaryLocations'))[copyIndex()], parameters('keyVaultName')), 24)]"
           },
-          "secretName": {
-            "value": "ddc-db-connection-string"
-          },
-          "secretValue": "[if(equals(parameters('newOrExistingCosmosDB'), 'new'), createObject('value', reference(resourceId('Microsoft.Resources/deployments', format('cosmosDB-{0}-key', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.cassandraConnectionString.value), createObject('value', parameters('cassandraConnectionString')))]"
+          "secrets": {
+            "value": [
+              {
+                "secretName": "ddc-db-connection-string",
+                "secretValue": "[if(equals(parameters('newOrExistingCosmosDB'), 'new'), reference(resourceId('Microsoft.Resources/deployments', format('cosmosDB-{0}-key', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.cassandraConnectionString.value, parameters('cassandraConnectionString'))]"
+              }
+            ]
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2575,7 +2579,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.15.31.15270",
-              "templateHash": "16096833141374438874"
+              "templateHash": "13849631961526341763"
             }
           },
           "parameters": {
@@ -2585,26 +2589,24 @@
                 "description": "Specifies the name of the key vault."
               }
             },
-            "secretName": {
-              "type": "string",
+            "secrets": {
+              "type": "array",
               "metadata": {
                 "description": "Specifies the name of the secret that you want to create."
-              }
-            },
-            "secretValue": {
-              "type": "securestring",
-              "metadata": {
-                "description": "Specifies the value of the secret that you want to create."
               }
             }
           },
           "resources": [
             {
+              "copy": {
+                "name": "secret",
+                "count": "[length(parameters('secrets'))]"
+              },
               "type": "Microsoft.KeyVault/vaults/secrets",
               "apiVersion": "2022-07-01",
-              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretName'))]",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secrets')[copyIndex()].secretName)]",
               "properties": {
-                "value": "[parameters('secretValue')]"
+                "value": "[parameters('secrets')[copyIndex()].secretValue]"
               }
             }
           ]

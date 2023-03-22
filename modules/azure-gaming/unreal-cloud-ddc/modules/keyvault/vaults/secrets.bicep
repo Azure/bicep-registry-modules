@@ -2,20 +2,16 @@
 param keyVaultName string
 
 @description('Specifies the name of the secret that you want to create.')
-param secretName string
-
-@description('Specifies the value of the secret that you want to create.')
-@secure()
-param secretValue string
+param secrets array
 
 resource vault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: keyVaultName
 }
 
-resource secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
+resource secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = [for secret in secrets: {
   parent: vault
-  name: secretName
+  name: secret.secretName
   properties: {
-    value: secretValue
+    value: secret.secretValue
   }
-}
+}]
