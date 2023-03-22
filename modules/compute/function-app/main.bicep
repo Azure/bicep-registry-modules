@@ -130,14 +130,14 @@ param repoUrl string = ''
 @description('Optional. Name of branch to use for deployment.')
 param branch string = ''
 
+@description('Required. Name of the storage account used by function app.')
+param storgeAccountName string
+
 @description('Optional. to limit to manual integration; to enable continuous integration (which configures webhooks into online repos like GitHub).')
 param isManualIntegration bool = true
 
 @description('Optional. true for a Mercurial repository; false for a Git repository.')
 param isMercurial bool = false
-
-@description('Required. Name of the storage account used by function app.')
-param storgeAccountName string
 
 @description('Required. Resource Group of storage account used by function app.')
 param storgeAccountResourceGroup string
@@ -160,12 +160,17 @@ APPINSIGHTS_INSTRUMENTATIONKEY
 APPLICATIONINSIGHTS_CONNECTION_STRING''')
 param extraAppSettings object = {}
 
+//Variables
+
+var maxNameLength = 24
+var uniqueStoragename = length(uniqueString(storgeAccountName)) > maxNameLength ? substring(uniqueString(storgeAccountName), 0, maxNameLength) : uniqueString(storgeAccountName)
+var storageAccountName = 'sa${uniqueStoragename}'
 
 
 
 @description('Defines storageAccounts for Azure Function App.')
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' existing = {
-  name: storgeAccountName
+  name: storageAccountName
   scope: resourceGroup(storgeAccountResourceGroup)
 }
 
@@ -184,7 +189,7 @@ resource serverfarms 'Microsoft.Web/serverfarms@2021-02-01' = {
   }
 }
 
-@description('Defines insight for app or function app i.e sites.')
+@description('If enabled, this will help mornior the application using the log analytics workspace')
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = if (enableInsights) {
   name: 'ai-${name}'
   location: location

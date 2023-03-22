@@ -73,17 +73,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: deployment().location
 }
 
-@description(''' 
-- This test setup the Azure Function with appInsights (Microsoft.Insights/components).
-- Make sure enableaInsights: true.
-- with functions of array
 
-Dependency list: 
-- Microsoft.ManagedIdentity/userAssignedIdentities
-- Microsoft.OperationalInsights/workspaces
-
-
-''')
 module test '../main.bicep' = {
   name: 'test-azure-func-${guid(name)}'
   dependsOn: [
@@ -161,13 +151,9 @@ module test '../main.bicep' = {
     ]
   }
 }
-```
+
 
 ### Example 2
-
-```@description('''
-Below test shows how to enable vnet integration and include functions from a source such as github.
-''')
 
 module test3 '../main.bicep' = {
   name: 'test-azure-func3-${guid(name)}'

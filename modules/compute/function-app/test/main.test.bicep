@@ -1,26 +1,21 @@
-targetScope = 'subscription'
 
 param name string = deployment().name
 
-param location string = deployment().location
+param location string = resourceGroup().location
 
 param tags object = {
   LOB: 'ENT'
   contact: 'iep.dev@nuance.com'
   costcenter: '000'
   environment: 'dev'
-  location: deployment().location
+  location: resourceGroup().location
   team: 'IEP'
 }
 
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: name
-  location: location
-}
 
 module dependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: 'dependencies-${uniqueString(resourceGroup.id)}'
+  scope: resourceGroup()
+  name: 'dependencies-${uniqueString(resourceGroup().id)}'
   params: {
     name: name
     location: location
@@ -57,16 +52,16 @@ module test1 '../main.bicep' = {
     }
     tags: tags
     storgeAccountName: dependencies.outputs.saAccountName
-    storgeAccountResourceGroup: resourceGroup.name
+    storgeAccountResourceGroup: resourceGroup().name
   }
-  scope: resourceGroup
+  scope: resourceGroup()
 
 }
 
 // TODO: should add test case using sourcecontrol extension later
 module test2 '../main.bicep' = {
   name: 'test-azure-func3-${guid(name)}'
-  scope: resourceGroup
+  scope: resourceGroup()
   dependsOn: [
     dependencies
   ]
@@ -89,7 +84,7 @@ module test2 '../main.bicep' = {
     functionsExtensionVersion: '~4'
     functionsWorkerRuntime: 'powershell'
     storgeAccountName: dependencies.outputs.saAccountName
-    storgeAccountResourceGroup: resourceGroup.name
+    storgeAccountResourceGroup: resourceGroup().name
     enablePackageDeploy: true
   }
 }
