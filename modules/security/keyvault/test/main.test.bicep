@@ -19,3 +19,23 @@ module test0 '../main.bicep' = {
     location: location
   }
 }
+
+// Test 1
+// Insert Secerts into existing Key Vault later in template
+module test1_new '../main.bicep' = {
+  name: 'test1-new'
+  params: {
+    location: location
+    prefix: 'kv2'
+  }
+}
+
+module test1_existing '../main.bicep' = {
+  name: 'test1-existing'
+  params: {
+    location: location
+    name: test1_new.outputs.name
+    newOrExisting: 'existing'
+    secrets: [{ secretName: 'SampleName', secretValue: 'SampleValue'}]
+  }
+}
