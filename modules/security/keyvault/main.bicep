@@ -19,9 +19,6 @@ param resourceGroupName string = resourceGroup().name
 @description('Subnet ID for the Key Vault')
 param subnetID string = ''
 
-@description('Enable VNet Service Endpoints for Key Vault')
-param enableVNet bool = false
-
 @description('List of RBAC policies to assign to the Key Vault')
 param rbacPolicies array = []
 
@@ -35,8 +32,12 @@ param roleAssignments array = [
 @description('Whether to create a new Key Vault or use an existing one')
 param newOrExisting string = 'new'
 
-@description('List of secrets to create in the Key Vault [ { secretName: string, secretValue: string }]')
-param secrets array = []
+@description('Name of Secret to add to Key Vault')
+param secretName string = 'secret${uniqueString(resourceGroup().id)}'
+
+@secure()
+@description('Value of Secret to add to Key Vault')
+param secretValue string = ''
 
 @description('Specifies whether soft delete should be enabled for the Key Vault.')
 param enableSoftDelete bool = true
@@ -68,7 +69,7 @@ module keyVault 'modules/vaults.bicep' = {
     enableRbacAuthorization: enableRbacAuthorization
     tenantId: tenantId
     subnetID: subnetID
-    enableVNet: enableVNet
+    enableVNet: subnetID != ''
   }
 }
 
@@ -82,12 +83,13 @@ module rbacRoleAssignments 'modules/roleAssignment.bicep' = [for rbacRole in rol
   }
 }]
 
-module secret 'modules/secrets.bicep' = {
+module secret 'modules/secrets.bicep' = if (secretName != '' && secretValue != '') {
   name: guid(keyVault.name, 'secrets')
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     keyVaultName: keyVault.name
-    secrets: secrets
+    secretName: secretName
+    secretValue: secretValue
   }
 }
 

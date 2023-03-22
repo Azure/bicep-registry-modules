@@ -36,6 +36,7 @@ module test1_existing '../main.bicep' = {
     location: location
     name: test1_new.outputs.name
     newOrExisting: 'existing'
-    secrets: [{ secretName: 'SampleName', secretValue: 'SampleValue'}]
+    secretName: 'SampleName'
+    secretValue: 'SampleValue'
   }
 }

@@ -14,25 +14,25 @@ The Bicep module outputs the ID and name of the Key Vault, which can be used by 
 
 ## Parameters
 
-| Name                        | Type     | Required | Description                                                                               |
-| :-------------------------- | :------: | :------: | :---------------------------------------------------------------------------------------- |
-| `location`                  | `string` | Yes      | Deployment Location                                                                       |
-| `prefix`                    | `string` | No       | Prefix of Cosmos DB Resource Name                                                         |
-| `name`                      | `string` | No       | Name of the Key Vault                                                                     |
-| `tenantId`                  | `string` | No       | The tenant ID where the Key Vault is deployed                                             |
-| `subscriptionId`            | `string` | No       | For an existing Managed Identity, the Subscription Id it is located in                    |
-| `resourceGroupName`         | `string` | No       | For an existing Managed Identity, the Resource Group it is located in                     |
-| `subnetID`                  | `string` | No       | Subnet ID for the Key Vault                                                               |
-| `enableVNet`                | `bool`   | No       | Enable VNet Service Endpoints for Key Vault                                               |
-| `rbacPolicies`              | `array`  | No       | List of RBAC policies to assign to the Key Vault                                          |
-| `roleAssignments`           | `array`  | No       | RBAC Role Assignments to apply to each RBAC policy                                        |
-| `newOrExisting`             | `string` | No       | Whether to create a new Key Vault or use an existing one                                  |
-| `secrets`                   | `array`  | No       | List of secrets to create in the Key Vault [ { secretName: string, secretValue: string }] |
-| `enableSoftDelete`          | `bool`   | No       | Specifies whether soft delete should be enabled for the Key Vault.                        |
-| `softDeleteRetentionInDays` | `int`    | No       | The number of days to retain deleted data in the Key Vault.                               |
-| `skuName`                   | `string` | No       | The SKU name of the Key Vault.                                                            |
-| `skuFamily`                 | `string` | No       | The SKU family of the Key Vault.                                                          |
-| `enableRbacAuthorization`   | `bool`   | No       | Specifies whether RBAC authorization should be enabled for the Key Vault.                 |
+| Name                        | Type           | Required | Description                                                               |
+| :-------------------------- | :------------: | :------: | :------------------------------------------------------------------------ |
+| `location`                  | `string`       | Yes      | Deployment Location                                                       |
+| `prefix`                    | `string`       | No       | Prefix of Cosmos DB Resource Name                                         |
+| `name`                      | `string`       | No       | Name of the Key Vault                                                     |
+| `tenantId`                  | `string`       | No       | The tenant ID where the Key Vault is deployed                             |
+| `subscriptionId`            | `string`       | No       | For an existing Managed Identity, the Subscription Id it is located in    |
+| `resourceGroupName`         | `string`       | No       | For an existing Managed Identity, the Resource Group it is located in     |
+| `subnetID`                  | `string`       | No       | Subnet ID for the Key Vault                                               |
+| `rbacPolicies`              | `array`        | No       | List of RBAC policies to assign to the Key Vault                          |
+| `roleAssignments`           | `array`        | No       | RBAC Role Assignments to apply to each RBAC policy                        |
+| `newOrExisting`             | `string`       | No       | Whether to create a new Key Vault or use an existing one                  |
+| `secretName`                | `string`       | No       | Name of Secret to add to Key Vault                                        |
+| `secretValue`               | `securestring` | No       | Value of Secret to add to Key Vault                                       |
+| `enableSoftDelete`          | `bool`         | No       | Specifies whether soft delete should be enabled for the Key Vault.        |
+| `softDeleteRetentionInDays` | `int`          | No       | The number of days to retain deleted data in the Key Vault.               |
+| `skuName`                   | `string`       | No       | The SKU name of the Key Vault.                                            |
+| `skuFamily`                 | `string`       | No       | The SKU family of the Key Vault.                                          |
+| `enableRbacAuthorization`   | `bool`         | No       | Specifies whether RBAC authorization should be enabled for the Key Vault. |
 
 ## Outputs
 
@@ -80,32 +80,18 @@ This example deploys a Virtual Network with the specified parameters and a subne
 
 ```bicep
 param location string
-param vnetName string = 'myVNet'
-param vnetAddressSpace string = '10.0.0.0/16'
-param subnetName string = 'kvSubnet'
-param subnetAddressSpace string = '10.0.0.0/24'
-param enableVNet bool = true
 
-resource vnet 'Microsoft.Network/virtualNetworks@2020-07-01' = {
-  name: vnetName
-  location: location
-  properties: {
-    addressSpace: {
-      addressPrefixes: [
-        vnetAddressSpace
-      ]
-    }
+module vnet 'br/public:network/virtual-network:1.0' = {
+  name: 'vnet'
+  params: {
+    location: location
+    name: 'az-vnet-kv-01'
+    addressPrefixes: [ '10.0.0.0/16' ]
     subnets: [
       {
-        name: subnetName
-        properties: {
-          addressPrefix: subnetAddressSpace
-          serviceEndpoints: enableVNet ? [
-            {
-              service: 'Microsoft.KeyVault'
-            }
-          ] : []
-        }
+        name: 'az-subnet-kv-01'
+        addressPrefix: '10.0.0.0/24'
+        serviceEndpoints: [{ service: 'Microsoft.KeyVault' }]
       }
     ]
   }
@@ -115,9 +101,7 @@ module keyVaultModule 'br/public:security/keyvault:0.0.1' = {
   name: 'keyVault-in-vnet'
   params: {
     location: location
-    prefix: prefix
-    subnetID: vnet.outputs.subnets[0].id
-    enableVNet: enableVNet
+    subnetID: vnet.outputs.subnetResourceIds[0]
   }
 }
 ```
@@ -142,7 +126,8 @@ module secretsBatch 'br/public:security/keyvault:0.0.1' = {
     resourceGroupName: resourceGroupName
     keyVaultName: keyVaultName
     newOrExisting: 'existing'
-    secrets: [ { secretName: storageSecretName, secretValue: storageAccountSecret } ]
+    secretName: storageSecretName
+    secretValue: storageAccountSecret
   }
 }
 ```

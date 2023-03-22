@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "11062603258316570816"
+      "templateHash": "10822805916258874293"
     }
   },
   "parameters": {
@@ -57,13 +57,6 @@
         "description": "Subnet ID for the Key Vault"
       }
     },
-    "enableVNet": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Enable VNet Service Endpoints for Key Vault"
-      }
-    },
     "rbacPolicies": {
       "type": "array",
       "defaultValue": [],
@@ -92,11 +85,18 @@
         "existing"
       ]
     },
-    "secrets": {
-      "type": "array",
-      "defaultValue": [],
+    "secretName": {
+      "type": "string",
+      "defaultValue": "[format('secret{0}', uniqueString(resourceGroup().id))]",
       "metadata": {
-        "description": "List of secrets to create in the Key Vault [ { secretName: string, secretValue: string }]"
+        "description": "Name of Secret to add to Key Vault"
+      }
+    },
+    "secretValue": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Value of Secret to add to Key Vault"
       }
     },
     "enableSoftDelete": {
@@ -184,7 +184,7 @@
             "value": "[parameters('subnetID')]"
           },
           "enableVNet": {
-            "value": "[parameters('enableVNet')]"
+            "value": "[not(equals(parameters('subnetID'), ''))]"
           }
         },
         "template": {
@@ -407,6 +407,7 @@
       ]
     },
     {
+      "condition": "[and(not(equals(parameters('secretName'), '')), not(equals(parameters('secretValue'), '')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[guid(guid(parameters('name'), 'deploy'), 'secrets')]",
@@ -421,8 +422,11 @@
           "keyVaultName": {
             "value": "[guid(parameters('name'), 'deploy')]"
           },
-          "secrets": {
-            "value": "[parameters('secrets')]"
+          "secretName": {
+            "value": "[parameters('secretName')]"
+          },
+          "secretValue": {
+            "value": "[parameters('secretValue')]"
           }
         },
         "template": {
@@ -432,7 +436,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.15.31.15270",
-              "templateHash": "9674585796932358038"
+              "templateHash": "11519199642012993474"
             }
           },
           "parameters": {
@@ -442,25 +446,20 @@
                 "description": "Specifies the name of the key vault."
               }
             },
-            "secrets": {
-              "type": "array",
-              "defaultValue": [],
-              "metadata": {
-                "description": "List of secrets to create in the Key Vault [ { secretName: string, secretValue: string }]"
-              }
+            "secretName": {
+              "type": "string"
+            },
+            "secretValue": {
+              "type": "securestring"
             }
           },
           "resources": [
             {
-              "copy": {
-                "name": "secret",
-                "count": "[length(parameters('secrets'))]"
-              },
               "type": "Microsoft.KeyVault/vaults/secrets",
               "apiVersion": "2022-11-01",
-              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secrets')[copyIndex()].secretName)]",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretName'))]",
               "properties": {
-                "value": "[parameters('secrets')[copyIndex()].secretValue]"
+                "value": "[parameters('secretValue')]"
               }
             }
           ]

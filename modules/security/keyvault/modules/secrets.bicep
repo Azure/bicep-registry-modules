@@ -1,17 +1,19 @@
 @description('Specifies the name of the key vault.')
 param keyVaultName string
 
-@description('List of secrets to create in the Key Vault [ { secretName: string, secretValue: string }]')
-param secrets array = []
+param secretName string
+
+@secure()
+param secretValue string
 
 resource vault 'Microsoft.KeyVault/vaults@2022-11-01' existing = {
   name: keyVaultName
 }
 
-resource secret 'Microsoft.KeyVault/vaults/secrets@2022-11-01' = [for secret in secrets: {
+resource secret 'Microsoft.KeyVault/vaults/secrets@2022-11-01' = {
   parent: vault
-  name: secret.secretName
+  name: secretName
   properties: {
-    value: secret.secretValue
+    value: secretValue
   }
-}]
+}
