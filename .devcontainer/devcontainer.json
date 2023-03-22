@@ -4,24 +4,26 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "ms-azuretools.vscode-bicep",
+        "cschleiden.vscode-github-actions",
         "esbenp.prettier-vscode",
-        "microsoft-dciborow.align-bicep",
-        "zokugun.explicit-folding",
         "GitHub.copilot",
-        "dbaeumer.vscode-eslint"
+        "github.vscode-pull-request-github",
+        "microsoft-dciborow.align-bicep",
+        "ms-azuretools.vscode-bicep",
+        "ms-vsliveshare.vsliveshare",
+        "ms-vscode-remote.remote-containers",
+        "zokugun.explicit-folding"
       ]
     }
   },
   "postCreateCommand": "dotnet tool install -g Azure.Bicep.RegistryModuleTool",
   "postStartCommand": "az bicep install",
   "remoteEnv": {
-    "PATH": "${containerEnv:PATH}:/home/vscode/.dotnet/tools:/home/vscode/.azure/bin"
+    "PATH": "${containerEnv:PATH}:/home/node/.dotnet/tools:/home/node/.azure/bin"
   },
   "features": {
     "azure-cli": "latest",
     "dotnet": "7.0",
-    "ghcr.io/devcontainers/features/node:1": "none",
-    "ghcr.io/devcontainers-contrib/features/jshint:2": {}
+    "ghcr.io/devcontainers/features/node:1": "none"
   }
 }
