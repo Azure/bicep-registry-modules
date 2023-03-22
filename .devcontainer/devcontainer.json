@@ -16,7 +16,7 @@
       ]
     }
   },
-  "postCreateCommand": "dotnet tool install -g Azure.Bicep.RegistryModuleTool",
+  "postCreateCommand": "npm install && dotnet tool install -g Azure.Bicep.RegistryModuleTool",
   "postStartCommand": "az bicep install",
   "remoteEnv": {
     "PATH": "${containerEnv:PATH}:/home/node/.dotnet/tools:/home/node/.azure/bin"
