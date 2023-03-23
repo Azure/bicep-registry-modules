@@ -24,6 +24,8 @@ async function uploadModulesMetadata({ require, core }) {
       const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${modulePath}/tags/list`;
 
       try {
+        core.info(`Getting ${modulePath}...`);
+
         const versionListResponse = await axios.default.get(versionListUrl);
         const tags = versionListResponse.data.tags.sort();
 

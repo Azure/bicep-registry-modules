@@ -31,6 +31,7 @@ async function generateModulesTable(require, axios, fs, path, core) {
       const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${modulePath}/tags/list`;
 
       try {
+        core.info(`Getting ${modulePath}...`);
         const versionListResponse = await axios.get(versionListUrl);
         const latestVersion = versionListResponse.data.tags.sort().at(-1);
         const badgeUrl = `https://img.shields.io/badge/mcr-${latestVersion}-blue`;
