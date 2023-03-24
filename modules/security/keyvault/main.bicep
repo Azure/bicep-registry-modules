@@ -1,7 +1,7 @@
 @description('Deployment Location')
 param location string
 
-@description('Prefix of Cosmos DB Resource Name')
+@description('Prefix of Azure Key Vault Resource Name')
 param prefix string = 'kv'
 
 @description('Name of the Key Vault')
