@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "10822805916258874293"
+      "templateHash": "15097748329166160045"
     }
   },
   "parameters": {
@@ -25,6 +25,8 @@
     "name": {
       "type": "string",
       "defaultValue": "[format('{0}-{1}', parameters('prefix'), uniqueString(resourceGroup().id))]",
+      "maxLength": 24,
+      "minLength": 3,
       "metadata": {
         "description": "Name of the Key Vault"
       }
