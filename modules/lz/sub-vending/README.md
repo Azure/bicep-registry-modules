@@ -199,7 +199,7 @@ module sub003 'br/public:lz/sub-vending:1.2.2' = {
 
 ### Example JSON Parameter File
 
-These parameters would need to be declared in the Bicep file using them (currently not present in the above provided Bicep samples). Note that it is not necessary to use JSON files here since in the proposed design pattern, the Bicep file would be the source of parameters.
+These parameters would need to be declared in the Bicep file using them (currently not present in the above provided Bicep samples). Note that it is not necessary to use JSON parameter files here since in the proposed design pattern, the Bicep file would be the source of parameters.
 
 ```json
 {
