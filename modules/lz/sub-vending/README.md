@@ -10,7 +10,7 @@ The landing zone Bicep modules are designed to accelerate deployment of the indi
 
 > See the different types of landing zones in the Azure Landing Zones documentation here: [What is an Azure landing zone? - Platform vs. application landing zones](https://learn.microsoft.com/azure/cloud-adoption-framework/ready/landing-zone/#platform-vs-application-landing-zones)
 
-The modules are designed to be instantiated many times, once for each desired landing zone.
+The modules are designed to be instantiated many times, once for each desired landing zone. Since the entire logic is captured in the registry's module, you may use the below proposed Bicep code samples to be the source of parameters instead of the usual parameters.json file, and have in this case one Bicep file per landing zone. If you decide instead to use a parameters.json (as the one proposed below), you will need to declare parameters in the Bicep file so it can fetch them from the JSON file.
 
 This is currently split logically into the following capabilities:
 
@@ -198,6 +198,8 @@ module sub003 'br/public:lz/sub-vending:1.2.2' = {
 ```
 
 ### Example JSON Parameter File
+
+These parameters would need to be declared in the Bicep file using them (currently not present in the above provided Bicep samples). Note that it is not necessary to use JSON files here since in the proposed design pattern, the Bicep file would be the source of parameters.
 
 ```json
 {
