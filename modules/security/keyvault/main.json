@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "15097748329166160045"
+      "templateHash": "9135967170216501609"
     }
   },
   "parameters": {
@@ -19,7 +19,7 @@
       "type": "string",
       "defaultValue": "kv",
       "metadata": {
-        "description": "Prefix of Cosmos DB Resource Name"
+        "description": "Prefix of Azure Key Vault Resource Name"
       }
     },
     "name": {
