@@ -5,6 +5,8 @@ param location string
 param prefix string = 'kv'
 
 @description('Name of the Key Vault')
+@minLength(3)
+@maxLength(24)
 param name string = '${prefix}-${uniqueString(resourceGroup().id)}'
 
 @description('The tenant ID where the Key Vault is deployed')
