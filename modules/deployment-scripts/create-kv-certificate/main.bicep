@@ -58,6 +58,9 @@ param organizationId string = ''
 @description('Override this parameter if using this in cross tenant scenarios')
 param isCrossTenant bool = false
 
+@description('The default policy might cause errors about CSR being used before, so set this to false if that happens')
+param reuseKey bool = true
+
 resource akv 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: akvName
 }
@@ -117,6 +120,7 @@ resource createImportCerts 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
       { name: 'accountId', value: accountId }
       { name: 'issuerPassword', secureValue: issuerPassword }
       { name: 'organizationId', value: organizationId }
+      { name: 'reuseKey', value: toLower(string(reuseKey)) }
     ]
     scriptContent: loadTextContent('create-kv-cert.sh')
     cleanupPreference: cleanupPreference
