@@ -1,22 +1,30 @@
 {
   "name": "Ubuntu",
-  "image": "mcr.microsoft.com/vscode/devcontainers/base:0-focal",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:0-18-bullseye",
   "customizations": {
     "vscode": {
       "extensions": [
-        "ms-azuretools.vscode-bicep",
+        "cschleiden.vscode-github-actions",
         "esbenp.prettier-vscode",
-        "microsoft-dciborow.align-bicep"
+        "GitHub.copilot",
+        "github.vscode-pull-request-github",
+        "microsoft-dciborow.align-bicep",
+        "ms-azuretools.vscode-bicep",
+        "ms-vsliveshare.vsliveshare",
+        "ms-vscode-remote.remote-containers",
+        "zokugun.explicit-folding",
+        "GitHub.copilot-labs"
       ]
     }
   },
-  "postCreateCommand": "dotnet tool install -g Azure.Bicep.RegistryModuleTool",
+  "postCreateCommand": "npm install -g prettier && dotnet tool install -g Azure.Bicep.RegistryModuleTool",
   "postStartCommand": "az bicep install",
   "remoteEnv": {
-    "PATH": "${containerEnv:PATH}:/home/vscode/.dotnet/tools:/home/vscode/.azure/bin"
+    "PATH": "${containerEnv:PATH}:/home/node/.dotnet/tools:/home/node/.azure/bin"
   },
   "features": {
     "azure-cli": "latest",
-    "dotnet": "7.0"
+    "dotnet": "7.0",
+    "ghcr.io/devcontainers/features/node:1": "none"
   }
 }
