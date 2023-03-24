@@ -131,7 +131,7 @@ param repoUrl string = ''
 param branch string = ''
 
 @description('Required. Name of the storage account used by function app.')
-param storgeAccountName string
+param storageAccountName string
 
 @description('Optional. to limit to manual integration; to enable continuous integration (which configures webhooks into online repos like GitHub).')
 param isManualIntegration bool = true
@@ -162,9 +162,9 @@ param extraAppSettings object = {}
 
 //Variables
 
-var maxNameLength = 24
-var uniqueStoragename = length(uniqueString(storgeAccountName)) > maxNameLength ? substring(uniqueString(storgeAccountName), 0, maxNameLength) : uniqueString(storgeAccountName)
-var storageAccountName = 'sa${uniqueStoragename}'
+//var maxNameLength = 24
+//var uniqueStoragename = length(uniqueString(storgeAccountName)) > maxNameLength ? substring(uniqueString(storgeAccountName), 0, maxNameLength) : uniqueString(storgeAccountName)
+//var storageAccountName = 'iep${uniqueStoragename}'
 
 
 

@@ -53,13 +53,15 @@ resource vnet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
 
 
 
+
 var maxNameLength = 20
 var uniqueStoragename = length(uniqueString(name)) > maxNameLength ? substring(uniqueString(name), 0, maxNameLength) : uniqueString(name)
-var storgeAccountName = 'iep${uniqueStoragename}'
+var storageAccountName = 'iep${uniqueStoragename}'
+
 
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {
-  name: storgeAccountName
+  name: storageAccountName
   location: location
   sku: {
     name: 'Standard_LRS'
@@ -92,7 +94,7 @@ resource userAssignedIdentities 'Microsoft.ManagedIdentity/userAssignedIdentitie
 }
 
 resource workspaces 'Microsoft.OperationalInsights/workspaces@2021-06-01' = {
-  name: 'workspace-${name}'
+  name: 'functionapp-workspace'
   location: location
   tags: tags
   properties: {

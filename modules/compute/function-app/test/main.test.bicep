@@ -1,6 +1,5 @@
 
 param name string = deployment().name
-
 param location string = resourceGroup().location
 
 param tags object = {
@@ -36,12 +35,12 @@ Dependency list:
 ''')
 
 module test1 '../main.bicep' = {
-  name: 'test-azure-func2-${guid(name)}'
+  name: 'func-app1-${guid(name)}'
   dependsOn: [
     dependencies
   ]
   params: {
-    name: 'test2-${name}'
+    name: 'funcapp1-${resourceGroup().name}'
     location: location
     sku: {
       name: 'Y1'
@@ -51,8 +50,9 @@ module test1 '../main.bicep' = {
       capacity: 0
     }
     tags: tags
-    storgeAccountName: dependencies.outputs.saAccountName
+    storageAccountName: dependencies.outputs.saAccountName
     storgeAccountResourceGroup: resourceGroup().name
+  
   }
   scope: resourceGroup()
 
@@ -60,13 +60,13 @@ module test1 '../main.bicep' = {
 
 // TODO: should add test case using sourcecontrol extension later
 module test2 '../main.bicep' = {
-  name: 'test-azure-func3-${guid(name)}'
+  name: 'func-app2-${resourceGroup().name}'
   scope: resourceGroup()
   dependsOn: [
     dependencies
   ]
   params: {
-    name: 'test3-${name}'
+    name: 'funcapp2-${resourceGroup().name}'
     location: location
     sku: {
       name: 'EP1'
@@ -83,7 +83,7 @@ module test2 '../main.bicep' = {
     subnetId: dependencies.outputs.subnets
     functionsExtensionVersion: '~4'
     functionsWorkerRuntime: 'powershell'
-    storgeAccountName: dependencies.outputs.saAccountName
+    storageAccountName: dependencies.outputs.saAccountName
     storgeAccountResourceGroup: resourceGroup().name
     enablePackageDeploy: true
   }
