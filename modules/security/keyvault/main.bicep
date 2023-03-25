@@ -31,14 +31,14 @@ param roleAssignments array = [
 ]
 
 @allowed([ 'new', 'existing' ])
-@description('Whether to create a new Key Vault or use an existing one')
+@description('Whether to create a new Key Vault or use an existing one.')
 param newOrExisting string = 'new'
 
-@description('Name of Secret to add to Key Vault')
-param secretName string = 'secret${uniqueString(resourceGroup().id)}'
+@description('Name of Secret to add to Key Vault. Required when provided a secretValue.')
+param secretName string = ''
 
 @secure()
-@description('Value of Secret to add to Key Vault')
+@description('Value of Secret to add to Key Vault. The secretName parameter must also be provided when adding a secret.')
 param secretValue string = ''
 
 @description('Specifies whether soft delete should be enabled for the Key Vault.')
@@ -86,7 +86,7 @@ module rbacRoleAssignments 'modules/roleAssignment.bicep' = [for rbacRole in rol
   }
 }]
 
-var createSecret = secretName != '' && secretValue != ''
+var createSecret = secretValue != ''
 
 module secret 'modules/secrets.bicep' = if (createSecret) {
   name: guid(keyVault.name, 'secrets')
