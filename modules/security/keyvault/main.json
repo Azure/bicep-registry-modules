@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "542878946674466792"
+      "templateHash": "6769170319242885075"
     }
   },
   "parameters": {
@@ -441,7 +441,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.15.31.15270",
-              "templateHash": "11519199642012993474"
+              "templateHash": "11284938965186073434"
             }
           },
           "parameters": {
@@ -467,7 +467,37 @@
                 "value": "[parameters('secretValue')]"
               }
             }
-          ]
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName'))]",
+              "metadata": {
+                "description": "Key Vault Id"
+              }
+            },
+            "name": {
+              "type": "string",
+              "value": "[parameters('secretName')]",
+              "metadata": {
+                "description": "Key Vault Name"
+              }
+            },
+            "secretUri": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUri]",
+              "metadata": {
+                "description": "Secret URI"
+              }
+            },
+            "secretUriWithVersion": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUriWithVersion]",
+              "metadata": {
+                "description": "Secret URI with version"
+              }
+            }
+          }
         }
       },
       "dependsOn": [
