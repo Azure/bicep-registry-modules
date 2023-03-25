@@ -63,6 +63,7 @@ module keyVault 'modules/vaults.bicep' = {
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     location: location
+    name: name
     newOrExisting: newOrExisting
     enableSoftDelete: enableSoftDelete
     softDeleteRetentionInDays: softDeleteRetentionInDays
