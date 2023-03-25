@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "9135967170216501609"
+      "templateHash": "542878946674466792"
     }
   },
   "parameters": {
@@ -160,6 +160,9 @@
         "parameters": {
           "location": {
             "value": "[parameters('location')]"
+          },
+          "name": {
+            "value": "[parameters('name')]"
           },
           "newOrExisting": {
             "value": "[parameters('newOrExisting')]"
