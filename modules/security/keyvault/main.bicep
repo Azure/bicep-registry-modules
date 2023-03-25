@@ -86,7 +86,9 @@ module rbacRoleAssignments 'modules/roleAssignment.bicep' = [for rbacRole in rol
   }
 }]
 
-module secret 'modules/secrets.bicep' = if (secretName != '' && secretValue != '') {
+var createSecret = secretName != '' && secretValue != ''
+
+module secret 'modules/secrets.bicep' = if (createSecret) {
   name: guid(keyVault.name, 'secrets')
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
@@ -101,3 +103,15 @@ output id string = keyVault.outputs.id
 
 @description('Key Vault Name')
 output name string = keyVault.outputs.name
+
+@description('Key Vault Id')
+output id string = createSecret ? secret.outputs.id : ''
+
+@description('Key Vault Name')
+output secretName string = createSecret ? secret.outputs.name : ''
+
+@description('Secret URI')
+output secretUri string = createSecret ? secret.outputs.secretUri : ''
+
+@description('Secret URI with version')
+output secretUriWithVersion string = createSecret ? secret.outputs.secretUriWithVersion : ''
