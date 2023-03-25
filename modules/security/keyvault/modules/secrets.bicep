@@ -17,3 +17,15 @@ resource secret 'Microsoft.KeyVault/vaults/secrets@2022-11-01' = {
     value: secretValue
   }
 }
+
+@description('Key Vault Id')
+output id string = secret.id
+
+@description('Key Vault Name')
+output name string = secret.name
+
+@description('Secret URI')
+output secretUri string = secret.properties.secretUri
+
+@description('Secret URI with version')
+output secretUriWithVersion string = secret.properties.secretUriWithVersion
