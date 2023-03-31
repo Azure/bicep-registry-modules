@@ -26,7 +26,7 @@ async function uploadModulesMetadata({ require, core }) {
       try {
         core.info(`Getting ${modulePath}...`);
 
-        const versionListResponse = await axios.default.get(versionListUrl);
+        const versionListResponse = await axios.get(versionListUrl);
         const tags = versionListResponse.data.tags.sort();
 
         result.push({
