@@ -1,10 +1,8 @@
-# Cost Management scheduled action
-
-Creates a Cost Management scheduled action for a subscription to notify recipients when an anomaly is detected or on a recurring schedule.
+# Cost Management scheduled action for subscriptions
 
 ## Description
 
-Use this module within other Bicep templates to simplify creating and updating scheduled actions.
+Creates a Cost Management scheduled action for a subscription to notify recipients about current costs on a recurring schedule or when an anomaly is detected.
 
 ## Parameters
 

@@ -1,6 +1,6 @@
 {
   "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
   "name": "Cost Management scheduled action for subscriptions",
-  "summary": "Creates a Cost Management scheduled action for a subscription to notify recipients when an anomaly is detected or on a recurring schedule.",
+  "summary": "Creates a Cost Management scheduled action for a subscription to notify recipients about current costs on a recurring schedule or when an anomaly is detected.",
   "owner": "cost-management-contrib"
 }
