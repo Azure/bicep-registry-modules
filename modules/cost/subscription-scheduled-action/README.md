@@ -2,7 +2,7 @@
 
 ## Description
 
-Creates a Cost Management scheduled action for a subscription to notify recipients about current costs on a recurring schedule or when an anomaly is detected.
+Creates a Cost Management scheduled action to notify recipients about the latest subscription costs on a recurring schedule or when an anomaly is detected.
 
 ## Parameters
 
