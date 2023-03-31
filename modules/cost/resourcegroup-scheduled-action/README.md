@@ -2,7 +2,7 @@
 
 ## Description
 
-Creates a Cost Management scheduled action for a resource group to notify recipients about current costs on a recurring schedule.
+Creates a Cost Management scheduled action to notify recipients about the latest resource group costs on a recurring schedule.
 
 ## Parameters
 
