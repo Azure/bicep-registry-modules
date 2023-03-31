@@ -1,8 +1,12 @@
 # Cost Management scheduled action for subscriptions
 
+Creates a scheduled action to notify recipients about the latest costs or when an anomaly is detected.
+
 ## Description
 
-Creates a Cost Management scheduled action to notify recipients about the latest subscription costs on a recurring schedule or when an anomaly is detected.
+Scheduled actions allow you to configure email alerts on a daily, weekly, or monthly basis. Scheduled actions are configured based on a Cost Management view, which can be opened and edited in Cost analysis in the Azure portal. Email alerts include a picture of the selected view and optionally a link to a CSV file with the summarized cost data. To learn more about scheduled alerts, see [Subscribe to scheduled alerts](https://learn.microsoft.com/azure/cost-management-billing/costs/save-share-views#subscribe-to-scheduled-alerts).
+
+You can also use scheduled actions to configure anomaly detection alerts for subscriptions. To learn more about Cost Management anomaly detection, see [Identify anomalies and unexpected changes in cost](https://learn.microsoft.com/azure/cost-management-billing/understand/analyze-unexpected-charges).
 
 ## Parameters
 
