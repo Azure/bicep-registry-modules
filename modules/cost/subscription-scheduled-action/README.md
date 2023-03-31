@@ -1,6 +1,6 @@
 # Cost Management scheduled action
 
-Creates a Cost Management scheduled action to notify recipients when an anomaly is detected or on a recurring schedule.
+Creates a Cost Management scheduled action for a subscription to notify recipients when an anomaly is detected or on a recurring schedule.
 
 ## Description
 
