@@ -1,10 +1,8 @@
-# Cost Management scheduled action
-
-Creates a Cost Management scheduled action to notify recipients when an anomaly is detected or on a recurring schedule.
+# Cost Management scheduled action for resource groups
 
 ## Description
 
-Use this module within other Bicep templates to simplify creating and updating scheduled actions.
+Creates a Cost Management scheduled action for a resource group to notify recipients about current costs on a recurring schedule.
 
 ## Parameters
 
