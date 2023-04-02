@@ -58,7 +58,7 @@ jobs:
       - name: shellcheck
         uses: reviewdog/action-shellcheck@v1
         with:
-          github_token: ${{ secrets.github_token }}
+          github_token: ${{ secrets.PAT || secrets.github_token }}
           reporter: github-pr-review # Change reporter.
           path: ${{ needs.get-module-to-validate.outputs.module_dir }}
           pattern: "*.sh"
