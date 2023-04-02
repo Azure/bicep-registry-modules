@@ -24,12 +24,12 @@ module akvCertSingle '../main.bicep' = {
   params: {
     akvName: akv.name
     location: location
-    certificateName: 'mysingleapp'
-    certificateCommonName: 'mysingleapp.mydomain.local'
+    certificateNames: ['mysingleapp']
+    certificateCommonNames: ['mysingleapp.mydomain.local']
   }
 }
-output singleSecretId string = akvCertSingle.outputs.certificateSecretId
-output singleThumbprint string = akvCertSingle.outputs.certificateThumbprintHex
+output singleSecretId string = akvCertSingle.outputs.certificateSecretIds[0]
+output singleThumbprint string = akvCertSingle.outputs.certificateThumbprintHexs[0]
 
 //Test 2. Array of certificates
 var certificateNames = [
@@ -37,21 +37,33 @@ var certificateNames = [
   'myotherapp'
 ]
 
-@batchSize(1)
-module akvCertMultiple '../main.bicep' = [ for certificateName in certificateNames : {
-  name: 'akvCertMultiple-${certificateName}'
+module akvCertMultiple '../main.bicep' = {
+  name: 'akvCertMultiple-${uniqueString(akv.name)}'
   params: {
     akvName:  akv.name
     location: location
-    certificateName: certificateName
+    certificateNames: certificateNames
     initialScriptDelay: '0'
     managedIdentityName: 'aDifferentIdentity'
   }
-}]
+}
+
+// Test 3. Test a signed cert
+// module akvCertSigned '../main.bicep' = {
+//   name: 'akvCertSigned'
+//   params: {
+//     akvName: akv.name
+//     location: location
+//     certificateName: 'mysignedcert'
+//     certificateCommonName: 'sample-cert.gaming.azure.com'
+//     issuerName: 'Signed'
+//     issuerProvider: 'OneCertV2-PublicCA'
+//   }
+// }
 
 @description('Array of info from each Certificate')
 output createdCertificates array = [for (certificateName, i) in certificateNames: {
   certificateName: certificateName
-  certificateSecretId: akvCertMultiple[i].outputs.certificateSecretId
-  certificateThumbprint: akvCertMultiple[i].outputs.certificateThumbprintHex
+  certificateSecretId: akvCertMultiple.outputs.certificateSecretIds[i]
+  certificateThumbprint: akvCertMultiple.outputs.certificateThumbprintHexs[i]
 }]

@@ -11,24 +11,15 @@ function getTimestamp() {
 }
 
 /**
- * @param {typeof import("fs")} fs
- * @param {string} dir
- */
-function getSubdirNames(fs, dir) {
-  return fs
-    .readdirSync(dir, { withFileTypes: true })
-    .filter((x) => x.isDirectory())
-    .map((x) => x.name);
-}
-
-/**
+ * @param {typeof require} require
  * @param {typeof import("axios").default} axios
  * @param {typeof import("fs")} fs
  * @param {typeof import("path")} path
  * @param {typeof import("@actions/core")} core
  */
-async function generateModulesTable(axios, fs, path, core) {
+async function generateModulesTable(require, axios, fs, path, core) {
   const tableData = [["Module", "Version", "Docs"]];
+  const getSubdirNames = require("./scripts/github-actions/get-sub-directory-names.js");
   const moduleGroups = getSubdirNames(fs, "modules");
 
   for (const moduleGroup of moduleGroups) {
@@ -40,6 +31,8 @@ async function generateModulesTable(axios, fs, path, core) {
       const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${modulePath}/tags/list`;
 
       try {
+        core.info(`Getting ${modulePath}...`);
+
         const versionListResponse = await axios.get(versionListUrl);
         const latestVersion = versionListResponse.data.tags.sort().at(-1);
         const badgeUrl = `https://img.shields.io/badge/mcr-${latestVersion}-blue`;
@@ -71,7 +64,7 @@ async function generateModulesTable(axios, fs, path, core) {
  * @param {typeof import("@actions/github").context} context
  * @param {string} newReadme
  */
-async function createPullRequestToUpdateReadme(github, context, newReadme) {
+async function createBranchToUpdateReadme(github, context, newReadme) {
   const branch = `refresh-module-table-${getTimestamp()}`;
 
   // Create a new branch.
@@ -112,15 +105,16 @@ async function createPullRequestToUpdateReadme(github, context, newReadme) {
   });
 
   // Create a pull request.
-  const { data: prData } = await github.rest.pulls.create({
-    ...context.repo,
-    title: "🤖 Refresh module table",
-    head: branch,
-    base: "main",
-    maintainer_can_modify: true,
-  });
+  // const { data: prData } = await github.rest.pulls.create({
+  //   ...context.repo,
+  //   title: "🤖 Refresh module table",
+  //   head: branch,
+  //   base: "main",
+  //   maintainer_can_modify: true,
+  // });
 
-  return prData.html_url;
+  // return prData.html_url;
+  return branch;
 }
 
 /**
@@ -148,7 +142,7 @@ async function refreshModuleTable({ require, github, context, core }) {
   }
 
   const oldTable = oldTableMatch[0].replace(/^\s+|\s+$/g, "");
-  const newTable = await generateModulesTable(axios, fs, path, core);
+  const newTable = await generateModulesTable(require, axios, fs, path, core);
   const newReadme = oldReadme.replace(oldTable, newTable);
   const newReadmeFormatted = prettier.format(newReadme, {
     parser: "markdown",
@@ -159,13 +153,13 @@ async function refreshModuleTable({ require, github, context, core }) {
     return;
   }
 
-  const prUrl = await createPullRequestToUpdateReadme(
+  const branch = await createBranchToUpdateReadme(
     github,
     context,
     newReadmeFormatted
   );
   core.info(
-    `The module table is outdated. A pull request ${prUrl} was created to update it.`
+    `The module table is outdated. A branch ${branch} was created to update it.`
   );
 }
 
