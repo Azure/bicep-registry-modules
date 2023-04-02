@@ -50,8 +50,7 @@ jobs:
     name: runner
     runs-on: ubuntu-latest
     needs: get-module-to-validate
-    permissions:
-      pull-requests: write
+    permissions: write-all
     if: needs.get-module-to-validate.outputs.module_dir
     steps:
       - uses: actions/checkout@v1
