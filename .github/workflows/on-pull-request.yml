@@ -61,7 +61,6 @@ jobs:
           github_token: ${{ secrets.PAT || github.token }}
           reporter: github-pr-review # Change reporter.
           path: ${{ needs.get-module-to-validate.outputs.module_dir }}
-          pattern: "*.sh"
 
   validate-non-module-files:
     runs-on: ubuntu-latest
