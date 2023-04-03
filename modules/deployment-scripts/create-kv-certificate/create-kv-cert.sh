@@ -12,7 +12,7 @@ do
 
     if [ -z "$issuerName" ] || [ -z "$issuerProvider" ]; then
         policy=$(az keyvault certificate get-default-policy \
-            | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g )
+            | sed -e s/CN=CLIGetDefaultPolicy/CN="${certCommonName}"/g )
     else
       if [ "$issuerProvider" == "DigiCert" ] || [ "$issuerProvider" == "GlobalCert" ]; then
         az keyvault certificate issuer create \
