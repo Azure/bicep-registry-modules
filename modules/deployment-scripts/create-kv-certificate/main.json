@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "12832549531481962738"
+      "templateHash": "14007271076612606255"
     }
   },
   "parameters": {
@@ -141,7 +141,7 @@
       "type": "int",
       "defaultValue": 12,
       "metadata": {
-        "description": "Optional. Override default validityInMonths 12 vlaue"
+        "description": "Optional. Override default validityInMonths 12 value"
       }
     }
   },

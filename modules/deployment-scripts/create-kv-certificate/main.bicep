@@ -58,7 +58,7 @@ param organizationId string = ''
 @description('Override this parameter if using this in cross tenant scenarios')
 param isCrossTenant bool = false
 
-@description('Optional. Override default validityInMonths 12 vlaue')
+@description('Optional. Override default validityInMonths 12 value')
 param validity int = 12
 
 resource akv 'Microsoft.KeyVault/vaults@2022-07-01' existing = {

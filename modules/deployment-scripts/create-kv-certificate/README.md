@@ -31,7 +31,7 @@ This module is based on the `az cli certificate` create command and more informa
 | `issuerPassword`                           | `securestring` | No       | Password of Certificate Issuer Account                                                                        |
 | `organizationId`                           | `string`       | No       | Organization ID of Certificate Issuer Account                                                                 |
 | `isCrossTenant`                            | `bool`         | No       | Override this parameter if using this in cross tenant scenarios                                               |
-| `validity`                                 | `int`          | No       | Optional. Override default validityInMonths 12 vlaue                                                          |
+| `validity`                                 | `int`          | No       | Optional. Override default validityInMonths 12 value                                                          |
 
 ## Outputs
 
