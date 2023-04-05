@@ -50,7 +50,7 @@ param issuerProvider string = ''
 @description('Certificate Validity in months. Default: 12')
 param validity int = 12
 
-@description('Create certificate in disabled state.')
+@description('Create certificate in disabled state. Default: false')
 param disabled bool = false
 
 @description('Account ID of Certificate Issuer Account')
