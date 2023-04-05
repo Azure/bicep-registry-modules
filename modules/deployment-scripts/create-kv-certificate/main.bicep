@@ -58,6 +58,8 @@ param organizationId string = ''
 @description('Override this parameter if using this in cross tenant scenarios')
 param isCrossTenant bool = false
 
+@minValue(1)
+@maxValue(1200)
 @description('Optional. Override default validityInMonths 12 value')
 param validity int = 12
 
