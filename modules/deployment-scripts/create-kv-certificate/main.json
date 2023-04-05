@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "14007271076612606255"
+      "version": "0.16.1.55165",
+      "templateHash": "4449897032634704319"
     }
   },
   "parameters": {
@@ -142,11 +142,13 @@
       "defaultValue": 12,
       "metadata": {
         "description": "Optional. Override default validityInMonths 12 value"
-      }
+      },
+      "maxValue": 1200,
+      "minValue": 1
     }
   },
   "variables": {
-    "$fxv#0": "#!/bin/bash\r\nset -e\r\n\r\necho \"Waiting on Identity RBAC replication ($initialDelay)\"\r\nsleep $initialDelay\r\n\r\n#Retry loop to catch errors (usually RBAC delays)\r\nretryLoopCount=0\r\nuntil [ $retryLoopCount -ge $retryMax ]\r\ndo\r\n    echo \"Creating AKV Cert $certName with CN $certCommonName (attempt $retryLoopCount)...\"\r\n\r\n    if [ -z \"$issuerName\" ] || [ -z \"$issuerProvider\" ]; then\r\n        policy=$(az keyvault certificate get-default-policy \\\r\n            | sed -e s/\\\"validityInMonths\\\":\\ 12/\\\"validityInMonths\\\":\\ ${validity}/g \\\r\n            | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g )\r\n    else\r\n      if [ \"$issuerProvider\" == \"DigiCert\" ] || [ \"$issuerProvider\" == \"GlobalCert\"]; then\r\n        az keyvault certificate issuer create \\\r\n          --vault-name $akvName \\\r\n          --issuer-name $issuerName \\\r\n          --provider-name $issuerProvider \\\r\n          --account-id $accountId \\\r\n          --password $issuerPassword \\\r\n          --organizatiion-id $organizationId\r\n      else\r\n        az keyvault certificate issuer create \\\r\n          --vault-name $akvName \\\r\n          --issuer-name $issuerName \\\r\n          --provider-name $issuerProvider\r\n      fi\r\n      policy=$(az keyvault certificate get-default-policy \\\r\n        | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g  \\\r\n        | sed -e s/\\\"validityInMonths\\\":\\ 12/\\\"validityInMonths\\\":\\ ${validity}/g \\\r\n        | sed -e s/\\\"name\\\":\\ \\\"Self\\\"/\\\"name\\\":\\ \\\"${issuerName}\\\"/g )\r\n    fi\r\n    az keyvault certificate create \\\r\n        --vault-name $akvName \\\r\n        -n $certName \\\r\n        -p \"$policy\" \\\r\n        && break\r\n\r\n    sleep $retrySleep\r\n    retryLoopCount=$((retryLoopCount+1))\r\ndone\r\n\r\necho \"Getting Certificate $certName\";\r\nretryLoopCount=0\r\ncreatedCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)\r\nwhile [ -z \"$(echo $createdCert | jq -r '.x509ThumbprintHex')\" ] && [ $retryLoopCount -lt $retryMax ]\r\ndo\r\n    echo \"Waiting for cert creation (attempt $retryLoopCount)...\"\r\n    sleep $retrySleep\r\n    createdCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)\r\n    retryLoopCount=$((retryLoopCount+1))\r\ndone\r\n\r\nunversionedSecretId=$(echo $createdCert | jq -r \".sid\" | cut -d'/' -f-5) # remove the version from the url;\r\njsonOutputString=$(echo $createdCert | jq --arg usid $unversionedSecretId '{name: .name ,certSecretId: {versioned: .sid, unversioned: $usid }, thumbprint: .x509Thumbprint, thumbprintHex: .x509ThumbprintHex}')\r\necho $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\r\n",
+    "$fxv#0": "#!/bin/bash\nset -e\n\necho \"Waiting on Identity RBAC replication ($initialDelay)\"\nsleep $initialDelay\n\n#Retry loop to catch errors (usually RBAC delays)\nretryLoopCount=0\nuntil [ $retryLoopCount -ge $retryMax ]\ndo\n    echo \"Creating AKV Cert $certName with CN $certCommonName (attempt $retryLoopCount)...\"\n\n    if [ -z \"$issuerName\" ] || [ -z \"$issuerProvider\" ]; then\n        policy=$(az keyvault certificate get-default-policy \\\n            | sed -e s/\\\"validityInMonths\\\":\\ 12/\\\"validityInMonths\\\":\\ ${validity}/g \\\n            | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g )\n    else\n      if [ \"$issuerProvider\" == \"DigiCert\" ] || [ \"$issuerProvider\" == \"GlobalCert\"]; then\n        az keyvault certificate issuer create \\\n          --vault-name $akvName \\\n          --issuer-name $issuerName \\\n          --provider-name $issuerProvider \\\n          --account-id $accountId \\\n          --password $issuerPassword \\\n          --organizatiion-id $organizationId\n      else\n        az keyvault certificate issuer create \\\n          --vault-name $akvName \\\n          --issuer-name $issuerName \\\n          --provider-name $issuerProvider\n      fi\n      policy=$(az keyvault certificate get-default-policy \\\n        | sed -e s/\\\"validityInMonths\\\":\\ 12/\\\"validityInMonths\\\":\\ ${validity}/g \\\n        | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g  \\\n        | sed -e s/\\\"name\\\":\\ \\\"Self\\\"/\\\"name\\\":\\ \\\"${issuerName}\\\"/g )\n    fi\n    az keyvault certificate create \\\n        --vault-name $akvName \\\n        -n $certName \\\n        -p \"$policy\" \\\n        && break\n\n    sleep $retrySleep\n    retryLoopCount=$((retryLoopCount+1))\ndone\n\necho \"Getting Certificate $certName\";\nretryLoopCount=0\ncreatedCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)\nwhile [ -z \"$(echo $createdCert | jq -r '.x509ThumbprintHex')\" ] && [ $retryLoopCount -lt $retryMax ]\ndo\n    echo \"Waiting for cert creation (attempt $retryLoopCount)...\"\n    sleep $retrySleep\n    createdCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)\n    retryLoopCount=$((retryLoopCount+1))\ndone\n\nunversionedSecretId=$(echo $createdCert | jq -r \".sid\" | cut -d'/' -f-5) # remove the version from the url;\njsonOutputString=$(echo $createdCert | jq --arg usid $unversionedSecretId '{name: .name ,certSecretId: {versioned: .sid, unversioned: $usid }, thumbprint: .x509Thumbprint, thumbprintHex: .x509ThumbprintHex}')\necho $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n",
     "delegatedManagedIdentityResourceId": "[if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))]"
   },
   "resources": [
@@ -258,52 +260,52 @@
   "outputs": {
     "certificateNames": {
       "type": "array",
+      "metadata": {
+        "description": "Certificate names"
+      },
       "copy": {
         "count": "[length(parameters('certificateNames'))]",
         "input": "[createArray(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[copyIndex()], ':', ''), '/', '-'))), '2020-10-01').outputs.name)]"
-      },
-      "metadata": {
-        "description": "Certificate names"
       }
     },
     "certificateSecretIds": {
       "type": "array",
+      "metadata": {
+        "description": "KeyVault secret ids to the created version"
+      },
       "copy": {
         "count": "[length(parameters('certificateNames'))]",
         "input": "[createArray(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[copyIndex()], ':', ''), '/', '-'))), '2020-10-01').outputs.certSecretId.versioned)]"
-      },
-      "metadata": {
-        "description": "KeyVault secret ids to the created version"
       }
     },
     "certificateSecretIdUnversioneds": {
       "type": "array",
+      "metadata": {
+        "description": "KeyVault secret ids which uses the unversioned uri"
+      },
       "copy": {
         "count": "[length(parameters('certificateNames'))]",
         "input": "[createArray(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[copyIndex()], ':', ''), '/', '-'))), '2020-10-01').outputs.certSecretId.unversioned)]"
-      },
-      "metadata": {
-        "description": "KeyVault secret ids which uses the unversioned uri"
       }
     },
     "certificateThumbpints": {
       "type": "array",
+      "metadata": {
+        "description": "Certificate Thumbprints"
+      },
       "copy": {
         "count": "[length(parameters('certificateNames'))]",
         "input": "[createArray(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[copyIndex()], ':', ''), '/', '-'))), '2020-10-01').outputs.thumbprint)]"
-      },
-      "metadata": {
-        "description": "Certificate Thumbprints"
       }
     },
     "certificateThumbprintHexs": {
       "type": "array",
+      "metadata": {
+        "description": "Certificate Thumbprints (in hex)"
+      },
       "copy": {
         "count": "[length(parameters('certificateNames'))]",
         "input": "[createArray(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[copyIndex()], ':', ''), '/', '-'))), '2020-10-01').outputs.thumbprintHex)]"
-      },
-      "metadata": {
-        "description": "Certificate Thumbprints (in hex)"
       }
     }
   }
