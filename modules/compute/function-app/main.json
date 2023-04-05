@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "15625760495765523569"
+      "version": "0.16.1.55165",
+      "templateHash": "14092859230876583654"
     }
   },
   "parameters": {
@@ -459,34 +459,37 @@
   "outputs": {
     "siteId": {
       "type": "string",
-      "value": "[resourceId('Microsoft.Web/sites', parameters('name'))]",
       "metadata": {
         "description": "Get resource id for app or functionapp."
-      }
+      },
+      "value": "[resourceId('Microsoft.Web/sites', parameters('name'))]"
     },
     "siteName": {
       "type": "string",
-      "value": "[parameters('name')]",
       "metadata": {
         "description": "Get resource name for app or functionapp."
-      }
+      },
+      "value": "[parameters('name')]"
     },
     "serverfarmsId": {
       "type": "string",
-      "value": "[resourceId('Microsoft.Web/serverfarms', parameters('name'))]",
       "metadata": {
         "description": "Get resource ID of the app service plan."
-      }
+      },
+      "value": "[resourceId('Microsoft.Web/serverfarms', parameters('name'))]"
     },
     "serverfarmsName": {
       "type": "string",
-      "value": "[parameters('name')]",
       "metadata": {
         "description": "Get name of the app service plan."
-      }
+      },
+      "value": "[parameters('name')]"
     },
     "functions": {
       "type": "array",
+      "metadata": {
+        "description": "Array of functions having name , language,isDisabled and id of functions."
+      },
       "copy": {
         "count": "[length(parameters('functions'))]",
         "input": {
@@ -496,17 +499,14 @@
           "id": "[format('{0}/functions/{1}', resourceId('Microsoft.Web/sites', parameters('name')), parameters('functions')[copyIndex()].name)]",
           "files": "[parameters('functions')[copyIndex()].files]"
         }
-      },
-      "metadata": {
-        "description": "Array of functions having name , language,isDisabled and id of functions."
       }
     },
     "sitePrincipalId": {
       "type": "string",
-      "value": "[if(equals(reference(resourceId('Microsoft.Web/sites', parameters('name')), '2022-03-01', 'full').identity.type, 'SystemAssigned'), reference(resourceId('Microsoft.Web/sites', parameters('name')), '2022-03-01', 'full').identity.principalId, '')]",
       "metadata": {
         "description": "Principal Id of the identity assigned to the function app."
-      }
+      },
+      "value": "[if(equals(reference(resourceId('Microsoft.Web/sites', parameters('name')), '2022-03-01', 'full').identity.type, 'SystemAssigned'), reference(resourceId('Microsoft.Web/sites', parameters('name')), '2022-03-01', 'full').identity.principalId, '')]"
     }
   }
 }
