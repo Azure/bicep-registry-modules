@@ -45,6 +45,7 @@ param issuerName string = 'Self'
 @description('Certificate Issuer Provider, DigiCert, GlobalSign, or internal options may be used.')
 param issuerProvider string = ''
 
+@minValue(1)
 @description('Certificate Validity in months. Default: 12')
 param validity int = 12
 
