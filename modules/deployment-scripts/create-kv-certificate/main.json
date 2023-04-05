@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.1.55165",
-      "templateHash": "14226857410752356971"
+      "templateHash": "10694253267418955702"
     }
   },
   "parameters": {
@@ -107,6 +107,13 @@
       "defaultValue": "",
       "metadata": {
         "description": "Certificate Issuer Provider, DigiCert, GlobalSign, or internal options may be used."
+      }
+    },
+    "validity": {
+      "type": "int",
+      "defaultValue": 12,
+      "metadata": {
+        "description": "Certificate Validity in months. Default: 12"
       }
     },
     "accountId": {
@@ -213,6 +220,10 @@
           {
             "name": "issuerProvider",
             "value": "[parameters('issuerProvider')]"
+          },
+          {
+            "name": "validity",
+            "value": "[parameters('validity')]"
           },
           {
             "name": "retryMax",
