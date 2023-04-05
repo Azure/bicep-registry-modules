@@ -50,6 +50,9 @@ param issuerProvider string = ''
 @description('Certificate Validity in months. Default: 12')
 param validity int = 12
 
+@description('Create certificate in disabled state.')
+param disabled bool = false
+
 @description('Account ID of Certificate Issuer Account')
 param accountId string = ''
 
@@ -118,6 +121,7 @@ resource createImportCerts 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
       { name: 'issuerName', value: issuerName }
       { name: 'issuerProvider', value: issuerProvider }
       { name: 'validity', value: validity }
+      { name: 'disabled', value: disabled }
       { name: 'retryMax', value: '10' }
       { name: 'retrySleep', value: '5s' }
       { name: 'accountId', value: accountId }
