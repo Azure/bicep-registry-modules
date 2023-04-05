@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "15366041586673514811"
+      "templateHash": "15625760495765523569"
     }
   },
   "parameters": {
@@ -295,6 +295,13 @@
         "description": "Optional. URI to the function source code zip package, must be accessible by the deployer. E.g. A zip file on Azure storage in the same resource group."
       }
     },
+    "enableDockerContainer": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable docker image deployment"
+      }
+    },
     "extraAppSettings": {
       "type": "object",
       "defaultValue": {},
@@ -352,6 +359,9 @@
         "userAssignedIdentities": "[if(or(equals(parameters('identityType'), 'UserAssigned'), equals(parameters('identityType'), 'SystemAssigned, UserAssigned')), createObject(format('{0}', parameters('userAssignedIdentityId')), createObject()), null())]"
       },
       "properties": {
+        "siteConfig": {
+          "linuxFxVersion": "[if(parameters('enableDockerContainer'), 'DOCKER|mcr.microsoft.com/azure-functions/dotnet:4-appservice-quickstart', null())]"
+        },
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('name'))]",
         "httpsOnly": "[parameters('httpsOnly')]",
         "hostingEnvironmentProfile": "[if(not(empty(parameters('appServiceEnvironmentId'))), createObject('id', parameters('appServiceEnvironmentId')), null())]",

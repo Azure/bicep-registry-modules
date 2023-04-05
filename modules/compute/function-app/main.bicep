@@ -148,6 +148,9 @@ param enablePackageDeploy bool = false
 @description('Optional. URI to the function source code zip package, must be accessible by the deployer. E.g. A zip file on Azure storage in the same resource group.')
 param functionPackageUri string = ''
 
+@description('Optional. Enable docker image deployment') 
+param enableDockerContainer bool = false
+
 @description('''Optional. Extra app settings that should be provisioned while creating the function app. Note! Settings below should not be included unless absolutely necessary, because settings in this param will override the ones added by the module:
 AzureWebJobsStorage
 AzureWebJobsDashboard
@@ -212,6 +215,9 @@ resource sites 'Microsoft.Web/sites@2022-03-01' = {
     } : null
   }
   properties: {
+    siteConfig:{
+      linuxFxVersion: enableDockerContainer ? 'DOCKER|mcr.microsoft.com/azure-functions/dotnet:4-appservice-quickstart' : null
+    } 
     serverFarmId: serverfarms.id
     httpsOnly: httpsOnly
     hostingEnvironmentProfile: !empty(appServiceEnvironmentId) ? {

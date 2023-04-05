@@ -2,6 +2,9 @@
 param name string = deployment().name
 param location string = resourceGroup().location
 
+param enableDockerContainer bool = true
+
+
 param tags object = {
   LOB: 'ENT'
   contact: 'iep.dev@nuance.com'
@@ -52,6 +55,11 @@ module test1 '../main.bicep' = {
     tags: tags
     storageAccountName: dependencies.outputs.saAccountName
     storgeAccountResourceGroup: resourceGroup().name
+    enableSourceControl: false
+    enableDockerContainer: enableDockerContainer
+    serverOS: 'Linux'
+    
+    //kind: 'functionapp,linux,container'
   
   }
   scope: resourceGroup()
