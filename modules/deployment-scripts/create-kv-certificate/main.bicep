@@ -46,6 +46,7 @@ param issuerName string = 'Self'
 param issuerProvider string = ''
 
 @minValue(1)
+@maxValue(1200)
 @description('Certificate Validity in months. Default: 12')
 param validity int = 12
 
