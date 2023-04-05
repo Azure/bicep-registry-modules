@@ -37,6 +37,7 @@ do
         -n $certName \
         -p "$policy" \
         --validity "$validity" \
+        --disabled "$disabled" \
         && break
 
     sleep $retrySleep
