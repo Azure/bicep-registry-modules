@@ -13,10 +13,7 @@ param sku object
 
 
 @description('Optional. Kind of server OS.')
-@allowed([
-  'Windows'
-  'Linux'
-])
+@allowed(['Windows','Linux'])
 
 param serverOS string = 'Windows'
 
@@ -30,11 +27,7 @@ param maximumElasticWorkerCount int = 0
 param targetWorkerCount int = 0
 
 @description('Optional. The instance size of the hosting plan (small, medium, or large).')
-@allowed([
-  0
-  1
-  2
-])
+@allowed([0, 1, 2 ])
 param targetWorkerSizeId int = 0
 
 @allowed([
@@ -59,10 +52,7 @@ param appServiceEnvironmentId string = ''
 param clientAffinityEnabled bool = true
 
 @description('Required. Type of site to deploy.')
-@allowed([
-  'functionapp'
-  'app'
-])
+@allowed(['functionapp', 'app'])
 param kind string = 'functionapp'
 
 @description('Optional. Version of the function extension.')
@@ -82,25 +72,16 @@ param functionsWorkerRuntime string = ''
 @description('Optional. NodeJS version.')
 param functionsDefaultNodeversion string = '~14'
 
-@allowed([
-  'Disabled'
-  'Enabled'
-])
+@allowed(['Disabled', 'Enabled'])
 @description('Optional. The network access type for accessing Application Insights ingestion. - Enabled or Disabled.')
 param publicNetworkAccessForIngestion string = 'Enabled'
 
-@allowed([
-  'Disabled'
-  'Enabled'
-])
+@allowed(['Disabled', 'Enabled'])
 @description('Optional. The network access type for accessing Application Insights query. - Enabled or Disabled.')
 param publicNetworkAccessForQuery string = 'Enabled'
 
 @description('Optional. Application type.')
-@allowed([
-  'web'
-  'other'
-])
+@allowed(['web', 'other'])
 param appInsightsType string = 'web'
 
 @description('Optional. The kind of application that this component refers to, used to customize UI.')
@@ -162,7 +143,6 @@ WEBSITE_NODE_DEFAULT_VERSION
 APPINSIGHTS_INSTRUMENTATIONKEY
 APPLICATIONINSIGHTS_CONNECTION_STRING''')
 param extraAppSettings object = {}
-
 
 
 @description('Defines storageAccounts for Azure Function App.')

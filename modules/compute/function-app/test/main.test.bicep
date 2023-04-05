@@ -58,8 +58,6 @@ module test1 '../main.bicep' = {
     enableSourceControl: false
     enableDockerContainer: enableDockerContainer
     serverOS: 'Linux'
-    
-    //kind: 'functionapp,linux,container'
   
   }
   scope: resourceGroup()
