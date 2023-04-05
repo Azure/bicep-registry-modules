@@ -11,27 +11,27 @@ This module is based on the `az cli certificate` create command and more informa
 
 ## Parameters
 
-| Name                                       | Type           | Required | Description                                                                                                   |
+| Name                                       |      Type      | Required | Description                                                                                                   |
 | :----------------------------------------- | :------------: | :------: | :------------------------------------------------------------------------------------------------------------ |
-| `akvName`                                  | `string`       | Yes      | The name of the Azure Key Vault                                                                               |
-| `location`                                 | `string`       | Yes      | The location to deploy the resources to                                                                       |
-| `forceUpdateTag`                           | `string`       | No       | How the deployment script should be forced to execute                                                         |
-| `rbacRolesNeededOnKV`                      | `string`       | No       | The RoleDefinitionId required for the DeploymentScript resource to interact with KeyVault                     |
-| `useExistingManagedIdentity`               | `bool`         | No       | Does the Managed Identity already exists, or should be created                                                |
-| `managedIdentityName`                      | `string`       | No       | Name of the Managed Identity resource                                                                         |
-| `existingManagedIdentitySubId`             | `string`       | No       | For an existing Managed Identity, the Subscription Id it is located in                                        |
-| `existingManagedIdentityResourceGroupName` | `string`       | No       | For an existing Managed Identity, the Resource Group it is located in                                         |
-| `certificateNames`                         | `array`        | Yes      | The names of the certificate to create. Use when creating many certificates.                                  |
-| `certificateCommonNames`                   | `array`        | No       | The common names of the certificate to create. Use when creating many certificates.                           |
-| `initialScriptDelay`                       | `string`       | No       | A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate |
-| `cleanupPreference`                        | `string`       | No       | When the script resource is cleaned up                                                                        |
-| `issuerName`                               | `string`       | No       | Self, or user defined {IssuerName} for certificate signing                                                    |
-| `issuerProvider`                           | `string`       | No       | Certificate Issuer Provider, DigiCert, GlobalSign, or internal options may be used.                           |
-| `accountId`                                | `string`       | No       | Account ID of Certificate Issuer Account                                                                      |
-| `issuerPassword`                           | `securestring` | No       | Password of Certificate Issuer Account                                                                        |
-| `organizationId`                           | `string`       | No       | Organization ID of Certificate Issuer Account                                                                 |
-| `isCrossTenant`                            | `bool`         | No       | Override this parameter if using this in cross tenant scenarios                                               |
-| `validity`                                 | `int`          | No       | Optional. Override default validityInMonths 12 value                                                          |
+| `akvName`                                  |    `string`    |   Yes    | The name of the Azure Key Vault                                                                               |
+| `location`                                 |    `string`    |   Yes    | The location to deploy the resources to                                                                       |
+| `forceUpdateTag`                           |    `string`    |    No    | How the deployment script should be forced to execute                                                         |
+| `rbacRolesNeededOnKV`                      |    `string`    |    No    | The RoleDefinitionId required for the DeploymentScript resource to interact with KeyVault                     |
+| `useExistingManagedIdentity`               |     `bool`     |    No    | Does the Managed Identity already exists, or should be created                                                |
+| `managedIdentityName`                      |    `string`    |    No    | Name of the Managed Identity resource                                                                         |
+| `existingManagedIdentitySubId`             |    `string`    |    No    | For an existing Managed Identity, the Subscription Id it is located in                                        |
+| `existingManagedIdentityResourceGroupName` |    `string`    |    No    | For an existing Managed Identity, the Resource Group it is located in                                         |
+| `certificateNames`                         |    `array`     |   Yes    | The names of the certificate to create. Use when creating many certificates.                                  |
+| `certificateCommonNames`                   |    `array`     |    No    | The common names of the certificate to create. Use when creating many certificates.                           |
+| `initialScriptDelay`                       |    `string`    |    No    | A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate |
+| `cleanupPreference`                        |    `string`    |    No    | When the script resource is cleaned up                                                                        |
+| `issuerName`                               |    `string`    |    No    | Self, or user defined {IssuerName} for certificate signing                                                    |
+| `issuerProvider`                           |    `string`    |    No    | Certificate Issuer Provider, DigiCert, GlobalSign, or internal options may be used.                           |
+| `accountId`                                |    `string`    |    No    | Account ID of Certificate Issuer Account                                                                      |
+| `issuerPassword`                           | `securestring` |    No    | Password of Certificate Issuer Account                                                                        |
+| `organizationId`                           |    `string`    |    No    | Organization ID of Certificate Issuer Account                                                                 |
+| `isCrossTenant`                            |     `bool`     |    No    | Override this parameter if using this in cross tenant scenarios                                               |
+| `validity`                                 |     `int`      |    No    | Optional. Override default validityInMonths 12 value                                                          |
 
 ## Outputs
 
@@ -103,7 +103,7 @@ param certificateNames array = [
   'myotherapp'
 ]
 
-module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.0.2' = {
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.1.1' = {
   name: 'akvCert-${certificateName}'
   params: {
     akvName:  akvName
@@ -130,7 +130,7 @@ param accountId
 param issuerPassword
 param organizationId
 
-module signedCert 'br/public:deployment-scripts/create-kv-certificate:3.0.2' = {
+module signedCert 'br/public:deployment-scripts/create-kv-certificate:3.1.1' = {
   name: 'akvCert-${certificateName}'
   params: {
     akvName:  akvName
