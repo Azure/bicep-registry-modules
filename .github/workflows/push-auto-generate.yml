@@ -66,6 +66,7 @@ jobs:
         if: steps.tag_version.outputs.release_type
         shell: bash
         env:
+          SAMPLEFOLDER_PATH: ${{ needs.get-module-to-validate.outputs.module_dir }}
           OLD_VERSION: ${{ steps.tag_version.outputs.previous_version }}
           VERSION: ${{ steps.tag_version.outputs.new_version }}
         run: |
