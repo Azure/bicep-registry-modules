@@ -25,19 +25,6 @@ module dependencies 'dependencies.bicep' = {
   }
 }
 
-
-module test0 '../main.bicep' = {
-  name: 'func-app0-${guid(name)}'
-  dependsOn: [
-    dependencies
-  ]
-  params: {
-    name: 'funcapp0-${resourceGroup().name}'
-    location: location
-  }
-  scope: resourceGroup()
-}
-
 @description(''' 
 - This test setup the Azure Function without appInsights (Microsoft.Insights/components).
 - enableaInsights default value is false and workspaceResourceId default value is empty so both params not required to pass.
