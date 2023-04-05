@@ -36,6 +36,7 @@ do
         --vault-name $akvName \
         -n $certName \
         -p "$policy" \
+        --validity "$validity"
         && break
 
     sleep $retrySleep
