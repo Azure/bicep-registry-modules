@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.1.55165",
-      "templateHash": "14413148925722204997"
+      "templateHash": "15517458431963188508"
     }
   },
   "parameters": {
@@ -115,6 +115,7 @@
       "metadata": {
         "description": "Certificate Validity in months. Default: 12"
       },
+      "maxValue": 1200,
       "minValue": 1
     },
     "accountId": {
