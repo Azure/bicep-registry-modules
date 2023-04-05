@@ -9,6 +9,7 @@ on:
       - modules/**/*.sh
       - modules/**/metadata.json
       - modules/**/README.md
+      - modules/**/main.json
 
 jobs:
   check-secret:
