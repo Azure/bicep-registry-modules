@@ -20,3 +20,12 @@ module test0 '../main.bicep' = {
     location: location
   }
 }
+
+// Test 1 - Enable Subnet
+module test0 '../main.bicep' = {
+  name: 'test0'
+  params: {
+    location: location
+    enableVNET: true
+  }
+}
