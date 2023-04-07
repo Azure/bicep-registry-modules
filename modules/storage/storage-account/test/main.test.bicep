@@ -13,7 +13,7 @@ param location string = resourceGroup().location
 //   }
 // }
 
-//Test 0. 
+//Test 0.
 module test0 '../main.bicep' = {
   name: 'test0'
   params: {
@@ -22,8 +22,8 @@ module test0 '../main.bicep' = {
 }
 
 // Test 1 - Enable Subnet
-module test0 '../main.bicep' = {
-  name: 'test0'
+module test1 '../main.bicep' = {
+  name: 'test1'
   params: {
     location: location
     enableVNET: true
