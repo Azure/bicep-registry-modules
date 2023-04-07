@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.1.55165",
-      "templateHash": "6527868928439809429"
+      "templateHash": "17939233979202657828"
     }
   },
   "parameters": {
@@ -102,13 +102,6 @@
       ],
       "metadata": {
         "description": "Specifies the minimum TLS version required for SSL requests. Default value is 1.2."
-      }
-    },
-    "appInsightsLocation": {
-      "type": "string",
-      "defaultValue": "[parameters('location')]",
-      "metadata": {
-        "description": "Location for Application Insights"
       }
     },
     "applicationInsightsName": {
@@ -222,7 +215,7 @@
       "type": "Microsoft.Insights/components",
       "apiVersion": "2020-02-02",
       "name": "[parameters('applicationInsightsName')]",
-      "location": "[parameters('appInsightsLocation')]",
+      "location": "[parameters('location')]",
       "kind": "web",
       "properties": {
         "Application_Type": "web",

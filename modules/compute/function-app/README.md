@@ -20,7 +20,6 @@ Deploy an Azure Function Application using this Bicep Module.
 | `subnetID`                | `string` | No       | The subnet resource ID if VNET integration is enabled. Default value is empty.                                                   |
 | `httpsOnly`               | `bool`   | No       | Enforces HTTPS-only access to the function app. Default value is true.                                                           |
 | `minTlsVersion`           | `string` | No       | Specifies the minimum TLS version required for SSL requests. Default value is 1.2.                                               |
-| `appInsightsLocation`     | `string` | No       | Location for Application Insights                                                                                                |
 | `applicationInsightsName` | `string` | No       | Name of Application Insights. Must be unique within Azure.                                                                       |
 | `storageAccountName`      | `string` | No       | Name of Storage Account. Must be unique within Azure.                                                                            |
 | `storageAccountType`      | `string` | No       | Storage Account type                                                                                                             |

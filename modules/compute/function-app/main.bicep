@@ -33,9 +33,6 @@ param httpsOnly bool = true
 @allowed([ '1.0', '1.1', '1.2' ])
 param minTlsVersion string = '1.2'
 
-@description('Location for Application Insights')
-param appInsightsLocation string = location
-
 @description('Name of Application Insights. Must be unique within Azure.')
 param applicationInsightsName string = 'ai${uniqueString(resourceGroup().id, subscription().id, location)}'
 
@@ -164,7 +161,7 @@ resource function 'Microsoft.Web/sites@2020-12-01' = {
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: applicationInsightsName
-  location: appInsightsLocation
+  location: location
   kind: 'web'
   properties: {
     Application_Type: 'web'
