@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.1.55165",
-      "templateHash": "3507117336367126124"
+      "templateHash": "15185028446071276240"
     }
   },
   "parameters": {
@@ -24,7 +24,7 @@
     },
     "subnetID": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[if(parameters('enableVNET'), null(), '')]",
       "metadata": {
         "description": "ID of the subnet where the Storage Account will be deployed, if virtual network access is enabled."
       }
