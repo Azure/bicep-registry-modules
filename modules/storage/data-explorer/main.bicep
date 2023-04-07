@@ -179,6 +179,27 @@ param cosmosDBDatabaseName string = 'mydb'
 @description('Name of Cosmos DB container')
 param cosmosDBContainerName string = 'mycontainer'
 
+@allowed([ 'new', 'existing', 'none' ])
+@description('Create a new Event Hub namespace or use an existing one. If none, the Event Hub connector will be disabled.')
+param newOrExistingEventHub string = 'none'
+
+@description('EventHub Sku Configuration Properties.')
+param eventHubSku object = {
+  capacity: 1
+  name: 'Standard'
+  tier: 'Standard'
+}
+
+@description('EventHub Properties.')
+param eventHubProperties object = {
+  messageRetentionInDays: 2
+  partitionCount: 2
+}
+
+@allowed([ 'new', 'existing', 'none' ])
+@description('Create a new Cosmos DB account or use an existing one. If none, the Cosmos DB connector will be disabled.')
+param newOrExistingCosmosDB string = 'none'
+
 //  Role list:  https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles
 var eventHubDataReceiver = 'a638d3c7-ab3a-418d-83e6-5f17a39d4fde'
 var cosmosDataReader = '00000000-0000-0000-0000-000000000001'
@@ -239,13 +260,8 @@ resource kustoCluster 'Microsoft.Kusto/clusters@2022-12-29' = {
     resource eventConnection 'dataConnections' = if (enableEventHubConnector) {
       name: 'eventConnection'
       location: location
-      //  Here we need to explicitely declare dependencies
-      //  Since we do not use those resources in the event connection
-      //  but we do need them to be deployed first
       dependsOn: [
-        //  We need the table to be present in the database
         kustoScript
-        //  We need the cluster to be receiver on the Event Hub
         clusterEventHubAuthorization
       ]
       kind: 'EventHub'
@@ -266,13 +282,8 @@ resource kustoCluster 'Microsoft.Kusto/clusters@2022-12-29' = {
     resource nosqlConnection 'dataConnections' = {
       name: 'nosqlConnection'
       location: location
-      //  Here we need to explicitely declare dependencies
-      //  Since we do not use those resources in the event connection
-      //  but we do need them to be deployed first
       dependsOn: [
-        //  We need the table to be present in the database
         kustoScript
-        //  We need the cluster to be receiver on the Event Hub
         cosmosDbAccount::clusterCosmosDbAuthorization
       ]
       kind: 'CosmosDb'
@@ -286,23 +297,6 @@ resource kustoCluster 'Microsoft.Kusto/clusters@2022-12-29' = {
       }
     }
   }
-}
-
-@allowed([ 'new', 'existing', 'none' ])
-@description('Create a new Event Hub namespace or use an existing one. If none, the Event Hub connector will be disabled.')
-param newOrExistingEventHub string = 'none'
-
-@description('EventHub Sku Configuration Properties.')
-param eventHubSku object = {
-  capacity: 1
-  name: 'Standard'
-  tier: 'Standard'
-}
-
-@description('EventHub Properties.')
-param eventHubProperties object = {
-  messageRetentionInDays: 2
-  partitionCount: 2
 }
 
 resource newEventHubNamespace 'Microsoft.EventHub/namespaces@2021-11-01' = if (enableEventHubConnector && newOrExistingEventHub == 'new') {
@@ -347,10 +341,6 @@ resource clusterEventHubAuthorization 'Microsoft.Authorization/roleAssignments@2
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', eventHubDataReceiver)
   }
 }
-
-@allowed([ 'new', 'existing', 'none' ])
-@description('Create a new Cosmos DB account or use an existing one. If none, the Cosmos DB connector will be disabled.')
-param newOrExistingCosmosDB string = 'none'
 
 resource newCosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' = if (enableCosmosDBConnector && newOrExistingCosmosDB == 'new') {
   name: cosmosDDAccountName
@@ -397,7 +387,6 @@ resource newCosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' =
 resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' existing = if (enableCosmosDBConnector) {
   name: cosmosDDAccountName
 
-  //  We need to authorize the cluster to read Cosmos DB's change feed by assigning the role
   resource clusterCosmosDbAuthorization 'sqlRoleAssignments' = if (enableCosmosDBConnector) {
     name: guid(kustoCluster.id, cosmosDDAccountName)
 
