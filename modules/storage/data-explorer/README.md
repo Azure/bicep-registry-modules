@@ -30,7 +30,7 @@ This Bicep module allows users to create or use existing Kusto Clusters with opt
 | `enablePurge`             | `bool`   | No       | Enable or disable purge.                                                                                              |
 | `enableDiskEncryption`    | `bool`   | No       | Enable or disable disk encryption.                                                                                    |
 | `enableDoubleEncryption`  | `bool`   | No       | Enable or disable double encryption.                                                                                  |
-| `trustAllTenants`         | `bool`   | No       |                                                                                                                       |
+| `trustAllTenants`         | `bool`   | No       | Enable or disable public access from all Tenants.                                                                     |
 | `trustedExternalTenants`  | `array`  | No       | The list of trusted external tenants.                                                                                 |
 | `enableAutoStop`          | `bool`   | No       | Enable or disable auto stop.                                                                                          |
 | `enableZoneRedundant`     | `bool`   | No       | Enable or disable zone redundant.                                                                                     |
@@ -46,10 +46,10 @@ This Bicep module allows users to create or use existing Kusto Clusters with opt
 | `cosmosDDAccountName`     | `string` | No       | Name of Cosmos DB account                                                                                             |
 | `cosmosDBDatabaseName`    | `string` | No       | Name of Cosmos DB database                                                                                            |
 | `cosmosDBContainerName`   | `string` | No       | Name of Cosmos DB container                                                                                           |
-| `newOrExistingEventHub`   | `string` | No       |                                                                                                                       |
-| `eventHubSku`             | `object` | No       |                                                                                                                       |
-| `eventHubProperties`      | `object` | No       |                                                                                                                       |
-| `newOrExistingCosmosDB`   | `string` | No       |                                                                                                                       |
+| `newOrExistingEventHub`   | `string` | No       | Create a new Event Hub namespace or use an existing one. If none, the Event Hub connector will be disabled.           |
+| `eventHubSku`             | `object` | No       | EventHub Sku Configuration Properties.                                                                                |
+| `eventHubProperties`      | `object` | No       | EventHub Properties.                                                                                                  |
+| `newOrExistingCosmosDB`   | `string` | No       | Create a new Cosmos DB account or use an existing one. If none, the Cosmos DB connector will be disabled.             |
 
 ## Outputs
 

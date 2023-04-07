@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.1.55165",
-      "templateHash": "12234303818178862283"
+      "templateHash": "13140996256759857654"
     }
   },
   "parameters": {
@@ -214,7 +214,10 @@
     },
     "trustAllTenants": {
       "type": "bool",
-      "defaultValue": false
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enable or disable public access from all Tenants."
+      }
     },
     "trustedExternalTenants": {
       "type": "array",
@@ -332,6 +335,9 @@
     "newOrExistingEventHub": {
       "type": "string",
       "defaultValue": "none",
+      "metadata": {
+        "description": "Create a new Event Hub namespace or use an existing one. If none, the Event Hub connector will be disabled."
+      },
       "allowedValues": [
         "new",
         "existing",
@@ -344,6 +350,9 @@
         "capacity": 1,
         "name": "Standard",
         "tier": "Standard"
+      },
+      "metadata": {
+        "description": "EventHub Sku Configuration Properties."
       }
     },
     "eventHubProperties": {
@@ -351,11 +360,17 @@
       "defaultValue": {
         "messageRetentionInDays": 2,
         "partitionCount": 2
+      },
+      "metadata": {
+        "description": "EventHub Properties."
       }
     },
     "newOrExistingCosmosDB": {
       "type": "string",
       "defaultValue": "none",
+      "metadata": {
+        "description": "Create a new Cosmos DB account or use an existing one. If none, the Cosmos DB connector will be disabled."
+      },
       "allowedValues": [
         "new",
         "existing",

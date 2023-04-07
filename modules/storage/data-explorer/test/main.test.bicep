@@ -13,7 +13,7 @@ param location string = resourceGroup().location
 module prereq 'prereq.test.bicep' = {
   name: 'test-prereqs'
   params: {
-    location: location
+    // location: location
   }
 }
 

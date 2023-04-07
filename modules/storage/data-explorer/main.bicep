@@ -126,6 +126,7 @@ param enableDiskEncryption bool = false
 @description('Enable or disable double encryption.')
 param enableDoubleEncryption bool = false
 
+@description('Enable or disable public access from all Tenants.')
 param trustAllTenants bool = false
 
 @description('The list of trusted external tenants.')
@@ -288,14 +289,17 @@ resource kustoCluster 'Microsoft.Kusto/clusters@2022-12-29' = {
 }
 
 @allowed([ 'new', 'existing', 'none' ])
+@description('Create a new Event Hub namespace or use an existing one. If none, the Event Hub connector will be disabled.')
 param newOrExistingEventHub string = 'none'
 
+@description('EventHub Sku Configuration Properties.')
 param eventHubSku object = {
   capacity: 1
   name: 'Standard'
   tier: 'Standard'
 }
 
+@description('EventHub Properties.')
 param eventHubProperties object = {
   messageRetentionInDays: 2
   partitionCount: 2
@@ -345,6 +349,7 @@ resource clusterEventHubAuthorization 'Microsoft.Authorization/roleAssignments@2
 }
 
 @allowed([ 'new', 'existing', 'none' ])
+@description('Create a new Cosmos DB account or use an existing one. If none, the Cosmos DB connector will be disabled.')
 param newOrExistingCosmosDB string = 'none'
 
 resource newCosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' = if (enableCosmosDBConnector && newOrExistingCosmosDB == 'new') {

@@ -1,4 +1,4 @@
-param location string
+// param location string
 
 // module eventhub 'br/public:data/event-hub:0.0.1' = {
 //   name: 'myeventhub'
