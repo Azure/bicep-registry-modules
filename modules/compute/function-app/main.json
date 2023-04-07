@@ -1,0 +1,315 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.16.1.55165",
+      "templateHash": "4605841860491828825"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Deployment Location"
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "[format('func{0}', uniqueString(resourceGroup().id, subscription().id, parameters('location')))]",
+      "metadata": {
+        "description": "Name of Storage Account. Must be unique within Azure."
+      }
+    },
+    "serverFarmName": {
+      "type": "string",
+      "defaultValue": "[format('asp{0}', uniqueString(resourceGroup().id, subscription().id, parameters('location')))]",
+      "metadata": {
+        "description": "Name of the resource group that will contain the resources."
+      }
+    },
+    "enableVNET": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enables VNET integration. Default value is false."
+      }
+    },
+    "skuName": {
+      "type": "string",
+      "defaultValue": "F1",
+      "allowedValues": [
+        "F1",
+        "D1",
+        "B1",
+        "B2",
+        "B3",
+        "S1",
+        "S2",
+        "S3",
+        "P1",
+        "P2",
+        "P3",
+        "P4"
+      ],
+      "metadata": {
+        "description": "Describes plan's pricing tier and instance size. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
+      }
+    },
+    "skuCapacity": {
+      "type": "int",
+      "defaultValue": 1,
+      "maxValue": 3,
+      "minValue": 1,
+      "metadata": {
+        "description": "Describes plan's instance count"
+      }
+    },
+    "runtime": {
+      "type": "string",
+      "defaultValue": "node",
+      "allowedValues": [
+        "node",
+        "dotnet",
+        "java"
+      ],
+      "metadata": {
+        "description": "The runtime that the function app is using. Default value is node."
+      }
+    },
+    "subnetID": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The subnet resource ID if VNET integration is enabled. Default value is empty."
+      }
+    },
+    "httpsOnly": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enforces HTTPS-only access to the function app. Default value is true."
+      }
+    },
+    "minTlsVersion": {
+      "type": "string",
+      "defaultValue": "1.2",
+      "allowedValues": [
+        "1.0",
+        "1.1",
+        "1.2"
+      ],
+      "metadata": {
+        "description": "Specifies the minimum TLS version required for SSL requests. Default value is 1.2."
+      }
+    },
+    "appInsightsLocation": {
+      "type": "string",
+      "defaultValue": "[parameters('location')]",
+      "metadata": {
+        "description": "Location for Application Insights"
+      }
+    },
+    "applicationInsightsName": {
+      "type": "string",
+      "defaultValue": "[format('ai{0}', uniqueString(resourceGroup().id, subscription().id, parameters('location')))]",
+      "metadata": {
+        "description": "Name of Application Insights. Must be unique within Azure."
+      }
+    },
+    "storageAccountName": {
+      "type": "string",
+      "defaultValue": "[format('sa{0}', uniqueString(resourceGroup().id, subscription().id, parameters('location')))]",
+      "metadata": {
+        "description": "Name of Storage Account. Must be unique within Azure."
+      }
+    },
+    "storageAccountType": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_GRS",
+        "Standard_RAGRS"
+      ],
+      "metadata": {
+        "description": "Storage Account type"
+      }
+    }
+  },
+  "variables": {
+    "ipSecurityRestrictions": "[if(parameters('enableVNET'), createArray(createObject('vnetSubnetResourceId', parameters('subnetID'), 'action', 'Allow', 'tag', 'Default', 'priority', 1, 'name', 'allowinboundonlyfromvnet', 'description', 'Allowing inbound only from VNET'), createObject('ipAddress', 'AzureCognitiveSearch', 'tag', 'ServiceTag', 'action', 'Allow', 'priority', 2, 'name', 'allowsearchinbound', 'description', 'allow search inbound from webapps')), createArray())]",
+    "scmIpSecurityRestrictions": "[if(parameters('enableVNET'), createArray(createObject('vnetSubnetResourceId', parameters('subnetID'), 'action', 'Allow', 'tag', 'Default', 'priority', 1, 'name', 'allowscminboundonlyfromvnet', 'description', 'Allowing scm inbound only from VNET'), createObject('ipAddress', 'AzureCognitiveSearch', 'tag', 'ServiceTag', 'action', 'Allow', 'priority', 2, 'name', 'allowsearchinbound', 'description', 'allow search inbound from webapps')), createArray())]",
+    "linuxFxVersion": "PYTHON|3.7"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2022-05-01",
+      "name": "[parameters('storageAccountName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('storageAccountType')]"
+      },
+      "kind": "Storage",
+      "properties": {
+        "supportsHttpsTrafficOnly": true,
+        "defaultToOAuthAuthentication": true
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2020-12-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "kind": "functionapp",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "tags": {
+        "[format('hidden-related:{0}/providers/Microsoft.Web/serverfarms/{1}', resourceGroup().id, parameters('serverFarmName'))]": "Resource",
+        "displayName": "Function"
+      },
+      "properties": {
+        "name": "[parameters('serverFarmName')]",
+        "serverFarmId": "[reference(resourceId('Microsoft.Resources/deployments', parameters('serverFarmName')), '2022-09-01').outputs.id.value]",
+        "siteConfig": {
+          "linuxFxVersion": "[variables('linuxFxVersion')]",
+          "ipSecurityRestrictions": "[variables('ipSecurityRestrictions')]",
+          "scmIpSecurityRestrictions": "[variables('scmIpSecurityRestrictions')]",
+          "minTlsVersion": "[parameters('minTlsVersion')]",
+          "appSettings": [
+            {
+              "name": "AzureWebJobsStorage",
+              "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', parameters('storageAccountName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2022-05-01').keys[0].value)]"
+            },
+            {
+              "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+              "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', parameters('storageAccountName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2022-05-01').keys[0].value)]"
+            },
+            {
+              "name": "WEBSITE_CONTENTSHARE",
+              "value": "[toLower(parameters('name'))]"
+            },
+            {
+              "name": "FUNCTIONS_EXTENSION_VERSION",
+              "value": "~4"
+            },
+            {
+              "name": "WEBSITE_NODE_DEFAULT_VERSION",
+              "value": "~14"
+            },
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference(resourceId('Microsoft.Insights/components', parameters('applicationInsightsName')), '2020-02-02').InstrumentationKey]"
+            },
+            {
+              "name": "FUNCTIONS_WORKER_RUNTIME",
+              "value": "[parameters('runtime')]"
+            }
+          ]
+        },
+        "httpsOnly": "[parameters('httpsOnly')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Insights/components', parameters('applicationInsightsName'))]",
+        "[resourceId('Microsoft.Resources/deployments', parameters('serverFarmName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02",
+      "name": "[parameters('applicationInsightsName')]",
+      "location": "[parameters('appInsightsLocation')]",
+      "kind": "web",
+      "properties": {
+        "Application_Type": "web",
+        "Request_Source": "rest"
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[parameters('serverFarmName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('serverFarmName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "skuName": {
+            "value": "[parameters('skuName')]"
+          },
+          "skuCapacity": {
+            "value": "[parameters('skuCapacity')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.16.1.55165",
+              "templateHash": "7174089972565293143"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "skuName": {
+              "type": "string"
+            },
+            "skuCapacity": {
+              "type": "int"
+            },
+            "tags": {
+              "type": "object",
+              "defaultValue": {}
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Web/serverfarms",
+              "apiVersion": "2020-12-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "sku": {
+                "name": "[parameters('skuName')]",
+                "capacity": "[parameters('skuCapacity')]"
+              },
+              "properties": {
+                "reserved": true
+              }
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Web/serverfarms', parameters('name'))]"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "id": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Web/sites', parameters('name'))]"
+    }
+  }
+}
