@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "6249334553241462209"
+      "version": "0.16.1.55165",
+      "templateHash": "3507117336367126124"
     }
   },
   "parameters": {
@@ -86,10 +86,10 @@
   "outputs": {
     "id": {
       "type": "string",
-      "value": "[resourceId('Microsoft.Storage/storageAccounts', parameters('name'))]",
       "metadata": {
         "description": "The ID of the created or existing Storage Account. Use this ID to reference the Storage Account in other Azure resource deployments."
-      }
+      },
+      "value": "[resourceId('Microsoft.Storage/storageAccounts', parameters('name'))]"
     }
   }
 }
