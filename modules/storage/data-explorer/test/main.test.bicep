@@ -63,3 +63,25 @@ module test3 '../main.bicep' = {
 //     cosmosDBAccountName: prereq.outputs.cosmosDBAccountName
 //   }
 // }
+
+// Test 5.
+module test5 '../main.bicep' = {
+  name: 'test5'
+  params: {
+    location: 'eastus'
+    newOrExistingEventHub: 'new'
+    newOrExistingCosmosDB: 'new'
+    enableAutoScale: true
+    autoScaleMin: 2
+    autoScaleMax: 4
+    enableDiskEncryption: true
+    enableZoneRedundant: true
+    unlimitedSoftDelete: true
+    unlimitedHotCache: true
+    enableAutoStop: false
+    enablePurge: true
+    enableManagedIdentity: true
+    enableDoubleEncryption: true
+    enableStreamingIngest: true
+  }
+}

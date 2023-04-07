@@ -133,7 +133,7 @@ param trustAllTenants bool = false
 param trustedExternalTenants array = []
 
 @description('Enable or disable auto stop.')
-param enableAutoStop bool = false
+param enableAutoStop bool = true
 
 @description('Enable or disable zone redundant.')
 param enableZoneRedundant bool = false
