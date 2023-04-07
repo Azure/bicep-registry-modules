@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.1.55165",
-      "templateHash": "13140996256759857654"
+      "templateHash": "17124113404659841613"
     }
   },
   "parameters": {
@@ -228,7 +228,7 @@
     },
     "enableAutoStop": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
         "description": "Enable or disable auto stop."
       }
