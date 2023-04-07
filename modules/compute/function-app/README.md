@@ -27,9 +27,9 @@ Deploy an Azure Function Application using this Bicep Module.
 
 ## Outputs
 
-| Name | Type   | Description |
-| :--- | :----: | :---------- |
-| id   | string |             |
+| Name | Type   | Description                |
+| :--- | :----: | :------------------------- |
+| id   | string | Azure Function Resource ID |
 
 ## Examples
 

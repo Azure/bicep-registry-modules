@@ -172,4 +172,5 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
+@description('Azure Function Resource ID')
 output id string = function.id

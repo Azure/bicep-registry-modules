@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.1.55165",
-      "templateHash": "4605841860491828825"
+      "templateHash": "6527868928439809429"
     }
   },
   "parameters": {
@@ -309,6 +309,9 @@
   "outputs": {
     "id": {
       "type": "string",
+      "metadata": {
+        "description": "Azure Function Resource ID"
+      },
       "value": "[resourceId('Microsoft.Web/sites', parameters('name'))]"
     }
   }
