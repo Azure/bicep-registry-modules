@@ -5,7 +5,8 @@ param location string
 param name string = 'st${uniqueString(resourceGroup().id, subscription().id)}'
 
 @description('ID of the subnet where the Storage Account will be deployed, if virtual network access is enabled.')
-param subnetID string = ''
+#disable-next-line BCP321
+param subnetID string = enableVNET ? null : ''
 
 @description('Toggle to enable or disable virtual network access for the Storage Account.')
 param enableVNET bool = false
