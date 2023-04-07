@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
+  "name": "Azure Data Explorer",
+  "summary": "This Bicep module creates a Kusto Cluster with the specified number of nodes and version.",
+  "owner": "dciborow"
+}
