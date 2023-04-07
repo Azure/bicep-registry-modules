@@ -1,0 +1,320 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.16.1.55165",
+      "templateHash": "2402608564451999405"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location into which the resources should be deployed"
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "[format('psql{0}', uniqueString(resourceGroup().id, subscription().id, parameters('location')))]",
+      "metadata": {
+        "description": "The name of the PostgreSQL server"
+      },
+      "maxLength": 63,
+      "minLength": 3
+    },
+    "vnetName": {
+      "type": "string",
+      "defaultValue": "[format('vnet{0}', uniqueString(resourceGroup().id, subscription().id, parameters('location')))]",
+      "metadata": {
+        "description": "The name of the virtual network"
+      },
+      "maxLength": 63,
+      "minLength": 3
+    },
+    "administratorLogin": {
+      "type": "securestring",
+      "minLength": 1,
+      "metadata": {
+        "description": "Database administrator login name"
+      }
+    },
+    "administratorLoginPassword": {
+      "type": "securestring",
+      "maxLength": 128,
+      "minLength": 8,
+      "metadata": {
+        "description": "Database administrator password"
+      }
+    },
+    "postgresFlexibleServersSkuTier": {
+      "type": "string",
+      "defaultValue": "Burstable",
+      "allowedValues": [
+        "Burstable",
+        "GeneralPurpose",
+        "MemoryOptimized"
+      ],
+      "metadata": {
+        "description": "The tier of the particular SKU, e.g. Burstable"
+      }
+    },
+    "postgresFlexibleServersSkuName": {
+      "type": "string",
+      "defaultValue": "Standard_B1ms",
+      "metadata": {
+        "description": "The name of the sku, typically, tier + family + cores, e.g. Standard_D4s_v3"
+      }
+    },
+    "postgresFlexibleServersversion": {
+      "type": "string",
+      "defaultValue": "13",
+      "allowedValues": [
+        "11",
+        "12",
+        "13"
+      ],
+      "metadata": {
+        "description": "The version of a PostgreSQL server"
+      }
+    },
+    "createMode": {
+      "type": "string",
+      "defaultValue": "Default",
+      "allowedValues": [
+        "Create",
+        "Default",
+        "PointInTimeRestore",
+        "Update"
+      ],
+      "metadata": {
+        "description": "The mode to create a new PostgreSQL server"
+      }
+    },
+    "storageSizeGB": {
+      "type": "int",
+      "defaultValue": 32,
+      "allowedValues": [
+        32,
+        64,
+        128,
+        256,
+        512,
+        1024,
+        2048,
+        4096,
+        8192,
+        16384
+      ],
+      "metadata": {
+        "description": "The size of the storage in GB"
+      }
+    },
+    "backupRetentionDays": {
+      "type": "int",
+      "defaultValue": 7,
+      "maxValue": 35,
+      "minValue": 7,
+      "metadata": {
+        "description": "The number of days a backup is retained"
+      }
+    },
+    "geoRedundantBackup": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "The geo-redundant backup setting"
+      }
+    },
+    "highAvailability": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
+      "metadata": {
+        "description": "The high availability mode"
+      }
+    },
+    "aadEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enable Azure Active Directory based authentication"
+      }
+    },
+    "aadData": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "The Azure Active Directory data"
+      }
+    },
+    "vnetResourceGroup": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().name]",
+      "metadata": {
+        "description": "The resource group containing  the virtual network."
+      }
+    },
+    "newOrExistingVnet": {
+      "type": "string",
+      "defaultValue": "none",
+      "allowedValues": [
+        "new",
+        "existing",
+        "none"
+      ],
+      "metadata": {
+        "description": "Chose to use a new or existing virtual network"
+      }
+    }
+  },
+  "variables": {
+    "privateDNSZoneName": "[format('{0}.private.postgres.database.azure.com', parameters('vnetName'))]",
+    "privateDNSZoneLinkName": "[format('{0}privatelink', parameters('vnetName'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/privateDnsZones/A",
+      "apiVersion": "2020-06-01",
+      "name": "[format('{0}/{1}', variables('privateDNSZoneName'), uniqueString(parameters('name')))]",
+      "properties": {
+        "ttl": 30,
+        "aRecords": [
+          {
+            "ipv4Address": "10.0.1.4"
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDNSZoneName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+      "apiVersion": "2020-06-01",
+      "name": "[format('{0}/{1}', variables('privateDNSZoneName'), variables('privateDNSZoneLinkName'))]",
+      "location": "global",
+      "properties": {
+        "registrationEnabled": true,
+        "virtualNetwork": {
+          "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('vnetResourceGroup')), 'Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDNSZoneName'))]"
+      ]
+    },
+    {
+      "condition": "[parameters('aadEnabled')]",
+      "type": "Microsoft.DBforPostgreSQL/flexibleServers/administrators",
+      "apiVersion": "2022-12-01",
+      "name": "[format('{0}/{1}', parameters('name'), parameters('aadData').objectId)]",
+      "properties": {
+        "tenantId": "[parameters('aadData').tenantId]",
+        "principalName": "[parameters('aadData').principalName]",
+        "principalType": "[parameters('aadData').principalType]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers', parameters('name'))]"
+      ]
+    },
+    {
+      "condition": "[equals(parameters('newOrExistingVnet'), 'new')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2021-08-01",
+      "name": "[parameters('vnetName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.0.0.0/16"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "appNet",
+            "properties": {
+              "addressPrefix": "10.0.0.0/24",
+              "delegations": [
+                {
+                  "name": "appDelegation",
+                  "properties": {
+                    "serviceName": "Microsoft.Web/serverfarms"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "dbNet",
+            "properties": {
+              "addressPrefix": "10.0.1.0/24",
+              "delegations": [
+                {
+                  "name": "dbDelegation",
+                  "properties": {
+                    "serviceName": "Microsoft.DBforPostgreSQL/flexibleServers"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/privateDnsZones",
+      "apiVersion": "2020-06-01",
+      "name": "[variables('privateDNSZoneName')]",
+      "location": "global",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.DBforPostgreSQL/flexibleServers",
+      "apiVersion": "2022-12-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('postgresFlexibleServersSkuName')]",
+        "tier": "[parameters('postgresFlexibleServersSkuTier')]"
+      },
+      "properties": {
+        "administratorLogin": "[parameters('administratorLogin')]",
+        "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+        "createMode": "[parameters('createMode')]",
+        "network": "[if(equals(parameters('newOrExistingVnet'), 'none'), null(), createObject('delegatedSubnetResourceId', resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), 'dbNet'), 'privateDnsZoneArmResourceId', resourceId('Microsoft.Network/privateDnsZones', variables('privateDNSZoneName'))))]",
+        "storage": {
+          "storageSizeGB": "[parameters('storageSizeGB')]"
+        },
+        "backup": {
+          "backupRetentionDays": "[parameters('backupRetentionDays')]",
+          "geoRedundantBackup": "[parameters('geoRedundantBackup')]"
+        },
+        "highAvailability": {
+          "mode": "[parameters('highAvailability')]"
+        },
+        "maintenanceWindow": {
+          "customWindow": "Disabled",
+          "dayOfWeek": 0,
+          "startHour": 0,
+          "startMinute": 0
+        },
+        "version": "[parameters('postgresFlexibleServersversion')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDNSZoneName'))]",
+        "[resourceId('Microsoft.Network/privateDnsZones/virtualNetworkLinks', variables('privateDNSZoneName'), variables('privateDNSZoneLinkName'))]"
+      ]
+    }
+  ]
+}

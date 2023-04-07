@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
+  "name": "Azure Flexible PostGres-SQL",
+  "summary": "This Bicep module creates a PostgreSQL Server with zone-redundancy, virtual network access.",
+  "owner": "dciborow"
+}
