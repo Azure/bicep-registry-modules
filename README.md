@@ -4,7 +4,7 @@ This repo contains the source code of all currently available Bicep modules in t
 
 ## Available Modules
 
-To view available modules and their versions, check the [Bicep Registry Module Index](https://azure.github.io/bicep-registry-modules/).
+To view available modules and their versions, go to Bicep Registry Module Index ([https://aka.ms/br-module-index](https://aka.ms/br-module-index)).
 
 ## Contributing
 
