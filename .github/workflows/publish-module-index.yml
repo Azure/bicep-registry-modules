@@ -4,6 +4,7 @@ on:
 
 permissions:
   id-token: write
+  pages: write
   contents: read
 
 # Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
