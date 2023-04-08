@@ -22,16 +22,16 @@ module test0 '../main.bicep' = {
 
 // Test 1
 // Insert Secerts into existing Key Vault later in template
-module test1_new '../main.bicep' = {
-  name: 'test1-new'
+module test1CreateKV '../main.bicep' = {
+  name: 'test1-newkv'
   params: {
     location: location
     prefix: 'kv2'
   }
 }
 
-module test1_existing '../main.bicep' = {
-  name: 'test1-existing'
+module test1InsertSecret '../main.bicep' = {
+  name: 'test1-insert-secret'
   params: {
     location: location
     name: test1_new.outputs.name
