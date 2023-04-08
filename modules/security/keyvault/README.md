@@ -51,7 +51,7 @@ The Bicep module outputs the ID and name of the Key Vault, which can be used by 
 param location string = 'eastus'
 param name string = 'mykeyvault'
 
-module keyVault 'br/public:security/keyvault:0.0.1' = {
+module keyVault 'br/public:security/keyvault:1.0.1' = {
   name: 'myKeyVault'
   params: {
     location: location
@@ -67,7 +67,7 @@ param roleAssignments array = [
   '4633458b-17de-408a-b874-0445c86b69e6' // rbacSecretsReaderRole
 ]
 
-module keyVault 'br/public:security/keyvault:0.0.1' = {
+module keyVault 'br/public:security/keyvault:1.0.1' = {
   name: 'myKeyVault'
   params: {
     location: location
