@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "11741624788643185086"
+      "version": "0.16.1.55165",
+      "templateHash": "7366548729355115021"
     }
   },
   "parameters": {
@@ -20,7 +20,7 @@
       "type": "string",
       "defaultValue": "[format('{0}-{1}', parameters('prefix'), uniqueString(resourceGroup().id, subscription().id))]",
       "metadata": {
-        "description": "Traffic Manager Profile Resource Name"
+        "description": "Name of Traffic Manager Profile Resource"
       }
     },
     "trafficManagerDnsName": {
@@ -102,17 +102,17 @@
   "outputs": {
     "id": {
       "type": "string",
-      "value": "[resourceId('Microsoft.Network/trafficmanagerprofiles', parameters('name'))]",
       "metadata": {
         "description": "Traffic Manager Profile Resource ID"
-      }
+      },
+      "value": "[resourceId('Microsoft.Network/trafficmanagerprofiles', parameters('name'))]"
     },
     "name": {
       "type": "string",
-      "value": "[parameters('name')]",
       "metadata": {
         "description": "Traffic Manager Profile Resource Name"
-      }
+      },
+      "value": "[parameters('name')]"
     }
   }
 }
