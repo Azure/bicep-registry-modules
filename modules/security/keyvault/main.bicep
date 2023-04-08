@@ -92,7 +92,7 @@ module secret 'modules/secrets.bicep' = if (createSecret) {
 output id string = keyVault.outputs.id
 
 @description('Key Vault Name')
-output name string = keyVault.outputs.name
+output name string = name
 
 @description('Key Vault Id')
 output id string = createSecret ? secret.outputs.id : ''
