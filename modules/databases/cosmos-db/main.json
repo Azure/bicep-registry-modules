@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "15955645419837971882"
+      "version": "0.16.1.55165",
+      "templateHash": "164460781412871878"
     }
   },
   "parameters": {
@@ -26,7 +26,7 @@
       "type": "string",
       "defaultValue": "[format('{0}{1}', parameters('prefix'), uniqueString(resourceGroup().id, parameters('location')))]",
       "metadata": {
-        "description": "Name of Cosmos DB"
+        "description": "Name of Cosmos DB Resource"
       }
     },
     "maxStalenessPrefix": {
@@ -158,17 +158,17 @@
   "outputs": {
     "id": {
       "type": "string",
-      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name')))]",
       "metadata": {
         "description": "Cosmos DB Resource ID"
-      }
+      },
+      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name')))]"
     },
     "name": {
       "type": "string",
-      "value": "[toLower(parameters('name'))]",
       "metadata": {
         "description": "Cosmos DB Resource Name"
-      }
+      },
+      "value": "[toLower(parameters('name'))]"
     }
   }
 }
