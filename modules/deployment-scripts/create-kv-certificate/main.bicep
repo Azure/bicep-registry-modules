@@ -5,7 +5,7 @@ param akvName string
 param location string
 
 @description('How the deployment script should be forced to execute')
-param forceUpdateTag  string = utcNow()
+param forceUpdateTag string = utcNow()
 
 @description('The RoleDefinitionId required for the DeploymentScript resource to interact with KeyVault')
 param rbacRolesNeededOnKV string = 'a4417e6f-fecd-4de8-b567-7b0420556985' //KeyVault Certificate Officer
@@ -66,6 +66,11 @@ param organizationId string = ''
 @description('Override this parameter if using this in cross tenant scenarios')
 param isCrossTenant bool = false
 
+@minValue(1)
+@maxValue(1200)
+@description('Optional. Override default validityInMonths 12 value')
+param validity int = 12
+
 resource akv 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: akvName
 }
@@ -77,7 +82,7 @@ resource newDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-1
 }
 
 @description('An existing managed identity that could exist in another sub/rg')
-resource existingDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = if (useExistingManagedIdentity ) {
+resource existingDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = if (useExistingManagedIdentity) {
   name: managedIdentityName
   scope: resourceGroup(existingManagedIdentitySubId, existingManagedIdentityResourceGroupName)
 }
@@ -91,12 +96,12 @@ resource rbacKv 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
     roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', rbacRolesNeededOnKV)
     principalId: useExistingManagedIdentity ? existingDepScriptId.properties.principalId : newDepScriptId.properties.principalId
     principalType: 'ServicePrincipal'
-    delegatedManagedIdentityResourceId: isCrossTenant ? delegatedManagedIdentityResourceId : null 
+    delegatedManagedIdentityResourceId: isCrossTenant ? delegatedManagedIdentityResourceId : null
   }
 }
 
 resource createImportCerts 'Microsoft.Resources/deploymentScripts@2020-10-01' = [for (certificateName, index) in certificateNames: {
-  name: 'AKV-Cert-${akv.name}-${replace(replace(certificateName,':',''),'/','-')}'
+  name: 'AKV-Cert-${akv.name}-${replace(replace(certificateName, ':', ''), '/', '-')}'
   location: location
   identity: {
     type: 'UserAssigned'
@@ -127,6 +132,7 @@ resource createImportCerts 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
       { name: 'accountId', value: accountId }
       { name: 'issuerPassword', secureValue: issuerPassword }
       { name: 'organizationId', value: organizationId }
+      { name: 'validity', value: string(validity) }
     ]
     scriptContent: loadTextContent('create-kv-cert.sh')
     cleanupPreference: cleanupPreference

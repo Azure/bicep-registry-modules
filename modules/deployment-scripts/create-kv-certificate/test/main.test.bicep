@@ -1,5 +1,7 @@
+targetScope = 'resourceGroup'
+
 param location string = resourceGroup().location
-param akvName string =  'akvtest${uniqueString(resourceGroup().id, deployment().name)}'
+param akvName string = 'akvtest${uniqueString(resourceGroup().id, deployment().name)}'
 
 //Prerequisites
 resource akv 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
@@ -30,8 +32,8 @@ module akvCertSingle '../main.bicep' = {
     disabled: true
   }
 }
-output singleSecretId string = akvCertSingle.outputs.certificateSecretIds[0]
-output singleThumbprint string = akvCertSingle.outputs.certificateThumbprintHexs[0]
+output singleSecretId string = akvCertSingle.outputs.certificateSecretIds[0][0]
+output singleThumbprint string = akvCertSingle.outputs.certificateThumbprintHexs[0][0]
 
 //Test 2. Array of certificates
 var certificateNames = [
@@ -42,11 +44,12 @@ var certificateNames = [
 module akvCertMultiple '../main.bicep' = {
   name: 'akvCertMultiple-${uniqueString(akv.name)}'
   params: {
-    akvName:  akv.name
+    akvName: akv.name
     location: location
     certificateNames: certificateNames
     initialScriptDelay: '0'
     managedIdentityName: 'aDifferentIdentity'
+    validity: 24
   }
 }
 

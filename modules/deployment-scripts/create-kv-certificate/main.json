@@ -152,6 +152,15 @@
       "metadata": {
         "description": "Override this parameter if using this in cross tenant scenarios"
       }
+    },
+    "validity": {
+      "type": "int",
+      "defaultValue": 12,
+      "metadata": {
+        "description": "Optional. Override default validityInMonths 12 value"
+      },
+      "maxValue": 1200,
+      "minValue": 1
     }
   },
   "variables": {
@@ -257,6 +266,10 @@
           {
             "name": "organizationId",
             "value": "[parameters('organizationId')]"
+          },
+          {
+            "name": "validity",
+            "value": "[string(parameters('validity'))]"
           }
         ],
         "scriptContent": "[variables('$fxv#0')]",
