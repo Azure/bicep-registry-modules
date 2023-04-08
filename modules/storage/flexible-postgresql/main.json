@@ -1,11 +1,13 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "1.10-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
+    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
       "version": "0.16.1.55165",
-      "templateHash": "13362754444533298385"
+      "templateHash": "14004663166972599569"
     }
   },
   "parameters": {
@@ -24,17 +26,8 @@
       "maxLength": 63,
       "minLength": 3
     },
-    "vnetName": {
-      "type": "string",
-      "defaultValue": "[format('vnet{0}', uniqueString(resourceGroup().id, subscription().id, parameters('location')))]",
-      "metadata": {
-        "description": "The name of the virtual network"
-      },
-      "maxLength": 63,
-      "minLength": 3
-    },
     "administratorLogin": {
-      "type": "securestring",
+      "type": "string",
       "minLength": 1,
       "metadata": {
         "description": "Database administrator login name"
@@ -141,145 +134,10 @@
       "metadata": {
         "description": "The high availability mode"
       }
-    },
-    "aadEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Enable Azure Active Directory based authentication"
-      }
-    },
-    "aadData": {
-      "type": "object",
-      "defaultValue": {},
-      "metadata": {
-        "description": "The Azure Active Directory data"
-      }
-    },
-    "vnetResourceGroup": {
-      "type": "string",
-      "defaultValue": "[resourceGroup().name]",
-      "metadata": {
-        "description": "The resource group containing  the virtual network."
-      }
-    },
-    "newOrExistingVnet": {
-      "type": "string",
-      "defaultValue": "none",
-      "allowedValues": [
-        "new",
-        "existing",
-        "none"
-      ],
-      "metadata": {
-        "description": "Chose to use a new or existing virtual network"
-      }
     }
   },
-  "variables": {
-    "privateDNSZoneName": "[format('{0}.private.postgres.database.azure.com', parameters('vnetName'))]",
-    "privateDNSZoneLinkName": "[format('{0}privatelink', parameters('vnetName'))]"
-  },
-  "resources": [
-    {
-      "type": "Microsoft.Network/privateDnsZones/A",
-      "apiVersion": "2020-06-01",
-      "name": "[format('{0}/{1}', variables('privateDNSZoneName'), uniqueString(parameters('name')))]",
-      "properties": {
-        "ttl": 30,
-        "aRecords": [
-          {
-            "ipv4Address": "10.0.1.4"
-          }
-        ]
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDNSZoneName'))]"
-      ]
-    },
-    {
-      "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
-      "apiVersion": "2020-06-01",
-      "name": "[format('{0}/{1}', variables('privateDNSZoneName'), variables('privateDNSZoneLinkName'))]",
-      "location": "global",
-      "properties": {
-        "registrationEnabled": true,
-        "virtualNetwork": {
-          "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('vnetResourceGroup')), 'Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
-        }
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDNSZoneName'))]"
-      ]
-    },
-    {
-      "condition": "[parameters('aadEnabled')]",
-      "type": "Microsoft.DBforPostgreSQL/flexibleServers/administrators",
-      "apiVersion": "2022-12-01",
-      "name": "[format('{0}/{1}', parameters('name'), if(contains(parameters('aadData'), 'objectId'), parameters('aadData').objectId, ''))]",
-      "properties": {
-        "tenantId": "[if(contains(parameters('aadData'), 'tenantId'), parameters('aadData').tenantId, '')]",
-        "principalName": "[if(contains(parameters('aadData'), 'principalName'), parameters('aadData').principalName, '')]",
-        "principalType": "[if(contains(parameters('aadData'), 'principalType'), parameters('aadData').principalType, '')]"
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers', parameters('name'))]"
-      ]
-    },
-    {
-      "condition": "[equals(parameters('newOrExistingVnet'), 'new')]",
-      "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2021-08-01",
-      "name": "[parameters('vnetName')]",
-      "location": "[parameters('location')]",
-      "properties": {
-        "addressSpace": {
-          "addressPrefixes": [
-            "10.0.0.0/16"
-          ]
-        },
-        "subnets": [
-          {
-            "name": "appNet",
-            "properties": {
-              "addressPrefix": "10.0.0.0/24",
-              "delegations": [
-                {
-                  "name": "appDelegation",
-                  "properties": {
-                    "serviceName": "Microsoft.Web/serverfarms"
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "name": "dbNet",
-            "properties": {
-              "addressPrefix": "10.0.1.0/24",
-              "delegations": [
-                {
-                  "name": "dbDelegation",
-                  "properties": {
-                    "serviceName": "Microsoft.DBforPostgreSQL/flexibleServers"
-                  }
-                }
-              ]
-            }
-          }
-        ]
-      }
-    },
-    {
-      "type": "Microsoft.Network/privateDnsZones",
-      "apiVersion": "2020-06-01",
-      "name": "[variables('privateDNSZoneName')]",
-      "location": "global",
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
-      ]
-    },
-    {
+  "resources": {
+    "postgresFlexibleServers": {
       "type": "Microsoft.DBforPostgreSQL/flexibleServers",
       "apiVersion": "2022-12-01",
       "name": "[parameters('name')]",
@@ -292,7 +150,6 @@
         "administratorLogin": "[parameters('administratorLogin')]",
         "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
         "createMode": "[parameters('createMode')]",
-        "network": "[if(equals(parameters('newOrExistingVnet'), 'none'), null(), createObject('delegatedSubnetResourceId', resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('vnetName'), 'dbNet'), 'privateDnsZoneArmResourceId', resourceId('Microsoft.Network/privateDnsZones', variables('privateDNSZoneName'))))]",
         "storage": {
           "storageSizeGB": "[parameters('storageSizeGB')]"
         },
@@ -310,11 +167,7 @@
           "startMinute": 0
         },
         "version": "[parameters('postgresFlexibleServersversion')]"
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDNSZoneName'))]",
-        "[resourceId('Microsoft.Network/privateDnsZones/virtualNetworkLinks', variables('privateDNSZoneName'), variables('privateDNSZoneLinkName'))]"
-      ]
+      }
     }
-  ]
+  }
 }

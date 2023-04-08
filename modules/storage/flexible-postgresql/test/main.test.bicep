@@ -18,7 +18,7 @@ module test0 '../main.bicep' = {
   name: 'test0'
   params: {
     location: location
-    administratorLogin: 'admin'
+    administratorLogin: 'kusto_admin'
     administratorLoginPassword: guid(location)
   }
 }
