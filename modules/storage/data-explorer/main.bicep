@@ -305,11 +305,11 @@ resource newEventHubNamespace 'Microsoft.EventHub/namespaces@2021-11-01' = if (e
   sku: eventHubSku
   properties: {}
 
-  resource eventHub 'eventhubs' = {
+  resource newEventHub 'eventhubs' = {
     name: eventHubName
     properties: eventHubProperties
 
-    resource kustoConsumerGroup 'consumergroups' = {
+    resource newKustoConsumerGroup 'consumergroups' = {
       name: 'kustoConsumerGroup'
       properties: {}
     }
