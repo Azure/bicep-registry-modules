@@ -7,13 +7,16 @@ param prefix string = 'kv'
 @description('Name of the Key Vault')
 @minLength(3)
 @maxLength(24)
-param name string = '${prefix}-${uniqueString(resourceGroup().id)}'
+param name string = take('${prefix}-${uniqueString(resourceGroup().id)}', 24)
 
 @description('The tenant ID where the Key Vault is deployed')
 param tenantId string = subscription().tenantId
 
+@description('Deploy Key Vault into existing Virtual Network. Enabling this setting also requires subnetID')
+param enableVNet bool = false
+
 @description('Subnet ID for the Key Vault')
-param subnetID string = ''
+param subnetID string = enableVNet ? null ? ''
 
 @description('List of RBAC policies to assign to the Key Vault')
 param rbacPolicies array = []
@@ -49,9 +52,6 @@ param skuName string = 'standard'
 @description('The SKU family of the Key Vault.')
 param skuFamily string = 'A'
 
-@description('Specifies whether RBAC authorization should be enabled for the Key Vault.')
-param enableRbacAuthorization bool = true
-
 module keyVault 'modules/vaults.bicep' = {
   name: guid(name, 'deploy')
   params: {
@@ -62,10 +62,9 @@ module keyVault 'modules/vaults.bicep' = {
     softDeleteRetentionInDays: softDeleteRetentionInDays
     skuFamily: skuFamily
     skuName: skuName
-    enableRbacAuthorization: enableRbacAuthorization
     tenantId: tenantId
     subnetID: subnetID
-    enableVNet: subnetID != ''
+    enableVNet: enableVNet
   }
 }
 
