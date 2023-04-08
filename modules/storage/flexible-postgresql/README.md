@@ -18,8 +18,7 @@ The module supports both PostgreSQL 9.6 and 10, allowing users to choose the ver
 | :------------------------------- | :------------: | :------: | :-------------------------------------------------------------------------- |
 | `location`                       | `string`       | Yes      | The location into which the resources should be deployed                    |
 | `name`                           | `string`       | No       | The name of the PostgreSQL server                                           |
-| `vnetName`                       | `string`       | No       | The name of the virtual network                                             |
-| `administratorLogin`             | `securestring` | Yes      | Database administrator login name                                           |
+| `administratorLogin`             | `string`       | Yes      | Database administrator login name                                           |
 | `administratorLoginPassword`     | `securestring` | Yes      | Database administrator password                                             |
 | `postgresFlexibleServersSkuTier` | `string`       | No       | The tier of the particular SKU, e.g. Burstable                              |
 | `postgresFlexibleServersSkuName` | `string`       | No       | The name of the sku, typically, tier + family + cores, e.g. Standard_D4s_v3 |
@@ -29,10 +28,6 @@ The module supports both PostgreSQL 9.6 and 10, allowing users to choose the ver
 | `backupRetentionDays`            | `int`          | No       | The number of days a backup is retained                                     |
 | `geoRedundantBackup`             | `string`       | No       | The geo-redundant backup setting                                            |
 | `highAvailability`               | `string`       | No       | The high availability mode                                                  |
-| `aadEnabled`                     | `bool`         | No       | Enable Azure Active Directory based authentication                          |
-| `aadData`                        | `object`       | No       | The Azure Active Directory data                                             |
-| `vnetResourceGroup`              | `string`       | No       | The resource group containing  the virtual network.                         |
-| `newOrExistingVnet`              | `string`       | No       | Chose to use a new or existing virtual network                              |
 
 ## Outputs
 
