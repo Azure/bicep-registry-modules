@@ -45,11 +45,6 @@ param issuerName string = 'Self'
 @description('Certificate Issuer Provider, DigiCert, GlobalSign, or internal options may be used.')
 param issuerProvider string = ''
 
-@minValue(1)
-@maxValue(1200)
-@description('Certificate Validity in months. Default: 12')
-param validity int = 12
-
 @description('Create certificate in disabled state. Default: false')
 param disabled bool = false
 
@@ -125,7 +120,6 @@ resource createImportCerts 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
       { name: 'initialDelay', value: initialScriptDelay }
       { name: 'issuerName', value: issuerName }
       { name: 'issuerProvider', value: issuerProvider }
-      { name: 'validity', value: validity }
       { name: 'disabled', value: disabled }
       { name: 'retryMax', value: '10' }
       { name: 'retrySleep', value: '5s' }
