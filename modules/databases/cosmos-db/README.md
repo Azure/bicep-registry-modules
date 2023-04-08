@@ -86,7 +86,7 @@ param secondaryRegions = [
   'centralus'
 ]
 
-module cosmosDb 'br/public:data/cosmos-db:0.0.1' = {
+module cosmosDb 'br/public:storage/cosmos-db:1.0.1' = {
   name: 'cosmosDbDeployment'
   params: {
     location: location
