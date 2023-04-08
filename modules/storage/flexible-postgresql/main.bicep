@@ -186,11 +186,11 @@ resource postgresFlexibleServers 'Microsoft.DBforPostgreSQL/flexibleServers@2022
   }
 
   resource administrators 'administrators' = if (aadEnabled) {
-    name: aadData.objectId
+    name: contains(aadData, 'objectId') ? aadData.objectId : ''
     properties: {
-      tenantId: aadData.tenantId
-      principalName: aadData.principalName
-      principalType: aadData.principalType
+      tenantId: contains(aadData, 'tenantId') ? aadData.tenantId : ''
+      principalName: contains(aadData, 'principalName') ? aadData.principalName : ''
+      principalType: contains(aadData, 'principalType') ? aadData.principalType : ''
     }
   }
 }
