@@ -1,7 +1,7 @@
 @description('Prefix of Traffic Manager Profile Name')
 param prefix string = 'traf'
 
-@description('Traffic Manager Profile Resource Name')
+@description('Name of Traffic Manager Profile Resource')
 param name string = '${prefix}-${uniqueString(resourceGroup().id, subscription().id)}'
 
 @description('Relative DNS name for the traffic manager profile, must be globally unique.')
