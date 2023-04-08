@@ -11,7 +11,22 @@ module file is a deployment test. Make sure at least one test is added.
 //   }
 // }
 
-//Test 0. 
+// Test 0
 module test0 '../main.bicep' = {
   name: 'test0'
+}
+
+// Test 1
+param endpoints array = [
+  {
+    name: 'my-endpoint-1',
+    target: 'http://www.bing.com',
+    endpointStatus: 'Enabled',
+    endpointLocation: 'eastus'
+  }
+]
+
+module test1 '../main.bicep' = {
+  name: 'test1'
+  endpoints: endpoints
 }
