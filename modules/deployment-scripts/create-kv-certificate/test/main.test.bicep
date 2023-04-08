@@ -26,8 +26,8 @@ module akvCertSingle '../main.bicep' = {
   params: {
     akvName: akv.name
     location: location
-    certificateNames: ['mysingleapp']
-    certificateCommonNames: ['mysingleapp.mydomain.local']
+    certificateNames: [ 'mysingleapp' ]
+    certificateCommonNames: [ 'mysingleapp.mydomain.local' ]
     validity: 11
     disabled: true
   }
