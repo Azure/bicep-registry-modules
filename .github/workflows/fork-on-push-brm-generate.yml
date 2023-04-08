@@ -1,4 +1,4 @@
-name: BRM / Automaticly Triggered BRM Generation
+name: On push run brm generate # fork only, optional
 
 on:
   push:
