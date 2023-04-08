@@ -45,6 +45,9 @@ param issuerName string = 'Self'
 @description('Certificate Issuer Provider, DigiCert, GlobalSign, or internal options may be used.')
 param issuerProvider string = ''
 
+@description('Create certificate in disabled state. Default: false')
+param disabled bool = false
+
 @description('Account ID of Certificate Issuer Account')
 param accountId string = ''
 
@@ -117,6 +120,7 @@ resource createImportCerts 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
       { name: 'initialDelay', value: initialScriptDelay }
       { name: 'issuerName', value: issuerName }
       { name: 'issuerProvider', value: issuerProvider }
+      { name: 'disabled', value: disabled }
       { name: 'retryMax', value: '10' }
       { name: 'retrySleep', value: '5s' }
       { name: 'accountId', value: accountId }

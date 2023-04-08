@@ -28,6 +28,8 @@ module akvCertSingle '../main.bicep' = {
     location: location
     certificateNames: [ 'mysingleapp' ]
     certificateCommonNames: [ 'mysingleapp.mydomain.local' ]
+    validity: 11
+    disabled: true
   }
 }
 output singleSecretId string = akvCertSingle.outputs.certificateSecretIds[0][0]
