@@ -16,7 +16,7 @@ param tenantId string = subscription().tenantId
 param enableVNet bool = false
 
 @description('Subnet ID for the Key Vault')
-param subnetID string = enableVNet ? null ? ''
+param subnetID string = enableVNet ? null : ''
 
 @description('List of RBAC policies to assign to the Key Vault')
 param rbacPolicies array = []
