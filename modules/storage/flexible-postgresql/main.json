@@ -1,13 +1,11 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "1.10-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
       "version": "0.16.1.55165",
-      "templateHash": "388292962117570106"
+      "templateHash": "13362754444533298385"
     }
   },
   "parameters": {
@@ -182,8 +180,8 @@
     "privateDNSZoneName": "[format('{0}.private.postgres.database.azure.com', parameters('vnetName'))]",
     "privateDNSZoneLinkName": "[format('{0}privatelink', parameters('vnetName'))]"
   },
-  "resources": {
-    "privateDNSZone::privateDNSZoneRecordA": {
+  "resources": [
+    {
       "type": "Microsoft.Network/privateDnsZones/A",
       "apiVersion": "2020-06-01",
       "name": "[format('{0}/{1}', variables('privateDNSZoneName'), uniqueString(parameters('name')))]",
@@ -196,10 +194,10 @@
         ]
       },
       "dependsOn": [
-        "privateDNSZone"
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDNSZoneName'))]"
       ]
     },
-    "privateDNSZone::privateDNSZoneLink": {
+    {
       "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
       "apiVersion": "2020-06-01",
       "name": "[format('{0}/{1}', variables('privateDNSZoneName'), variables('privateDNSZoneLinkName'))]",
@@ -211,10 +209,10 @@
         }
       },
       "dependsOn": [
-        "privateDNSZone"
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDNSZoneName'))]"
       ]
     },
-    "postgresFlexibleServers::administrators": {
+    {
       "condition": "[parameters('aadEnabled')]",
       "type": "Microsoft.DBforPostgreSQL/flexibleServers/administrators",
       "apiVersion": "2022-12-01",
@@ -225,10 +223,10 @@
         "principalType": "[if(contains(parameters('aadData'), 'principalType'), parameters('aadData').principalType, '')]"
       },
       "dependsOn": [
-        "postgresFlexibleServers"
+        "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers', parameters('name'))]"
       ]
     },
-    "newVirtualNetwork": {
+    {
       "condition": "[equals(parameters('newOrExistingVnet'), 'new')]",
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2021-08-01",
@@ -272,23 +270,16 @@
         ]
       }
     },
-    "virtualNetwork": {
-      "existing": true,
-      "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2021-08-01",
-      "resourceGroup": "[parameters('vnetResourceGroup')]",
-      "name": "[parameters('vnetName')]"
-    },
-    "privateDNSZone": {
+    {
       "type": "Microsoft.Network/privateDnsZones",
       "apiVersion": "2020-06-01",
       "name": "[variables('privateDNSZoneName')]",
       "location": "global",
       "dependsOn": [
-        "newVirtualNetwork"
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('vnetName'))]"
       ]
     },
-    "postgresFlexibleServers": {
+    {
       "type": "Microsoft.DBforPostgreSQL/flexibleServers",
       "apiVersion": "2022-12-01",
       "name": "[parameters('name')]",
@@ -321,9 +312,9 @@
         "version": "[parameters('postgresFlexibleServersversion')]"
       },
       "dependsOn": [
-        "privateDNSZone",
-        "privateDNSZone::privateDNSZoneLink"
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('privateDNSZoneName'))]",
+        "[resourceId('Microsoft.Network/privateDnsZones/virtualNetworkLinks', variables('privateDNSZoneName'), variables('privateDNSZoneLinkName'))]"
       ]
     }
-  }
+  ]
 }
