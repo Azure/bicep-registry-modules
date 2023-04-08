@@ -98,7 +98,7 @@ output name string = name
 output id string = createSecret ? secret.outputs.id : ''
 
 @description('Key Vault Name')
-output secretName string = createSecret ? secret.outputs.name : ''
+output secretName string = secretName
 
 @description('Secret URI')
 output secretUri string = createSecret ? secret.outputs.secretUri : ''
