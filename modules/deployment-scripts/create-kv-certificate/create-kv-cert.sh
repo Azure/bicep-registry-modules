@@ -38,7 +38,6 @@ do
         --vault-name $akvName \
         -n $certName \
         -p "$policy" \
-        --validity "$validity" \
         --disabled "$disabled" \
         && break
 
