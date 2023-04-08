@@ -1,3 +1,21 @@
+type kustoSku = 'Dev(No SLA)_Standard_D11_v2' | 'Dev(No SLA)_Standard_E2a_v4' | 'Standard_D11_v2' | 'Standard_D12_v2' | 'Standard_D13_v2' | 'Standard_D14_v2' | 'Standard_D16d_v5' | 'Standard_D32d_v4' | 'Standard_D32d_v5' | 'Standard_DS13_v2+1TB_PS' | 'Standard_DS13_v2+2TB_PS' | 'Standard_DS14_v2+3TB_PS' | 'Standard_DS14_v2+4TB_PS' | 'Standard_E16a_v4' | 'Standard_E16ads_v5' | 'Standard_E16as_v4+3TB_PS' | 'Standard_E16as_v4+4TB_PS' | 'Standard_E16as_v5+3TB_PS' | 'Standard_E16as_v5+4TB_PS' | 'Standard_E16d_v4' | 'Standard_E16d_v5' | 'Standard_E16s_v4+3TB_PS' | 'Standard_E16s_v4+4TB_PS' | 'Standard_E16s_v5+3TB_PS' | 'Standard_E16s_v5+4TB_PS' | 'Standard_E2a_v4' | 'Standard_E2ads_v5' | 'Standard_E2d_v4' | 'Standard_E2d_v5' | 'Standard_E4a_v4' | 'Standard_E4ads_v5' | 'Standard_E4d_v4' | 'Standard_E4d_v5' | 'Standard_E64i_v3' | 'Standard_E80ids_v4' | 'Standard_E8a_v4' | 'Standard_E8ads_v5' | 'Standard_E8as_v4+1TB_PS' | 'Standard_E8as_v4+2TB_PS' | 'Standard_E8as_v5+1TB_PS' | 'Standard_E8as_v5+2TB_PS' | 'Standard_E8d_v4' | 'Standard_E8d_v5' | 'Standard_E8s_v4+1TB_PS' | 'Standard_E8s_v4+2TB_PS' | 'Standard_E8s_v5+1TB_PS' | 'Standard_E8s_v5+2TB_PS' | 'Standard_EC16ads_v5' | 'Standard_EC16as_v5+3TB_PS'
+
+type kustoTier = 'Basic' | 'Standard'
+
+@minValue(0)
+@maxValue(36500)
+type period = int
+
+type newOrExisting = 'new' | 'existing' | 'none'
+
+type eventHubSkuName = 'Basic' | 'Standard'
+
+type EventHubSkuConfig = {
+  capacity: int
+  name: eventHubSkuName
+  tier: eventHubSkuName
+}
+
 @description('Deployment Location')
 param location string
 
@@ -9,77 +27,11 @@ param name string = 'kusto${uniqueString(resourceGroup().id, subscription().id)}
 @description('Name of the Kusto Database. Must be unique within Kusto Cluster.')
 param databaseName string = 'kustodb${uniqueString(resourceGroup().id, subscription().id)}'
 
-@allowed([
-  'Dev(No SLA)_Standard_D11_v2'
-  'Dev(No SLA)_Standard_E2a_v4'
-  'Standard_D11_v2'
-  'Standard_D12_v2'
-  'Standard_D13_v2'
-  'Standard_D14_v2'
-  'Standard_D16d_v5'
-  'Standard_D32d_v4'
-  'Standard_D32d_v5'
-  'Standard_DS13_v2+1TB_PS'
-  'Standard_DS13_v2+2TB_PS'
-  'Standard_DS14_v2+3TB_PS'
-  'Standard_DS14_v2+4TB_PS'
-  'Standard_E16a_v4'
-  'Standard_E16ads_v5'
-  'Standard_E16as_v4+3TB_PS'
-  'Standard_E16as_v4+4TB_PS'
-  'Standard_E16as_v5+3TB_PS'
-  'Standard_E16as_v5+4TB_PS'
-  'Standard_E16d_v4'
-  'Standard_E16d_v5'
-  'Standard_E16s_v4+3TB_PS'
-  'Standard_E16s_v4+4TB_PS'
-  'Standard_E16s_v5+3TB_PS'
-  'Standard_E16s_v5+4TB_PS'
-  'Standard_E2a_v4'
-  'Standard_E2ads_v5'
-  'Standard_E2d_v4'
-  'Standard_E2d_v5'
-  'Standard_E4a_v4'
-  'Standard_E4ads_v5'
-  'Standard_E4d_v4'
-  'Standard_E4d_v5'
-  'Standard_E64i_v3'
-  'Standard_E80ids_v4'
-  'Standard_E8a_v4'
-  'Standard_E8ads_v5'
-  'Standard_E8as_v4+1TB_PS'
-  'Standard_E8as_v4+2TB_PS'
-  'Standard_E8as_v5+1TB_PS'
-  'Standard_E8as_v5+2TB_PS'
-  'Standard_E8d_v4'
-  'Standard_E8d_v5'
-  'Standard_E8s_v4+1TB_PS'
-  'Standard_E8s_v4+2TB_PS'
-  'Standard_E8s_v5+1TB_PS'
-  'Standard_E8s_v5+2TB_PS'
-  'Standard_EC16ads_v5'
-  'Standard_EC16as_v5+3TB_PS'
-  'Standard_EC16as_v5+4TB_PS'
-  'Standard_EC8ads_v5'
-  'Standard_EC8as_v5+1TB_PS'
-  'Standard_EC8as_v5+2TB_PS'
-  'Standard_L16as_v3'
-  'Standard_L16s'
-  'Standard_L16s_v2'
-  'Standard_L16s_v3'
-  'Standard_L32as_v3'
-  'Standard_L32s_v3'
-  'Standard_L4s'
-  'Standard_L8as_v3'
-  'Standard_L8s'
-  'Standard_L8s_v2'
-  'Standard_L8s_v3' ])
 @description('The SKU of the Kusto Cluster.')
-param sku string = 'Dev(No SLA)_Standard_D11_v2'
+param sku kustoSku = 'Dev(No SLA)_Standard_D11_v2'
 
-@allowed([ 'Basic', 'Standard' ])
 @description('The tier of the Kusto Cluster.')
-param tier string = 'Standard'
+param tier kustoTier = 'Standard'
 
 @minValue(2)
 @maxValue(1000)
@@ -145,18 +97,14 @@ param databaseKind string = 'ReadWrite'
 @description('Enable or disable soft delete.')
 param unlimitedSoftDelete bool = false
 
-@minValue(0)
-@maxValue(36500)
 @description('The soft delete period of the Kusto Database.')
-param softDeletePeriod int = 30
+param softDeletePeriod period = 30
 
 @description('Enable or disable unlimited hot cache.')
 param unlimitedHotCache bool = false
 
-@minValue(0)
-@maxValue(36500)
 @description('The hot cache period of the Kusto Database.')
-param hotCachePeriod int = 30
+param hotCachePeriod period = 30
 
 @description('Enable or disable the Event Hub connector.')
 param enableEventHubConnector bool = newOrExistingEventHub != 'none'
@@ -179,26 +127,31 @@ param cosmosDBDatabaseName string = 'mydb'
 @description('Name of Cosmos DB container')
 param cosmosDBContainerName string = 'mycontainer'
 
-@allowed([ 'new', 'existing', 'none' ])
 @description('Create a new Event Hub namespace or use an existing one. If none, the Event Hub connector will be disabled.')
-param newOrExistingEventHub string = 'none'
+param newOrExistingEventHub newOrExisting = 'none'
 
 @description('EventHub Sku Configuration Properties.')
-param eventHubSku object = {
+param eventHubSku {
+  capacity: int
+  name: eventHubSkuName
+  tier: eventHubSkuName
+} = {
   capacity: 1
   name: 'Standard'
   tier: 'Standard'
 }
 
 @description('EventHub Properties.')
-param eventHubProperties object = {
+param eventHubProperties {
+  messageRetentionInDays: int
+  partitionCount: int
+} = {
   messageRetentionInDays: 2
   partitionCount: 2
 }
 
-@allowed([ 'new', 'existing', 'none' ])
 @description('Create a new Cosmos DB account or use an existing one. If none, the Cosmos DB connector will be disabled.')
-param newOrExistingCosmosDB string = 'none'
+param newOrExistingCosmosDB newOrExisting = 'none'
 
 //  Role list:  https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles
 var eventHubDataReceiver = 'a638d3c7-ab3a-418d-83e6-5f17a39d4fde'
