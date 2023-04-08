@@ -71,7 +71,7 @@ module keyVault 'modules/vaults.bicep' = {
 module rbacRoleAssignments 'modules/roleAssignment.bicep' = [for rbacRole in roleAssignments: {
   name: guid(keyVault.name, rbacRole)
   params: {
-    keyVaultName: keyVault.name
+    keyVaultName: keyVault.outputs.name
     rbacPolicies: rbacPolicies
     rbacRole: rbacRole
   }
@@ -82,7 +82,7 @@ var createSecret = secretValue != ''
 module secret 'modules/secrets.bicep' = if (createSecret) {
   name: guid(keyVault.name, 'secrets')
   params: {
-    keyVaultName: keyVault.name
+    keyVaultName: keyVault.outputs.name
     secretName: secretName
     secretValue: secretValue
   }
