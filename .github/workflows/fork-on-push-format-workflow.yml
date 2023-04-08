@@ -1,4 +1,4 @@
-name: BRM / Automaticly Format Workflow Files
+name: On push format workflow files # fork only, optional
 
 on:
   push:
