@@ -83,7 +83,7 @@ This example deploys a Virtual Network with the specified parameters and a subne
 ```bicep
 param location string
 
-module vnet 'br/public:network/virtual-network:1.0' = {
+module vnet 'br/public:network/virtual-network:1.0.1' = {
   name: 'vnet'
   params: {
     location: location
@@ -99,7 +99,7 @@ module vnet 'br/public:network/virtual-network:1.0' = {
   }
 }
 
-module keyVaultModule 'br/public:security/keyvault:0.0.1' = {
+module keyVaultModule 'br/public:security/keyvault:1.0.1' = {
   name: 'keyVault-in-vnet'
   params: {
     location: location
@@ -121,7 +121,7 @@ param storageSecretName string
 @secure()
 param storageAccountSecret string
 
-module secretsBatch 'br/public:security/keyvault:0.0.1' = {
+module secretsBatch 'br/public:security/keyvault:1.0.1' = {
   name: 'secrets-${uniqueString(location, resourceGroup().id, deployment().name)}'
   params: {
     subscriptionId: subscriptionId
