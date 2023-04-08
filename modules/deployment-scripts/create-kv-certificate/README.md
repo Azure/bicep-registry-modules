@@ -31,6 +31,7 @@ This module is based on the `az cli certificate` create command and more informa
 | `issuerPassword`                           | `securestring` | No       | Password of Certificate Issuer Account                                                                        |
 | `organizationId`                           | `string`       | No       | Organization ID of Certificate Issuer Account                                                                 |
 | `isCrossTenant`                            | `bool`         | No       | Override this parameter if using this in cross tenant scenarios                                               |
+| `validity`                                 | `int`          | No       | Optional. Override default validityInMonths 12 value                                                          |
 
 ## Outputs
 
@@ -102,7 +103,7 @@ param certificateNames array = [
   'myotherapp'
 ]
 
-module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.0.2' = {
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.1.1' = {
   name: 'akvCert-${certificateName}'
   params: {
     akvName:  akvName
@@ -129,7 +130,7 @@ param accountId
 param issuerPassword
 param organizationId
 
-module signedCert 'br/public:deployment-scripts/create-kv-certificate:3.0.2' = {
+module signedCert 'br/public:deployment-scripts/create-kv-certificate:3.1.1' = {
   name: 'akvCert-${certificateName}'
   params: {
     akvName:  akvName
