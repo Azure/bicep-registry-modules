@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "6769170319242885075"
+      "version": "0.16.1.55165",
+      "templateHash": "8961324726129349413"
     }
   },
   "parameters": {
@@ -24,7 +24,7 @@
     },
     "name": {
       "type": "string",
-      "defaultValue": "[format('{0}-{1}', parameters('prefix'), uniqueString(resourceGroup().id))]",
+      "defaultValue": "[take(format('{0}-{1}', parameters('prefix'), uniqueString(resourceGroup().id)), 24)]",
       "maxLength": 24,
       "minLength": 3,
       "metadata": {
@@ -38,23 +38,16 @@
         "description": "The tenant ID where the Key Vault is deployed"
       }
     },
-    "subscriptionId": {
-      "type": "string",
-      "defaultValue": "[subscription().subscriptionId]",
+    "enableVNet": {
+      "type": "bool",
+      "defaultValue": false,
       "metadata": {
-        "description": "For an existing Managed Identity, the Subscription Id it is located in"
-      }
-    },
-    "resourceGroupName": {
-      "type": "string",
-      "defaultValue": "[resourceGroup().name]",
-      "metadata": {
-        "description": "For an existing Managed Identity, the Resource Group it is located in"
+        "description": "Deploy Key Vault into existing Virtual Network. Enabling this setting also requires subnetID"
       }
     },
     "subnetID": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[if(parameters('enableVNet'), null(), '')]",
       "metadata": {
         "description": "Subnet ID for the Key Vault"
       }
@@ -80,7 +73,7 @@
       "type": "string",
       "defaultValue": "new",
       "metadata": {
-        "description": "Whether to create a new Key Vault or use an existing one"
+        "description": "Whether to create a new Key Vault or use an existing one."
       },
       "allowedValues": [
         "new",
@@ -89,16 +82,16 @@
     },
     "secretName": {
       "type": "string",
-      "defaultValue": "[format('secret{0}', uniqueString(resourceGroup().id))]",
+      "defaultValue": "",
       "metadata": {
-        "description": "Name of Secret to add to Key Vault"
+        "description": "Name of Secret to add to Key Vault. Required when provided a secretValue."
       }
     },
     "secretValue": {
       "type": "securestring",
       "defaultValue": "",
       "metadata": {
-        "description": "Value of Secret to add to Key Vault"
+        "description": "Value of Secret to add to Key Vault. The secretName parameter must also be provided when adding a secret."
       }
     },
     "enableSoftDelete": {
@@ -136,22 +129,16 @@
         "A",
         "B"
       ]
-    },
-    "enableRbacAuthorization": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Specifies whether RBAC authorization should be enabled for the Key Vault."
-      }
     }
+  },
+  "variables": {
+    "createSecret": "[not(equals(parameters('secretValue'), ''))]"
   },
   "resources": [
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[guid(parameters('name'), 'deploy')]",
-      "subscriptionId": "[parameters('subscriptionId')]",
-      "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -179,9 +166,6 @@
           "skuName": {
             "value": "[parameters('skuName')]"
           },
-          "enableRbacAuthorization": {
-            "value": "[parameters('enableRbacAuthorization')]"
-          },
           "tenantId": {
             "value": "[parameters('tenantId')]"
           },
@@ -189,7 +173,7 @@
             "value": "[parameters('subnetID')]"
           },
           "enableVNet": {
-            "value": "[not(equals(parameters('subnetID'), ''))]"
+            "value": "[parameters('enableVNet')]"
           }
         },
         "template": {
@@ -198,8 +182,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "2023048292384948848"
+              "version": "0.16.1.55165",
+              "templateHash": "10816584324620723529"
             }
           },
           "parameters": {
@@ -325,17 +309,17 @@
           "outputs": {
             "id": {
               "type": "string",
-              "value": "[if(equals(parameters('newOrExisting'), 'new'), resourceId('Microsoft.KeyVault/vaults', parameters('name')), resourceId('Microsoft.KeyVault/vaults', parameters('name')))]",
               "metadata": {
                 "description": "Key Vault Id"
-              }
+              },
+              "value": "[if(equals(parameters('newOrExisting'), 'new'), resourceId('Microsoft.KeyVault/vaults', parameters('name')), resourceId('Microsoft.KeyVault/vaults', parameters('name')))]"
             },
             "name": {
               "type": "string",
-              "value": "[if(equals(parameters('newOrExisting'), 'new'), parameters('name'), parameters('name'))]",
               "metadata": {
                 "description": "Key Vault Name"
-              }
+              },
+              "value": "[parameters('name')]"
             }
           }
         }
@@ -347,10 +331,8 @@
         "count": "[length(parameters('roleAssignments'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
-      "name": "[guid(guid(parameters('name'), 'deploy'), parameters('roleAssignments')[copyIndex()])]",
-      "subscriptionId": "[parameters('subscriptionId')]",
-      "resourceGroup": "[parameters('resourceGroupName')]",
+      "apiVersion": "2022-09-01",
+      "name": "[guid(parameters('name'), parameters('roleAssignments')[copyIndex()])]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -358,7 +340,7 @@
         "mode": "Incremental",
         "parameters": {
           "keyVaultName": {
-            "value": "[guid(parameters('name'), 'deploy')]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', guid(parameters('name'), 'deploy')), '2022-09-01').outputs.name.value]"
           },
           "rbacPolicies": {
             "value": "[parameters('rbacPolicies')]"
@@ -373,8 +355,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "16197444694091798636"
+              "version": "0.16.1.55165",
+              "templateHash": "1466673951247645495"
             }
           },
           "parameters": {
@@ -408,16 +390,14 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', guid(parameters('name'), 'deploy'))]"
+        "[resourceId('Microsoft.Resources/deployments', guid(parameters('name'), 'deploy'))]"
       ]
     },
     {
-      "condition": "[and(not(equals(parameters('secretName'), '')), not(equals(parameters('secretValue'), '')))]",
+      "condition": "[variables('createSecret')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
-      "name": "[guid(guid(parameters('name'), 'deploy'), 'secrets')]",
-      "subscriptionId": "[parameters('subscriptionId')]",
-      "resourceGroup": "[parameters('resourceGroupName')]",
+      "apiVersion": "2022-09-01",
+      "name": "[guid(parameters('name'), 'secrets')]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -425,7 +405,7 @@
         "mode": "Incremental",
         "parameters": {
           "keyVaultName": {
-            "value": "[guid(parameters('name'), 'deploy')]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', guid(parameters('name'), 'deploy')), '2022-09-01').outputs.name.value]"
           },
           "secretName": {
             "value": "[parameters('secretName')]"
@@ -440,8 +420,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "11284938965186073434"
+              "version": "0.16.1.55165",
+              "templateHash": "18097458506845857436"
             }
           },
           "parameters": {
@@ -471,54 +451,82 @@
           "outputs": {
             "id": {
               "type": "string",
-              "value": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName'))]",
               "metadata": {
                 "description": "Key Vault Id"
-              }
+              },
+              "value": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName'))]"
             },
             "name": {
               "type": "string",
-              "value": "[parameters('secretName')]",
               "metadata": {
                 "description": "Key Vault Name"
-              }
+              },
+              "value": "[parameters('secretName')]"
             },
             "secretUri": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUri]",
               "metadata": {
                 "description": "Secret URI"
-              }
+              },
+              "value": "[reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUri]"
             },
             "secretUriWithVersion": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUriWithVersion]",
               "metadata": {
                 "description": "Secret URI with version"
-              }
+              },
+              "value": "[reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUriWithVersion]"
             }
           }
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', guid(parameters('name'), 'deploy'))]"
+        "[resourceId('Microsoft.Resources/deployments', guid(parameters('name'), 'deploy'))]"
       ]
     }
   ],
   "outputs": {
     "id": {
       "type": "string",
-      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', guid(parameters('name'), 'deploy')), '2020-10-01').outputs.id.value]",
       "metadata": {
         "description": "Key Vault Id"
-      }
+      },
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', guid(parameters('name'), 'deploy')), '2022-09-01').outputs.id.value]"
     },
     "name": {
       "type": "string",
-      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', guid(parameters('name'), 'deploy')), '2020-10-01').outputs.name.value]",
       "metadata": {
         "description": "Key Vault Name"
-      }
+      },
+      "value": "[parameters('name')]"
+    },
+    "secretId": {
+      "type": "string",
+      "metadata": {
+        "description": "Key Vault Seceret Id"
+      },
+      "value": "[if(variables('createSecret'), reference(resourceId('Microsoft.Resources/deployments', guid(parameters('name'), 'secrets')), '2022-09-01').outputs.id.value, '')]"
+    },
+    "secretName": {
+      "type": "string",
+      "metadata": {
+        "description": "Key Vault Secert Name"
+      },
+      "value": "[parameters('secretName')]"
+    },
+    "secretUri": {
+      "type": "string",
+      "metadata": {
+        "description": "Secret URI"
+      },
+      "value": "[if(variables('createSecret'), reference(resourceId('Microsoft.Resources/deployments', guid(parameters('name'), 'secrets')), '2022-09-01').outputs.secretUri.value, '')]"
+    },
+    "secretUriWithVersion": {
+      "type": "string",
+      "metadata": {
+        "description": "Secret URI with version"
+      },
+      "value": "[if(variables('createSecret'), reference(resourceId('Microsoft.Resources/deployments', guid(parameters('name'), 'secrets')), '2022-09-01').outputs.secretUriWithVersion.value, '')]"
     }
   }
 }

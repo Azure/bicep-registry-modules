@@ -14,32 +14,34 @@ The Bicep module outputs the ID and name of the Key Vault, which can be used by 
 
 ## Parameters
 
-| Name                        | Type           | Required | Description                                                               |
-| :-------------------------- | :------------: | :------: | :------------------------------------------------------------------------ |
-| `location`                  | `string`       | Yes      | Deployment Location                                                       |
-| `prefix`                    | `string`       | No       | Prefix of Azure Key Vault Resource Name                                   |
-| `name`                      | `string`       | No       | Name of the Key Vault                                                     |
-| `tenantId`                  | `string`       | No       | The tenant ID where the Key Vault is deployed                             |
-| `subscriptionId`            | `string`       | No       | For an existing Managed Identity, the Subscription Id it is located in    |
-| `resourceGroupName`         | `string`       | No       | For an existing Managed Identity, the Resource Group it is located in     |
-| `subnetID`                  | `string`       | No       | Subnet ID for the Key Vault                                               |
-| `rbacPolicies`              | `array`        | No       | List of RBAC policies to assign to the Key Vault                          |
-| `roleAssignments`           | `array`        | No       | RBAC Role Assignments to apply to each RBAC policy                        |
-| `newOrExisting`             | `string`       | No       | Whether to create a new Key Vault or use an existing one                  |
-| `secretName`                | `string`       | No       | Name of Secret to add to Key Vault                                        |
-| `secretValue`               | `securestring` | No       | Value of Secret to add to Key Vault                                       |
-| `enableSoftDelete`          | `bool`         | No       | Specifies whether soft delete should be enabled for the Key Vault.        |
-| `softDeleteRetentionInDays` | `int`          | No       | The number of days to retain deleted data in the Key Vault.               |
-| `skuName`                   | `string`       | No       | The SKU name of the Key Vault.                                            |
-| `skuFamily`                 | `string`       | No       | The SKU family of the Key Vault.                                          |
-| `enableRbacAuthorization`   | `bool`         | No       | Specifies whether RBAC authorization should be enabled for the Key Vault. |
+| Name                        | Type           | Required | Description                                                                                               |
+| :-------------------------- | :------------: | :------: | :-------------------------------------------------------------------------------------------------------- |
+| `location`                  | `string`       | Yes      | Deployment Location                                                                                       |
+| `prefix`                    | `string`       | No       | Prefix of Azure Key Vault Resource Name                                                                   |
+| `name`                      | `string`       | No       | Name of the Key Vault                                                                                     |
+| `tenantId`                  | `string`       | No       | The tenant ID where the Key Vault is deployed                                                             |
+| `enableVNet`                | `bool`         | No       | Deploy Key Vault into existing Virtual Network. Enabling this setting also requires subnetID              |
+| `subnetID`                  | `string`       | No       | Subnet ID for the Key Vault                                                                               |
+| `rbacPolicies`              | `array`        | No       | List of RBAC policies to assign to the Key Vault                                                          |
+| `roleAssignments`           | `array`        | No       | RBAC Role Assignments to apply to each RBAC policy                                                        |
+| `newOrExisting`             | `string`       | No       | Whether to create a new Key Vault or use an existing one.                                                 |
+| `secretName`                | `string`       | No       | Name of Secret to add to Key Vault. Required when provided a secretValue.                                 |
+| `secretValue`               | `securestring` | No       | Value of Secret to add to Key Vault. The secretName parameter must also be provided when adding a secret. |
+| `enableSoftDelete`          | `bool`         | No       | Specifies whether soft delete should be enabled for the Key Vault.                                        |
+| `softDeleteRetentionInDays` | `int`          | No       | The number of days to retain deleted data in the Key Vault.                                               |
+| `skuName`                   | `string`       | No       | The SKU name of the Key Vault.                                                                            |
+| `skuFamily`                 | `string`       | No       | The SKU family of the Key Vault.                                                                          |
 
 ## Outputs
 
-| Name | Type   | Description    |
-| :--- | :----: | :------------- |
-| id   | string | Key Vault Id   |
-| name | string | Key Vault Name |
+| Name                 | Type   | Description             |
+| :------------------- | :----: | :---------------------- |
+| id                   | string | Key Vault Id            |
+| name                 | string | Key Vault Name          |
+| secretId             | string | Key Vault Seceret Id    |
+| secretName           | string | Key Vault Secert Name   |
+| secretUri            | string | Secret URI              |
+| secretUriWithVersion | string | Secret URI with version |
 
 ## Examples
 
