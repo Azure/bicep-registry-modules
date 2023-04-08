@@ -50,6 +50,8 @@ async function getChangedModule({ require, github, context, core }) {
     ...new Set(
       data.files
         .filter((file) => file.filename.startsWith("modules/"))
+        // Do not consider module changed if only the README.md has changed
+        .filter((file) => !file.filename.endsWith("README.md"))
         .map((file) => {
           const dir = path.dirname(file.filename);
           const segments = dir.split("/");
