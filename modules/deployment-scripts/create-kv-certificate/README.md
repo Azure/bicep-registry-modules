@@ -27,7 +27,6 @@ This module is based on the `az cli certificate` create command and more informa
 | `cleanupPreference`                        | `string`       | No       | When the script resource is cleaned up                                                                        |
 | `issuerName`                               | `string`       | No       | Self, or user defined {IssuerName} for certificate signing                                                    |
 | `issuerProvider`                           | `string`       | No       | Certificate Issuer Provider, DigiCert, GlobalSign, or internal options may be used.                           |
-| `validity`                                 | `int`          | No       | Certificate Validity in months. Default: 12                                                                   |
 | `disabled`                                 | `bool`         | No       | Create certificate in disabled state. Default: false                                                          |
 | `accountId`                                | `string`       | No       | Account ID of Certificate Issuer Account                                                                      |
 | `issuerPassword`                           | `securestring` | No       | Password of Certificate Issuer Account                                                                        |
