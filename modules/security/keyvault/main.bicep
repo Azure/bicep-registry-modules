@@ -94,10 +94,10 @@ output id string = keyVault.outputs.id
 @description('Key Vault Name')
 output name string = name
 
-@description('Key Vault Id')
-output id string = createSecret ? secret.outputs.id : ''
+@description('Key Vault Seceret Id')
+output secretId string = createSecret ? secret.outputs.id : ''
 
-@description('Key Vault Name')
+@description('Key Vault Secert Name')
 output secretName string = secretName
 
 @description('Secret URI')
