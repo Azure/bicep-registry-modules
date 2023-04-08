@@ -12,12 +12,6 @@ param name string = '${prefix}-${uniqueString(resourceGroup().id)}'
 @description('The tenant ID where the Key Vault is deployed')
 param tenantId string = subscription().tenantId
 
-@description('For an existing Managed Identity, the Subscription Id it is located in')
-param subscriptionId string = subscription().subscriptionId
-
-@description('For an existing Managed Identity, the Resource Group it is located in')
-param resourceGroupName string = resourceGroup().name
-
 @description('Subnet ID for the Key Vault')
 param subnetID string = ''
 
@@ -60,7 +54,6 @@ param enableRbacAuthorization bool = true
 
 module keyVault 'modules/vaults.bicep' = {
   name: guid(name, 'deploy')
-  scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     location: location
     name: name
@@ -78,7 +71,6 @@ module keyVault 'modules/vaults.bicep' = {
 
 module rbacRoleAssignments 'modules/roleAssignment.bicep' = [for rbacRole in roleAssignments: {
   name: guid(keyVault.name, rbacRole)
-  scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     keyVaultName: keyVault.name
     rbacPolicies: rbacPolicies
@@ -90,7 +82,6 @@ var createSecret = secretValue != ''
 
 module secret 'modules/secrets.bicep' = if (createSecret) {
   name: guid(keyVault.name, 'secrets')
-  scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {
     keyVaultName: keyVault.name
     secretName: secretName
