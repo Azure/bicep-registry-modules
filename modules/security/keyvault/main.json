@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.1.55165",
-      "templateHash": "8961324726129349413"
+      "templateHash": "4951279185551200804"
     }
   },
   "parameters": {
@@ -47,7 +47,7 @@
     },
     "subnetID": {
       "type": "string",
-      "defaultValue": "[if(parameters('enableVNet'), null(), '')]",
+      "defaultValue": "",
       "metadata": {
         "description": "Subnet ID for the Key Vault"
       }
