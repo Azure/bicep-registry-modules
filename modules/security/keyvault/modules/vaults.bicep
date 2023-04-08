@@ -71,4 +71,4 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-11-01' existing = if(newOrExis
 output id string = newOrExisting == 'new' ? newKeyVault.id : keyVault.id
 
 @description('Key Vault Name')
-output name string = newOrExisting == 'new' ? newKeyVault.name : keyVault.name
+output name string = name
