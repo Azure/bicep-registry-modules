@@ -40,7 +40,7 @@ This example creates a new Traffic Manager profile with the name "my-traffic-man
 param name string = 'my-traffic-manager'
 param dnsName string = 'my-traffic-manager-dns'
 
-module trafficManager 'br/public:network/traffic-manager:0.0.1' = { = {
+module trafficManager 'br/public:network/traffic-manager:1.0.1' = { = {
   name: 'myTrafficManager'
   params: {
     name: name
@@ -71,7 +71,7 @@ param endpoints array = [
   }
 ]
 
-module trafficManagerProfile 'br/public:network/traffic-manager:0.0.1' = { = {
+module trafficManagerProfile 'br/public:network/traffic-manager:1.0.1' = { = {
   name: 'trafficManagerProfile'
   params: {
     name: name
