@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.10.61.36676",
-      "templateHash": "1459696798853310609"
+      "version": "0.15.31.15270",
+      "templateHash": "6032557744571321527"
     }
   },
   "parameters": {
@@ -44,7 +44,7 @@
       }
     },
     "adminPass": {
-      "type": "secureString",
+      "type": "securestring",
       "metadata": {
         "type": "password",
         "description": "Admin password."
@@ -52,10 +52,10 @@
     },
     "osType": {
       "type": "string",
-      "defaultValue": "win10",
+      "defaultValue": "win11",
       "allowedValues": [
-        "win10",
-        "ws2019"
+        "win11",
+        "ws2022"
       ],
       "metadata": {
         "description": "Operating System type"
@@ -63,11 +63,11 @@
     },
     "gameEngine": {
       "type": "string",
-      "defaultValue": "ue_4_27_2",
+      "defaultValue": "no_engine",
       "allowedValues": [
         "no_engine",
-        "ue_4_27_2",
-        "ue_5_0_1"
+        "ue_5_0",
+        "ue_5_1"
       ],
       "metadata": {
         "description": "Game Engine"
@@ -75,7 +75,7 @@
     },
     "gdkVersion": {
       "type": "string",
-      "defaultValue": "June_2021_Update_9",
+      "defaultValue": "June_2022_Update_1",
       "allowedValues": [
         "June_2022_Update_1",
         "March_2022_Update_1",
@@ -87,7 +87,7 @@
       }
     },
     "ibLicenseKey": {
-      "type": "secureString",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "Incredibuild License Key"
@@ -106,7 +106,7 @@
       }
     },
     "teradiciRegKey": {
-      "type": "secureString",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "Teradici Registration Key"
@@ -120,7 +120,7 @@
       }
     },
     "parsec_teamKey": {
-      "type": "secureString",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "Parsec Team Key"
@@ -169,7 +169,7 @@
       }
     },
     "fileShareStorageAccountKey": {
-      "type": "secureString",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "File Share Storage Account key"
@@ -197,7 +197,7 @@
       }
     },
     "p4Password": {
-      "type": "secureString",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "Perforce User password"
