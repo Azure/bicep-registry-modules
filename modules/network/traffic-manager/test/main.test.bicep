@@ -19,9 +19,9 @@ module test0 '../main.bicep' = {
 // Test 1
 param endpoints array = [
   {
-    name: 'my-endpoint-1',
-    target: 'http://www.bing.com',
-    endpointStatus: 'Enabled',
+    name: 'my-endpoint-1'
+    target: 'http://www.bing.com'
+    endpointStatus: 'Enabled'
     endpointLocation: 'eastus'
   }
 ]
