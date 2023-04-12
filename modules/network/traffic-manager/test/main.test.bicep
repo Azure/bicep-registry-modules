@@ -28,5 +28,7 @@ param endpoints array = [
 
 module test1 '../main.bicep' = {
   name: 'test1'
-  endpoints: endpoints
+  params: {
+    endpoints: endpoints
+  }
 }
