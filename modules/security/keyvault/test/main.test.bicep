@@ -12,7 +12,7 @@ module prereq 'prereq.test.bicep' = {
   }
 }
 
-//Test 0. 
+//Test 0.
 module test0 '../main.bicep' = {
   name: 'test0'
   params: {
@@ -26,6 +26,7 @@ module test1InsertSecret '../main.bicep' = {
   name: 'test1-insert-secret'
   params: {
     location: location
+    #disable-next-line BCP334 BCP335 // These are false positives, the output is configured with annotations
     name: prereq.outputs.name
     newOrExisting: 'existing'
     secretName: 'SampleName'

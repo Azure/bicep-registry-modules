@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.16.1.55165",
-      "templateHash": "4951279185551200804"
+      "version": "0.16.2.56959",
+      "templateHash": "15395286456069283977"
     }
   },
   "parameters": {
@@ -182,8 +182,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.16.1.55165",
-              "templateHash": "10816584324620723529"
+              "version": "0.16.2.56959",
+              "templateHash": "13959664894464648251"
             }
           },
           "parameters": {
@@ -355,8 +355,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.16.1.55165",
-              "templateHash": "1466673951247645495"
+              "version": "0.16.2.56959",
+              "templateHash": "3117076575586483786"
             }
           },
           "parameters": {
@@ -420,8 +420,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.16.1.55165",
-              "templateHash": "18097458506845857436"
+              "version": "0.16.2.56959",
+              "templateHash": "17826599313936370174"
             }
           },
           "parameters": {
@@ -495,6 +495,8 @@
     },
     "name": {
       "type": "string",
+      "maxLength": 24,
+      "minLength": 3,
       "metadata": {
         "description": "Key Vault Name"
       },

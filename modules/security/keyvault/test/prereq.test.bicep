@@ -8,4 +8,6 @@ module precreateKV '../main.bicep' = {
   }
 }
 
+@minLength(3)
+@maxLength(24)
 output name string = precreateKV.outputs.name

@@ -92,6 +92,8 @@ module secret 'modules/secrets.bicep' = if (createSecret) {
 output id string = keyVault.outputs.id
 
 @description('Key Vault Name')
+@minLength(3)
+@maxLength(24)
 output name string = name
 
 @description('Key Vault Seceret Id')
