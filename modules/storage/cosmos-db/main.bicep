@@ -69,6 +69,7 @@ param disableRateLimitingResponses bool = false
 @allowed([ 'FullFidelity', 'None' ])
 param analyticalStorageConfiguration string = 'FullFidelity'
 
+@description('API specific properties. Currently, supported only for MongoDB API.')
 @allowed([ '3.2', '3.6', '4.0', '4.2'])
 param serverVersion string = '4.2'
 

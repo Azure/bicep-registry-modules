@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "2014006192790443516"
+      "templateHash": "11367073346350573661"
     }
   },
   "parameters": {
@@ -180,7 +180,10 @@
         "3.6",
         "4.0",
         "4.2"
-      ]
+      ],
+      "metadata": {
+        "description": "API specific properties. Currently, supported only for MongoDB API."
+      }
     },
     "enableAggregationPipeline": {
       "type": "bool",

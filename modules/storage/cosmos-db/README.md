@@ -32,7 +32,7 @@ It allows for the creation of a new Cosmos DB account or use of an existing one,
 | `enableAnalyticalStorage`        | `bool`   | No       | Flag to indicate whether to enable storage analytics.                                                                                         |
 | `disableRateLimitingResponses`   | `bool`   | No       | Disable rate limiting on responses.                                                                                                           |
 | `analyticalStorageConfiguration` | `string` | No       | Analytical storage specific properties.                                                                                                       |
-| `serverVersion`                  | `string` | No       |                                                                                                                                               |
+| `serverVersion`                  | `string` | No       | API specific properties. Currently, supported only for MongoDB API.                                                                           |
 | `enableAggregationPipeline`      | `bool`   | No       | Enable Aggregation Pipeline                                                                                                                   |
 | `enableMongoDBv34`               | `bool`   | No       | Enable MongoDBv34                                                                                                                             |
 | `allowSelfServeUpgradeToMongo36` | `bool`   | No       | Allow Self Serve Upgrade To Mongo36                                                                                                           |

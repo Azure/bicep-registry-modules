@@ -3,8 +3,12 @@ Write deployment tests in this file. Any module that references the main
 module file is a deployment test. Make sure at least one test is added.
 */
 param location string = resourceGroup().location
-param name string = 'mycosmosdb${uniqueString(resourceGroup().id, location)}'
-param cassandra_name string = 'mycassandradb${uniqueString(resourceGroup().id, location)}'
+@minLength(3)
+@maxLength(64)
+param name string = take('mycosmosdb${uniqueString(resourceGroup().id, location)}', 64)
+@minLength(3)
+@maxLength(64)
+param cassandra_name string = take('mycassandradb${uniqueString(resourceGroup().id, location)}', 64)
 
 // Prerequisites
 // module prereq 'prereq.test.bicep' = {
