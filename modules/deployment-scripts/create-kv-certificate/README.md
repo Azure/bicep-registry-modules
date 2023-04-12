@@ -21,26 +21,28 @@ This module is based on the `az cli certificate` create command and more informa
 | `managedIdentityName`                      | `string`       | No       | Name of the Managed Identity resource                                                                         |
 | `existingManagedIdentitySubId`             | `string`       | No       | For an existing Managed Identity, the Subscription Id it is located in                                        |
 | `existingManagedIdentityResourceGroupName` | `string`       | No       | For an existing Managed Identity, the Resource Group it is located in                                         |
-| `certificateName`                          | `string`       | Yes      | The name of the certificate to create                                                                         |
-| `certificateCommonName`                    | `string`       | No       | The common name of the certificate to create                                                                  |
+| `certificateNames`                         | `array`        | Yes      | The names of the certificate to create. Use when creating many certificates.                                  |
+| `certificateCommonNames`                   | `array`        | No       | The common names of the certificate to create. Use when creating many certificates.                           |
 | `initialScriptDelay`                       | `string`       | No       | A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate |
 | `cleanupPreference`                        | `string`       | No       | When the script resource is cleaned up                                                                        |
 | `issuerName`                               | `string`       | No       | Self, or user defined {IssuerName} for certificate signing                                                    |
 | `issuerProvider`                           | `string`       | No       | Certificate Issuer Provider, DigiCert, GlobalSign, or internal options may be used.                           |
+| `disabled`                                 | `bool`         | No       | Create certificate in disabled state. Default: false                                                          |
 | `accountId`                                | `string`       | No       | Account ID of Certificate Issuer Account                                                                      |
 | `issuerPassword`                           | `securestring` | No       | Password of Certificate Issuer Account                                                                        |
 | `organizationId`                           | `string`       | No       | Organization ID of Certificate Issuer Account                                                                 |
 | `isCrossTenant`                            | `bool`         | No       | Override this parameter if using this in cross tenant scenarios                                               |
+| `validity`                                 | `int`          | No       | Optional. Override default validityInMonths 12 value                                                          |
 
 ## Outputs
 
-| Name                           | Type   | Description                                       |
-| :----------------------------- | :----: | :------------------------------------------------ |
-| certificateName                | string | Certificate name                                  |
-| certificateSecretId            | string | KeyVault secret id to the created version         |
-| certificateSecretIdUnversioned | string | KeyVault secret id which uses the unversioned uri |
-| certificateThumbprint          | string | Certificate Thumbprint                            |
-| certificateThumbprintHex       | string | Certificate Thumbprint (in hex)                   |
+| Name                            | Type  | Description                                        |
+| :------------------------------ | :---: | :------------------------------------------------- |
+| certificateNames                | array | Certificate names                                  |
+| certificateSecretIds            | array | KeyVault secret ids to the created version         |
+| certificateSecretIdUnversioneds | array | KeyVault secret ids which uses the unversioned uri |
+| certificateThumbpints           | array | Certificate Thumbprints                            |
+| certificateThumbprintHexs       | array | Certificate Thumbprints (in hex)                   |
 
 ## Examples
 
@@ -50,10 +52,10 @@ Creates a single self-signed certificate in Azure KeyVault.
 
 ```bicep
 param location string = resourceGroup().location
-param akvName string =  'yourAzureKeyVault'
+param akvName string = 'yourAzureKeyVault'
 param certificateName string = 'myapp'
 
-module kvCert 'br/public:deployment-scripts/create-kv-certificate:1.1.1' = {
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.2.1' = {
   name: 'akvCertSingle'
   params: {
     akvName: akvName
@@ -76,17 +78,17 @@ param akvName string =  'yourAzureKeyVault'
 param certificateName string = 'myapp'
 param certificateCommonName string = '${certificateName}.mydomain.local'
 
-module kvCert 'br/public:deployment-scripts/create-kv-certificate:1.1.1' = {
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.2.1' = {
   name: 'akvCertSingle'
   params: {
     akvName: akvName
     location: location
-    certificateName: certificateName
-    certificateCommonName: certificateCommonName
+    certificateNames: [certificateName]
+    certificateCommonNames: [certificateCommonName]
   }
 }
-output SecretId string = akvCertSingle.outputs.certificateSecretId
-output Thumbprint string = akvCertSingle.outputs.certificateThumbprintHex
+output SecretId string = akvCertSingle.outputs.certificateSecretIds[0]
+output Thumbprint string = akvCertSingle.outputs.certificateThumbprintHexs[0]
 
 ```
 
@@ -102,20 +104,20 @@ param certificateNames array = [
   'myotherapp'
 ]
 
-module kvCert 'br/public:deployment-scripts/create-kv-certificate:1.1.1' = [ for certificateName in certificateNames : {
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.1.1' = {
   name: 'akvCert-${certificateName}'
   params: {
     akvName:  akvName
     location: location
-    certificateName: certificateName
+    certificateNames: certificateNames
   }
-}]
+}
 
 @description('Array of info from each Certificate')
 output createdCertificates array = [for (certificateName, i) in certificateNames: {
-  certificateName: certificateName
-  certificateSecretId: akvCertMultiple[i].outputs.certificateSecretId
-  certificateThumbprint: akvCertMultiple[i].outputs.certificateThumbprintHex
+  certificateName: kvCert.outputs.certificateNames[i]
+  certificateSecretId: kvCert.outputs.certificateSecretIds[i]
+  certificateThumbprint: kvCert.outputs.certificateThumbprintHexs[i]
 }]
 ```
 
@@ -129,13 +131,13 @@ param accountId
 param issuerPassword
 param organizationId
 
-module signedCert 'br/public:deployment-scripts/create-kv-certificate:1.1.1' = {
+module signedCert 'br/public:deployment-scripts/create-kv-certificate:3.1.1' = {
   name: 'akvCert-${certificateName}'
   params: {
     akvName:  akvName
     location: location
-    certificateName: certificateName
-    certificateCommonName: 'customdomain.com'
+    certificateName: [certificateName]
+    certificateCommonName: ['customdomain.com']
     issuerName: 'MyCert'
     issuerProvider: 'DigiCert'
     accountId: accountId

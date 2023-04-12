@@ -18,16 +18,16 @@ param adminName string
 param adminPass string
 
 @description('Operating System type')
-@allowed([ 'win10', 'ws2019' ])
-param osType string = 'win10'
+@allowed([ 'win11', 'ws2022' ])
+param osType string = 'win11'
 
 @description('Game Engine')
-@allowed([ 'no_engine', 'ue_4_27_2', 'ue_5_0_1' ])
-param gameEngine string = 'ue_4_27_2'
+@allowed([ 'no_engine', 'ue_5_0', 'ue_5_1' ])
+param gameEngine string = 'no_engine'
 
 @description('GDK Version')
 @allowed([ 'June_2022_Update_1', 'March_2022_Update_1', 'October_2021_Update_5', 'June_2021_Update_9' ])
-param gdkVersion string = 'June_2021_Update_9'
+param gdkVersion string = 'June_2022_Update_1'
 
 @description('Incredibuild License Key')
 @secure()
