@@ -22,55 +22,66 @@ function groupBy(items, keyGetter) {
 /**
  * @param {ReturnType<typeof import("@actions/github").getOctokit>} github
  * @param {typeof import("@actions/github").context} context
- * @param {string} commitSha
+ * @param {string} tag
  */
-async function getCommitDate(github, context, commitSha) {
+async function getPublishDate(github, context, tag) {
+  const { owner, repo } = context.repo;
+
+  const reference = await github.rest.git.getRef({
+    owner,
+    repo,
+    ref: `tags/${tag}`,
+  });
+
   const commit = await github.rest.git.getCommit({
     owner: context.repo.owner,
     repo: context.repo.repo,
-    commit_sha: commitSha,
+    commit_sha: reference.data.object.sha,
   });
 
   return commit.data.committer.date.split("T")[0];
 }
 
 /**
- *
+ * @param {ReturnType<typeof import("@actions/github").getOctokit>} github
+ * @param {typeof import("@actions/github").context} context
  * @param {Array<{ moduleName: string, tags: string[] }>} modules
- * @param {Map<string, string>} commitIdsByTag
  * @param {typeof import("prettier")} prettier
  * @returns
  */
-async function generateModuleGroupTable(modules, publishDateByTag, prettier) {
+async function generateModuleGroupTable(github, context, modules, prettier) {
   const moduleGroupTableData = [
-    ["Module", "Published on", "Source code", "Readme"],
+    ["Module", "Latest version", "Published on", "Source code", "Readme"],
   ];
 
   for (const module of modules) {
-    const versions = module.tags.reverse();
+    const modulePath = `\`${module.moduleName}\``;
 
-    for (const version of versions) {
-      const modulePath = `\`${module.moduleName}:${version}\``;
+    // module.tags is an sorted array.
+    const latestVersion = module.tags.slice(-1);
+    const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${module.moduleName}/tags/list`;
+    const versionBadgeUrl = `https://img.shields.io/badge/mcr-${latestVersion}-blue`;
+    const versionBadge = `<a href="${versionListUrl}"><image src="${versionBadgeUrl}"/></a>`;
 
-      const tag = `${module.moduleName}/${version}`;
-      const publishDate = publishDateByTag.get(tag);
+    const tag = `${module.moduleName}/${latestVersion}`;
+    const publishDate = await getPublishDate(github, context, tag);
 
-      const moduleRootUrl = `https://github.com/Azure/bicep-registry-modules/blob/${module.moduleName}/${version}/modules/${module.moduleName}`;
-      const sourceCodeButton = `[🦾 Source code](${moduleRootUrl}/main.bicep){: .btn}`;
-      const readmeButton = `[📃 Readme](${moduleRootUrl}/README.md){: .btn .btn-purple}`;
+    const moduleRootUrl = `https://github.com/Azure/bicep-registry-modules/tree/main/modules/${module.moduleName}`;
+    const sourceCodeButton = `[🦾 Source code](${moduleRootUrl}/main.bicep){: .btn}`;
+    const readmeButton = `[📃 Readme](${moduleRootUrl}/README.md){: .btn .btn-purple}`;
 
-      moduleGroupTableData.push([
-        modulePath,
-        publishDate,
-        sourceCodeButton,
-        readmeButton,
-      ]);
-    }
+    moduleGroupTableData.push([
+      modulePath,
+      versionBadge,
+      publishDate,
+      sourceCodeButton,
+      readmeButton,
+    ]);
   }
 
   const { markdownTable } = await import("markdown-table");
   const table = markdownTable(moduleGroupTableData, {
-    align: ["l", "r", "r", "r"],
+    align: ["l", "r", "r", "r", "r"],
   });
 
   return prettier.format(table, { parser: "markdown" });
@@ -103,22 +114,6 @@ permalink: /
 
 `;
 
-  const { owner, repo } = context.repo;
-  const tags = await github.paginate(
-    github.rest.repos.listTags,
-    { owner, repo },
-    (response) => response.data
-  );
-
-  const publishDateByTag = new Map(
-    await Promise.all(
-      tags.map(async ({ name, commit }) => {
-        const date = await getCommitDate(github, context, commit.sha);
-        return [name, date];
-      })
-    )
-  );
-
   const moduleIndexDataContent = await fs.readFile("moduleIndex.json", {
     encoding: "utf-8",
   });
@@ -132,8 +127,9 @@ permalink: /
     core.debug(`Generating ${moduleGroup}...`);
 
     const moduleGroupTable = await generateModuleGroupTable(
+      github,
+      context,
       modules,
-      publishDateByTag,
       prettier
     );
 
