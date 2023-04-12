@@ -27,6 +27,7 @@ This module is based on the `az cli certificate` create command and more informa
 | `cleanupPreference`                        | `string`       | No       | When the script resource is cleaned up                                                                        |
 | `issuerName`                               | `string`       | No       | Self, or user defined {IssuerName} for certificate signing                                                    |
 | `issuerProvider`                           | `string`       | No       | Certificate Issuer Provider, DigiCert, GlobalSign, or internal options may be used.                           |
+| `disabled`                                 | `bool`         | No       | Create certificate in disabled state. Default: false                                                          |
 | `accountId`                                | `string`       | No       | Account ID of Certificate Issuer Account                                                                      |
 | `issuerPassword`                           | `securestring` | No       | Password of Certificate Issuer Account                                                                        |
 | `organizationId`                           | `string`       | No       | Organization ID of Certificate Issuer Account                                                                 |
@@ -54,7 +55,7 @@ param location string = resourceGroup().location
 param akvName string = 'yourAzureKeyVault'
 param certificateName string = 'myapp'
 
-module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.0.2' = {
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.2.1' = {
   name: 'akvCertSingle'
   params: {
     akvName: akvName
@@ -77,7 +78,7 @@ param akvName string =  'yourAzureKeyVault'
 param certificateName string = 'myapp'
 param certificateCommonName string = '${certificateName}.mydomain.local'
 
-module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.0.2' = {
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.2.1' = {
   name: 'akvCertSingle'
   params: {
     akvName: akvName
