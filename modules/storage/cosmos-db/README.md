@@ -41,7 +41,7 @@ In this example, we're deploying a new Cosmos DB account to the "eastus" region 
 param location string = 'eastus'
 param prefix string = 'mycosmosdb'
 
-module cosmosDb 'br/public:data/cosmos-db:0.0.1' = {
+module cosmosDb 'br/public:data/cosmos-db:1.0.1' = {
   name: 'cosmosDbDeployment'
   params: {
     location: location
@@ -60,7 +60,7 @@ In this example, we're using the data/cosmos-db module to deploy a new Cosmos DB
 param location string = 'eastus'
 param prefix string = 'mycassandradb'
 
-module cassandraDb 'br/public:data/cosmos-db:0.0.1' = {
+module cassandraDb 'br/public:data/cosmos-db:1.0.1' = {
   name: 'cassandraDbDeployment'
   params: {
     location: location
