@@ -69,4 +69,4 @@ resource trafficManagerEndpoints 'Microsoft.Network/TrafficManagerProfiles/Exter
 output id string = trafficManagerProfile.id
 
 @description('Traffic Manager Profile Resource Name')
-output name string = trafficManagerProfile.name
+output name string = name
