@@ -1,9 +1,7 @@
-
-param name string = deployment().name
+param name string = take(deployment().name, 64)
 param location string = resourceGroup().location
 
 param enableDockerContainer bool = true
-
 
 param tags object = {
   LOB: 'ENT'
@@ -14,8 +12,7 @@ param tags object = {
   team: 'IEP'
 }
 
-
-module dependencies 'dependencies.bicep' = {
+module dependencies 'prereq.test.bicep' = {
   scope: resourceGroup()
   name: 'dependencies-${uniqueString(resourceGroup().id)}'
   params: {
@@ -25,12 +22,12 @@ module dependencies 'dependencies.bicep' = {
   }
 }
 
-@description(''' 
+@description('''
 - This test setup the Azure Function without appInsights (Microsoft.Insights/components).
 - enableaInsights default value is false and workspaceResourceId default value is empty so both params not required to pass.
 - without any function
 
-Dependency list: 
+Dependency list:
 - Microsoft.ManagedIdentity/userAssignedIdentities
 
 ''')
@@ -56,7 +53,7 @@ module test1 '../main.bicep' = {
     enableSourceControl: false
     enableDockerContainer: enableDockerContainer
     serverOS: 'Linux'
-  
+
   }
   scope: resourceGroup()
 

@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.16.1.55165",
-      "templateHash": "14092859230876583654"
+      "version": "0.16.2.56959",
+      "templateHash": "9425172260330919872"
     }
   },
   "parameters": {
@@ -30,6 +30,13 @@
     },
     "sku": {
       "type": "object",
+      "defaultValue": {
+        "name": "Y1",
+        "tier": "Dynamic",
+        "size": "Y1",
+        "family": "Y",
+        "capacity": 0
+      },
       "metadata": {
         "description": "Required. Defines the name, tier, size, family and capacity of the app service plan."
       }
