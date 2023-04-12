@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "6984401003152783394"
+      "templateHash": "2014006192790443516"
     }
   },
   "parameters": {
@@ -24,7 +24,9 @@
     },
     "name": {
       "type": "string",
-      "defaultValue": "[format('{0}{1}', parameters('prefix'), uniqueString(resourceGroup().id, parameters('location')))]",
+      "defaultValue": "[take(format('{0}{1}', parameters('prefix'), uniqueString(resourceGroup().id, parameters('location'))), 64)]",
+      "maxLength": 64,
+      "minLength": 3,
       "metadata": {
         "description": "Name of Cosmos DB Resource"
       }
@@ -89,6 +91,13 @@
         "description": "Enable Cassandra Backend."
       }
     },
+    "enableGremlin": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enable Gremlin API."
+      }
+    },
     "enableServerless": {
       "type": "bool",
       "defaultValue": false,
@@ -96,11 +105,109 @@
         "description": "Enable Serverless for consumption-based usage."
       }
     },
+    "enableTable": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enable Table API."
+      }
+    },
+    "enableMongo": {
+      "type": "bool",
+      "defaultValue": "[or(or(or(false(), parameters('enableMongoDBv34')), parameters('allowSelfServeUpgradeToMongo36')), parameters('enablemongoEnableDocLevelTTL'))]",
+      "metadata": {
+        "description": "Enable Mongo API."
+      }
+    },
     "isZoneRedundant": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
         "description": "Toggle to enable or disable zone redudance."
+      }
+    },
+    "disableLocalAuth": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication."
+      }
+    },
+    "enablePartitionMerge": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Flag to indicate enabling/disabling of Partition Merge feature on the account"
+      }
+    },
+    "enableCassandraConnector": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enables the cassandra connector on the Cosmos DB C* account"
+      }
+    },
+    "enableAnalyticalStorage": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Flag to indicate whether to enable storage analytics."
+      }
+    },
+    "disableRateLimitingResponses": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Disable rate limiting on responses."
+      }
+    },
+    "analyticalStorageConfiguration": {
+      "type": "string",
+      "defaultValue": "FullFidelity",
+      "allowedValues": [
+        "FullFidelity",
+        "None"
+      ],
+      "metadata": {
+        "description": "Analytical storage specific properties."
+      }
+    },
+    "serverVersion": {
+      "type": "string",
+      "defaultValue": "4.2",
+      "allowedValues": [
+        "3.2",
+        "3.6",
+        "4.0",
+        "4.2"
+      ]
+    },
+    "enableAggregationPipeline": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enable Aggregation Pipeline"
+      }
+    },
+    "enableMongoDBv34": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enable MongoDBv34"
+      }
+    },
+    "allowSelfServeUpgradeToMongo36": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Allow Self Serve Upgrade To Mongo36"
+      }
+    },
+    "enablemongoEnableDocLevelTTL": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enable mongoEnableDocLevelTTL"
       }
     }
   },
@@ -136,22 +243,869 @@
       }
     },
     "locations": "[union(createArray(createObject('locationName', parameters('location'), 'failoverPriority', 0, 'isZoneRedundant', parameters('isZoneRedundant'))), variables('secondaryRegions'))]",
-    "capabilities": "[union(if(parameters('enableCassandra'), createArray(createObject('name', 'EnableCassandra')), createArray()), if(parameters('enableServerless'), createArray(createObject('name', 'EnableServerless')), createArray()))]"
+    "capabilities": "[union(if(parameters('disableRateLimitingResponses'), createArray(createObject('name', 'DisableRateLimitingResponses')), createArray()), if(parameters('enableMongo'), createArray(createObject('name', 'EnableMongo')), createArray()), if(parameters('allowSelfServeUpgradeToMongo36'), createArray(createObject('name', 'AllowSelfServeUpgradeToMongo36')), createArray()), if(parameters('enableAggregationPipeline'), createArray(createObject('name', 'EnableAggregationPipeline')), createArray()), if(parameters('enableMongoDBv34'), createArray(createObject('name', 'MongoDBv34')), createArray()), if(parameters('enablemongoEnableDocLevelTTL'), createArray(createObject('name', 'mongoEnableDocLevelTTL')), createArray()), if(parameters('enableTable'), createArray(createObject('name', 'EnableTable')), createArray()), if(parameters('enableGremlin'), createArray(createObject('name', 'EnableGremlin')), createArray()), if(parameters('enableCassandra'), createArray(createObject('name', 'EnableCassandra')), createArray()), if(parameters('enableServerless'), createArray(createObject('name', 'EnableServerless')), createArray()))]"
   },
   "resources": [
     {
-      "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2022-05-15",
-      "name": "[toLower(parameters('name'))]",
-      "location": "[parameters('location')]",
-      "kind": "GlobalDocumentDB",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "deploy-cosmosdb",
       "properties": {
-        "consistencyPolicy": "[variables('consistencyPolicy')[parameters('defaultConsistencyLevel')]]",
-        "locations": "[variables('locations')]",
-        "databaseAccountOfferType": "Standard",
-        "enableAutomaticFailover": "[parameters('systemManagedFailover')]",
-        "enableMultipleWriteLocations": "[parameters('enableMultipleWriteLocations')]",
-        "capabilities": "[variables('capabilities')]"
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('name')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "properties": {
+            "value": {
+              "analyticalStorageConfiguration": "[if(parameters('enableAnalyticalStorage'), createObject('schemaType', parameters('analyticalStorageConfiguration')), null())]",
+              "apiProperties": "[if(parameters('enableMongo'), createObject('serverVersion', parameters('serverVersion')), null())]",
+              "databaseAccountOfferType": "Standard",
+              "locations": "[variables('locations')]",
+              "capabilities": "[variables('capabilities')]",
+              "consistencyPolicy": "[variables('consistencyPolicy')[parameters('defaultConsistencyLevel')]]",
+              "disableLocalAuth": "[parameters('disableLocalAuth')]",
+              "enableAnalyticalStorage": "[parameters('enableAnalyticalStorage')]",
+              "enableAutomaticFailover": "[parameters('systemManagedFailover')]",
+              "enableCassandraConnector": "[parameters('enableCassandraConnector')]",
+              "enableMultipleWriteLocations": "[parameters('enableMultipleWriteLocations')]",
+              "enablePartitionMerge": "[parameters('enablePartitionMerge')]"
+            }
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
+            "_generator": {
+              "name": "bicep",
+              "version": "0.16.2.56959",
+              "templateHash": "4410539128391034453"
+            }
+          },
+          "definitions": {
+            "CosmosDB": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "$ref": "#/definitions/_name"
+                },
+                "location": {
+                  "$ref": "#/definitions/_location"
+                },
+                "tags": {
+                  "$ref": "#/definitions/_tags",
+                  "nullable": true
+                },
+                "kind": {
+                  "$ref": "#/definitions/_kind",
+                  "nullable": true
+                },
+                "identity": {
+                  "$ref": "#/definitions/_identity",
+                  "nullable": true
+                },
+                "properties": {
+                  "$ref": "#/definitions/_properties"
+                }
+              }
+            },
+            "_name": {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 3,
+              "metadata": {
+                "description": "The resource name."
+              }
+            },
+            "_location": {
+              "type": "string",
+              "allowedValues": [
+                "australiaeast",
+                "australiasoutheast",
+                "brazilsouth",
+                "canadacentral",
+                "canadaeast",
+                "centralindia",
+                "eastus",
+                "eastus2",
+                "francecentral",
+                "germanywestcentral",
+                "japaneast",
+                "japanwest",
+                "koreacentral",
+                "koreasouth",
+                "northeurope",
+                "norwayeast",
+                "southafricanorth",
+                "southeastasia",
+                "southindia",
+                "switzerlandnorth",
+                "uaenorth",
+                "uksouth",
+                "ukwest",
+                "westcentralus",
+                "westeurope",
+                "westindia",
+                "westus",
+                "westus2"
+              ],
+              "metadata": {
+                "description": "The location of the resource group to which the resource belongs."
+              }
+            },
+            "_tag_key": {
+              "type": "string",
+              "maxLength": 128
+            },
+            "_tag_value": {
+              "type": "string",
+              "maxLength": 256
+            },
+            "_tags": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "$ref": "#/definitions/_tag_key"
+                  },
+                  "value": {
+                    "$ref": "#/definitions/_tag_value"
+                  }
+                }
+              },
+              "maxLength": 15,
+              "metadata": {
+                "description": "Tags are a list of key-value pairs that describe the resource. These tags can be used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can be provided for a resource. Each tag must have a key no greater than 128 characters and value no greater than 256 characters. For example, the default experience for a template type is set with \"defaultExperience\": \"Cassandra\". Current \"defaultExperience\" values also include \"Table\", \"Graph\", \"DocumentDB\", and \"MongoDB\"."
+              }
+            },
+            "_kind": {
+              "type": "string",
+              "allowedValues": [
+                "GlobalDocumentDB",
+                "MongoDB",
+                "Parse"
+              ],
+              "metadata": {
+                "description": "Indicates the type of database account. This can only be set at database account creation."
+              }
+            },
+            "_identity": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "SystemAssigned",
+                    "SystemAssigned,UserAssigned",
+                    "UserAssigned"
+                  ]
+                },
+                "userAssignedIdentities": {
+                  "type": "object"
+                }
+              },
+              "metadata": {
+                "description": "Identity for the resource."
+              }
+            },
+            "_properties": {
+              "type": "object",
+              "properties": {
+                "analyticalStorageConfiguration": {
+                  "$ref": "#/definitions/_analyticalStorageConfiguration",
+                  "nullable": true
+                },
+                "apiProperties": {
+                  "$ref": "#/definitions/_apiProperties",
+                  "nullable": true
+                },
+                "backupPolicy": {
+                  "$ref": "#/definitions/_backupPolicy",
+                  "nullable": true
+                },
+                "capabilities": {
+                  "$ref": "#/definitions/_capabilities",
+                  "nullable": true
+                },
+                "capacity": {
+                  "$ref": "#/definitions/_capacity",
+                  "nullable": true
+                },
+                "connectorOffer": {
+                  "$ref": "#/definitions/_connectorOffer",
+                  "nullable": true
+                },
+                "consistencyPolicy": {
+                  "$ref": "#/definitions/_consistencyPolicy",
+                  "nullable": true
+                },
+                "cors": {
+                  "$ref": "#/definitions/_cors",
+                  "nullable": true
+                },
+                "createMode": {
+                  "$ref": "#/definitions/_createMode",
+                  "nullable": true
+                },
+                "databaseAccountOfferType": {
+                  "$ref": "#/definitions/_databaseAccountOfferType"
+                },
+                "defaultIdentity": {
+                  "$ref": "#/definitions/_defaultIdentity",
+                  "nullable": true
+                },
+                "disableKeyBasedMetadataWriteAccess": {
+                  "$ref": "#/definitions/_disableKeyBasedMetadataWriteAccess",
+                  "nullable": true
+                },
+                "disableLocalAuth": {
+                  "$ref": "#/definitions/_disableLocalAuth",
+                  "nullable": true
+                },
+                "enableAnalyticalStorage": {
+                  "$ref": "#/definitions/_enableAnalyticalStorage",
+                  "nullable": true
+                },
+                "enableAutomaticFailover": {
+                  "$ref": "#/definitions/_enableAutomaticFailover",
+                  "nullable": true
+                },
+                "enableCassandraConnector": {
+                  "$ref": "#/definitions/_enableCassandraConnector",
+                  "nullable": true
+                },
+                "enableFreeTier": {
+                  "$ref": "#/definitions/_enableFreeTier",
+                  "nullable": true
+                },
+                "enableMultipleWriteLocations": {
+                  "$ref": "#/definitions/_enableMultipleWriteLocations",
+                  "nullable": true
+                },
+                "enablePartitionMerge": {
+                  "$ref": "#/definitions/_enablePartitionMerge",
+                  "nullable": true
+                },
+                "ipRules": {
+                  "$ref": "#/definitions/_ipRules",
+                  "nullable": true
+                },
+                "isVirtualNetworkFilterEnabled": {
+                  "$ref": "#/definitions/_isVirtualNetworkFilterEnabled",
+                  "nullable": true
+                },
+                "keyVaultKeyUri": {
+                  "$ref": "#/definitions/_keyVaultKeyUri",
+                  "nullable": true
+                },
+                "locations": {
+                  "$ref": "#/definitions/_locations"
+                },
+                "networkAclBypass": {
+                  "$ref": "#/definitions/_networkAclBypass",
+                  "nullable": true
+                },
+                "networkAclBypassResourceIds": {
+                  "$ref": "#/definitions/_networkAclBypassResourceIds",
+                  "nullable": true
+                },
+                "publicNetworkAccess": {
+                  "$ref": "#/definitions/_publicNetworkAccess",
+                  "nullable": true
+                },
+                "restoreParameters": {
+                  "$ref": "#/definitions/_restoreParameters",
+                  "nullable": true
+                },
+                "virtualNetworkRules": {
+                  "$ref": "#/definitions/_virtualNetworkRules",
+                  "nullable": true
+                }
+              },
+              "metadata": {
+                "description": "Properties to create and update Azure Cosmos DB database accounts."
+              }
+            },
+            "_analyticalStorageConfiguration": {
+              "type": "object",
+              "properties": {
+                "schemaType": {
+                  "$ref": "#/definitions/_schemaType"
+                }
+              },
+              "metadata": {
+                "description": "Analytical storage specific properties."
+              }
+            },
+            "_schemaType": {
+              "type": "string",
+              "allowedValues": [
+                "FullFidelity",
+                "WellDefined"
+              ],
+              "metadata": {
+                "description": "Describes the types of schema for analytical storage."
+              }
+            },
+            "_apiProperties": {
+              "type": "object",
+              "properties": {
+                "serverVersion": {
+                  "$ref": "#/definitions/_serverVersion"
+                }
+              },
+              "metadata": {
+                "description": "API specific properties. Currently, supported only for MongoDB API."
+              }
+            },
+            "_serverVersion": {
+              "type": "string",
+              "allowedValues": [
+                "3.2",
+                "3.6",
+                "4.0",
+                "4.2"
+              ],
+              "metadata": {
+                "description": "Describes the ServerVersion of an a MongoDB account."
+              }
+            },
+            "_backupPolicy": {
+              "type": "object",
+              "properties": {
+                "migrationState": {
+                  "$ref": "#/definitions/_backupPolicyMigrationState",
+                  "nullable": true
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "metadata": {
+                "description": "The object representing the policy for taking backups on an account."
+              }
+            },
+            "_startTime": {
+              "type": "string",
+              "metadata": {
+                "description": "Time at which the backup policy migration started (ISO-8601 format)."
+              }
+            },
+            "_status": {
+              "type": "string",
+              "allowedValues": [
+                "Completed",
+                "Failed",
+                "InProgress",
+                "Invalid",
+                null
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Describes the status of migration between backup policy types."
+              }
+            },
+            "_targetType": {
+              "type": "string",
+              "allowedValues": [
+                "Continuous",
+                "Periodic"
+              ],
+              "metadata": {
+                "description": "Describes the target backup policy type of the backup policy migration."
+              }
+            },
+            "_backupPolicyMigrationState": {
+              "type": "object",
+              "properties": {
+                "startTime": {
+                  "$ref": "#/definitions/_startTime",
+                  "nullable": true
+                },
+                "status": {
+                  "$ref": "#/definitions/_status"
+                },
+                "targetType": {
+                  "$ref": "#/definitions/_targetType",
+                  "nullable": true
+                }
+              },
+              "metadata": {
+                "description": "The object representing the state of the migration between the backup policies."
+              }
+            },
+            "_capabilities": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/_capability"
+              },
+              "metadata": {
+                "description": "List of Cosmos DB capabilities for the account"
+              }
+            },
+            "_capability": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "allowedValues": [
+                    "AllowSelfServeUpgradeToMongo36",
+                    "DisableRateLimitingResponses",
+                    "EnableAggregationPipeline",
+                    "EnableCassandra",
+                    "EnableGremlin",
+                    "EnableMongo",
+                    "EnableServerless",
+                    "EnableTable",
+                    "MongoDBv3.4",
+                    "mongoEnableDocLevelTTL"
+                  ]
+                }
+              },
+              "metadata": {
+                "description": "Name of the Cosmos DB capability. For example, \"name\": \"EnableCassandra\". Current values also include \"EnableTable\" and \"EnableGremlin\"."
+              }
+            },
+            "_totalThroughputLimit": {
+              "type": "int",
+              "minValue": -1,
+              "metadata": {
+                "description": "The total throughput limit imposed on the account. A totalThroughputLimit of 2000 imposes a strict limit of max throughput that can be provisioned on that account to be 2000. A totalThroughputLimit of -1 indicates no limits on provisioning of throughput."
+              }
+            },
+            "_capacity": {
+              "type": "object",
+              "properties": {
+                "totalThroughputLimit": {
+                  "$ref": "#/definitions/_totalThroughputLimit"
+                }
+              },
+              "metadata": {
+                "description": "The object that represents all properties related to capacity enforcement on an account."
+              }
+            },
+            "_connectorOffer": {
+              "type": "string",
+              "allowedValues": [
+                "Small"
+              ],
+              "metadata": {
+                "description": "The cassandra connector offer type for the Cosmos DB database C* account."
+              }
+            },
+            "_defaultConsistencyLevel": {
+              "type": "string",
+              "allowedValues": [
+                "BoundedStaleness",
+                "ConsistentPrefix",
+                "Eventual",
+                "Session",
+                "Strong"
+              ],
+              "metadata": {
+                "description": "The default consistency level and configuration settings of the Cosmos DB account."
+              }
+            },
+            "_maxIntervalInSeconds": {
+              "type": "int",
+              "maxValue": 86400,
+              "minValue": 5,
+              "metadata": {
+                "description": "The maximum interval, in seconds, between requests when using the Bounded Staleness consistency level."
+              }
+            },
+            "_maxStalenessPrefix": {
+              "type": "int",
+              "maxValue": 2147483647,
+              "minValue": 10,
+              "metadata": {
+                "description": "The maximum staleness prefix that can be used when using the Bounded Staleness consistency level."
+              }
+            },
+            "_consistencyPolicy": {
+              "type": "object",
+              "properties": {
+                "defaultConsistencyLevel": {
+                  "$ref": "#/definitions/_defaultConsistencyLevel"
+                },
+                "maxIntervalInSeconds": {
+                  "$ref": "#/definitions/_maxIntervalInSeconds",
+                  "nullable": true
+                },
+                "maxStalenessPrefix": {
+                  "$ref": "#/definitions/_maxStalenessPrefix",
+                  "nullable": true
+                }
+              },
+              "metadata": {
+                "description": "The consistency policy for the Cosmos DB database account."
+              }
+            },
+            "_cors": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "allowedHeaders": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "allowedMethods": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "allowedOrigins": {
+                    "type": "string"
+                  },
+                  "exposedHeaders": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "maxAgeInSeconds": {
+                    "type": "int",
+                    "nullable": true
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The CORS policy for the Cosmos DB database account."
+              }
+            },
+            "_createMode": {
+              "type": "string",
+              "allowedValues": [
+                "Default",
+                "Restore"
+              ],
+              "metadata": {
+                "description": "Enum to indicate the mode of account creation."
+              }
+            },
+            "_databaseAccountOfferType": {
+              "type": "string",
+              "allowedValues": [
+                "Standard"
+              ],
+              "metadata": {
+                "description": "The offer type for the database. Required."
+              }
+            },
+            "_defaultIdentity": {
+              "type": "string",
+              "allowedValues": [
+                "FirstPartyIdentity",
+                "SystemAssignedIdentity"
+              ],
+              "metadata": {
+                "description": "The default identity for accessing key vault used in features like customer managed keys. The default identity needs to be explicitly set by the users. It can be \"FirstPartyIdentity\", \"SystemAssignedIdentity\" and more."
+              }
+            },
+            "_disableKeyBasedMetadataWriteAccess": {
+              "type": "bool",
+              "metadata": {
+                "description": "Disable write operations on metadata resources (databases, containers, throughput) via account keys"
+              }
+            },
+            "_disableLocalAuth": {
+              "type": "bool",
+              "metadata": {
+                "description": "Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication."
+              }
+            },
+            "_enableAnalyticalStorage": {
+              "type": "bool",
+              "metadata": {
+                "description": "Flag to indicate whether to enable storage analytics."
+              }
+            },
+            "_enableAutomaticFailover": {
+              "type": "bool",
+              "metadata": {
+                "description": "Enables automatic failover of the write region in the rare event that the region is unavailable due to an outage. Automatic failover will result in a new write region for the account and is chosen based on the failover priorities configured for the account."
+              }
+            },
+            "_enableCassandraConnector": {
+              "type": "bool",
+              "metadata": {
+                "description": "Enables the cassandra connector on the Cosmos DB C* account"
+              }
+            },
+            "_enableFreeTier": {
+              "type": "bool",
+              "metadata": {
+                "description": "Flag to indicate whether Free Tier is enabled."
+              }
+            },
+            "_enableMultipleWriteLocations": {
+              "type": "bool",
+              "metadata": {
+                "description": "Enables the account to write in multiple locations"
+              }
+            },
+            "_enablePartitionMerge": {
+              "type": "bool",
+              "metadata": {
+                "description": "Flag to indicate enabling/disabling of Partition Merge feature on the account"
+              }
+            },
+            "_ipRules": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "ipAddressOrRange": {
+                    "$ref": "#/definitions/_ipAddressOrRange"
+                  }
+                }
+              },
+              "metadata": {
+                "description": "List of IpRules."
+              }
+            },
+            "_ipAddressOrRange": {
+              "type": "string",
+              "metadata": {
+                "description": "A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: “23.40.210.245” or “23.40.210.0/8”."
+              }
+            },
+            "_isVirtualNetworkFilterEnabled": {
+              "type": "bool",
+              "metadata": {
+                "description": "Flag to indicate whether to enable/disable Virtual Network ACL rules."
+              }
+            },
+            "_keyVaultKeyUri": {
+              "type": "string",
+              "metadata": {
+                "description": "The URI of the key vault"
+              }
+            },
+            "_locations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "failoverPriority": {
+                    "$ref": "#/definitions/_failoverPriority"
+                  },
+                  "isZoneRedundant": {
+                    "$ref": "#/definitions/_isZoneRedundant"
+                  },
+                  "locationName": {
+                    "$ref": "#/definitions/_locationName"
+                  }
+                }
+              },
+              "minLength": 1,
+              "metadata": {
+                "description": "An array that contains the georeplication locations enabled for the Cosmos DB account. Required."
+              }
+            },
+            "_failoverPriority": {
+              "type": "int",
+              "metadata": {
+                "description": "The failover priority of the region. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists."
+              }
+            },
+            "_isZoneRedundant": {
+              "type": "bool",
+              "metadata": {
+                "description": "Flag to indicate whether or not this region is an AvailabilityZone region"
+              }
+            },
+            "_locationName": {
+              "$ref": "#/definitions/_location",
+              "metadata": {
+                "description": "The name of the region."
+              }
+            },
+            "_networkAclBypass": {
+              "type": "string",
+              "allowedValues": [
+                "AzureServices",
+                "None"
+              ],
+              "metadata": {
+                "description": "Indicates what services are allowed to bypass firewall checks."
+              }
+            },
+            "_networkAclBypassResourceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "metadata": {
+                "description": "An array that contains the Resource Ids for Network Acl Bypass for the Cosmos DB account."
+              }
+            },
+            "_publicNetworkAccess": {
+              "type": "string",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "metadata": {
+                "description": "Whether requests from Public Network are allowed"
+              }
+            },
+            "_restoreParameters": {
+              "type": "object",
+              "properties": {
+                "databasesToRestore": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/_databasesToRestore"
+                  },
+                  "nullable": true
+                },
+                "restoreMode": {
+                  "$ref": "#/definitions/_restoreMode",
+                  "nullable": true
+                },
+                "restoreSource": {
+                  "$ref": "#/definitions/_restoreSource",
+                  "nullable": true
+                },
+                "restoreTimestampInUtc": {
+                  "$ref": "#/definitions/_restoreTimestampInUtc",
+                  "nullable": true
+                }
+              },
+              "metadata": {
+                "description": "Parameters to indicate the information about the restore."
+              }
+            },
+            "_databasesToRestore": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "collectionNames": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/_collectionNames"
+                    },
+                    "nullable": true
+                  },
+                  "databaseName": {
+                    "$ref": "#/definitions/_databaseName",
+                    "nullable": true
+                  }
+                }
+              },
+              "metadata": {
+                "description": "List of Virtual Network ACL rules configured for the Cosmos DB account."
+              }
+            },
+            "_collectionNames": {
+              "type": "string",
+              "metadata": {
+                "description": "The names of the collections available for restore."
+              }
+            },
+            "_databaseName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the database available for restore."
+              }
+            },
+            "_restoreMode": {
+              "type": "string",
+              "allowedValues": [
+                "PointInTime"
+              ],
+              "metadata": {
+                "description": "Describes the mode of the restore."
+              }
+            },
+            "_restoreSource": {
+              "type": "string",
+              "metadata": {
+                "description": "The id of the restorable database account from which the restore has to be initiated. For example: /subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}/restorableDatabaseAccounts/{restorableDatabaseAccountName}"
+              }
+            },
+            "_restoreTimestampInUtc": {
+              "type": "string",
+              "metadata": {
+                "description": "Time to which the account has to be restored (ISO-8601 format)."
+              }
+            },
+            "_virtualNetworkRules": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "$ref": "#/definitions/_id"
+                  },
+                  "ignoreMissingVNetServiceEndpoint": {
+                    "$ref": "#/definitions/_ignoreMissingVNetServiceEndpoint"
+                  }
+                }
+              },
+              "metadata": {
+                "description": "List of Virtual Network ACL rules configured for the Cosmos DB account."
+              }
+            },
+            "_id": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of a subnet, for example: /subscriptions/{subscriptionId}/resourceGroups/{groupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}."
+              }
+            },
+            "_ignoreMissingVNetServiceEndpoint": {
+              "type": "bool",
+              "metadata": {
+                "description": "Create firewall rule before the virtual network has vnet service endpoint enabled."
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "$ref": "#/definitions/_name"
+            },
+            "location": {
+              "$ref": "#/definitions/_location"
+            },
+            "kind": {
+              "$ref": "#/definitions/_kind",
+              "defaultValue": "GlobalDocumentDB"
+            },
+            "properties": {
+              "$ref": "#/definitions/_properties"
+            }
+          },
+          "resources": {
+            "cosmosDB": {
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2022-05-15",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "kind": "[parameters('kind')]",
+              "properties": "[parameters('properties')]"
+            }
+          },
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name'))]"
+            },
+            "name": {
+              "$ref": "#/definitions/_name",
+              "value": "[parameters('name')]"
+            }
+          }
+        }
       }
     }
   ],
@@ -161,14 +1115,14 @@
       "metadata": {
         "description": "Cosmos DB Resource ID"
       },
-      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name')))]"
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-cosmosdb'), '2022-09-01').outputs.id.value]"
     },
     "name": {
       "type": "string",
       "metadata": {
         "description": "Cosmos DB Resource Name"
       },
-      "value": "[toLower(parameters('name'))]"
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'deploy-cosmosdb'), '2022-09-01').outputs.name.value]"
     }
   }
 }

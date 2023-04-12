@@ -9,20 +9,34 @@ It allows for the creation of a new Cosmos DB account or use of an existing one,
 
 ## Parameters
 
-| Name                           | Type     | Required | Description                                                                                                                                   |
-| :----------------------------- | :------: | :------: | :-------------------------------------------------------------------------------------------------------------------------------------------- |
-| `location`                     | `string` | Yes      | Deployment Location                                                                                                                           |
-| `prefix`                       | `string` | No       | Prefix of Cosmos DB Resource Name                                                                                                             |
-| `name`                         | `string` | No       | Name of Cosmos DB Resource                                                                                                                    |
-| `maxStalenessPrefix`           | `int`    | No       | Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 2147483647. Multi Region: 100000 to 2147483647.         |
-| `maxIntervalInSeconds`         | `int`    | No       | Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400.                   |
-| `defaultConsistencyLevel`      | `string` | No       | The default consistency level of the Cosmos DB account.                                                                                       |
-| `systemManagedFailover`        | `bool`   | No       | Enable system managed failover for regions                                                                                                    |
-| `secondaryLocations`           | `array`  | No       | array of region objects or regions: [region: string]                                                                                          |
-| `enableMultipleWriteLocations` | `bool`   | No       | Multi-region writes capability allows you to take advantage of the provisioned throughput for your databases and containers across the globe. |
-| `enableCassandra`              | `bool`   | No       | Enable Cassandra Backend.                                                                                                                     |
-| `enableServerless`             | `bool`   | No       | Enable Serverless for consumption-based usage.                                                                                                |
-| `isZoneRedundant`              | `bool`   | No       | Toggle to enable or disable zone redudance.                                                                                                   |
+| Name                             | Type     | Required | Description                                                                                                                                   |
+| :------------------------------- | :------: | :------: | :-------------------------------------------------------------------------------------------------------------------------------------------- |
+| `location`                       | `string` | Yes      | Deployment Location                                                                                                                           |
+| `prefix`                         | `string` | No       | Prefix of Cosmos DB Resource Name                                                                                                             |
+| `name`                           | `string` | No       | Name of Cosmos DB Resource                                                                                                                    |
+| `maxStalenessPrefix`             | `int`    | No       | Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 2147483647. Multi Region: 100000 to 2147483647.         |
+| `maxIntervalInSeconds`           | `int`    | No       | Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400.                   |
+| `defaultConsistencyLevel`        | `string` | No       | The default consistency level of the Cosmos DB account.                                                                                       |
+| `systemManagedFailover`          | `bool`   | No       | Enable system managed failover for regions                                                                                                    |
+| `secondaryLocations`             | `array`  | No       | array of region objects or regions: [region: string]                                                                                          |
+| `enableMultipleWriteLocations`   | `bool`   | No       | Multi-region writes capability allows you to take advantage of the provisioned throughput for your databases and containers across the globe. |
+| `enableCassandra`                | `bool`   | No       | Enable Cassandra Backend.                                                                                                                     |
+| `enableGremlin`                  | `bool`   | No       | Enable Gremlin API.                                                                                                                           |
+| `enableServerless`               | `bool`   | No       | Enable Serverless for consumption-based usage.                                                                                                |
+| `enableTable`                    | `bool`   | No       | Enable Table API.                                                                                                                             |
+| `enableMongo`                    | `bool`   | No       | Enable Mongo API.                                                                                                                             |
+| `isZoneRedundant`                | `bool`   | No       | Toggle to enable or disable zone redudance.                                                                                                   |
+| `disableLocalAuth`               | `bool`   | No       | Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.                                       |
+| `enablePartitionMerge`           | `bool`   | No       | Flag to indicate enabling/disabling of Partition Merge feature on the account                                                                 |
+| `enableCassandraConnector`       | `bool`   | No       | Enables the cassandra connector on the Cosmos DB C* account                                                                                   |
+| `enableAnalyticalStorage`        | `bool`   | No       | Flag to indicate whether to enable storage analytics.                                                                                         |
+| `disableRateLimitingResponses`   | `bool`   | No       | Disable rate limiting on responses.                                                                                                           |
+| `analyticalStorageConfiguration` | `string` | No       | Analytical storage specific properties.                                                                                                       |
+| `serverVersion`                  | `string` | No       |                                                                                                                                               |
+| `enableAggregationPipeline`      | `bool`   | No       | Enable Aggregation Pipeline                                                                                                                   |
+| `enableMongoDBv34`               | `bool`   | No       | Enable MongoDBv34                                                                                                                             |
+| `allowSelfServeUpgradeToMongo36` | `bool`   | No       | Allow Self Serve Upgrade To Mongo36                                                                                                           |
+| `enablemongoEnableDocLevelTTL`   | `bool`   | No       | Enable mongoEnableDocLevelTTL                                                                                                                 |
 
 ## Outputs
 
