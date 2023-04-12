@@ -62,7 +62,7 @@ param newOrExisting string = 'new'
 param resourceGroupName string = 'myresourcegroup'
 param isZoneRedundant bool = true
 
-module postgresqlServer 'br/public:databases/flexible-postgresql:0.0.1' = {
+module postgresqlServer 'br/public:storage/flexible-postgresql-server:1.0.1' = {
   name: 'mypostgresqlserver'
   params: {
     location: location
