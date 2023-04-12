@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "7862511920085401642"
+      "templateHash": "1351348448041479846"
     }
   },
   "parameters": {
@@ -25,7 +25,7 @@
     },
     "trafficManagerDnsName": {
       "type": "string",
-      "defaultValue": "[format('tmp-{0}', uniqueString(resourceGroup().id, subscription().id))]",
+      "defaultValue": "[format('tmp-{0}', uniqueString(resourceGroup().id, subscription().id, parameters('name')))]",
       "metadata": {
         "description": "Relative DNS name for the traffic manager profile, must be globally unique."
       }

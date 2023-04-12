@@ -5,7 +5,7 @@ param prefix string = 'traf'
 param name string = '${prefix}-${uniqueString(resourceGroup().id, subscription().id)}'
 
 @description('Relative DNS name for the traffic manager profile, must be globally unique.')
-param trafficManagerDnsName string = 'tmp-${uniqueString(resourceGroup().id, subscription().id)}'
+param trafficManagerDnsName string = 'tmp-${uniqueString(resourceGroup().id, subscription().id, name)}'
 
 @description('An array of objects that represent the endpoints in the Traffic Manager profile. {name: string, target: string, endpointStatus: string, endpointLocation: string}')
 param endpoints array = []

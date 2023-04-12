@@ -17,18 +17,16 @@ module test0 '../main.bicep' = {
 }
 
 // Test 1
-param endpoints array = [
-  {
-    name: 'my-endpoint-1'
-    target: 'http://www.bing.com'
-    endpointStatus: 'Enabled'
-    endpointLocation: 'eastus'
-  }
-]
-
+// Set Traffic Manager Endpoint
 module test1 '../main.bicep' = {
   name: 'test1'
   params: {
-    endpoints: endpoints
+    prefix: 'traf1'
+    endpoints: [{
+        name: 'my-endpoint-1'
+        target: 'www.bing.com'
+        endpointStatus: 'Enabled'
+        endpointLocation: 'eastus'
+    }]
   }
 }
