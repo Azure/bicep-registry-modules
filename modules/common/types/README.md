@@ -72,9 +72,9 @@ output id resourceTypes.id = deployResource.outputs.id
 
 ```bicep
 import 'br/public:common/types:1.0.1' as types
-import types.storage as storageTypes
-import types.cosmosdb as cosmosTypes
 
+from types.storage import StorageAccount as storageTypes
+from types.cosmosdb import CosmosDB as cosmosTypes
 from types.resource import AzurePublicCloudLocations as Location, ResourceId
 
 param location Location
