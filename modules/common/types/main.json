@@ -1,0 +1,1742 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "1.10-experimental",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
+    "_generator": {
+      "name": "bicep",
+      "version": "0.16.2.56959",
+      "templateHash": "3886174009231858927"
+    }
+  },
+  "definitions": {
+    "AzureLocations": {
+      "type": "string",
+      "allowedValues": [
+        "australiaeast",
+        "australiasoutheast",
+        "brazilsouth",
+        "canadacentral",
+        "canadaeast",
+        "centralindia",
+        "chinaeast",
+        "chinaeast2",
+        "chinanorth",
+        "chinanorth2",
+        "eastus",
+        "eastus2",
+        "francecentral",
+        "germanycentral",
+        "germanynortheast",
+        "germanywestcentral",
+        "japaneast",
+        "japanwest",
+        "koreacentral",
+        "koreasouth",
+        "northeurope",
+        "norwayeast",
+        "southafricanorth",
+        "southeastasia",
+        "southindia",
+        "switzerlandnorth",
+        "uaenorth",
+        "uksouth",
+        "ukwest",
+        "usgovarizona",
+        "usgoviowa",
+        "usgovtexas",
+        "usgovvirginia",
+        "westcentralus",
+        "westeurope",
+        "westindia",
+        "westus",
+        "westus2"
+      ]
+    },
+    "AzurePublicCloudLocations": {
+      "type": "string",
+      "allowedValues": [
+        "australiaeast",
+        "australiasoutheast",
+        "brazilsouth",
+        "canadacentral",
+        "canadaeast",
+        "centralindia",
+        "eastus",
+        "eastus2",
+        "francecentral",
+        "germanywestcentral",
+        "japaneast",
+        "japanwest",
+        "koreacentral",
+        "koreasouth",
+        "northeurope",
+        "norwayeast",
+        "southafricanorth",
+        "southeastasia",
+        "southindia",
+        "switzerlandnorth",
+        "uaenorth",
+        "uksouth",
+        "ukwest",
+        "westcentralus",
+        "westeurope",
+        "westindia",
+        "westus",
+        "westus2"
+      ]
+    },
+    "AzureChinaCloudLocations": {
+      "type": "string",
+      "allowedValues": [
+        "chinaeast",
+        "chinaeast2",
+        "chinanorth",
+        "chinanorth2"
+      ]
+    },
+    "AzureUSGovernmentCloudLocations": {
+      "type": "string",
+      "allowedValues": [
+        "usgovarizona",
+        "usgoviowa",
+        "usgovtexas",
+        "usgovvirginia"
+      ]
+    },
+    "AzureGermanCloudLocations": {
+      "type": "string",
+      "allowedValues": [
+        "germanycentral",
+        "germanynortheast"
+      ]
+    }
+  },
+  "resources": {
+    "StorageAccount": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "StorageAccountTypes",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
+            "_generator": {
+              "name": "bicep",
+              "version": "0.16.2.56959",
+              "templateHash": "15434923990148863942"
+            }
+          },
+          "definitions": {
+            "StorageAccount": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "$ref": "#/definitions/_name"
+                },
+                "location": {
+                  "$ref": "#/definitions/_location",
+                  "nullable": true
+                },
+                "tags": {
+                  "$ref": "#/definitions/_tags",
+                  "nullable": true
+                },
+                "sku": {
+                  "$ref": "#/definitions/_sku"
+                },
+                "kind": {
+                  "$ref": "#/definitions/_kind"
+                },
+                "extendedLocation": {
+                  "$ref": "#/definitions/_extendedLocation",
+                  "nullable": true
+                },
+                "identity": {
+                  "$ref": "#/definitions/_identity",
+                  "nullable": true
+                },
+                "properties": {
+                  "$ref": "#/definitions/_properties"
+                }
+              }
+            },
+            "_name": {
+              "type": "string",
+              "maxLength": 24,
+              "minLength": 3
+            },
+            "_location": {
+              "type": "string",
+              "allowedValues": [
+                "australiaeast",
+                "australiasoutheast",
+                "brazilsouth",
+                "canadacentral",
+                "canadaeast",
+                "centralindia",
+                "eastus",
+                "eastus2",
+                "francecentral",
+                "germanywestcentral",
+                "japaneast",
+                "japanwest",
+                "koreacentral",
+                "koreasouth",
+                "northeurope",
+                "norwayeast",
+                "southafricanorth",
+                "southeastasia",
+                "southindia",
+                "switzerlandnorth",
+                "uaenorth",
+                "uksouth",
+                "ukwest",
+                "westcentralus",
+                "westeurope",
+                "westindia",
+                "westus",
+                "westus2"
+              ],
+              "metadata": {
+                "description": "The location of the resource group to which the resource belongs."
+              }
+            },
+            "_tag_key": {
+              "type": "string",
+              "maxLength": 128
+            },
+            "_tag_value": {
+              "type": "string",
+              "maxLength": 256
+            },
+            "_tags": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "$ref": "#/definitions/_tag_key"
+                  },
+                  "value": {
+                    "$ref": "#/definitions/_tag_value"
+                  }
+                }
+              },
+              "maxLength": 15,
+              "metadata": {
+                "description": "Tags are a list of key-value pairs that describe the resource. These tags can be used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can be provided for a resource. Each tag must have a key no greater than 128 characters and value no greater than 256 characters. For example, the default experience for a template type is set with \"defaultExperience\": \"Cassandra\". Current \"defaultExperience\" values also include \"Table\", \"Graph\", \"DocumentDB\", and \"MongoDB\"."
+              }
+            },
+            "_sku": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "$ref": "#/definitions/_sku_name"
+                }
+              },
+              "metadata": {
+                "description": "Gets or sets the SKU name. Required."
+              }
+            },
+            "_sku_name": {
+              "type": "string",
+              "allowedValues": [
+                "Premium_LRS",
+                "Standard_GRS",
+                "Standard_LRS",
+                "Standard_RAGRS",
+                "Standard_ZRS"
+              ],
+              "metadata": {
+                "description": "The SKU name. Required for account creation; optional for update. Note that in older versions, SKU name was called accountType."
+              }
+            },
+            "_kind": {
+              "type": "string",
+              "allowedValues": [
+                "BlobStorage",
+                "BlockBlobStorage",
+                "FileStorage",
+                "Storage",
+                "StorageV2"
+              ],
+              "metadata": {
+                "description": "Indicates the type of storage account. Required."
+              }
+            },
+            "_extendedLocation": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "$ref": "#/definitions/_extendedLocation_name"
+                },
+                "type": {
+                  "$ref": "#/definitions/_extendedLocation_type"
+                }
+              },
+              "metadata": {
+                "description": "Set the extended location of the resource. If not set, the storage account will be created in Azure main region. Otherwise it will be created in the specified extended location"
+              }
+            },
+            "_extendedLocation_name": {
+              "type": "string",
+              "allowedValues": [
+                "string"
+              ],
+              "metadata": {
+                "description": "The name of the extended location."
+              }
+            },
+            "_extendedLocation_type": {
+              "type": "string",
+              "allowedValues": [
+                "EdgeZone"
+              ],
+              "metadata": {
+                "description": "The type of the extended location."
+              }
+            },
+            "_identity": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "$ref": "#/definitions/_identity_type"
+                },
+                "userAssignedIdentities": {
+                  "$ref": "#/definitions/_identity_userAssignedIdentities",
+                  "nullable": true
+                }
+              },
+              "metadata": {
+                "description": "The identity of the resource."
+              }
+            },
+            "_identity_type": {
+              "type": "string",
+              "allowedValues": [
+                "None",
+                "SystemAssigned",
+                "SystemAssigned,UserAssigned",
+                "UserAssigned"
+              ],
+              "metadata": {
+                "description": "The type of identity used for the resource. The type \"SystemAssigned, UserAssigned\" includes both an implicitly created identity and a set of user-assigned identities. The type \"None\" will remove any identities from the service."
+              }
+            },
+            "_identity_userAssignedIdentities": {
+              "type": "object",
+              "metadata": {
+                "description": "The list of user identities associated with the resource. The user identity dictionary key references will be ARM resource ids in the form: \"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}\"."
+              }
+            },
+            "_properties": {
+              "type": "object",
+              "properties": {
+                "accessTier": {
+                  "$ref": "#/definitions/_accessTier",
+                  "nullable": true
+                },
+                "allowBlobPublicAccess": {
+                  "$ref": "#/definitions/allowBlobPublicAccess",
+                  "nullable": true
+                },
+                "allowCrossTenantReplication": {
+                  "$ref": "#/definitions/allowCrossTenantReplication",
+                  "nullable": true
+                },
+                "allowedCopyScope": {
+                  "$ref": "#/definitions/allowedCopyScope",
+                  "nullable": true
+                },
+                "allowSharedKeyAccess": {
+                  "$ref": "#/definitions/allowSharedKeyAccess",
+                  "nullable": true
+                },
+                "azureFilesIdentityBasedAuthentication": {
+                  "$ref": "#/definitions/azureFilesIdentityBasedAuthentication",
+                  "nullable": true
+                },
+                "customDomain": {
+                  "$ref": "#/definitions/customDomain",
+                  "nullable": true
+                },
+                "defaultToOAuthAuthentication": {
+                  "$ref": "#/definitions/defaultToOAuthAuthentication",
+                  "nullable": true
+                },
+                "dnsEndpointType": {
+                  "$ref": "#/definitions/dnsEndpointType",
+                  "nullable": true
+                },
+                "encryption": {
+                  "$ref": "#/definitions/encryption",
+                  "nullable": true
+                },
+                "immutableStorageWithVersioning": {
+                  "$ref": "#/definitions/immutableStorageWithVersioning",
+                  "nullable": true
+                },
+                "isHnsEnabled": {
+                  "$ref": "#/definitions/isHnsEnabled",
+                  "nullable": true
+                },
+                "isLocalUserEnabled": {
+                  "$ref": "#/definitions/isLocalUserEnabled",
+                  "nullable": true
+                },
+                "isNfsV3Enabled": {
+                  "$ref": "#/definitions/isNfsV3Enabled",
+                  "nullable": true
+                },
+                "isSftpEnabled": {
+                  "$ref": "#/definitions/isSftpEnabled",
+                  "nullable": true
+                },
+                "keyPolicy": {
+                  "$ref": "#/definitions/keyPolicy",
+                  "nullable": true
+                },
+                "largeFileSharesState": {
+                  "$ref": "#/definitions/largeFileSharesState",
+                  "nullable": true
+                },
+                "minimumTlsVersion": {
+                  "$ref": "#/definitions/minimumTlsVersion",
+                  "nullable": true
+                },
+                "networkAcls": {
+                  "$ref": "#/definitions/networkAcls",
+                  "nullable": true
+                },
+                "publicNetworkAccess": {
+                  "$ref": "#/definitions/publicNetworkAccess",
+                  "nullable": true
+                },
+                "routingPreference": {
+                  "$ref": "#/definitions/routingPreference",
+                  "nullable": true
+                },
+                "sasPolicy": {
+                  "$ref": "#/definitions/sasPolicy",
+                  "nullable": true
+                },
+                "supportsHttpsTrafficOnly": {
+                  "$ref": "#/definitions/supportsHttpsTrafficOnly",
+                  "nullable": true
+                }
+              },
+              "metadata": {
+                "description": "The parameters used to create the storage account."
+              }
+            },
+            "_accessTier": {
+              "type": "string",
+              "allowedValues": [
+                "Cool",
+                "Hot",
+                "Premium"
+              ],
+              "metadata": {
+                "description": "Required for storage accounts where kind = BlobStorage. The access tier is used for billing. The \"Premium\" access tier is the default value for premium block blobs storage account type and it cannot be changed for the premium block blobs storage account type."
+              }
+            },
+            "allowBlobPublicAccess": {
+              "type": "bool",
+              "metadata": {
+                "description": "Allow or disallow public access to all blobs or containers in the storage account. The default interpretation is true for this property."
+              }
+            },
+            "allowCrossTenantReplication": {
+              "type": "bool",
+              "metadata": {
+                "description": "Allow or disallow cross AAD tenant object replication. The default interpretation is true for this property."
+              }
+            },
+            "allowedCopyScope": {
+              "type": "string",
+              "allowedValues": [
+                "AAD",
+                "PrivateLink"
+              ],
+              "metadata": {
+                "description": "Restrict copy to and from Storage Accounts within an AAD tenant or with Private Links to the same VNet."
+              }
+            },
+            "allowSharedKeyAccess": {
+              "type": "bool",
+              "metadata": {
+                "description": "Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Azure Active Directory (Azure AD). The default value is null, which is equivalent to true."
+              }
+            },
+            "azureFilesIdentityBasedAuthentication": {
+              "type": "object",
+              "properties": {
+                "activeDirectoryProperties": {
+                  "type": "object",
+                  "properties": {
+                    "accountType": {
+                      "type": "string",
+                      "allowedValues": [
+                        "string"
+                      ]
+                    },
+                    "azureStorageSid": {
+                      "type": "string",
+                      "allowedValues": [
+                        "string"
+                      ]
+                    },
+                    "domainGuid": {
+                      "type": "string",
+                      "allowedValues": [
+                        "string"
+                      ]
+                    },
+                    "domainName": {
+                      "type": "string",
+                      "allowedValues": [
+                        "string"
+                      ]
+                    },
+                    "domainSid": {
+                      "type": "string",
+                      "allowedValues": [
+                        "string"
+                      ]
+                    },
+                    "forestName": {
+                      "type": "string",
+                      "allowedValues": [
+                        "string"
+                      ]
+                    },
+                    "netBiosDomainName": {
+                      "type": "string",
+                      "allowedValues": [
+                        "string"
+                      ]
+                    },
+                    "samAccountName": {
+                      "type": "string",
+                      "allowedValues": [
+                        "string"
+                      ]
+                    }
+                  }
+                },
+                "defaultSharePermission": {
+                  "type": "string",
+                  "allowedValues": [
+                    "string"
+                  ]
+                },
+                "directoryServiceOptions": {
+                  "type": "string",
+                  "allowedValues": [
+                    "string"
+                  ]
+                }
+              },
+              "metadata": {
+                "description": "Provides the identity based authentication settings for Azure Files."
+              }
+            },
+            "customDomain": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "allowedValues": [
+                    "string"
+                  ]
+                },
+                "useSubDomainName": {
+                  "type": "bool"
+                }
+              },
+              "metadata": {
+                "description": "The custom domain name assigned to the storage account by the user. Name is the CNAME source. Only one custom domain is supported per storage account at this time. To clear the existing custom domain, use an empty string for the custom domain name property."
+              }
+            },
+            "defaultToOAuthAuthentication": {
+              "type": "bool",
+              "metadata": {
+                "description": "Indicates whether default authentication with Azure Active Directory (Azure AD) is enabled for the storage account. The default value is true, this means that Azure AD authentication is enabled unless explicitly disabled when creating the storage account."
+              }
+            },
+            "dnsEndpointType": {
+              "type": "string",
+              "allowedValues": [
+                "string"
+              ],
+              "metadata": {
+                "description": "Indicates the type of DNS to be used."
+              }
+            },
+            "encryption": {
+              "type": "object",
+              "properties": {
+                "identity": {
+                  "type": "object",
+                  "properties": {
+                    "federatedIdentityClientId": {
+                      "type": "string",
+                      "allowedValues": [
+                        "string"
+                      ]
+                    },
+                    "userAssignedIdentity": {
+                      "type": "string",
+                      "allowedValues": [
+                        "string"
+                      ]
+                    }
+                  }
+                },
+                "keySource": {
+                  "type": "string",
+                  "allowedValues": [
+                    "string"
+                  ]
+                },
+                "keyvaultproperties": {
+                  "type": "object",
+                  "properties": {
+                    "keyname": {
+                      "type": "string",
+                      "allowedValues": [
+                        "string"
+                      ]
+                    },
+                    "keyvaulturi": {
+                      "type": "string",
+                      "allowedValues": [
+                        "string"
+                      ]
+                    },
+                    "keyversion": {
+                      "type": "string",
+                      "allowedValues": [
+                        "string"
+                      ]
+                    }
+                  }
+                },
+                "requireInfrastructureEncryption": {
+                  "type": "bool"
+                },
+                "services": {
+                  "type": "object",
+                  "properties": {
+                    "blob": {
+                      "type": "object",
+                      "properties": {
+                        "enabled": {
+                          "type": "bool"
+                        },
+                        "keyType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "string"
+                          ]
+                        }
+                      }
+                    },
+                    "file": {
+                      "type": "object",
+                      "properties": {
+                        "enabled": {
+                          "type": "bool"
+                        },
+                        "keyType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "string"
+                          ]
+                        }
+                      }
+                    },
+                    "queue": {
+                      "type": "object",
+                      "properties": {
+                        "enabled": {
+                          "type": "bool"
+                        },
+                        "keyType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "string"
+                          ]
+                        }
+                      }
+                    },
+                    "table": {
+                      "type": "object",
+                      "properties": {
+                        "enabled": {
+                          "type": "bool"
+                        },
+                        "keyType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "string"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Provides the encryption settings on the account. The default setting is unencrypted."
+              }
+            },
+            "immutableStorageWithVersioning": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "bool"
+                },
+                "immutabilityPolicy": {
+                  "type": "object",
+                  "properties": {
+                    "allowProtectedAppendWrites": {
+                      "type": "bool"
+                    },
+                    "immutabilityPeriodSinceCreationInDays": {
+                      "type": "int"
+                    },
+                    "state": {
+                      "type": "string",
+                      "allowedValues": [
+                        "string"
+                      ]
+                    }
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Provides the immutable storage with versioning settings on the account."
+              }
+            },
+            "isHnsEnabled": {
+              "type": "bool",
+              "metadata": {
+                "description": "Indicates whether the storage account has Hierarchical Namespace enabled."
+              }
+            },
+            "isLocalUserEnabled": {
+              "type": "bool",
+              "metadata": {
+                "description": "Indicates whether the storage account has local user enabled."
+              }
+            },
+            "isNfsV3Enabled": {
+              "type": "bool",
+              "metadata": {
+                "description": "Indicates whether the storage account has NFSv3 enabled."
+              }
+            },
+            "isSftpEnabled": {
+              "type": "bool",
+              "metadata": {
+                "description": "Indicates whether the storage account has SFTP enabled."
+              }
+            },
+            "keyPolicy": {
+              "type": "object",
+              "properties": {
+                "keyExpirationPeriodInDays": {
+                  "type": "int"
+                }
+              },
+              "metadata": {
+                "description": "Provides the key policy rules on the account."
+              }
+            },
+            "largeFileSharesState": {
+              "type": "string",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "metadata": {
+                "description": "Indicates whether large file shares is enabled."
+              }
+            },
+            "minimumTlsVersion": {
+              "type": "string",
+              "allowedValues": [
+                "TLS1_0",
+                "TLS1_1",
+                "TLS1_2"
+              ],
+              "metadata": {
+                "description": "Indicates the minimum TLS version to be permitted on requests to storage. The default interpretation is TLS 1.0 for this property."
+              }
+            },
+            "networkAcls": {
+              "type": "object",
+              "properties": {
+                "bypass": {
+                  "type": "string",
+                  "allowedValues": [
+                    "string"
+                  ]
+                },
+                "defaultAction": {
+                  "type": "string",
+                  "allowedValues": [
+                    "string"
+                  ]
+                },
+                "ipRules": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "action": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Allow"
+                          ]
+                        },
+                        "value": {
+                          "type": "string",
+                          "allowedValues": [
+                            "string"
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "items": false
+                },
+                "resourceAccessRules": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "resourceId": {
+                          "type": "string",
+                          "allowedValues": [
+                            "string"
+                          ]
+                        },
+                        "tenantId": {
+                          "type": "string",
+                          "allowedValues": [
+                            "string"
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "items": false
+                },
+                "virtualNetworkRules": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "action": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Allow"
+                          ]
+                        },
+                        "id": {
+                          "type": "string",
+                          "allowedValues": [
+                            "string"
+                          ]
+                        },
+                        "state": {
+                          "type": "string",
+                          "allowedValues": [
+                            "string"
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "items": false
+                }
+              },
+              "metadata": {
+                "description": "Provides the network ruleset for a storage account."
+              }
+            },
+            "publicNetworkAccess": {
+              "type": "string",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "metadata": {
+                "description": "Indicates whether or not public endpoint access is allowed for this storage account. The default interpretation is true for this property."
+              }
+            },
+            "routingPreference": {
+              "type": "object",
+              "properties": {
+                "publishInternetEndpoints": {
+                  "type": "bool"
+                },
+                "publishMicrosoftEndpoints": {
+                  "type": "bool"
+                },
+                "routingChoice": {
+                  "type": "string",
+                  "allowedValues": [
+                    "string"
+                  ]
+                }
+              },
+              "metadata": {
+                "description": "Provides the routing choice between Internet and Microsoft network for data transfer."
+              }
+            },
+            "sasPolicy": {
+              "type": "object",
+              "properties": {
+                "expirationAction": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Log"
+                  ]
+                },
+                "sasExpirationPeriod": {
+                  "type": "string",
+                  "allowedValues": [
+                    "string"
+                  ]
+                }
+              },
+              "metadata": {
+                "description": "Provides the Secure Access Signature (SAS) policy assigned to the storage account."
+              }
+            },
+            "supportsHttpsTrafficOnly": {
+              "type": "bool",
+              "metadata": {
+                "description": "Indicates whether https traffic is required for the storage account."
+              }
+            }
+          },
+          "resources": {}
+        }
+      }
+    },
+    "CosmosDB": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "CosmosDBTypes",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
+            "_generator": {
+              "name": "bicep",
+              "version": "0.16.2.56959",
+              "templateHash": "16551541697264657673"
+            }
+          },
+          "definitions": {
+            "CosmosDB": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "$ref": "#/definitions/_name"
+                },
+                "location": {
+                  "$ref": "#/definitions/_location"
+                },
+                "tags": {
+                  "$ref": "#/definitions/_tags",
+                  "nullable": true
+                },
+                "kind": {
+                  "$ref": "#/definitions/_kind",
+                  "nullable": true
+                },
+                "identity": {
+                  "$ref": "#/definitions/_identity",
+                  "nullable": true
+                },
+                "properties": {
+                  "$ref": "#/definitions/_properties"
+                }
+              }
+            },
+            "_name": {
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 3,
+              "metadata": {
+                "description": "The resource name."
+              }
+            },
+            "_location": {
+              "type": "string",
+              "allowedValues": [
+                "australiaeast",
+                "australiasoutheast",
+                "brazilsouth",
+                "canadacentral",
+                "canadaeast",
+                "centralindia",
+                "eastus",
+                "eastus2",
+                "francecentral",
+                "germanywestcentral",
+                "japaneast",
+                "japanwest",
+                "koreacentral",
+                "koreasouth",
+                "northeurope",
+                "norwayeast",
+                "southafricanorth",
+                "southeastasia",
+                "southindia",
+                "switzerlandnorth",
+                "uaenorth",
+                "uksouth",
+                "ukwest",
+                "westcentralus",
+                "westeurope",
+                "westindia",
+                "westus",
+                "westus2"
+              ],
+              "metadata": {
+                "description": "The location of the resource group to which the resource belongs."
+              }
+            },
+            "_tag_key": {
+              "type": "string",
+              "maxLength": 128
+            },
+            "_tag_value": {
+              "type": "string",
+              "maxLength": 256
+            },
+            "_tags": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "key": {
+                    "$ref": "#/definitions/_tag_key"
+                  },
+                  "value": {
+                    "$ref": "#/definitions/_tag_value"
+                  }
+                }
+              },
+              "maxLength": 15,
+              "metadata": {
+                "description": "Tags are a list of key-value pairs that describe the resource. These tags can be used in viewing and grouping this resource (across resource groups). A maximum of 15 tags can be provided for a resource. Each tag must have a key no greater than 128 characters and value no greater than 256 characters. For example, the default experience for a template type is set with \"defaultExperience\": \"Cassandra\". Current \"defaultExperience\" values also include \"Table\", \"Graph\", \"DocumentDB\", and \"MongoDB\"."
+              }
+            },
+            "_kind": {
+              "type": "string",
+              "allowedValues": [
+                "GlobalDocumentDB",
+                "MongoDB",
+                "Parse"
+              ],
+              "metadata": {
+                "description": "Indicates the type of database account. This can only be set at database account creation."
+              }
+            },
+            "_identity": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "SystemAssigned",
+                    "SystemAssigned,UserAssigned",
+                    "UserAssigned"
+                  ]
+                },
+                "userAssignedIdentities": {
+                  "type": "object"
+                }
+              },
+              "metadata": {
+                "description": "Identity for the resource."
+              }
+            },
+            "_properties": {
+              "type": "object",
+              "properties": {
+                "analyticalStorageConfiguration": {
+                  "$ref": "#/definitions/_analyticalStorageConfiguration",
+                  "nullable": true
+                },
+                "apiProperties": {
+                  "$ref": "#/definitions/_apiProperties",
+                  "nullable": true
+                },
+                "backupPolicy": {
+                  "$ref": "#/definitions/_backupPolicy",
+                  "nullable": true
+                },
+                "capabilities": {
+                  "$ref": "#/definitions/_capabilities",
+                  "nullable": true
+                },
+                "capacity": {
+                  "$ref": "#/definitions/_capacity",
+                  "nullable": true
+                },
+                "connectorOffer": {
+                  "$ref": "#/definitions/_connectorOffer",
+                  "nullable": true
+                },
+                "consistencyPolicy": {
+                  "$ref": "#/definitions/_consistencyPolicy",
+                  "nullable": true
+                },
+                "cors": {
+                  "$ref": "#/definitions/_cors",
+                  "nullable": true
+                },
+                "createMode": {
+                  "$ref": "#/definitions/_createMode",
+                  "nullable": true
+                },
+                "databaseAccountOfferType": {
+                  "$ref": "#/definitions/_databaseAccountOfferType"
+                },
+                "defaultIdentity": {
+                  "$ref": "#/definitions/_defaultIdentity",
+                  "nullable": true
+                },
+                "disableKeyBasedMetadataWriteAccess": {
+                  "$ref": "#/definitions/_disableKeyBasedMetadataWriteAccess",
+                  "nullable": true
+                },
+                "disableLocalAuth": {
+                  "$ref": "#/definitions/_disableLocalAuth",
+                  "nullable": true
+                },
+                "enableAnalyticalStorage": {
+                  "$ref": "#/definitions/_enableAnalyticalStorage",
+                  "nullable": true
+                },
+                "enableAutomaticFailover": {
+                  "$ref": "#/definitions/_enableAutomaticFailover",
+                  "nullable": true
+                },
+                "enableCassandraConnector": {
+                  "$ref": "#/definitions/_enableCassandraConnector",
+                  "nullable": true
+                },
+                "enableFreeTier": {
+                  "$ref": "#/definitions/_enableFreeTier",
+                  "nullable": true
+                },
+                "enableMultipleWriteLocations": {
+                  "$ref": "#/definitions/_enableMultipleWriteLocations",
+                  "nullable": true
+                },
+                "enablePartitionMerge": {
+                  "$ref": "#/definitions/_enablePartitionMerge",
+                  "nullable": true
+                },
+                "ipRules": {
+                  "$ref": "#/definitions/_ipRules",
+                  "nullable": true
+                },
+                "isVirtualNetworkFilterEnabled": {
+                  "$ref": "#/definitions/_isVirtualNetworkFilterEnabled",
+                  "nullable": true
+                },
+                "keyVaultKeyUri": {
+                  "$ref": "#/definitions/_keyVaultKeyUri",
+                  "nullable": true
+                },
+                "locations": {
+                  "$ref": "#/definitions/_locations"
+                },
+                "networkAclBypass": {
+                  "$ref": "#/definitions/_networkAclBypass",
+                  "nullable": true
+                },
+                "networkAclBypassResourceIds": {
+                  "$ref": "#/definitions/_networkAclBypassResourceIds",
+                  "nullable": true
+                },
+                "publicNetworkAccess": {
+                  "$ref": "#/definitions/_publicNetworkAccess",
+                  "nullable": true
+                },
+                "restoreParameters": {
+                  "$ref": "#/definitions/_restoreParameters",
+                  "nullable": true
+                },
+                "virtualNetworkRules": {
+                  "$ref": "#/definitions/_virtualNetworkRules",
+                  "nullable": true
+                }
+              },
+              "metadata": {
+                "description": "Properties to create and update Azure Cosmos DB database accounts."
+              }
+            },
+            "_analyticalStorageConfiguration": {
+              "type": "object",
+              "properties": {
+                "schemaType": {
+                  "$ref": "#/definitions/_schemaType"
+                }
+              },
+              "metadata": {
+                "description": "Analytical storage specific properties."
+              }
+            },
+            "_schemaType": {
+              "type": "string",
+              "allowedValues": [
+                "FullFidelity",
+                "WellDefined"
+              ],
+              "metadata": {
+                "description": "Describes the types of schema for analytical storage."
+              }
+            },
+            "_apiProperties": {
+              "type": "object",
+              "properties": {
+                "serverVersion": {
+                  "$ref": "#/definitions/_serverVersion"
+                }
+              },
+              "metadata": {
+                "description": "API specific properties. Currently, supported only for MongoDB API."
+              }
+            },
+            "_serverVersion": {
+              "type": "string",
+              "allowedValues": [
+                "3.2",
+                "3.6",
+                "4.0",
+                "4.2"
+              ],
+              "metadata": {
+                "description": "Describes the ServerVersion of an a MongoDB account."
+              }
+            },
+            "_backupPolicy": {
+              "type": "object",
+              "properties": {
+                "migrationState": {
+                  "$ref": "#/definitions/_backupPolicyMigrationState",
+                  "nullable": true
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "metadata": {
+                "description": "The object representing the policy for taking backups on an account."
+              }
+            },
+            "_startTime": {
+              "type": "string",
+              "metadata": {
+                "description": "Time at which the backup policy migration started (ISO-8601 format)."
+              }
+            },
+            "_status": {
+              "type": "string",
+              "allowedValues": [
+                "Completed",
+                "Failed",
+                "InProgress",
+                "Invalid",
+                null
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Describes the status of migration between backup policy types."
+              }
+            },
+            "_targetType": {
+              "type": "string",
+              "allowedValues": [
+                "Continuous",
+                "Periodic"
+              ],
+              "metadata": {
+                "description": "Describes the target backup policy type of the backup policy migration."
+              }
+            },
+            "_backupPolicyMigrationState": {
+              "type": "object",
+              "properties": {
+                "startTime": {
+                  "$ref": "#/definitions/_startTime",
+                  "nullable": true
+                },
+                "status": {
+                  "$ref": "#/definitions/_status"
+                },
+                "targetType": {
+                  "$ref": "#/definitions/_targetType",
+                  "nullable": true
+                }
+              },
+              "metadata": {
+                "description": "The object representing the state of the migration between the backup policies."
+              }
+            },
+            "_capabilities": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/_capability"
+              },
+              "metadata": {
+                "description": "List of Cosmos DB capabilities for the account"
+              }
+            },
+            "_capability": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "allowedValues": [
+                    "EnableCassandra",
+                    "EnableGremlin",
+                    "EnableServerless",
+                    "EnableTable"
+                  ]
+                }
+              },
+              "metadata": {
+                "description": "Name of the Cosmos DB capability. For example, \"name\": \"EnableCassandra\". Current values also include \"EnableTable\" and \"EnableGremlin\"."
+              }
+            },
+            "_totalThroughputLimit": {
+              "type": "int",
+              "minValue": -1,
+              "metadata": {
+                "description": "The total throughput limit imposed on the account. A totalThroughputLimit of 2000 imposes a strict limit of max throughput that can be provisioned on that account to be 2000. A totalThroughputLimit of -1 indicates no limits on provisioning of throughput."
+              }
+            },
+            "_capacity": {
+              "type": "object",
+              "properties": {
+                "totalThroughputLimit": {
+                  "$ref": "#/definitions/_totalThroughputLimit"
+                }
+              },
+              "metadata": {
+                "description": "The object that represents all properties related to capacity enforcement on an account."
+              }
+            },
+            "_connectorOffer": {
+              "type": "string",
+              "allowedValues": [
+                "Small"
+              ],
+              "metadata": {
+                "description": "The cassandra connector offer type for the Cosmos DB database C* account."
+              }
+            },
+            "_defaultConsistencyLevel": {
+              "type": "string",
+              "allowedValues": [
+                "BoundedStaleness",
+                "ConsistentPrefix",
+                "Eventual",
+                "Session",
+                "Strong"
+              ],
+              "metadata": {
+                "description": "The default consistency level and configuration settings of the Cosmos DB account."
+              }
+            },
+            "_maxIntervalInSeconds": {
+              "type": "int",
+              "maxValue": 86400,
+              "minValue": 5,
+              "metadata": {
+                "description": "The maximum interval, in seconds, between requests when using the Bounded Staleness consistency level."
+              }
+            },
+            "_maxStalenessPrefix": {
+              "type": "int",
+              "maxValue": 2147483647,
+              "minValue": 10,
+              "metadata": {
+                "description": "The maximum staleness prefix that can be used when using the Bounded Staleness consistency level."
+              }
+            },
+            "_consistencyPolicy": {
+              "type": "object",
+              "properties": {
+                "defaultConsistencyLevel": {
+                  "$ref": "#/definitions/_defaultConsistencyLevel"
+                },
+                "maxIntervalInSeconds": {
+                  "$ref": "#/definitions/_maxIntervalInSeconds",
+                  "nullable": true
+                },
+                "maxStalenessPrefix": {
+                  "$ref": "#/definitions/_maxStalenessPrefix",
+                  "nullable": true
+                }
+              },
+              "metadata": {
+                "description": "The consistency policy for the Cosmos DB database account."
+              }
+            },
+            "_cors": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "allowedHeaders": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "allowedMethods": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "allowedOrigins": {
+                    "type": "string"
+                  },
+                  "exposedHeaders": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "maxAgeInSeconds": {
+                    "type": "int",
+                    "nullable": true
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The CORS policy for the Cosmos DB database account."
+              }
+            },
+            "_createMode": {
+              "type": "string",
+              "allowedValues": [
+                "Default",
+                "Restore"
+              ],
+              "metadata": {
+                "description": "Enum to indicate the mode of account creation."
+              }
+            },
+            "_databaseAccountOfferType": {
+              "type": "string",
+              "allowedValues": [
+                "Standard"
+              ],
+              "metadata": {
+                "description": "The offer type for the database. Required."
+              }
+            },
+            "_defaultIdentity": {
+              "type": "string",
+              "allowedValues": [
+                "FirstPartyIdentity",
+                "SystemAssignedIdentity"
+              ],
+              "metadata": {
+                "description": "The default identity for accessing key vault used in features like customer managed keys. The default identity needs to be explicitly set by the users. It can be \"FirstPartyIdentity\", \"SystemAssignedIdentity\" and more."
+              }
+            },
+            "_disableKeyBasedMetadataWriteAccess": {
+              "type": "bool",
+              "metadata": {
+                "description": "Disable write operations on metadata resources (databases, containers, throughput) via account keys"
+              }
+            },
+            "_disableLocalAuth": {
+              "type": "bool",
+              "metadata": {
+                "description": "Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication."
+              }
+            },
+            "_enableAnalyticalStorage": {
+              "type": "bool",
+              "metadata": {
+                "description": "Flag to indicate whether to enable storage analytics."
+              }
+            },
+            "_enableAutomaticFailover": {
+              "type": "bool",
+              "metadata": {
+                "description": "Enables automatic failover of the write region in the rare event that the region is unavailable due to an outage. Automatic failover will result in a new write region for the account and is chosen based on the failover priorities configured for the account."
+              }
+            },
+            "_enableCassandraConnector": {
+              "type": "bool",
+              "metadata": {
+                "description": "Enables the cassandra connector on the Cosmos DB C* account"
+              }
+            },
+            "_enableFreeTier": {
+              "type": "bool",
+              "metadata": {
+                "description": "Flag to indicate whether Free Tier is enabled."
+              }
+            },
+            "_enableMultipleWriteLocations": {
+              "type": "bool",
+              "metadata": {
+                "description": "Enables the account to write in multiple locations"
+              }
+            },
+            "_enablePartitionMerge": {
+              "type": "bool",
+              "metadata": {
+                "description": "Flag to indicate enabling/disabling of Partition Merge feature on the account"
+              }
+            },
+            "_ipRules": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "ipAddressOrRange": {
+                    "$ref": "#/definitions/_ipAddressOrRange"
+                  }
+                }
+              },
+              "metadata": {
+                "description": "List of IpRules."
+              }
+            },
+            "_ipAddressOrRange": {
+              "type": "string",
+              "metadata": {
+                "description": "A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: “23.40.210.245” or “23.40.210.0/8”."
+              }
+            },
+            "_isVirtualNetworkFilterEnabled": {
+              "type": "bool",
+              "metadata": {
+                "description": "Flag to indicate whether to enable/disable Virtual Network ACL rules."
+              }
+            },
+            "_keyVaultKeyUri": {
+              "type": "string",
+              "metadata": {
+                "description": "The URI of the key vault"
+              }
+            },
+            "_locations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "failoverPriority": {
+                    "$ref": "#/definitions/_failoverPriority"
+                  },
+                  "isZoneRedundant": {
+                    "$ref": "#/definitions/_isZoneRedundant"
+                  },
+                  "locationName": {
+                    "$ref": "#/definitions/_locationName"
+                  }
+                }
+              },
+              "minLength": 1,
+              "metadata": {
+                "description": "An array that contains the georeplication locations enabled for the Cosmos DB account. Required."
+              }
+            },
+            "_failoverPriority": {
+              "type": "int",
+              "metadata": {
+                "description": "The failover priority of the region. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists."
+              }
+            },
+            "_isZoneRedundant": {
+              "type": "bool",
+              "metadata": {
+                "description": "Flag to indicate whether or not this region is an AvailabilityZone region"
+              }
+            },
+            "_locationName": {
+              "$ref": "#/definitions/_location",
+              "metadata": {
+                "description": "The name of the region."
+              }
+            },
+            "_networkAclBypass": {
+              "type": "string",
+              "allowedValues": [
+                "AzureServices",
+                "None"
+              ],
+              "metadata": {
+                "description": "Indicates what services are allowed to bypass firewall checks."
+              }
+            },
+            "_networkAclBypassResourceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "metadata": {
+                "description": "An array that contains the Resource Ids for Network Acl Bypass for the Cosmos DB account."
+              }
+            },
+            "_publicNetworkAccess": {
+              "type": "string",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "metadata": {
+                "description": "Whether requests from Public Network are allowed"
+              }
+            },
+            "_restoreParameters": {
+              "type": "object",
+              "properties": {
+                "databasesToRestore": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/_databasesToRestore"
+                  },
+                  "nullable": true
+                },
+                "restoreMode": {
+                  "$ref": "#/definitions/_restoreMode",
+                  "nullable": true
+                },
+                "restoreSource": {
+                  "$ref": "#/definitions/_restoreSource",
+                  "nullable": true
+                },
+                "restoreTimestampInUtc": {
+                  "$ref": "#/definitions/_restoreTimestampInUtc",
+                  "nullable": true
+                }
+              },
+              "metadata": {
+                "description": "Parameters to indicate the information about the restore."
+              }
+            },
+            "_databasesToRestore": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "collectionNames": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/_collectionNames"
+                    },
+                    "nullable": true
+                  },
+                  "databaseName": {
+                    "$ref": "#/definitions/_databaseName",
+                    "nullable": true
+                  }
+                }
+              },
+              "metadata": {
+                "description": "List of Virtual Network ACL rules configured for the Cosmos DB account."
+              }
+            },
+            "_collectionNames": {
+              "type": "string",
+              "metadata": {
+                "description": "The names of the collections available for restore."
+              }
+            },
+            "_databaseName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the database available for restore."
+              }
+            },
+            "_restoreMode": {
+              "type": "string",
+              "allowedValues": [
+                "PointInTime"
+              ],
+              "metadata": {
+                "description": "Describes the mode of the restore."
+              }
+            },
+            "_restoreSource": {
+              "type": "string",
+              "metadata": {
+                "description": "The id of the restorable database account from which the restore has to be initiated. For example: /subscriptions/{subscriptionId}/providers/Microsoft.DocumentDB/locations/{location}/restorableDatabaseAccounts/{restorableDatabaseAccountName}"
+              }
+            },
+            "_restoreTimestampInUtc": {
+              "type": "string",
+              "metadata": {
+                "description": "Time to which the account has to be restored (ISO-8601 format)."
+              }
+            },
+            "_virtualNetworkRules": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "$ref": "#/definitions/_id"
+                  },
+                  "ignoreMissingVNetServiceEndpoint": {
+                    "$ref": "#/definitions/_ignoreMissingVNetServiceEndpoint"
+                  }
+                }
+              },
+              "metadata": {
+                "description": "List of Virtual Network ACL rules configured for the Cosmos DB account."
+              }
+            },
+            "_id": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource ID of a subnet, for example: /subscriptions/{subscriptionId}/resourceGroups/{groupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}."
+              }
+            },
+            "_ignoreMissingVNetServiceEndpoint": {
+              "type": "bool",
+              "metadata": {
+                "description": "Create firewall rule before the virtual network has vnet service endpoint enabled."
+              }
+            }
+          },
+          "resources": {}
+        }
+      }
+    }
+  }
+}

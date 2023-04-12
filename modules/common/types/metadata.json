@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
+  "name": "Common Types for Azure Resources",
+  "summary": "This module provides common user-defined types for Azure resources based on the Resource Provider specification.",
+  "owner": "dciborow"
+}
