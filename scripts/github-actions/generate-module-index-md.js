@@ -30,7 +30,7 @@ async function getPublishDate(github, context, tag) {
   const reference = await github.rest.git.getRef({
     owner,
     repo,
-    ref: `tags/${tag}`
+    ref: `tags/${tag}`,
   });
 
   const commit = await github.rest.git.getCommit({
