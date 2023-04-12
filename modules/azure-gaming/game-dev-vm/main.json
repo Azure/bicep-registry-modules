@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "6032557744571321527"
+      "version": "0.16.2.56959",
+      "templateHash": "6744115734082113124"
     }
   },
   "parameters": {
@@ -552,7 +552,7 @@
     {
       "condition": "[equals(parameters('vnetNewOrExisting'), 'new')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}', parameters('vnetName'), deployment().name)]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1311,17 +1311,17 @@
   "outputs": {
     "Host_Name": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIpName')), '2021-05-01').dnsSettings.fqdn]",
       "metadata": {
         "description": "Game Developer Virtual Machine Host Name"
-      }
+      },
+      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIpName')), '2021-05-01').dnsSettings.fqdn]"
     },
     "UserName": {
       "type": "string",
-      "value": "[parameters('adminName')]",
       "metadata": {
         "description": "Game Developer Virtual Machine User Name"
-      }
+      },
+      "value": "[parameters('adminName')]"
     }
   }
 }
