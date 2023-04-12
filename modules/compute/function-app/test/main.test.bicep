@@ -1,15 +1,12 @@
-param name string = take(deployment().name, 55)
+param name string = replace(take(deployment().name, 55), '.', '')
 param location string = resourceGroup().location
 
 param enableDockerContainer bool = true
 
 param tags object = {
-  LOB: 'ENT'
-  contact: 'iep.dev@nuance.com'
   costcenter: '000'
   environment: 'dev'
   location: resourceGroup().location
-  team: 'IEP'
 }
 
 module dependencies 'prereq.test.bicep' = {

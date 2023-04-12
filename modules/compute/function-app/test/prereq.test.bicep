@@ -2,10 +2,9 @@ param location string
 param name string
 param tags object
 
-
 @description('Virtual network')
 resource vnet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
-  name:  'network-${uniqueString(resourceGroup().id)}'
+  name: 'network-${uniqueString(resourceGroup().id)}'
   location: location
   properties: {
     addressSpace: {
@@ -51,14 +50,9 @@ resource vnet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
   }
 }
 
-
-
-
 var maxNameLength = 20
 var uniqueStoragename = length(uniqueString(name)) > maxNameLength ? substring(uniqueString(name), 0, maxNameLength) : uniqueString(name)
 var storageAccountName = 'iep${uniqueStoragename}'
-
-
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {
   name: storageAccountName
@@ -78,15 +72,12 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {
     networkAcls: {
       bypass: 'AzureServices'
       defaultAction: 'Allow'
-  
+
     }
     publicNetworkAccess: 'Enabled'
-  
-   
+
   }
 }
-
-
 
 resource userAssignedIdentities 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: 'test2-${uniqueString(resourceGroup().id)}'
@@ -119,4 +110,3 @@ output subnets string = vnet::funcSubnet.id
 
 @description('Name of the storage account used by function app.')
 output saAccountName string = storageAccount.name
-
