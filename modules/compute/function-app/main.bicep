@@ -9,11 +9,16 @@ param location string
 param tags object = {}
 
 @description('Required. Defines the name, tier, size, family and capacity of the app service plan.')
-param sku object
-
+param sku object = {
+  name: 'Y1'
+  tier: 'Dynamic'
+  size: 'Y1'
+  family: 'Y'
+  capacity: 0
+}
 
 @description('Optional. Kind of server OS.')
-@allowed(['Windows','Linux'])
+@allowed([ 'Windows', 'Linux' ])
 
 param serverOS string = 'Windows'
 
@@ -27,7 +32,7 @@ param maximumElasticWorkerCount int = 0
 param targetWorkerCount int = 0
 
 @description('Optional. The instance size of the hosting plan (small, medium, or large).')
-@allowed([0, 1, 2 ])
+@allowed([ 0, 1, 2 ])
 param targetWorkerSizeId int = 0
 
 @allowed([
@@ -52,7 +57,7 @@ param appServiceEnvironmentId string = ''
 param clientAffinityEnabled bool = true
 
 @description('Required. Type of site to deploy.')
-@allowed(['functionapp', 'app'])
+@allowed([ 'functionapp', 'app' ])
 param kind string = 'functionapp'
 
 @description('Optional. Version of the function extension.')
@@ -72,16 +77,16 @@ param functionsWorkerRuntime string = ''
 @description('Optional. NodeJS version.')
 param functionsDefaultNodeversion string = '~14'
 
-@allowed(['Disabled', 'Enabled'])
+@allowed([ 'Disabled', 'Enabled' ])
 @description('Optional. The network access type for accessing Application Insights ingestion. - Enabled or Disabled.')
 param publicNetworkAccessForIngestion string = 'Enabled'
 
-@allowed(['Disabled', 'Enabled'])
+@allowed([ 'Disabled', 'Enabled' ])
 @description('Optional. The network access type for accessing Application Insights query. - Enabled or Disabled.')
 param publicNetworkAccessForQuery string = 'Enabled'
 
 @description('Optional. Application type.')
-@allowed(['web', 'other'])
+@allowed([ 'web', 'other' ])
 param appInsightsType string = 'web'
 
 @description('Optional. The kind of application that this component refers to, used to customize UI.')
@@ -129,7 +134,7 @@ param enablePackageDeploy bool = false
 @description('Optional. URI to the function source code zip package, must be accessible by the deployer. E.g. A zip file on Azure storage in the same resource group.')
 param functionPackageUri string = ''
 
-@description('Optional. Enable docker image deployment') 
+@description('Optional. Enable docker image deployment')
 param enableDockerContainer bool = false
 
 @description('''Optional. Extra app settings that should be provisioned while creating the function app. Note! Settings below should not be included unless absolutely necessary, because settings in this param will override the ones added by the module:
@@ -143,7 +148,6 @@ WEBSITE_NODE_DEFAULT_VERSION
 APPINSIGHTS_INSTRUMENTATIONKEY
 APPLICATIONINSIGHTS_CONNECTION_STRING''')
 param extraAppSettings object = {}
-
 
 @description('Defines storageAccounts for Azure Function App.')
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' existing = {
@@ -180,7 +184,6 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = if (enableInsi
   tags: tags
 }
 
-
 @description('''The app or function app resource.
 Note: This is not actual Azure Function App this will be container for storing multiple functions.''')
 resource sites 'Microsoft.Web/sites@2022-03-01' = {
@@ -195,9 +198,9 @@ resource sites 'Microsoft.Web/sites@2022-03-01' = {
     } : null
   }
   properties: {
-    siteConfig:{
+    siteConfig: {
       linuxFxVersion: enableDockerContainer ? 'DOCKER|mcr.microsoft.com/azure-functions/dotnet:4-appservice-quickstart' : null
-    } 
+    }
     serverFarmId: serverfarms.id
     httpsOnly: httpsOnly
     hostingEnvironmentProfile: !empty(appServiceEnvironmentId) ? {
@@ -206,7 +209,6 @@ resource sites 'Microsoft.Web/sites@2022-03-01' = {
     clientAffinityEnabled: clientAffinityEnabled
   }
 }
-
 
 @description('Appsettings/config for the sites (app or functionapp).')
 resource config 'Microsoft.Web/sites/config@2021-02-01' = {
@@ -226,7 +228,6 @@ resource config 'Microsoft.Web/sites/config@2021-02-01' = {
   dependsOn: enableVnetIntegration ? [ networkConfig ] : []
 }
 
-
 resource networkConfig 'Microsoft.Web/sites/networkConfig@2022-03-01' = if (enableVnetIntegration == true) {
   parent: sites
   name: 'virtualNetwork'
@@ -234,7 +235,6 @@ resource networkConfig 'Microsoft.Web/sites/networkConfig@2022-03-01' = if (enab
     subnetResourceId: subnetId
   }
 }
-
 
 @description('The resources actual is function where code exits')
 @batchSize(1)
