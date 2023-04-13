@@ -33,3 +33,5 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_TITLE: ${{ github.event.pull_request.title }}
           REPOSITORY_NAME: ${{ github.repository }}
+          AZURE_OPENAI_API: ${{ secrets.AZURE_OPENAI_API }}
+          AZURE_OPENAI_API_KEY: ${{ secrets.AZURE_OPENAI_API_KEY }}
