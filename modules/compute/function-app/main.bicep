@@ -1,5 +1,6 @@
 /*param section*/
 @description('Required. Name for the Azure Function App.')
+@maxLength(64)
 param name string
 
 @description('Required. Location for all resources.')

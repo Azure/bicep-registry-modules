@@ -5,12 +5,13 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "9425172260330919872"
+      "templateHash": "7644818069097581785"
     }
   },
   "parameters": {
     "name": {
       "type": "string",
+      "maxLength": 64,
       "metadata": {
         "description": "Required. Name for the Azure Function App."
       }
