@@ -11,9 +11,9 @@ targetScope = 'resourceGroup'
 //     location: location
 //   }
 // }
-
+param prefix string = 'traf'
 @maxLength(60)
-param name string = take(replace(deployment().name, '-', ''), 60)
+param name string = take('${prefix}-${uniqueString(resourceGroup().id, subscription().id)}', 60)
 
 // Test 0
 module test0 '../main.bicep' = {
@@ -23,7 +23,7 @@ module test0 '../main.bicep' = {
     tags: {
       env: 'test'
     }
-    trafficManagerDnsName: 'tmp-${uniqueString(resourceGroup().id, subscription().id, name)}'
+    trafficManagerDnsName: 'tmp0-${uniqueString(resourceGroup().id, subscription().id, name)}'
   }
 }
 
@@ -33,7 +33,7 @@ module test1 '../main.bicep' = {
   name: 'test1'
   params: {
     name: 't1${name}'
-    trafficManagerDnsName: 'tmp-${uniqueString(resourceGroup().id, subscription().id, name)}'
+    trafficManagerDnsName: 'tmp1-${uniqueString(resourceGroup().id, subscription().id, name)}'
     endpoints: [ {
         name: 'my-endpoint-1'
         target: 'www.bing.com'
