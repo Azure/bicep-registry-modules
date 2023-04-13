@@ -1,0 +1,1027 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.16.1.55165",
+      "templateHash": "1759700117978593039"
+    }
+  },
+  "parameters": {
+    "secrets": {
+      "type": "array",
+      "metadata": {
+        "description": "  Required.\r\n\r\n  Definition of secrets to be auto-rotated. Includes name of the CosmosDB, name of the KeyVault, name of the Secret, name of the Resource Group etc.\r\n  Example:\r\n  [\r\n    {\r\n      type: 'cosmosdb', // mandatory, can be 'cosmosdb', 'redis'\r\n      resourceName: 'cosmosdb-1',\r\n      resourceRg: 'resource-group-1', // optional, default to parameter \"resourceGroup().name\"\r\n      keyvaultRg: 'resource-group-1', // optional, default to parameter \"resourceGroup().name\"\r\n      keyvaultName: 'keyvault-1',\r\n      secretName: 'secret-1',\r\n      isCreate: false, // optional, default to false. If true this module will create the secret with the CosmosDB key as value in the keyvault.\r\n      validityDays: 90, // optional, default to 90 days\r\n      expirationDate: '2023-05-02T15:16:13Z' // optional, default to 90 days from now\r\n    }\r\n  ]\r\n  It's unlikely that for a single CosmosDB both primary and secondary keys are stored as keyvault secrets, normally one is used and later alternated to the other. Thus for now multiple keys are not supported.\r\n  Note! Currently only support each CosmosDB having 1 secret.\r\n  "
+      }
+    },
+    "analyticWorkspaceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Resource ID of the log analytic workspace to be used by the function app."
+      }
+    },
+    "functionStorageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Storage account name for the function app."
+      }
+    },
+    "functionStorageAccountRg": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().name]",
+      "metadata": {
+        "description": "Optional. Resource group of the storage account, default to current resource group."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location to be used. Default to resource group's location."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Tags to be added to the resources created by this module."
+      }
+    },
+    "appServicePlanSku": {
+      "type": "string",
+      "defaultValue": "EP1",
+      "allowedValues": [
+        "EP1",
+        "EP2",
+        "EP3",
+        "Y1"
+      ],
+      "metadata": {
+        "description": "Optional. The type of App Service hosting plan. Premium must be used to access key vaults behind firewall. Default is EP1."
+      }
+    },
+    "functionAppName": {
+      "type": "string",
+      "defaultValue": "[format('{0}-rotation-fnapp', resourceGroup().name)]",
+      "metadata": {
+        "description": "Optional. The name of the function app that you wish to create. Default is {resource group name}-rotation-fnapp."
+      }
+    },
+    "isEnableVnet": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. True if vnet integration should be enabled. If set to false, the vnet related parameters will be ignored. Default to false."
+      }
+    },
+    "functionAppSubnetId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Name of the subnet to be assigned to function app. Leave empty if private network is not used."
+      }
+    },
+    "isCreateFileShare": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. True if the file share needs to be created in the storage account, this file share will host the function app files. The function app name will be used as the file share name. Default to true. NOTE: This seems required if using deployment script to provision the contents of the function app, if the fileshare does not exist at the time of creation, the deployment will fail."
+      }
+    },
+    "fileShareName": {
+      "type": "string",
+      "defaultValue": "[parameters('functionAppName')]",
+      "metadata": {
+        "description": "Optional. Name of the file share to be created, default to functionAppName."
+      }
+    },
+    "isAssignStorageRole": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. True if this module should assigned the role defined by param 'storageRoleId' to the function app identity. Supports user assigned identity only. Default is false."
+      }
+    },
+    "storageRoleId": {
+      "type": "string",
+      "defaultValue": "[resourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
+      "metadata": {
+        "description": "Optional. Id of role that should be assigned to the function identity for the storage account. Default to storage account contributor role ID."
+      }
+    },
+    "isStoragePrivate": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. True if the storage on which the function will be created is accessible only from private network(vnet). Default to false."
+      }
+    },
+    "functionAppIdentityType": {
+      "type": "string",
+      "defaultValue": "SystemAssigned",
+      "allowedValues": [
+        "UserAssigned",
+        "SystemAssigned"
+      ],
+      "metadata": {
+        "description": "Optional. Function app identity type. Default is SystemAssigned, which means the identity created with the function app will be used."
+      }
+    },
+    "userAssignedIdentityName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Name of the user assigned identity used to execute the deployment script for uploading function app source code. Must be provided if NOT using MSDeploy option. If user assigned identity is chosen for the function app, this will also be the identity used. Only effective when 'functionAppIdentityType' is set to 'UserAssigned'."
+      }
+    },
+    "userAssignedIdentityRg": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().name]",
+      "metadata": {
+        "description": "Optional. Resource group name of the user assigned identity, default to current resource group."
+      }
+    },
+    "deploymentScriptStorage": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Storage account name to be used by the deployment scripts. Deployment script by default create a temporary storage account during its execution but it is also possible to assign an existing storage instead."
+      }
+    },
+    "deploymentScriptStorageRg": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().name]",
+      "metadata": {
+        "description": "Optional. Resource group of the deployment script storage, if 'deploymentScriptStorage', this param will be ignored. Default to current resource group."
+      }
+    },
+    "isGrantExecutorRole": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. True if the role with necessary permissions needed to execute the scripts for the function app is to be granted to the identity, either user assigned or system. Default to false."
+      }
+    },
+    "isAssignResourceRole": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Depends on the resource type, whether to assign necessary role so that the identity can perform certain operations. E.g. for CosmosDB, granting function app permission to regenerate access key. Sometimes the user assigned identity is already assigned the roles so no need to do it again. Note! This param will be discarded if system assigned identity is used."
+      }
+    },
+    "systemTopicName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Event grid topic name, to which the keyvault near expiry event will be subscribed."
+      }
+    },
+    "systemTopicRg": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().name]",
+      "metadata": {
+        "description": "Optional. Resource group name of the event topic, default to current group. Will be ignored if system topic name is not provided."
+      }
+    },
+    "now": {
+      "type": "string",
+      "defaultValue": "[utcNow()]",
+      "metadata": {
+        "description": "Readonly. Do not change!"
+      }
+    }
+  },
+  "variables": {
+    "rotationFunctionNames": {
+      "cosmosdb": "AKVCosmosDBRotation",
+      "redis": "AKVRedisRotation"
+    },
+    "zipfile": "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",
+    "filename": "functionapp.zip",
+    "suffix": "[uniqueString(parameters('functionAppName'))]",
+    "websiteContirbutorRoleId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'de139f84-1756-47ae-9be6-808fbbe84772')]"
+  },
+  "resources": [
+    {
+      "condition": "[parameters('isEnableVnet')]",
+      "type": "Microsoft.Web/sites/networkConfig",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}/{1}', parameters('functionAppName'), 'virtualNetwork')]",
+      "properties": {
+        "subnetResourceId": "[parameters('functionAppSubnetId')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}/{1}', parameters('functionAppName'), 'appsettings')]",
+      "properties": "[union(createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', parameters('functionStorageAccountName'), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('functionStorageAccountRg')), 'Microsoft.Storage/storageAccounts', parameters('functionStorageAccountName')), '2022-09-01').keys[0].value), 'AzureWebJobsDashboard', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', parameters('functionStorageAccountName'), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('functionStorageAccountRg')), 'Microsoft.Storage/storageAccounts', parameters('functionStorageAccountName')), '2022-09-01').keys[0].value), 'WEBSITE_CONTENTSHARE', parameters('functionAppName'), 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', parameters('functionStorageAccountName'), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('functionStorageAccountRg')), 'Microsoft.Storage/storageAccounts', parameters('functionStorageAccountName')), '2022-09-01').keys[0].value), 'FUNCTIONS_EXTENSION_VERSION', '~4', 'FUNCTIONS_WORKER_RUNTIME', 'powershell', 'APPINSIGHTS_INSTRUMENTATIONKEY', reference(resourceId('Microsoft.Insights/components', format('ai-{0}', parameters('functionAppName'))), '2020-02-02').InstrumentationKey, 'APPLICATIONINSIGHTS_CONNECTION_STRING', reference(resourceId('Microsoft.Insights/components', format('ai-{0}', parameters('functionAppName'))), '2020-02-02').ConnectionString), union(if(parameters('isStoragePrivate'), createObject('WEBSITE_CONTENTOVERVNET', 1), createObject()), if(equals(parameters('functionAppIdentityType'), 'SystemAssigned'), createObject('IS_USER_ASSIGNED_IDENTITY', 'false'), createObject('IS_USER_ASSIGNED_IDENTITY', 'true', 'USER_ASSIGNED_IDENTITY_CLIENT_ID', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('userAssignedIdentityRg')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdentityName')), '2023-01-31').clientId))))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Insights/components', format('ai-{0}', parameters('functionAppName')))]",
+        "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]",
+        "[resourceId('Microsoft.Web/sites/networkConfig', parameters('functionAppName'), 'virtualNetwork')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2021-02-01",
+      "name": "[parameters('functionAppName')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "sku": {
+        "name": "[parameters('appServicePlanSku')]"
+      },
+      "properties": {
+        "perSiteScaling": false,
+        "maximumElasticWorkerCount": 1,
+        "targetWorkerCount": 0,
+        "targetWorkerSizeId": 0
+      },
+      "metadata": {
+        "description": "Application service plan."
+      }
+    },
+    {
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02",
+      "name": "[format('ai-{0}', parameters('functionAppName'))]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "kind": "azfunc",
+      "properties": {
+        "Application_Type": "web",
+        "WorkspaceResourceId": "[parameters('analyticWorkspaceId')]",
+        "publicNetworkAccessForIngestion": "Enabled",
+        "publicNetworkAccessForQuery": "Enabled"
+      },
+      "metadata": {
+        "description": "Insight for the function app."
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2022-03-01",
+      "name": "[parameters('functionAppName')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "kind": "functionapp",
+      "identity": {
+        "type": "[parameters('functionAppIdentityType')]",
+        "userAssignedIdentities": "[if(equals(parameters('functionAppIdentityType'), 'UserAssigned'), createObject(format('{0}', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('userAssignedIdentityRg')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdentityName'))), createObject()), null())]"
+      },
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('functionAppName'))]",
+        "httpsOnly": true,
+        "clientAffinityEnabled": true
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', parameters('functionAppName'))]"
+      ],
+      "metadata": {
+        "description": "Create the key rotation function app."
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
+      "name": "[format('upload-site-files-{0}', variables('suffix'))]",
+      "location": "[parameters('location')]",
+      "kind": "AzureCLI",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[format('{0}', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('userAssignedIdentityRg')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdentityName')))]": {}
+        }
+      },
+      "properties": "[union(createObject('azCliVersion', '2.26.1', 'timeout', 'PT5M', 'retentionInterval', 'PT1H', 'scriptContent', format('echo \"{0}\" | base64 -d > {1} && az functionapp deploy --resource-group {2} --name {3} --src-path {4} --type zip', variables('zipfile'), variables('filename'), resourceGroup().name, parameters('functionAppName'), variables('filename'))), if(equals(parameters('deploymentScriptStorage'), ''), createObject(), createObject('storageAccountSettings', createObject('storageAccountName', parameters('deploymentScriptStorage'), 'storageAccountKey', listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('deploymentScriptStorageRg')), 'Microsoft.Storage/storageAccounts', parameters('deploymentScriptStorage')), '2022-09-01').keys[0].value))))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]",
+        "[resourceId('Microsoft.Resources/deployments', format('grant-executor-role-{0}', variables('suffix')))]"
+      ],
+      "metadata": {
+        "description": "Deploy function app files."
+      }
+    },
+    {
+      "condition": "[parameters('isCreateFileShare')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('create-fileshare-{0}', variables('suffix'))]",
+      "resourceGroup": "[parameters('functionStorageAccountRg')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "storageAccountName": {
+            "value": "[parameters('functionStorageAccountName')]"
+          },
+          "fileShareName": {
+            "value": "[parameters('fileShareName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.16.1.55165",
+              "templateHash": "11949976737039574547"
+            }
+          },
+          "parameters": {
+            "storageAccountName": {
+              "type": "string"
+            },
+            "fileShareName": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), 'default', parameters('fileShareName'))]"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "condition": "[and(and(parameters('isAssignStorageRole'), equals(parameters('functionAppIdentityType'), 'UserAssigned')), not(equals(parameters('userAssignedIdentityName'), '')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('grant-storage-role-{0}', variables('suffix'))]",
+      "resourceGroup": "[parameters('functionStorageAccountRg')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "storageAccountName": {
+            "value": "[parameters('functionStorageAccountName')]"
+          },
+          "uaiPrincipalId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('userAssignedIdentityRg')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdentityName')), '2023-01-31').principalId]"
+          },
+          "storageRoleId": {
+            "value": "[parameters('storageRoleId')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.16.1.55165",
+              "templateHash": "17609823540155968270"
+            }
+          },
+          "parameters": {
+            "storageRoleId": {
+              "type": "string"
+            },
+            "storageAccountName": {
+              "type": "string"
+            },
+            "uaiPrincipalId": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountName'))]",
+              "name": "[guid(format('{0}-{1}-{2}-{3}', resourceGroup().name, parameters('storageAccountName'), parameters('uaiPrincipalId'), parameters('storageRoleId')))]",
+              "properties": {
+                "roleDefinitionId": "[parameters('storageRoleId')]",
+                "principalId": "[parameters('uaiPrincipalId')]",
+                "principalType": "ServicePrincipal"
+              },
+              "metadata": {
+                "description": "Assign executor role to identity"
+              }
+            }
+          ]
+        }
+      },
+      "metadata": {
+        "description": "Grant the given role to identity for the storage account if needed."
+      }
+    },
+    {
+      "condition": "[parameters('isGrantExecutorRole')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('grant-executor-role-{0}', variables('suffix'))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "functionAppName": {
+            "value": "[parameters('functionAppName')]"
+          },
+          "scriptExecutorRoleId": {
+            "value": "[variables('websiteContirbutorRoleId')]"
+          },
+          "uaiPrincipalId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('userAssignedIdentityRg')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdentityName')), '2023-01-31').principalId]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.16.1.55165",
+              "templateHash": "10367758215881762020"
+            }
+          },
+          "parameters": {
+            "scriptExecutorRoleId": {
+              "type": "string"
+            },
+            "functionAppName": {
+              "type": "string"
+            },
+            "uaiPrincipalId": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Web/sites/{0}', parameters('functionAppName'))]",
+              "name": "[guid(format('{0}{1}{2}{3}', resourceGroup().name, parameters('functionAppName'), parameters('uaiPrincipalId'), parameters('scriptExecutorRoleId')))]",
+              "properties": {
+                "roleDefinitionId": "[parameters('scriptExecutorRoleId')]",
+                "principalId": "[parameters('uaiPrincipalId')]",
+                "principalType": "ServicePrincipal"
+              },
+              "metadata": {
+                "description": "Assign executor role to identity"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
+      ],
+      "metadata": {
+        "description": "Assign executor role to identity"
+      }
+    },
+    {
+      "copy": {
+        "name": "grantAccess",
+        "count": "[length(parameters('secrets'))]"
+      },
+      "condition": "[or(equals(parameters('functionAppIdentityType'), 'SystemAssigned'), and(equals(parameters('functionAppIdentityType'), 'UserAssigned'), parameters('isAssignResourceRole')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('role-assignment-{0}-{1}', parameters('secrets')[copyIndex()].resourceName, variables('suffix'))]",
+      "resourceGroup": "[if(contains(parameters('secrets')[copyIndex()], 'resourceRg'), parameters('secrets')[copyIndex()].resourceRg, resourceGroup().name)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "type": {
+            "value": "[parameters('secrets')[copyIndex()].type]"
+          },
+          "resourceName": {
+            "value": "[parameters('secrets')[copyIndex()].resourceName]"
+          },
+          "functionAppName": {
+            "value": "[parameters('functionAppName')]"
+          },
+          "functionAppPrincipalId": "[if(equals(parameters('functionAppIdentityType'), 'SystemAssigned'), createObject('value', reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')), '2022-03-01', 'full').identity.principalId), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('userAssignedIdentityRg')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdentityName')), '2023-01-31').principalId))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.16.1.55165",
+              "templateHash": "1625903100551484893"
+            }
+          },
+          "parameters": {
+            "type": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource type"
+              }
+            },
+            "resourceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Name of the CosmosDB to who key should be rotated."
+              }
+            },
+            "functionAppName": {
+              "type": "string",
+              "metadata": {
+                "description": "Name of the function app that rotates the key."
+              }
+            },
+            "functionAppPrincipalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Principal ID of the function app that rotates the key."
+              }
+            }
+          },
+          "variables": {
+            "dbManagerRoleId": "5bd9cd88-fe45-4216-938b-f97437e15450",
+            "redisContributorRoleId": "e0f68234-74aa-48ed-b826-c38b57376e17"
+          },
+          "resources": [
+            {
+              "condition": "[equals(parameters('type'), 'cosmosdb')]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.DocumentDB/databaseAccounts/{0}', parameters('resourceName'))]",
+              "name": "[guid(format('cosmosdb{0}{1}', parameters('resourceName'), parameters('functionAppName')))]",
+              "properties": {
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('dbManagerRoleId'))]",
+                "principalId": "[parameters('functionAppPrincipalId')]",
+                "principalType": "ServicePrincipal"
+              },
+              "metadata": {
+                "description": "Grant CosmosDB role to function app."
+              }
+            },
+            {
+              "condition": "[equals(parameters('type'), 'redis')]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Cache/redis/{0}', parameters('resourceName'))]",
+              "name": "[guid(format('redis{0}{1}', parameters('resourceName'), parameters('functionAppName')))]",
+              "properties": {
+                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('redisContributorRoleId'))]",
+                "principalId": "[parameters('functionAppPrincipalId')]",
+                "principalType": "ServicePrincipal"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deploymentScripts', format('upload-site-files-{0}', variables('suffix')))]",
+        "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
+      ],
+      "metadata": {
+        "description": "Grant contributor role of the CosmosDB to the function app."
+      }
+    },
+    {
+      "copy": {
+        "name": "addAccessPolicy",
+        "count": "[length(items(reduce(parameters('secrets'), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), createObject(format('{0}', lambdaVariables('next').keyvaultName), if(contains(lambdaVariables('next'), 'keyvaultRg'), lambdaVariables('next').keyvaultRg, resourceGroup().name)))))))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('ap-{0}-{1}', uniqueString(items(reduce(parameters('secrets'), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), createObject(format('{0}', lambdaVariables('next').keyvaultName), if(contains(lambdaVariables('next'), 'keyvaultRg'), lambdaVariables('next').keyvaultRg, resourceGroup().name))))))[copyIndex()].key), variables('suffix'))]",
+      "resourceGroup": "[items(reduce(parameters('secrets'), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), createObject(format('{0}', lambdaVariables('next').keyvaultName), if(contains(lambdaVariables('next'), 'keyvaultRg'), lambdaVariables('next').keyvaultRg, resourceGroup().name))))))[copyIndex()].value]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "keyvaultName": {
+            "value": "[items(reduce(parameters('secrets'), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), createObject(format('{0}', lambdaVariables('next').keyvaultName), if(contains(lambdaVariables('next'), 'keyvaultRg'), lambdaVariables('next').keyvaultRg, resourceGroup().name))))))[copyIndex()].key]"
+          },
+          "principalId": "[if(equals(parameters('functionAppIdentityType'), 'SystemAssigned'), createObject('value', reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')), '2022-03-01', 'full').identity.principalId), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('userAssignedIdentityRg')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdentityName')), '2023-01-31').principalId))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.16.1.55165",
+              "templateHash": "1153151522379214321"
+            }
+          },
+          "parameters": {
+            "keyvaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Name of the keyvault to whom the access policy should be created."
+              }
+            },
+            "principalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Access policy principal ID"
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.KeyVault/vaults/accessPolicies",
+              "apiVersion": "2022-07-01",
+              "name": "[format('{0}/add', parameters('keyvaultName'))]",
+              "properties": {
+                "accessPolicies": [
+                  {
+                    "tenantId": "[subscription().tenantId]",
+                    "objectId": "[parameters('principalId')]",
+                    "permissions": {
+                      "secrets": [
+                        "Get",
+                        "List",
+                        "Set"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "metadata": {
+                "description": "Create access policy of the keyvault secrets for the function app"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deploymentScripts', format('upload-site-files-{0}', variables('suffix')))]",
+        "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
+      ],
+      "metadata": {
+        "description": "Create access policy of the keyvault secrets for the function app"
+      }
+    },
+    {
+      "copy": {
+        "name": "eventSubscription",
+        "count": "[length(parameters('secrets'))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "condition": "[equals(parameters('systemTopicName'), '')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('kv-event-sub-{0}-{1}', uniqueString(format('{0}{1}', parameters('secrets')[copyIndex()].keyvaultName, parameters('secrets')[copyIndex()].secretName)), variables('suffix'))]",
+      "resourceGroup": "[if(contains(parameters('secrets')[copyIndex()], 'keyvaultRg'), parameters('secrets')[copyIndex()].keyvaultRg, resourceGroup().name)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "functionAppName": {
+            "value": "[parameters('functionAppName')]"
+          },
+          "functionAppRg": {
+            "value": "[resourceGroup().name]"
+          },
+          "functionName": {
+            "value": "[variables('rotationFunctionNames')[parameters('secrets')[copyIndex()].type]]"
+          },
+          "keyvaultName": {
+            "value": "[parameters('secrets')[copyIndex()].keyvaultName]"
+          },
+          "secretName": {
+            "value": "[parameters('secrets')[copyIndex()].secretName]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.16.1.55165",
+              "templateHash": "677282634227096997"
+            }
+          },
+          "parameters": {
+            "functionAppName": {
+              "type": "string",
+              "metadata": {
+                "description": "Name of the function app."
+              }
+            },
+            "functionAppRg": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource name of the function app."
+              }
+            },
+            "keyvaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Name of the keyvault. This is used in the event subscription."
+              }
+            },
+            "secretName": {
+              "type": "string",
+              "metadata": {
+                "description": "Name of the keyvault secret."
+              }
+            },
+            "functionName": {
+              "type": "string",
+              "metadata": {
+                "description": "Name of the rotate function, used to subscript to the keyvault event."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.EventGrid/eventSubscriptions",
+              "apiVersion": "2022-06-15",
+              "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('keyvaultName'))]",
+              "name": "[format('{0}-{1}-{2}', parameters('functionAppName'), parameters('keyvaultName'), parameters('secretName'))]",
+              "properties": {
+                "destination": {
+                  "endpointType": "AzureFunction",
+                  "properties": {
+                    "maxEventsPerBatch": 1,
+                    "preferredBatchSizeInKilobytes": 64,
+                    "resourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('functionAppRg')), 'Microsoft.Web/sites/functions', split(format('{0}/{1}', parameters('functionAppName'), parameters('functionName')), '/')[0], split(format('{0}/{1}', parameters('functionAppName'), parameters('functionName')), '/')[1])]"
+                  }
+                },
+                "filter": {
+                  "subjectBeginsWith": "[parameters('secretName')]",
+                  "subjectEndsWith": "[parameters('secretName')]",
+                  "includedEventTypes": [
+                    "Microsoft.KeyVault.SecretNearExpiry"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "addAccessPolicy",
+        "grantAccess"
+      ],
+      "metadata": {
+        "description": "Create Keyvault event subscription and let the function app consume it."
+      }
+    },
+    {
+      "copy": {
+        "name": "topicSubscription",
+        "count": "[length(parameters('secrets'))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "condition": "[not(equals(parameters('systemTopicName'), ''))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('topic-sub-{0}-{1}', uniqueString(format('{0}{1}', parameters('secrets')[copyIndex()].keyvaultName, parameters('secrets')[copyIndex()].secretName)), variables('suffix'))]",
+      "resourceGroup": "[parameters('systemTopicRg')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "functionAppName": {
+            "value": "[parameters('functionAppName')]"
+          },
+          "functionAppRg": {
+            "value": "[resourceGroup().name]"
+          },
+          "functionName": {
+            "value": "[variables('rotationFunctionNames')[parameters('secrets')[copyIndex()].type]]"
+          },
+          "keyvaultName": {
+            "value": "[parameters('secrets')[copyIndex()].keyvaultName]"
+          },
+          "secretName": {
+            "value": "[parameters('secrets')[copyIndex()].secretName]"
+          },
+          "systemTopicName": {
+            "value": "[parameters('systemTopicName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.16.1.55165",
+              "templateHash": "8637633046468927374"
+            }
+          },
+          "parameters": {
+            "functionAppName": {
+              "type": "string",
+              "metadata": {
+                "description": "Name of the function app."
+              }
+            },
+            "functionAppRg": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource name of the function app."
+              }
+            },
+            "keyvaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Name of the keyvault. This is used in the event subscription."
+              }
+            },
+            "secretName": {
+              "type": "string",
+              "metadata": {
+                "description": "Name of the keyvault secret."
+              }
+            },
+            "functionName": {
+              "type": "string",
+              "metadata": {
+                "description": "Name of the rotate function, used to subscript to the keyvault event."
+              }
+            },
+            "systemTopicName": {
+              "type": "string",
+              "metadata": {
+                "description": "Name of the system topic for keyvault event subscription"
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.EventGrid/systemTopics/eventSubscriptions",
+              "apiVersion": "2022-06-15",
+              "name": "[format('{0}/{1}', parameters('systemTopicName'), format('{0}-{1}-{2}', parameters('functionAppName'), parameters('keyvaultName'), parameters('secretName')))]",
+              "properties": {
+                "destination": {
+                  "endpointType": "AzureFunction",
+                  "properties": {
+                    "maxEventsPerBatch": 1,
+                    "preferredBatchSizeInKilobytes": 64,
+                    "resourceId": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('functionAppRg')), 'Microsoft.Web/sites/functions', split(format('{0}/{1}', parameters('functionAppName'), parameters('functionName')), '/')[0], split(format('{0}/{1}', parameters('functionAppName'), parameters('functionName')), '/')[1])]"
+                  }
+                },
+                "filter": {
+                  "subjectBeginsWith": "[parameters('secretName')]",
+                  "subjectEndsWith": "[parameters('secretName')]",
+                  "includedEventTypes": [
+                    "Microsoft.KeyVault.SecretNearExpiry"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deploymentScripts', format('upload-site-files-{0}', variables('suffix')))]"
+      ],
+      "metadata": {
+        "description": "Create event subscription to the system topic and let the function app consume it."
+      }
+    },
+    {
+      "copy": {
+        "name": "vaultSecrets",
+        "count": "[length(parameters('secrets'))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "condition": "[and(contains(parameters('secrets')[copyIndex()], 'isCreate'), parameters('secrets')[copyIndex()].isCreate)]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('kv-secret-{0}-{1}', uniqueString(format('{0}{1}', parameters('secrets')[copyIndex()].keyvaultName, parameters('secrets')[copyIndex()].secretName)), variables('suffix'))]",
+      "resourceGroup": "[if(contains(parameters('secrets')[copyIndex()], 'keyvaultRg'), parameters('secrets')[copyIndex()].keyvaultRg, resourceGroup().name)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "type": {
+            "value": "[parameters('secrets')[copyIndex()].type]"
+          },
+          "resourceName": {
+            "value": "[parameters('secrets')[copyIndex()].resourceName]"
+          },
+          "resourceRg": "[if(contains(parameters('secrets')[copyIndex()], 'resourceRg'), createObject('value', parameters('secrets')[copyIndex()].resourceRg), createObject('value', resourceGroup().name))]",
+          "keyvaultName": {
+            "value": "[parameters('secrets')[copyIndex()].keyvaultName]"
+          },
+          "secretName": {
+            "value": "[parameters('secrets')[copyIndex()].secretName]"
+          },
+          "validityDays": "[if(contains(parameters('secrets')[copyIndex()], 'validityDays'), createObject('value', parameters('secrets')[copyIndex()].validityDays), createObject('value', 90))]",
+          "expirationDate": "[if(contains(parameters('secrets')[copyIndex()], 'expirationDate'), createObject('value', parameters('secrets')[copyIndex()].expirationDate), createObject('value', dateTimeAdd(parameters('now'), format('P{0}D', if(contains(parameters('secrets')[copyIndex()], 'validityDays'), parameters('secrets')[copyIndex()].validityDays, 90)))))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.16.1.55165",
+              "templateHash": "11311253575158087229"
+            }
+          },
+          "parameters": {
+            "type": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource type"
+              }
+            },
+            "resourceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Name of the CosmosDB to who key should be rotated."
+              }
+            },
+            "resourceRg": {
+              "type": "string",
+              "metadata": {
+                "description": "CosmosDB resource group name"
+              }
+            },
+            "keyvaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Name of the keyvault"
+              }
+            },
+            "secretName": {
+              "type": "string",
+              "metadata": {
+                "description": "Name of the keyvault secret to be created"
+              }
+            },
+            "validityDays": {
+              "type": "int",
+              "defaultValue": 90,
+              "metadata": {
+                "description": "Validity period in days, default is 90."
+              }
+            },
+            "expirationDate": {
+              "type": "string",
+              "defaultValue": "[dateTimeAdd(utcNow(), format('P{0}D', parameters('validityDays')))]",
+              "metadata": {
+                "description": "Expiration date in ISO-8601 format, default to <validityDays> from now."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-07-01",
+              "name": "[format('{0}/{1}', parameters('keyvaultName'), parameters('secretName'))]",
+              "tags": {
+                "ValidityPeriodDays": "[format('{0}', parameters('validityDays'))]",
+                "CredentialId": "Primary",
+                "ProviderAddress": "[if(equals(parameters('type'), 'cosmosdb'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceRg')), 'Microsoft.DocumentDB/databaseAccounts', parameters('resourceName')), if(equals(parameters('type'), 'redis'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceRg')), 'Microsoft.Cache/redis', parameters('resourceName')), ''))]"
+              },
+              "properties": {
+                "attributes": {
+                  "enabled": true,
+                  "exp": "[dateTimeToEpoch(parameters('expirationDate'))]"
+                },
+                "value": "[if(equals(parameters('type'), 'cosmosdb'), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceRg')), 'Microsoft.DocumentDB/databaseAccounts', parameters('resourceName')), '2022-08-15').primaryMasterKey, if(equals(parameters('type'), 'redis'), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceRg')), 'Microsoft.Cache/redis', parameters('resourceName')), '2022-06-01').primaryKey, ''))]"
+              }
+            }
+          ]
+        }
+      },
+      "metadata": {
+        "description": "Create keyvault secret if needed. Primary key of the target resource will be used as the initial secret value."
+      }
+    }
+  ],
+  "outputs": {
+    "siteId": {
+      "type": "string",
+      "metadata": {
+        "description": "ID of the function app created."
+      },
+      "value": "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
+    }
+  }
+}

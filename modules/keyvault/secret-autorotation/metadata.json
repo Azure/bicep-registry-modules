@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
+  "name": "Azure Keyvault secret auto-rotation",
+  "summary": "This module creates a function app that will automatically rotate a near expiry keyvault secret.",
+  "owner": "little-evan"
+}
