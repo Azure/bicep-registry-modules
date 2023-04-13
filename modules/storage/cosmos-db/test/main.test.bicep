@@ -83,6 +83,7 @@ module cosmosDBDisableLocalAuthAndEnableAnalyticalStorage '../main.bicep' = {
   params: {
     location: location
     name: take('disableLocalAuthCosmos${uniqueString(resourceGroup().id, location)}', 64)
-    disableLocalAuth : true,
-    enableAnalyticalStorage : true,
+    disableLocalAuth : true
+    enableAnalyticalStorage : true
+  }
 }
