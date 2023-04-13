@@ -27,7 +27,7 @@ module test0 '../main.bicep' = {
   }
 }
 
-//Test 1. - Deploy with name
+//Test 1. Deploy with name
 module test1 '../main.bicep' = {
   name: 'test1'
   params: {
@@ -36,12 +36,53 @@ module test1 '../main.bicep' = {
   }
 }
 
-//Test 2. - Deploy Cassandra
+//Test with Cassandra Enabled
 module test2 '../main.bicep' = {
-  name: 'test3'
+  name: 'cosmosDBWithCassandra'
   params: {
     location: location
     name: cassandra_name
     enableCassandra: true
   }
+}
+
+// Test with Gremlin API enabled
+module cosmosDBWithGremlin '../main.bicep' = {
+  name: 'cosmosDBWithGremlin'
+  params: {
+    location: location
+    name: take('gremlinCosmos${uniqueString(resourceGroup().id, location)}', 64)
+    enableGremlin: true
+  }
+}
+
+// Test with Table API enabled
+module cosmosDBWithTable '../main.bicep' = {
+  name: 'cosmosDBWithTable'
+  params: {
+    location: location
+    name: take('tableCosmos${uniqueString(resourceGroup().id, location)}', 64)
+    enableTable: true
+  }
+}
+
+// Test with Mongo API enabled and server version set to 4.0
+module cosmosDBWithMongo '../main.bicep' = {
+  name: 'cosmosDBWithMongo'
+  params: {
+    location: location
+    name: take('mongoCosmos${uniqueString(resourceGroup().id, location)}', 64)
+    enableMongo: true
+    serverVersion: '4.0'
+  }
+}
+
+// Test with disableLocalAuth set to true and enableAnalyticalStorage set to true
+module cosmosDBDisableLocalAuthAndEnableAnalyticalStorage '../main.bicep' = {
+  name: 'cosmosDBDisableLocalAuthAndEnableAnalyticalStorage'
+  params: {
+    location: location
+    name: take('disableLocalAuthCosmos${uniqueString(resourceGroup().id, location)}', 64)
+    disableLocalAuth : true,
+    enableAnalyticalStorage : true,
 }
