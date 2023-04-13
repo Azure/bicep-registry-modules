@@ -87,3 +87,46 @@ module cosmosDBDisableLocalAuthAndEnableAnalyticalStorage '../main.bicep' = {
     enableAnalyticalStorage : true
   }
 }
+
+// Test with disableRateLimitingResponses set to true
+module cosmosDBWithDisableRateLimitingResponses '../main.bicep' = {
+  name: 'cosmosDBWithDisableRateLimitingResponses'
+  params: {
+    location: location
+    name: take('disableRateLimitCosmos${uniqueString(resourceGroup().id, location)}', 64)
+    disableRateLimitingResponses: true
+  }
+}
+
+// Test with enablePartitionMerge set to true and enableCassandraConnector set to true
+module cosmosDBWithPartitionMergeAndCassandraConnector '../main.bicep' = {
+  name: 'cosmosDBWithPartitionMergeAndCassandraConnector'
+  params: {
+    location: location
+    name: take('partitionMergeCosmos${uniqueString(resourceGroup().id, location)}', 64)
+    enablePartitionMerge : true
+    enableCassandraConnector : true
+  }
+}
+
+// Test with enableAggregationPipeline set to true and enableMongoDBv34 set to true
+module cosmosDBWithAggregationPipelineAndMongoDBv34 '../main.bicep' = {
+  name: 'cosmosDBWithAggregationPipelineAndMongoDBv34'
+  params: {
+    location: location
+    name: take('aggregationPipelineCosmos${uniqueString(resourceGroup().id, location)}', 64)
+    enableAggregationPipeline : true
+    enableMongoDBv34 : true
+  }
+}
+
+// Test with allowSelfServeUpgradeToMongo36 set to true and enablemongoEnableDocLevelTTL set to true
+module cosmosDBWithSelfServeUpgradeAndDocLevelTTL '../main.bicep' = {
+  name: 'cosmosDBWithSelfServeUpgradeAndDocLevelTTL'
+  params: {
+    location: location
+    name: take('selfServeUpgradeCosmos${uniqueString(resourceGroup().id, location)}', 64)
+    allowSelfServeUpgradeToMongo36 : true
+    enablemongoEnableDocLevelTTL : true
+  }
+}
