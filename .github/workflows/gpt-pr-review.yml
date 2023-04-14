@@ -11,7 +11,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 2
       - id: review
-        uses: dciborow/action-gpt@0.0.5
+        uses: dciborow/action-gpt@0.0.6
         with:
           GIT_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
