@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "3797820253856302360"
+      "templateHash": "9805778886911106734"
     }
   },
   "parameters": {
@@ -42,14 +42,14 @@
         "Weighted"
       ],
       "metadata": {
-        "description": "The traffic routing method of the Traffic Manager profile."
+        "description": "The traffic routing method of the Traffic Manager profile. default is \"Performance\"."
       }
     },
     "ttl": {
       "type": "int",
       "defaultValue": 30,
       "metadata": {
-        "description": "The DNS Time-To-Live (TTL), in seconds."
+        "description": "The DNS Time-To-Live (TTL), in seconds. default is 30. "
       }
     },
     "profileStatus": {

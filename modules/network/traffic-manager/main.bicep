@@ -9,7 +9,7 @@ param trafficManagerDnsName string
 @description('Tags for the module resources.')
 param tags object = {}
 
-@description('The traffic routing method of the Traffic Manager profile.')
+@description('The traffic routing method of the Traffic Manager profile. default is "Performance".')
 @allowed([
   'Geographic'
   'MultiValue'
@@ -20,7 +20,7 @@ param tags object = {}
 ])
 param trafficRoutingMethod string = 'Performance'
 
-@description('The DNS Time-To-Live (TTL), in seconds.')
+@description('The DNS Time-To-Live (TTL), in seconds. default is 30. ')
 param ttl int = 30
 
 @description('Optional. The status of the Traffic Manager profile.')
