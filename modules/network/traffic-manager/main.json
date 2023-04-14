@@ -5,29 +5,62 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "1351348448041479846"
+      "templateHash": "14602496474047091233"
     }
   },
   "parameters": {
-    "prefix": {
-      "type": "string",
-      "defaultValue": "traf",
-      "metadata": {
-        "description": "Prefix of Traffic Manager Profile Name"
-      }
-    },
     "name": {
       "type": "string",
-      "defaultValue": "[format('{0}-{1}', parameters('prefix'), uniqueString(resourceGroup().id, subscription().id))]",
+      "maxLength": 63,
+      "minLength": 1,
       "metadata": {
         "description": "Name of Traffic Manager Profile Resource"
       }
     },
     "trafficManagerDnsName": {
       "type": "string",
-      "defaultValue": "[format('tmp-{0}', uniqueString(resourceGroup().id, subscription().id, parameters('name')))]",
       "metadata": {
         "description": "Relative DNS name for the traffic manager profile, must be globally unique."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Tags for the module resources."
+      }
+    },
+    "trafficRoutingMethod": {
+      "type": "string",
+      "defaultValue": "Performance",
+      "allowedValues": [
+        "Geographic",
+        "MultiValue",
+        "Performance",
+        "Priority",
+        "Subnet",
+        "Weighted"
+      ],
+      "metadata": {
+        "description": "The traffic routing method of the Traffic Manager profile. default is \"Performance\"."
+      }
+    },
+    "ttl": {
+      "type": "int",
+      "defaultValue": 30,
+      "metadata": {
+        "description": "The DNS Time-To-Live (TTL), in seconds. default is 30. "
+      }
+    },
+    "profileStatus": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. The status of the Traffic Manager profile. default is Enabled."
       }
     },
     "endpoints": {
@@ -65,12 +98,13 @@
       "apiVersion": "2018-08-01",
       "name": "[parameters('name')]",
       "location": "global",
+      "tags": "[parameters('tags')]",
       "properties": {
-        "profileStatus": "Enabled",
-        "trafficRoutingMethod": "Performance",
+        "profileStatus": "[parameters('profileStatus')]",
+        "trafficRoutingMethod": "[parameters('trafficRoutingMethod')]",
         "dnsConfig": {
           "relativeName": "[toLower(parameters('trafficManagerDnsName'))]",
-          "ttl": 30
+          "ttl": "[parameters('ttl')]"
         },
         "monitorConfig": {
           "protocol": "[if(contains(parameters('monitorConfig'), 'protocol'), parameters('monitorConfig').protocol, 'HTTPS')]",

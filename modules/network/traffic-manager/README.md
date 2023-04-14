@@ -17,9 +17,12 @@ The module also allows for the configuration of monitor settings such as protoco
 
 | Name                    | Type     | Required | Description                                                                                                                                                       |
 | :---------------------- | :------: | :------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `prefix`                | `string` | No       | Prefix of Traffic Manager Profile Name                                                                                                                            |
-| `name`                  | `string` | No       | Name of Traffic Manager Profile Resource                                                                                                                          |
-| `trafficManagerDnsName` | `string` | No       | Relative DNS name for the traffic manager profile, must be globally unique.                                                                                       |
+| `name`                  | `string` | Yes      | Name of Traffic Manager Profile Resource                                                                                                                          |
+| `trafficManagerDnsName` | `string` | Yes      | Relative DNS name for the traffic manager profile, must be globally unique.                                                                                       |
+| `tags`                  | `object` | No       | Tags for the module resources.                                                                                                                                    |
+| `trafficRoutingMethod`  | `string` | No       | The traffic routing method of the Traffic Manager profile. default is "Performance".                                                                              |
+| `ttl`                   | `int`    | No       | The DNS Time-To-Live (TTL), in seconds. default is 30.                                                                                                            |
+| `profileStatus`         | `string` | No       | Optional. The status of the Traffic Manager profile. default is Enabled.                                                                                          |
 | `endpoints`             | `array`  | No       | An array of objects that represent the endpoints in the Traffic Manager profile. {name: string, target: string, endpointStatus: string, endpointLocation: string} |
 | `monitorConfig`         | `object` | No       | An object that represents the monitoring configuration for the Traffic Manager profile.                                                                           |
 
@@ -71,7 +74,7 @@ param endpoints array = [
   }
 ]
 
-module trafficManagerProfile 'br/public:network/traffic-manager:1.0.1' = { = {
+module trafficManagerProfile 'br/public:network/traffic-manager:2.0.1' = { = {
   name: 'trafficManagerProfile'
   params: {
     name: name
