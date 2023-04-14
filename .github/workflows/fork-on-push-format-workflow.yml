@@ -1,6 +1,7 @@
 name: On push format workflow files # fork only, optional
 
 on:
+  workflow_dispatch:
   push:
     branches-ignore:
       - main
