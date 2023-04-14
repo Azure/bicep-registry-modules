@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "9805778886911106734"
+      "templateHash": "14602496474047091233"
     }
   },
   "parameters": {
@@ -60,7 +60,7 @@
         "Disabled"
       ],
       "metadata": {
-        "description": "Optional. The status of the Traffic Manager profile."
+        "description": "Optional. The status of the Traffic Manager profile. default is Enabled."
       }
     },
     "endpoints": {

@@ -23,7 +23,7 @@ param trafficRoutingMethod string = 'Performance'
 @description('The DNS Time-To-Live (TTL), in seconds. default is 30. ')
 param ttl int = 30
 
-@description('Optional. The status of the Traffic Manager profile.')
+@description('Optional. The status of the Traffic Manager profile. default is Enabled.')
 @allowed([
   'Enabled'
   'Disabled'
