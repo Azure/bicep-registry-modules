@@ -17,7 +17,7 @@ It allows for the creation of a new Cosmos DB account or use of an existing one,
 | `enableAutomaticFailover`            | `bool`   | No       | Enables automatic failover of the write region in the rare event that the region is unavailable due to an outage. Automatic failover will result in a new write region for the account and is chosen based on the failover priorities configured for the account.                                                                                                                            |
 | `enableMultipleWriteLocations`       | `bool`   | No       | Multi-region writes capability allows you to take advantage of the provisioned throughput for your databases and containers across the globe.                                                                                                                                                                                                                                                |
 | `enableServerless`                   | `bool`   | No       | Enable Serverless for consumption-based usage.                                                                                                                                                                                                                                                                                                                                               |
-| `isZoneRedundant`                    | `bool`   | No       |                                                                                                                                                                                                                                                                                                                                                                                              |
+| `isZoneRedundant`                    | `bool`   | No       | Flag to indicate whether or not this region is an AvailabilityZone region                                                                                                                                                                                                                                                                                                                    |
 | `enableFreeTier`                     | `bool`   | No       | Flag to indicate whether Free Tier is enabled, up to one account per subscription is allowed.                                                                                                                                                                                                                                                                                                |
 | `totalThroughputLimit`               | `int`    | No       | The total throughput limit of the Cosmos DB account in measurement of requests units (RUs) per second, -1 indicates no limits on provisioning of throughput.                                                                                                                                                                                                                                 |
 | `secondaryLocations`                 | `array`  | No       | The array of secondary locations.                                                                                                                                                                                                                                                                                                                                                            |
@@ -51,11 +51,11 @@ It allows for the creation of a new Cosmos DB account or use of an existing one,
 
 ## Outputs
 
-| Name                              | Type   | Description                                                          |
-| :-------------------------------- | :----: | :------------------------------------------------------------------- |
-| id                                | string | Cosmos DB Resource ID                                                |
-| name                              | string | Cosmos DB Resource Name                                              |
-| systemAssignedIdentityPrincipalId | string | Object Id of system assigned managed identity for Cosmos DB account. |
+| Name                              | Type   | Description                                                                       |
+| :-------------------------------- | :----: | :-------------------------------------------------------------------------------- |
+| id                                | string | Cosmos DB Account Resource ID                                                     |
+| name                              | string | Cosmos DB Account Resource Name                                                   |
+| systemAssignedIdentityPrincipalId | string | Object Id of system assigned managed identity for Cosmos DB account (if enabled). |
 
 ## Examples
 
@@ -352,7 +352,6 @@ module cosmosTable 'br/public:storage/cosmos-db:1.0.1' = {
       '20.53.0.0/31'
     ]
     isVirtualNetworkFilterEnabled: true
-    allowAccessFromAzurePortal: true
     virtualNetworkRules: [
       {
         id: dependencies.outputs.subnetIds[0]

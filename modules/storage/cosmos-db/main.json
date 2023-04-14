@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "13578748791449581397"
+      "templateHash": "7284079907465977624"
     }
   },
   "parameters": {
@@ -62,7 +62,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": ""
+        "description": "Flag to indicate whether or not this region is an AvailabilityZone region"
       }
     },
     "enableFreeTier": {
@@ -1230,21 +1230,21 @@
     "id": {
       "type": "string",
       "metadata": {
-        "description": "Cosmos DB Resource ID"
+        "description": "Cosmos DB Account Resource ID"
       },
       "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name')))]"
     },
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Cosmos DB Resource Name"
+        "description": "Cosmos DB Account Resource Name"
       },
       "value": "[toLower(parameters('name'))]"
     },
     "systemAssignedIdentityPrincipalId": {
       "type": "string",
       "metadata": {
-        "description": "Object Id of system assigned managed identity for Cosmos DB account."
+        "description": "Object Id of system assigned managed identity for Cosmos DB account (if enabled)."
       },
       "value": "[if(contains(parameters('identityType'), 'SystemAssigned'), reference(resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name'))), '2023-03-15', 'full').identity.principalId, '')]"
     }

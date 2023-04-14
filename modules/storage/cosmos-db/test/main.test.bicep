@@ -274,7 +274,6 @@ module test05 '../main.bicep' = {
       '20.53.0.0/31'
     ]
     isVirtualNetworkFilterEnabled: true
-    allowAccessFromAzurePortal: true
     virtualNetworkRules: [
       {
         id: dependencies.outputs.subnetIds[0]

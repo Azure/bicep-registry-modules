@@ -17,7 +17,7 @@ param enableMultipleWriteLocations bool = true
 @description('Enable Serverless for consumption-based usage.')
 param enableServerless bool = false
 
-@description('')
+@description('Flag to indicate whether or not this region is an AvailabilityZone region')
 param isZoneRedundant bool = false
 
 @description('Flag to indicate whether Free Tier is enabled, up to one account per subscription is allowed.')
