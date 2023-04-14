@@ -12,8 +12,8 @@ do
 
     if [ -z "$issuerName" ] || [ -z "$issuerProvider" ]; then
         policy=$(az keyvault certificate get-default-policy \
-            | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g \
-            | sed -e s/\"name\":\ \"Self\"/\"name\":\ \"${issuerName}\"/g )
+            | sed -e s/\"validityInMonths\":\ 12/\"validityInMonths\":\ ${validity}/g \
+            | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g )
     else
       if [ "$issuerProvider" == "DigiCert" ] || [ "$issuerProvider" == "GlobalCert"]; then
         az keyvault certificate issuer create \
@@ -30,12 +30,15 @@ do
           --provider-name $issuerProvider
       fi
       policy=$(az keyvault certificate get-default-policy \
-        | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g )
+        | sed -e s/\"validityInMonths\":\ 12/\"validityInMonths\":\ ${validity}/g \
+        | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g  \
+        | sed -e s/\"name\":\ \"Self\"/\"name\":\ \"${issuerName}\"/g )
     fi
     az keyvault certificate create \
         --vault-name $akvName \
         -n $certName \
         -p "$policy" \
+        --disabled "$disabled" \
         && break
 
     sleep $retrySleep
