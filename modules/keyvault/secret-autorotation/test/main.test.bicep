@@ -2,20 +2,12 @@
 Write deployment tests in this file. Any module that references the main
 module file is a deployment test. Make sure at least one test is added.
 */
-targetScope = 'subscription'
-
 param name string = deployment().name
 
-param location string = deployment().location
-
-resource testResourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: name
-  location: location
-}
+param location string = resourceGroup().location
 
 module dependencies1 './dependencies1.bicep' = {
-  scope: testResourceGroup
-  name: 'dependency1-${uniqueString(testResourceGroup.id)}'
+  name: 'dependency1-${uniqueString(resourceGroup().id)}'
   params: {
     name: uniqueString(name)
     location: location
@@ -23,8 +15,7 @@ module dependencies1 './dependencies1.bicep' = {
 }
 
 module dependencies2 './dependencies2.bicep' = {
-  scope: testResourceGroup
-  name: 'dependency2-${uniqueString(testResourceGroup.id)}'
+  name: 'dependency2-${uniqueString(resourceGroup().id)}'
   params: {
     name: uniqueString(name)
     location: location
@@ -34,7 +25,6 @@ module dependencies2 './dependencies2.bicep' = {
 @description('Create key rotation function app for the multiple cosmosdb keys.')
 module testMultipleKeys '../main.bicep' = {
   name: 'akv-rotate-test1'
-  scope: testResourceGroup
   params: {
     location: location
     functionAppName: '${uniqueString(name)}-1'
@@ -55,9 +45,9 @@ module testMultipleKeys '../main.bicep' = {
       {
         type: 'cosmosdb'
         resourceName: dependencies1.outputs.cosmosdbName2
-        resourceRg: testResourceGroup.name
+        resourceRg: resourceGroup().name
         keyvaultName: dependencies1.outputs.keyvaultName
-        keyvaultRg: testResourceGroup.name
+        keyvaultRg: resourceGroup().name
         secretName: 'secret2'
         isCreate: true
         validityDays: 10
@@ -66,14 +56,14 @@ module testMultipleKeys '../main.bicep' = {
         type: 'redis'
         resourceName: dependencies1.outputs.redisName
         keyvaultName: dependencies1.outputs.keyvaultName
-        keyvaultRg: testResourceGroup.name
+        keyvaultRg: resourceGroup().name
         secretName: 'secret3'
         isCreate: true
       }
     ]
     functionAppIdentityType: 'UserAssigned'
     userAssignedIdentityName: dependencies1.outputs.identityName
-    userAssignedIdentityRg: testResourceGroup.name
+    userAssignedIdentityRg: resourceGroup().name
     systemTopicName: dependencies1.outputs.topicName
     isAssignResourceRole: true
   }
@@ -82,7 +72,6 @@ module testMultipleKeys '../main.bicep' = {
 @description('Create key rotation func app without VNET')
 module testNoVnet '../main.bicep' = {
   name: 'akv-rotate-test2'
-  scope: testResourceGroup
   params: {
     location: location
     functionStorageAccountName: dependencies2.outputs.storageAccountName
@@ -91,9 +80,9 @@ module testNoVnet '../main.bicep' = {
       {
         type: 'cosmosdb'
         resourceName: dependencies2.outputs.cosmosdbName
-        resourceRg: testResourceGroup.name
+        resourceRg: resourceGroup().name
         keyvaultName: dependencies2.outputs.keyvaultName
-        keyvaultRg: testResourceGroup.name
+        keyvaultRg: resourceGroup().name
         secretName: dependencies2.outputs.secretName
       }
     ]
