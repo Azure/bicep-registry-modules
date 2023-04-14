@@ -70,6 +70,7 @@ module testNoVnet '../main.bicep' = {
   name: 'akv-rotate-test2'
   params: {
     location: location
+    functionAppName: '${uniqueString(resourceGroup().name)}-fnapp'
     functionStorageAccountName: dependencies2.outputs.storageAccountName
     analyticWorkspaceId: dependencies2.outputs.workspaceId
     secrets: [
