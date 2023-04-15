@@ -8,11 +8,11 @@ param location string = 'eastus'
 param serviceShort string = 'redis'
 var uniqueName = uniqueString(resourceGroup().id, deployment().name, location)
 
-// ============ //
-// Dependencies //
-// ============ //
+// ============= //
+// Prerequisites //
+// ============= //
 
-module prereqs 'prereqs.test.bicep' = {
+module prerequisites 'prereq.test.bicep' = {
   name: 'test-prereqs'
   params: {
     name: serviceShort
@@ -47,8 +47,8 @@ module test_02 '../main.bicep' = {
     skuName: 'Standard'
     redisVersion: '6.0'
     capacity: 1
-    diagnosticEventHubAuthorizationRuleId: dependencies.outputs.authorizationRuleId
-    diagnosticEventHubName: dependencies.outputs.eventHubName
+    diagnosticEventHubAuthorizationRuleId: prerequisites.outputs.authorizationRuleId
+    diagnosticEventHubName: prerequisites.outputs.eventHubName
     redisFirewallRules: {
       Rule1: {
         startIP: '10.2.1.20'
@@ -74,17 +74,17 @@ module test_03 '../main.bicep' = {
     capacity: 1
     shardCount: 1
     replicasPerMaster: 1
-    diagnosticStorageAccountId: dependencies.outputs.storageAccountId
-    diagnosticWorkspaceId: dependencies.outputs.workspaceId
+    diagnosticStorageAccountId: prerequisites.outputs.storageAccountId
+    diagnosticWorkspaceId: prerequisites.outputs.workspaceId
     privateEndpoints: [
       {
         name: 'endpoint1'
-        subnetId: dependencies.outputs.subnetIds[0]
+        subnetId: prerequisites.outputs.subnetIds[0]
       }
       {
         name: 'endpoint2'
-        subnetId: dependencies.outputs.subnetIds[1]
-        privateDnsZoneId: dependencies.outputs.privateDNSZoneId
+        subnetId: prerequisites.outputs.subnetIds[1]
+        privateDnsZoneId: prerequisites.outputs.privateDNSZoneId
       }
     ]
   }
