@@ -144,7 +144,7 @@ resource eventHubNamespace 'Microsoft.EventHub/namespaces@2021-11-01' = [for var
   tags: tags
 }]
 
-module eventHubNamespace_authorizationRules 'authorizationRules/deploy.bicep' = [for (varNamespaceAuthorizationRule, index) in varNamespaceAuthorizationRules: if (!empty(namespaceAuthorizationRules)) {
+module eventHubNamespace_authorizationRules 'modules/authorizationRules/deploy.bicep' = [for (varNamespaceAuthorizationRule, index) in varNamespaceAuthorizationRules: if (!empty(namespaceAuthorizationRules)) {
   name: '${uniqueString(deployment().name, location)}-EvhbNamespace-AuthRule-${index}'
   params: {
     namespaceName: varNamespaceAuthorizationRule.eventHubNamespaceName
@@ -156,7 +156,7 @@ module eventHubNamespace_authorizationRules 'authorizationRules/deploy.bicep' = 
   ]
 }]
 
-module eventHubNamespace_disasterRecoveryConfigs 'disasterRecoveryConfigs/deploy.bicep' = [for (varDisasterRecoveryConfig, index) in varDisasterRecoveryConfigs: if (!empty(disasterRecoveryConfigs)) {
+module eventHubNamespace_disasterRecoveryConfigs 'modules/disasterRecoveryConfigs/deploy.bicep' = [for (varDisasterRecoveryConfig, index) in varDisasterRecoveryConfigs: if (!empty(disasterRecoveryConfigs)) {
   name: '${uniqueString(deployment().name, location)}-EvhbNamespace-DisRecConfig-${index}'
   params: {
     namespaceName: varDisasterRecoveryConfig.eventHubNamespaceName
@@ -168,7 +168,7 @@ module eventHubNamespace_disasterRecoveryConfigs 'disasterRecoveryConfigs/deploy
   ]
 }]
 
-module eventHubNamespace_eventHubs 'eventHubs/deploy.bicep' = [for (varEventHub, index) in varEventHubs: if (!empty(eventHubs)){
+module eventHubNamespace_eventHubs 'modules/eventHubs/deploy.bicep' = [for (varEventHub, index) in varEventHubs: if (!empty(eventHubs)){
   name: '${uniqueString(deployment().name, location)}-EvhbNamespace-EventHub-${index}'
   params: {
     namespaceName: varEventHub.eventHubNamespaceName
@@ -177,7 +177,7 @@ module eventHubNamespace_eventHubs 'eventHubs/deploy.bicep' = [for (varEventHub,
     partitionCount: varEventHub.partitionCount
     status: varEventHub.status
     captureDescriptionEnabled: varEventHub.captureDescriptionEnabled
-    captureDescriptionDestinationArchiveNameFormat: varEventHub.captureDescriptionDestinationArchiveNameFormat 
+    captureDescriptionDestinationArchiveNameFormat: varEventHub.captureDescriptionDestinationArchiveNameFormat
     captureDescriptionDestinationBlobContainer: varEventHub.captureDescriptionDestinationBlobContainer
     captureDescriptionDestinationName: varEventHub.captureDescriptionDestinationName
     captureDescriptionDestinationStorageAccountResourceId: varEventHub.captureDescriptionDestinationStorageAccountResourceId
@@ -191,7 +191,7 @@ module eventHubNamespace_eventHubs 'eventHubs/deploy.bicep' = [for (varEventHub,
   ]
 }]
 
-module eventHub_authorizationRules 'eventHubs/authorizationRules/deploy.bicep' = [for (varEventHubAuthorizationRule, index) in varEventHubAuthorizationRules: if (!empty(eventHubAuthorizationRules)) {
+module eventHub_authorizationRules 'modules/eventHubs/authorizationRules/deploy.bicep' = [for (varEventHubAuthorizationRule, index) in varEventHubAuthorizationRules: if (!empty(eventHubAuthorizationRules)) {
   name: '${uniqueString(deployment().name, location)}-Evhub-AuthRule-${index}'
   params: {
     namespaceName: varEventHubAuthorizationRule.eventHubNamespaceName
@@ -204,7 +204,7 @@ module eventHub_authorizationRules 'eventHubs/authorizationRules/deploy.bicep' =
   ]
 }]
 
-module eventHub_consumerGroup 'eventHubs/consumerGroups/deploy.bicep' = [for (varConsumerGroup, index) in varConsumerGroups: if (!empty(consumerGroups)) {
+module eventHub_consumerGroup 'modules/eventHubs/consumerGroups/deploy.bicep' = [for (varConsumerGroup, index) in varConsumerGroups: if (!empty(consumerGroups)) {
   name: '${deployment().name}-ConsumerGroup-${index}'
   params: {
     namespaceName: varConsumerGroup.eventHubNamespaceName
@@ -217,7 +217,7 @@ module eventHub_consumerGroup 'eventHubs/consumerGroups/deploy.bicep' = [for (va
   ]
 }]
 
-module eventHubNamespace_diagnosticSettings 'diagnosticSettings/deploy.bicep' = [for (varDiagnosticSetting, index) in varDiagnosticSettings: if (!empty(diagnosticSettings)) {
+module eventHubNamespace_diagnosticSettings 'modules/diagnosticSettings/deploy.bicep' = [for (varDiagnosticSetting, index) in varDiagnosticSettings: if (!empty(diagnosticSettings)) {
   name: '${deployment().name}-diagnosticSettings-${index}'
   params: {
     namespaceName: varDiagnosticSetting.diagnosticEnableNamespaceName
