@@ -7,52 +7,29 @@ param location string = resourceGroup().location
 @description('Optional. Tags of the resource.')
 param tags object = {}
 
-@allowed([
-  'Basic'
-  'Premium'
-  'Standard'
-])
+@allowed([ 'Basic', 'Premium', 'Standard' ])
 @description('Optional. The type of Redis cache to deploy.')
 param skuName string = 'Basic'
 
 @description('Optional. Specifies whether the non-ssl Redis server port (6379) is enabled.')
 param enableNonSslPort bool = false
 
-@allowed([
-  '1.0'
-  '1.1'
-  '1.2'
-])
+@allowed([ '1.0', '1.1', '1.2' ])
 @description('Optional. Requires clients to use a specified TLS version (or higher) to connect.')
 param minimumTlsVersion string = '1.2'
 
 @description('Optional. Whether or not public network access is allowed for this resource.')
-@allowed([
-  ''
-  'Enabled'
-  'Disabled'
-])
+@allowed([ '', 'Enabled', 'Disabled' ])
 param publicNetworkAccess string = ''
 
 @description('Optional. All Redis Settings. Few possible keys: rdb-backup-enabled,rdb-storage-connection-string,rdb-backup-frequency,maxmemory-delta,maxmemory-policy,notify-keyspace-events,maxmemory-samples,slowlog-log-slower-than,slowlog-max-len,list-max-ziplist-entries,list-max-ziplist-value,hash-max-ziplist-entries,hash-max-ziplist-value,set-max-intset-entries,zset-max-ziplist-entries,zset-max-ziplist-value etc.')
 param redisConfiguration object = {}
 
-@allowed([
-  '4.0'
-  '6.0'
-])
+@allowed([ '4.0', '6.0' ])
 @description('Optional. Redis version. Only major version will be used in PUT/PATCH request with current valid values: (4, 6).')
 param redisVersion string = '6.0'
 
-@allowed([
-  0
-  1
-  2
-  3
-  4
-  5
-  6
-])
+@allowed([ 0, 1, 2, 3, 4, 5, 6 ])
 @description('Optional. The size of the Redis cache to deploy. Valid values: for C (Basic/Standard) family (0, 1, 2, 3, 4, 5, 6), for P (Premium) family (1, 2, 3, 4).')
 param capacity int = 1
 
@@ -104,9 +81,7 @@ param logsToEnable array = [
 ]
 
 @description('The name of metrics that will be streamed.')
-@allowed([
-  'AllMetrics'
-])
+@allowed([ 'AllMetrics' ])
 param metricsToEnable array = [
   'AllMetrics'
 ]
@@ -173,7 +148,7 @@ resource redisCache 'Microsoft.Cache/redis@2022-06-01' = {
     publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : (!empty(publicNetworkAccess) ? 'Disabled' : null)
     redisConfiguration: !empty(redisConfiguration) ? redisConfiguration : null
     redisVersion: redisVersion
-    shardCount: skuName == 'Premium' ? shardCount : null 
+    shardCount: skuName == 'Premium' ? shardCount : null
     replicasPerMaster: skuName == 'Premium' ? replicasPerMaster : null
     replicasPerPrimary: skuName == 'Premium' ? replicasPerPrimary : null
     sku: {
@@ -210,7 +185,7 @@ resource redis_firewall 'Microsoft.Cache/redis/firewallRules@2022-06-01' = [ for
   }
 }]
 
-module redis_rbac '.bicep/nested_roleAssignments.bicep' = [for (roleAssignment, index) in roleAssignments: {
+module redis_rbac 'modules/roleAssignments.bicep' = [for (roleAssignment, index) in roleAssignments: {
   name: '${uniqueString(deployment().name, location)}-acr-rbac-${index}'
   params: {
     description: contains(roleAssignment, 'description') ? roleAssignment.description : ''
@@ -221,7 +196,7 @@ module redis_rbac '.bicep/nested_roleAssignments.bicep' = [for (roleAssignment, 
   }
 }]
 
-module redisCache_privateEndpoint '.bicep/nested_privateEndpoint.bicep' = {
+module redisCache_privateEndpoint 'modules/privateEndpoint.bicep' = {
   name: '${uniqueString(deployment().name, location)}-redis-private-endpoints'
   params: {
     location: location

@@ -12,8 +12,8 @@ var uniqueName = uniqueString(resourceGroup().id, deployment().name, location)
 // Dependencies //
 // ============ //
 
-module dependencies 'dependencies.test.bicep' = {
-  name: 'test-dependencies'
+module prereqs 'prereqs.test.bicep' = {
+  name: 'test-prereqs'
   params: {
     name: serviceShort
     location: location
