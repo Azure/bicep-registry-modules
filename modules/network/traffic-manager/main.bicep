@@ -50,6 +50,58 @@ param monitorConfig object = {
   ]
 }
 
+@description('Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely. default is 365.')
+@minValue(0)
+@maxValue(365)
+param diagnosticLogsRetentionInDays int = 365
+
+@description('Resource ID of the diagnostic storage account.')
+param diagnosticStorageAccountId string = ''
+
+@description('Resource ID of the diagnostic log analytics workspace.')
+param diagnosticWorkspaceId string = ''
+
+@description('Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
+param diagnosticEventHubAuthorizationRuleId string = ''
+
+@description('Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category.')
+param diagnosticEventHubName string = ''
+
+@description('The name of logs that will be streamed. default is allLogs.')
+@allowed([
+  'allLogs'
+  'ProbeHealthStatusEvents'
+])
+param logsToEnable string = 'allLogs'
+
+@description('The name of metrics that will be streamed. default is AllMetrics')
+@allowed([
+  'AllMetrics'
+])
+param metricsToEnable array = [
+  'AllMetrics'
+]
+
+var diagnosticsLogs = [ {
+    category: logsToEnable == 'allLogs' ? null : logsToEnable
+    categoryGroup: logsToEnable == 'allLogs' ? logsToEnable : null
+    enabled: true
+    retentionPolicy: {
+      enabled: true
+      days: diagnosticLogsRetentionInDays
+    }
+  } ]
+
+var diagnosticsMetrics = [for metric in metricsToEnable: {
+  category: metric
+  timeGrain: null
+  enabled: true
+  retentionPolicy: {
+    enabled: true
+    days: diagnosticLogsRetentionInDays
+  }
+}]
+
 resource trafficManagerProfile 'Microsoft.Network/trafficmanagerprofiles@2018-08-01' = {
   name: name
   location: 'global'
@@ -76,10 +128,11 @@ resource trafficManagerProfile 'Microsoft.Network/trafficmanagerprofiles@2018-08
         }
       ]
     }
+
   }
 }
 
-resource trafficManagerEndpoints 'Microsoft.Network/TrafficManagerProfiles/ExternalEndpoints@2018-08-01' = [for endpoint in endpoints: if (!empty(endpoint)) {
+resource trafficManagerEndpoints 'Microsoft.Network/trafficmanagerprofiles/ExternalEndpoints@2018-08-01' = [for endpoint in endpoints: if (!empty(endpoint)) {
   parent: trafficManagerProfile
   name: endpoint.name
   properties: {
@@ -88,6 +141,19 @@ resource trafficManagerEndpoints 'Microsoft.Network/TrafficManagerProfiles/Exter
     endpointLocation: endpoint.endpointLocation
   }
 }]
+
+resource trafficManagerdiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(diagnosticStorageAccountId) || !empty(diagnosticWorkspaceId) || !empty(diagnosticEventHubAuthorizationRuleId) || !empty(diagnosticEventHubName) && !empty(diagnosticsLogs)) {
+  name: '${trafficManagerProfile.name}-diagnosticSettings'
+  properties: {
+    storageAccountId: !empty(diagnosticStorageAccountId) ? diagnosticStorageAccountId : null
+    workspaceId: !empty(diagnosticWorkspaceId) ? diagnosticWorkspaceId : null
+    eventHubAuthorizationRuleId: !empty(diagnosticEventHubAuthorizationRuleId) ? diagnosticEventHubAuthorizationRuleId : null
+    eventHubName: !empty(diagnosticEventHubName) ? diagnosticEventHubName : null
+    metrics: diagnosticsMetrics
+    logs: diagnosticsLogs
+  }
+  scope: trafficManagerProfile
+}
 
 @description('Traffic Manager Profile Resource ID')
 output id string = trafficManagerProfile.id
