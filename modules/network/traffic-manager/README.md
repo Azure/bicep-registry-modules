@@ -81,7 +81,7 @@ param endpoints array = [
   }
 ]
 
-module trafficManagerProfile 'br/public:network/traffic-manager:2.0.2' = { = {
+module trafficManagerProfile 'br/public:network/traffic-manager:3.0.1' = {
   name: 'trafficManagerProfile'
   params: {
     name: name
