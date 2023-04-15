@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.9.1.41621",
-      "templateHash": "2465942561230693956"
+      "version": "0.15.31.15270",
+      "templateHash": "1311160354913464789"
     }
   },
   "parameters": {
@@ -114,8 +114,7 @@
           },
           "commands": {
             "value": [
-              "[format('helm repo add {0} {1}; helm repo update', parameters('helmRepo'), parameters('helmRepoURL'))]",
-              "[format('helm upgrade --install  {0} {1} {2}', parameters('helmApps')[copyIndex()].helmApp, parameters('helmApps')[copyIndex()].helmAppName, if(contains(parameters('helmApps')[copyIndex()], 'helmAppParams'), parameters('helmApps')[copyIndex()].helmAppParams, ''))]"
+              "[format('helm repo add {0} {1} && helm repo update && helm upgrade --install {2} {3} {4}', parameters('helmRepo'), parameters('helmRepoURL'), parameters('helmApps')[copyIndex()].helmAppName, parameters('helmApps')[copyIndex()].helmApp, if(contains(parameters('helmApps')[copyIndex()], 'helmAppParams'), parameters('helmApps')[copyIndex()].helmAppParams, ''))]"
             ]
           },
           "forceUpdateTag": {
@@ -331,5 +330,20 @@
         }
       }
     }
-  ]
+  ],
+  "outputs": {
+    "helmOutputs": {
+      "type": "array",
+      "copy": {
+        "count": "[length(parameters('helmApps'))]",
+        "input": {
+          "appName": "[parameters('helmApps')[copyIndex()].helmAppName]",
+          "outputs": "[reference(resourceId('Microsoft.Resources/deployments', format('helmInstall-{0}-{1}', parameters('helmApps')[copyIndex()].helmAppName, copyIndex())), '2020-10-01').outputs.commandOutput.value]"
+        }
+      },
+      "metadata": {
+        "description": "Helm Command Output Values"
+      }
+    }
+  }
 }
