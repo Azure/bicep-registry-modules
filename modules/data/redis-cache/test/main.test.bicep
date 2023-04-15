@@ -26,11 +26,11 @@ module dependencies 'dependencies.test.bicep' = {
 // ===== //
 
 // Test 01 - Basic SKU - Minimal Parameters
+
 module test_01 '../main.bicep' = {
   name: '${uniqueName}-test-01'
   params: {
     location: location
-    name: '${uniqueName}test01'
     skuName: 'Basic'
     redisVersion: '6.0'
     capacity: 1
@@ -43,7 +43,6 @@ module test_02 '../main.bicep' = {
   name: '${uniqueName}-test-02'
   params: {
     location: location
-    name: '${uniqueName}test02'
     skuName: 'Standard'
     redisVersion: '6.0'
     capacity: 1
@@ -68,7 +67,6 @@ module test_03 '../main.bicep' = {
   name: '${uniqueName}-test-03'
   params: {
     location: location
-    name: '${uniqueName}test03'
     skuName: 'Premium'
     redisVersion: '6.0'
     capacity: 1

@@ -10,8 +10,9 @@ This module deploys Azure Cache for Redis(Microsoft.Cache/redis) and optionally 
 
 | Name                                    | Type     | Required | Description                                                                                                                                                                                                                                                                                                                                                                                                          |
 | :-------------------------------------- | :------: | :------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`                                  | `string` | Yes      | Required. The name of the Redis cache resource.                                                                                                                                                                                                                                                                                                                                                                      |
-| `location`                              | `string` | No       | Optional. The location to deploy the Redis cache service.                                                                                                                                                                                                                                                                                                                                                            |
+| `prefix`                                | `string` | No       | Optional. The prefix of the Redis cache resource name.                                                                                                                                                                                                                                                                                                                                                               |
+| `name`                                  | `string` | No       | Optional. The name of the Redis cache resource.                                                                                                                                                                                                                                                                                                                                                                      |
+| `location`                              | `string` | Yes      | Required. The location to deploy the Redis cache service.                                                                                                                                                                                                                                                                                                                                                            |
 | `tags`                                  | `object` | No       | Optional. Tags of the resource.                                                                                                                                                                                                                                                                                                                                                                                      |
 | `skuName`                               | `string` | No       | Optional. The type of Redis cache to deploy.                                                                                                                                                                                                                                                                                                                                                                         |
 | `enableNonSslPort`                      | `bool`   | No       | Optional. Specifies whether the non-ssl Redis server port (6379) is enabled.                                                                                                                                                                                                                                                                                                                                         |
@@ -58,7 +59,7 @@ module redisCache 'br/public:data/redis-cache:1.0.0' = {
   name: '${uniqueString(deployment().name, 'eastus')}-redis-cache'
   params: {
     location: 'eastus'
-    name: 'redis${uniqueString(deployment().name, location)}'
+    name: 'redis-${uniqueString(resourceGroup().id, location)}'
   }
 }
 ```
@@ -70,7 +71,7 @@ module redisCache 'br/public:data/redis-cache:1.0.0' = {
   name: '${uniqueString(deployment().name, 'eastus')}-redis-cache'
   params: {
     location: 'eastus'
-    name: 'redis${uniqueString(deployment().name, location)}'
+    name: 'redis-${uniqueString(resourceGroup().id, location)}'
     skuName: 'Premium'
     capacity: 1
     privateEndpoints: [

@@ -5,21 +5,28 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "5039835440655986811"
+      "templateHash": "13627357048436074063"
     }
   },
   "parameters": {
+    "prefix": {
+      "type": "string",
+      "defaultValue": "redis-",
+      "metadata": {
+        "description": "Optional. The prefix of the Redis cache resource name."
+      }
+    },
     "name": {
       "type": "string",
+      "defaultValue": "[format('{0}{1}', parameters('prefix'), uniqueString(resourceGroup().id, parameters('location')))]",
       "metadata": {
-        "description": "Required. The name of the Redis cache resource."
+        "description": "Optional. The name of the Redis cache resource."
       }
     },
     "location": {
       "type": "string",
-      "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Optional. The location to deploy the Redis cache service."
+        "description": "Required. The location to deploy the Redis cache service."
       }
     },
     "tags": {
@@ -290,7 +297,8 @@
           "privateDnsZones": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'privateDnsZoneId'), createArray(createObject('name', 'default', 'zoneId', parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].privateDnsZoneId)), createArray())]"
         }
       }
-    ]
+    ],
+    "isPremium": "[equals(parameters('skuName'), 'Premium')]"
   },
   "resources": [
     {
@@ -305,19 +313,19 @@
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('publicNetworkAccess'))), 'Disabled', null()))]",
         "redisConfiguration": "[if(not(empty(parameters('redisConfiguration'))), parameters('redisConfiguration'), null())]",
         "redisVersion": "[parameters('redisVersion')]",
-        "shardCount": "[if(equals(parameters('skuName'), 'Premium'), parameters('shardCount'), null())]",
-        "replicasPerMaster": "[if(equals(parameters('skuName'), 'Premium'), parameters('replicasPerMaster'), null())]",
-        "replicasPerPrimary": "[if(equals(parameters('skuName'), 'Premium'), parameters('replicasPerPrimary'), null())]",
+        "shardCount": "[if(variables('isPremium'), parameters('shardCount'), null())]",
+        "replicasPerMaster": "[if(variables('isPremium'), parameters('replicasPerMaster'), null())]",
+        "replicasPerPrimary": "[if(variables('isPremium'), parameters('replicasPerPrimary'), null())]",
         "sku": {
           "capacity": "[parameters('capacity')]",
-          "family": "[if(equals(parameters('skuName'), 'Premium'), 'P', 'C')]",
+          "family": "[if(variables('isPremium'), 'P', 'C')]",
           "name": "[parameters('skuName')]"
         },
         "staticIP": "[if(not(empty(parameters('staticIP'))), parameters('staticIP'), null())]",
         "subnetId": "[if(not(empty(parameters('subnetId'))), parameters('subnetId'), null())]",
         "tenantSettings": "[parameters('tenantSettings')]"
       },
-      "zones": "[if(equals(parameters('skuName'), 'Premium'), pickZones('Microsoft.Cache', 'redis', parameters('location'), 1), null())]"
+      "zones": "[if(variables('isPremium'), pickZones('Microsoft.Cache', 'redis', parameters('location'), 1), null())]"
     },
     {
       "condition": "[or(or(or(not(empty(parameters('diagnosticStorageAccountId'))), not(empty(parameters('diagnosticWorkspaceId')))), not(empty(parameters('diagnosticEventHubAuthorizationRuleId')))), not(empty(parameters('diagnosticEventHubName'))))]",
