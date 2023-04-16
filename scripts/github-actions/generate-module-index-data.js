@@ -1,23 +1,31 @@
 /**
+ * @param {typeof import("fs").promises} fs
+ * @param {string} dir
+ */
+async function getSubdirNames(fs, dir) {
+  var files = await fs.readdir(dir, { withFileTypes: true });
+  return files.filter((x) => x.isDirectory()).map((x) => x.name);
+}
+
+/**
  * @typedef Params
  * @property {typeof require} require
  * @property {typeof import("@actions/core")} core
  *
  * @param {Params} params
  */
-async function uploadModulesMetadata({ require, core }) {
-  const fs = require("fs");
-  const getSubdirNames = require("./scripts/github-actions/get-sub-directory-names.js");
-  const moduleGroups = getSubdirNames(fs, "modules");
+async function generateModuleIndexData({ require, core }) {
+  const fs = require("fs").promises;
+  const moduleGroups = await getSubdirNames(fs, "modules");
 
-  var result = [];
+  var moduleIndexData = [];
 
   const path = require("path");
   const axios = require("axios").default;
 
   for (const moduleGroup of moduleGroups) {
     var moduleGroupPath = path.join("modules", moduleGroup);
-    var moduleNames = getSubdirNames(fs, moduleGroupPath);
+    var moduleNames = await getSubdirNames(fs, moduleGroupPath);
 
     for (const moduleName of moduleNames) {
       const modulePath = `${moduleGroup}/${moduleName}`;
@@ -29,7 +37,7 @@ async function uploadModulesMetadata({ require, core }) {
         const versionListResponse = await axios.get(versionListUrl);
         const tags = versionListResponse.data.tags.sort();
 
-        result.push({
+        moduleIndexData.push({
           moduleName: modulePath,
           tags: tags,
         });
@@ -39,11 +47,10 @@ async function uploadModulesMetadata({ require, core }) {
     }
   }
 
-  const newModulesMetadata = JSON.stringify(result, null, 2);
-
-  fs.writeFileSync("modulesMetadata.json", newModulesMetadata, (err) => {
-    if (err) throw err;
-  });
+  await fs.writeFile(
+    "moduleIndex.json",
+    JSON.stringify(moduleIndexData, null, 2)
+  );
 }
 
-module.exports = uploadModulesMetadata;
+module.exports = generateModuleIndexData;
