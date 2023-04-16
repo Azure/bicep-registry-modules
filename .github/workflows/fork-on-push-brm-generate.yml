@@ -8,8 +8,6 @@ on:
       - modules/**/*.bicep
       - modules/**/*.sh
       - modules/**/metadata.json
-      - modules/**/main.json
-      - modules/**/README.md
 
 jobs:
   check-secret:
