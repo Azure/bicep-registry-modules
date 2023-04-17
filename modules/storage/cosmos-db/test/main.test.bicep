@@ -44,10 +44,6 @@ module test02 '../main.bicep' = {
       {
         locationName: 'westus'
       }
-      {
-        locationName: 'centralus'
-        isZoneRedundant: true
-      }
     ]
     roleAssignments: [
       {
@@ -121,6 +117,12 @@ module test03 '../main.bicep' = {
     maxIntervalInSeconds: 10000
     maxStalenessPrefix: 100000
     totalThroughputLimit: 10000
+    enableMultipleWriteLocations : false
+    secondaryLocations: [
+      {
+        locationName: 'westus'
+      }
+    ]
     sqlDatabases: [
       {
         name: 'testdb1'
@@ -260,6 +262,7 @@ module test05 '../main.bicep' = {
     defaultConsistencyLevel: 'BoundedStaleness'
     maxIntervalInSeconds: 10000
     maxStalenessPrefix: 100000
+    enableAnalyticalStorage: true
     tables: [
       {
         name: 'table1'

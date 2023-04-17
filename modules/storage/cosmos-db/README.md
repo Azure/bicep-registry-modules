@@ -5,7 +5,7 @@ Bicep module for simplified deployment of Cosmos DB; enables VNet integration an
 ## Description
 
 This Bicep Module simplifies the deployment of a Cosmos DB account by providing a reusable set of parameters and resources.
-It allows for the creation of a new Cosmos DB account or use of an existing one, and offers configuration options such as the default consistency level, system-managed failover, and multi-region writes.
+It allows for the creation of a new Cosmos DB account or use of an existing one with all supported backend types, Apache Cassandra, MongoDB, Gremlin, Table, SQL Database and offers configuration options such as the default consistency level, system-managed failover, and multi-region writes. Also supports adding private endpoints and role assignments.
 
 ## Parameters
 
