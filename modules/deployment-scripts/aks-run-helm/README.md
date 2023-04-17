@@ -28,8 +28,9 @@ More information about using Helm on Azure can be found [here](https://docs.micr
 
 ## Outputs
 
-| Name | Type | Description |
-| :--- | :--: | :---------- |
+| Name        | Type  | Description                |
+| :---------- | :---: | :------------------------- |
+| helmOutputs | array | Helm Command Output Values |
 
 ## Examples
 
@@ -55,9 +56,7 @@ module runCmd 'br/public:deployment-scripts/aks-run-helm:1.0.1' = {
   name: 'kubectlGetNodes'
   params: {
     useExistingManagedIdentity: true
-    initialScriptDelay: '0'
     managedIdentityName: managedIdentityName
-    rbacRolesNeeded:[]
     aksName: aksName
     location: location
     helmApps: [{helmApp: 'azure-marketplace/wordpress', helmAppName: 'my-wordpress'}]
@@ -106,7 +105,7 @@ module helmInstallIngressController 'br/public:deployment-scripts/aks-run-helm:1
       {
         helmApp: 'bitnami/contour'
         helmAppName: 'contour-ingress'
-        helmParams: '--version 7.7.1 --namespace ingress-basic --create_namespace --set envoy.kind=deployment --set contour.service.externalTrafficPolicy=cluster'
+        helmAppParams: '--version 7.7.1 --namespace ingress-basic --create_namespace --set envoy.kind=deployment --set contour.service.externalTrafficPolicy=cluster'
       }
     ]
   }

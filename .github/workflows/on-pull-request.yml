@@ -20,7 +20,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: 7.0.x
 
       # Adding a step to explicitly install the latest Bicep CLI because there is
       # always a delay in updating Bicep CLI in the job runner environments.
@@ -37,6 +37,14 @@ jobs:
       - name: Validate module files
         run: brm validate
         working-directory: ${{ needs.get-module-to-validate.outputs.module_dir }}
+
+      - run: mv ${{ needs.get-module-to-validate.outputs.module_dir }}/main.json ${{ needs.get-module-to-validate.outputs.module_dir }}/mainTemplate.json
+
+      - name: Run ARM-TTK (optional)
+        uses: microsoft/action-armttk@v1
+        continue-on-error: true
+        with:
+          workdir: "${{ needs.get-module-to-validate.outputs.module_dir }}"
 
   validate-non-module-files:
     runs-on: ubuntu-latest
