@@ -1,8 +1,8 @@
 param location string = resourceGroup().location
 @minLength(3)
 @maxLength(24)
-param keyVaultName string = 'kv${uniqueString(resourceGroup().id, location)}'
-param storageAccountName string = 'sa${uniqueString(resourceGroup().id, location)}'
+param keyVaultName string = 'kv${uniqueString(resourceGroup().id, location, 'storage2keyvault')}'
+param storageAccountName string = 'sa${uniqueString(resourceGroup().id, location, 'storage2keyvault')}'
 
 module storageAccount 'br/public:storage/storage-account:0.0.1' = {
   name: 'mystorageaccount'
