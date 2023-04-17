@@ -1,4 +1,9 @@
-@description('Deployment Location')
+/*param section*/
+@description('Required. Name for the Azure Function App.')
+@maxLength(64)
+param name string
+
+@description('Required. Location for all resources.')
 param location string
 
 @description('Name of Storage Account. Must be unique within Azure.')
