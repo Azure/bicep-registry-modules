@@ -91,6 +91,23 @@ The `version.json` file defines the MAJOR and MINOR version number of the module
 
 Once you are done editing the files, run `brm generate` again to refresh `main.json` and `README.md`.
 
+## Nested Bicep Files
+
+Nested bicep files should be placed into a folder `modules`, for example `modules/nested.bicep`.
+Additional nested folders may be created, only if the nested directory contain multiple files.
+
+Avoid the following:
+
+- `./main.bicep`
+- `./modules/storage/main.bicep`
+- `./modules/compute/main.bicep`
+
+Instead go with:
+
+- `./main.bicep`
+- `./modules/storage.bicep`
+- `./modules/compute.bicep`
+
 ## Updating an existing module
 
 To update an existing module, refer to the [Authoring module files](#authoring-module-files) section to update and regenerate the module files. Depending on the changes you make, you may need to bump the version in the `version.json` file.
