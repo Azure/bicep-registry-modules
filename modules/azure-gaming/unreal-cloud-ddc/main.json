@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "4057145463197865920"
+      "version": "0.16.2.56959",
+      "templateHash": "5325097971423290416"
     }
   },
   "parameters": {
@@ -484,7 +484,7 @@
     {
       "condition": "[variables('enableTrafficManager')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('trafficManager-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -508,8 +508,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "4251649884428436457"
+              "version": "0.16.2.56959",
+              "templateHash": "13338778160602260380"
             }
           },
           "parameters": {
@@ -597,7 +597,7 @@
     {
       "condition": "[variables('enableContainerInsights')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('logAnalytics-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -624,8 +624,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "17147811696040112808"
+              "version": "0.16.2.56959",
+              "templateHash": "15175776353107122013"
             }
           },
           "parameters": {
@@ -728,7 +728,7 @@
       },
       "condition": "[parameters('epicEULA')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[guid(parameters('keyVaultName'), parameters('publicIpName'), parameters('cosmosDBName'), parameters('storageAccountName'), variables('allLocations')[copyIndex()])]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -770,7 +770,7 @@
           "publicIpName": {
             "value": "[format('{0}-{1}', parameters('publicIpName'), variables('allLocations')[copyIndex()])]"
           },
-          "trafficManagerNameForEndpoints": "[if(variables('enableTrafficManager'), createObject('value', reference(resourceId('Microsoft.Resources/deployments', format('trafficManager-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.name.value), createObject('value', ''))]",
+          "trafficManagerNameForEndpoints": "[if(variables('enableTrafficManager'), createObject('value', reference(resourceId('Microsoft.Resources/deployments', format('trafficManager-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2022-09-01').outputs.name.value), createObject('value', ''))]",
           "storageAccountName": {
             "value": "[format('{0}{1}', take(variables('allLocations')[copyIndex()], 8), parameters('storageAccountName'))]"
           },
@@ -802,7 +802,7 @@
           "dnsRecordNameSuffix": {
             "value": "[parameters('shortHostname')]"
           },
-          "logAnalyticsWorkspaceResourceId": "[if(variables('enableContainerInsights'), createObject('value', reference(resourceId('Microsoft.Resources/deployments', format('logAnalytics-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.workspaceId.value), createObject('value', ''))]"
+          "logAnalyticsWorkspaceResourceId": "[if(variables('enableContainerInsights'), createObject('value', reference(resourceId('Microsoft.Resources/deployments', format('logAnalytics-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2022-09-01').outputs.workspaceId.value), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -810,8 +810,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "14314763825365333821"
+              "version": "0.16.2.56959",
+              "templateHash": "3639380754216672815"
             }
           },
           "parameters": {
@@ -979,7 +979,7 @@
             {
               "condition": "[variables('enableKubernetes')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2022-09-01",
               "name": "[format('create_cluster-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -1024,8 +1024,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.15.31.15270",
-                      "templateHash": "8556534828785585398"
+                      "version": "0.16.2.56959",
+                      "templateHash": "8774908260606061917"
                     }
                   },
                   "parameters": {
@@ -1222,7 +1222,7 @@
             {
               "condition": "[variables('enableKeyVault')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2022-09-01",
               "name": "[format('keyVault-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -1244,7 +1244,7 @@
                   },
                   "rbacPolicies": {
                     "value": [
-                      "[if(variables('enableKubernetes'), createObject('objectId', reference(resourceId('Microsoft.Resources/deployments', format('create_cluster-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.clusterUserObjectId.value), createObject())]"
+                      "[if(variables('enableKubernetes'), createObject('objectId', reference(resourceId('Microsoft.Resources/deployments', format('create_cluster-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2022-09-01').outputs.clusterUserObjectId.value), createObject())]"
                     ]
                   },
                   "assignRole": {
@@ -1257,8 +1257,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.15.31.15270",
-                      "templateHash": "17155228047418593770"
+                      "version": "0.16.2.56959",
+                      "templateHash": "14926005274998103618"
                     }
                   },
                   "parameters": {
@@ -1372,17 +1372,17 @@
                   "outputs": {
                     "id": {
                       "type": "string",
-                      "value": "[if(equals(parameters('newOrExisting'), 'new'), resourceId('Microsoft.KeyVault/vaults', take(parameters('name'), 24)), resourceId('Microsoft.KeyVault/vaults', parameters('name')))]",
                       "metadata": {
                         "description": "Key Vault Id"
-                      }
+                      },
+                      "value": "[if(equals(parameters('newOrExisting'), 'new'), resourceId('Microsoft.KeyVault/vaults', take(parameters('name'), 24)), resourceId('Microsoft.KeyVault/vaults', parameters('name')))]"
                     },
                     "name": {
                       "type": "string",
-                      "value": "[if(equals(parameters('newOrExisting'), 'new'), take(parameters('name'), 24), parameters('name'))]",
                       "metadata": {
                         "description": "Key Vault Name"
-                      }
+                      },
+                      "value": "[if(equals(parameters('newOrExisting'), 'new'), take(parameters('name'), 24), parameters('name'))]"
                     }
                   }
                 }
@@ -1394,7 +1394,7 @@
             {
               "condition": "[variables('enableStorage')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2022-09-01",
               "name": "[format('storageAccount-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -1424,8 +1424,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.15.31.15270",
-                      "templateHash": "16173237465883120317"
+                      "version": "0.16.2.56959",
+                      "templateHash": "16521986576556249549"
                     }
                   },
                   "parameters": {
@@ -1542,7 +1542,7 @@
             {
               "condition": "[variables('enablePublicIP')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2022-09-01",
               "name": "[format('publicIp-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -1578,8 +1578,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.15.31.15270",
-                      "templateHash": "5686374995822048231"
+                      "version": "0.16.2.56959",
+                      "templateHash": "2262670902328618504"
                     }
                   },
                   "parameters": {
@@ -1667,7 +1667,7 @@
                     {
                       "condition": "[parameters('useDnsZone')]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('dns-ip-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))]",
                       "resourceGroup": "[parameters('dnsZoneResourceGroupName')]",
                       "properties": {
@@ -1690,8 +1690,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.15.31.15270",
-                              "templateHash": "13837079787879581028"
+                              "version": "0.16.2.56959",
+                              "templateHash": "8242777620503298756"
                             }
                           },
                           "parameters": {
@@ -1756,7 +1756,7 @@
             {
               "condition": "[variables('enableTrafficManager')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2022-09-01",
               "name": "[format('trafficManagerEndpoint-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -1769,7 +1769,7 @@
                   },
                   "endpoints": {
                     "value": [
-                      "[if(variables('enablePublicIP'), createObject('name', format('publicip{0}', parameters('location')), 'target', reference(resourceId('Microsoft.Resources/deployments', format('publicIp-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.ipAddress.value, 'endpointStatus', 'Enabled', 'endpointLocation', parameters('location')), createObject())]"
+                      "[if(variables('enablePublicIP'), createObject('name', format('publicip{0}', parameters('location')), 'target', reference(resourceId('Microsoft.Resources/deployments', format('publicIp-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2022-09-01').outputs.ipAddress.value, 'endpointStatus', 'Enabled', 'endpointLocation', parameters('location')), createObject())]"
                     ]
                   }
                 },
@@ -1779,8 +1779,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.15.31.15270",
-                      "templateHash": "4475810625914109302"
+                      "version": "0.16.2.56959",
+                      "templateHash": "16075534495230749274"
                     }
                   },
                   "parameters": {
@@ -1824,7 +1824,7 @@
             {
               "condition": "[and(parameters('assignRole'), variables('enableKeyVault'))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2022-09-01",
               "name": "[format('secrets-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -1833,13 +1833,13 @@
                 "mode": "Incremental",
                 "parameters": {
                   "keyVaultName": {
-                    "value": "[reference(resourceId('Microsoft.Resources/deployments', format('keyVault-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.name.value]"
+                    "value": "[reference(resourceId('Microsoft.Resources/deployments', format('keyVault-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2022-09-01').outputs.name.value]"
                   },
                   "secrets": {
                     "value": [
                       {
                         "secretName": "[parameters('storageSecretName')]",
-                        "secretValue": "[if(equals(parameters('newOrExistingStorageAccount'), 'new'), reference(resourceId('Microsoft.Resources/deployments', format('storageAccount-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.blobStorageConnectionString.value, parameters('storageAccountSecret'))]"
+                        "secretValue": "[if(equals(parameters('newOrExistingStorageAccount'), 'new'), reference(resourceId('Microsoft.Resources/deployments', format('storageAccount-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2022-09-01').outputs.blobStorageConnectionString.value, parameters('storageAccountSecret'))]"
                       }
                     ]
                   }
@@ -1850,8 +1850,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.15.31.15270",
-                      "templateHash": "13849631961526341763"
+                      "version": "0.16.2.56959",
+                      "templateHash": "7459629157400148616"
                     }
                   },
                   "parameters": {
@@ -1893,15 +1893,15 @@
           "outputs": {
             "keyVaultName": {
               "type": "string",
-              "value": "[if(variables('enableKeyVault'), reference(resourceId('Microsoft.Resources/deployments', format('keyVault-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.name.value, '')]"
+              "value": "[if(variables('enableKeyVault'), reference(resourceId('Microsoft.Resources/deployments', format('keyVault-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2022-09-01').outputs.name.value, '')]"
             },
             "blobStorageConnectionString": {
               "type": "string",
-              "value": "[if(equals(parameters('newOrExistingStorageAccount'), 'new'), reference(resourceId('Microsoft.Resources/deployments', format('storageAccount-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.blobStorageConnectionString.value, '')]"
+              "value": "[if(equals(parameters('newOrExistingStorageAccount'), 'new'), reference(resourceId('Microsoft.Resources/deployments', format('storageAccount-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2022-09-01').outputs.blobStorageConnectionString.value, '')]"
             },
             "ipAddress": {
               "type": "string",
-              "value": "[if(variables('enablePublicIP'), reference(resourceId('Microsoft.Resources/deployments', format('publicIp-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.ipAddress.value, '')]"
+              "value": "[if(variables('enablePublicIP'), reference(resourceId('Microsoft.Resources/deployments', format('publicIp-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2022-09-01').outputs.ipAddress.value, '')]"
             }
           }
         }
@@ -1918,7 +1918,7 @@
       },
       "condition": "[and(parameters('assignRole'), parameters('enableCert'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('akvCert-{0}', variables('locationSpecs')[copyIndex()].location)]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2274,7 +2274,7 @@
       },
       "condition": "[and(and(parameters('assignRole'), parameters('epicEULA')), not(equals(parameters('workerServicePrincipalSecret'), '')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('build-app-{0}-{1}', union(createArray(parameters('location')), parameters('secondaryLocations'))[copyIndex()], uniqueString(resourceGroup().id, subscription().subscriptionId))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2300,8 +2300,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "13849631961526341763"
+              "version": "0.16.2.56959",
+              "templateHash": "7459629157400148616"
             }
           },
           "parameters": {
@@ -2341,7 +2341,7 @@
     {
       "condition": "[equals(parameters('newOrExistingCosmosDB'), 'new')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('cosmosDB-{0}-key', uniqueString(parameters('location'), resourceGroup().id, deployment().name))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2371,8 +2371,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "3864509798886869565"
+              "version": "0.16.2.56959",
+              "templateHash": "2496851890439133874"
             }
           },
           "parameters": {
@@ -2529,10 +2529,10 @@
           "outputs": {
             "cassandraConnectionString": {
               "type": "string",
-              "value": "[format('Contact Points={0}.cassandra.cosmos.azure.com,{1};Username={2};Password={3};Port=10350', toLower(parameters('name')), variables('locationString'), toLower(parameters('name')), if(equals(parameters('newOrExisting'), 'new'), listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name'))), '2022-05-15'), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('cosmosDBRG')), 'Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name'))), '2022-05-15')).primaryMasterKey)]",
               "metadata": {
                 "description": "Key to connect with Cosmos DB"
-              }
+              },
+              "value": "[format('Contact Points={0}.cassandra.cosmos.azure.com,{1};Username={2};Password={3};Port=10350', toLower(parameters('name')), variables('locationString'), toLower(parameters('name')), if(equals(parameters('newOrExisting'), 'new'), listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name'))), '2022-05-15'), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('cosmosDBRG')), 'Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name'))), '2022-05-15')).primaryMasterKey)]"
             },
             "name": {
               "type": "string",
@@ -2552,7 +2552,7 @@
       },
       "condition": "[and(parameters('assignRole'), parameters('epicEULA'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('cassandra-keys-{0}-{1}', union(createArray(parameters('location')), parameters('secondaryLocations'))[copyIndex()], uniqueString(resourceGroup().id, subscription().subscriptionId))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2567,7 +2567,7 @@
             "value": [
               {
                 "secretName": "ddc-db-connection-string",
-                "secretValue": "[if(equals(parameters('newOrExistingCosmosDB'), 'new'), reference(resourceId('Microsoft.Resources/deployments', format('cosmosDB-{0}-key', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.cassandraConnectionString.value, parameters('cassandraConnectionString'))]"
+                "secretValue": "[if(equals(parameters('newOrExistingCosmosDB'), 'new'), reference(resourceId('Microsoft.Resources/deployments', format('cosmosDB-{0}-key', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2022-09-01').outputs.cassandraConnectionString.value, parameters('cassandraConnectionString'))]"
               }
             ]
           }
@@ -2578,8 +2578,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "13849631961526341763"
+              "version": "0.16.2.56959",
+              "templateHash": "7459629157400148616"
             }
           },
           "parameters": {
@@ -2619,7 +2619,7 @@
     {
       "condition": "[and(parameters('assignRole'), parameters('epicEULA'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('setup-ddc-{0}', parameters('location'))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2712,8 +2712,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "3889195874665072925"
+              "version": "0.16.2.56959",
+              "templateHash": "18077666509052538793"
             }
           },
           "parameters": {
@@ -2841,7 +2841,7 @@
                 "count": "[length(parameters('locationSpecs'))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2022-09-01",
               "name": "[format('helmInstall-ddc-{0}', uniqueString(parameters('locationSpecs')[copyIndex()].location, resourceGroup().id, deployment().name))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -2923,8 +2923,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.15.31.15270",
-                      "templateHash": "2761057130002766096"
+                      "version": "0.16.2.56959",
+                      "templateHash": "14928624156243513173"
                     }
                   },
                   "parameters": {
@@ -3213,7 +3213,7 @@
                 "count": "[length(parameters('locationSpecs'))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2022-09-01",
               "name": "[format('configAKS-{0}', uniqueString(parameters('locationSpecs')[copyIndex()].location, resourceGroup().id, deployment().name))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -3229,7 +3229,7 @@
                   },
                   "additionalCharts": {
                     "value": [
-                      "[reference(resourceId('Microsoft.Resources/deployments', format('helmInstall-ddc-{0}', uniqueString(parameters('locationSpecs')[copyIndex()].location, resourceGroup().id, deployment().name))), '2020-10-01').outputs.helmChart.value]"
+                      "[reference(resourceId('Microsoft.Resources/deployments', format('helmInstall-ddc-{0}', uniqueString(parameters('locationSpecs')[copyIndex()].location, resourceGroup().id, deployment().name))), '2022-09-01').outputs.helmChart.value]"
                     ]
                   },
                   "staticIP": {
@@ -3260,8 +3260,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.15.31.15270",
-                      "templateHash": "16658455692631095524"
+                      "version": "0.16.2.56959",
+                      "templateHash": "1201883775772046451"
                     }
                   },
                   "parameters": {
@@ -3336,7 +3336,7 @@
                     {
                       "condition": "[parameters('enableWorkloadIdentity')]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('helmInstallWorkloadID-{0}', uniqueString(parameters('aksName'), parameters('location'), resourceGroup().name))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -3354,8 +3354,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.15.31.15270",
-                              "templateHash": "646851129729579343"
+                              "version": "0.16.2.56959",
+                              "templateHash": "12185815586447393771"
                             }
                           },
                           "parameters": {
@@ -3388,7 +3388,7 @@
                     {
                       "condition": "[parameters('enableSecretStore')]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('helmInstallSecretStore-{0}', uniqueString(parameters('aksName'), parameters('location'), resourceGroup().name))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -3401,8 +3401,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.15.31.15270",
-                              "templateHash": "75475333027951717"
+                              "version": "0.16.2.56959",
+                              "templateHash": "2783441017032817756"
                             }
                           },
                           "parameters": {
@@ -3465,7 +3465,7 @@
                     {
                       "condition": "[parameters('enableIngress')]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('helmInstallIngress-{0}', uniqueString(parameters('aksName'), parameters('location'), resourceGroup().name))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -3483,8 +3483,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.15.31.15270",
-                              "templateHash": "7885331952633052311"
+                              "version": "0.16.2.56959",
+                              "templateHash": "14756851902743675277"
                             }
                           },
                           "parameters": {
@@ -3558,7 +3558,7 @@
                     {
                       "condition": "[parameters('enableLocalProvisioner')]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('helmInstallProvisioner-{0}', uniqueString(parameters('aksName'), parameters('location'), resourceGroup().name))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -3571,8 +3571,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.15.31.15270",
-                              "templateHash": "10082839968750650413"
+                              "version": "0.16.2.56959",
+                              "templateHash": "3819792504242199482"
                             }
                           },
                           "variables": {
@@ -3603,7 +3603,7 @@
                     },
                     {
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('helmInstallCombo-{0}', uniqueString(parameters('aksName'), parameters('location'), resourceGroup().name))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -3618,7 +3618,7 @@
                             "value": "[parameters('location')]"
                           },
                           "helmCharts": {
-                            "value": "[union(if(parameters('enableWorkloadIdentity'), createArray(reference(resourceId('Microsoft.Resources/deployments', format('helmInstallWorkloadID-{0}', uniqueString(parameters('aksName'), parameters('location'), resourceGroup().name))), '2020-10-01').outputs.helmChart.value), createArray()), if(parameters('enableIngress'), createArray(reference(resourceId('Microsoft.Resources/deployments', format('helmInstallIngress-{0}', uniqueString(parameters('aksName'), parameters('location'), resourceGroup().name))), '2020-10-01').outputs.helmChart.value), createArray()), if(parameters('enableSecretStore'), createArray(reference(resourceId('Microsoft.Resources/deployments', format('helmInstallSecretStore-{0}', uniqueString(parameters('aksName'), parameters('location'), resourceGroup().name))), '2020-10-01').outputs.helmChart.value), createArray()), if(parameters('enableLocalProvisioner'), createArray(reference(resourceId('Microsoft.Resources/deployments', format('helmInstallProvisioner-{0}', uniqueString(parameters('aksName'), parameters('location'), resourceGroup().name))), '2020-10-01').outputs.helmChart.value), createArray()), parameters('additionalCharts'))]"
+                            "value": "[union(if(parameters('enableWorkloadIdentity'), createArray(reference(resourceId('Microsoft.Resources/deployments', format('helmInstallWorkloadID-{0}', uniqueString(parameters('aksName'), parameters('location'), resourceGroup().name))), '2022-09-01').outputs.helmChart.value), createArray()), if(parameters('enableIngress'), createArray(reference(resourceId('Microsoft.Resources/deployments', format('helmInstallIngress-{0}', uniqueString(parameters('aksName'), parameters('location'), resourceGroup().name))), '2022-09-01').outputs.helmChart.value), createArray()), if(parameters('enableSecretStore'), createArray(reference(resourceId('Microsoft.Resources/deployments', format('helmInstallSecretStore-{0}', uniqueString(parameters('aksName'), parameters('location'), resourceGroup().name))), '2022-09-01').outputs.helmChart.value), createArray()), if(parameters('enableLocalProvisioner'), createArray(reference(resourceId('Microsoft.Resources/deployments', format('helmInstallProvisioner-{0}', uniqueString(parameters('aksName'), parameters('location'), resourceGroup().name))), '2022-09-01').outputs.helmChart.value), createArray()), parameters('additionalCharts'))]"
                           },
                           "useExistingManagedIdentity": {
                             "value": "[parameters('useExistingManagedIdentity')]"
@@ -3642,8 +3642,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.15.31.15270",
-                              "templateHash": "15315654682631401547"
+                              "version": "0.16.2.56959",
+                              "templateHash": "2665806766654980078"
                             }
                           },
                           "parameters": {
@@ -3733,7 +3733,7 @@
                           "resources": [
                             {
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2020-10-01",
+                              "apiVersion": "2022-09-01",
                               "name": "[format('helmChartMultiInstall-{0}', uniqueString(parameters('aksName'), parameters('location'), resourceGroup().name))]",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -3780,8 +3780,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.15.31.15270",
-                                      "templateHash": "9686979174361419729"
+                                      "version": "0.16.2.56959",
+                                      "templateHash": "10075265730642459492"
                                     }
                                   },
                                   "parameters": {
@@ -3962,6 +3962,9 @@
                                   "outputs": {
                                     "commandOutput": {
                                       "type": "array",
+                                      "metadata": {
+                                        "description": "Array of command output from each Deployment Script AKS run command"
+                                      },
                                       "copy": {
                                         "count": "[length(parameters('commands'))]",
                                         "input": {
@@ -3969,9 +3972,6 @@
                                           "Name": "[format('AKS-Run-{0}-{1}-{2}', parameters('aksName'), deployment().name, copyIndex())]",
                                           "CommandOutput": "[reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKS-Run-{0}-{1}-{2}', parameters('aksName'), deployment().name, copyIndex())), '2020-10-01').outputs]"
                                         }
-                                      },
-                                      "metadata": {
-                                        "description": "Array of command output from each Deployment Script AKS run command"
                                       }
                                     }
                                   }
@@ -4006,7 +4006,7 @@
     {
       "condition": "[variables('useDnsZone')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('dns-{0}', uniqueString(parameters('dnsZoneName'), resourceGroup().id, deployment().name))]",
       "resourceGroup": "[parameters('dnsZoneResourceGroupName')]",
       "properties": {
@@ -4022,7 +4022,7 @@
             "value": "[parameters('shortHostname')]"
           },
           "targetFQDN": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('trafficManager-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2020-10-01').outputs.fqdn.value]"
+            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('trafficManager-{0}', uniqueString(parameters('location'), resourceGroup().id, deployment().name))), '2022-09-01').outputs.fqdn.value]"
           }
         },
         "template": {
@@ -4031,8 +4031,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "8890423886548031927"
+              "version": "0.16.2.56959",
+              "templateHash": "7638119490902041773"
             }
           },
           "parameters": {
@@ -4079,17 +4079,17 @@
   "outputs": {
     "cosmosDBName": {
       "type": "string",
-      "value": "[parameters('cosmosDBName')]",
       "metadata": {
         "description": "Name of Cosmos DB resource"
-      }
+      },
+      "value": "[parameters('cosmosDBName')]"
     },
     "newOrExistingCosmosDB": {
       "type": "string",
-      "value": "[parameters('newOrExistingCosmosDB')]",
       "metadata": {
         "description": "New or Existing Cosmos DB resource"
-      }
+      },
+      "value": "[parameters('newOrExistingCosmosDB')]"
     }
   }
 }
