@@ -97,11 +97,13 @@ Nested bicep files should be placed into a folder `modules`, for example `module
 Additional nested folders may be created, only if the nested directory contain multiple files.
 
 Avoid the following:
+
 - `./main.bicep`
 - `./modules/storage/main.bicep`
 - `./modules/compute/main.bicep`
 
 Instead go with:
+
 - `./main.bicep`
 - `./modules/storage.bicep`
 - `./modules/compute.bicep`
