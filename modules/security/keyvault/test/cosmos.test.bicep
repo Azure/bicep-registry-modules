@@ -4,25 +4,25 @@ param location string = resourceGroup().location
 @minLength(3)
 @maxLength(24)
 param keyVaultName string = 'kv${uniqueString(resourceGroup().id, location, utcNow())}'
-param storageAccountName string = 'sa${uniqueString(resourceGroup().id, location, utcNow())}'
+param name string = 'sa${uniqueString(resourceGroup().id, location, utcNow())}'
 
-module storageAccount 'br/public:storage/storage-account:0.0.1' = {
+module cosmos 'br/public:storage/cosmos-db:1.0.1' = {
   name: 'mystorageaccount'
   params: {
     location: location
-    name: storageAccountName
+    name: name
   }
 }
 
 module addKey 'nestedKeyVault.test.bicep' = {
   name: 'addKeyToKeyVault'
   dependsOn: [
-    storageAccount
+    cosmos
   ]
   params: {
     location: location
     keyVaultName: keyVaultName
-    storageAccountName: storageAccountName
+    cosmosDBName: name
   }
 }
 

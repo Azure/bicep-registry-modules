@@ -42,3 +42,13 @@ module testStorage2KeyVault 'storage.test.bicep' = {
     location: location
   }
 }
+
+
+// Test 3
+// Insert Secerts into existing Key Vault later in template
+module testCosmos2KeyVault 'cosmos.test.bicep' = {
+  name: 'test3-comsos-keyvault'
+  params: {
+    location: location
+  }
+}
