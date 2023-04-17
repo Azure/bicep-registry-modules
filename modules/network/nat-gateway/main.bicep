@@ -4,7 +4,7 @@ param name string
 @description('Required. Location(region) for NAT Gateway will be deployed.')
 param location string
 
-@description('Optional. Tags to apply to all Azure Resource(s).')
+@description('Optional. Tags for natGateways resource.')
 param tags object = {}
 
 @minValue(4)

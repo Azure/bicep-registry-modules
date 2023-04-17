@@ -24,8 +24,6 @@ resource publicIpPrefix 'Microsoft.Network/publicIPPrefixes@2022-09-01' = {
   tags: tags
   zones: [
     '1'
-    '2'
-    '3'
   ]
   sku: {
     name: 'Standard'

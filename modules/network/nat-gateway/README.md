@@ -12,7 +12,7 @@ A bicep module for simplified deployment for NAT gateways and available configur
 | :--------------------- | :------: | :------: | :---------------------------------------------------------------------------------- |
 | `name`                 | `string` | Yes      | Required. The name of the NAT Gateway resource.                                     |
 | `location`             | `string` | Yes      | Required. Location(region) for NAT Gateway will be deployed.                        |
-| `tags`                 | `object` | No       | Optional. Tags to apply to all Azure Resource(s).                                   |
+| `tags`                 | `object` | No       | Optional. Tags for natGateways resource.                                            |
 | `idleTimeoutInMinutes` | `int`    | No       | Optional. The idle timeout of the NAT Gateway.                                      |
 | `publicIpAddresses`    | `array`  | No       | Optional. An array of public ip addresses associated with the nat gateway resource. |
 | `publicIpPrefixes`     | `array`  | No       | Optional. An array of public ip prefixes associated with the nat gateway resource.  |
