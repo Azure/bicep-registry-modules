@@ -31,6 +31,7 @@ module test_01 '../main.bicep' = {
   name: '${uniqueName}-test-01'
   params: {
     location: location
+    name: '${uniqueName}-test-01'
     skuName: 'Basic'
     redisVersion: '6.0'
     capacity: 1
@@ -42,7 +43,8 @@ module test_01 '../main.bicep' = {
 module test_02 '../main.bicep' = {
   name: '${uniqueName}-test-02'
   params: {
-    location: location
+        name: '${uniqueName}-test-02'
+        location: location
     skuName: 'Standard'
     redisVersion: '6.0'
     capacity: 1
@@ -66,6 +68,7 @@ module test_02 '../main.bicep' = {
 module test_03 '../main.bicep' = {
   name: '${uniqueName}-test-03'
   params: {
+    name: '${uniqueName}-test-03'
     location: location
     skuName: 'Premium'
     redisVersion: '6.0'
