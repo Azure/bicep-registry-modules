@@ -123,7 +123,7 @@ resource createImportCerts 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
       { name: 'initialDelay', value: initialScriptDelay }
       { name: 'issuerName', value: issuerName }
       { name: 'issuerProvider', value: issuerProvider }
-      { name: 'disabled', value: disabled }
+      { name: 'disabled', value: toLower(string(disabled)) }
       { name: 'retryMax', value: '10' }
       { name: 'retrySleep', value: '5s' }
       { name: 'accountId', value: accountId }
