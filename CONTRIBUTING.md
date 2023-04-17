@@ -161,17 +161,15 @@ Once the module files are validated locally, you can commit your changes and ope
 The modules in the repository follow Semantic Versioning.
 A GitHub action checks that PRs include a prefix. This acts as a stepping stone to automating the version incrementing, this action requires each PR have a semantic prefix.
 
-Examples include:
-
-- feat: New Storage Account module
-- fix: Storage Account does not properly format output
-- feat: Add input parameter to deploy storage into vnet
-- refactor!: Drop support for Node.js 12
-- feat(ui): Add Button component
+Example PR Tiles:
+- Creating a new module: `feat(new): Storage Account Module`
+- Add a bug fix to existing module: `fix: Storage Account does not properly format output`
+- Add a feature to existing module `feat: Add input parameter to deploy storage into vnet`
+- Add a breaking change to a module due to refactoring: `refactor!: Use custom types in storage account`
 
 More details can be found [here] about each prefix(https://www.conventionalcommits.org/en/v1.0.0/).
-Recommend prefixes include:
 
+Recommend prefixes include:
 - fix:
 - feat:
 - build:
