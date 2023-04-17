@@ -3,12 +3,12 @@ param location string = 'eastus'
 var uniqueName = uniqueString(resourceGroup().id, deployment().name, location)
 param serviceShort string = 'eventhub'
 
-// ============ //
-// Dependencies //
-// ============ //
+// ============= //
+// Prerequisites //
+// ============= //
 
-module dependencies 'dependencies.test.bicep' = {
-  name: 'test-dependencies'
+module prerequisites 'prereq.test.bicep' = {
+  name: 'test-prereq'
   params: {
     name: serviceShort
     location: location
@@ -75,7 +75,7 @@ module test_01 '../main.bicep' = {
           eventHubName: 'test01${uniqueName}'
       }
     }
-  }  
+  }
 }
 
 // Test 02 - Basic SKU Minimal Parameters
@@ -108,8 +108,8 @@ module test_03 '../main.bicep' = {
     diagnosticSettings: {
       'test03digno${uniqueName}': {
         diagnosticEnablenamespaceName: 'test03na${uniqueName}'
-        diagnosticEventHubAuthorizationRuleId: dependencies.outputs.authorizationRuleId
-        diagnosticEventHubName: dependencies.outputs.eventHubName
+        diagnosticEventHubAuthorizationRuleId: prerequisites.outputs.authorizationRuleId
+        diagnosticEventHubName: prerequisites.outputs.eventHubName
         diagnosticsMetrics: [{category: 'AllMetrics', enabled:true, retentionPolicy: {days:365,enabled:true}}]
         diagnosticsLogs: [
           {
@@ -124,7 +124,7 @@ module test_03 '../main.bicep' = {
           }
         ]
       }
-    } 
+    }
   }
 }
 
@@ -146,16 +146,16 @@ module test_04 '../main.bicep' = {
           messageRetentionInDays: 1
           partitionCount: 2
           eventHubNamespaceName: 'test04na${uniqueName}'
-          captureDescriptionDestinationBlobContainer: dependencies.outputs.containerName
-          captureDescriptionDestinationStorageAccountResourceId: dependencies.outputs.storageAccountId
+          captureDescriptionDestinationBlobContainer: prerequisites.outputs.containerName
+          captureDescriptionDestinationStorageAccountResourceId: prerequisites.outputs.storageAccountId
           captureDescriptionEnabled: true
       }
     }
     diagnosticSettings: {
       'test04digno${uniqueName}': {
         diagnosticEnablenamespaceName: 'test04na${uniqueName}'
-        diagnosticStorageAccountId: dependencies.outputs.storageAccountId
-        diagnosticWorkspaceId: dependencies.outputs.workspaceId
+        diagnosticStorageAccountId: prerequisites.outputs.storageAccountId
+        diagnosticWorkspaceId: prerequisites.outputs.workspaceId
         diagnosticsMetrics: [{category: 'AllMetrics', enabled:true, retentionPolicy: {days:365,enabled:true}}]
         diagnosticsLogs: [
           {
