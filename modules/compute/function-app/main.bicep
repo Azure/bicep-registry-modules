@@ -34,7 +34,46 @@ param runtime string = 'node'
 @description('The subnet resource ID if VNET integration is enabled. Default value is empty.')
 param subnetID string = ''
 
-@description('Enforces HTTPS-only access to the function app. Default value is true.')
+@description('Required. Defines the name, tier, size, family and capacity of the app service plan.')
+param sku object = {
+  name: 'Y1'
+  tier: 'Dynamic'
+  size: 'Y1'
+  family: 'Y'
+  capacity: 0
+}
+
+@description('Optional. Kind of server OS.')
+@allowed([ 'Windows', 'Linux' ])
+
+param serverOS string = 'Windows'
+
+@description('Optional. If true, apps assigned to this app service plan can be scaled independently. If false, apps assigned to this app service plan will scale to all instances of the plan.')
+param perSiteScaling bool = false
+
+@description('Optional. Maximum number of total workers allowed for this ElasticScaleEnabled app service plan.')
+param maximumElasticWorkerCount int = 0
+
+@description('Optional. Scaling worker count.')
+param targetWorkerCount int = 0
+
+@description('Optional. The instance size of the hosting plan (small, medium, or large).')
+@allowed([ 0, 1, 2 ])
+param targetWorkerSizeId int = 0
+
+@allowed([
+  'None'
+  'SystemAssigned'
+  'UserAssigned'
+  'SystemAssigned, UserAssigned'
+])
+@description('Optional. The type of identity used for the virtual machine. The type \'SystemAssigned, UserAssigned\' includes both an implicitly created identity and a set of user assigned identities. The type \'None\' will remove any identities from the sites ( app or functionapp).')
+param identityType string = 'SystemAssigned'
+
+@description('Optional. Specify the resource ID of the user assigned Managed Identity, if \'identity\' is set as \'UserAssigned\'.')
+param userAssignedIdentityId string = ''
+
+@description('Optional. Configures a site to accept only HTTPS requests. Issues redirect for HTTP requests.')
 param httpsOnly bool = true
 
 @description('Specifies the minimum TLS version required for SSL requests. Default value is 1.2.')
