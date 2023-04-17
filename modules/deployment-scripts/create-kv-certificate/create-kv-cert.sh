@@ -2,55 +2,59 @@
 set -e
 initialDelay="${initialDelay:-5}"
 retryMax="${retryMax:-5}"
+certName="${certName:-default-cert}"
+certCommonName="${certCommonName:-default}"
+validity="${validity:-12}"
+akvName="${akvName:-keyvault}"
 
-echo "Waiting on Identity RBAC replication ($initialDelay)"
-sleep $initialDelay
+echo "Waiting on Identity RBAC replication ("$initialDelay")"
+sleep "$initialDelay"
 
 #Retry loop to catch errors (usually RBAC delays)
 retryLoopCount=0
-until [ $retryLoopCount -ge $retryMax ]
+until [ "$retryLoopCount" -ge "$retryMax" ]
 do
     echo "Creating AKV Cert $certName with CN $certCommonName (attempt $retryLoopCount)..."
 
     if [ -z "$issuerName" ] || [ -z "$issuerProvider" ]; then
         policy=$(az keyvault certificate get-default-policy \
-            | sed -e s/\"validityInMonths\":\ 12/\"validityInMonths\":\ ${validity}/g \
+            | sed -e s/\"validityInMonths\":\ 12/\"validityInMonths\":\ "${validity}"/g \
             | sed -e s/CN=CLIGetDefaultPolicy/CN="${certCommonName}"/g )
     else
       if [ "$issuerProvider" == "DigiCert" ] || [ "$issuerProvider" == "GlobalCert" ]; then
         az keyvault certificate issuer create \
-          --vault-name $akvName \
-          --issuer-name $issuerName \
-          --provider-name $issuerProvider \
-          --account-id $accountId \
-          --password $issuerPassword \
-          --organizatiion-id $organizationId
+          --vault-name "$akvName" \
+          --issuer-name "$issuerName" \
+          --provider-name "$issuerProvider" \
+          --account-id "$accountId" \
+          --password "$issuerPassword" \
+          --organizatiion-id "$organizationId"
       else
         az keyvault certificate issuer create \
-          --vault-name $akvName \
-          --issuer-name $issuerName \
-          --provider-name $issuerProvider
+          --vault-name "$akvName" \
+          --issuer-name "$issuerName" \
+          --provider-name "$issuerProvider"
       fi
       policy=$(az keyvault certificate get-default-policy \
-        | sed -e s/\"validityInMonths\":\ 12/\"validityInMonths\":\ ${validity}/g \
-        | sed -e s/CN=CLIGetDefaultPolicy/CN=${certCommonName}/g  \
-        | sed -e s/\"name\":\ \"Self\"/\"name\":\ \"${issuerName}\"/g )
+        | sed -e s/\"validityInMonths\":\ 12/\"validityInMonths\":\ "${validity}"/g \
+        | sed -e s/CN=CLIGetDefaultPolicy/CN="${certCommonName}"/g \
+        | sed -e s/\"name\":\ \"Self\"/\"name\":\ \""${issuerName}"\"/g )
     fi
     az keyvault certificate create \
-        --vault-name $akvName \
-        -n $certName \
+        --vault-name "$akvName" \
+        -n "$certName" \
         -p "$policy" \
         --disabled "$disabled" \
         && break
 
-    sleep $retrySleep
+    sleep "$retrySleep"
     retryLoopCount=$((retryLoopCount+1))
 done
 
 echo "Getting Certificate $certName";
 retryLoopCount=0
-createdCert=$(az keyvault certificate show -n $certName --vault-name $akvName -o json)
-while [ -z "$(echo $createdCert | jq -r '.x509ThumbprintHex')" ] && [ $retryLoopCount -lt $retryMax ]
+createdCert=$(az keyvault certificate show -n "$certName" --vault-name "$akvName" -o json)
+while [ -z "$(echo "$createdCert" | jq -r '.x509ThumbprintHex')" ] && [ $retryLoopCount -lt "$retryMax" ]
 do
     echo "Waiting for cert creation (attempt $retryLoopCount)..."
     sleep $retrySleep
