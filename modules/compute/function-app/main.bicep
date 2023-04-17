@@ -6,6 +6,9 @@ param name string
 @description('Required. Location for all resources.')
 param location string
 
+@description('Optional. Tags for all resources within Azure Function App module.')
+param tags object = {}
+
 @description('Name of Storage Account. Must be unique within Azure.')
 param name string = 'func${uniqueString(resourceGroup().id, subscription().id, location)}'
 
