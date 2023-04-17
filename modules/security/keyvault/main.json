@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "15395286456069283977"
+      "templateHash": "1071584659067698361"
     }
   },
   "parameters": {
@@ -129,6 +129,20 @@
         "A",
         "B"
       ]
+    },
+    "storageAccountName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The name of the storage account to add secrets from."
+      }
+    },
+    "cosmosDBName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The name of the Cosmos DB to add secrets from."
+      }
     }
   },
   "variables": {
@@ -407,6 +421,12 @@
           "keyVaultName": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', guid(parameters('name'), 'deploy')), '2022-09-01').outputs.name.value]"
           },
+          "storageAccountName": {
+            "value": "[parameters('storageAccountName')]"
+          },
+          "cosmosDBName": {
+            "value": "[parameters('cosmosDBName')]"
+          },
           "secretName": {
             "value": "[parameters('secretName')]"
           },
@@ -421,7 +441,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.2.56959",
-              "templateHash": "17826599313936370174"
+              "templateHash": "11455022829300152178"
             }
           },
           "parameters": {
@@ -431,31 +451,55 @@
                 "description": "Specifies the name of the key vault."
               }
             },
+            "storageAccountName": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "cosmosDBName": {
+              "type": "string",
+              "defaultValue": ""
+            },
             "secretName": {
               "type": "string"
             },
             "secretValue": {
-              "type": "securestring"
+              "type": "securestring",
+              "defaultValue": ""
             }
+          },
+          "variables": {
+            "hasSecret": "[not(equals(parameters('secretValue'), ''))]"
           },
           "resources": [
             {
+              "condition": "[variables('hasSecret')]",
               "type": "Microsoft.KeyVault/vaults/secrets",
               "apiVersion": "2022-11-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretName'))]",
               "properties": {
                 "value": "[parameters('secretValue')]"
               }
+            },
+            {
+              "condition": "[not(equals(parameters('storageAccountName'), ''))]",
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-11-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretName'))]",
+              "properties": {
+                "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2022-09-01').keys[0].value]"
+              }
+            },
+            {
+              "condition": "[not(equals(parameters('cosmosDBName'), ''))]",
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-11-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretName'))]",
+              "properties": {
+                "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('cosmosDBName')), '2022-09-01').keys[0].value]"
+              }
             }
           ],
           "outputs": {
-            "id": {
-              "type": "string",
-              "metadata": {
-                "description": "Key Vault Id"
-              },
-              "value": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName'))]"
-            },
             "name": {
               "type": "string",
               "metadata": {
@@ -463,19 +507,54 @@
               },
               "value": "[parameters('secretName')]"
             },
+            "id": {
+              "type": "string",
+              "metadata": {
+                "description": "Key Vault Id"
+              },
+              "value": "[if(variables('hasSecret'), resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '')]"
+            },
             "secretUri": {
               "type": "string",
               "metadata": {
                 "description": "Secret URI"
               },
-              "value": "[reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUri]"
+              "value": "[if(variables('hasSecret'), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUri, '')]"
             },
             "secretUriWithVersion": {
               "type": "string",
               "metadata": {
                 "description": "Secret URI with version"
               },
-              "value": "[reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUriWithVersion]"
+              "value": "[if(variables('hasSecret'), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUriWithVersion, '')]"
+            },
+            "storageSecretUri": {
+              "type": "string",
+              "metadata": {
+                "description": "Storage Secret URI"
+              },
+              "value": "[if(not(equals(parameters('storageAccountName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUri, '')]"
+            },
+            "storageSecretUriWithVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Storage Secret URI with version"
+              },
+              "value": "[if(not(equals(parameters('storageAccountName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUriWithVersion, '')]"
+            },
+            "cosmosSecretUri": {
+              "type": "string",
+              "metadata": {
+                "description": "Cosmos Secret URI"
+              },
+              "value": "[if(not(equals(parameters('cosmosDBName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUri, '')]"
+            },
+            "cosmosSecretUriWithVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Cosmos Secret URI with version"
+              },
+              "value": "[if(not(equals(parameters('cosmosDBName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUriWithVersion, '')]"
             }
           }
         }

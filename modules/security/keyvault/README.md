@@ -31,6 +31,8 @@ The Bicep module outputs the ID and name of the Key Vault, which can be used by 
 | `softDeleteRetentionInDays` | `int`          | No       | The number of days to retain deleted data in the Key Vault.                                               |
 | `skuName`                   | `string`       | No       | The SKU name of the Key Vault.                                                                            |
 | `skuFamily`                 | `string`       | No       | The SKU family of the Key Vault.                                                                          |
+| `storageAccountName`        | `string`       | No       | The name of the storage account to add secrets from.                                                      |
+| `cosmosDBName`              | `string`       | No       | The name of the Cosmos DB to add secrets from.                                                            |
 
 ## Outputs
 
