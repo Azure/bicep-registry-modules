@@ -83,7 +83,7 @@ module acrImport 'br/public:deployment-scripts/import-acr:3.0.1' = {
     useExistingManagedIdentity: true
     managedIdentityName: existingManagedIdName
     existingManagedIdentityResourceGroupName: resourceGroup().name
-    existingManagedIdentitySubId: subscription().id
+    existingManagedIdentitySubId: subscription().subscriptionId
     rbacRoleNeeded = '' //If the existing ManagedId already has RBAC, we can opt out of the RBAC assignment
     acrName: acr.name
     location: location
