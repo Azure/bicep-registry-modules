@@ -18,6 +18,14 @@ module test0 '../main.bicep' = {
   name: 'test0'
   params: {
     location: location
+  }
+}
+
+//Test 1. 
+module test1 '../main.bicep' = {
+  name: 'test1'
+  params: {
+    location: location
     blobProperties: {
       isVersioningEnabled: true
     }
