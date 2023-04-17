@@ -52,6 +52,12 @@ param skuName string = 'standard'
 @description('The SKU family of the Key Vault.')
 param skuFamily string = 'A'
 
+@description('The name of the storage account to add secrets from.')
+param storageAccountName string = ''
+
+@description('The name of the Cosmos DB to add secrets from.')
+param cosmosDbName string = ''
+
 module keyVault 'modules/vaults.bicep' = {
   name: guid(name, 'deploy')
   params: {
@@ -83,6 +89,7 @@ module secret 'modules/secrets.bicep' = if (createSecret) {
   name: guid(name, 'secrets')
   params: {
     keyVaultName: keyVault.outputs.name
+    storageAccountName: storageAccountName
     secretName: secretName
     secretValue: secretValue
   }

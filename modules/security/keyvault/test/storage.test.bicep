@@ -14,17 +14,30 @@ module storageAccount 'br/public:storage/storage-account:0.0.1' = {
   }
 }
 
-module addKey 'nestedKeyVault.test.bicep' = {
-  name: 'addKeyToKeyVault'
+module storageKeyVault '../main.bicep' = {
+  name: 'myStorageKeyVault'
   dependsOn: [
     storageAccount
   ]
   params: {
     location: location
-    keyVaultName: keyVaultName
+    name: keyVaultName
+    secretName: 'storage-secret'
     storageAccountName: storageAccountName
   }
 }
+
+// module addKey 'nestedKeyVault.test.bicep' = {
+//   name: 'addKeyToKeyVault'
+//   dependsOn: [
+//     storageAccount
+//   ]
+//   params: {
+//     location: location
+//     keyVaultName: keyVaultName
+//     storageAccountName: storageAccountName
+//   }
+// }
 
 /* This is case fails, we must nest the module instead.
 
