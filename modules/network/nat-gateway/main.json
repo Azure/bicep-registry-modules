@@ -1,0 +1,96 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.16.2.56959",
+      "templateHash": "11997253330207690237"
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the NAT Gateway resource."
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Location(region) for NAT Gateway will be deployed."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Tags to apply to all Azure Resource(s)."
+      }
+    },
+    "idleTimeoutInMinutes": {
+      "type": "int",
+      "defaultValue": 4,
+      "metadata": {
+        "description": "Optional. The idle timeout of the NAT Gateway."
+      },
+      "maxValue": 120,
+      "minValue": 4
+    },
+    "publicIpAddresses": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. An array of public ip addresses associated with the nat gateway resource."
+      }
+    },
+    "publicIpPrefixes": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. An array of public ip prefixes associated with the nat gateway resource."
+      }
+    },
+    "zones": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Specify Azure Availability Zone IDs or leave unset to disable."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/natGateways",
+      "apiVersion": "2022-09-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "properties": {
+        "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
+        "publicIpAddresses": "[parameters('publicIpAddresses')]",
+        "publicIpPrefixes": "[parameters('publicIpPrefixes')]"
+      },
+      "zones": "[parameters('zones')]"
+    }
+  ],
+  "outputs": {
+    "id": {
+      "type": "string",
+      "metadata": {
+        "description": "Id of the NAT Gateway resource created."
+      },
+      "value": "[resourceId('Microsoft.Network/natGateways', parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the NAT Gateway Resource."
+      },
+      "value": "[parameters('name')]"
+    }
+  }
+}
