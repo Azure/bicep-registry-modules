@@ -76,6 +76,93 @@ param userAssignedIdentityId string = ''
 @description('Optional. Configures a site to accept only HTTPS requests. Issues redirect for HTTP requests.')
 param httpsOnly bool = true
 
+@description('Optional. The resource ID of the app service environment to use for this resource.')
+param appServiceEnvironmentId string = ''
+
+@description('Optional. If client affinity is enabled.')
+param clientAffinityEnabled bool = true
+
+@description('Required. Type of site to deploy.')
+@allowed([ 'functionapp', 'app' ])
+param kind string = 'functionapp'
+
+@description('Optional. Version of the function extension.')
+param functionsExtensionVersion string = '~4'
+
+@description('Optional. Runtime of the function worker.')
+@allowed([
+  'dotnet'
+  'node'
+  'python'
+  'java'
+  'powershell'
+  ''
+])
+param functionsWorkerRuntime string = ''
+
+@description('Optional. NodeJS version.')
+param functionsDefaultNodeversion string = '~14'
+
+@allowed([ 'Disabled', 'Enabled' ])
+@description('Optional. The network access type for accessing Application Insights ingestion. - Enabled or Disabled.')
+param publicNetworkAccessForIngestion string = 'Enabled'
+
+@allowed([ 'Disabled', 'Enabled' ])
+@description('Optional. The network access type for accessing Application Insights query. - Enabled or Disabled.')
+param publicNetworkAccessForQuery string = 'Enabled'
+
+@description('Optional. Application type.')
+@allowed([ 'web', 'other' ])
+param appInsightsType string = 'web'
+
+@description('Optional. The kind of application that this component refers to, used to customize UI.')
+param appInsightsKind string = 'azfunc'
+
+@description('Optional. Enabled or Disable Insights for Azure functions')
+param enableInsights bool = false
+
+@description('Optional. Resource ID of the log analytics workspace which the data will be ingested to, if enableaInsights is false.')
+param workspaceResourceId string = ''
+
+@description('Optional. List of Azure function (Actual object where our code resides).')
+param functions array = []
+
+@description('Optional. Enable Vnet Integration or not.')
+param enableVnetIntegration bool = false
+
+@description('Optional. The subnet that will be integrated to enable vnet Integration.')
+param subnetId string = ''
+
+@description('Optional. Enable Source control for the function.')
+param enableSourceControl bool = false
+
+@description('Optional. Repository or source control URL.')
+param repoUrl string = ''
+
+@description('Optional. Name of branch to use for deployment.')
+param branch string = ''
+
+@description('Required. Name of the storage account used by function app.')
+param storageAccountName string
+
+@description('Optional. to limit to manual integration; to enable continuous integration (which configures webhooks into online repos like GitHub).')
+param isManualIntegration bool = true
+
+@description('Optional. true for a Mercurial repository; false for a Git repository.')
+param isMercurial bool = false
+
+@description('Required. Resource Group of storage account used by function app.')
+param storgeAccountResourceGroup string
+
+@description('Optional. True to deploy functions from zip package. "functionPackageUri" must be specified if enabled. The package option and sourcecontrol option should not be enabled at the same time.')
+param enablePackageDeploy bool = false
+
+@description('Optional. URI to the function source code zip package, must be accessible by the deployer. E.g. A zip file on Azure storage in the same resource group.')
+param functionPackageUri string = ''
+
+@description('Optional. Enable docker image deployment')
+param enableDockerContainer bool = false
+
 @description('Specifies the minimum TLS version required for SSL requests. Default value is 1.2.')
 @allowed([ '1.0', '1.1', '1.2' ])
 param minTlsVersion string = '1.2'
