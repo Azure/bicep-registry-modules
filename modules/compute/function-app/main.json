@@ -83,12 +83,112 @@
       "defaultValue": "",
       "metadata": {
         "description": "The subnet resource ID if VNET integration is enabled. Default value is empty."
+      "version": "0.16.2.56959",
+      "templateHash": "7644818069097581785"
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "maxLength": 64,
+      "metadata": {
+        "description": "Required. Name for the Azure Function App."
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Location for all resources."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Tags for all resources within Azure Function App module."
+      }
+    },
+    "sku": {
+      "type": "object",
+      "defaultValue": {
+        "name": "Y1",
+        "tier": "Dynamic",
+        "size": "Y1",
+        "family": "Y",
+        "capacity": 0
+      },
+      "metadata": {
+        "description": "Required. Defines the name, tier, size, family and capacity of the app service plan."
+      }
+    },
+    "serverOS": {
+      "type": "string",
+      "defaultValue": "Windows",
+      "allowedValues": [
+        "Windows",
+        "Linux"
+      ],
+      "metadata": {
+        "description": "Optional. Kind of server OS."
+      }
+    },
+    "perSiteScaling": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. If true, apps assigned to this app service plan can be scaled independently. If false, apps assigned to this app service plan will scale to all instances of the plan."
+      }
+    },
+    "maximumElasticWorkerCount": {
+      "type": "int",
+      "defaultValue": 0,
+      "metadata": {
+        "description": "Optional. Maximum number of total workers allowed for this ElasticScaleEnabled app service plan."
+      }
+    },
+    "targetWorkerCount": {
+      "type": "int",
+      "defaultValue": 0,
+      "metadata": {
+        "description": "Optional. Scaling worker count."
+      }
+    },
+    "targetWorkerSizeId": {
+      "type": "int",
+      "defaultValue": 0,
+      "allowedValues": [
+        0,
+        1,
+        2
+      ],
+      "metadata": {
+        "description": "Optional. The instance size of the hosting plan (small, medium, or large)."
+      }
+    },
+    "identityType": {
+      "type": "string",
+      "defaultValue": "SystemAssigned",
+      "metadata": {
+        "description": "Optional. The type of identity used for the virtual machine. The type 'SystemAssigned, UserAssigned' includes both an implicitly created identity and a set of user assigned identities. The type 'None' will remove any identities from the sites ( app or functionapp)."
+      },
+      "allowedValues": [
+        "None",
+        "SystemAssigned",
+        "UserAssigned",
+        "SystemAssigned, UserAssigned"
+      ]
+    },
+    "userAssignedIdentityId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Specify the resource ID of the user assigned Managed Identity, if 'identity' is set as 'UserAssigned'."
       }
     },
     "httpsOnly": {
       "type": "bool",
       "defaultValue": true,
-      "metadata": {
+      "metadata": {app
         "description": "Enforces HTTPS-only access to the function app. Default value is true."
       }
     },

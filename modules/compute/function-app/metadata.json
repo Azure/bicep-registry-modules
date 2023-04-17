@@ -1,6 +1,6 @@
 {
   "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
-  "name": "Azure Functions App",
-  "summary": "Deploy an Azure Function Application using this Bicep Module.",
-  "owner": "dciborow"
+  "name": "Function app module",
+  "summary": "Module to create function app for your application",
+  "owner": "rhalloul"
 }
