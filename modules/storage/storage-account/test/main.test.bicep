@@ -18,5 +18,11 @@ module test0 '../main.bicep' = {
   name: 'test0'
   params: {
     location: location
+    blobProperties: {
+      isVersioningEnabled: true
+    }
+    blobContainerProperties: {
+      publicAccess: 'None'
+    }
   }
 }
