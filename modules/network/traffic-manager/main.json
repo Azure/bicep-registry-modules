@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "9639815022399715698"
+      "templateHash": "2582188524800919470"
     }
   },
   "parameters": {
@@ -60,7 +60,7 @@
         "Disabled"
       ],
       "metadata": {
-        "description": "Optional. The status of the Traffic Manager profile. default is Enabled."
+        "description": "The status of the Traffic Manager profile. default is Enabled."
       }
     },
     "endpoints": {
@@ -89,6 +89,13 @@
       },
       "metadata": {
         "description": "An object that represents the monitoring configuration for the Traffic Manager profile."
+      }
+    },
+    "enableDiagnostics": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enable Diagnostic Capture . default is false"
       }
     },
     "diagnosticLogsRetentionInDays": {
@@ -221,7 +228,7 @@
       ]
     },
     {
-      "condition": "[or(or(or(not(empty(parameters('diagnosticStorageAccountId'))), not(empty(parameters('diagnosticWorkspaceId')))), not(empty(parameters('diagnosticEventHubAuthorizationRuleId')))), and(not(empty(parameters('diagnosticEventHubName'))), not(empty(variables('diagnosticsLogs')))))]",
+      "condition": "[parameters('enableDiagnostics')]",
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
       "scope": "[format('Microsoft.Network/trafficmanagerprofiles/{0}', parameters('name'))]",

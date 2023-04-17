@@ -45,6 +45,7 @@ module test1 '../main.bicep' = {
         endpointStatus: 'Enabled'
         endpointLocation: 'eastus'
       } ]
+    enableDiagnostics: true
     diagnosticStorageAccountId: prereq.outputs.storageAccountId
     diagnosticWorkspaceId: prereq.outputs.workspaceId
     diagnosticEventHubName: prereq.outputs.eventHubName

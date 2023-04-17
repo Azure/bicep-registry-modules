@@ -22,9 +22,10 @@ The module also allows for the configuration of monitor settings such as protoco
 | `tags`                                  | `object` | No       | Tags for the module resources.                                                                                                                                    |
 | `trafficRoutingMethod`                  | `string` | No       | The traffic routing method of the Traffic Manager profile. default is "Performance".                                                                              |
 | `ttl`                                   | `int`    | No       | The DNS Time-To-Live (TTL), in seconds. default is 30.                                                                                                            |
-| `profileStatus`                         | `string` | No       | Optional. The status of the Traffic Manager profile. default is Enabled.                                                                                          |
+| `profileStatus`                         | `string` | No       | The status of the Traffic Manager profile. default is Enabled.                                                                                                    |
 | `endpoints`                             | `array`  | No       | An array of objects that represent the endpoints in the Traffic Manager profile. {name: string, target: string, endpointStatus: string, endpointLocation: string} |
 | `monitorConfig`                         | `object` | No       | An object that represents the monitoring configuration for the Traffic Manager profile.                                                                           |
+| `enableDiagnostics`                     | `bool`   | No       | Enable Diagnostic Capture . default is false                                                                                                                      |
 | `diagnosticLogsRetentionInDays`         | `int`    | No       | Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely. default is 365.                                              |
 | `diagnosticStorageAccountId`            | `string` | No       | Resource ID of the diagnostic storage account.                                                                                                                    |
 | `diagnosticWorkspaceId`                 | `string` | No       | Resource ID of the diagnostic log analytics workspace.                                                                                                            |
@@ -81,12 +82,13 @@ param endpoints array = [
   }
 ]
 
-module trafficManagerProfile 'br/public:network/traffic-manager:3.0.1' = {
+module trafficManagerProfile 'br/public:network/traffic-manager:2.0.2' = {
   name: 'trafficManagerProfile'
   params: {
     name: name
     trafficManagerDnsName: trafficManagerDnsName
     endpoints: endpoints
+    enableDiagnostics: true
     diagnosticStorageAccountId: prereq.outputs.storageAccountId
     diagnosticWorkspaceId: prereq.outputs.workspaceId
     diagnosticEventHubName: prereq.outputs.eventHubName

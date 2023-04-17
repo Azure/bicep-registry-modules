@@ -23,7 +23,7 @@ param trafficRoutingMethod string = 'Performance'
 @description('The DNS Time-To-Live (TTL), in seconds. default is 30. ')
 param ttl int = 30
 
-@description('Optional. The status of the Traffic Manager profile. default is Enabled.')
+@description('The status of the Traffic Manager profile. default is Enabled.')
 @allowed([
   'Enabled'
   'Disabled'
@@ -49,6 +49,9 @@ param monitorConfig object = {
     }
   ]
 }
+
+@description('Enable Diagnostic Capture . default is false')
+param enableDiagnostics bool = false
 
 @description('Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely. default is 365.')
 @minValue(0)
@@ -132,7 +135,7 @@ resource trafficManagerProfile 'Microsoft.Network/trafficmanagerprofiles@2018-08
   }
 }
 
-resource trafficManagerEndpoints 'Microsoft.Network/trafficmanagerprofiles/ExternalEndpoints@2018-08-01' = [for endpoint in endpoints: if (!empty(endpoint)) {
+resource trafficManagerEndpoints 'Microsoft.Network/TrafficManagerProfiles/ExternalEndpoints@2018-08-01' = [for endpoint in endpoints: if (!empty(endpoint)) {
   parent: trafficManagerProfile
   name: endpoint.name
   properties: {
@@ -142,7 +145,7 @@ resource trafficManagerEndpoints 'Microsoft.Network/trafficmanagerprofiles/Exter
   }
 }]
 
-resource trafficManagerdiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(diagnosticStorageAccountId) || !empty(diagnosticWorkspaceId) || !empty(diagnosticEventHubAuthorizationRuleId) || !empty(diagnosticEventHubName) && !empty(diagnosticsLogs)) {
+resource trafficManagerdiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableDiagnostics) {
   name: '${trafficManagerProfile.name}-diagnosticSettings'
   properties: {
     storageAccountId: !empty(diagnosticStorageAccountId) ? diagnosticStorageAccountId : null
