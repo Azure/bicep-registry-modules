@@ -163,6 +163,18 @@ param functionPackageUri string = ''
 @description('Optional. Enable docker image deployment')
 param enableDockerContainer bool = false
 
+@description('''Optional. Extra app settings that should be provisioned while creating the function app. Note! Settings below should not be included unless absolutely necessary, because settings in this param will override the ones added by the module:
+AzureWebJobsStorage
+AzureWebJobsDashboard
+WEBSITE_CONTENTSHARE
+WEBSITE_CONTENTAZUREFILECONNECTIONSTRING
+FUNCTIONS_EXTENSION_VERSION
+FUNCTIONS_WORKER_RUNTIME
+WEBSITE_NODE_DEFAULT_VERSION
+APPINSIGHTS_INSTRUMENTATIONKEY
+APPLICATIONINSIGHTS_CONNECTION_STRING''')
+param extraAppSettings object = {}
+
 @description('Specifies the minimum TLS version required for SSL requests. Default value is 1.2.')
 @allowed([ '1.0', '1.1', '1.2' ])
 param minTlsVersion string = '1.2'
