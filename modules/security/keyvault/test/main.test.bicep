@@ -12,7 +12,7 @@ module prereq 'prereq.test.bicep' = {
   }
 }
 
-Test 0.
+// Test 0.
 module test0 '../main.bicep' = {
   name: 'test0'
   params: {
