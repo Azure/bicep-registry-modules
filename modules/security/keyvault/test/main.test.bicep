@@ -42,3 +42,33 @@ module testStorage2KeyVault 'storage.test.bicep' = {
     location: location
   }
 }
+
+var keyVaultName = 'kv${uniqueString(resourceGroup().id, location, 'Test3-Storage2keyvault')}'
+var storageAccountName = 'sa${uniqueString(resourceGroup().id, location, 'Test3-Storage2keyvault')}'
+
+
+// Test 3
+module storageAccount 'br/public:storage/storage-account:0.0.1' = {
+  name: 'test3-storage-account'
+  params: {
+    location: location
+    name: storageAccountName
+  }
+}
+
+resource existingStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
+  name: storageAccountName
+}
+
+module keyVault '../main.bicep' = {
+  name: 'test3-myKeyVault'
+  dependsOn: [
+    storageAccount
+  ]
+  params: {
+    location: location
+    name: keyVaultName
+    secretName: 'storage-secret'
+    secretValue: existingStorageAccount.listKeys().keys[0].value
+  }
+}
