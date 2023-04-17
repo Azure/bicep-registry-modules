@@ -1,5 +1,7 @@
 #!/bin/bash
 set -e
+initialDelay="${initialDelay:-5}"
+retryMax="${retryMax:-5}"
 
 echo "Waiting on Identity RBAC replication ($initialDelay)"
 sleep $initialDelay
