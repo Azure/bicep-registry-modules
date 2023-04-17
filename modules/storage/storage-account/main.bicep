@@ -140,7 +140,7 @@ resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01'
   properties: blobProperties
 }
 
-resource containers 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01' = {
+resource containers 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01' = if (enableBlobService) {
   name: blobContainerName
   parent: blobService
   properties: blobContainerProperties
