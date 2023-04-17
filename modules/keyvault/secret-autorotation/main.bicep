@@ -1,8 +1,7 @@
 targetScope = 'resourceGroup'
 
 // params
-@description(
-  '''
+@description('''
   Required.
 
   Definition of secrets to be auto-rotated. Includes name of the CosmosDB, name of the KeyVault, name of the Secret, name of the Resource Group etc.
@@ -22,8 +21,7 @@ targetScope = 'resourceGroup'
   ]
   It's unlikely that for a single CosmosDB both primary and secondary keys are stored as keyvault secrets, normally one is used and later alternated to the other. Thus for now multiple keys are not supported.
   Note! Currently only support each CosmosDB having 1 secret.
-  '''
-)
+  ''')
 param secrets array
 
 @description('Required. Resource ID of the log analytic workspace to be used by the function app.')
@@ -42,12 +40,7 @@ param location string = resourceGroup().location
 param tags object = {}
 
 @description('Optional. The type of App Service hosting plan. Premium must be used to access key vaults behind firewall. Default is EP1.')
-@allowed([
-  'EP1'
-  'EP2'
-  'EP3'
-  'Y1'
-])
+@allowed([ 'EP1', 'EP2', 'EP3', 'Y1' ])
 param appServicePlanSku string = 'EP1'
 
 @description('Optional. The name of the function app that you wish to create. Default is {resource group name}-rotation-fnapp.')
@@ -75,10 +68,7 @@ param storageRoleId string = resourceId('Microsoft.Authorization/roleDefinitions
 param isStoragePrivate bool = false
 
 @description('Optional. Function app identity type. Default is SystemAssigned, which means the identity created with the function app will be used.')
-@allowed([
-  'UserAssigned'
-  'SystemAssigned'
-])
+@allowed([ 'UserAssigned', 'SystemAssigned' ])
 param functionAppIdentityType string = 'SystemAssigned'
 
 @description('Optional. Name of the user assigned identity used to execute the deployment script for uploading function app source code. Must be provided if NOT using MSDeploy option. If user assigned identity is chosen for the function app, this will also be the identity used. Only effective when \'functionAppIdentityType\' is set to \'UserAssigned\'.')
@@ -90,7 +80,7 @@ param userAssignedIdentityRg string = resourceGroup().name
 @description('Optional. Storage account name to be used by the deployment scripts. Deployment script by default create a temporary storage account during its execution but it is also possible to assign an existing storage instead.')
 param deploymentScriptStorage string = ''
 
-@description('Optional. Resource group of the deployment script storage, if \'deploymentScriptStorage\', this param will be ignored. Default to current resource group.')
+@description('Optional. Resource group of the deployment script storage, if `deploymentScriptStorage`, this param will be ignored. Default to current resource group.')
 param deploymentScriptStorageRg string = resourceGroup().name
 
 @description('Optional. True if the role with necessary permissions needed to execute the scripts for the function app is to be granted to the identity, either user assigned or system. Default to false.')
@@ -345,4 +335,7 @@ module vaultSecrets './modules/create-secret.bicep' = [for item in secrets: if (
 }]
 
 @description('ID of the function app created.')
-output siteId string = functions.id
+output id string = functions.id
+
+@description('Name of the function app created.')
+output name string = functions.name
