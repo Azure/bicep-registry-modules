@@ -1,8 +1,11 @@
-@description('Required. The name of the Redis cache resource.')
-param name string
+@description('Optional. The prefix of the Redis cache resource name.')
+param prefix string = 'redis-'
 
-@description('Optional. The location to deploy the Redis cache service.')
-param location string = resourceGroup().location
+@description('Optional. The name of the Redis cache resource.')
+param name string = '${prefix}${uniqueString(resourceGroup().id, location)}'
+
+@description('Required. The location to deploy the Redis cache service.')
+param location string
 
 @description('Optional. Tags of the resource.')
 param tags object = {}
@@ -138,6 +141,8 @@ var varPrivateEndpoints = [for privateEndpoint in privateEndpoints: {
   ] : []
 }]
 
+var isPremium = skuName == 'Premium'
+
 resource redisCache 'Microsoft.Cache/redis@2022-06-01' = {
   name: name
   location: location
@@ -148,19 +153,19 @@ resource redisCache 'Microsoft.Cache/redis@2022-06-01' = {
     publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : (!empty(publicNetworkAccess) ? 'Disabled' : null)
     redisConfiguration: !empty(redisConfiguration) ? redisConfiguration : null
     redisVersion: redisVersion
-    shardCount: skuName == 'Premium' ? shardCount : null
-    replicasPerMaster: skuName == 'Premium' ? replicasPerMaster : null
-    replicasPerPrimary: skuName == 'Premium' ? replicasPerPrimary : null
+    shardCount: isPremium  ? shardCount : null
+    replicasPerMaster: isPremium  ? replicasPerMaster : null
+    replicasPerPrimary: isPremium  ? replicasPerPrimary : null
     sku: {
       capacity: capacity
-      family: skuName == 'Premium' ? 'P' : 'C'
+      family: isPremium  ? 'P' : 'C'
       name: skuName
     }
     staticIP: !empty(staticIP) ? staticIP : null
     subnetId: !empty(subnetId) ? subnetId : null
     tenantSettings: tenantSettings
   }
-  zones: skuName == 'Premium' ? pickZones('Microsoft.Cache', 'redis', location, 1) : null
+  zones: isPremium  ? pickZones('Microsoft.Cache', 'redis', location, 1) : null
 }
 
 resource redis_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(diagnosticStorageAccountId) || !empty(diagnosticWorkspaceId) || !empty(diagnosticEventHubAuthorizationRuleId) || !empty(diagnosticEventHubName)) {
@@ -207,7 +212,7 @@ module redisCache_privateEndpoint 'modules/privateEndpoint.bicep' = {
 }
 
 @description('The resource name.')
-output name string = redisCache.name
+output name string = name
 
 @description('The resource ID.')
 output resourceId string = redisCache.id
