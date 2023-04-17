@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "4074870108696353524"
+      "version": "0.16.1.55165",
+      "templateHash": "4836847177311751370"
     }
   },
   "parameters": {
@@ -109,6 +109,13 @@
         "description": "Certificate Issuer Provider, DigiCert, GlobalSign, or internal options may be used."
       }
     },
+    "disabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Create certificate in disabled state. Default: false"
+      }
+    },
     "accountId": {
       "type": "string",
       "defaultValue": "",
@@ -136,6 +143,15 @@
       "metadata": {
         "description": "Override this parameter if using this in cross tenant scenarios"
       }
+    },
+    "validity": {
+      "type": "int",
+      "defaultValue": 12,
+      "metadata": {
+        "description": "Optional. Override default validityInMonths 12 value"
+      },
+      "maxValue": 1200,
+      "minValue": 1
     }
   },
   "variables": {
@@ -215,6 +231,10 @@
             "value": "[parameters('issuerProvider')]"
           },
           {
+            "name": "disabled",
+            "value": "[parameters('disabled')]"
+          },
+          {
             "name": "retryMax",
             "value": "10"
           },
@@ -233,6 +253,10 @@
           {
             "name": "organizationId",
             "value": "[parameters('organizationId')]"
+          },
+          {
+            "name": "validity",
+            "value": "[string(parameters('validity'))]"
           }
         ],
         "scriptContent": "[variables('$fxv#0')]",
@@ -247,52 +271,52 @@
   "outputs": {
     "certificateNames": {
       "type": "array",
+      "metadata": {
+        "description": "Certificate names"
+      },
       "copy": {
         "count": "[length(parameters('certificateNames'))]",
         "input": "[createArray(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[copyIndex()], ':', ''), '/', '-'))), '2020-10-01').outputs.name)]"
-      },
-      "metadata": {
-        "description": "Certificate names"
       }
     },
     "certificateSecretIds": {
       "type": "array",
+      "metadata": {
+        "description": "KeyVault secret ids to the created version"
+      },
       "copy": {
         "count": "[length(parameters('certificateNames'))]",
         "input": "[createArray(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[copyIndex()], ':', ''), '/', '-'))), '2020-10-01').outputs.certSecretId.versioned)]"
-      },
-      "metadata": {
-        "description": "KeyVault secret ids to the created version"
       }
     },
     "certificateSecretIdUnversioneds": {
       "type": "array",
+      "metadata": {
+        "description": "KeyVault secret ids which uses the unversioned uri"
+      },
       "copy": {
         "count": "[length(parameters('certificateNames'))]",
         "input": "[createArray(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[copyIndex()], ':', ''), '/', '-'))), '2020-10-01').outputs.certSecretId.unversioned)]"
-      },
-      "metadata": {
-        "description": "KeyVault secret ids which uses the unversioned uri"
       }
     },
     "certificateThumbpints": {
       "type": "array",
+      "metadata": {
+        "description": "Certificate Thumbprints"
+      },
       "copy": {
         "count": "[length(parameters('certificateNames'))]",
         "input": "[createArray(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[copyIndex()], ':', ''), '/', '-'))), '2020-10-01').outputs.thumbprint)]"
-      },
-      "metadata": {
-        "description": "Certificate Thumbprints"
       }
     },
     "certificateThumbprintHexs": {
       "type": "array",
+      "metadata": {
+        "description": "Certificate Thumbprints (in hex)"
+      },
       "copy": {
         "count": "[length(parameters('certificateNames'))]",
         "input": "[createArray(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[copyIndex()], ':', ''), '/', '-'))), '2020-10-01').outputs.thumbprintHex)]"
-      },
-      "metadata": {
-        "description": "Certificate Thumbprints (in hex)"
       }
     }
   }
