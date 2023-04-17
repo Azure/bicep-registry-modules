@@ -33,3 +33,12 @@ module test1InsertSecret '../main.bicep' = {
     secretValue: 'SampleValue'
   }
 }
+
+// Test 2
+// Insert Secerts into existing Key Vault later in template
+module testStorage2KeyVault 'storage.test.bicep' = {
+  name: 'test2-storage-keyvault'
+  params: {
+    location: location
+  }
+}
