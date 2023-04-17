@@ -92,6 +92,7 @@ The `version.json` file defines the MAJOR and MINOR version number of the module
 Once you are done editing the files, run `brm generate` again to refresh `main.json` and `README.md`.
 
 ## Nested Bicep Files
+
 Nested bicep files should be placed into a folder `modules`, for example `modules/nested.bicep`.
 Additional nested folders may be created, only if the nested directory contain multiple files.
 
