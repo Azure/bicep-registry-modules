@@ -69,3 +69,35 @@ module test3CosmosDBSecret '../main.bicep' = {
     cosmosDBName: cosmos.outputs.name
   }
 }
+
+// Create a Cassandra DB module (if not already available)
+param cassandraName string = 'sa${uniqueString(resourceGroup().id, location, utcNow())}'
+var locations = [
+  {
+    locationName: location
+    failoverPriority: 0
+    isZoneRedundant: false
+  }
+]
+
+var unwind = [for location in locations: '${toLower(cassandraName)}-${location.locationName}.cassandra.cosmos.azure.com']
+var locationString = replace(substring(string(unwind), 1, length(string(unwind))-2), '"', '')
+
+module cassandraDB 'br/public:storage/cosmos-db:1.0.1' = {
+  name: 'mycassandradb'
+  params: {
+    location: location
+    enableCassandra: true
+  }
+}
+
+// Test 4 - Add Cassandra DB secret to Key Vault
+module test4CassandraDBSecret '../main.bicep' = {
+  name: 'testX-cassandra-db-secret'
+  params: {
+    location: location
+    name: 'testX-keyvault'
+    cassandraDBName: cassandraDB.outputs.name
+    locationString: locationString
+  }
+}
