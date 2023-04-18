@@ -5,13 +5,17 @@ module file is a deployment test. Make sure at least one test is added.
 
 param location string = resourceGroup().location
 
+var uniqueName = uniqueString(resourceGroup().id, deployment().name, location)
+
 //Prerequisites
-// module prereq 'prereq.test.bicep' = {
-//   name: 'test-prereqs'
-//   params: {
-//     location: location
-//   }
-// }
+module prereq 'prereq.test.bicep' = {
+  name: 'test-prereqs'
+  params: {
+    name: 'storage'
+    location: location
+    prefix: uniqueName
+  }
+}
 
 //Test 0. 
 module test0 '../main.bicep' = {
@@ -32,5 +36,30 @@ module test1 '../main.bicep' = {
     blobContainerProperties: {
       publicAccess: 'None'
     }
+  }
+}
+
+//Test 1. 
+module test2 '../main.bicep' = {
+  name: 'test2'
+  params: {
+    location: location
+    blobProperties: {
+      isVersioningEnabled: true
+    }
+    blobContainerProperties: {
+      publicAccess: 'None'
+    }
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Reader and Data Access'
+        principalIds: [ prereq.outputs.identityPrincipalIds[0] ]
+      }
+      {
+        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+        principalIds: [ prereq.outputs.identityPrincipalIds[1] ]
+        resourceType: 'blobContainer'
+      }            
+    ]
   }
 }
