@@ -57,9 +57,13 @@ module test2 '../main.bicep' = {
       }
       {
         roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-        principalIds: [ prereq.outputs.identityPrincipalIds[1] ]
+        principalIds: [ prereq.outputs.identityPrincipalIds[0] ]
         resourceType: 'blobContainer'
-      }            
+      }
+      {
+        roleDefinitionIdOrName: 'Reader and Data Access'
+        principalIds: [ prereq.outputs.identityPrincipalIds[1] ]
+      }      
     ]
   }
 }
