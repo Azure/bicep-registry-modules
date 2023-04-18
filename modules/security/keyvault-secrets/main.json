@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "6364030219632615528"
+      "templateHash": "11474482697389886367"
     }
   },
   "parameters": {
@@ -662,13 +662,6 @@
     }
   ],
   "outputs": {
-    "id": {
-      "type": "string",
-      "metadata": {
-        "description": "Key Vault Id"
-      },
-      "value": "[reference(resourceId('Microsoft.Resources/deployments', guid(parameters('name'), 'secrets')), '2022-09-01').outputs.id.value]"
-    },
     "name": {
       "type": "string",
       "maxLength": 24,
@@ -677,6 +670,13 @@
         "description": "Key Vault Name"
       },
       "value": "[parameters('name')]"
+    },
+    "id": {
+      "type": "string",
+      "metadata": {
+        "description": "Key Vault Id"
+      },
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', guid(parameters('name'), 'secrets')), '2022-09-01').outputs.id.value]"
     },
     "secretId": {
       "type": "string",

@@ -82,13 +82,14 @@ module secret 'modules/secrets.bicep' = {
   }
 }
 
-@description('Key Vault Id')
-output id string = secret.outputs.id
 
 @description('Key Vault Name')
 @minLength(3)
 @maxLength(24)
 output name string = name
+
+@description('Key Vault Id')
+output id string = secret.outputs.id
 
 @description('Key Vault Seceret Id')
 output secretId string = secret.outputs.id

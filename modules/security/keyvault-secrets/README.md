@@ -37,8 +37,8 @@ The template uses the 'secrets.bicep' module to manage secrets and returns outpu
 
 | Name                 | Type   | Description             |
 | :------------------- | :----: | :---------------------- |
-| id                   | string | Key Vault Id            |
 | name                 | string | Key Vault Name          |
+| id                   | string | Key Vault Id            |
 | secretId             | string | Key Vault Seceret Id    |
 | secretName           | string | Key Vault Secert Name   |
 | secretUri            | string | Secret URI              |
