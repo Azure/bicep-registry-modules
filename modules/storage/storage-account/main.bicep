@@ -52,5 +52,9 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   }
 }
 
-@description('The ID of the created or existing Storage Account. Use this ID to reference the Storage Account in other Azure resource deployments.')
+
+@description('The name of the Storage Account resource')
+output name string = name
+
+@description('The ID of the Storage Account. Use this ID to reference the Storage Account in other Azure resource deployments.')
 output id string = storageAccount.id
