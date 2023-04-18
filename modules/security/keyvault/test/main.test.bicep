@@ -4,7 +4,7 @@ module file is a deployment test. Make sure at least one test is added.
 */
 param location string = resourceGroup().location
 
-//Prerequisites
+// Prerequisites
 module prereq 'prereq.test.bicep' = {
   name: 'test-prereqs'
   params: {
@@ -48,7 +48,7 @@ module test2StorageAccountSecret '../main.bicep' = {
   name: 'test2-storage-account-secret-${guid(storageAccountName)}'
   params: {
     location: location
-    name: 'test4-keyvault'
+    prefix: 'test4-keyvault'
     storageAccountName: prereq.outputs.storageAccountName
   }
 }
@@ -57,6 +57,7 @@ module test2StorageAccountSecret '../main.bicep' = {
 module cosmos 'br/public:storage/cosmos-db:1.0.1' = {
   name: 'mycosmos'
   params: {
+    prefix: 'test5'
     location: location
   }
 }
@@ -65,12 +66,12 @@ module test3CosmosDBSecret '../main.bicep' = {
   name: 'test3-cosmos-db-secret'
   params: {
     location: location
-    name: 'test5-keyvault'
+    prefix: 'test5'
     cosmosDBName: cosmos.outputs.name
   }
 }
 
-// Create a Cassandra DB module (if not already available)
+// Test 4 - Add Cassandra DB secret to Key Vault
 param cassandraName string = 'sa${uniqueString(resourceGroup().id, location, utcNow())}'
 var locations = [
   {
@@ -87,16 +88,16 @@ module cassandraDB 'br/public:storage/cosmos-db:1.0.1' = {
   name: 'mycassandradb'
   params: {
     location: location
+    prefix: 'test4'
     enableCassandra: true
   }
 }
 
-// Test 4 - Add Cassandra DB secret to Key Vault
 module test4CassandraDBSecret '../main.bicep' = {
   name: 'testX-cassandra-db-secret'
   params: {
     location: location
-    name: 'testX-keyvault'
+    prefix: 'test4'
     cassandraDBName: cassandraDB.outputs.name
     locationString: locationString
   }
