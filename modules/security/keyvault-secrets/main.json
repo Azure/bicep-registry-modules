@@ -1,0 +1,710 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.16.2.56959",
+      "templateHash": "6364030219632615528"
+    }
+  },
+  "parameters": {
+    "prefix": {
+      "type": "string",
+      "defaultValue": "kv",
+      "metadata": {
+        "description": "Prefix of Azure Key Vault Resource Name"
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "[take(format('{0}-{1}', parameters('prefix'), uniqueString(resourceGroup().id)), 24)]",
+      "maxLength": 24,
+      "minLength": 3,
+      "metadata": {
+        "description": "Name of the Key Vault"
+      }
+    },
+    "secretName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of Secret to add to Key Vault. Required when provided a secretValue."
+      }
+    },
+    "secretValue": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Value of Secret to add to Key Vault. The secretName parameter must also be provided when adding a secret."
+      }
+    },
+    "storageAccountName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The name of the storage account to add secrets from."
+      }
+    },
+    "cosmosDBName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The name of the Cosmos DB to add secrets from."
+      }
+    },
+    "locationString": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Custom Location String for Cassandra DB"
+      }
+    },
+    "cassandraDBName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The name of the Cassandra Keyspace to add secrets from."
+      }
+    },
+    "eventHubNamespaceName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Event Hub Namespace"
+      }
+    },
+    "eventHubName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Event Hub"
+      }
+    },
+    "eventHubAuthorizationRulesName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the secret for the Event Hub"
+      }
+    },
+    "redisCacheName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Redis Cache"
+      }
+    },
+    "azurePsqlServerName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Azure PSQL Server"
+      }
+    },
+    "azureMySQLServerName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Azure MySQL Server"
+      }
+    },
+    "azureSqlServerName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Azure SQL Server"
+      }
+    },
+    "azureMapsAccountName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Azure Maps Account"
+      }
+    },
+    "azureOperationalInsightsWorkspaceName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Azure OperationalInsights Workspace"
+      }
+    },
+    "azureBatchAccountName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Azure Batch Account"
+      }
+    },
+    "azureContainerRegistryAccountName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the Azure ContainerRegistry Account"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[guid(parameters('name'), 'secrets')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "keyVaultName": {
+            "value": "[parameters('name')]"
+          },
+          "secretName": {
+            "value": "[parameters('secretName')]"
+          },
+          "secretValue": {
+            "value": "[parameters('secretValue')]"
+          },
+          "storageAccountName": {
+            "value": "[parameters('storageAccountName')]"
+          },
+          "cosmosDBName": {
+            "value": "[parameters('cosmosDBName')]"
+          },
+          "azureBatchAccountName": {
+            "value": "[parameters('azureBatchAccountName')]"
+          },
+          "azureContainerRegistryAccountName": {
+            "value": "[parameters('azureContainerRegistryAccountName')]"
+          },
+          "azureMapsAccountName": {
+            "value": "[parameters('azureMapsAccountName')]"
+          },
+          "azureMySQLServerName": {
+            "value": "[parameters('azureMySQLServerName')]"
+          },
+          "azureOperationalInsightsWorkspaceName": {
+            "value": "[parameters('azureOperationalInsightsWorkspaceName')]"
+          },
+          "azurePsqlServerName": {
+            "value": "[parameters('azurePsqlServerName')]"
+          },
+          "azureSqlServerName": {
+            "value": "[parameters('azureSqlServerName')]"
+          },
+          "cassandraDBName": {
+            "value": "[parameters('cassandraDBName')]"
+          },
+          "eventHubAuthorizationRulesName": {
+            "value": "[parameters('eventHubAuthorizationRulesName')]"
+          },
+          "eventHubName": {
+            "value": "[parameters('eventHubName')]"
+          },
+          "eventHubNamespaceName": {
+            "value": "[parameters('eventHubNamespaceName')]"
+          },
+          "redisCacheName": {
+            "value": "[parameters('redisCacheName')]"
+          },
+          "locationString": {
+            "value": "[parameters('locationString')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.16.2.56959",
+              "templateHash": "2011504801850034073"
+            }
+          },
+          "parameters": {
+            "keyVaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Specifies the name of the key vault."
+              }
+            },
+            "secretName": {
+              "type": "string",
+              "metadata": {
+                "description": "Specifies the name of the secret."
+              }
+            },
+            "secretValue": {
+              "type": "securestring",
+              "defaultValue": ""
+            },
+            "storageAccountName": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "cosmosDBName": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "cassandraDBName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Name of the CassandrDB"
+              }
+            },
+            "locationString": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Custom Location String for CassandrDB"
+              }
+            },
+            "eventHubNamespaceName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Name of the Event Hub Namespace"
+              }
+            },
+            "eventHubName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Name of the Event Hub"
+              }
+            },
+            "eventHubAuthorizationRulesName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Name of the secret for the Event Hub"
+              }
+            },
+            "redisCacheName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Name of the Redis Cache"
+              }
+            },
+            "azurePsqlServerName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Name of the Azure PSQL Server"
+              }
+            },
+            "azureMySQLServerName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Name of the Azure MySQL Server"
+              }
+            },
+            "azureSqlServerName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Name of the Azure SQL Server"
+              }
+            },
+            "azureMapsAccountName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Name of the Azure Maps Account"
+              }
+            },
+            "azureOperationalInsightsWorkspaceName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Name of the Azure OperationalInsights Workspace"
+              }
+            },
+            "azureBatchAccountName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Name of the Azure Batch Account"
+              }
+            },
+            "azureContainerRegistryAccountName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Name of the Azure ContainerRegistry Account"
+              }
+            }
+          },
+          "variables": {
+            "hasSecret": "[not(equals(parameters('secretValue'), ''))]"
+          },
+          "resources": [
+            {
+              "condition": "[variables('hasSecret')]",
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-11-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretName'))]",
+              "properties": {
+                "value": "[parameters('secretValue')]"
+              }
+            },
+            {
+              "condition": "[not(equals(parameters('storageAccountName'), ''))]",
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-11-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretName'))]",
+              "properties": {
+                "value": "[if(equals(parameters('secretValue'), ''), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2022-09-01').keys[0].value, parameters('secretValue'))]"
+              }
+            },
+            {
+              "condition": "[not(equals(parameters('cosmosDBName'), ''))]",
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-11-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretName'))]",
+              "properties": {
+                "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('cosmosDBName')), '2022-09-01').keys[0].value]"
+              }
+            },
+            {
+              "condition": "[not(equals(parameters('cassandraDBName'), ''))]",
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-11-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretName'))]",
+              "properties": {
+                "value": "[if(equals(parameters('secretValue'), ''), format('Contact Points={0}.cassandra.cosmos.azure.com,{1};Username={2};Password={3};Port=10350', parameters('cassandraDBName'), parameters('locationString'), parameters('cassandraDBName'), listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cassandraDBName')), '2022-05-15').primaryMasterKey), parameters('secretValue'))]"
+              }
+            },
+            {
+              "condition": "[not(equals(parameters('eventHubNamespaceName'), ''))]",
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-11-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretName'))]",
+              "properties": {
+                "value": "[if(equals(parameters('secretValue'), ''), listKeys(resourceId('Microsoft.EventHub/namespaces/eventhubs/authorizationRules', parameters('eventHubNamespaceName'), parameters('eventHubName'), parameters('eventHubAuthorizationRulesName')), '2022-01-01-preview').primaryConnectionString, parameters('secretValue'))]"
+              }
+            },
+            {
+              "condition": "[not(equals(parameters('redisCacheName'), ''))]",
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-11-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretName'))]",
+              "properties": {
+                "value": "[if(equals(parameters('secretValue'), ''), listKeys(resourceId('Microsoft.Cache/redis', parameters('redisCacheName')), '2022-06-01').primaryKey, parameters('secretValue'))]"
+              }
+            },
+            {
+              "condition": "[not(equals(parameters('azurePsqlServerName'), ''))]",
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-11-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretName'))]",
+              "properties": {
+                "value": "[if(equals(parameters('secretValue'), ''), listKeys(resourceId('Microsoft.DBforPostgreSQL/flexibleServers', parameters('azurePsqlServerName')), '2022-12-01').primaryMasterKey, parameters('secretValue'))]"
+              }
+            },
+            {
+              "condition": "[not(equals(parameters('azureMySQLServerName'), ''))]",
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-11-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretName'))]",
+              "properties": {
+                "value": "[if(equals(parameters('secretValue'), ''), listKeys(resourceId('Microsoft.DBforMySQL/flexibleServers', parameters('azureMySQLServerName')), '2021-05-01').primaryMasterKey, parameters('secretValue'))]"
+              }
+            },
+            {
+              "condition": "[not(equals(parameters('azureSqlServerName'), ''))]",
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-11-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretName'))]",
+              "properties": {
+                "value": "[if(equals(parameters('secretValue'), ''), listKeys(resourceId('Microsoft.Sql/servers', parameters('azureSqlServerName')), '2021-11-01').primaryMasterKey, parameters('secretValue'))]"
+              }
+            },
+            {
+              "condition": "[not(equals(parameters('azureMapsAccountName'), ''))]",
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-11-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretName'))]",
+              "properties": {
+                "value": "[if(equals(parameters('secretValue'), ''), listKeys(resourceId('Microsoft.Maps/accounts', parameters('azureMapsAccountName')), '2021-02-01').primaryKey, parameters('secretValue'))]"
+              }
+            },
+            {
+              "condition": "[not(equals(parameters('azureOperationalInsightsWorkspaceName'), ''))]",
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-11-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretName'))]",
+              "properties": {
+                "value": "[if(equals(parameters('secretValue'), ''), listKeys(resourceId('Microsoft.OperationalInsights/workspaces', parameters('azureOperationalInsightsWorkspaceName')), '2022-10-01').primarySharedKey, parameters('secretValue'))]"
+              }
+            },
+            {
+              "condition": "[not(equals(parameters('azureBatchAccountName'), ''))]",
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-11-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretName'))]",
+              "properties": {
+                "value": "[if(equals(parameters('secretValue'), ''), listKeys(resourceId('Microsoft.Batch/batchAccounts', parameters('azureBatchAccountName')), '2021-06-01').primary, parameters('secretValue'))]"
+              }
+            },
+            {
+              "condition": "[not(equals(parameters('azureContainerRegistryAccountName'), ''))]",
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2022-11-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretName'))]",
+              "properties": {
+                "value": "[if(equals(parameters('secretValue'), ''), listKeys(resourceId('Microsoft.ContainerRegistry/registries', parameters('azureContainerRegistryAccountName')), '2022-12-01').key1, parameters('secretValue'))]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Secret Name"
+              },
+              "value": "[parameters('secretName')]"
+            },
+            "id": {
+              "type": "string",
+              "metadata": {
+                "description": "Key Vault Id"
+              },
+              "value": "[if(variables('hasSecret'), resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '')]"
+            },
+            "secretUri": {
+              "type": "string",
+              "metadata": {
+                "description": "Secret URI"
+              },
+              "value": "[if(variables('hasSecret'), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUri, '')]"
+            },
+            "secretUriWithVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Secret URI with version"
+              },
+              "value": "[if(variables('hasSecret'), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUriWithVersion, '')]"
+            },
+            "storageSecretUri": {
+              "type": "string",
+              "metadata": {
+                "description": "Storage Secret URI"
+              },
+              "value": "[if(not(equals(parameters('storageAccountName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUri, '')]"
+            },
+            "storageSecretUriWithVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Storage Secret URI with version"
+              },
+              "value": "[if(not(equals(parameters('storageAccountName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUriWithVersion, '')]"
+            },
+            "cosmosSecretUri": {
+              "type": "string",
+              "metadata": {
+                "description": "Cosmos Secret URI"
+              },
+              "value": "[if(not(equals(parameters('cosmosDBName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUri, '')]"
+            },
+            "cosmosSecretUriWithVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Cosmos Secret URI with version"
+              },
+              "value": "[if(not(equals(parameters('cosmosDBName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUriWithVersion, '')]"
+            },
+            "cassandraSecretUri": {
+              "type": "string",
+              "metadata": {
+                "description": "CassandrSecret URI"
+              },
+              "value": "[if(not(equals(parameters('cassandraDBName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUri, '')]"
+            },
+            "cassandraSecretUriWithVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "CassandrSecret URI with version"
+              },
+              "value": "[if(not(equals(parameters('cassandraDBName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUriWithVersion, '')]"
+            },
+            "eventHubSecretUri": {
+              "type": "string",
+              "metadata": {
+                "description": "Event Hub Secret URI"
+              },
+              "value": "[if(not(equals(parameters('eventHubNamespaceName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUri, '')]"
+            },
+            "eventHubSecretUriWithVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Event Hub Secret URI with version"
+              },
+              "value": "[if(not(equals(parameters('eventHubNamespaceName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUriWithVersion, '')]"
+            },
+            "redisSecretUri": {
+              "type": "string",
+              "metadata": {
+                "description": "Redis Secret URI"
+              },
+              "value": "[if(not(equals(parameters('redisCacheName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUri, '')]"
+            },
+            "redisSecretUriWithVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Redis Secret URI with version"
+              },
+              "value": "[if(not(equals(parameters('redisCacheName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUriWithVersion, '')]"
+            },
+            "azurePsqlSecretUri": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure PSQL Secret URI"
+              },
+              "value": "[if(not(equals(parameters('azurePsqlServerName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUri, '')]"
+            },
+            "azurePsqlSecretUriWithVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure PSQL Secret URI with version"
+              },
+              "value": "[if(not(equals(parameters('azurePsqlServerName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUriWithVersion, '')]"
+            },
+            "azureMySQLSecretUri": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure MySQL Secret URI"
+              },
+              "value": "[if(not(equals(parameters('azureMySQLServerName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUri, '')]"
+            },
+            "azureMySQLSecretUriWithVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure MySQL Secret URI with version"
+              },
+              "value": "[if(not(equals(parameters('azureMySQLServerName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUriWithVersion, '')]"
+            },
+            "azureSqlSecretUri": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure SQL Secret URI"
+              },
+              "value": "[if(not(equals(parameters('azureSqlServerName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUri, '')]"
+            },
+            "azureSqlSecretUriWithVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure SQL Secret URI with version"
+              },
+              "value": "[if(not(equals(parameters('azureSqlServerName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUriWithVersion, '')]"
+            },
+            "azureMapsSecretUri": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure Maps Secret URI"
+              },
+              "value": "[if(not(equals(parameters('azureMapsAccountName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUri, '')]"
+            },
+            "azureMapsSecretUriWithVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure Maps Secret URI with version"
+              },
+              "value": "[if(not(equals(parameters('azureMapsAccountName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUriWithVersion, '')]"
+            },
+            "azureOperationalInsightsSecretUri": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure OperationalInsights Secret URI"
+              },
+              "value": "[if(not(equals(parameters('azureOperationalInsightsWorkspaceName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUri, '')]"
+            },
+            "azureOperationalInsightsSecretUriWithVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure OperationalInsights Secret URI with version"
+              },
+              "value": "[if(not(equals(parameters('azureOperationalInsightsWorkspaceName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUriWithVersion, '')]"
+            },
+            "azureBatchSecretUri": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure Batch Secret URI"
+              },
+              "value": "[if(not(equals(parameters('azureBatchAccountName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUri, '')]"
+            },
+            "azureBatchSecretUriWithVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure Batch Secret URI with version"
+              },
+              "value": "[if(not(equals(parameters('azureBatchAccountName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUriWithVersion, '')]"
+            },
+            "azureContainerRegistrySecretUri": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure ContainerRegistry Secret URI"
+              },
+              "value": "[if(not(equals(parameters('azureContainerRegistryAccountName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUri, '')]"
+            },
+            "azureContainerRegistrySecretUriWithVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure ContainerRegistry Secret URI with version"
+              },
+              "value": "[if(not(equals(parameters('azureContainerRegistryAccountName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUriWithVersion, '')]"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "id": {
+      "type": "string",
+      "metadata": {
+        "description": "Key Vault Id"
+      },
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', guid(parameters('name'), 'secrets')), '2022-09-01').outputs.id.value]"
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 24,
+      "minLength": 3,
+      "metadata": {
+        "description": "Key Vault Name"
+      },
+      "value": "[parameters('name')]"
+    },
+    "secretId": {
+      "type": "string",
+      "metadata": {
+        "description": "Key Vault Seceret Id"
+      },
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', guid(parameters('name'), 'secrets')), '2022-09-01').outputs.id.value]"
+    },
+    "secretName": {
+      "type": "string",
+      "metadata": {
+        "description": "Key Vault Secert Name"
+      },
+      "value": "[parameters('secretName')]"
+    },
+    "secretUri": {
+      "type": "string",
+      "metadata": {
+        "description": "Secret URI"
+      },
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', guid(parameters('name'), 'secrets')), '2022-09-01').outputs.secretUri.value]"
+    },
+    "secretUriWithVersion": {
+      "type": "string",
+      "metadata": {
+        "description": "Secret URI with version"
+      },
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', guid(parameters('name'), 'secrets')), '2022-09-01').outputs.secretUriWithVersion.value]"
+    }
+  }
+}

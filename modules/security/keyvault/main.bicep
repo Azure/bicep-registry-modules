@@ -52,51 +52,6 @@ param skuName string = 'standard'
 @description('The SKU family of the Key Vault.')
 param skuFamily string = 'A'
 
-@description('The name of the storage account to add secrets from.')
-param storageAccountName string = ''
-
-@description('The name of the Cosmos DB to add secrets from.')
-param cosmosDBName string = ''
-
-@description('Custom Location String for Cassandra DB')
-param locationString string = ''
-
-@description('The name of the Cassandra Keyspace to add secrets from.')
-param cassandraDBName string = ''
-
-@description('Name of the Event Hub Namespace')
-param eventHubNamespaceName string = ''
-
-@description('Name of the Event Hub')
-param eventHubName string = ''
-
-@description('Name of the secret for the Event Hub')
-param eventHubAuthorizationRulesName string = ''
-
-@description('Name of the Redis Cache')
-param redisCacheName string = ''
-
-@description('Name of the Azure PSQL Server')
-param azurePsqlServerName string = ''
-
-@description('Name of the Azure MySQL Server')
-param azureMySQLServerName string = ''
-
-@description('Name of the Azure SQL Server')
-param azureSqlServerName string = ''
-
-@description('Name of the Azure Maps Account')
-param azureMapsAccountName string = ''
-
-@description('Name of the Azure OperationalInsights Workspace')
-param azureOperationalInsightsWorkspaceName string = ''
-
-@description('Name of the Azure Batch Account')
-param azureBatchAccountName string = ''
-
-@description('Name of the Azure ContainerRegistry Account')
-param azureContainerRegistryAccountName string = ''
-
 module keyVault 'modules/vaults.bicep' = {
   name: guid(name, 'deploy')
   params: {
@@ -130,21 +85,6 @@ module secret 'modules/secrets.bicep' = if (createSecret) {
     keyVaultName: keyVault.outputs.name
     secretName: secretName
     secretValue: secretValue
-    storageAccountName: storageAccountName
-    cosmosDBName: cosmosDBName
-    azureBatchAccountName: azureBatchAccountName
-    azureContainerRegistryAccountName: azureContainerRegistryAccountName
-    azureMapsAccountName: azureMapsAccountName
-    azureMySQLServerName: azureMySQLServerName
-    azureOperationalInsightsWorkspaceName: azureOperationalInsightsWorkspaceName
-    azurePsqlServerName: azurePsqlServerName
-    azureSqlServerName: azureSqlServerName
-    cassandraDBName: cassandraDBName
-    eventHubAuthorizationRulesName: eventHubAuthorizationRulesName
-    eventHubName: eventHubName
-    eventHubNamespaceName: eventHubNamespaceName
-    redisCacheName: redisCacheName
-    locationString: locationString
   }
 }
 
