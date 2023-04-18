@@ -20,6 +20,7 @@ The output of the module is the ID of the created or existing Storage Account, w
 | Name                 | Type     | Required | Description                                                                                        |
 | :------------------- | :------: | :------: | :------------------------------------------------------------------------------------------------- |
 | `location`           | `string` | Yes      | Deployment Location                                                                                |
+| `prefix`             | `string` | No       | Prefix of Storage Account Resource Name                                                            |
 | `name`               | `string` | No       | Name of Storage Account. Must be unique within Azure.                                              |
 | `subnetID`           | `string` | No       | ID of the subnet where the Storage Account will be deployed, if virtual network access is enabled. |
 | `enableVNET`         | `bool`   | No       | Toggle to enable or disable virtual network access for the Storage Account.                        |
@@ -28,9 +29,10 @@ The output of the module is the ID of the created or existing Storage Account, w
 
 ## Outputs
 
-| Name | Type   | Description                                                                                                                          |
-| :--- | :----: | :----------------------------------------------------------------------------------------------------------------------------------- |
-| id   | string | The ID of the created or existing Storage Account. Use this ID to reference the Storage Account in other Azure resource deployments. |
+| Name | Type   | Description                                                                                                      |
+| :--- | :----: | :--------------------------------------------------------------------------------------------------------------- |
+| name | string | The name of the Storage Account resource                                                                         |
+| id   | string | The ID of the Storage Account. Use this ID to reference the Storage Account in other Azure resource deployments. |
 
 ## Examples
 

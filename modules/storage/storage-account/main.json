@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "6249334553241462209"
+      "version": "0.16.2.56959",
+      "templateHash": "15106724795906058787"
     }
   },
   "parameters": {
@@ -15,9 +15,16 @@
         "description": "Deployment Location"
       }
     },
+    "prefix": {
+      "type": "string",
+      "defaultValue": "st",
+      "metadata": {
+        "description": "Prefix of Storage Account Resource Name"
+      }
+    },
     "name": {
       "type": "string",
-      "defaultValue": "[format('st{0}', uniqueString(resourceGroup().id, subscription().id))]",
+      "defaultValue": "[format('{0}{1}', parameters('prefix'), uniqueString(resourceGroup().id, subscription().id))]",
       "metadata": {
         "description": "Name of Storage Account. Must be unique within Azure."
       }
@@ -84,12 +91,19 @@
     }
   ],
   "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Storage Account resource"
+      },
+      "value": "[parameters('name')]"
+    },
     "id": {
       "type": "string",
-      "value": "[resourceId('Microsoft.Storage/storageAccounts', parameters('name'))]",
       "metadata": {
-        "description": "The ID of the created or existing Storage Account. Use this ID to reference the Storage Account in other Azure resource deployments."
-      }
+        "description": "The ID of the Storage Account. Use this ID to reference the Storage Account in other Azure resource deployments."
+      },
+      "value": "[resourceId('Microsoft.Storage/storageAccounts', parameters('name'))]"
     }
   }
 }
