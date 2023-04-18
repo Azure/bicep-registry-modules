@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "15106724795906058787"
+      "templateHash": "11345736734548816497"
     }
   },
   "parameters": {
@@ -19,7 +19,7 @@
       "type": "string",
       "defaultValue": "st",
       "metadata": {
-        "description": "Prefix of Storage Account Resource Name"
+        "description": "Prefix of Storage Account Resource Name. This param is ignored when name is provided."
       }
     },
     "name": {
