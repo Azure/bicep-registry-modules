@@ -22,9 +22,6 @@ resource publicIpPrefix 'Microsoft.Network/publicIPPrefixes@2022-09-01' = {
   name: 'nat-public-ip-prefix-${uniqueString(name)}'
   location: location
   tags: tags
-  zones: [
-    '1'
-  ]
   sku: {
     name: 'Standard'
   }
