@@ -93,10 +93,21 @@ type restorePolicy = {
 }
 
 type blobServiceContainerProperties = {
+  defaultEncryptionScope: defaultEncryptionScope?
+  denyEncryptionScopeOverride: denyEncryptionScopeOverride?
+  immutableStorageWithVersioning: immutableStorageWithVersioning?
   publicAccess: blobContainerPublicAccess?
 }
 
 type blobContainerPublicAccess = 'Blob' | 'Container' | 'None'
+
+type defaultEncryptionScope = string
+
+type denyEncryptionScopeOverride = string
+
+type immutableStorageWithVersioning = {
+  enabled: bool
+}
 
 var networkAcls = enableVNET ? {
   defaultAction: 'Deny'
