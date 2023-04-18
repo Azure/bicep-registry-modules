@@ -31,7 +31,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-05-01' = {
 }
 
 resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: 'privatelink.azurecr.io'
+  name: 'privatelink.gremlin.cosmos.azure.com'
   location: 'global'
   properties: {}
 }
