@@ -1,7 +1,7 @@
 @description('Deployment Location')
 param location string
 
-@description('Prefix of Storage Account Resource Name')
+@description('Prefix of Storage Account Resource Name. This param is ignored when name is provided.')
 param prefix string = 'st'
 
 @description('Name of Storage Account. Must be unique within Azure.')
