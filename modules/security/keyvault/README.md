@@ -14,25 +14,38 @@ The Bicep module outputs the ID and name of the Key Vault, which can be used by 
 
 ## Parameters
 
-| Name                        | Type           | Required | Description                                                                                               |
-| :-------------------------- | :------------: | :------: | :-------------------------------------------------------------------------------------------------------- |
-| `location`                  | `string`       | Yes      | Deployment Location                                                                                       |
-| `prefix`                    | `string`       | No       | Prefix of Azure Key Vault Resource Name                                                                   |
-| `name`                      | `string`       | No       | Name of the Key Vault                                                                                     |
-| `tenantId`                  | `string`       | No       | The tenant ID where the Key Vault is deployed                                                             |
-| `enableVNet`                | `bool`         | No       | Deploy Key Vault into existing Virtual Network. Enabling this setting also requires subnetID              |
-| `subnetID`                  | `string`       | No       | Subnet ID for the Key Vault                                                                               |
-| `rbacPolicies`              | `array`        | No       | List of RBAC policies to assign to the Key Vault                                                          |
-| `roleAssignments`           | `array`        | No       | RBAC Role Assignments to apply to each RBAC policy                                                        |
-| `newOrExisting`             | `string`       | No       | Whether to create a new Key Vault or use an existing one.                                                 |
-| `secretName`                | `string`       | No       | Name of Secret to add to Key Vault. Required when provided a secretValue.                                 |
-| `secretValue`               | `securestring` | No       | Value of Secret to add to Key Vault. The secretName parameter must also be provided when adding a secret. |
-| `enableSoftDelete`          | `bool`         | No       | Specifies whether soft delete should be enabled for the Key Vault.                                        |
-| `softDeleteRetentionInDays` | `int`          | No       | The number of days to retain deleted data in the Key Vault.                                               |
-| `skuName`                   | `string`       | No       | The SKU name of the Key Vault.                                                                            |
-| `skuFamily`                 | `string`       | No       | The SKU family of the Key Vault.                                                                          |
-| `storageAccountName`        | `string`       | No       | The name of the storage account to add secrets from.                                                      |
-| `cosmosDBName`              | `string`       | No       | The name of the Cosmos DB to add secrets from.                                                            |
+| Name                                    | Type           | Required | Description                                                                                               |
+| :-------------------------------------- | :------------: | :------: | :-------------------------------------------------------------------------------------------------------- |
+| `location`                              | `string`       | Yes      | Deployment Location                                                                                       |
+| `prefix`                                | `string`       | No       | Prefix of Azure Key Vault Resource Name                                                                   |
+| `name`                                  | `string`       | No       | Name of the Key Vault                                                                                     |
+| `tenantId`                              | `string`       | No       | The tenant ID where the Key Vault is deployed                                                             |
+| `enableVNet`                            | `bool`         | No       | Deploy Key Vault into existing Virtual Network. Enabling this setting also requires subnetID              |
+| `subnetID`                              | `string`       | No       | Subnet ID for the Key Vault                                                                               |
+| `rbacPolicies`                          | `array`        | No       | List of RBAC policies to assign to the Key Vault                                                          |
+| `roleAssignments`                       | `array`        | No       | RBAC Role Assignments to apply to each RBAC policy                                                        |
+| `newOrExisting`                         | `string`       | No       | Whether to create a new Key Vault or use an existing one.                                                 |
+| `secretName`                            | `string`       | No       | Name of Secret to add to Key Vault. Required when provided a secretValue.                                 |
+| `secretValue`                           | `securestring` | No       | Value of Secret to add to Key Vault. The secretName parameter must also be provided when adding a secret. |
+| `enableSoftDelete`                      | `bool`         | No       | Specifies whether soft delete should be enabled for the Key Vault.                                        |
+| `softDeleteRetentionInDays`             | `int`          | No       | The number of days to retain deleted data in the Key Vault.                                               |
+| `skuName`                               | `string`       | No       | The SKU name of the Key Vault.                                                                            |
+| `skuFamily`                             | `string`       | No       | The SKU family of the Key Vault.                                                                          |
+| `storageAccountName`                    | `string`       | No       | The name of the storage account to add secrets from.                                                      |
+| `cosmosDBName`                          | `string`       | No       | The name of the Cosmos DB to add secrets from.                                                            |
+| `locationString`                        | `string`       | No       | Custom Location String for Cassandra DB                                                                   |
+| `cassandraDBName`                       | `string`       | No       | The name of the Cassandra Keyspace to add secrets from.                                                   |
+| `eventHubNamespaceName`                 | `string`       | No       | Name of the Event Hub Namespace                                                                           |
+| `eventHubName`                          | `string`       | No       | Name of the Event Hub                                                                                     |
+| `eventHubAuthorizationRulesName`        | `string`       | No       | Name of the secret for the Event Hub                                                                      |
+| `redisCacheName`                        | `string`       | No       | Name of the Redis Cache                                                                                   |
+| `azurePsqlServerName`                   | `string`       | No       | Name of the Azure PSQL Server                                                                             |
+| `azureMySQLServerName`                  | `string`       | No       | Name of the Azure MySQL Server                                                                            |
+| `azureSqlServerName`                    | `string`       | No       | Name of the Azure SQL Server                                                                              |
+| `azureMapsAccountName`                  | `string`       | No       | Name of the Azure Maps Account                                                                            |
+| `azureOperationalInsightsWorkspaceName` | `string`       | No       | Name of the Azure OperationalInsights Workspace                                                           |
+| `azureBatchAccountName`                 | `string`       | No       | Name of the Azure Batch Account                                                                           |
+| `azureContainerRegistryAccountName`     | `string`       | No       | Name of the Azure ContainerRegistry Account                                                               |
 
 ## Outputs
 
