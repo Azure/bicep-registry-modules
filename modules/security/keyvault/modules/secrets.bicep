@@ -12,7 +12,7 @@ resource vault 'Microsoft.KeyVault/vaults@2022-11-01' existing = {
 }
 
 /***********************************************************************************************************************
-                                            Add a provided secret to the key vault.
+                                            Add provided secret to the key vault.
 ***********************************************************************************************************************/
 
 var hasSecret = secretValue != ''
@@ -63,7 +63,7 @@ output storageSecretUri string = storageAccountName != '' ? storageSecret.proper
 output storageSecretUriWithVersion string = storageAccountName != '' ? storageSecret.properties.secretUriWithVersion : ''
 
 /***********************************************************************************************************************
-                                            Add a Cosmos DB key to the key vault.
+                                            Add Cosmos DB key to the key vault.
 ***********************************************************************************************************************/
 param cosmosDBName string = ''
 
@@ -86,12 +86,12 @@ output cosmosSecretUri string = cosmosDBName != '' ? cosmosSecret.properties.sec
 output cosmosSecretUriWithVersion string = cosmosDBName != '' ? cosmosSecret.properties.secretUriWithVersion : ''
 
 /***********************************************************************************************************************
-                                            Add a Cassandra DB key to the key vault.
+                                            Add CassandrDB key to the key vault.
 ***********************************************************************************************************************/
-@description('Name of the Cassandra DB')
+@description('Name of the CassandrDB')
 param cassandraDBName string = ''
 
-@description('Custom Location String for Cassandra DB')
+@description('Custom Location String for CassandrDB')
 param locationString string = ''
 
 resource cassandraDB 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' existing = if (cassandraDBName == '') {
@@ -108,14 +108,14 @@ resource cassandraSecret 'Microsoft.KeyVault/vaults/secrets@2022-11-01' = if (ca
   }
 }
 
-@description('Cassandra Secret URI')
+@description('CassandrSecret URI')
 output cassandraSecretUri string = cassandraDBName != '' ? cassandraSecret.properties.secretUri : ''
 
-@description('Cassandra Secret URI with version')
+@description('CassandrSecret URI with version')
 output cassandraSecretUriWithVersion string = cassandraDBName != '' ? cassandraSecret.properties.secretUriWithVersion : ''
 
 /***********************************************************************************************************************
-                                            Add a Event Hub key to the key vault.
+                                            Add Azure Event Hub key to the key vault.
 ***********************************************************************************************************************/
 
 @description('Name of the Event Hub Namespace')
@@ -155,7 +155,7 @@ output eventHubSecretUriWithVersion string = eventHubNamespaceName != '' ? event
 
 
 /***********************************************************************************************************************
-                                            Add a Redis Cache key to the key vault.
+                                            Add Azure Redis Cache key to the key vault.
 ***********************************************************************************************************************/
 
 @description('Name of the Redis Cache')
@@ -182,7 +182,7 @@ output redisSecretUri string = redisCacheName != '' ? redisSecret.properties.sec
 output redisSecretUriWithVersion string = redisCacheName != '' ? redisSecret.properties.secretUriWithVersion : ''
 
 /***********************************************************************************************************************
-                                            Add a Azure PSQL key to the key vault.
+                                            Add Azure PSQL key to the key vault.
 ***********************************************************************************************************************/
 
 @description('Name of the Azure PSQL Server')
@@ -209,7 +209,7 @@ output azurePsqlSecretUri string = azurePsqlServerName != '' ? azurePsqlSecret.p
 output azurePsqlSecretUriWithVersion string = azurePsqlServerName != '' ? azurePsqlSecret.properties.secretUriWithVersion : ''
 
 /***********************************************************************************************************************
-                                            Add a Azure MySQL key to the key vault.
+                                            Add Azure MySQL key to the key vault.
 ***********************************************************************************************************************/
 
 @description('Name of the Azure MySQL Server')
@@ -236,7 +236,7 @@ output azureMySQLSecretUri string = azureMySQLServerName != '' ? azureMySQLSecre
 output azureMySQLSecretUriWithVersion string = azureMySQLServerName != '' ? azureMySQLSecret.properties.secretUriWithVersion : ''
 
 /***********************************************************************************************************************
-                                            Add a Azure SQL key to the key vault.
+                                            Add Azure SQL key to the key vault.
 ***********************************************************************************************************************/
 
 @description('Name of the Azure SQL Server')
@@ -263,7 +263,7 @@ output azureSqlSecretUri string = azureSqlServerName != '' ? azureSqlSecret.prop
 output azureSqlSecretUriWithVersion string = azureSqlServerName != '' ? azureSqlSecret.properties.secretUriWithVersion : ''
 
 /***********************************************************************************************************************
-                                            Add a Azure Maps key to the key vault.
+                                            Add Azure Maps key to the key vault.
 ***********************************************************************************************************************/
 
 @description('Name of the Azure Maps Account')
@@ -290,7 +290,7 @@ output azureMapsSecretUri string = azureMapsAccountName != '' ? azureMapsSecret.
 output azureMapsSecretUriWithVersion string = azureMapsAccountName != '' ? azureMapsSecret.properties.secretUriWithVersion : ''
 
 /***********************************************************************************************************************
-                                            Add a Azure OperationalInsights key to the key vault.
+                                            Add Azure Operational Insights key to the key vault.
 ***********************************************************************************************************************/
 
 @description('Name of the Azure OperationalInsights Workspace')
@@ -317,7 +317,7 @@ output azureOperationalInsightsSecretUri string = azureOperationalInsightsWorksp
 output azureOperationalInsightsSecretUriWithVersion string = azureOperationalInsightsWorkspaceName != '' ? azureOperationalInsightsSecret.properties.secretUriWithVersion : ''
 
 /***********************************************************************************************************************
-                                            Add a Azure Batch key to the key vault.
+                                            Add Azure Batch key to the key vault.
 ***********************************************************************************************************************/
 
 @description('Name of the Azure Batch Account')
@@ -344,7 +344,7 @@ output azureBatchSecretUri string = azureBatchAccountName != '' ? azureBatchSecr
 output azureBatchSecretUriWithVersion string = azureBatchAccountName != '' ? azureBatchSecret.properties.secretUriWithVersion : ''
 
 /***********************************************************************************************************************
-                                            Add a Azure ContainerRegistry key to the key vault.
+                                            Add Azure ContainerRegistry key to the key vault.
 ***********************************************************************************************************************/
 
 @description('Name of the Azure ContainerRegistry Account')

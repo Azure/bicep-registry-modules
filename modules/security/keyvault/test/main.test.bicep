@@ -88,7 +88,7 @@ module cassandraDB 'br/public:storage/cosmos-db:1.0.1' = {
   name: 'mycassandradb'
   params: {
     location: location
-    prefix: 'test4'
+    name: cassandraName
     enableCassandra: true
   }
 }
@@ -98,7 +98,39 @@ module test4CassandraDBSecret '../main.bicep' = {
   params: {
     location: location
     prefix: 'test4'
-    cassandraDBName: cassandraDB.outputs.name
+    cassandraDBName: cassandraName
     locationString: locationString
+  }
+}
+
+
+// Test 5 Test Event Hub Secret
+
+resource eventHubNamespace 'Microsoft.EventHub/namespaces@2021-11-01' = {
+  #disable-next-line use-stable-resource-identifier
+  name: 'test5ehn${uniqueString(resourceGroup().id, location)}'
+  location: location
+
+  resource eventHub 'eventhubs' = {
+    name: 'test5-event-hub'
+    properties: {
+      partitionCount: 2
+      messageRetentionInDays: 1
+    }
+
+    resource eventHubAuthorizationRules 'authorizationRules' existing = {
+      name: 'test5-event-hub-rules'
+    }
+  }
+}
+
+module test5EventHubSecret '../main.bicep' = {
+  name: 'test5-event-hub-secret'
+  params: {
+    location: location
+    prefix: 'test5-keyvault'
+    eventHubNamespaceName: eventHubNamespace.name
+    eventHubName: eventHubNamespace::eventHub.name
+    eventHubAuthorizationRulesName: eventHubNamespace::eventHub::eventHubAuthorizationRules.name
   }
 }
