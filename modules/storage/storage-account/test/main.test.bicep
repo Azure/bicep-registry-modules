@@ -40,8 +40,8 @@ module test1 '../main.bicep' = {
 }
 
 //Test 1. 
-module test1 '../main.bicep' = {
-  name: 'test1'
+module test2 '../main.bicep' = {
+  name: 'test2'
   params: {
     name: 'test1blobcontainers'
     location: location
@@ -51,6 +51,17 @@ module test1 '../main.bicep' = {
     blobContainerProperties: {
       publicAccess: 'None'
     }
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Reader and Data Access'
+        principalIds: [ prereq.outputs.identityPrincipalIds[0] ]
+      }
+      {
+        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+        principalIds: [ prereq.outputs.identityPrincipalIds[1] ]
+        resourceType: 'blobContainer'
+      }            
+    ]
   }
 }
 
