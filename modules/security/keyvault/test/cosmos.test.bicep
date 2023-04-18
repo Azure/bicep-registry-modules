@@ -23,7 +23,7 @@ module storageKeyVault '../main.bicep' = {
     location: location
     name: keyVaultName
     secretName: 'storage-secret'
-    cosmosDbName: name
+    cosmosDBName: name
   }
 }
 
