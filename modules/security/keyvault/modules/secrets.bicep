@@ -46,11 +46,13 @@ resource existingStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' e
   name: storageAccountName
 }
 
+var storageSecretValue = secretValue == '' ? existingStorageAccount.listKeys().keys[0].value : secretValue
+
 resource storageSecret 'Microsoft.KeyVault/vaults/secrets@2022-11-01' = if (storageAccountName != '') {
   parent: vault
   name: secretName
   properties: {
-    value: existingStorageAccount.listKeys().keys[0].value
+    value: storageSecretValue
   }
 }
 
@@ -96,7 +98,7 @@ resource cassandraDB 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' existing
   name: cassandraDBName
 }
 
-var cassandraSecretValue = cassandraDBName == '' ? secretValue : 'Contact Points=${cassandraDB.name}.cassandra.cosmos.azure.com,${locationString};Username=${cassandraDB.name};Password=${cassandraDB.listKeys().primaryMasterKey};Port=10350' : ''
+var cassandraSecretValue = secretValue == '' ? 'Contact Points=${cassandraDB.name}.cassandra.cosmos.azure.com,${locationString};Username=${cassandraDB.name};Password=${cassandraDB.listKeys().primaryMasterKey};Port=10350' : secretValue
 
 resource cassandraSecret 'Microsoft.KeyVault/vaults/secrets@2022-11-01' = if (cassandraDBName != '') {
   parent: vault
@@ -367,4 +369,3 @@ output azureContainerRegistrySecretUri string = azureContainerRegistryAccountNam
 
 @description('Azure ContainerRegistry Secret URI with version')
 output azureContainerRegistrySecretUriWithVersion string = azureContainerRegistryAccountName != '' ? azureContainerRegistry.properties.secretUriWithVersion : ''
-
