@@ -16,7 +16,7 @@ module prerequisites 'prereq.test.bicep' = {
   }
 }
 
-/*
+
 // Test 01 - Standard SKU with cluster and Parameters, AuthRule(namespace,eventHub), EventHub, ConsumerGroups
 module test_01 '../main.bicep' = {
   name: '${uniqueName}-test-01'
@@ -91,7 +91,6 @@ module test_02 '../main.bicep' = {
     }
   }
 }
-*/
 
 // Test 03 - Premium SKU Minimal Parameters
 module test_03 '../main.bicep' = {

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "9441434972547291147"
+      "templateHash": "14932336562235921608"
     }
   },
   "parameters": {
@@ -25,9 +25,8 @@
     },
     "location": {
       "type": "string",
-      "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Optional. Location for all resources."
+        "description": "Required. Location for all resources."
       }
     },
     "tags": {
@@ -39,16 +38,24 @@
     },
     "eventHubNamespaces": {
       "type": "object",
-      "defaultValue": {},
+      "defaultValue": {
+        "evhns": {
+          "sku": "Standard",
+          "capacity": 4,
+          "maximumThroughputUnits": 2,
+          "zoneRedundant": true,
+          "isAutoInflateEnabled": true
+        }
+      },
       "metadata": {
-        "description": "Optional. The name of the event hub namespace to be created.\r\nBelow paramters you can pass while creating the Azure Event Hub namespace.\r\nsku: (Optional) Possible values are \"Basic\" or \"Standard\" or \"Premium\". Detault to 'Standard'.\r\ncapacity: (Optional) int, The Event Hubs throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units.The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units. Default to 1.\r\nzoneRedundant: (Optional) bool, Enabling this property creates a Standard Event Hubs Namespace in regions supported availability zones. Default to false.\r\nisAutoInflateEnabled: (Optional) bool,  Value that indicates whether AutoInflate is enabled for eventhub namespace. Only available for \"Standard\" sku. Default to false.\r\nmaximumThroughputUnits: (Optional) int, Upper limit of throughput units when AutoInflate is enabled, value should be within 0 to 20 throughput units. ( '0' if AutoInflateEnabled = true)\r\ndisableLocalAuth: (Optional) bool, This property disables SAS authentication for the Event Hubs namespace. Default to false.\r\nkafkaEnabled: (Optional) bool, Value that indicates whether Kafka is enabled for eventhub namespace. Default to true.\r\n"
+        "description": "Optional. The name of the event hub namespace to be created.\nBelow paramters you can pass while creating the Azure Event Hub namespace.\nsku: (Optional) Possible values are \"Basic\" or \"Standard\" or \"Premium\". Detault to 'Standard'.\ncapacity: (Optional) int, The Event Hubs throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units.The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units. Default to 1.\nzoneRedundant: (Optional) bool, Enabling this property creates a Standard Event Hubs Namespace in regions supported availability zones. Default to false.\nisAutoInflateEnabled: (Optional) bool,  Value that indicates whether AutoInflate is enabled for eventhub namespace. Only available for \"Standard\" sku. Default to false.\nmaximumThroughputUnits: (Optional) int, Upper limit of throughput units when AutoInflate is enabled, value should be within 0 to 20 throughput units. ( '0' if AutoInflateEnabled = true)\ndisableLocalAuth: (Optional) bool, This property disables SAS authentication for the Event Hubs namespace. Default to false.\nkafkaEnabled: (Optional) bool, Value that indicates whether Kafka is enabled for eventhub namespace. Default to true.\n"
       }
     },
     "eventHubs": {
       "type": "object",
       "defaultValue": {},
       "metadata": {
-        "description": " Optional. Name for the eventhub to be created.\r\nBelow paramters you can pass while the creating Azure Event Hub\r\nmessageRetentionInDays: (Optional) int, Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Default to 1.\r\npartitionCount: (Optional) int, Number of partitions created for the Event Hub. Default to 2\r\neventHubNamespaceName: (Optional) string, Name of the Azure Event Hub Namespace\r\nstatus: (Optional) string, Enumerates the possible values for the status of the Event Hub. 'Active','Creating','Deleting','Disabled','ReceiveDisabled','Renaming','Restoring','SendDisabled','Unknown'. Default to 'Active'\r\n"
+        "description": " Optional. Name for the eventhub to be created.\nBelow paramters you can pass while the creating Azure Event Hub.\nmessageRetentionInDays: (Optional) int, Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Default to 1.\npartitionCount: (Optional) int, Number of partitions created for the Event Hub. Default to 2.\neventHubNamespaceName: (Optional) string, Name of the Azure Event Hub Namespace.\nstatus: (Optional) string, Enumerates the possible values for the status of the Event Hub. 'Active','Creating','Deleting','Disabled','ReceiveDisabled','Renaming','Restoring','SendDisabled','Unknown'. Default to 'Active'.\ncaptureDescriptionDestinationName: (Optional) string, Name for capture destination.\ncaptureDescriptionDestinationArchiveNameFormat: (Optional) string,  Blob naming convention for archive, e.g. {Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}. Here all the parameters (Namespace,EventHub .. etc) are mandatory irrespective of order.\ncaptureDescriptionDestinationBlobContainer: (Optional) string, Blob container Name.\ncaptureDescriptionDestinationStorageAccountResourceId: (Optional) string, Resource ID of the storage account to be used to create the blobs.\ncaptureDescriptionEnabled: (Optional) boolean, A value that indicates whether capture description is enabled.\ncaptureDescriptionEncoding: (Optional) string, Enumerates the possible values for the encoding format of capture description.\ncaptureDescriptionIntervalInSeconds: (Optional) int, The time window allows you to set the frequency with which the capture to Azure Blobs will happen.\ncaptureDescriptionSizeLimitInBytes: (Optional) int, The size window defines the amount of data built up in your Event Hub before an capture operation.\ncaptureDescriptionSkipEmptyArchives: (Optional) boolean,  A value that indicates whether to Skip Empty Archives.\nroleAssignments: (Optional) Array, Array of role assignment objects that contain the \\'roleDefinitionIdOrName\\' and \\'principalId\\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \\'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\\'.\n"
       }
     },
     "namespaceAuthorizationRules": {
@@ -58,18 +65,11 @@
         "description": "Optional. Authorization Rules for the Event Hub Namespace."
       }
     },
-    "eventHubAuthorizationRules": {
+    "namespaceRoleAssignments": {
       "type": "object",
       "defaultValue": {},
       "metadata": {
-        "description": "Optional. Authorization Rules for the Event Hub ."
-      }
-    },
-    "consumerGroups": {
-      "type": "object",
-      "defaultValue": {},
-      "metadata": {
-        "description": "Optional. consumer groups for the Event Hub ."
+        "description": "Optional. Role assignments for the namespace."
       }
     },
     "disasterRecoveryConfigs": {
@@ -84,6 +84,20 @@
       "defaultValue": {},
       "metadata": {
         "description": "Optional. The Diagnostics Settings config for the namespace."
+      }
+    },
+    "eventHubAuthorizationRules": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Authorization Rules for the Event Hub ."
+      }
+    },
+    "consumerGroups": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. consumer groups for the Event Hub ."
       }
     }
   },
@@ -138,7 +152,8 @@
           "captureDescriptionEncoding": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'captureDescriptionEncoding'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.captureDescriptionEncoding, 'Avro')]",
           "captureDescriptionIntervalInSeconds": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'captureDescriptionIntervalInSeconds'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.captureDescriptionIntervalInSeconds, 300)]",
           "captureDescriptionSizeLimitInBytes": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'captureDescriptionSizeLimitInBytes'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.captureDescriptionSizeLimitInBytes, 314572800)]",
-          "captureDescriptionSkipEmptyArchives": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'captureDescriptionSkipEmptyArchives'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.captureDescriptionSkipEmptyArchives, false())]"
+          "captureDescriptionSkipEmptyArchives": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'captureDescriptionSkipEmptyArchives'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.captureDescriptionSkipEmptyArchives, false())]",
+          "roleAssignments": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'roleAssignments'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.roleAssignments, createArray())]"
         }
       },
       {
@@ -174,6 +189,18 @@
           "diagnosticsMetrics": "[if(contains(items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value, 'diagnosticsMetrics'), items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value.diagnosticsMetrics, createArray())]",
           "diagnosticsLogs": "[if(contains(items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value, 'diagnosticsLogs'), items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value.diagnosticsLogs, createArray())]"
         }
+      },
+      {
+        "name": "varNamespaceRoleAssignments",
+        "count": "[length(items(parameters('namespaceRoleAssignments')))]",
+        "input": {
+          "eventHubNamespaceAuthorizationRuleName": "[items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].key]",
+          "description": "[if(contains(items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value, 'description'), items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.description, '')]",
+          "principalIds": "[items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.principalIds]",
+          "principalType": "[if(contains(items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value, 'principalType'), items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.principalType, '')]",
+          "roleDefinitionIdOrName": "[items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.roleDefinitionIdOrName]",
+          "eventHubNamespaceName": "[items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.eventHubNamespaceName]"
+        }
       }
     ]
   },
@@ -196,7 +223,6 @@
         "name": "eventHubNamespace",
         "count": "[length(variables('varEventHubNamespaces'))]"
       },
-      "condition": "[not(empty(parameters('eventHubNamespaces')))]",
       "type": "Microsoft.EventHub/namespaces",
       "apiVersion": "2021-11-01",
       "name": "[variables('varEventHubNamespaces')[copyIndex()].eventHubNamespaceName]",
@@ -224,7 +250,6 @@
         "name": "eventHubNamespace_authorizationRules",
         "count": "[length(variables('varNamespaceAuthorizationRules'))]"
       },
-      "condition": "[not(empty(parameters('namespaceAuthorizationRules')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('{0}-EvhbNamespace-AuthRule-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
@@ -287,7 +312,6 @@
         "name": "eventHubNamespace_disasterRecoveryConfigs",
         "count": "[length(variables('varDisasterRecoveryConfigs'))]"
       },
-      "condition": "[not(empty(parameters('disasterRecoveryConfigs')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('{0}-EvhbNamespace-DisRecConfig-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
@@ -347,10 +371,114 @@
     },
     {
       "copy": {
+        "name": "eventHubNamespace_roleAssignments",
+        "count": "[length(variables('varNamespaceRoleAssignments'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[format('{0}-Namespace-Rbac-{1}', deployment().name, copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "description": {
+            "value": "[variables('varNamespaceRoleAssignments')[copyIndex()].description]"
+          },
+          "principalIds": {
+            "value": "[variables('varNamespaceRoleAssignments')[copyIndex()].principalIds]"
+          },
+          "principalType": {
+            "value": "[variables('varNamespaceRoleAssignments')[copyIndex()].principalType]"
+          },
+          "roleDefinitionIdOrName": {
+            "value": "[variables('varNamespaceRoleAssignments')[copyIndex()].roleDefinitionIdOrName]"
+          },
+          "eventHubNamespaceName": {
+            "value": "[variables('varNamespaceRoleAssignments')[copyIndex()].eventHubNamespaceName]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.15.31.15270",
+              "templateHash": "2403438557881199525"
+            }
+          },
+          "parameters": {
+            "eventHubNamespaceName": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "principalIds": {
+              "type": "array"
+            },
+            "roleDefinitionIdOrName": {
+              "type": "string"
+            },
+            "principalType": {
+              "type": "string",
+              "defaultValue": ""
+            }
+          },
+          "variables": {
+            "builtInRoleNames": {
+              "Azure Event Hubs Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f526a384-b230-433a-b45c-95f59c4a2dec')]",
+              "Azure Event Hubs Data Receiver": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a638d3c7-ab3a-418d-83e6-5f17a39d4fde')]",
+              "Azure Event Hubs Data Sender": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2b629674-e913-4c01-ae53-ef4638d8f975')]",
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+              "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
+              "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
+              "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
+              "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
+              "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
+              "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "Schema Registry Contributor (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5dffeca3-4936-4216-b2bc-10343a5abb25')]",
+              "Schema Registry Reader (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2c56ea50-c6b3-40a6-83c0-9d98858bc7d2')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            }
+          },
+          "resources": [
+            {
+              "copy": {
+                "name": "roleAssignment",
+                "count": "[length(parameters('principalIds'))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.EventHub/namespaces/{0}', parameters('eventHubNamespaceName'))]",
+              "name": "[guid(parameters('eventHubNamespaceName'), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+              "properties": {
+                "description": "[parameters('description')]",
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
+                "principalId": "[parameters('principalIds')[copyIndex()]]",
+                "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "eventHubNamespace"
+      ]
+    },
+    {
+      "copy": {
         "name": "eventHubNamespace_eventHubs",
         "count": "[length(variables('varEventHubs'))]"
       },
-      "condition": "[not(empty(parameters('eventHubs')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('{0}-EvhbNamespace-EventHub-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
@@ -401,6 +529,9 @@
           },
           "captureDescriptionSkipEmptyArchives": {
             "value": "[variables('varEventHubs')[copyIndex()].captureDescriptionSkipEmptyArchives]"
+          },
+          "roleAssignments": {
+            "value": "[variables('varEventHubs')[copyIndex()].roleAssignments]"
           }
         },
         "template": {
@@ -410,7 +541,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.15.31.15270",
-              "templateHash": "7805667471948837542"
+              "templateHash": "117341781735749662"
             }
           },
           "parameters": {
@@ -467,6 +598,10 @@
             "captureDescriptionSkipEmptyArchives": {
               "type": "bool",
               "defaultValue": false
+            },
+            "roleAssignments": {
+              "type": "array",
+              "defaultValue": []
             }
           },
           "variables": {
@@ -502,6 +637,107 @@
               "apiVersion": "2021-11-01",
               "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
               "properties": "[if(parameters('captureDescriptionEnabled'), variables('eventHubPropertiesWithCapture'), variables('eventHubPropertiesSimple'))]"
+            },
+            {
+              "copy": {
+                "name": "eventHub_roleAssignments",
+                "count": "[length(parameters('roleAssignments'))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2020-10-01",
+              "name": "[format('{0}-Rbac-{1}', deployment().name, copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
+                  "principalIds": {
+                    "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
+                  },
+                  "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
+                  "roleDefinitionIdOrName": {
+                    "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
+                  },
+                  "resourceId": {
+                    "value": "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaceName'), parameters('name'))]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.15.31.15270",
+                      "templateHash": "14324444585229407005"
+                    }
+                  },
+                  "parameters": {
+                    "description": {
+                      "type": "string",
+                      "defaultValue": ""
+                    },
+                    "principalIds": {
+                      "type": "array"
+                    },
+                    "roleDefinitionIdOrName": {
+                      "type": "string"
+                    },
+                    "resourceId": {
+                      "type": "string"
+                    },
+                    "principalType": {
+                      "type": "string",
+                      "defaultValue": ""
+                    }
+                  },
+                  "variables": {
+                    "builtInRoleNames": {
+                      "Azure Event Hubs Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f526a384-b230-433a-b45c-95f59c4a2dec')]",
+                      "Azure Event Hubs Data Receiver": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a638d3c7-ab3a-418d-83e6-5f17a39d4fde')]",
+                      "Azure Event Hubs Data Sender": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2b629674-e913-4c01-ae53-ef4638d8f975')]",
+                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                      "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+                      "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
+                      "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
+                      "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
+                      "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
+                      "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
+                      "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
+                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                      "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+                      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                      "Schema Registry Contributor (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5dffeca3-4936-4216-b2bc-10343a5abb25')]",
+                      "Schema Registry Reader (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2c56ea50-c6b3-40a6-83c0-9d98858bc7d2')]",
+                      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "copy": {
+                        "name": "roleAssignment",
+                        "count": "[length(parameters('principalIds'))]"
+                      },
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "scope": "[format('Microsoft.EventHub/namespaces/{0}/eventhubs/{1}', split(format('{0}/{1}}}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10]), '/')[0], split(format('{0}/{1}}}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10]), '/')[1])]",
+                      "name": "[guid(split(parameters('resourceId'), '/')[0], split(parameters('resourceId'), '/')[1], parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+                      "properties": {
+                        "description": "[parameters('description')]",
+                        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
+                        "principalId": "[parameters('principalIds')[copyIndex()]]",
+                        "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]"
+                      }
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaceName'), parameters('name'))]"
+              ]
             }
           ]
         }
@@ -515,7 +751,6 @@
         "name": "eventHub_authorizationRules",
         "count": "[length(variables('varEventHubAuthorizationRules'))]"
       },
-      "condition": "[not(empty(parameters('eventHubAuthorizationRules')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('{0}-Evhub-AuthRule-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
@@ -584,7 +819,6 @@
         "name": "eventHub_consumerGroup",
         "count": "[length(variables('varConsumerGroups'))]"
       },
-      "condition": "[not(empty(parameters('consumerGroups')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('{0}-ConsumerGroup-{1}', deployment().name, copyIndex())]",
@@ -653,7 +887,6 @@
         "name": "eventHubNamespace_diagnosticSettings",
         "count": "[length(variables('varDiagnosticSettings'))]"
       },
-      "condition": "[not(empty(parameters('diagnosticSettings')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2020-10-01",
       "name": "[format('{0}-diagnosticSettings-{1}', deployment().name, copyIndex())]",

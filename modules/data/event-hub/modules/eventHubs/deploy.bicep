@@ -12,6 +12,7 @@ param captureDescriptionEncoding string = 'Avro'
 param captureDescriptionIntervalInSeconds int = 300
 param captureDescriptionSizeLimitInBytes int = 314572800
 param captureDescriptionSkipEmptyArchives bool = false
+param roleAssignments array = []
 
 
 var eventHubPropertiesSimple = {
@@ -50,3 +51,14 @@ resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2021-11-01' = {
   parent: namespace
   properties: captureDescriptionEnabled ? eventHubPropertiesWithCapture : eventHubPropertiesSimple
 }
+
+module eventHub_roleAssignments './roleAssignments.bicep' = [for (roleAssignment, index) in roleAssignments: {
+  name: '${deployment().name}-Rbac-${index}'
+  params: {
+    description: contains(roleAssignment, 'description') ? roleAssignment.description : ''
+    principalIds: roleAssignment.principalIds
+    principalType: contains(roleAssignment, 'principalType') ? roleAssignment.principalType : ''
+    roleDefinitionIdOrName: roleAssignment.roleDefinitionIdOrName
+    resourceId: eventHub.id
+  }
+}]
