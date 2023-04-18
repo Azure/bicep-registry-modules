@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "15782173797037566495"
+      "templateHash": "10659367526325445270"
     }
   },
   "parameters": {
@@ -571,7 +571,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.2.56959",
-              "templateHash": "8275011026340796795"
+              "templateHash": "9852224662144463642"
             }
           },
           "parameters": {
@@ -603,14 +603,14 @@
               "type": "string",
               "defaultValue": "",
               "metadata": {
-                "description": "Name of the Cassandra DB"
+                "description": "Name of the CassandrDB"
               }
             },
             "locationString": {
               "type": "string",
               "defaultValue": "",
               "metadata": {
-                "description": "Custom Location String for Cassandra DB"
+                "description": "Custom Location String for CassandrDB"
               }
             },
             "eventHubNamespaceName": {
@@ -873,14 +873,14 @@
             "cassandraSecretUri": {
               "type": "string",
               "metadata": {
-                "description": "Cassandra Secret URI"
+                "description": "CassandrSecret URI"
               },
               "value": "[if(not(equals(parameters('cassandraDBName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUri, '')]"
             },
             "cassandraSecretUriWithVersion": {
               "type": "string",
               "metadata": {
-                "description": "Cassandra Secret URI with version"
+                "description": "CassandrSecret URI with version"
               },
               "value": "[if(not(equals(parameters('cassandraDBName'), '')), reference(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretName')), '2022-11-01').secretUriWithVersion, '')]"
             },
