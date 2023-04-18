@@ -214,7 +214,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-03-15' = {
 }
 
 @batchSize(1)
-module cosmosDBAccount_cassandraKeyspaces 'cassandra/deploy.bicep' = [for keyspace in cassandraKeyspaces: if (backendApi == 'cassandra') {
+module cosmosDBAccount_cassandraKeyspaces 'modules/cassandra.bicep' = [for keyspace in cassandraKeyspaces: if (backendApi == 'cassandra') {
   name: 'cassandra-keyspace-${uniqueString(keyspace.name, location)}'
   dependsOn: [
     cosmosDBAccount
@@ -229,7 +229,7 @@ module cosmosDBAccount_cassandraKeyspaces 'cassandra/deploy.bicep' = [for keyspa
   }
 }]
 
-module cosmosDBAccount_sqlDatabases 'sql/deploy.bicep' = [for sqlDatabase in sqlDatabases: if (backendApi == 'sql') {
+module cosmosDBAccount_sqlDatabases 'modules/sql.bicep' = [for sqlDatabase in sqlDatabases: if (backendApi == 'sql') {
   name: 'sql-database-${uniqueString(sqlDatabase.name, location)}'
   dependsOn: [
     cosmosDBAccount
@@ -244,7 +244,7 @@ module cosmosDBAccount_sqlDatabases 'sql/deploy.bicep' = [for sqlDatabase in sql
   }
 }]
 
-module cosmosDBAccount_mongodbDatabases 'mongodb/deploy.bicep' = [for mongodbDatabase in mongodbDatabases: if (backendApi == 'mongodb') {
+module cosmosDBAccount_mongodbDatabases 'modules/mongodb.bicep' = [for mongodbDatabase in mongodbDatabases: if (backendApi == 'mongodb') {
   name: 'mongodb-database-${uniqueString(mongodbDatabase.name, location)}'
   dependsOn: [
     cosmosDBAccount
@@ -259,7 +259,7 @@ module cosmosDBAccount_mongodbDatabases 'mongodb/deploy.bicep' = [for mongodbDat
   }
 }]
 
-module cosmosDBAccount_tables 'table/deploy.bicep' = [for table in tables: if (backendApi == 'table') {
+module cosmosDBAccount_tables 'modules/table.bicep' = [for table in tables: if (backendApi == 'table') {
   name: 'table-${uniqueString(table.name, location)}'
   dependsOn: [
     cosmosDBAccount
@@ -273,7 +273,7 @@ module cosmosDBAccount_tables 'table/deploy.bicep' = [for table in tables: if (b
   }
 }]
 
-module cosmosDBAccount_gremlinDatabases 'gremlin/deploy.bicep' = [for gremlinDatabase in gremlinDatabases: if (backendApi == 'gremlin') {
+module cosmosDBAccount_gremlinDatabases 'modules/gremlin.bicep' = [for gremlinDatabase in gremlinDatabases: if (backendApi == 'gremlin') {
   name: 'gremlin-database-${uniqueString(gremlinDatabase.name, location)}'
   dependsOn: [
     cosmosDBAccount
