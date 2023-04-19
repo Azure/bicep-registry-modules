@@ -67,6 +67,12 @@ param eventHubAuthorizationRules object = {}
 @description('Optional. consumer groups for the Event Hub .')
 param consumerGroups object = {}
 
+@description('Define Private Endpoints that should be created for Azure Container Registry.')
+param privateEndpoints array = []
+
+@description('Toggle if Private Endpoints manual approval for Azure Container Registry should be enabled.')
+param privateEndpointsApprovalEnabled bool = false
+
 var varEventHubNamespaces = [for eventHubnamespace in items(eventHubNamespaces): {
   eventHubNamespaceName: eventHubnamespace.key
   sku: contains(eventHubnamespace.value, 'sku')? eventHubnamespace.value.sku : 'Standard'
@@ -140,6 +146,22 @@ var varNamespaceRoleAssignments =  [for namespaceRoleAssignment in items(namespa
   principalType: contains(namespaceRoleAssignment.value, 'principalType') ? namespaceRoleAssignment.value.principalType: ''
   roleDefinitionIdOrName: namespaceRoleAssignment.value.roleDefinitionIdOrName
   eventHubNamespaceName: namespaceRoleAssignment.value.eventHubNamespaceName
+}]
+
+var varPrivateEndpoints = [for privateEndpoint in privateEndpoints: {
+  name: privateEndpoint.name
+  eventHubNamespaceName: privateEndpoint.eventHubNamespaceName
+  groupIds: [
+    'namespace'
+  ]
+  subnetId: privateEndpoint.subnetId
+  customNetworkInterfaceName: contains(privateEndpoint, 'customNetworkInterfaceName') ? privateEndpoint.customNetworkInterfaceName : ''
+  privateDnsZones: contains(privateEndpoint, 'privateDnsZoneId') ? [
+    {
+      name: 'default'
+      zoneId: privateEndpoint.privateDnsZoneId
+    }
+  ] : []
 }]
 
 resource cluster 'Microsoft.EventHub/clusters@2021-11-01' = if (clusterName != 'null' )  {
@@ -274,6 +296,24 @@ module eventHubNamespace_diagnosticSettings 'modules/diagnosticSettings.bicep' =
     diagnosticEventHubName:varDiagnosticSetting.diagnosticEventHubName
     diagnosticsMetrics: varDiagnosticSetting.diagnosticsMetrics
     diagnosticsLogs: varDiagnosticSetting.diagnosticsLogs
+  }
+  dependsOn: [
+    eventHubNamespace
+  ]
+}]
+
+module eventHubNamespace_privateEndpoint 'modules/privateEndpoint.bicep'= [for (varPrivateEndpoint, index) in varPrivateEndpoints: {
+  name: '${uniqueString(deployment().name)}-eventnamespace-private-endpoints-${index}'
+  params: {
+    name: varPrivateEndpoint.name
+    namespaceName: varPrivateEndpoint.eventHubNamespaceName
+    location: location
+    groupIds: varPrivateEndpoint.groupIds
+    subnetId: varPrivateEndpoint.subnetId
+    privateDnsZones: contains(varPrivateEndpoint, 'privateDnsZones') ? varPrivateEndpoint.privateDnsZones : []
+    customNetworkInterfaceName: varPrivateEndpoint.customNetworkInterfaceName
+    tags: tags
+    manualApprovalEnabled: privateEndpointsApprovalEnabled
   }
   dependsOn: [
     eventHubNamespace

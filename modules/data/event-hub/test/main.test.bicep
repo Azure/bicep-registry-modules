@@ -104,6 +104,19 @@ module test_03 '../main.bicep' = {
           zoneRedundant: true
       }
     }
+    privateEndpoints: [
+      {
+        name: 'endpoint1'
+        subnetId: prerequisites.outputs.subnetIds[0]
+        eventHubNamespaceName: 'test03na${uniqueName}'
+      }
+      {
+        name: 'endpoint2'
+        subnetId: prerequisites.outputs.subnetIds[1]
+        privateDnsZoneId: prerequisites.outputs.privateDNSZoneId
+        eventHubNamespaceName: 'test03na${uniqueName}'
+      }
+    ]
     diagnosticSettings: {
       'test03digno${uniqueName}': {
         diagnosticEnablenamespaceName: 'test03na${uniqueName}'

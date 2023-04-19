@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "14932336562235921608"
+      "templateHash": "6882369911072859716"
     }
   },
   "parameters": {
@@ -98,6 +98,20 @@
       "defaultValue": {},
       "metadata": {
         "description": "Optional. consumer groups for the Event Hub ."
+      }
+    },
+    "privateEndpoints": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Define Private Endpoints that should be created for Azure Container Registry."
+      }
+    },
+    "privateEndpointsApprovalEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Toggle if Private Endpoints manual approval for Azure Container Registry should be enabled."
       }
     }
   },
@@ -200,6 +214,20 @@
           "principalType": "[if(contains(items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value, 'principalType'), items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.principalType, '')]",
           "roleDefinitionIdOrName": "[items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.roleDefinitionIdOrName]",
           "eventHubNamespaceName": "[items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.eventHubNamespaceName]"
+        }
+      },
+      {
+        "name": "varPrivateEndpoints",
+        "count": "[length(parameters('privateEndpoints'))]",
+        "input": {
+          "name": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].name]",
+          "eventHubNamespaceName": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].eventHubNamespaceName]",
+          "groupIds": [
+            "namespace"
+          ],
+          "subnetId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].subnetId]",
+          "customNetworkInterfaceName": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'customNetworkInterfaceName'), parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].customNetworkInterfaceName, '')]",
+          "privateDnsZones": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'privateDnsZoneId'), createArray(createObject('name', 'default', 'zoneId', parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].privateDnsZoneId)), createArray())]"
         }
       }
     ]
@@ -971,6 +999,130 @@
                 "metrics": "[parameters('diagnosticsMetrics')]",
                 "logs": "[parameters('diagnosticsLogs')]"
               }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "eventHubNamespace"
+      ]
+    },
+    {
+      "copy": {
+        "name": "eventHubNamespace_privateEndpoint",
+        "count": "[length(variables('varPrivateEndpoints'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "[format('{0}-eventnamespace-private-endpoints-{1}', uniqueString(deployment().name), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[variables('varPrivateEndpoints')[copyIndex()].name]"
+          },
+          "namespaceName": {
+            "value": "[variables('varPrivateEndpoints')[copyIndex()].eventHubNamespaceName]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "groupIds": {
+            "value": "[variables('varPrivateEndpoints')[copyIndex()].groupIds]"
+          },
+          "subnetId": {
+            "value": "[variables('varPrivateEndpoints')[copyIndex()].subnetId]"
+          },
+          "privateDnsZones": "[if(contains(variables('varPrivateEndpoints')[copyIndex()], 'privateDnsZones'), createObject('value', variables('varPrivateEndpoints')[copyIndex()].privateDnsZones), createObject('value', createArray()))]",
+          "customNetworkInterfaceName": {
+            "value": "[variables('varPrivateEndpoints')[copyIndex()].customNetworkInterfaceName]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "manualApprovalEnabled": {
+            "value": "[parameters('privateEndpointsApprovalEnabled')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.15.31.15270",
+              "templateHash": "4890749713602361970"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "manualApprovalEnabled": {
+              "type": "bool"
+            },
+            "namespaceName": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "groupIds": {
+              "type": "array"
+            },
+            "subnetId": {
+              "type": "string"
+            },
+            "privateDnsZones": {
+              "type": "array"
+            },
+            "customNetworkInterfaceName": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2022-05-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "privateLinkServiceConnections": "[if(parameters('manualApprovalEnabled'), null(), createArray(createObject('name', parameters('name'), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.EventHub/namespaces', parameters('namespaceName')), 'groupIds', if(not(empty(parameters('groupIds'))), parameters('groupIds'), null())))))]",
+                "manualPrivateLinkServiceConnections": "[if(parameters('manualApprovalEnabled'), createArray(createObject('name', parameters('name'), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.EventHub/namespaces', parameters('namespaceName')), 'groupIds', if(not(empty(parameters('groupIds'))), parameters('groupIds'), null())))), null())]",
+                "subnet": {
+                  "id": "[parameters('subnetId')]"
+                },
+                "customNetworkInterfaceName": "[parameters('customNetworkInterfaceName')]"
+              }
+            },
+            {
+              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+              "apiVersion": "2022-05-01",
+              "name": "[format('{0}/{1}', parameters('name'), 'default')]",
+              "properties": {
+                "copy": [
+                  {
+                    "name": "privateDnsZoneConfigs",
+                    "count": "[length(parameters('privateDnsZones'))]",
+                    "input": {
+                      "name": "[if(contains(parameters('privateDnsZones')[copyIndex('privateDnsZoneConfigs')], 'name'), parameters('privateDnsZones')[copyIndex('privateDnsZoneConfigs')].name, 'default')]",
+                      "properties": {
+                        "privateDnsZoneId": "[parameters('privateDnsZones')[copyIndex('privateDnsZoneConfigs')].zoneId]"
+                      }
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]"
+              ]
             }
           ]
         }
