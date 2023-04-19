@@ -53,7 +53,7 @@ resource containerResourceScope 'Microsoft.Storage/storageAccounts/blobServices/
 }
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for principalId in principalIds: {
-  name: guid(resourceType == 'blobContainer' ? containerResourceScope.id : storageResourceScope.id, principalId, roleDefinitionIdOrName)
+  name: guid(resourceType == 'blobContainer' ? containerResourceScope.name : storageResourceScope.name, principalId, roleDefinitionIdOrName)
   properties: {
     description: description
     roleDefinitionId: contains(builtInRoleNames, roleDefinitionIdOrName) ? builtInRoleNames[roleDefinitionIdOrName] : roleDefinitionIdOrName
