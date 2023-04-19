@@ -64,7 +64,7 @@ It allows for the creation of a new Cosmos DB account or use of an existing one 
 An example of how to deploy Azure Cosmosdb Account with _Apache Cassanda backend_ using the minimum required parameters.
 
 ```bicep
-module cosmosDbAccount 'br/public:data/cosmos-db:1.0.1' = {
+module cosmosDbAccount 'br/public:storage/cosmos-db:2.0.0' = {
  name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     name: 'cosmosdb-${uniqueString(deployment().name, location)}'
@@ -80,7 +80,7 @@ output cosmosDbAccountResourceId string = cosmosDbAccount.outputs.id
 An example of how to deploy a _multi-region_ enabled cassandra backend Cosmosdb account along with access _role assignments_ and _zone redundancy_ for one of secondary locations.
 
 ```bicep
-module cosmosCassandraDb 'br/public:data/cosmos-db:1.0.1' = {
+module cosmosCassandraDb 'br/public:storage/cosmos-db:2.0.0' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'eastus'
@@ -173,7 +173,7 @@ output cosmosCassandraDbResourceId string = cosmosCassandraDb.outputs.id
 An example of how to deploy a SQL Databses with Containers with _CORS Policies_, _totalThroughputLimit_ and different _defaultConsistencyLevel_ options.
 
 ```bicep
-module cosmosSqlDb 'br/public:storage/cosmos-db:1.0.1' = {
+module cosmosSqlDb 'br/public:storage/cosmos-db:2.0.0' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'westus'
@@ -267,7 +267,7 @@ output cosmosSqlDbResourceId string = cosmosSqlDb.outputs.id
 An example of how to deploy a MongoDB Databases with collections with _CORS Policies_, extra non-default _capabilities_ options and with _systemAssigned managed identity_ enabled.
 
 ```bicep
-module cosmosMongoDb 'br/public:storage/cosmos-db:1.0.1' = {
+module cosmosMongoDb 'br/public:storage/cosmos-db:2.0.0' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'eastus'
@@ -328,7 +328,7 @@ output systemAssignedIdentityPrincipalId string = cosmosMongoDb.outputs.systemAs
 An example of how to deploy a Cosmmos DB Tables with networking IP and VNet firewall bypass rules.
 
 ```bicep
-module cosmosTable 'br/public:storage/cosmos-db:1.0.1' = {
+module cosmosTable 'br/public:storage/cosmos-db:2.0.0' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'westus'
