@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "2723303604260222394"
+      "templateHash": "6651179765317651627"
     }
   },
   "parameters": {
@@ -145,24 +145,15 @@
       "metadata": {
         "description": "The name of logs that will be streamed. default is allLogs."
       }
-    },
-    "metricsToEnable": {
-      "type": "array",
-      "defaultValue": [
-        "AllMetrics"
-      ],
-      "metadata": {
-        "description": "The name of metrics that will be streamed. default is AllMetrics"
-      }
     }
   },
   "variables": {
     "copy": [
       {
         "name": "diagnosticsMetrics",
-        "count": "[length(parameters('metricsToEnable'))]",
+        "count": "[length(variables('metricsToEnable'))]",
         "input": {
-          "category": "[parameters('metricsToEnable')[copyIndex('diagnosticsMetrics')]]",
+          "category": "[variables('metricsToEnable')[copyIndex('diagnosticsMetrics')]]",
           "timeGrain": null,
           "enabled": true,
           "retentionPolicy": {
@@ -171,6 +162,9 @@
           }
         }
       }
+    ],
+    "metricsToEnable": [
+      "AllMetrics"
     ],
     "diagnosticsLogs": [
       {

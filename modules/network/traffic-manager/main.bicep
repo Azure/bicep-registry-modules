@@ -77,8 +77,7 @@ param diagnosticEventHubName string = ''
 ])
 param logsToEnable string = 'allLogs'
 
-@description('The name of metrics that will be streamed. default is AllMetrics')
-param metricsToEnable array = [
+var metricsToEnable = [
   'AllMetrics'
 ]
 

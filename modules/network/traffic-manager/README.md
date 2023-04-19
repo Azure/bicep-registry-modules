@@ -32,7 +32,6 @@ The module also allows for the configuration of monitor settings such as protoco
 | `diagnosticEventHubAuthorizationRuleId` | `string` | No       | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.                  |
 | `diagnosticEventHubName`                | `string` | No       | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category.                    |
 | `logsToEnable`                          | `string` | No       | The name of logs that will be streamed. default is allLogs.                                                                                                       |
-| `metricsToEnable`                       | `array`  | No       | The name of metrics that will be streamed. default is AllMetrics                                                                                                  |
 
 ## Outputs
 
