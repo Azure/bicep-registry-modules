@@ -7,7 +7,7 @@ certCommonName="${certCommonName:-default}"
 validity="${validity:-12}"
 akvName="${akvName:-keyvault}"
 
-echo "Waiting on Identity RBAC replication ("$initialDelay")"
+echo "Waiting on Identity RBAC replication (\"$initialDelay\")"
 sleep "$initialDelay"
 
 #Retry loop to catch errors (usually RBAC delays)
