@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.10.61.36676",
-      "templateHash": "7734580265894351369"
+      "version": "0.16.2.56959",
+      "templateHash": "15564129852387220032"
     }
   },
   "parameters": {
@@ -124,7 +124,7 @@
       }
     },
     "issuerPassword": {
-      "type": "secureString",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "Password of Certificate Issuer Account"
@@ -282,52 +282,52 @@
   "outputs": {
     "certificateNames": {
       "type": "array",
-      "copy": {
-        "count": "[length(parameters('certificateNames'))]",
-        "input": "[createArray(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[copyIndex()], ':', ''), '/', '-')))).outputs.name)]"
-      },
       "metadata": {
         "description": "Certificate names"
+      },
+      "copy": {
+        "count": "[length(parameters('certificateNames'))]",
+        "input": "[createArray(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[copyIndex()], ':', ''), '/', '-'))), '2020-10-01').outputs.name)]"
       }
     },
     "certificateSecretIds": {
       "type": "array",
-      "copy": {
-        "count": "[length(parameters('certificateNames'))]",
-        "input": "[createArray(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[copyIndex()], ':', ''), '/', '-')))).outputs.certSecretId.versioned)]"
-      },
       "metadata": {
         "description": "KeyVault secret ids to the created version"
+      },
+      "copy": {
+        "count": "[length(parameters('certificateNames'))]",
+        "input": "[createArray(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[copyIndex()], ':', ''), '/', '-'))), '2020-10-01').outputs.certSecretId.versioned)]"
       }
     },
     "certificateSecretIdUnversioneds": {
       "type": "array",
-      "copy": {
-        "count": "[length(parameters('certificateNames'))]",
-        "input": "[createArray(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[copyIndex()], ':', ''), '/', '-')))).outputs.certSecretId.unversioned)]"
-      },
       "metadata": {
         "description": "KeyVault secret ids which uses the unversioned uri"
+      },
+      "copy": {
+        "count": "[length(parameters('certificateNames'))]",
+        "input": "[createArray(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[copyIndex()], ':', ''), '/', '-'))), '2020-10-01').outputs.certSecretId.unversioned)]"
       }
     },
     "certificateThumbpints": {
       "type": "array",
-      "copy": {
-        "count": "[length(parameters('certificateNames'))]",
-        "input": "[createArray(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[copyIndex()], ':', ''), '/', '-')))).outputs.thumbprint)]"
-      },
       "metadata": {
         "description": "Certificate Thumbprints"
+      },
+      "copy": {
+        "count": "[length(parameters('certificateNames'))]",
+        "input": "[createArray(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[copyIndex()], ':', ''), '/', '-'))), '2020-10-01').outputs.thumbprint)]"
       }
     },
     "certificateThumbprintHexs": {
       "type": "array",
-      "copy": {
-        "count": "[length(parameters('certificateNames'))]",
-        "input": "[createArray(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[copyIndex()], ':', ''), '/', '-')))).outputs.thumbprintHex)]"
-      },
       "metadata": {
         "description": "Certificate Thumbprints (in hex)"
+      },
+      "copy": {
+        "count": "[length(parameters('certificateNames'))]",
+        "input": "[createArray(reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKV-Cert-{0}-{1}', parameters('akvName'), replace(replace(parameters('certificateNames')[copyIndex()], ':', ''), '/', '-'))), '2020-10-01').outputs.thumbprintHex)]"
       }
     }
   }

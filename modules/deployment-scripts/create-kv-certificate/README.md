@@ -29,7 +29,7 @@ This module is based on the `az cli certificate` create command and more informa
 | `issuerProvider`                           | `string`       | No       | Certificate Issuer Provider, DigiCert, GlobalSign, or internal options may be used.                           |
 | `disabled`                                 | `bool`         | No       | Create certificate in disabled state. Default: false                                                          |
 | `accountId`                                | `string`       | No       | Account ID of Certificate Issuer Account                                                                      |
-| `issuerPassword`                           | `secureString` | No       | Password of Certificate Issuer Account                                                                        |
+| `issuerPassword`                           | `securestring` | No       | Password of Certificate Issuer Account                                                                        |
 | `organizationId`                           | `string`       | No       | Organization ID of Certificate Issuer Account                                                                 |
 | `isCrossTenant`                            | `bool`         | No       | Override this parameter if using this in cross tenant scenarios                                               |
 | `reuseKey`                                 | `bool`         | No       | The default policy might cause errors about CSR being used before, so set this to false if that happens       |
