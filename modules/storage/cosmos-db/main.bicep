@@ -93,6 +93,12 @@ param cassandraKeyspaces array = []
 @description('The list of SQL databases configurations with containers, its triggers, storedProcedures and userDefinedFunctions.')
 param sqlDatabases array = []
 
+@description('The list of SQL role definitions.')
+param sqlRoleDefinitions array = []
+
+@description('The list of SQL role assignments.')
+param sqlRoleAssignments array = []
+
 @description('The list of MongoDB databases configurations with collections, its indexes, Shard Keys.')
 param mongodbDatabases array = []
 
@@ -288,6 +294,18 @@ module cosmosDBAccount_gremlinDatabases 'modules/gremlin.bicep' = [for gremlinDa
   }
 }]
 
+module cosmosDBAccount_sqlRoles 'modules/sql_role.bicep' = {
+  name: 'sql-role-${uniqueString(name, location)}'
+  dependsOn: [
+    cosmosDBAccount
+  ]
+  params: {
+    cosmosDBAccountName: name
+    sqlRoleDefinitions: sqlRoleDefinitions
+    sqlRoleAssignments: sqlRoleAssignments
+  }
+}
+
 module cosmosDBAccount_rbac 'modules/rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
   name: 'cosmosdb-rbac-${uniqueString(deployment().name, location)}-${index}'
   params: {
@@ -325,3 +343,6 @@ output name string = cosmosDBAccount.name
 
 @description('Object Id of system assigned managed identity for Cosmos DB account (if enabled).')
 output systemAssignedIdentityPrincipalId string = contains(identityType, 'SystemAssigned') ? cosmosDBAccount.identity.principalId : ''
+
+@description('Resource Ids of sql role definition resources created for this Cosmos DB account.')
+output sqlRoleDefinitionIds array = !empty(sqlRoleDefinitions) ? cosmosDBAccount_sqlRoles.outputs.sqlRoleDefinitionIds : []

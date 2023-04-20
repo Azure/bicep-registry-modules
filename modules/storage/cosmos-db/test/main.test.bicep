@@ -332,3 +332,64 @@ module test06 '../main.bicep' = {
     ]
   }
 }
+
+// Test 07 - SQL DB with containers - totalThroughputLimit & BoundedStaleness as defaultConsistencyLevel.
+module test07 '../main.bicep' = {
+  name: 'test07-${uniqueName}'
+  params: {
+    location: location
+    backendApi: 'sql'
+    name: 'test07-${uniqueName}'
+    sqlDatabases: [
+      {
+        name: 'testdb1'
+        containers: [
+          {
+            name: 'container1'
+            autoscaleMaxThroughput: 4000
+            defaultTtl: 3600
+            partitionKey: {
+              paths: [
+                '/id'
+              ]
+              kind: 'Hash'
+              version: 1
+            }
+          }
+        ]
+      }
+    ]
+    sqlRoleDefinitions: [
+      {
+        roleName: 'testReadWriteRole1'
+        assignableScopes: [
+          '/'
+          '/dbs/testdb1'
+        ]
+        permissions: [
+          {
+            dataActions: [
+              'Microsoft.DocumentDB/databaseAccounts/readMetadata'
+              'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+              'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
+            ]
+          }
+        ]
+      }
+    ]
+    sqlRoleAssignments: [
+      {
+        principalId: dependencies.outputs.identityPrincipalIds[0]
+        roleDefinitionId: '00000000-0000-0000-0000-000000000001'
+        scope: '/'
+      }
+      {
+        principalId: dependencies.outputs.identityPrincipalIds[1]
+        roleDefinitionId: '00000000-0000-0000-0000-000000000002'
+        scope: '/dbs/testdb1'
+      }
+    ]
+  }
+}
+
+output sqlIds array = test07.outputs.sqlRoleDefinitionIds

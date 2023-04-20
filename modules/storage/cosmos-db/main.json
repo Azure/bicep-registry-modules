@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "11025477020362641350"
+      "templateHash": "3375019966852422893"
     }
   },
   "parameters": {
@@ -250,6 +250,20 @@
         "description": "The list of SQL databases configurations with containers, its triggers, storedProcedures and userDefinedFunctions."
       }
     },
+    "sqlRoleDefinitions": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "The list of SQL role definitions."
+      }
+    },
+    "sqlRoleAssignments": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "The list of SQL role assignments."
+      }
+    },
     "mongodbDatabases": {
       "type": "array",
       "defaultValue": [],
@@ -455,7 +469,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.2.56959",
-              "templateHash": "204324384331059090"
+              "templateHash": "18388752353531754486"
             }
           },
           "parameters": {
@@ -486,7 +500,7 @@
                 "count": "[length(parameters('cassandraTables'))]"
               },
               "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables",
-              "apiVersion": "2023-03-15",
+              "apiVersion": "2022-11-15",
               "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), parameters('keyspaceName'), parameters('cassandraTables')[copyIndex()].name)]",
               "properties": {
                 "resource": {
@@ -506,7 +520,7 @@
             },
             {
               "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces",
-              "apiVersion": "2023-03-15",
+              "apiVersion": "2022-11-15",
               "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), parameters('keyspaceName'))]",
               "properties": {
                 "resource": {
@@ -1012,6 +1026,112 @@
       ]
     },
     {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('sql-role-{0}', uniqueString(parameters('name'), parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "cosmosDBAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "sqlRoleDefinitions": {
+            "value": "[parameters('sqlRoleDefinitions')]"
+          },
+          "sqlRoleAssignments": {
+            "value": "[parameters('sqlRoleAssignments')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.16.2.56959",
+              "templateHash": "9847349528618158824"
+            }
+          },
+          "parameters": {
+            "cosmosDBAccountName": {
+              "type": "string"
+            },
+            "sqlRoleDefinitions": {
+              "type": "array"
+            },
+            "sqlRoleAssignments": {
+              "type": "array"
+            }
+          },
+          "resources": [
+            {
+              "copy": {
+                "name": "cosmosDBAccount_sqlRoleDefinitions",
+                "count": "[length(parameters('sqlRoleDefinitions'))]",
+                "mode": "serial",
+                "batchSize": 1
+              },
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
+              "apiVersion": "2022-11-15",
+              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), parameters('sqlRoleDefinitions')[copyIndex()].roleName))]",
+              "properties": {
+                "copy": [
+                  {
+                    "name": "assignableScopes",
+                    "count": "[length(parameters('sqlRoleDefinitions')[copyIndex()].assignableScopes)]",
+                    "input": "[format('{0}{1}', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), parameters('sqlRoleDefinitions')[copyIndex()].assignableScopes[copyIndex('assignableScopes')])]"
+                  }
+                ],
+                "roleName": "[parameters('sqlRoleDefinitions')[copyIndex()].roleName]",
+                "type": "CustomRole",
+                "permissions": "[parameters('sqlRoleDefinitions')[copyIndex()].permissions]"
+              }
+            },
+            {
+              "copy": {
+                "name": "cosmosDBAccount_sqlRoleAssignments",
+                "count": "[length(parameters('sqlRoleAssignments'))]",
+                "mode": "serial",
+                "batchSize": 1
+              },
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
+              "apiVersion": "2022-11-15",
+              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), parameters('sqlRoleAssignments')[copyIndex()].roleDefinitionId, parameters('sqlRoleAssignments')[copyIndex()].principalId))]",
+              "properties": {
+                "roleDefinitionId": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDBAccountName'), parameters('sqlRoleAssignments')[copyIndex()].roleDefinitionId)]",
+                "principalId": "[parameters('sqlRoleAssignments')[copyIndex()].principalId]",
+                "scope": "[format('{0}{1}', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), parameters('sqlRoleAssignments')[copyIndex()].scope)]"
+              },
+              "dependsOn": [
+                "cosmosDBAccount_sqlRoleDefinitions"
+              ]
+            }
+          ],
+          "outputs": {
+            "sqlRoleDefinitionIds": {
+              "type": "array",
+              "metadata": {
+                "description": "The role definition ids of the created role definitions."
+              },
+              "copy": {
+                "count": "[length(parameters('sqlRoleDefinitions'))]",
+                "input": {
+                  "name": "[parameters('sqlRoleDefinitions')[copyIndex()].roleName]",
+                  "id": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDBAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), parameters('sqlRoleDefinitions')[copyIndex()].roleName))]"
+                }
+              }
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name')))]"
+      ]
+    },
+    {
       "copy": {
         "name": "cosmosDBAccount_rbac",
         "count": "[length(parameters('roleAssignments'))]"
@@ -1244,6 +1364,13 @@
         "description": "Object Id of system assigned managed identity for Cosmos DB account (if enabled)."
       },
       "value": "[if(contains(parameters('identityType'), 'SystemAssigned'), reference(resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name'))), '2022-11-15', 'full').identity.principalId, '')]"
+    },
+    "sqlRoleDefinitionIds": {
+      "type": "array",
+      "metadata": {
+        "description": "Resource Ids of sql role definition resources created for this Cosmos DB account."
+      },
+      "value": "[if(not(empty(parameters('sqlRoleDefinitions'))), reference(resourceId('Microsoft.Resources/deployments', format('sql-role-{0}', uniqueString(parameters('name'), parameters('location')))), '2022-09-01').outputs.sqlRoleDefinitionIds.value, createArray())]"
     }
   }
 }

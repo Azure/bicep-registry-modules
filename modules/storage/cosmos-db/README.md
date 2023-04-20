@@ -39,6 +39,8 @@ It allows for the creation of a new Cosmos DB account or use of an existing one 
 | `analyticalStorageSchemaType`        | `string` | No       | The type of schema for analytical storage.                                                                                                                                                                                                                                                                                                                                                   |
 | `cassandraKeyspaces`                 | `array`  | No       | The list of Cassandra keyspaces configurations with tables.                                                                                                                                                                                                                                                                                                                                  |
 | `sqlDatabases`                       | `array`  | No       | The list of SQL databases configurations with containers, its triggers, storedProcedures and userDefinedFunctions.                                                                                                                                                                                                                                                                           |
+| `sqlRoleDefinitions`                 | `array`  | No       | The list of SQL role definitions.                                                                                                                                                                                                                                                                                                                                                            |
+| `sqlRoleAssignments`                 | `array`  | No       | The list of SQL role assignments.                                                                                                                                                                                                                                                                                                                                                            |
 | `mongodbDatabases`                   | `array`  | No       | The list of MongoDB databases configurations with collections, its indexes, Shard Keys.                                                                                                                                                                                                                                                                                                      |
 | `gremlinDatabases`                   | `array`  | No       | The list of Gremlin databases configurations with graphs.                                                                                                                                                                                                                                                                                                                                    |
 | `tables`                             | `array`  | No       | The list of Table databases configurations.                                                                                                                                                                                                                                                                                                                                                  |
@@ -56,6 +58,7 @@ It allows for the creation of a new Cosmos DB account or use of an existing one 
 | id                                | string | Cosmos DB Account Resource ID                                                     |
 | name                              | string | Cosmos DB Account Resource Name                                                   |
 | systemAssignedIdentityPrincipalId | string | Object Id of system assigned managed identity for Cosmos DB account (if enabled). |
+| sqlRoleDefinitionIds              | array  | Resource Ids of sql role definition resources created for this Cosmos DB account. |
 
 ## Examples
 
@@ -369,7 +372,7 @@ output cosmosTableDbResourceId string = cosmosTable.outputs.id
 An example of how to deploy a Gremlin DB with graphs along with _private endpoints_.
 
 ```bicep
-module cosmosGremlinDb 'br/public:storage/cosmos-db:1.0.1' = {
+module cosmosGremlinDb 'br/public:storage/cosmos-db:2.0.0' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'westus'
@@ -416,4 +419,74 @@ module cosmosGremlinDb 'br/public:storage/cosmos-db:1.0.1' = {
 }
 
 output cosmosGremlinDbResourceId string = cosmosGremlinDb.outputs.id
+```
+
+### Example 7
+
+An example of how to deploy a Cosmos DB account with sqlRoleDefinitions and sqlRoleAssignments.
+
+```bicep
+module cosmosDb 'br/public:storage/cosmos-db:2.0.0' = {
+  name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
+  params: {
+    location: 'westus'
+    backendApi: 'sql'
+    name: 'cosmosdb-${uniqueString(deployment().name, location)}'
+    sqlDatabases: [
+      {
+        name: 'testdb1'
+        containers: [
+          {
+            name: 'container1'
+            autoscaleMaxThroughput: 4000
+            defaultTtl: 3600
+            partitionKey: {
+              paths: [
+                '/id'
+              ]
+              kind: 'Hash'
+              version: 1
+            }
+          }
+        ]
+      }
+    ]
+    sqlRoleDefinitions: [
+      {
+        // A user-friendly name for the Role Definition. Must be unique for the database account.
+        roleName: 'testReadWriteRole'
+        // A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Collection.
+        // Must have at least one element.
+        assignableScopes: [
+          '/' // This role definition can be assigned at the database account level
+        ]
+        // The set of operations allowed through this Role Definition.
+        permissions: [
+          {
+            dataActions: [
+              'Microsoft.DocumentDB/databaseAccounts/readMetadata'
+              'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+              'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
+            ]
+          }
+        ]
+      }
+    ]
+    sqlRoleAssignments: [
+      {
+        principalId: dependencies.outputs.identityPrincipalIds[0]
+        roleDefinitionId: '00000000-0000-0000-0000-000000000001'
+        scope: '/'
+      }
+      {
+        principalId: dependencies.outputs.identityPrincipalIds[1]
+        roleDefinitionId: '00000000-0000-0000-0000-000000000002'
+        scope: '/dbs/testdb1'
+      }
+    ]
+  }
+}
+
+output cosmosDbResourceId string = cosmosDb.outputs.id
+output sqlRoleDefinitionIds array = cosmosDb.outputs.sqlRoleDefinitionIds
 ```

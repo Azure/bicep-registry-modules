@@ -5,11 +5,11 @@ param cassandraTables array
 param autoscaleMaxThroughput int
 param manualProvisionedThroughput int
 
-resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-03-15' existing = {
+resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2022-11-15' existing = {
   name: cosmosDBAccountName
 }
 
-resource cosmosDBAccount_cassandraKeyspaces 'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces@2023-03-15' = {
+resource cosmosDBAccount_cassandraKeyspaces 'Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces@2022-11-15' = {
   name: keyspaceName
   parent: cosmosDBAccount
   properties: {
