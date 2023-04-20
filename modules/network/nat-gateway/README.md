@@ -4,7 +4,10 @@ A bicep module for simplified deployment for NAT gateways and available configur
 
 ## Description
 
+NAT gateway provides outbound internet connectivity for one or more subnets of a virtual network.
 The module creates a NAT Gateway resource using the Microsoft.Network/natGateways provider, with a standard SKU and the specified properties, including idle timeout, public IP addresses, public IP prefixes, and availability zones.
+[quickstart-create-nat-gateway-portal](https://learn.microsoft.com/en-us/azure/virtual-network/nat-gateway/quickstart-create-nat-gateway-portal)
+[nat-gateway](https://learn.microsoft.com/en-us/azure/virtual-network/nat-gateway/nat-gateway-resource)
 
 ## Parameters
 
