@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "6882369911072859716"
+      "templateHash": "12219304310386392453"
     }
   },
   "parameters": {
@@ -39,12 +39,14 @@
     "eventHubNamespaces": {
       "type": "object",
       "defaultValue": {
-        "evhns": {
+        "[format('evns-{0}', uniqueString(parameters('location')))]": {
           "sku": "Standard",
-          "capacity": 4,
-          "maximumThroughputUnits": 2,
-          "zoneRedundant": true,
-          "isAutoInflateEnabled": true
+          "capacity": 1,
+          "maximumThroughputUnits": 0,
+          "zoneRedundant": false,
+          "isAutoInflateEnabled": false,
+          "disableLocalAuth": false,
+          "kafkaEnabled": true
         }
       },
       "metadata": {

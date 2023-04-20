@@ -1,4 +1,5 @@
 @description('Optional. Name for the Event Hub cluster, Alphanumerics and hyphens characters, Start with letter, End with letter or number.')
+// We can not pass default variable value ''. Because it was showing The template resource '' of type 'Microsoft.EventHub/clusters' at line '1' is not valid. The name property cannot be null or empty.
 param clusterName string = 'null'
 
 @description('Optional. The quantity of Event Hubs Cluster Capacity Units contained in this cluster.')
@@ -21,12 +22,14 @@ disableLocalAuth: (Optional) bool, This property disables SAS authentication for
 kafkaEnabled: (Optional) bool, Value that indicates whether Kafka is enabled for eventhub namespace. Default to true.
 ''')
 param eventHubNamespaces object = {
-  evhns: {
+  'evns-${uniqueString(location)}': {
     sku: 'Standard'
-    capacity:  4
-    maximumThroughputUnits: 2
-    zoneRedundant: true
-    isAutoInflateEnabled: true
+    capacity:  1
+    maximumThroughputUnits: 0
+    zoneRedundant: false
+    isAutoInflateEnabled: false
+    disableLocalAuth: false
+    kafkaEnabled: true
   }
 }
 
