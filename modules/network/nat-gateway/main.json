@@ -5,14 +5,22 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "6963221398005326346"
+      "templateHash": "6966743742348997544"
     }
   },
   "parameters": {
+    "prefix": {
+      "type": "string",
+      "defaultValue": "ng",
+      "metadata": {
+        "description": "Required. Prefix of NAT Gateway Resource Name. This param is ignored when name is provided."
+      }
+    },
     "name": {
       "type": "string",
+      "defaultValue": "[format('{0}{1}', parameters('prefix'), uniqueString(resourceGroup().id, subscription().id))]",
       "metadata": {
-        "description": "Required. The name of the NAT Gateway resource."
+        "description": "Optional. The name of the NAT Gateway resource."
       }
     },
     "location": {
@@ -51,11 +59,22 @@
         "description": "Optional. An array of public ip prefixes associated with the nat gateway resource."
       }
     },
+    "isZoneRedundant": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Toggle to enable or disable zone redundance."
+      }
+    },
     "zones": {
       "type": "array",
-      "defaultValue": [],
+      "defaultValue": [
+        "1",
+        "2",
+        "3"
+      ],
       "metadata": {
-        "description": "Optional. Specify Azure Availability Zone IDs or leave unset to disable."
+        "description": "Optional. Specify Azure Availability Zone IDs when zone redundance is enabled."
       }
     }
   },
@@ -74,7 +93,7 @@
         "publicIpAddresses": "[parameters('publicIpAddresses')]",
         "publicIpPrefixes": "[parameters('publicIpPrefixes')]"
       },
-      "zones": "[parameters('zones')]"
+      "zones": "[if(parameters('isZoneRedundant'), parameters('zones'), createArray())]"
     }
   ],
   "outputs": {

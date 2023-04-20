@@ -1,5 +1,8 @@
-@description('Required. The name of the NAT Gateway resource.')
-param name string
+@description('Required. Prefix of NAT Gateway Resource Name. This param is ignored when name is provided.')
+param prefix string = 'ng'
+
+@description('Optional. The name of the NAT Gateway resource.')
+param name string = '${prefix}${uniqueString(resourceGroup().id, subscription().id)}'
 
 @description('Required. Location(region) for NAT Gateway will be deployed.')
 param location string
@@ -28,15 +31,11 @@ publicIPPrefixes: [{
       }]
 */
 
-@description('Optional. Specify Azure Availability Zone IDs or leave unset to disable.')
-param zones array = []
-/*Example:
-zones: [
-  '1'
-  '2'
-  '3'
-]
-*/
+@description('Toggle to enable or disable zone redundance.')
+param isZoneRedundant bool = false
+
+@description('Optional. Specify Azure Availability Zone IDs when zone redundance is enabled.')
+param zones array = [ '1', '2', '3' ]
 
 resource natGateway 'Microsoft.Network/natGateways@2022-09-01' = {
   name: name
@@ -50,11 +49,11 @@ resource natGateway 'Microsoft.Network/natGateways@2022-09-01' = {
     publicIpAddresses: publicIpAddresses
     publicIpPrefixes: publicIpPrefixes
   }
-  zones: zones
+  zones: isZoneRedundant ? zones : []
 }
 
 @description('Id of the NAT Gateway resource created.')
 output id string = natGateway.id
 
 @description('Name of the NAT Gateway Resource.')
-output name string = natGateway.name
+output name string = name

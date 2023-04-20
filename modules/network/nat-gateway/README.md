@@ -4,19 +4,21 @@ A bicep module for simplified deployment for NAT gateways and available configur
 
 ## Description
 
-{{ Add detailed description for the module. }}
+The module creates a NAT Gateway resource using the Microsoft.Network/natGateways provider, with a standard SKU and the specified properties, including idle timeout, public IP addresses, public IP prefixes, and availability zones.
 
 ## Parameters
 
-| Name                   | Type     | Required | Description                                                                         |
-| :--------------------- | :------: | :------: | :---------------------------------------------------------------------------------- |
-| `name`                 | `string` | Yes      | Required. The name of the NAT Gateway resource.                                     |
-| `location`             | `string` | Yes      | Required. Location(region) for NAT Gateway will be deployed.                        |
-| `tags`                 | `object` | No       | Optional. Tags for natGateways resource.                                            |
-| `idleTimeoutInMinutes` | `int`    | No       | Optional. The idle timeout of the NAT Gateway.                                      |
-| `publicIpAddresses`    | `array`  | No       | Optional. An array of public ip addresses associated with the nat gateway resource. |
-| `publicIpPrefixes`     | `array`  | No       | Optional. An array of public ip prefixes associated with the nat gateway resource.  |
-| `zones`                | `array`  | No       | Optional. Specify Azure Availability Zone IDs or leave unset to disable.            |
+| Name                   | Type     | Required | Description                                                                                 |
+| :--------------------- | :------: | :------: | :------------------------------------------------------------------------------------------ |
+| `prefix`               | `string` | No       | Required. Prefix of NAT Gateway Resource Name. This param is ignored when name is provided. |
+| `name`                 | `string` | No       | Optional. The name of the NAT Gateway resource.                                             |
+| `location`             | `string` | Yes      | Required. Location(region) for NAT Gateway will be deployed.                                |
+| `tags`                 | `object` | No       | Optional. Tags for natGateways resource.                                                    |
+| `idleTimeoutInMinutes` | `int`    | No       | Optional. The idle timeout of the NAT Gateway.                                              |
+| `publicIpAddresses`    | `array`  | No       | Optional. An array of public ip addresses associated with the nat gateway resource.         |
+| `publicIpPrefixes`     | `array`  | No       | Optional. An array of public ip prefixes associated with the nat gateway resource.          |
+| `isZoneRedundant`      | `bool`   | No       | Toggle to enable or disable zone redundance.                                                |
+| `zones`                | `array`  | No       | Optional. Specify Azure Availability Zone IDs when zone redundance is enabled.              |
 
 ## Outputs
 
@@ -33,7 +35,7 @@ A bicep module for simplified deployment for NAT gateways and available configur
 param name string = 'my-natGateway-01'
 param location = 'eastus'
 
-module natGateway 'br/public:network/nat-gateway:1.0.0' = {
+module natGateway 'br/public:network/nat-gateway:1.0.1' = {
   name: 'my-natGateway-01'
   params: {
     name: name
@@ -48,7 +50,7 @@ module natGateway 'br/public:network/nat-gateway:1.0.0' = {
 param name string = 'my-natGateway-02'
 param location = 'eastus'
 
-module natGateway 'br/public:network/nat-gateway:1.0.0' = {
+module natGateway 'br/public:network/nat-gateway:1.0.1' = {
   name: 'my-natGateway-02'
   params: {
     name: name
