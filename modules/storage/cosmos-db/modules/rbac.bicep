@@ -2,7 +2,7 @@ param description string = ''
 param principalIds array
 param principalType string = ''
 param roleDefinitionIdOrName string
-param resourceId string
+param cosmosDBAccountName string
 
 var builtInRoleNames = {
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -24,14 +24,14 @@ var builtInRoleNames = {
 }
 
 resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2022-11-15' existing = {
-  name: last(split(resourceId, '/'))
+  name: cosmosDBAccountName
 }
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for principalId in principalIds: {
   name: guid(cosmosDBAccount.name, principalId, roleDefinitionIdOrName)
   properties: {
     description: description
-    roleDefinitionId: contains(builtInRoleNames, roleDefinitionIdOrName) ? builtInRoleNames[roleDefinitionIdOrName] : roleDefinitionIdOrName
+    roleDefinitionId: contains(builtInRoleNames, roleDefinitionIdOrName) ? builtInRoleNames[roleDefinitionIdOrName] : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionIdOrName)
     principalId: principalId
     principalType: !empty(principalType) ? principalType : null
   }

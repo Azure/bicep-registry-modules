@@ -179,7 +179,7 @@ var varPrivateEndpoints = [for endpoint in privateEndpoints: {
   manualApprovalEnabled: contains(endpoint, 'manualApprovalEnabled') ? endpoint.manualApprovalEnabled : false
 }]
 
-resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-03-15' = {
+resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2022-11-15' = {
   name: toLower(name)
   location: location
   kind: (backendApi == 'mongodb') ? 'MongoDB' : 'GlobalDocumentDB'
@@ -288,18 +288,18 @@ module cosmosDBAccount_gremlinDatabases 'modules/gremlin.bicep' = [for gremlinDa
   }
 }]
 
-module cosmosDBAccount_rbac '.bicep/nested_rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
+module cosmosDBAccount_rbac 'modules/rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
   name: 'cosmosdb-rbac-${uniqueString(deployment().name, location)}-${index}'
   params: {
     description: contains(roleAssignment, 'description') ? roleAssignment.description : ''
     principalIds: roleAssignment.principalIds
     roleDefinitionIdOrName: roleAssignment.roleDefinitionIdOrName
     principalType: contains(roleAssignment, 'principalType') ? roleAssignment.principalType : ''
-    resourceId: cosmosDBAccount.id
+    cosmosDBAccountName: name
   }
 }]
 
-module cosmosDBAccount_privateEndpoint '.bicep/nested_privateEndpoint.bicep' = {
+module cosmosDBAccount_privateEndpoint 'modules/privateEndpoint.bicep' = {
   name: '${name}-${uniqueString(deployment().name, location)}-private-endpoints'
   params: {
     location: location

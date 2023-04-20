@@ -100,7 +100,7 @@ module cosmosCassandraDb 'br/public:storage/cosmos-db:2.0.0' = {
         principalIds: [ '5f82d7a7-1d09-401a-b473-c723972e8676' ]
       }
       {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions/5bd9cd88-fe45-4216-938b-f97437e15450') // DocumentDB Account Contributor
+        roleDefinitionIdOrName: '5bd9cd88-fe45-4216-938b-f97437e15450' // DocumentDB Account Contributor
         principalIds: [ 'cdac5946-f757-43a9-8657-31f59048deb5' ]
       }
     ]

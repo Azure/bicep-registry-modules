@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "7284079907465977624"
+      "templateHash": "11025477020362641350"
     }
   },
   "parameters": {
@@ -365,7 +365,7 @@
   "resources": [
     {
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2023-03-15",
+      "apiVersion": "2022-11-15",
       "name": "[toLower(parameters('name'))]",
       "location": "[parameters('location')]",
       "kind": "[if(equals(parameters('backendApi'), 'mongodb'), 'MongoDB', 'GlobalDocumentDB')]",
@@ -1033,8 +1033,8 @@
             "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
           },
           "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
-          "resourceId": {
-            "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name')))]"
+          "cosmosDBAccountName": {
+            "value": "[parameters('name')]"
           }
         },
         "template": {
@@ -1044,7 +1044,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.2.56959",
-              "templateHash": "15852672048836364275"
+              "templateHash": "11005349213797858385"
             }
           },
           "parameters": {
@@ -1062,7 +1062,7 @@
             "roleDefinitionIdOrName": {
               "type": "string"
             },
-            "resourceId": {
+            "cosmosDBAccountName": {
               "type": "string"
             }
           },
@@ -1094,21 +1094,18 @@
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.DocumentDB/databaseAccounts/{0}', last(split(parameters('resourceId'), '/')))]",
-              "name": "[guid(last(split(parameters('resourceId'), '/')), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+              "scope": "[format('Microsoft.DocumentDB/databaseAccounts/{0}', parameters('cosmosDBAccountName'))]",
+              "name": "[guid(parameters('cosmosDBAccountName'), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
               "properties": {
                 "description": "[parameters('description')]",
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionIdOrName')))]",
                 "principalId": "[parameters('principalIds')[copyIndex()]]",
                 "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]"
               }
             }
           ]
         }
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name')))]"
-      ]
+      }
     },
     {
       "type": "Microsoft.Resources/deployments",
@@ -1246,7 +1243,7 @@
       "metadata": {
         "description": "Object Id of system assigned managed identity for Cosmos DB account (if enabled)."
       },
-      "value": "[if(contains(parameters('identityType'), 'SystemAssigned'), reference(resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name'))), '2023-03-15', 'full').identity.principalId, '')]"
+      "value": "[if(contains(parameters('identityType'), 'SystemAssigned'), reference(resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name'))), '2022-11-15', 'full').identity.principalId, '')]"
     }
   }
 }

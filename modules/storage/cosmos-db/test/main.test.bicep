@@ -51,7 +51,7 @@ module test02 '../main.bicep' = {
         principalIds: [ dependencies.outputs.identityPrincipalIds[0] ]
       }
       {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5bd9cd88-fe45-4216-938b-f97437e15450') // DocumentDB Account Contributor
+        roleDefinitionIdOrName: '5bd9cd88-fe45-4216-938b-f97437e15450' // DocumentDB Account Contributor
         principalIds: [ dependencies.outputs.identityPrincipalIds[1] ]
       }
     ]
@@ -117,7 +117,7 @@ module test03 '../main.bicep' = {
     maxIntervalInSeconds: 10000
     maxStalenessPrefix: 100000
     totalThroughputLimit: 10000
-    enableMultipleWriteLocations : false
+    enableMultipleWriteLocations: false
     secondaryLocations: [
       {
         locationName: 'westus'
