@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
+  "name": "Azure MySQL Database",
+  "summary": "This module deploys a MySQL database.",
+  "owner": "tanujbhatia1708"
+}
