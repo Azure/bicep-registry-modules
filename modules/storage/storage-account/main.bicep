@@ -1,8 +1,11 @@
 @description('Deployment Location')
 param location string
 
+@description('Prefix of Storage Account Resource Name. This param is ignored when name is provided.')
+param prefix string = 'st'
+
 @description('Name of Storage Account. Must be unique within Azure.')
-param name string = 'st${uniqueString(resourceGroup().id, subscription().id)}'
+param name string = '${prefix}${uniqueString(resourceGroup().id, subscription().id)}'
 
 @description('ID of the subnet where the Storage Account will be deployed, if virtual network access is enabled.')
 param subnetID string = ''
@@ -52,5 +55,9 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   }
 }
 
-@description('The ID of the created or existing Storage Account. Use this ID to reference the Storage Account in other Azure resource deployments.')
+
+@description('The name of the Storage Account resource')
+output name string = name
+
+@description('The ID of the Storage Account. Use this ID to reference the Storage Account in other Azure resource deployments.')
 output id string = storageAccount.id
