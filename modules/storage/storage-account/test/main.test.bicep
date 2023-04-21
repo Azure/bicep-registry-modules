@@ -21,7 +21,7 @@ module prereq 'prereq.test.bicep' = {
 module delayDeployment 'br/public:deployment-scripts/wait:1.0.1' = {
   name: 'delayDeployment'
   params: {
-    waitSeconds: 120
+    waitSeconds: 60
     location: location
   }
 }
