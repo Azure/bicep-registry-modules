@@ -1,6 +1,6 @@
 # Azure MySQL Database
 
-This module deploys a MySQL database in Azure.
+This module deploys a MySQL database.
 
 ## Description
 
