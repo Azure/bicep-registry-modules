@@ -56,6 +56,7 @@ module test2 '../main.bicep' = {
     prereq
   ]
   params: {
+    name: 'test2sablobcontainers'
     location: location
     blobProperties: {
       isVersioningEnabled: true
