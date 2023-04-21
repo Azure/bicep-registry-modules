@@ -19,8 +19,8 @@ param isZoneRedundant bool = false
 @description('Storage Account Type. Use Zonal Redundant Storage when able.')
 param storageAccountType string = isZoneRedundant ? 'Standard_ZRS' : 'Standard_LRS'
 
-@description('Toggle to enable or disable Blob service of the Storage Account.')
-param enableBlobService bool = false
+// @description('Toggle to enable or disable Blob service of the Storage Account.')
+// param enableBlobService bool = false
 
 @description('Name of a blob service to be created.')
 param blobName string = ''
@@ -171,10 +171,10 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     networkAcls: networkAcls
     minimumTlsVersion: 'TLS1_2'
   }
-  resource blobService 'blobServices' = if (enableBlobService) {
+  resource blobService 'blobServices' = if (blobName != '') {
     name: blobName
     properties: blobProperties
-    resource container 'containers' = if (enableBlobService) {
+    resource container 'containers' = if (blobContainerName != '') {
       name: blobContainerName
       properties: blobContainerProperties
     }
