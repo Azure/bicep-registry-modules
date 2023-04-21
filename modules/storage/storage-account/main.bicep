@@ -126,7 +126,8 @@ type blobServiceContainerProperties = {
   publicAccess: blobContainerPublicAccess?
 }
 
-type blobContainerPublicAccess = 'Blob' | 'Container' | 'None'
+@description('Allowed values are \'Blob\', \'Container\' or \'None\'')
+type blobContainerPublicAccess = string
 
 type defaultEncryptionScope = string
 
