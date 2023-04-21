@@ -97,7 +97,7 @@ type deleteRetentionPolicy = {
 type deleteRetentionPolicyDays = int
 
 @description('Toggle to enable or disable versioning for Blob service of the Storage Account. Used only if enableBlobService is set to true.')
-type isBlobVersioningEnabled = false | true
+type isBlobVersioningEnabled = bool
 
 type lastAccessTimeTrackingPolicy = {
   blobType: [
