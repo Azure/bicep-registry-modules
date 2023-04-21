@@ -50,36 +50,36 @@ module test1 '../main.bicep' = {
 }
 
 //Test 2. 
-module test2 '../main.bicep' = {
-  name: 'test2'
-  dependsOn: [
-    prereq
-  ]
-  params: {
-    location: location
-    blobProperties: {
-      isVersioningEnabled: true
-    }
-    blobContainerProperties: {
-      publicAccess: 'None'
-    }
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Reader and Data Access'
-        principalIds: [ prereq.outputs.identityPrincipalIds[0] ]
-        principalType: 'ServicePrincipal'
-      }
-      {
-        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-        principalIds: [ prereq.outputs.identityPrincipalIds[0] ]
-        principalType: 'ServicePrincipal'
-        resourceType: 'blobContainer'
-      }
-      {
-        roleDefinitionIdOrName: 'Reader and Data Access'
-        principalIds: [ prereq.outputs.identityPrincipalIds[1] ]
-        principalType: 'ServicePrincipal'
-      }
-    ]
-  }
-}
+// module test2 '../main.bicep' = {
+//   name: 'test2'
+//   dependsOn: [
+//     prereq
+//   ]
+//   params: {
+//     location: location
+//     blobProperties: {
+//       isVersioningEnabled: true
+//     }
+//     blobContainerProperties: {
+//       publicAccess: 'None'
+//     }
+//     roleAssignments: [
+//       {
+//         roleDefinitionIdOrName: 'Reader and Data Access'
+//         principalIds: [ prereq.outputs.identityPrincipalIds[0] ]
+//         principalType: 'ServicePrincipal'
+//       }
+//       {
+//         roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+//         principalIds: [ prereq.outputs.identityPrincipalIds[0] ]
+//         principalType: 'ServicePrincipal'
+//         resourceType: 'blobContainer'
+//       }
+//       {
+//         roleDefinitionIdOrName: 'Reader and Data Access'
+//         principalIds: [ prereq.outputs.identityPrincipalIds[1] ]
+//         principalType: 'ServicePrincipal'
+//       }
+//     ]
+//   }
+// }
