@@ -48,9 +48,9 @@ var builtInRoleNames = {
 
 resource storage 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
   name: name
-  resource blob 'blobServices@2022-09-01' existing = if (blobName != '') {
+  resource blob 'blobServices' existing = if (blobName != '') {
     name: blobName
-    resource container 'containers@2022-09-01' existing = if (containerName != '') {
+    resource container 'containers' existing = if (containerName != '') {
       name: containerName
     }
   }

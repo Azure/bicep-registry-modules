@@ -171,10 +171,10 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     networkAcls: networkAcls
     minimumTlsVersion: 'TLS1_2'
   }
-  resource blobService 'blobServices@2022-09-01' = if (enableBlobService) {
+  resource blobService 'blobServices' = if (enableBlobService) {
     name: blobName
     properties: blobProperties
-    resource container 'containers@2022-09-01' = if (enableBlobService) {
+    resource container 'containers' = if (enableBlobService) {
       name: blobContainerName
       properties: blobContainerProperties
     }
