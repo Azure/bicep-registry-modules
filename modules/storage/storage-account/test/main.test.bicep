@@ -22,6 +22,9 @@ module test0 '../main.bicep' = {
   name: 'test0'
   params: {
     location: location
+    blobProperties: {
+      isVersioningEnabled: false
+    }
   }
 }
 
@@ -39,7 +42,7 @@ module test1 '../main.bicep' = {
   }
 }
 
-//Test 1. 
+//Test 2. 
 module test2 '../main.bicep' = {
   name: 'test2'
   params: {
