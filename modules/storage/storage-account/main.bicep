@@ -149,7 +149,7 @@ type roleAssignmentDescription = string
 
 type roleDefinitionIdOrName = string
 
-type principalIds = []
+type principalIds = string[]
 
 type principalType = string
 
