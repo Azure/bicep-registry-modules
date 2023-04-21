@@ -57,7 +57,7 @@ resource storage 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
 }
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for principalId in principalIds: {
-  name: guid(resourceType == 'blobContainer' ? containerName : storage.name, principalId, roleDefinitionIdOrName)
+  name: guid(resourceType == 'blobContainer' ? storage::blob::container.name : storage.name, principalId, roleDefinitionIdOrName)
   properties: {
     description: description
     roleDefinitionId: contains(builtInRoleNames, roleDefinitionIdOrName) ? subscriptionResourceId('Microsoft.Authorization/roleDefinitions', builtInRoleNames[roleDefinitionIdOrName]) : roleDefinitionIdOrName
