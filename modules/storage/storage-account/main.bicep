@@ -35,7 +35,7 @@ param blobContainerName string = 'default'
 param blobContainerProperties blobServiceContainerProperties = {}
 
 @description('Array of role assignment objects that contain the \'roleDefinitionIdOrName\', \'principalId\' and \'resourceType\' as \'storageAccount\' or \'blobContainer\' to define RBAC role assignments on that resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'')
-param roleAssignments array = []
+param roleAssignments roleAssignmentsArray = []
 
 type blobServiceProperties = {
   changeFeed: changeFeed?
@@ -136,6 +136,24 @@ type denyEncryptionScopeOverride = string
 type immutableStorageWithVersioning = {
   enabled: bool
 }
+
+type roleAssignmentsArray = {
+  description: roleAssignmentDescription?
+  roleDefinitionIdOrName: roleDefinitionIdOrName?
+  principalIds: principalIds?
+  principalType: principalType?
+  resourceType: resourceType?
+}[]
+
+type roleAssignmentDescription = string
+
+type roleDefinitionIdOrName = string
+
+type principalIds = []
+
+type principalType = string
+
+type resourceType = string
 
 var networkAcls = enableVNET ? {
   defaultAction: 'Deny'
