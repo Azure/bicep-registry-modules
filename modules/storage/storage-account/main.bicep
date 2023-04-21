@@ -201,6 +201,9 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
 
 module storageRbac 'modules/rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
   name: 'sa-rbac-${index}-${uniqueString(deployment().name, location)}'
+  dependsOn: [
+    storageAccount
+  ]
   params: {
     description: contains(roleAssignment, 'description') ? roleAssignment.description : 'role assignment'
     principalIds: roleAssignment.principalIds
