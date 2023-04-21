@@ -17,6 +17,15 @@ module prereq 'prereq.test.bicep' = {
   }
 }
 
+// This 'wait' is needed because RBAC (Identities/Roles/Role Assignemnts etc) in Azure always take few to reflect!
+// module delayDeployment 'br/public:deployment-scripts/wait:1.0.1' = {
+//   name: 'delayDeployment'
+//   params: {
+//     waitSeconds: 60
+//     location: location
+//   }
+// }
+
 //Test 0. 
 module test0 '../main.bicep' = {
   name: 'test0'
@@ -41,30 +50,33 @@ module test1 '../main.bicep' = {
 }
 
 //Test 2. 
-// module test2 '../main.bicep' = {
-//   name: 'test2'
-//   params: {
-//     location: location
-//     blobProperties: {
-//       isVersioningEnabled: true
-//     }
-//     blobContainerProperties: {
-//       publicAccess: 'None'
-//     }
-//     roleAssignments: [
-//       {
-//         roleDefinitionIdOrName: 'Reader and Data Access'
-//         principalIds: [ prereq.outputs.identityPrincipalIds[0] ]
-//       }
-//       {
-//         roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-//         principalIds: [ prereq.outputs.identityPrincipalIds[0] ]
-//         resourceType: 'blobContainer'
-//       }
-//       {
-//         roleDefinitionIdOrName: 'Reader and Data Access'
-//         principalIds: [ prereq.outputs.identityPrincipalIds[1] ]
-//       }      
-//     ]
-//   }
-// }
+module test2 '../main.bicep' = {
+  name: 'test2'
+  dependsOn: [
+    prereq
+  ]
+  params: {
+    location: location
+    blobProperties: {
+      isVersioningEnabled: true
+    }
+    blobContainerProperties: {
+      publicAccess: 'None'
+    }
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Reader and Data Access'
+        principalIds: [ prereq.outputs.identityPrincipalIds[0] ]
+      }
+      {
+        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+        principalIds: [ prereq.outputs.identityPrincipalIds[0] ]
+        resourceType: 'blobContainer'
+      }
+      {
+        roleDefinitionIdOrName: 'Reader and Data Access'
+        principalIds: [ prereq.outputs.identityPrincipalIds[1] ]
+      }
+    ]
+  }
+}
