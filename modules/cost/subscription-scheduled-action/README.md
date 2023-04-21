@@ -46,7 +46,7 @@ You can also use scheduled actions to configure anomaly detection alerts for sub
 Creates a shared scheduled action for the DailyCosts built-in view.
 
 ```bicep
-module dailyCostsAlert 'br/public:cost/subscription-scheduled-action:1.0' = {
+module dailyCostsAlert 'br/public:cost/subscription-scheduled-action:1.0.1' = {
   name: 'dailyCostsAlert'
   params: {
     name: 'DailyCostsAlert'
@@ -64,7 +64,7 @@ module dailyCostsAlert 'br/public:cost/subscription-scheduled-action:1.0' = {
 Creates a private scheduled action for the DailyCosts built-in view with custom start/end dates.
 
 ```bicep
-module privateAlert 'br/public:cost/subscription-scheduled-action:1.0' = {
+module privateAlert 'br/public:cost/subscription-scheduled-action:1.0.1' = {
   name: 'privateAlert'
   params: {
     name: 'PrivateAlert'
@@ -85,7 +85,7 @@ module privateAlert 'br/public:cost/subscription-scheduled-action:1.0' = {
 Creates an anomaly alert.
 
 ```bicep
-module anomalyAlert 'br/public:cost/subscription-scheduled-action:1.0' = {
+module anomalyAlert 'br/public:cost/subscription-scheduled-action:1.0.1' = {
   name: 'anomalyAlert'
   params: {
     name: 'AnomalyAlert'
