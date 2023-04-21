@@ -21,6 +21,7 @@ module prereq 'prereq.test.bicep' = {
 module test0 '../main.bicep' = {
   name: 'test0'
   params: {
+    name: 'test0sablobcontainers'
     location: location
   }
 }

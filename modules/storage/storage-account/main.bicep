@@ -23,13 +23,13 @@ param storageAccountType string = isZoneRedundant ? 'Standard_ZRS' : 'Standard_L
 // param enableBlobService bool = false
 
 @description('Name of a blob service to be created.')
-param blobName string = ''
+param blobName string = 'default'
 
 @description('Properties object for a Blob service of a Storage Account.')
 param blobProperties blobServiceProperties = {}
 
 @description('Name of a blob container to be created')
-param blobContainerName string = ''
+param blobContainerName string = 'default'
 
 @description('Properties object for a Blob container of a Storage Account.')
 param blobContainerProperties blobServiceContainerProperties = {}
