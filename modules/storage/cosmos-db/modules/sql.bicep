@@ -27,7 +27,7 @@ resource cosmosDBAccount_sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlD
 }
 
 @batchSize(1)
-module cosmosDBAccount_sqlDatabaseContainers 'sql_container.bicep' = [for sqlDatabaseContainer in sqlDatabaseContainers: {
+module cosmosDBAccount_sqlDatabaseContainers 'sql_containers.bicep' = [for sqlDatabaseContainer in sqlDatabaseContainers: {
   name: sqlDatabaseContainer.name
   dependsOn: [
     cosmosDBAccount_sqlDatabase

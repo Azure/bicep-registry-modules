@@ -294,7 +294,7 @@ module cosmosDBAccount_gremlinDatabases 'modules/gremlin.bicep' = [for gremlinDa
   }
 }]
 
-module cosmosDBAccount_sqlRoles 'modules/sql_role.bicep' = {
+module cosmosDBAccount_sqlRoles 'modules/sql_roles.bicep' = {
   name: 'sql-role-${uniqueString(name, location)}'
   dependsOn: [
     cosmosDBAccount
