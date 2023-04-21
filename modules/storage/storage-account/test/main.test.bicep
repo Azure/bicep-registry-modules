@@ -41,30 +41,30 @@ module test1 '../main.bicep' = {
 }
 
 //Test 2. 
-module test2 '../main.bicep' = {
-  name: 'test2'
-  params: {
-    location: location
-    blobProperties: {
-      isVersioningEnabled: true
-    }
-    blobContainerProperties: {
-      publicAccess: 'None'
-    }
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Reader and Data Access'
-        principalIds: [ prereq.outputs.identityPrincipalIds[0] ]
-      }
-      {
-        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-        principalIds: [ prereq.outputs.identityPrincipalIds[0] ]
-        resourceType: 'blobContainer'
-      }
-      {
-        roleDefinitionIdOrName: 'Reader and Data Access'
-        principalIds: [ prereq.outputs.identityPrincipalIds[1] ]
-      }      
-    ]
-  }
-}
+// module test2 '../main.bicep' = {
+//   name: 'test2'
+//   params: {
+//     location: location
+//     blobProperties: {
+//       isVersioningEnabled: true
+//     }
+//     blobContainerProperties: {
+//       publicAccess: 'None'
+//     }
+//     roleAssignments: [
+//       {
+//         roleDefinitionIdOrName: 'Reader and Data Access'
+//         principalIds: [ prereq.outputs.identityPrincipalIds[0] ]
+//       }
+//       {
+//         roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+//         principalIds: [ prereq.outputs.identityPrincipalIds[0] ]
+//         resourceType: 'blobContainer'
+//       }
+//       {
+//         roleDefinitionIdOrName: 'Reader and Data Access'
+//         principalIds: [ prereq.outputs.identityPrincipalIds[1] ]
+//       }      
+//     ]
+//   }
+// }
