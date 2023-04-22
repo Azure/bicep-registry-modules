@@ -18,13 +18,13 @@ module prereq 'prereq.test.bicep' = {
 }
 
 // This 'wait' is needed because RBAC (Identities/Roles/Role Assignemnts etc) in Azure always take some time to reflect!
-module delayDeployment 'br/public:deployment-scripts/wait:1.0.1' = {
-  name: 'delayDeployment'
-  params: {
-    waitSeconds: 60
-    location: location
-  }
-}
+// module delayDeployment 'br/public:deployment-scripts/wait:1.0.1' = {
+//   name: 'delayDeployment'
+//   params: {
+//     waitSeconds: 60
+//     location: location
+//   }
+// }
 
 //Test 0. 
 module test0 '../main.bicep' = {
