@@ -5,7 +5,7 @@ module file is a deployment test. Make sure at least one test is added.
 
 targetScope = 'resourceGroup'
 param location string = resourceGroup().location
-param name string = replace(take(deployment().name, 55), '.', '')
+var uniqueName = uniqueString(resourceGroup().id, deployment().name, location)
 
 param tags object = {
   costcenter: '000'
@@ -13,11 +13,16 @@ param tags object = {
   location: resourceGroup().location
 }
 
-//test 0
-module test0 '../main.bicep' = {
-  name: 'test0-${uniqueString(name)}'
+// ===== //
+// Tests //
+// ===== //
+
+//test 01 - Minimal Parameters//
+
+module test_01 '../main.bicep' = {
+  name: '${uniqueName}-test-01'
   params: {
-    name: 'test0-${name}'
+    name: 'test01${uniqueName}'
     location: location
     tags: tags
   }
