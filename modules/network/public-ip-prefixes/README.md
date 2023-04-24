@@ -57,11 +57,6 @@ module publicIpPrefix2 'br/public:network/public-ip-prefixes:1.0.1' = {
     name: 'publicIpPrefix2'
     location: location
     prefixLength: 30
-    availabilityZones: [
-      '1'
-      '2'
-      '3'
-    ]
     publicIPAddressVersion: 'IPv4'
     tier: 'Regional'
   }

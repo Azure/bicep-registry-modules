@@ -31,11 +31,6 @@ module test1 '../main.bicep' = {
     location: location
     tags: tags
     prefixLength: 30
-    availabilityZones: [
-      '1'
-      '2'
-      '3'
-    ]
     publicIPAddressVersion: 'IPv4'
     tier: 'Regional'
   }
