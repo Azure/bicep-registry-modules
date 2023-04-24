@@ -8,25 +8,24 @@ This module deploys Log Analytics workspace and optionally available integration
 
 ## Parameters
 
-| Name                              | Type     | Required | Description                                                                         |
-| :---------------------------------| :------: | :------: | :---------------------------------------------------------------------------------- |
-| `name`                            | `string` | Yes      | Name of the Log Analytics Workspace.                                                |
-| `location`                        | `string` | Yes      | Define the Azure Location that the Log Analytics Workspace should be created within.|
-| `tags`                            | `object` | No       | Tags for Log Analytics Workspace.                                                   |
-| `skuName`                         | `string` | No       | sku of Log Analytics Workspace.                                                     |
-| `retentionInDays`                 | `int`    | No       | The workspace data retention in days.                                               |
-| `publicNetworkAccessForIngestion` | `string` | No       | The network access type for operating on the Log Analytics Workspace.               |
-| `publicNetworkAccessForQuery`     | `string` | No       | The network access type for operating on the Log Analytics Workspace.               |
-| `dailyQuotaGb`                    | `int`    | No       | The workspace daily quota for ingestion.                                            |
-| `forceCmkForQuery`                | `bool`   | No       | Indicates whether customer managed storage is mandatory for query management.       |
-
+| Name                              | Type     | Required | Description                                                                                              |
+| :-------------------------------- | :------: | :------: | :------------------------------------------------------------------------------------------------------- |
+| `name`                            | `string` | Yes      | Required. Name of the Log Analytics Workspace.                                                           |
+| `location`                        | `string` | Yes      | Required. Define the Azure Location that the Log Analytics Workspace should be created within.           |
+| `tags`                            | `object` | No       | Optional. Tags for Log Analytics Workspace.                                                              |
+| `skuName`                         | `string` | No       | Optional. sku of Log Analytics Workspace. Default set to PerGB2018                                       |
+| `retentionInDays`                 | `int`    | No       | Optional. The workspace data retention in days. Default set to 30                                        |
+| `publicNetworkAccessForIngestion` | `string` | No       | Optional. The network access type for operating on the Log Analytics Workspace. By default it is Enabled |
+| `publicNetworkAccessForQuery`     | `string` | No       | Optional. The network access type for operating on the Log Analytics Workspace. By default it is Enabled |
+| `dailyQuotaGb`                    | `int`    | No       | Optional. The workspace daily quota for ingestion. Default set to -1                                     |
+| `forceCmkForQuery`                | `bool`   | No       | Optional. Indicates whether customer managed storage is mandatory for query management.                  |
 
 ## Outputs
 
-| Name | Type   | Description                             |
-| :--- | :----: | :-------------------------------------- |
-| id   | string | Id of the Log Analytics Workspace.      |
-| name | string | Name of the Log Analytics Workspace.    |
+| Name | Type   | Description                          |
+| :--- | :----: | :----------------------------------- |
+| id   | string | Id of the Log Analytics Workspace.   |
+| name | string | Name of the Log Analytics Workspace. |
 
 ## Examples
 
