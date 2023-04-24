@@ -220,8 +220,8 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2022-11-15' = {
 }
 
 @batchSize(1)
-module cosmosDBAccount_cassandraKeyspaces 'modules/cassandra.bicep' = [for keyspace in cassandraKeyspaces: if (backendApi == 'cassandra') {
-  name: 'cassandra-keyspace-${uniqueString(keyspace.name, resourceGroup().name)}'
+module cosmosDBAccount_cassandraKeyspaces 'modules/cassandra.bicep' = [for (keyspace, i) in cassandraKeyspaces: if (backendApi == 'cassandra') {
+  name: 'cassandra-keyspace-${uniqueString(keyspace.name, resourceGroup().name)}-${i}'
   dependsOn: [
     cosmosDBAccount
   ]
@@ -236,8 +236,8 @@ module cosmosDBAccount_cassandraKeyspaces 'modules/cassandra.bicep' = [for keysp
 }]
 
 @batchSize(1)
-module cosmosDBAccount_sqlDatabases 'modules/sql.bicep' = [for sqlDatabase in sqlDatabases: if (backendApi == 'sql') {
-  name: 'sql-database-${uniqueString(sqlDatabase.name, resourceGroup().name)}'
+module cosmosDBAccount_sqlDatabases 'modules/sql.bicep' = [for (sqlDatabase, i) in sqlDatabases: if (backendApi == 'sql') {
+  name: 'sql-database-${uniqueString(sqlDatabase.name, resourceGroup().name)}-${i}'
   dependsOn: [
     cosmosDBAccount
   ]
@@ -252,8 +252,8 @@ module cosmosDBAccount_sqlDatabases 'modules/sql.bicep' = [for sqlDatabase in sq
 }]
 
 @batchSize(1)
-module cosmosDBAccount_mongodbDatabases 'modules/mongodb.bicep' = [for mongodbDatabase in mongodbDatabases: if (backendApi == 'mongodb') {
-  name: 'mongodb-database-${uniqueString(mongodbDatabase.name, resourceGroup().name)}'
+module cosmosDBAccount_mongodbDatabases 'modules/mongodb.bicep' = [for (mongodbDatabase, i) in mongodbDatabases: if (backendApi == 'mongodb') {
+  name: 'mongodb-database-${uniqueString(mongodbDatabase.name, resourceGroup().name)}-${i}'
   dependsOn: [
     cosmosDBAccount
   ]
@@ -268,8 +268,8 @@ module cosmosDBAccount_mongodbDatabases 'modules/mongodb.bicep' = [for mongodbDa
 }]
 
 @batchSize(1)
-module cosmosDBAccount_tables 'modules/table.bicep' = [for table in tables: if (backendApi == 'table') {
-  name: 'table-${uniqueString(table.name, resourceGroup().name)}'
+module cosmosDBAccount_tables 'modules/table.bicep' = [for (table, i) in tables: if (backendApi == 'table') {
+  name: 'table-${uniqueString(table.name, resourceGroup().name)}-${i}'
   dependsOn: [
     cosmosDBAccount
   ]
@@ -283,8 +283,8 @@ module cosmosDBAccount_tables 'modules/table.bicep' = [for table in tables: if (
 }]
 
 @batchSize(1)
-module cosmosDBAccount_gremlinDatabases 'modules/gremlin.bicep' = [for gremlinDatabase in gremlinDatabases: if (backendApi == 'gremlin') {
-  name: 'gremlin-database-${uniqueString(gremlinDatabase.name, resourceGroup().name)}'
+module cosmosDBAccount_gremlinDatabases 'modules/gremlin.bicep' = [for (gremlinDatabase, i) in gremlinDatabases: if (backendApi == 'gremlin') {
+  name: 'gremlin-database-${uniqueString(gremlinDatabase.name, resourceGroup().name)}-${i}'
   dependsOn: [
     cosmosDBAccount
   ]
