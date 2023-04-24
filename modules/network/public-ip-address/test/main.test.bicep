@@ -33,14 +33,14 @@ module test0 '../main.bicep' = {
   params: {
     location: location
     name: 'test0'
-    domainNameLabel: 'test0'
+    domainNameLabel: 'sample0'
   }
 }
 
 module test1 '../main.bicep' = {
   name: 'test1-${name}'
   params: {
-    domainNameLabel: 'test1'
+    domainNameLabel: 'sample1'
     location: location
     name: 'test1'
     publicIPAddressVersion: 'IPv4'
@@ -56,14 +56,9 @@ module test2 '../main.bicep' = {
     prereq
   ]
   params: {
-    domainNameLabel: 'test2'
+    domainNameLabel: 'sample2'
     location: location
     name: 'test2'
-    availabilityZones: [
-      '1'
-      '2'
-      '3'
-    ]
     publicIPAddressVersion: 'IPv4'
     publicIPAllocationMethod: 'Static'
     skuName: 'Standard'
