@@ -17,7 +17,7 @@ param tags object = {
 // Tests //
 // ===== //
 
-//test 01 -Minimal Parameters//
+//test 01 - Minimal Parameters//
 
 module test_01 '../main.bicep' = {
   name: '${uniqueName}-test-01'

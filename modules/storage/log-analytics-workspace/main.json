@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "4895258095632138081"
+      "version": "0.16.2.56959",
+      "templateHash": "18212039306959495780"
     }
   },
   "parameters": {
@@ -131,17 +131,17 @@
   "outputs": {
     "id": {
       "type": "string",
-      "value": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('name'))]",
       "metadata": {
         "description": "Id of the Log Analytics Workspace."
-      }
+      },
+      "value": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('name'))]"
     },
     "name": {
       "type": "string",
-      "value": "[parameters('name')]",
       "metadata": {
         "description": "Name of the Log Analytics Workspace."
-      }
+      },
+      "value": "[parameters('name')]"
     }
   }
 }
