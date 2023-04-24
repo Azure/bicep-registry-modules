@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "4612138379598120522"
+      "templateHash": "8195679853000186012"
     }
   },
   "parameters": {
@@ -101,7 +101,7 @@
     "domainNameLabel": {
       "type": "string",
       "metadata": {
-        "description": "Optional. The domain name label. The concatenation of the domain name label and the regionalized DNS zone make up the fully qualified domain name associated with the public IP address. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system."
+        "description": "Required. The domain name label. The concatenation of the domain name label and the regionalized DNS zone make up the fully qualified domain name associated with the public IP address. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system."
       },
       "maxLength": 63,
       "minLength": 3
