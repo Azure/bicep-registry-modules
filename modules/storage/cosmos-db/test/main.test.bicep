@@ -336,6 +336,9 @@ module test06 '../main.bicep' = {
 // Test 07 - SQL DB with containers - totalThroughputLimit & BoundedStaleness as defaultConsistencyLevel.
 module test07 '../main.bicep' = {
   name: 'test07-${uniqueName}'
+  dependsOn: [
+    test03 // SQL DB with containers test case causing conflict due to same deployment name.
+  ]
   params: {
     location: location
     backendApi: 'sql'
