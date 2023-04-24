@@ -221,7 +221,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2022-11-15' = {
 
 @batchSize(1)
 module cosmosDBAccount_cassandraKeyspaces 'modules/cassandra.bicep' = [for keyspace in cassandraKeyspaces: if (backendApi == 'cassandra') {
-  name: 'cassandra-keyspace-${uniqueString(keyspace.name, location)}'
+  name: 'cassandra-keyspace-${uniqueString(keyspace.name, resourceGroup().name)}'
   dependsOn: [
     cosmosDBAccount
   ]
@@ -235,8 +235,9 @@ module cosmosDBAccount_cassandraKeyspaces 'modules/cassandra.bicep' = [for keysp
   }
 }]
 
+@batchSize(1)
 module cosmosDBAccount_sqlDatabases 'modules/sql.bicep' = [for sqlDatabase in sqlDatabases: if (backendApi == 'sql') {
-  name: 'sql-database-${uniqueString(sqlDatabase.name, location)}'
+  name: 'sql-database-${uniqueString(sqlDatabase.name, resourceGroup().name)}'
   dependsOn: [
     cosmosDBAccount
   ]
@@ -250,8 +251,9 @@ module cosmosDBAccount_sqlDatabases 'modules/sql.bicep' = [for sqlDatabase in sq
   }
 }]
 
+@batchSize(1)
 module cosmosDBAccount_mongodbDatabases 'modules/mongodb.bicep' = [for mongodbDatabase in mongodbDatabases: if (backendApi == 'mongodb') {
-  name: 'mongodb-database-${uniqueString(mongodbDatabase.name, location)}'
+  name: 'mongodb-database-${uniqueString(mongodbDatabase.name, resourceGroup().name)}'
   dependsOn: [
     cosmosDBAccount
   ]
@@ -265,8 +267,9 @@ module cosmosDBAccount_mongodbDatabases 'modules/mongodb.bicep' = [for mongodbDa
   }
 }]
 
+@batchSize(1)
 module cosmosDBAccount_tables 'modules/table.bicep' = [for table in tables: if (backendApi == 'table') {
-  name: 'table-${uniqueString(table.name, location)}'
+  name: 'table-${uniqueString(table.name, resourceGroup().name)}'
   dependsOn: [
     cosmosDBAccount
   ]
@@ -279,8 +282,9 @@ module cosmosDBAccount_tables 'modules/table.bicep' = [for table in tables: if (
   }
 }]
 
+@batchSize(1)
 module cosmosDBAccount_gremlinDatabases 'modules/gremlin.bicep' = [for gremlinDatabase in gremlinDatabases: if (backendApi == 'gremlin') {
-  name: 'gremlin-database-${uniqueString(gremlinDatabase.name, location)}'
+  name: 'gremlin-database-${uniqueString(gremlinDatabase.name, resourceGroup().name)}'
   dependsOn: [
     cosmosDBAccount
   ]
@@ -295,7 +299,7 @@ module cosmosDBAccount_gremlinDatabases 'modules/gremlin.bicep' = [for gremlinDa
 }]
 
 module cosmosDBAccount_sqlRoles 'modules/sql_roles.bicep' = {
-  name: 'sql-role-${uniqueString(name, location)}'
+  name: 'sql-role-${uniqueString(name, resourceGroup().name)}'
   dependsOn: [
     cosmosDBAccount
   ]
@@ -306,6 +310,7 @@ module cosmosDBAccount_sqlRoles 'modules/sql_roles.bicep' = {
   }
 }
 
+@batchSize(1)
 module cosmosDBAccount_rbac 'modules/rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
   name: 'cosmosdb-rbac-${uniqueString(deployment().name, location)}-${index}'
   params: {
