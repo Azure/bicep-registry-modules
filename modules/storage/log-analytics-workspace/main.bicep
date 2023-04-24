@@ -37,7 +37,7 @@ var sku = {
   550
   730
 ])
-@description('Optional. The workspace data retention in days.')
+@description('Optional. The workspace data retention in days. Default set to 30')
 param retentionInDays int = 30
 
 @allowed([
@@ -54,7 +54,7 @@ param publicNetworkAccessForIngestion string = 'Enabled'
 @description('Optional. The network access type for operating on the Log Analytics Workspace. By default it is Enabled')
 param publicNetworkAccessForQuery string = 'Enabled'
 
-@description('Optional. The workspace daily quota for ingestion.')
+@description('Optional. The workspace daily quota for ingestion. Default set to -1')
 param dailyQuotaGb int = -1
 
 @description('Optional. Indicates whether customer managed storage is mandatory for query management.')
