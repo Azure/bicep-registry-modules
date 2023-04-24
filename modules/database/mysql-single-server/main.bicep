@@ -1,6 +1,5 @@
 targetScope = 'resourceGroup'
 
-// General params
 @description('Deployment region name. Default is the location of the resource group.')
 param location string = resourceGroup().location
 
@@ -30,26 +29,9 @@ param createMode string = 'Default'
 
 @description('Optional. List of databases to create on server.')
 param databases array = []
-/*
-e.g.
-[{
-    name: 'mysql'
-    charset: 'UTF8'             // Default: 'UTF8'
-    collation: 'en_US.UTF8'     //Default: 'UTF8_general_ci'
-  }
-]
-*/
 
 @description('Optional. List of server configurations to create on server.')
 param serverConfigurations array = []
-/*
-e.g.
-[{
-    name: 'backend_flush_after'
-    value: '256'
-  }
-]
-*/
 
 @description('Optional. Status showing whether the server enabled infrastructure encryption..')
 @allowed([
@@ -60,28 +42,9 @@ param infrastructureEncryption string = 'Disabled'
 
 @description('Optional. List of firewall rules to create on server.')
 param firewallRules array = []
-/*
-e.g.
-[{
-    name: 'AllowAll'
-    startIpAddress: ''
-    endIpAddress: ''
-  }
-]
-*/
 
-@description('Optional. List of privateEndpoints to create on server.')
+@description('Optional. List of privateEndpoints to create on mysql server.')
 param privateEndpoints array = []
-/*
-e.g.
-[{
-    name: ''
-    id: ''
-    description: 'Auto-approved by Bicep module'
-    status: 'Approved'
-  }
-]
-*/
 
 @description('Optional. Enable or disable geo-redundant backups.')
 @allowed([
@@ -143,46 +106,24 @@ param storageSizeGB int = 32
 ])
 param version string = '8.0'
 
-@description('Optional. Virtual Network Name')
-param virtualNetworkName string = 'azure_mysql_vnet'
+@description('Array of role assignment objects that contain the "roleDefinitionIdOrName" and "principalId" to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, provide either the display name of the role definition, or its fully qualified ID in the following format: "/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11"')
+param roleAssignments array = []
 
-@description('Optional. Subnet Name')
-param subnetName string = 'azure_mysql_subnet'
-
-@description('Optional. Virtual Network RuleName')
-param virtualNetworkRuleName string = 'AllowSubnet'
-
-@description('Optional. Virtual Network Address Prefix')
-param vnetAddressPrefix string = '10.0.0.0/16'
-
-@description('Optional. Subnet Address Prefix')
-param subnetPrefix string = '10.0.0.0/16'
-
-@description('Optional. Create firewall rule before the virtual network has vnet service endpoint enabled')
-param ignoreMissingVnetServiceEndpoint bool = true
-
-@description('Optional. Private DNS zone name for the private endpoint. Default is privatelink.mysql.database.azure.com')
-param privateDnsZoneName string = 'privatelink.mysql.database.azure.com'
-
-resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
-  name: virtualNetworkName
-  location: location
-  properties: {
-    addressSpace: {
-      addressPrefixes: [
-        vnetAddressPrefix
-      ]
+var varPrivateEndpoints = [for endpoint in privateEndpoints: {
+  name: '${mysqlServer.name}-${endpoint.name}'
+  privateLinkServiceId: mysqlServer.id
+  groupIds: [
+    endpoint.groupId
+  ]
+  subnetId: endpoint.subnetId
+  privateDnsZones: contains(endpoint, 'privateDnsZoneId') ? [
+    {
+      name: 'default'
+      zoneId: endpoint.privateDnsZoneId
     }
-  }
-}
-
-resource subnet 'Microsoft.Network/virtualNetworks/subnets@2021-05-01' = {
-  parent: vnet
-  name: subnetName
-  properties: {
-    addressPrefix: subnetPrefix
-  }
-}
+  ] : []
+  manualApprovalEnabled: contains(endpoint, 'manualApprovalEnabled') ? endpoint.manualApprovalEnabled : false
+}]
 
 resource mysqlServer 'Microsoft.DBforMySQL/servers@2017-12-01' = {
   name: serverName
@@ -211,14 +152,6 @@ resource mysqlServer 'Microsoft.DBforMySQL/servers@2017-12-01' = {
     publicNetworkAccess: publicNetworkAccess
     sourceServerId: createMode != 'Default' ? sourceServerResourceId : json('null')
     restorePointInTime: createMode == 'PointInTimeRestore' ? restorePointInTime : json('null')
-  }
-}
-
-resource virtualNetworkRule 'Microsoft.DBforMySQL/servers/virtualNetworkRules@2017-12-01' = {
-  name: virtualNetworkRuleName
-  properties: {
-    ignoreMissingVnetServiceEndpoint: ignoreMissingVnetServiceEndpoint
-    virtualNetworkSubnetId: subnet.id
   }
 }
 
@@ -257,26 +190,28 @@ resource mysqlServerConfig 'Microsoft.DBforMySQL/servers/configurations@2017-12-
 }]
 
 @batchSize(1)
-resource mysqlServerprivateEndpoint 'Microsoft.DBforMySQL/servers/privateEndpointConnections@2018-06-01' = [for privateEndpoint in privateEndpoints:{
-  name: privateEndpoint.name
-  parent: mysqlServer
-  properties: {
-    privateEndpoint: {
-      id: privateEndpoint.id
-    }
-    privateLinkServiceConnectionState: {
-      description: privateEndpoint.description
-      status: privateEndpoint.status
-    }
+module MySQLDBAccount_rbac 'modules/rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
+  name: 'mysqldb-rbac-${uniqueString(deployment().name, location)}-${index}'
+  params: {
+    description: contains(roleAssignment, 'description') ? roleAssignment.description : ''
+    principalIds: roleAssignment.principalIds
+    roleDefinitionIdOrName: roleAssignment.roleDefinitionIdOrName
+    principalType: contains(roleAssignment, 'principalType') ? roleAssignment.principalType : ''
+    serverName: serverName
   }
 }]
 
-resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: privateDnsZoneName
-  location: location
+module MySQLDB_privateEndpoint 'modules/privateEndpoint.bicep' = {
+  name: '${serverName}-${uniqueString(deployment().name, location)}-private-endpoints'
+  params: {
+    location: location
+    privateEndpoints: varPrivateEndpoints
+    tags: tags
+  }
 }
 
-@description('MySQL server Resource id')
+
+@description('MySQL Single Server Resource id')
 output id string = mysqlServer.id
-@description('MySQL fully Qualified Domain Name')
+@description('MySQL Single Server fully Qualified Domain Name')
 output fqdn string = mysqlServer.properties.fullyQualifiedDomainName

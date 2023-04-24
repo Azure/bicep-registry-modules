@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "16475355432982827474"
+      "templateHash": "11234981086261306551"
     }
   },
   "parameters": {
@@ -93,7 +93,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. List of privateEndpoints to create on server."
+        "description": "Optional. List of privateEndpoints to create on mysql server."
       }
     },
     "geoRedundantBackup": {
@@ -199,81 +199,33 @@
         "description": "Optional. The version of the MySQL server."
       }
     },
-    "virtualNetworkName": {
-      "type": "string",
-      "defaultValue": "azure_mysql_vnet",
+    "roleAssignments": {
+      "type": "array",
+      "defaultValue": [],
       "metadata": {
-        "description": "Optional. Virtual Network Name"
-      }
-    },
-    "subnetName": {
-      "type": "string",
-      "defaultValue": "azure_mysql_subnet",
-      "metadata": {
-        "description": "Optional. Subnet Name"
-      }
-    },
-    "virtualNetworkRuleName": {
-      "type": "string",
-      "defaultValue": "AllowSubnet",
-      "metadata": {
-        "description": "Optional. Virtual Network RuleName"
-      }
-    },
-    "vnetAddressPrefix": {
-      "type": "string",
-      "defaultValue": "10.0.0.0/16",
-      "metadata": {
-        "description": "Optional. Virtual Network Address Prefix"
-      }
-    },
-    "subnetPrefix": {
-      "type": "string",
-      "defaultValue": "10.0.0.0/16",
-      "metadata": {
-        "description": "Optional. Subnet Address Prefix"
-      }
-    },
-    "ignoreMissingVnetServiceEndpoint": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Create firewall rule before the virtual network has vnet service endpoint enabled"
-      }
-    },
-    "privateDnsZoneName": {
-      "type": "string",
-      "defaultValue": "privatelink.mysql.database.azure.com",
-      "metadata": {
-        "description": "Optional. Private DNS zone name for the private endpoint. Default is privatelink.mysql.database.azure.com"
+        "description": "Array of role assignment objects that contain the \"roleDefinitionIdOrName\" and \"principalId\" to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, provide either the display name of the role definition, or its fully qualified ID in the following format: \"/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\""
       }
     }
   },
-  "resources": [
-    {
-      "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2021-05-01",
-      "name": "[parameters('virtualNetworkName')]",
-      "location": "[parameters('location')]",
-      "properties": {
-        "addressSpace": {
-          "addressPrefixes": [
-            "[parameters('vnetAddressPrefix')]"
-          ]
+  "variables": {
+    "copy": [
+      {
+        "name": "varPrivateEndpoints",
+        "count": "[length(parameters('privateEndpoints'))]",
+        "input": {
+          "name": "[format('{0}-{1}', parameters('serverName'), parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].name)]",
+          "privateLinkServiceId": "[resourceId('Microsoft.DBforMySQL/servers', parameters('serverName'))]",
+          "groupIds": [
+            "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].groupId]"
+          ],
+          "subnetId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].subnetId]",
+          "privateDnsZones": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'privateDnsZoneId'), createArray(createObject('name', 'default', 'zoneId', parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].privateDnsZoneId)), createArray())]",
+          "manualApprovalEnabled": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'manualApprovalEnabled'), parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].manualApprovalEnabled, false())]"
         }
       }
-    },
-    {
-      "type": "Microsoft.Network/virtualNetworks/subnets",
-      "apiVersion": "2021-05-01",
-      "name": "[format('{0}/{1}', parameters('virtualNetworkName'), parameters('subnetName'))]",
-      "properties": {
-        "addressPrefix": "[parameters('subnetPrefix')]"
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]"
-      ]
-    },
+    ]
+  },
+  "resources": [
     {
       "type": "Microsoft.DBforMySQL/servers",
       "apiVersion": "2017-12-01",
@@ -304,18 +256,6 @@
         "sourceServerId": "[if(not(equals(parameters('createMode'), 'Default')), parameters('sourceServerResourceId'), json('null'))]",
         "restorePointInTime": "[if(equals(parameters('createMode'), 'PointInTimeRestore'), parameters('restorePointInTime'), json('null'))]"
       }
-    },
-    {
-      "type": "Microsoft.DBforMySQL/servers/virtualNetworkRules",
-      "apiVersion": "2017-12-01",
-      "name": "[parameters('virtualNetworkRuleName')]",
-      "properties": {
-        "ignoreMissingVnetServiceEndpoint": "[parameters('ignoreMissingVnetServiceEndpoint')]",
-        "virtualNetworkSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
-      ]
     },
     {
       "copy": {
@@ -374,46 +314,230 @@
     },
     {
       "copy": {
-        "name": "mysqlServerprivateEndpoint",
-        "count": "[length(parameters('privateEndpoints'))]",
+        "name": "MySQLDBAccount_rbac",
+        "count": "[length(parameters('roleAssignments'))]",
         "mode": "serial",
         "batchSize": 1
       },
-      "type": "Microsoft.DBforMySQL/servers/privateEndpointConnections",
-      "apiVersion": "2018-06-01",
-      "name": "[format('{0}/{1}', parameters('serverName'), parameters('privateEndpoints')[copyIndex()].name)]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('mysqldb-rbac-{0}-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
-        "privateEndpoint": {
-          "id": "[parameters('privateEndpoints')[copyIndex()].id]"
+        "expressionEvaluationOptions": {
+          "scope": "inner"
         },
-        "privateLinkServiceConnectionState": {
-          "description": "[parameters('privateEndpoints')[copyIndex()].description]",
-          "status": "[parameters('privateEndpoints')[copyIndex()].status]"
+        "mode": "Incremental",
+        "parameters": {
+          "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
+          "principalIds": {
+            "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
+          },
+          "roleDefinitionIdOrName": {
+            "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
+          },
+          "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
+          "serverName": {
+            "value": "[parameters('serverName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.16.2.56959",
+              "templateHash": "8183027780392786858"
+            }
+          },
+          "parameters": {
+            "description": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "principalIds": {
+              "type": "array"
+            },
+            "principalType": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "roleDefinitionIdOrName": {
+              "type": "string"
+            },
+            "serverName": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "builtInRoleNames": {
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "SQL DB Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9b7fa17d-e63e-47b0-bb0a-15c516ac86ec')]",
+              "SQL Managed Instance Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4939a1f6-9ae0-4e48-a1e0-f2cbe897382d')]",
+              "SQL Server Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6d8ee4ec-f05a-4a1d-8b00-a9b17e38b437')]",
+              "SQL Security Manager": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '056cd41c-7e88-42e1-933e-88ba6a50c9c3')]",
+              "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+              "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
+              "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
+              "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
+              "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
+              "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
+              "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
+              "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
+              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]"
+            }
+          },
+          "resources": [
+            {
+              "copy": {
+                "name": "roleAssignment",
+                "count": "[length(parameters('principalIds'))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.DBforMySQL/servers/{0}', parameters('serverName'))]",
+              "name": "[guid(parameters('serverName'), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+              "properties": {
+                "description": "[parameters('description')]",
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionIdOrName')))]",
+                "principalId": "[parameters('principalIds')[copyIndex()]]",
+                "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-{1}-private-endpoints', parameters('serverName'), uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "privateEndpoints": {
+            "value": "[variables('varPrivateEndpoints')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.16.2.56959",
+              "templateHash": "9050958236782304652"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "privateEndpoints": {
+              "type": "array"
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "varPrivateEndpoints",
+                "count": "[length(parameters('privateEndpoints'))]",
+                "input": {
+                  "name": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].name]",
+                  "privateLinkServiceId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].privateLinkServiceId]",
+                  "groupIds": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].groupIds]",
+                  "subnetId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].subnetId]",
+                  "privateDnsZones": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'privateDnsZones'), parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].privateDnsZones, createArray())]",
+                  "customNetworkInterfaceName": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'customNetworkInterfaceName'), parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].customNetworkInterfaceName, null())]",
+                  "manualApprovalEnabled": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'manualApprovalEnabled'), parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].manualApprovalEnabled, false())]"
+                }
+              }
+            ]
+          },
+          "resources": [
+            {
+              "copy": {
+                "name": "privateEndpoint",
+                "count": "[length(variables('varPrivateEndpoints'))]",
+                "mode": "serial",
+                "batchSize": 1
+              },
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2022-05-01",
+              "name": "[format('{0}-{1}', variables('varPrivateEndpoints')[copyIndex()].name, uniqueString(variables('varPrivateEndpoints')[copyIndex()].name, variables('varPrivateEndpoints')[copyIndex()].subnetId, variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "privateLinkServiceConnections": "[if(variables('varPrivateEndpoints')[copyIndex()].manualApprovalEnabled, null(), createArray(createObject('name', variables('varPrivateEndpoints')[copyIndex()].name, 'properties', createObject('privateLinkServiceId', variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId, 'groupIds', if(not(empty(variables('varPrivateEndpoints')[copyIndex()].groupIds)), variables('varPrivateEndpoints')[copyIndex()].groupIds, null())))))]",
+                "manualPrivateLinkServiceConnections": "[if(variables('varPrivateEndpoints')[copyIndex()].manualApprovalEnabled, createArray(createObject('name', variables('varPrivateEndpoints')[copyIndex()].name, 'properties', createObject('privateLinkServiceId', variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId, 'groupIds', if(not(empty(variables('varPrivateEndpoints')[copyIndex()].groupIds)), variables('varPrivateEndpoints')[copyIndex()].groupIds, null())))), null())]",
+                "subnet": {
+                  "id": "[variables('varPrivateEndpoints')[copyIndex()].subnetId]"
+                },
+                "customNetworkInterfaceName": "[variables('varPrivateEndpoints')[copyIndex()].customNetworkInterfaceName]"
+              }
+            },
+            {
+              "copy": {
+                "name": "privateDnsZoneGroup",
+                "count": "[length(variables('varPrivateEndpoints'))]",
+                "mode": "serial",
+                "batchSize": 1
+              },
+              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+              "apiVersion": "2022-05-01",
+              "name": "[format('{0}/{1}', format('{0}-{1}', variables('varPrivateEndpoints')[copyIndex()].name, uniqueString(variables('varPrivateEndpoints')[copyIndex()].name, variables('varPrivateEndpoints')[copyIndex()].subnetId, variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId)), 'default')]",
+              "properties": {
+                "copy": [
+                  {
+                    "name": "privateDnsZoneConfigs",
+                    "count": "[length(variables('varPrivateEndpoints')[copyIndex()].privateDnsZones)]",
+                    "input": {
+                      "name": "[if(contains(variables('varPrivateEndpoints')[copyIndex()].privateDnsZones[copyIndex('privateDnsZoneConfigs')], 'name'), variables('varPrivateEndpoints')[copyIndex()].privateDnsZones[copyIndex('privateDnsZoneConfigs')].name, 'default')]",
+                      "properties": {
+                        "privateDnsZoneId": "[variables('varPrivateEndpoints')[copyIndex()].privateDnsZones[copyIndex('privateDnsZoneConfigs')].zoneId]"
+                      }
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/privateEndpoints', format('{0}-{1}', variables('varPrivateEndpoints')[copyIndex()].name, uniqueString(variables('varPrivateEndpoints')[copyIndex()].name, variables('varPrivateEndpoints')[copyIndex()].subnetId, variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId)))]"
+              ]
+            }
+          ]
         }
       },
       "dependsOn": [
         "[resourceId('Microsoft.DBforMySQL/servers', parameters('serverName'))]"
       ]
-    },
-    {
-      "type": "Microsoft.Network/privateDnsZones",
-      "apiVersion": "2020-06-01",
-      "name": "[parameters('privateDnsZoneName')]",
-      "location": "[parameters('location')]"
     }
   ],
   "outputs": {
     "id": {
       "type": "string",
       "metadata": {
-        "description": "MySQL server Resource id"
+        "description": "MySQL Single Server Resource id"
       },
       "value": "[resourceId('Microsoft.DBforMySQL/servers', parameters('serverName'))]"
     },
     "fqdn": {
       "type": "string",
       "metadata": {
-        "description": "MySQL fully Qualified Domain Name"
+        "description": "MySQL Single Server fully Qualified Domain Name"
       },
       "value": "[reference(resourceId('Microsoft.DBforMySQL/servers', parameters('serverName')), '2017-12-01').fullyQualifiedDomainName]"
     }
