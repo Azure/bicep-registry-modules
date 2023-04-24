@@ -22,7 +22,7 @@ Public IP addresses allow Internet resources to communicate inbound to Azure res
 | `publicIPAllocationMethod` | `string` | No       | Optional. IP address allocation method.                                                                                                                                                                                                                                                                       |
 | `deleteOption`             | `string` | No       | Optional. Specify what happens to the public IP address when the VM using it is deleted.                                                                                                                                                                                                                      |
 | `publicIPPrefixId`         | `string` | No       | Optional. Reference to another subresource ID                                                                                                                                                                                                                                                                 |
-| `domainNameLabel`          | `string` | Yes      | Optional. The domain name label. The concatenation of the domain name label and the regionalized DNS zone make up the fully qualified domain name associated with the public IP address. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system. |
+| `domainNameLabel`          | `string` | Yes      | Required. The domain name label. The concatenation of the domain name label and the regionalized DNS zone make up the fully qualified domain name associated with the public IP address. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system. |
 | `idleTimeoutInMinutes`     | `int`    | No       | Optional. The idle timeout of the public IP address.                                                                                                                                                                                                                                                          |
 
 ## Outputs
@@ -41,7 +41,7 @@ Public IP addresses allow Internet resources to communicate inbound to Azure res
 ```bicep
 param location string = 'eastus'
 
-module publicIp1 'br/public:network/public-ip-address:1.0.1'' = {
+module publicIp1 'br/public:network/public-ip-address:1.0.1' = {
   name: 'publicIp1'
   params: {
     location: location
@@ -55,7 +55,7 @@ module publicIp1 'br/public:network/public-ip-address:1.0.1'' = {
 ```bicep
 param location string = 'eastus'
 
-module publicIp2 'br/public:network/public-ip-address:1.0.1'' = {
+module publicIp2 'br/public:network/public-ip-address:1.0.1' = {
   name: 'publicIp2'
   params: {
     domainNameLabel: 'publicIp2'

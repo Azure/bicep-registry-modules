@@ -60,7 +60,7 @@ param publicIPPrefixId string = ''
 
 @minLength(3)
 @maxLength(63)
-@description('Optional. The domain name label. The concatenation of the domain name label and the regionalized DNS zone make up the fully qualified domain name associated with the public IP address. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system.')
+@description('Required. The domain name label. The concatenation of the domain name label and the regionalized DNS zone make up the fully qualified domain name associated with the public IP address. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system.')
 param domainNameLabel string
 
 @description('Optional. The idle timeout of the public IP address.')
