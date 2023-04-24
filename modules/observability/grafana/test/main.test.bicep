@@ -12,7 +12,7 @@ targetScope = 'resourceGroup'
 param prefix string = 'grafana'
 @maxLength(60)
 param name string = take('${prefix}-${uniqueString(resourceGroup().id, subscription().id)}', 60)
-param location string = resourceGroup().location
+param location string = 'eastus'
 
 // prereq
 module prereq 'prereq.test.bicep' = {
