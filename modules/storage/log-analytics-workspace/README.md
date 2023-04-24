@@ -4,7 +4,7 @@ This module deploys Log Analytics workspace and optionally available integration
 
 ## Description
 
-[Log Analytics Workspace](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/quick-create-workspace) is a unique environment for log data from Azure Monitor and other Azure services. Log Analytics uses a powerful query language, to give you insights into the operation of your applications and resources. Each workspace has its own data repository and configuration but might combine data from multiple services. We can use a single workspace for all your data collection or create multiple workspaces based on your requirements.
+[Log Analytics Workspace](https://learn.microsoft.com/en-us/azure/azure-monitor/logs/quick-create-workspace) is a unique environment for log data from Azure Monitor and other Azure services. Log Analytics uses a powerful query language, to give you insights into the operation of your applications and resources. Each workspace has its own data repository and configuration but might combine data from multiple services. We can use a single workspace for all your data collection or create multiple workspaces based on your requirements. [Quickstart: Setup Log Analytics Workspace](https://learn.microsoft.com/en-us/azure/spring-apps/quickstart-setup-log-analytics)
 
 ## Parameters
 
