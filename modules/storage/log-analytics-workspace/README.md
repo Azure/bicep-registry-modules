@@ -1,4 +1,4 @@
-# Workspaces
+# Log Analytics Workspace
 
 This module deploys Log Analytics workspace and optionally available integrations.
 
