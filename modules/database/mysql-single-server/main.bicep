@@ -210,7 +210,6 @@ module MySQLDB_privateEndpoint 'modules/privateEndpoint.bicep' = {
   }
 }
 
-
 @description('MySQL Single Server Resource id')
 output id string = mysqlServer.id
 @description('MySQL Single Server fully Qualified Domain Name')
