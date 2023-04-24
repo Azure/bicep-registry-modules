@@ -1,3 +1,5 @@
+@minLength(4)
+@maxLength(63)
 @description('Required. Name of the Log Analytics Workspace.')
 param name string
 
