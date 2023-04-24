@@ -20,7 +20,7 @@ param tags object = {
 //test 01 - Minimal Parameters//
 
 module test_01 '../main.bicep' = {
-  name: '${uniqueName}-test-01'
+  name: '${uniqueName}-test01'
   params: {
     name: 'test01${uniqueName}'
     location: location
