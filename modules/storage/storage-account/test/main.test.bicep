@@ -29,7 +29,7 @@ module test0 '../main.bicep' = {
 module test1 '../main.bicep' = {
   name: 'test1'
   params: {
-    name: 'test1sablobcontainers'
+    name: 'test1blobcontainers'
     location: location
     blobProperties: {
       isVersioningEnabled: true
@@ -47,7 +47,7 @@ module test2 '../main.bicep' = {
     prereq
   ]
   params: {
-    name: 'test2sablobcontainersrbac'
+    name: 'test2rbac'
     location: location
     blobProperties: {
       isVersioningEnabled: true
