@@ -5,14 +5,14 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.1.55165",
-      "templateHash": "1759700117978593039"
+      "templateHash": "9475937966905179455"
     }
   },
   "parameters": {
     "secrets": {
       "type": "array",
       "metadata": {
-        "description": "  Required.\r\n\r\n  Definition of secrets to be auto-rotated. Includes name of the CosmosDB, name of the KeyVault, name of the Secret, name of the Resource Group etc.\r\n  Example:\r\n  [\r\n    {\r\n      type: 'cosmosdb', // mandatory, can be 'cosmosdb', 'redis'\r\n      resourceName: 'cosmosdb-1',\r\n      resourceRg: 'resource-group-1', // optional, default to parameter \"resourceGroup().name\"\r\n      keyvaultRg: 'resource-group-1', // optional, default to parameter \"resourceGroup().name\"\r\n      keyvaultName: 'keyvault-1',\r\n      secretName: 'secret-1',\r\n      isCreate: false, // optional, default to false. If true this module will create the secret with the CosmosDB key as value in the keyvault.\r\n      validityDays: 90, // optional, default to 90 days\r\n      expirationDate: '2023-05-02T15:16:13Z' // optional, default to 90 days from now\r\n    }\r\n  ]\r\n  It's unlikely that for a single CosmosDB both primary and secondary keys are stored as keyvault secrets, normally one is used and later alternated to the other. Thus for now multiple keys are not supported.\r\n  Note! Currently only support each CosmosDB having 1 secret.\r\n  "
+        "description": "  Required.\r\n\r\n  Definition of secrets to be auto-rotated. Includes name of the CosmosDB, name of the KeyVault, name of the Secret, name of the Resource Group etc.\r\n  Example:\r\n  [\r\n    {\r\n      type: 'cosmosdb', // mandatory, can be 'cosmosdb', 'redis'\r\n      resourceName: 'cosmosdb-1',\r\n      resourceRg: 'resource-group-1', // optional, default to parameter \"resourceGroup().name\"\r\n      keyvaultRg: 'resource-group-1', // optional, default to parameter \"resourceGroup().name\"\r\n      keyvaultName: 'keyvault-1',\r\n      secretName: 'secret-1'\r\n    }\r\n  ]\r\n  It's unlikely that for a single CosmosDB both primary and secondary keys are stored as keyvault secrets, normally one is used and later alternated to the other. Thus for now multiple keys are not supported.\r\n  Note! Currently only support each CosmosDB having 1 secret.\r\n  "
       }
     },
     "analyticWorkspaceId": {
@@ -153,7 +153,7 @@
       "type": "string",
       "defaultValue": "[resourceGroup().name]",
       "metadata": {
-        "description": "Optional. Resource group of the deployment script storage, if 'deploymentScriptStorage', this param will be ignored. Default to current resource group."
+        "description": "Optional. Resource group of the deployment script storage, if `deploymentScriptStorage`, this param will be ignored. Default to current resource group."
       }
     },
     "isGrantExecutorRole": {
@@ -182,13 +182,6 @@
       "defaultValue": "[resourceGroup().name]",
       "metadata": {
         "description": "Optional. Resource group name of the event topic, default to current group. Will be ignored if system topic name is not provided."
-      }
-    },
-    "now": {
-      "type": "string",
-      "defaultValue": "[utcNow()]",
-      "metadata": {
-        "description": "Readonly. Do not change!"
       }
     }
   },
@@ -898,130 +891,22 @@
       "metadata": {
         "description": "Create event subscription to the system topic and let the function app consume it."
       }
-    },
-    {
-      "copy": {
-        "name": "vaultSecrets",
-        "count": "[length(parameters('secrets'))]",
-        "mode": "serial",
-        "batchSize": 1
-      },
-      "condition": "[and(contains(parameters('secrets')[copyIndex()], 'isCreate'), parameters('secrets')[copyIndex()].isCreate)]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('kv-secret-{0}-{1}', uniqueString(format('{0}{1}', parameters('secrets')[copyIndex()].keyvaultName, parameters('secrets')[copyIndex()].secretName)), variables('suffix'))]",
-      "resourceGroup": "[if(contains(parameters('secrets')[copyIndex()], 'keyvaultRg'), parameters('secrets')[copyIndex()].keyvaultRg, resourceGroup().name)]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "type": {
-            "value": "[parameters('secrets')[copyIndex()].type]"
-          },
-          "resourceName": {
-            "value": "[parameters('secrets')[copyIndex()].resourceName]"
-          },
-          "resourceRg": "[if(contains(parameters('secrets')[copyIndex()], 'resourceRg'), createObject('value', parameters('secrets')[copyIndex()].resourceRg), createObject('value', resourceGroup().name))]",
-          "keyvaultName": {
-            "value": "[parameters('secrets')[copyIndex()].keyvaultName]"
-          },
-          "secretName": {
-            "value": "[parameters('secrets')[copyIndex()].secretName]"
-          },
-          "validityDays": "[if(contains(parameters('secrets')[copyIndex()], 'validityDays'), createObject('value', parameters('secrets')[copyIndex()].validityDays), createObject('value', 90))]",
-          "expirationDate": "[if(contains(parameters('secrets')[copyIndex()], 'expirationDate'), createObject('value', parameters('secrets')[copyIndex()].expirationDate), createObject('value', dateTimeAdd(parameters('now'), format('P{0}D', if(contains(parameters('secrets')[copyIndex()], 'validityDays'), parameters('secrets')[copyIndex()].validityDays, 90)))))]"
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.16.1.55165",
-              "templateHash": "11311253575158087229"
-            }
-          },
-          "parameters": {
-            "type": {
-              "type": "string",
-              "metadata": {
-                "description": "Resource type"
-              }
-            },
-            "resourceName": {
-              "type": "string",
-              "metadata": {
-                "description": "Name of the CosmosDB to who key should be rotated."
-              }
-            },
-            "resourceRg": {
-              "type": "string",
-              "metadata": {
-                "description": "CosmosDB resource group name"
-              }
-            },
-            "keyvaultName": {
-              "type": "string",
-              "metadata": {
-                "description": "Name of the keyvault"
-              }
-            },
-            "secretName": {
-              "type": "string",
-              "metadata": {
-                "description": "Name of the keyvault secret to be created"
-              }
-            },
-            "validityDays": {
-              "type": "int",
-              "defaultValue": 90,
-              "metadata": {
-                "description": "Validity period in days, default is 90."
-              }
-            },
-            "expirationDate": {
-              "type": "string",
-              "defaultValue": "[dateTimeAdd(utcNow(), format('P{0}D', parameters('validityDays')))]",
-              "metadata": {
-                "description": "Expiration date in ISO-8601 format, default to <validityDays> from now."
-              }
-            }
-          },
-          "resources": [
-            {
-              "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2022-07-01",
-              "name": "[format('{0}/{1}', parameters('keyvaultName'), parameters('secretName'))]",
-              "tags": {
-                "ValidityPeriodDays": "[format('{0}', parameters('validityDays'))]",
-                "CredentialId": "Primary",
-                "ProviderAddress": "[if(equals(parameters('type'), 'cosmosdb'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceRg')), 'Microsoft.DocumentDB/databaseAccounts', parameters('resourceName')), if(equals(parameters('type'), 'redis'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceRg')), 'Microsoft.Cache/redis', parameters('resourceName')), ''))]"
-              },
-              "properties": {
-                "attributes": {
-                  "enabled": true,
-                  "exp": "[dateTimeToEpoch(parameters('expirationDate'))]"
-                },
-                "value": "[if(equals(parameters('type'), 'cosmosdb'), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceRg')), 'Microsoft.DocumentDB/databaseAccounts', parameters('resourceName')), '2022-08-15').primaryMasterKey, if(equals(parameters('type'), 'redis'), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceRg')), 'Microsoft.Cache/redis', parameters('resourceName')), '2022-06-01').primaryKey, ''))]"
-              }
-            }
-          ]
-        }
-      },
-      "metadata": {
-        "description": "Create keyvault secret if needed. Primary key of the target resource will be used as the initial secret value."
-      }
     }
   ],
   "outputs": {
-    "siteId": {
+    "id": {
       "type": "string",
       "metadata": {
         "description": "ID of the function app created."
       },
       "value": "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the function app created."
+      },
+      "value": "[parameters('functionAppName')]"
     }
   }
 }
