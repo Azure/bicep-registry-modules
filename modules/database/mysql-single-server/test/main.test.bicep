@@ -12,7 +12,7 @@ param location string = 'eastus'
 param serviceShort string = 'mysqldb'
 var uniqueName = uniqueString(resourceGroup().id, deployment().name, location)
 param administratorLogin string = 'testlogin'
-param administratorLoginPassword string = 'testpassword'
+param administratorLoginPassword string = 'test@passw0rd123'
 
 // ============ //
 // Dependencies //
@@ -54,6 +54,7 @@ module test02 '../main.bicep' = {
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
     skuName: 'GP_Gen5_2'
+    publicNetworkAccess: 'Enabled'
     privateEndpoints: [
       {
         name: 'endpoint1'
@@ -66,14 +67,14 @@ module test02 '../main.bicep' = {
     {
         name: 'testdb'
         charset: 'UTF8'
-        collation: 'en_US.UTF8'
+        collation: 'utf8_bin'
      }
     ]
     firewallRules: [
     {
-        name: 'AllowAll'
-        startIpAddress: '10.0.0.0'
-        endIpAddress: '10.255.255.255'
+        name: 'allowip'
+        startIpAddress: '10.0.0.1'
+        endIpAddress: '10.0.0.1'
     }
     ]
     serverConfigurations: [
@@ -100,6 +101,7 @@ module test03 '../main.bicep' = {
     serverName: 'test03-${uniqueName}'
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
+    publicNetworkAccess: 'Enabled'
     skuName: 'GP_Gen5_2'
     roleAssignments: [
        {
@@ -123,14 +125,14 @@ module test03 '../main.bicep' = {
     {
         name: 'testdb'
         charset: 'UTF8'
-        collation: 'en_US.UTF8'
+        collation: 'utf8_bin'
      }
     ]
     firewallRules: [
     {
-        name: 'AllowAll'
-        startIpAddress: '10.0.0.0'
-        endIpAddress: '10.255.255.255'
+        name: 'allowip'
+        startIpAddress: '10.0.0.1'
+        endIpAddress: '10.0.0.1'
     }
     ]
     serverConfigurations: [

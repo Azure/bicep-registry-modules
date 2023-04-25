@@ -73,8 +73,9 @@ module test02 'br/public:database/mysql-single-server:1.0' = {
     createMode : 'default'
     serverName: 'mysqldb-${uniqueString(deployment().name, location)}'
     administratorLogin: 'testlogin'
-    administratorLoginPassword: 'testpassword'
-    skuName: GP_Gen5_2
+    administratorLoginPassword: 'test@passw0rd123'
+    skuName: 'GP_Gen5_2'
+    publicNetworkAccess: 'Enabled'
     privateEndpoints: [
       {
         name: 'endpoint1'
@@ -87,14 +88,14 @@ module test02 'br/public:database/mysql-single-server:1.0' = {
     {
         name: 'testdb'
         charset: 'UTF8'
-        collation: 'en_US.UTF8'
+        collation: 'utf8_bin'
      }
     ]
     firewallRules: [
     {
-        name: 'AllowAll'
-        startIpAddress: '10.0.0.0'
-        endIpAddress: '10.255.255.255'
+        name: 'allowip'
+        startIpAddress: '10.0.0.1'
+        endIpAddress: '10.0.0.1'
     }
     ]
     serverConfigurations: [
@@ -123,8 +124,9 @@ module test02 'br/public:database/mysql-single-server:1.0' = {
     createMode : 'default'
     serverName: 'mysqldb-${uniqueString(deployment().name, location)}'
     administratorLogin: 'testlogin'
-    administratorLoginPassword: 'testpassword'
-    skuName: GP_Gen5_2
+    administratorLoginPassword: 'test@passw0rd123'
+    skuName: 'GP_Gen5_2'
+    publicNetworkAccess: 'Enabled'
     roleAssignments: [
        {
          roleDefinitionIdOrName: 'SQL DB Contributor'
@@ -147,16 +149,15 @@ module test02 'br/public:database/mysql-single-server:1.0' = {
     {
         name: 'testdb'
         charset: 'UTF8'
-        collation: 'en_US.UTF8'
+        collation: 'utf8_bin'
      }
     ]
     firewallRules: [
     {
-        name: 'AllowAll'
-        startIpAddress: '10.0.0.0'
-        endIpAddress: '10.255.255.255'
+        name: 'allowip'
+        startIpAddress: '10.0.0.1'
+        endIpAddress: '10.0.0.1'
     }
-    ]
     serverConfigurations: [
     {
         name: 'flush_time'
