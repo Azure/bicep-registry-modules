@@ -91,6 +91,23 @@ The `version.json` file defines the MAJOR and MINOR version number of the module
 
 Once you are done editing the files, run `brm generate` again to refresh `main.json` and `README.md`.
 
+## Nested Bicep Files
+
+Nested bicep files should be placed into a folder `modules`, for example `modules/nested.bicep`.
+Additional nested folders may be created, only if the nested directory contain multiple files.
+
+Avoid the following:
+
+- `./main.bicep`
+- `./modules/storage/main.bicep`
+- `./modules/compute/main.bicep`
+
+Instead go with:
+
+- `./main.bicep`
+- `./modules/storage.bicep`
+- `./modules/compute.bicep`
+
 ## Updating an existing module
 
 To update an existing module, refer to the [Authoring module files](#authoring-module-files) section to update and regenerate the module files. Depending on the changes you make, you may need to bump the version in the `version.json` file.
@@ -155,6 +172,33 @@ The `brm validate` command mentioned in the above step does not deploy the `test
 ## Submitting a pull request
 
 Once the module files are validated locally, you can commit your changes and open a pull request. You must link the new module proposal in the pull request description if you are trying to add a new module. Adding or updating multiple modules is not supported and will cause a failure in the pull request validation CI, so please only add or change one module at a time.
+
+## Prefix the PR TItle based on the type of change.
+
+The modules in the repository follow Semantic Versioning.
+A GitHub action checks that PRs include a prefix. This acts as a stepping stone to automating the version incrementing, this action requires each PR have a semantic prefix.
+
+Example PR Tiles:
+
+- Creating a new module: `feat(new): Storage Account Module`
+- Add a bug fix to existing module: `fix: Storage Account does not properly format output`
+- Add a feature to existing module `feat: Add input parameter to deploy storage into vnet`
+- Add a breaking change to a module due to refactoring: `refactor!: Use custom types in storage account`
+
+More details can be found [here] about each prefix(https://www.conventionalcommits.org/en/v1.0.0/).
+
+Recommend prefixes include:
+
+- fix:
+- feat:
+- build:
+- chore:
+- ci:
+- docs:
+- style:
+- refactor:
+- perf:
+- test:
 
 ### Optional: Enable Auto Generation with GitHub Actions
 
