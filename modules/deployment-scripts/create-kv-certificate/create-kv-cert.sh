@@ -8,6 +8,7 @@ validity="${validity:-12}"
 akvName="${akvName:-keyvault}"
 issuerName="${issuerName:-}"
 reuseKey="${reuseKey:-true}"
+retrySleep="${retrySleep:-5}
 
 echo "Waiting on Identity RBAC replication (\"$initialDelay\")"
 sleep "$initialDelay"
