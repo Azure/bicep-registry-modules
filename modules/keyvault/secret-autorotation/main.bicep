@@ -106,6 +106,8 @@ var suffix = uniqueString(functionAppName)
 
 var websiteContirbutorRoleId = resourceId('Microsoft.Authorization/roleDefinitions', 'de139f84-1756-47ae-9be6-808fbbe84772')
 
+var deployZipScript = loadTextContent('./scripts/deploye-zip.sh')
+
 resource uai 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (userAssignedIdentityName != '') {
   name: userAssignedIdentityName
   scope: resourceGroup(userAssignedIdentityRg)
@@ -245,7 +247,25 @@ resource deployFunctionZip 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
       azCliVersion: '2.26.1'
       timeout: 'PT5M'
       retentionInterval: 'PT1H'
-      scriptContent: 'echo "${zipfile}" | base64 -d > ${filename} && az functionapp deploy --resource-group ${resourceGroup().name} --name ${functions.name} --src-path ${filename} --type zip'
+      scriptContent: deployZipScript
+      environmentVariables: [
+        {
+          name: 'ZIP_FILE'
+          value: zipfile
+        }
+        {
+          name: 'FILE_NAME'
+          value: filename
+        }
+        {
+          name: 'RESOURCE_GROUP_NAME'
+          value: resourceGroup().name
+        }
+        {
+          name: 'FUNCTION_APP_NAME'
+          value: functions.name
+        }
+      ]
     }, deploymentScriptStorage == '' ? {} : {
       storageAccountSettings: {
         storageAccountName: deploymentScriptStorage
@@ -317,3 +337,15 @@ output id string = functions.id
 
 @description('Name of the function app created.')
 output name string = functions.name
+
+@description('ID of the App Insight created.')
+output appInsightId string = appInsights.id
+
+@description('Name of the App Insight created.')
+output appInsightName string = appInsights.name
+
+@description('ID of the server farm created.')
+output serverFarmId string = serverfarms.id
+
+@description('Name of the server farm created.')
+output serverFarmName string = serverfarms.name

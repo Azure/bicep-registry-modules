@@ -75,10 +75,14 @@ deactivate app
 
 ## Outputs
 
-| Name | Type   | Description                       |
-| :--- | :----: | :-------------------------------- |
-| id   | string | ID of the function app created.   |
-| name | string | Name of the function app created. |
+| Name           | Type   | Description                       |
+| :------------- | :----: | :-------------------------------- |
+| id             | string | ID of the function app created.   |
+| name           | string | Name of the function app created. |
+| appInsightId   | string | ID of the App Insight created.    |
+| appInsightName | string | Name of the App Insight created.  |
+| serverFarmId   | string | ID of the server farm created.    |
+| serverFarmName | string | Name of the server farm created.  |
 
 ## Examples
 
