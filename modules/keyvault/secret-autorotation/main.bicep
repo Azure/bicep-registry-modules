@@ -13,10 +13,7 @@ targetScope = 'resourceGroup'
       resourceRg: 'resource-group-1', // optional, default to parameter "resourceGroup().name"
       keyvaultRg: 'resource-group-1', // optional, default to parameter "resourceGroup().name"
       keyvaultName: 'keyvault-1',
-      secretName: 'secret-1',
-      isCreate: false, // optional, default to false. If true this module will create the secret with the CosmosDB key as value in the keyvault.
-      validityDays: 90, // optional, default to 90 days
-      expirationDate: '2023-05-02T15:16:13Z' // optional, default to 90 days from now
+      secretName: 'secret-1'
     }
   ]
   It's unlikely that for a single CosmosDB both primary and secondary keys are stored as keyvault secrets, normally one is used and later alternated to the other. Thus for now multiple keys are not supported.
@@ -94,9 +91,6 @@ param systemTopicName string = ''
 
 @description('Optional. Resource group name of the event topic, default to current group. Will be ignored if system topic name is not provided.')
 param systemTopicRg string = resourceGroup().name
-
-@description('Readonly. Do not change!')
-param now string = utcNow()
 
 // variables
 var rotationFunctionNames = {
@@ -316,22 +310,6 @@ module topicSubscription './modules/topic-subscription.bicep' = [for item in sec
     systemTopicName: systemTopicName
   }
   dependsOn: [ deployFunctionZip ]
-}]
-
-@batchSize(1)
-@description('Create keyvault secret if needed. Primary key of the target resource will be used as the initial secret value.')
-module vaultSecrets './modules/create-secret.bicep' = [for item in secrets: if (contains(item, 'isCreate') && item.isCreate) {
-  name: 'kv-secret-${uniqueString('${item.keyvaultName}${item.secretName}')}-${suffix}'
-  scope: resourceGroup(contains(item, 'keyvaultRg') ? item.keyvaultRg : resourceGroup().name)
-  params: {
-    type: item.type
-    resourceName: item.resourceName
-    resourceRg: contains(item, 'resourceRg') ? item.resourceRg : resourceGroup().name
-    keyvaultName: item.keyvaultName
-    secretName: item.secretName
-    validityDays: contains(item, 'validityDays') ? item.validityDays : 90
-    expirationDate: contains(item, 'expirationDate') ? item.expirationDate : dateTimeAdd(now, 'P${contains(item, 'validityDays') ? item.validityDays : 90}D')
-  }
 }]
 
 @description('ID of the function app created.')

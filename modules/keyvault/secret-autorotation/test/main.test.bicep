@@ -45,8 +45,6 @@ module testMultipleKeys '../main.bicep' = {
         keyvaultName: dependencies1.outputs.keyvaultName
         keyvaultRg: resourceGroup().name
         secretName: 'secret2'
-        isCreate: true
-        validityDays: 10
       }
       {
         type: 'redis'
@@ -54,7 +52,6 @@ module testMultipleKeys '../main.bicep' = {
         keyvaultName: dependencies1.outputs.keyvaultName
         keyvaultRg: resourceGroup().name
         secretName: 'secret3'
-        isCreate: true
       }
     ]
     functionAppIdentityType: 'UserAssigned'
