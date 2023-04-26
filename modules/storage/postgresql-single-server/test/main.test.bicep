@@ -128,3 +128,33 @@ module test_03_postgresqlServer '../main.bicep' = {
     sqlServerConfigurations: sqlServerConfigurations
   }
 }
+
+// Test-04 - Server with RBAC and private endpoints
+
+module test_04_postgresqlServer '../main.bicep' = {
+  name: 'test-04-server'
+  params: {
+    location: location
+    sqlServerAdministratorLogin: adminLogin
+    sqlServerAdministratorPassword: adminPassword
+    sqlServerName: 'test-04-server-${uniqueName}'
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'SQL DB Contributor'
+        principalIds: [ dependencies.outputs.identityPrincipalIds[0] ]
+      }
+      {
+        roleDefinitionIdOrName: 'Log Analytics Reader'
+        principalIds: [ dependencies.outputs.identityPrincipalIds[1] ]
+      }
+   ]
+    privateEndpoints: [
+      {
+        name: 'endpoint1'
+        subnetId: dependencies.outputs.subnetIds[0]
+        manualApprovalEnabled: true
+        groupId: 'postgresqlServer'
+      }
+    ]
+  }
+}
