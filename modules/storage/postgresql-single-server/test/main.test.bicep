@@ -47,27 +47,27 @@ module test_01_postgresqlServer '../main.bicep' = {
 // Test-02 - Primary server with a replica in paired region
 
 module test_02_primaryPostgresqlServer '../main.bicep' = {
-  name: 'test-02-primary-server'
+  name: 'test-02-primary'
   params: {
     location: location
     sqlServerAdministratorLogin: adminLogin
     sqlServerAdministratorPassword: adminPassword
-    sqlServerName: 'test-02-primary-server-${uniqueName}'
+    sqlServerName: 'test-02-primary-${uniqueName}'
   }
 }
 
 module test_02_replicaPostgresqlServer '../main.bicep' = {
-  name: 'test-02-replica-server'
-  dependsOn: [
-    test_02_primaryPostgresqlServer
-  ]
+  name: 'test-02-replica'
+  // dependsOn: [
+  //   test_02_primaryPostgresqlServer
+  // ]
   params: {
     location: location
     createMode: 'Replica'
     sourceServerResourceId: test_02_primaryPostgresqlServer.outputs.id
     sqlServerAdministratorLogin: adminLogin
     sqlServerAdministratorPassword: adminPassword
-    sqlServerName: 'test-02-replica-server-${uniqueName}'
+    sqlServerName: 'test-02-replica-${uniqueName}'
   }
 }
 
