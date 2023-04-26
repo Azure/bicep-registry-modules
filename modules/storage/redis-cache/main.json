@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "13627357048436074063"
+      "version": "0.16.2.56959",
+      "templateHash": "3234470744313096245"
     }
   },
   "parameters": {
@@ -368,7 +368,7 @@
         "count": "[length(parameters('roleAssignments'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-acr-rbac-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -394,8 +394,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "5626322573086259212"
+              "version": "0.16.2.56959",
+              "templateHash": "17023662779958688893"
             }
           },
           "parameters": {
@@ -461,7 +461,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-redis-private-endpoints', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -488,8 +488,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "16642965424735785264"
+              "version": "0.16.2.56959",
+              "templateHash": "8728918711703682047"
             }
           },
           "parameters": {
@@ -583,45 +583,45 @@
   "outputs": {
     "name": {
       "type": "string",
-      "value": "[parameters('name')]",
       "metadata": {
         "description": "The resource name."
-      }
+      },
+      "value": "[parameters('name')]"
     },
     "resourceId": {
       "type": "string",
-      "value": "[resourceId('Microsoft.Cache/redis', parameters('name'))]",
       "metadata": {
         "description": "The resource ID."
-      }
+      },
+      "value": "[resourceId('Microsoft.Cache/redis', parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
-      "value": "[resourceGroup().name]",
       "metadata": {
         "description": "The name of the resource group the Redis cache was created in."
-      }
+      },
+      "value": "[resourceGroup().name]"
     },
     "hostName": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.Cache/redis', parameters('name')), '2022-06-01').hostName]",
       "metadata": {
         "description": "Redis hostname."
-      }
+      },
+      "value": "[reference(resourceId('Microsoft.Cache/redis', parameters('name')), '2022-06-01').hostName]"
     },
     "sslPort": {
       "type": "int",
-      "value": "[reference(resourceId('Microsoft.Cache/redis', parameters('name')), '2022-06-01').sslPort]",
       "metadata": {
         "description": "Redis SSL port."
-      }
+      },
+      "value": "[reference(resourceId('Microsoft.Cache/redis', parameters('name')), '2022-06-01').sslPort]"
     },
     "location": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.Cache/redis', parameters('name')), '2022-06-01', 'full').location]",
       "metadata": {
         "description": "The location the resource was deployed into."
-      }
+      },
+      "value": "[reference(resourceId('Microsoft.Cache/redis', parameters('name')), '2022-06-01', 'full').location]"
     }
   }
 }
