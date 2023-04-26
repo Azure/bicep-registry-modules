@@ -147,7 +147,7 @@ resource mysqlServer 'Microsoft.DBforMySQL/servers@2017-12-01' = {
       storageMB: storageSizeGB * 1024
       backupRetentionDays: backupRetentionDays
       geoRedundantBackup: geoRedundantBackup
-      storageAutogrow: storageAutogrow
+      storageAutogrow: createMode == 'Replica' ? null : (storageAutogrow ? 'Enabled' : 'Disabled')
     }
     publicNetworkAccess: publicNetworkAccess
     sourceServerId: createMode != 'Default' ? sourceServerResourceId : json('null')
