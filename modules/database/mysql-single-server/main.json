@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "11234981086261306551"
+      "templateHash": "9622396487505706949"
     }
   },
   "parameters": {
@@ -170,15 +170,11 @@
       }
     },
     "storageAutogrow": {
-      "type": "string",
-      "defaultValue": "Enabled",
+      "type": "bool",
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. Auto grow of storage."
-      },
-      "allowedValues": [
-        "Enabled",
-        "Disabled"
-      ]
+      }
     },
     "storageSizeGB": {
       "type": "int",
@@ -250,7 +246,7 @@
           "storageMB": "[mul(parameters('storageSizeGB'), 1024)]",
           "backupRetentionDays": "[parameters('backupRetentionDays')]",
           "geoRedundantBackup": "[parameters('geoRedundantBackup')]",
-          "storageAutogrow": "[parameters('storageAutogrow')]"
+          "storageAutogrow": "[if(equals(parameters('createMode'), 'Replica'), null(), if(parameters('storageAutogrow'), 'Enabled', 'Disabled'))]"
         },
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "sourceServerId": "[if(not(equals(parameters('createMode'), 'Default')), parameters('sourceServerResourceId'), json('null'))]",

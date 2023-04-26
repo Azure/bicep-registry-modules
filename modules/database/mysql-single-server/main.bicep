@@ -88,12 +88,8 @@ param sourceServerResourceId string = ''
 ])
 param sslEnforcement string = 'Enabled'
 
-@allowed([
-  'Enabled'
-  'Disabled'
-])
 @description('Optional. Auto grow of storage.')
-param storageAutogrow string = 'Enabled'
+param storageAutogrow bool = true
 
 @description('Optional. The storage size of the server.')
 param storageSizeGB int = 32
