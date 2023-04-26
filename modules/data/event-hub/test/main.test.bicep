@@ -16,7 +16,8 @@ module prerequisites 'prereq.test.bicep' = {
   }
 }
 
-
+/*
+//Disabled this test case becuase it was showing error Status Message: Free provisioned clusters currently not available for internal tenants. Currently working on provisioning more clusters
 // Test 01 - Standard SKU with cluster and Parameters, AuthRule(namespace,eventHub), EventHub, ConsumerGroups
 module test_01 '../main.bicep' = {
   name: '${uniqueName}-test-01'
@@ -77,6 +78,7 @@ module test_01 '../main.bicep' = {
     }
   }
 }
+*/
 
 // Test 02 - Basic SKU Minimal Parameters
 module test_02 '../main.bicep' = {
