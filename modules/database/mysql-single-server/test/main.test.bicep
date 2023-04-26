@@ -97,7 +97,7 @@ module test03 '../main.bicep' = {
   name: 'test03-${uniqueName}'
   params: {
     location: location
-    createMode : 'GeoRestore'
+    createMode : 'Default'
     serverName: 'test03-${uniqueName}'
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
@@ -110,7 +110,7 @@ module test03 '../main.bicep' = {
        }
        {
          roleDefinitionIdOrName: 'Log Analytics Reader'
-          principalIds: [ dependencies.outputs.identityPrincipalIds[1] ]
+         principalIds: [ dependencies.outputs.identityPrincipalIds[1] ]
        }
     ]
     privateEndpoints: [
