@@ -98,7 +98,7 @@ module test_03_primaryMysqlServer '../main.bicep' = {
     location: location
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
-    serverName: 'test-03-primary-server-${uniqueName}'
+    serverName: 'test-03-pri-${uniqueName}'
   }
 }
 
@@ -113,7 +113,7 @@ module test_03_replicaMysqlServer '../main.bicep' = {
     sourceServerResourceId: test_03_primaryMysqlServer.outputs.id
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
-    serverName: 'test-03-replica-server-${uniqueName}'
+    serverName: 'test-03-replica-${uniqueName}'
   }
 }
 
