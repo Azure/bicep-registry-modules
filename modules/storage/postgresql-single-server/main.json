@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "9505213675365335111"
+      "version": "0.16.2.56959",
+      "templateHash": "6707953378630707390"
     }
   },
   "parameters": {
@@ -307,7 +307,7 @@
         "batchSize": 1
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('postgresql-rbac-{0}-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -333,8 +333,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "6365074791194043514"
+              "version": "0.16.2.56959",
+              "templateHash": "5193539447345747227"
             }
           },
           "parameters": {
@@ -399,7 +399,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}-private-endpoints', parameters('sqlServerName'), uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -423,8 +423,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "5387913556748181917"
+              "version": "0.16.2.56959",
+              "templateHash": "9050958236782304652"
             }
           },
           "parameters": {
@@ -516,24 +516,24 @@
   "outputs": {
     "resourceGroupName": {
       "type": "string",
-      "value": "[resourceGroup().name]",
       "metadata": {
         "description": "The resource group the Postgresql Single Server was deployed into."
-      }
+      },
+      "value": "[resourceGroup().name]"
     },
     "fqdn": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/servers', toLower(parameters('sqlServerName'))), '2017-12-01').fullyQualifiedDomainName]",
       "metadata": {
         "description": "FQDN of the generated Postgresql Single Server"
-      }
+      },
+      "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/servers', toLower(parameters('sqlServerName'))), '2017-12-01').fullyQualifiedDomainName]"
     },
     "id": {
       "type": "string",
-      "value": "[resourceId('Microsoft.DBforPostgreSQL/servers', toLower(parameters('sqlServerName')))]",
       "metadata": {
         "description": "The resource ID of the Postgresql Single Server."
-      }
+      },
+      "value": "[resourceId('Microsoft.DBforPostgreSQL/servers', toLower(parameters('sqlServerName')))]"
     }
   }
 }
