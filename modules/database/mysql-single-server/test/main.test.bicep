@@ -90,15 +90,41 @@ module test02 '../main.bicep' = {
   }
 }
 
+// Test-03 - Primary server with a replica in paired region
 
-// Test 03 -  MySQL Deployment - with Role Assignments
+module test_03_primaryMysqlServer '../main.bicep' = {
+  name: 'test-03-primary-${uniqueName}'
+  params: {
+    location: location
+    administratorLogin: administratorLogin
+    administratorLoginPassword: administratorLoginPassword
+    ServerName: 'test-03-primary-server-${uniqueName}'
+  }
+}
 
-module test03 '../main.bicep' = {
-  name: 'test03-${uniqueName}'
+module test_03_replicaMysqlServer '../main.bicep' = {
+  name: 'test-03-replica-${uniqueName}'
+  dependsOn: [
+    test_03_primaryMysqlServer
+  ]
+  params: {
+    location: location
+    createMode: 'Replica'
+    sourceServerResourceId: test_03_primaryMysqlServer.outputs.id
+    administratorLogin: administratorLogin
+    administratorLoginPassword: administratorLoginPassword
+    ServerName: 'test-03-replica-server-${uniqueName}'
+  }
+}
+
+// Test 04 -  MySQL Deployment - with Role Assignments
+
+module test04 '../main.bicep' = {
+  name: 'test04-${uniqueName}'
   params: {
     location: location
     createMode : 'Default'
-    serverName: 'test03-${uniqueName}'
+    serverName: 'test04-${uniqueName}'
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
     publicNetworkAccess: 'Enabled'
