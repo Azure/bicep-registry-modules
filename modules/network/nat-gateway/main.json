@@ -1,0 +1,115 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.16.2.56959",
+      "templateHash": "6966743742348997544"
+    }
+  },
+  "parameters": {
+    "prefix": {
+      "type": "string",
+      "defaultValue": "ng",
+      "metadata": {
+        "description": "Required. Prefix of NAT Gateway Resource Name. This param is ignored when name is provided."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "[format('{0}{1}', parameters('prefix'), uniqueString(resourceGroup().id, subscription().id))]",
+      "metadata": {
+        "description": "Optional. The name of the NAT Gateway resource."
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Location(region) for NAT Gateway will be deployed."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Tags for natGateways resource."
+      }
+    },
+    "idleTimeoutInMinutes": {
+      "type": "int",
+      "defaultValue": 4,
+      "metadata": {
+        "description": "Optional. The idle timeout of the NAT Gateway."
+      },
+      "maxValue": 120,
+      "minValue": 4
+    },
+    "publicIpAddresses": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. An array of public ip addresses associated with the nat gateway resource."
+      }
+    },
+    "publicIpPrefixes": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. An array of public ip prefixes associated with the nat gateway resource."
+      }
+    },
+    "isZoneRedundant": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Toggle to enable or disable zone redundance."
+      }
+    },
+    "zones": {
+      "type": "array",
+      "defaultValue": [
+        "1",
+        "2",
+        "3"
+      ],
+      "metadata": {
+        "description": "Optional. Specify Azure Availability Zone IDs when zone redundance is enabled."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/natGateways",
+      "apiVersion": "2022-09-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "sku": {
+        "name": "Standard"
+      },
+      "properties": {
+        "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
+        "publicIpAddresses": "[parameters('publicIpAddresses')]",
+        "publicIpPrefixes": "[parameters('publicIpPrefixes')]"
+      },
+      "zones": "[if(parameters('isZoneRedundant'), parameters('zones'), createArray())]"
+    }
+  ],
+  "outputs": {
+    "id": {
+      "type": "string",
+      "metadata": {
+        "description": "Id of the NAT Gateway resource created."
+      },
+      "value": "[resourceId('Microsoft.Network/natGateways', parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the NAT Gateway Resource."
+      },
+      "value": "[parameters('name')]"
+    }
+  }
+}
