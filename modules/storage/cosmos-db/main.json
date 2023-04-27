@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "8338705310039840294"
+      "templateHash": "4184963345518952719"
     }
   },
   "parameters": {
@@ -341,45 +341,45 @@
   "variables": {
     "copy": [
       {
-        "name": "varSecondaryRegions",
+        "name": "secondaryRegionsWithDefaults",
         "count": "[length(parameters('secondaryLocations'))]",
         "input": {
-          "locationName": "[coalesce(tryGet(parameters('secondaryLocations')[copyIndex('varSecondaryRegions')], 'locationName'), parameters('secondaryLocations')[copyIndex('varSecondaryRegions')])]",
-          "failoverPriority": "[coalesce(tryGet(parameters('secondaryLocations')[copyIndex('varSecondaryRegions')], 'failoverPriority'), add(copyIndex('varSecondaryRegions'), 1))]",
-          "isZoneRedundant": "[coalesce(tryGet(parameters('secondaryLocations')[copyIndex('varSecondaryRegions')], 'isZoneRedundant'), parameters('isZoneRedundant'))]"
+          "locationName": "[coalesce(tryGet(parameters('secondaryLocations')[copyIndex('secondaryRegionsWithDefaults')], 'locationName'), parameters('secondaryLocations')[copyIndex('secondaryRegionsWithDefaults')])]",
+          "failoverPriority": "[coalesce(tryGet(parameters('secondaryLocations')[copyIndex('secondaryRegionsWithDefaults')], 'failoverPriority'), add(copyIndex('secondaryRegionsWithDefaults'), 1))]",
+          "isZoneRedundant": "[coalesce(tryGet(parameters('secondaryLocations')[copyIndex('secondaryRegionsWithDefaults')], 'isZoneRedundant'), parameters('isZoneRedundant'))]"
         }
       },
       {
-        "name": "varIpRules",
+        "name": "ipRulesWithDefaults",
         "count": "[length(parameters('ipRules'))]",
         "input": {
-          "ipAddressOrRange": "[parameters('ipRules')[copyIndex('varIpRules')]]"
+          "ipAddressOrRange": "[parameters('ipRules')[copyIndex('ipRulesWithDefaults')]]"
         }
       },
       {
-        "name": "varPrivateEndpoints",
+        "name": "privateEndpointsWithDefaults",
         "count": "[length(parameters('privateEndpoints'))]",
         "input": {
-          "name": "[format('{0}-{1}', toLower(parameters('name')), parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].name)]",
+          "name": "[format('{0}-{1}', toLower(parameters('name')), parameters('privateEndpoints')[copyIndex('privateEndpointsWithDefaults')].name)]",
           "privateLinkServiceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name')))]",
           "groupIds": [
-            "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].groupId]"
+            "[parameters('privateEndpoints')[copyIndex('privateEndpointsWithDefaults')].groupId]"
           ],
-          "subnetId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].subnetId]",
-          "privateDnsZones": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'privateDnsZoneId'), createArray(createObject('name', 'default', 'zoneId', parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].privateDnsZoneId)), createArray())]",
-          "manualApprovalEnabled": "[coalesce(tryGet(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'manualApprovalEnabled'), false())]"
+          "subnetId": "[parameters('privateEndpoints')[copyIndex('privateEndpointsWithDefaults')].subnetId]",
+          "privateDnsZones": "[if(contains(parameters('privateEndpoints')[copyIndex('privateEndpointsWithDefaults')], 'privateDnsZoneId'), createArray(createObject('name', 'default', 'zoneId', parameters('privateEndpoints')[copyIndex('privateEndpointsWithDefaults')].privateDnsZoneId)), createArray())]",
+          "manualApprovalEnabled": "[coalesce(tryGet(parameters('privateEndpoints')[copyIndex('privateEndpointsWithDefaults')], 'manualApprovalEnabled'), false())]"
         }
       }
     ],
     "varConsistencyPolicy": "[if(equals(parameters('defaultConsistencyLevel'), 'BoundedStaleness'), createObject('defaultConsistencyLevel', 'BoundedStaleness', 'maxStalenessPrefix', parameters('maxStalenessPrefix'), 'maxIntervalInSeconds', parameters('maxIntervalInSeconds')), createObject('defaultConsistencyLevel', parameters('defaultConsistencyLevel')))]",
-    "varLocations": "[union(createArray(createObject('locationName', parameters('location'), 'failoverPriority', 0, 'isZoneRedundant', parameters('isZoneRedundant'))), if(parameters('enableServerless'), createArray(), variables('varSecondaryRegions')))]",
+    "locationsWithDefaults": "[union(createArray(createObject('locationName', parameters('location'), 'failoverPriority', 0, 'isZoneRedundant', parameters('isZoneRedundant'))), if(parameters('enableServerless'), createArray(), variables('secondaryRegionsWithDefaults')))]",
     "capabilityMappings": {
       "cassandra": "EnableCassandra",
       "gremlin": "EnableGremlin",
       "mongodb": "EnableMongo",
       "table": "EnableTable"
     },
-    "varCapabilities": "[union(parameters('capabilities'), if(parameters('enableServerless'), createArray('EnableServerless'), createArray()), if(contains(variables('capabilityMappings'), parameters('backendApi')), createArray(variables('capabilityMappings')[parameters('backendApi')]), createArray()))]"
+    "capabilitiesWithDefaults": "[union(parameters('capabilities'), if(parameters('enableServerless'), createArray('EnableServerless'), createArray()), if(contains(variables('capabilityMappings'), parameters('backendApi')), createArray(variables('capabilityMappings')[parameters('backendApi')]), createArray()))]"
   },
   "resources": [
     {
@@ -392,9 +392,9 @@
         "copy": [
           {
             "name": "capabilities",
-            "count": "[length(variables('varCapabilities'))]",
+            "count": "[length(variables('capabilitiesWithDefaults'))]",
             "input": {
-              "name": "[variables('varCapabilities')[copyIndex('capabilities')]]"
+              "name": "[variables('capabilitiesWithDefaults')[copyIndex('capabilities')]]"
             }
           }
         ],
@@ -410,9 +410,9 @@
         "enableAutomaticFailover": "[parameters('enableAutomaticFailover')]",
         "enableFreeTier": "[parameters('enableFreeTier')]",
         "enableMultipleWriteLocations": "[if(parameters('enableServerless'), false(), parameters('enableMultipleWriteLocations'))]",
-        "ipRules": "[variables('varIpRules')]",
+        "ipRules": "[variables('ipRulesWithDefaults')]",
         "isVirtualNetworkFilterEnabled": "[parameters('isVirtualNetworkFilterEnabled')]",
-        "locations": "[variables('varLocations')]",
+        "locations": "[variables('locationsWithDefaults')]",
         "networkAclBypass": "[parameters('networkAclBypass')]",
         "networkAclBypassResourceIds": "[parameters('networkAclBypassResourceIds')]",
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
@@ -588,7 +588,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.2.56959",
-              "templateHash": "8156066381075135293"
+              "templateHash": "14470324069343215151"
             }
           },
           "parameters": {
@@ -660,7 +660,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.16.2.56959",
-                      "templateHash": "5475082331870031970"
+                      "templateHash": "13969499250039756413"
                     }
                   },
                   "parameters": {
@@ -679,9 +679,9 @@
                     }
                   },
                   "variables": {
-                    "varStoredProcedures": "[if(contains(parameters('databaseContainer'), 'storedProcedures'), parameters('databaseContainer').storedProcedures, createArray())]",
-                    "varTriggers": "[if(contains(parameters('databaseContainer'), 'triggers'), parameters('databaseContainer').triggers, createArray())]",
-                    "varUserDefinedFunctions": "[if(contains(parameters('databaseContainer'), 'userDefinedFunctions'), parameters('databaseContainer').userDefinedFunctions, createArray())]"
+                    "varStoredProcedures": "[coalesce(tryGet(parameters('databaseContainer'), 'storedProcedures'), createArray())]",
+                    "varTriggers": "[coalesce(tryGet(parameters('databaseContainer'), 'triggers'), createArray())]",
+                    "varUserDefinedFunctions": "[coalesce(tryGet(parameters('databaseContainer'), 'userDefinedFunctions'), createArray())]"
                   },
                   "resources": [
                     {
@@ -1091,7 +1091,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.2.56959",
-              "templateHash": "1513355008207078223"
+              "templateHash": "7616646655512683661"
             }
           },
           "parameters": {
@@ -1113,7 +1113,7 @@
                 "mode": "serial",
                 "batchSize": 1
               },
-              "type": "Microsoft.DocumentDB/databaseAccounts/roleDefinitions",
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
               "apiVersion": "2022-11-15",
               "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), parameters('roleDefinitions')[copyIndex()].roleName))]",
               "properties": {
@@ -1136,11 +1136,11 @@
                 "mode": "serial",
                 "batchSize": 1
               },
-              "type": "Microsoft.DocumentDB/databaseAccounts/roleAssignments",
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
               "apiVersion": "2022-11-15",
               "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), parameters('roleAssignments')[copyIndex()].roleDefinitionId, parameters('roleAssignments')[copyIndex()].principalId))]",
               "properties": {
-                "roleDefinitionId": "[resourceId('Microsoft.DocumentDB/databaseAccounts/roleDefinitions', parameters('cosmosDBAccountName'), parameters('roleAssignments')[copyIndex()].roleDefinitionId)]",
+                "roleDefinitionId": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDBAccountName'), parameters('roleAssignments')[copyIndex()].roleDefinitionId)]",
                 "principalId": "[parameters('roleAssignments')[copyIndex()].principalId]",
                 "scope": "[format('{0}{1}', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), parameters('roleAssignments')[copyIndex()].scope)]"
               },
@@ -1159,7 +1159,7 @@
                 "count": "[length(parameters('roleDefinitions'))]",
                 "input": {
                   "name": "[parameters('roleDefinitions')[copyIndex()].roleName]",
-                  "id": "[parameters('roleDefinitions')[copyIndex()].id]"
+                  "id": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDBAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), parameters('roleDefinitions')[copyIndex()].roleName))]"
                 }
               }
             }
@@ -1270,7 +1270,10 @@
             }
           ]
         }
-      }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name')))]"
+      ]
     },
     {
       "type": "Microsoft.Resources/deployments",
@@ -1286,7 +1289,7 @@
             "value": "[parameters('location')]"
           },
           "privateEndpoints": {
-            "value": "[variables('varPrivateEndpoints')]"
+            "value": "[variables('privateEndpointsWithDefaults')]"
           },
           "tags": {
             "value": "[parameters('tags')]"

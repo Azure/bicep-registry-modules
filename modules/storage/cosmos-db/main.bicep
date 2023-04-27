@@ -143,20 +143,20 @@ var varConsistencyPolicy = (defaultConsistencyLevel == 'BoundedStaleness') ? {
   defaultConsistencyLevel: defaultConsistencyLevel
 }
 
-var varSecondaryRegions = [for (region, i) in secondaryLocations: {
+var secondaryRegionsWithDefaults = [for (region, i) in secondaryLocations: {
   locationName: region.?locationName ?? region
   failoverPriority: region.?failoverPriority ?? i + 1
   isZoneRedundant: region.?isZoneRedundant ?? isZoneRedundant
 }]
 
-var varLocations = union([
+var locationsWithDefaults = union([
     {
       locationName: location
       failoverPriority: 0
       isZoneRedundant: isZoneRedundant
     }
   ],
-  enableServerless ? [] : varSecondaryRegions
+  enableServerless ? [] : secondaryRegionsWithDefaults
 )
 
 var capabilityMappings = {
@@ -166,17 +166,17 @@ var capabilityMappings = {
   table: 'EnableTable'
 }
 
-var varCapabilities = union(
+var capabilitiesWithDefaults = union(
   capabilities,
   enableServerless ? [ 'EnableServerless' ] : [],
   contains(capabilityMappings, backendApi) ? [ capabilityMappings[backendApi] ] : []
 )
 
-var varIpRules = [for ipRule in ipRules: {
+var ipRulesWithDefaults = [for ipRule in ipRules: {
   ipAddressOrRange: ipRule
 }]
 
-var varPrivateEndpoints = [for endpoint in privateEndpoints: {
+var privateEndpointsWithDefaults = [for endpoint in privateEndpoints: {
   name: '${cosmosDBAccount.name}-${endpoint.name}'
   privateLinkServiceId: cosmosDBAccount.id
   groupIds: [
@@ -200,7 +200,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2022-11-15' = {
     analyticalStorageConfiguration: enableAnalyticalStorage ? { schemaType: analyticalStorageSchemaType } : null
     apiProperties: (backendApi == 'mongodb') ? { serverVersion: serverVersion } : null
 
-    capabilities: [for capability in varCapabilities: { name: capability }]
+    capabilities: [for capability in capabilitiesWithDefaults: { name: capability }]
     capacity: enableServerless ? null : { totalThroughputLimit: totalThroughputLimit }
     consistencyPolicy: varConsistencyPolicy
     cors: cors
@@ -211,9 +211,9 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2022-11-15' = {
     enableAutomaticFailover: enableAutomaticFailover
     enableFreeTier: enableFreeTier
     enableMultipleWriteLocations: enableServerless ? false : enableMultipleWriteLocations
-    ipRules: varIpRules
+    ipRules: ipRulesWithDefaults
     isVirtualNetworkFilterEnabled: isVirtualNetworkFilterEnabled
-    locations: varLocations
+    locations: locationsWithDefaults
     networkAclBypass: networkAclBypass
     networkAclBypassResourceIds: networkAclBypassResourceIds
     publicNetworkAccess: publicNetworkAccess
@@ -336,7 +336,7 @@ module cosmosDBAccount_privateEndpoint 'modules/privateEndpoint.bicep' = {
   name: '${name}-${uniqueString(deployment().name, location)}-private-endpoints'
   params: {
     location: location
-    privateEndpoints: varPrivateEndpoints
+    privateEndpoints: privateEndpointsWithDefaults
     tags: tags
   }
 }
