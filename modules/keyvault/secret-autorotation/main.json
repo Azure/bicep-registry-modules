@@ -5,14 +5,14 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.1.55165",
-      "templateHash": "2871935769403308702"
+      "templateHash": "3023964117531376491"
     }
   },
   "parameters": {
     "secrets": {
       "type": "array",
       "metadata": {
-        "description": "  Required.\r\n\r\n  Definition of secrets to be auto-rotated. Includes name of the CosmosDB, name of the KeyVault, name of the Secret, name of the Resource Group etc.\r\n  Example:\r\n  [\r\n    {\r\n      type: 'cosmosdb', // mandatory, can be 'cosmosdb', 'redis'\r\n      resourceName: 'cosmosdb-1',\r\n      resourceRg: 'resource-group-1', // optional, default to parameter \"resourceGroup().name\"\r\n      keyvaultRg: 'resource-group-1', // optional, default to parameter \"resourceGroup().name\"\r\n      keyvaultName: 'keyvault-1',\r\n      secretName: 'secret-1'\r\n    }\r\n  ]\r\n  It's unlikely that for a single CosmosDB both primary and secondary keys are stored as keyvault secrets, normally one is used and later alternated to the other. Thus for now multiple keys are not supported.\r\n  Note! Currently only support each CosmosDB having 1 secret.\r\n  "
+        "description": "  Required.\n\n  Definition of secrets to be auto-rotated. Includes name of the CosmosDB, name of the KeyVault, name of the Secret, name of the Resource Group etc.\n  Example:\n  [\n    {\n      type: 'cosmosdb', // mandatory, can be 'cosmosdb', 'redis'\n      resourceName: 'cosmosdb-1',\n      resourceRg: 'resource-group-1', // optional, default to parameter \"resourceGroup().name\"\n      keyvaultRg: 'resource-group-1', // optional, default to parameter \"resourceGroup().name\"\n      keyvaultName: 'keyvault-1',\n      secretName: 'secret-1'\n    }\n  ]\n  It's unlikely that for a single CosmosDB both primary and secondary keys are stored as keyvault secrets, normally one is used and later alternated to the other. Thus for now multiple keys are not supported.\n  Note! Currently only support each CosmosDB having 1 secret.\n  "
       }
     },
     "analyticWorkspaceId": {
@@ -194,7 +194,7 @@
     "filename": "functionapp.zip",
     "suffix": "[uniqueString(parameters('functionAppName'))]",
     "websiteContirbutorRoleId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'de139f84-1756-47ae-9be6-808fbbe84772')]",
-    "deployZipScript": "#!/bin/bash\n\necho \"${ZIP_FILE}\" | base64 -d > $FILE_NAME\naz functionapp deploy --resource-group $RESOURCE_GROUP_NAME --name $FUNCTION_APP_NAME --src-path $FILE_NAME --type zip"
+    "deployZipScript": "#!/bin/bash\r\n\r\necho \"${ZIP_FILE}\" | base64 -d > $FILE_NAME\r\naz functionapp deploy --resource-group $RESOURCE_GROUP_NAME --name $FUNCTION_APP_NAME --src-path $FILE_NAME --type zip"
   },
   "resources": [
     {
