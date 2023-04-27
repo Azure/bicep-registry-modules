@@ -7,6 +7,8 @@ Azure Managed Grafana is a data visualization platform built on top of the Grafa
 Azure Managed Grafana is a data visualization platform built on top of the Grafana software by Grafana Labs. It’s built as a fully managed Azure service operated and supported by Microsoft. Grafana helps you bring together metrics, logs and traces into a single user interface. With its extensive support for data sources and graphing capabilities, you can view and analyze your application and infrastructure telemetry data in real-time. Azure Managed Grafana is optimized for the Azure environment.
 (Overview)[https://learn.microsoft.com/en-us/azure/managed-grafana/overview]
 
+> Note: Make sure  'Microsoft.Monitor' and 'Micrsoft.Dashboard' namespaces to be registered manually for the subscription
+
 ## Parameters
 
 | Name                                    | Type     | Required | Description                                                                                                                                                                                                                                                                                                                                                                                          |
