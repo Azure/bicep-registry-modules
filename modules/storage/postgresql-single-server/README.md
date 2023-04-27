@@ -1,6 +1,6 @@
-# Postgresql Single Server
+# PostgreSQL Single Server
 
-This module deploys Postgresql Single Server (Microsoft.DBforPostgreSQL/servers) and optionally available integrations.
+This module deploys PostgreSQL Single Server (Microsoft.DBforPostgreSQL/servers) and optionally available integrations.
 
 ## Description
 
