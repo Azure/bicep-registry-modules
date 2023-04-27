@@ -173,3 +173,4 @@ module test04 '../main.bicep' = {
     ]
   }
 }
+
