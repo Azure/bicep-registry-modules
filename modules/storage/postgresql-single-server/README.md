@@ -54,7 +54,7 @@ Deploy a Postgresql Single Server with minimal parameters
 @secure
 param administratorLoginPassword string
 
-module postgresqlSingleServer 'br/public:storage/postgresql-single-server:1.0' = {
+module postgresqlSingleServer 'br/public:storage/postgresql-single-server:1.0.1' = {
   name: 'postgresqlSingleServer'
   params: {
     sqlServerAdministratorLogin: 'testlogin'
@@ -72,7 +72,7 @@ Deploy a Postgresql Single Server primary + replica set
 @secure
 param administratorLoginPassword string
 
-module primaryPostgresqlServer 'br/public:storage/postgresql-single-server:1.0' = {
+module primaryPostgresqlServer 'br/public:storage/postgresql-single-server:1.0.1' = {
   name: 'primary-server'
   params: {
     location: location
@@ -82,7 +82,7 @@ module primaryPostgresqlServer 'br/public:storage/postgresql-single-server:1.0' 
   }
 }
 
-module replicaPostgresqlServer 'br/public:storage/postgresql-single-server:1.0' = {
+module replicaPostgresqlServer 'br/public:storage/postgresql-single-server:1.0.1' = {
   name: 'replica-server'
   params: {
     location: location
@@ -144,7 +144,7 @@ var sqlServerConfigurations = [
   }
 ]
 
-module postgresqlSingleServer 'br/public:storage/postgresql-single-server:1.0' = {
+module postgresqlSingleServer 'br/public:storage/postgresql-single-server:1.0.1' = {
   name: 'postgresqlSingleServer'
   params: {
     location: location
