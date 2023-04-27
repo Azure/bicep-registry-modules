@@ -1,39 +1,39 @@
 param cosmosDBAccountName string
-param sqlRoleDefinitions array
-param sqlRoleAssignments array
+param roleDefinitions array
+param roleAssignments array
 
 resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2022-11-15' existing = {
   name: cosmosDBAccountName
 }
 
 @batchSize(1)
-resource cosmosDBAccount_sqlRoleDefinitions 'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions@2022-11-15' = [for sqlRoleDefinition in sqlRoleDefinitions: {
-  name: guid(cosmosDBAccount.id, sqlRoleDefinition.roleName)
+resource sqlRoleDefinitions 'Microsoft.DocumentDB/databaseAccounts/sqlroleDefinitions@2022-11-15' = [for roleDefinition in roleDefinitions: {
+  name: guid(cosmosDBAccount.id, roleDefinition.roleName)
   parent: cosmosDBAccount
   properties: {
-    roleName: sqlRoleDefinition.roleName
+    roleName: roleDefinition.roleName
     type: 'CustomRole'
-    assignableScopes: [for (scope, i) in sqlRoleDefinition.assignableScopes: '${cosmosDBAccount.id}${sqlRoleDefinition.assignableScopes[i]}']
-    permissions: sqlRoleDefinition.permissions
+    assignableScopes: [for (scope, i) in roleDefinition.assignableScopes: '${cosmosDBAccount.id}${roleDefinition.assignableScopes[i]}']
+    permissions: roleDefinition.permissions
   }
 }]
 
 @batchSize(1)
-resource cosmosDBAccount_sqlRoleAssignments 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2022-11-15' = [for sqlRoleAssignment in sqlRoleAssignments: {
-  name: guid(cosmosDBAccount.id, sqlRoleAssignment.roleDefinitionId, sqlRoleAssignment.principalId)
+resource sqlRoleAssignments 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2022-11-15' = [for roleAssignment in roleAssignments: {
+  name: guid(cosmosDBAccount.id, roleAssignment.roleDefinitionId, roleAssignment.principalId)
   parent: cosmosDBAccount
   dependsOn: [
-    cosmosDBAccount_sqlRoleDefinitions
+    sqlRoleDefinitions
   ]
   properties: {
-    roleDefinitionId: resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', cosmosDBAccount.name, sqlRoleAssignment.roleDefinitionId)
-    principalId: sqlRoleAssignment.principalId
-    scope: '${cosmosDBAccount.id}${sqlRoleAssignment.scope}'
+    roleDefinitionId: resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', cosmosDBAccount.name, roleAssignment.roleDefinitionId)
+    principalId: roleAssignment.principalId
+    scope: '${cosmosDBAccount.id}${roleAssignment.scope}'
   }
 }]
 
 @description('The role definition ids of the created role definitions.')
-output sqlRoleDefinitionIds array = [for (roleDefinition, i) in sqlRoleDefinitions: {
+output roleDefinitionIds array = [for (roleDefinition, i) in roleDefinitions: {
   name: roleDefinition.roleName
-  id: cosmosDBAccount_sqlRoleDefinitions[i].id
+  id: sqlRoleDefinitions[i].id
 }]

@@ -3,10 +3,13 @@ param location string = resourceGroup().location
 
 @description('The bakend API type of Cosmos DB database account. The API selection cannot be changed after account creation. Possible values: "cassandra", "gremlin", "mongodb", "sql", "table".')
 @allowed([ 'cassandra', 'gremlin', 'mongodb', 'sql', 'table' ])
-param backendApi string = 'cassandra'
+param backendApi string = 'sql'
+
+@description('Prefix of Cosmos DB Resource Name. Not used if name is provided.')
+param prefix string = { cassandra: 'coscas', gremlin: 'cosgrm', mongodb: 'cosmon', sql: 'cosmos', table: 'costab' }[backendApi]
 
 @description('The name of the Cosmos DB account. Character limit: 3-44, valid characters: lowercase letters, numbers, and hyphens. It must me unique across Azure.')
-param name string = 'cdb${backendApi}-${uniqueString(resourceGroup().id, location)}'
+param name string = take('${prefix}-${uniqueString(resourceGroup().id, location)}', 44)
 
 @description('Enables automatic failover of the write region in the rare event that the region is unavailable due to an outage. Automatic failover will result in a new write region for the account and is chosen based on the failover priorities configured for the account.')
 param enableAutomaticFailover bool = true
@@ -24,6 +27,7 @@ param isZoneRedundant bool = false
 param enableFreeTier bool = false
 
 @description('The total throughput limit of the Cosmos DB account in measurement of requests units (RUs) per second, -1 indicates no limits on provisioning of throughput.')
+@minValue(-1)
 param totalThroughputLimit int = -1
 
 @description('The array of secondary locations.')
@@ -38,7 +42,7 @@ param defaultConsistencyLevel string = 'Session'
 @maxValue(2147483647)
 param maxStalenessPrefix int = 100000
 
-@description('Max lag time (minutes) required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400.')
+@description('Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400.')
 @minValue(5)
 @maxValue(86400)
 param maxIntervalInSeconds int = 300
@@ -74,7 +78,6 @@ param virtualNetworkRules array = []
 param networkAclBypassResourceIds array = []
 
 @description('Non-default extra capabilities.')
-@allowed([ 'DisableRateLimitingResponses', 'EnableAggregationPipeline', 'EnableMongo16MBDocumentSupport', 'EnableMongoRetryableWrites', 'EnableMongoRoleBasedAccessControl', 'EnableUniqueCompoundNestedDocs', 'mongoEnableDocLevelTTL' ])
 param capabilities array = []
 
 @description('Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.')
@@ -141,9 +144,9 @@ var varConsistencyPolicy = (defaultConsistencyLevel == 'BoundedStaleness') ? {
 }
 
 var varSecondaryRegions = [for (region, i) in secondaryLocations: {
-  locationName: contains(region, 'locationName') ? region.locationName : region
-  failoverPriority: contains(region, 'failoverPriority') ? region.failoverPriority : i + 1
-  isZoneRedundant: contains(region, 'isZoneRedundant') ? region.isZoneRedundant : isZoneRedundant
+  locationName: region.?locationName ?? region
+  failoverPriority: region.?failoverPriority ?? i + 1
+  isZoneRedundant: region.?isZoneRedundant ?? isZoneRedundant
 }]
 
 var varLocations = union([
@@ -156,13 +159,17 @@ var varLocations = union([
   enableServerless ? [] : varSecondaryRegions
 )
 
+var capabilityMappings = {
+  cassandra: 'EnableCassandra'
+  gremlin: 'EnableGremlin'
+  mongodb: 'EnableMongo'
+  table: 'EnableTable'
+}
+
 var varCapabilities = union(
   capabilities,
   enableServerless ? [ 'EnableServerless' ] : [],
-  backendApi == 'cassandra' ? [ 'EnableCassandra' ] : [],
-  backendApi == 'gremlin' ? [ 'EnableGremlin' ] : [],
-  backendApi == 'mongodb' ? [ 'EnableMongo' ] : [],
-  backendApi == 'table' ? [ 'EnableTable' ] : []
+  contains(capabilityMappings, backendApi) ? [ capabilityMappings[backendApi] ] : []
 )
 
 var varIpRules = [for ipRule in ipRules: {
@@ -182,7 +189,7 @@ var varPrivateEndpoints = [for endpoint in privateEndpoints: {
       zoneId: endpoint.privateDnsZoneId
     }
   ] : []
-  manualApprovalEnabled: contains(endpoint, 'manualApprovalEnabled') ? endpoint.manualApprovalEnabled : false
+  manualApprovalEnabled: endpoint.?manualApprovalEnabled ?? false
 }]
 
 resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2022-11-15' = {
@@ -228,9 +235,9 @@ module cosmosDBAccount_cassandraKeyspaces 'modules/cassandra.bicep' = [for (keys
   params: {
     cosmosDBAccountName: name
     keyspaceName: keyspace.name
-    cassandraTables: keyspace.tables
-    autoscaleMaxThroughput: contains(keyspace, 'autoscaleMaxThroughput') ? keyspace.autoscaleMaxThroughput : 0
-    manualProvisionedThroughput: contains(keyspace, 'manualProvisionedThroughput') ? keyspace.manualProvisionedThroughput : 0
+    tables: keyspace.tables
+    autoscaleMaxThroughput: keyspace.?autoscaleMaxThroughput ?? 0
+    manualProvisionedThroughput: keyspace.?manualProvisionedThroughput ?? 0
     enableServerless: enableServerless
   }
 }]
@@ -243,10 +250,10 @@ module cosmosDBAccount_sqlDatabases 'modules/sql.bicep' = [for (sqlDatabase, ind
   ]
   params: {
     cosmosDBAccountName: name
-    sqlDatabaseName: sqlDatabase.name
-    sqlDatabaseContainers: contains(sqlDatabase, 'containers') ? sqlDatabase.containers : []
-    autoscaleMaxThroughput: contains(sqlDatabase, 'autoscaleMaxThroughput') ? sqlDatabase.autoscaleMaxThroughput : 0
-    manualProvisionedThroughput: contains(sqlDatabase, 'manualProvisionedThroughput') ? sqlDatabase.manualProvisionedThroughput : 0
+    databaseName: sqlDatabase.name
+    databaseContainers: sqlDatabase.?containers ?? []
+    autoscaleMaxThroughput: sqlDatabase.?autoscaleMaxThroughput ?? 0
+    manualProvisionedThroughput: sqlDatabase.?manualProvisionedThroughput ?? 0
     enableServerless: enableServerless
   }
 }]
@@ -259,10 +266,10 @@ module cosmosDBAccount_mongodbDatabases 'modules/mongodb.bicep' = [for (mongodbD
   ]
   params: {
     cosmosDBAccountName: name
-    mongodbDatabaseName: mongodbDatabase.name
-    mongodbDatabaseCollections: contains(mongodbDatabase, 'collections') ? mongodbDatabase.collections : []
-    autoscaleMaxThroughput: contains(mongodbDatabase, 'autoscaleMaxThroughput') ? mongodbDatabase.autoscaleMaxThroughput : 0
-    manualProvisionedThroughput: contains(mongodbDatabase, 'manualProvisionedThroughput') ? mongodbDatabase.manualProvisionedThroughput : 0
+    databaseName: mongodbDatabase.name
+    databaseCollections: mongodbDatabase.?collections ?? []
+    autoscaleMaxThroughput: mongodbDatabase.?autoscaleMaxThroughput ?? 0
+    manualProvisionedThroughput: mongodbDatabase.?manualProvisionedThroughput ?? 0
     enableServerless: enableServerless
   }
 }]
@@ -276,8 +283,8 @@ module cosmosDBAccount_tables 'modules/table.bicep' = [for (table, index) in tab
   params: {
     cosmosDBAccountName: name
     tableName: table.name
-    autoscaleMaxThroughput: contains(table, 'autoscaleMaxThroughput') ? table.autoscaleMaxThroughput : 0
-    manualProvisionedThroughput: contains(table, 'manualProvisionedThroughput') ? table.manualProvisionedThroughput : 0
+    autoscaleMaxThroughput: table.?autoscaleMaxThroughput ?? 0
+    manualProvisionedThroughput: table.?manualProvisionedThroughput ?? 0
     enableServerless: enableServerless
   }
 }]
@@ -290,10 +297,10 @@ module cosmosDBAccount_gremlinDatabases 'modules/gremlin.bicep' = [for (gremlinD
   ]
   params: {
     cosmosDBAccountName: name
-    gremlinDatabaseName: gremlinDatabase.name
-    gremlinDatabaseGraphs: contains(gremlinDatabase, 'graphs') ? gremlinDatabase.graphs : []
-    autoscaleMaxThroughput: contains(gremlinDatabase, 'autoscaleMaxThroughput') ? gremlinDatabase.autoscaleMaxThroughput : 0
-    manualProvisionedThroughput: contains(gremlinDatabase, 'manualProvisionedThroughput') ? gremlinDatabase.manualProvisionedThroughput : 0
+    databaseName: gremlinDatabase.name
+    databaseGraphs: gremlinDatabase.?graphs ?? []
+    autoscaleMaxThroughput: gremlinDatabase.?autoscaleMaxThroughput ?? 0
+    manualProvisionedThroughput: gremlinDatabase.?manualProvisionedThroughput ?? 0
     enableServerless: enableServerless
   }
 }]
@@ -305,19 +312,22 @@ module cosmosDBAccount_sqlRoles 'modules/sql_roles.bicep' = {
   ]
   params: {
     cosmosDBAccountName: name
-    sqlRoleDefinitions: sqlRoleDefinitions
-    sqlRoleAssignments: sqlRoleAssignments
+    roleDefinitions: sqlRoleDefinitions
+    roleAssignments: sqlRoleAssignments
   }
 }
 
 @batchSize(1)
 module cosmosDBAccount_rbac 'modules/rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
   name: 'cosmosdb-rbac-${uniqueString(deployment().name, location)}-${index}'
+  dependsOn: [
+    cosmosDBAccount
+  ]
   params: {
-    description: contains(roleAssignment, 'description') ? roleAssignment.description : ''
+    description: roleAssignment.?description ?? ''
     principalIds: roleAssignment.principalIds
     roleDefinitionIdOrName: roleAssignment.roleDefinitionIdOrName
-    principalType: contains(roleAssignment, 'principalType') ? roleAssignment.principalType : ''
+    principalType: roleAssignment.?principalType ?? ''
     cosmosDBAccountName: name
   }
 }]
@@ -350,4 +360,4 @@ output name string = cosmosDBAccount.name
 output systemAssignedIdentityPrincipalId string = contains(identityType, 'SystemAssigned') ? cosmosDBAccount.identity.principalId : ''
 
 @description('Resource Ids of sql role definition resources created for this Cosmos DB account.')
-output sqlRoleDefinitionIds array = !empty(sqlRoleDefinitions) ? cosmosDBAccount_sqlRoles.outputs.sqlRoleDefinitionIds : []
+output sqlRoleDefinitionIds array = !empty(sqlRoleDefinitions) ? cosmosDBAccount_sqlRoles.outputs.roleDefinitionIds : []

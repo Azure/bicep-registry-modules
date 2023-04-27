@@ -30,7 +30,7 @@ module test01 '../main.bicep' = {
   name: 'test01-${uniqueName}'
   params: {
     location: location
-    name: 'test01-${uniqueName}'
+    prefix: 'test01'
   }
 }
 
@@ -39,7 +39,7 @@ module test02 '../main.bicep' = {
   name: 'test02-${uniqueName}'
   params: {
     location: location
-    name: 'test02-${uniqueName}'
+    prefix: 'test02'
     secondaryLocations: [
       {
         locationName: 'westus'
@@ -112,7 +112,7 @@ module test03 '../main.bicep' = {
   params: {
     location: location
     backendApi: 'sql'
-    name: 'test03-${uniqueName}'
+    prefix: 'test03'
     defaultConsistencyLevel: 'BoundedStaleness'
     maxIntervalInSeconds: 10000
     maxStalenessPrefix: 100000
@@ -204,7 +204,7 @@ module test04 '../main.bicep' = {
   params: {
     location: location
     backendApi: 'mongodb'
-    name: 'test04-${uniqueName}'
+    prefix: 'test04'
     capabilities: [
       'EnableMongoRetryableWrites'
       'EnableAggregationPipeline'
@@ -257,7 +257,7 @@ module test05 '../main.bicep' = {
   params: {
     location: location
     backendApi: 'table'
-    name: 'test05-2-${uniqueName}'
+    prefix: 'test05'
     enableServerless: true
     defaultConsistencyLevel: 'BoundedStaleness'
     maxIntervalInSeconds: 10000
@@ -292,7 +292,7 @@ module test06 '../main.bicep' = {
   params: {
     location: location
     backendApi: 'gremlin'
-    name: 'test06-${uniqueName}'
+    prefix: 'test06'
     gremlinDatabases: [
       {
         name: 'testdb01'
@@ -337,12 +337,13 @@ module test06 '../main.bicep' = {
 module test07 '../main.bicep' = {
   name: 'test07-${uniqueName}'
   dependsOn: [
-    test03 // SQL DB with containers test case causing conflict due to same deployment name.
+    test01 // SQL DB with containers test case causing conflict due to same deployment name.
+    test03
   ]
   params: {
     location: location
     backendApi: 'sql'
-    name: 'test07-${uniqueName}'
+    prefix: 'test07'
     sqlDatabases: [
       {
         name: 'testdb1'

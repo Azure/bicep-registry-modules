@@ -1,7 +1,7 @@
 param cosmosDBAccountName string
 param enableServerless bool = false
-param sqlDatabaseName string
-param sqlDatabaseContainers array
+param databaseName string
+param databaseContainers array
 param autoscaleMaxThroughput int
 param manualProvisionedThroughput int
 
@@ -9,12 +9,12 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2022-11-15' exis
   name: cosmosDBAccountName
 }
 
-resource cosmosDBAccount_sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2022-11-15' = {
-  name: sqlDatabaseName
+resource sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2022-11-15' = {
+  name: databaseName
   parent: cosmosDBAccount
   properties: {
     resource: {
-      id: sqlDatabaseName
+      id: databaseName
     }
     options: enableServerless ? {} : (autoscaleMaxThroughput != 0 ? {
       autoscaleSettings: {
@@ -27,15 +27,15 @@ resource cosmosDBAccount_sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlD
 }
 
 @batchSize(1)
-module cosmosDBAccount_sqlDatabaseContainers 'sql_containers.bicep' = [for sqlDatabaseContainer in sqlDatabaseContainers: {
-  name: sqlDatabaseContainer.name
+module sqlDatabaseContainers 'sql_containers.bicep' = [for databaseContainer in databaseContainers: {
+  name: databaseContainer.name
   dependsOn: [
-    cosmosDBAccount_sqlDatabase
+    sqlDatabase
   ]
   params: {
     cosmosDBAccountName: cosmosDBAccountName
-    sqlDatabaseName: sqlDatabaseName
-    sqlDatabaseContainer: sqlDatabaseContainer
+    databaseName: databaseName
+    databaseContainer: databaseContainer
     enableServerless: enableServerless
   }
 }]

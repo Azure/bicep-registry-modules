@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "6785736822469328698"
+      "templateHash": "8338705310039840294"
     }
   },
   "parameters": {
@@ -18,7 +18,7 @@
     },
     "backendApi": {
       "type": "string",
-      "defaultValue": "cassandra",
+      "defaultValue": "sql",
       "allowedValues": [
         "cassandra",
         "gremlin",
@@ -30,9 +30,16 @@
         "description": "The bakend API type of Cosmos DB database account. The API selection cannot be changed after account creation. Possible values: \"cassandra\", \"gremlin\", \"mongodb\", \"sql\", \"table\"."
       }
     },
+    "prefix": {
+      "type": "string",
+      "defaultValue": "[createObject('cassandra', 'coscas', 'gremlin', 'cosgrm', 'mongodb', 'cosmon', 'sql', 'cosmos', 'table', 'costab')[parameters('backendApi')]]",
+      "metadata": {
+        "description": "Prefix of Cosmos DB Resource Name. Not used if name is provided."
+      }
+    },
     "name": {
       "type": "string",
-      "defaultValue": "[format('cdb{0}-{1}', parameters('backendApi'), uniqueString(resourceGroup().id, parameters('location')))]",
+      "defaultValue": "[take(format('{0}-{1}', parameters('prefix'), uniqueString(resourceGroup().id, parameters('location'))), 44)]",
       "metadata": {
         "description": "The name of the Cosmos DB account. Character limit: 3-44, valid characters: lowercase letters, numbers, and hyphens. It must me unique across Azure."
       }
@@ -75,6 +82,7 @@
     "totalThroughputLimit": {
       "type": "int",
       "defaultValue": -1,
+      "minValue": -1,
       "metadata": {
         "description": "The total throughput limit of the Cosmos DB account in measurement of requests units (RUs) per second, -1 indicates no limits on provisioning of throughput."
       }
@@ -115,7 +123,7 @@
       "maxValue": 86400,
       "minValue": 5,
       "metadata": {
-        "description": "Max lag time (minutes) required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400."
+        "description": "Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400."
       }
     },
     "serverVersion": {
@@ -198,15 +206,6 @@
     "capabilities": {
       "type": "array",
       "defaultValue": [],
-      "allowedValues": [
-        "DisableRateLimitingResponses",
-        "EnableAggregationPipeline",
-        "EnableMongo16MBDocumentSupport",
-        "EnableMongoRetryableWrites",
-        "EnableMongoRoleBasedAccessControl",
-        "EnableUniqueCompoundNestedDocs",
-        "mongoEnableDocLevelTTL"
-      ],
       "metadata": {
         "description": "Non-default extra capabilities."
       }
@@ -345,9 +344,9 @@
         "name": "varSecondaryRegions",
         "count": "[length(parameters('secondaryLocations'))]",
         "input": {
-          "locationName": "[if(contains(parameters('secondaryLocations')[copyIndex('varSecondaryRegions')], 'locationName'), parameters('secondaryLocations')[copyIndex('varSecondaryRegions')].locationName, parameters('secondaryLocations')[copyIndex('varSecondaryRegions')])]",
-          "failoverPriority": "[if(contains(parameters('secondaryLocations')[copyIndex('varSecondaryRegions')], 'failoverPriority'), parameters('secondaryLocations')[copyIndex('varSecondaryRegions')].failoverPriority, add(copyIndex('varSecondaryRegions'), 1))]",
-          "isZoneRedundant": "[if(contains(parameters('secondaryLocations')[copyIndex('varSecondaryRegions')], 'isZoneRedundant'), parameters('secondaryLocations')[copyIndex('varSecondaryRegions')].isZoneRedundant, parameters('isZoneRedundant'))]"
+          "locationName": "[coalesce(tryGet(parameters('secondaryLocations')[copyIndex('varSecondaryRegions')], 'locationName'), parameters('secondaryLocations')[copyIndex('varSecondaryRegions')])]",
+          "failoverPriority": "[coalesce(tryGet(parameters('secondaryLocations')[copyIndex('varSecondaryRegions')], 'failoverPriority'), add(copyIndex('varSecondaryRegions'), 1))]",
+          "isZoneRedundant": "[coalesce(tryGet(parameters('secondaryLocations')[copyIndex('varSecondaryRegions')], 'isZoneRedundant'), parameters('isZoneRedundant'))]"
         }
       },
       {
@@ -368,13 +367,19 @@
           ],
           "subnetId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].subnetId]",
           "privateDnsZones": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'privateDnsZoneId'), createArray(createObject('name', 'default', 'zoneId', parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].privateDnsZoneId)), createArray())]",
-          "manualApprovalEnabled": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'manualApprovalEnabled'), parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].manualApprovalEnabled, false())]"
+          "manualApprovalEnabled": "[coalesce(tryGet(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'manualApprovalEnabled'), false())]"
         }
       }
     ],
     "varConsistencyPolicy": "[if(equals(parameters('defaultConsistencyLevel'), 'BoundedStaleness'), createObject('defaultConsistencyLevel', 'BoundedStaleness', 'maxStalenessPrefix', parameters('maxStalenessPrefix'), 'maxIntervalInSeconds', parameters('maxIntervalInSeconds')), createObject('defaultConsistencyLevel', parameters('defaultConsistencyLevel')))]",
     "varLocations": "[union(createArray(createObject('locationName', parameters('location'), 'failoverPriority', 0, 'isZoneRedundant', parameters('isZoneRedundant'))), if(parameters('enableServerless'), createArray(), variables('varSecondaryRegions')))]",
-    "varCapabilities": "[union(parameters('capabilities'), if(parameters('enableServerless'), createArray('EnableServerless'), createArray()), if(equals(parameters('backendApi'), 'cassandra'), createArray('EnableCassandra'), createArray()), if(equals(parameters('backendApi'), 'gremlin'), createArray('EnableGremlin'), createArray()), if(equals(parameters('backendApi'), 'mongodb'), createArray('EnableMongo'), createArray()), if(equals(parameters('backendApi'), 'table'), createArray('EnableTable'), createArray()))]"
+    "capabilityMappings": {
+      "cassandra": "EnableCassandra",
+      "gremlin": "EnableGremlin",
+      "mongodb": "EnableMongo",
+      "table": "EnableTable"
+    },
+    "varCapabilities": "[union(parameters('capabilities'), if(parameters('enableServerless'), createArray('EnableServerless'), createArray()), if(contains(variables('capabilityMappings'), parameters('backendApi')), createArray(variables('capabilityMappings')[parameters('backendApi')]), createArray()))]"
   },
   "resources": [
     {
@@ -453,11 +458,15 @@
           "keyspaceName": {
             "value": "[parameters('cassandraKeyspaces')[copyIndex()].name]"
           },
-          "cassandraTables": {
+          "tables": {
             "value": "[parameters('cassandraKeyspaces')[copyIndex()].tables]"
           },
-          "autoscaleMaxThroughput": "[if(contains(parameters('cassandraKeyspaces')[copyIndex()], 'autoscaleMaxThroughput'), createObject('value', parameters('cassandraKeyspaces')[copyIndex()].autoscaleMaxThroughput), createObject('value', 0))]",
-          "manualProvisionedThroughput": "[if(contains(parameters('cassandraKeyspaces')[copyIndex()], 'manualProvisionedThroughput'), createObject('value', parameters('cassandraKeyspaces')[copyIndex()].manualProvisionedThroughput), createObject('value', 0))]",
+          "autoscaleMaxThroughput": {
+            "value": "[coalesce(tryGet(parameters('cassandraKeyspaces')[copyIndex()], 'autoscaleMaxThroughput'), 0)]"
+          },
+          "manualProvisionedThroughput": {
+            "value": "[coalesce(tryGet(parameters('cassandraKeyspaces')[copyIndex()], 'manualProvisionedThroughput'), 0)]"
+          },
           "enableServerless": {
             "value": "[parameters('enableServerless')]"
           }
@@ -469,7 +478,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.2.56959",
-              "templateHash": "18388752353531754486"
+              "templateHash": "2510971043502111441"
             }
           },
           "parameters": {
@@ -483,7 +492,7 @@
             "keyspaceName": {
               "type": "string"
             },
-            "cassandraTables": {
+            "tables": {
               "type": "array"
             },
             "autoscaleMaxThroughput": {
@@ -496,23 +505,23 @@
           "resources": [
             {
               "copy": {
-                "name": "cosmosDBAccount_cassandraTables",
-                "count": "[length(parameters('cassandraTables'))]"
+                "name": "cassandraTables",
+                "count": "[length(parameters('tables'))]"
               },
               "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables",
               "apiVersion": "2022-11-15",
-              "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), parameters('keyspaceName'), parameters('cassandraTables')[copyIndex()].name)]",
+              "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), parameters('keyspaceName'), parameters('tables')[copyIndex()].name)]",
               "properties": {
                 "resource": {
-                  "id": "[parameters('cassandraTables')[copyIndex()].name]",
-                  "defaultTtl": "[if(contains(parameters('cassandraTables')[copyIndex()], 'defaultTtl'), parameters('cassandraTables')[copyIndex()].defaultTtl, null())]",
+                  "id": "[parameters('tables')[copyIndex()].name]",
+                  "defaultTtl": "[coalesce(tryGet(parameters('tables')[copyIndex()], 'defaultTtl'), null())]",
                   "schema": {
-                    "columns": "[if(contains(parameters('cassandraTables')[copyIndex()], 'schemaColumns'), parameters('cassandraTables')[copyIndex()].schemaColumns, createArray())]",
-                    "partitionKeys": "[if(contains(parameters('cassandraTables')[copyIndex()], 'schemaPartitionKeys'), parameters('cassandraTables')[copyIndex()].schemaPartitionKeys, createArray())]",
-                    "clusterKeys": "[if(contains(parameters('cassandraTables')[copyIndex()], 'schemaClusteringKeys'), parameters('cassandraTables')[copyIndex()].schemaClusteringKeys, createArray())]"
+                    "columns": "[coalesce(tryGet(parameters('tables')[copyIndex()], 'schemaColumns'), createArray())]",
+                    "partitionKeys": "[coalesce(tryGet(parameters('tables')[copyIndex()], 'schemaPartitionKeys'), createArray())]",
+                    "clusterKeys": "[coalesce(tryGet(parameters('tables')[copyIndex()], 'schemaClusteringKeys'), createArray())]"
                   }
                 },
-                "options": "[if(not(parameters('enableServerless')), if(contains(parameters('cassandraTables')[copyIndex()], 'autoscaleMaxThroughput'), createObject('autoscaleSettings', createObject('maxThroughput', parameters('cassandraTables')[copyIndex()].autoscaleMaxThroughput)), if(contains(parameters('cassandraTables')[copyIndex()], 'manualProvisionedThroughput'), createObject('throughput', parameters('cassandraTables')[copyIndex()].manualProvisionedThroughput), createObject())), createObject())]"
+                "options": "[if(not(parameters('enableServerless')), if(contains(parameters('tables')[copyIndex()], 'autoscaleMaxThroughput'), createObject('autoscaleSettings', createObject('maxThroughput', parameters('tables')[copyIndex()].autoscaleMaxThroughput)), if(contains(parameters('tables')[copyIndex()], 'manualProvisionedThroughput'), createObject('throughput', parameters('tables')[copyIndex()].manualProvisionedThroughput), createObject())), createObject())]"
               },
               "dependsOn": [
                 "[resourceId('Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces', parameters('cosmosDBAccountName'), parameters('keyspaceName'))]"
@@ -556,12 +565,18 @@
           "cosmosDBAccountName": {
             "value": "[parameters('name')]"
           },
-          "sqlDatabaseName": {
+          "databaseName": {
             "value": "[parameters('sqlDatabases')[copyIndex()].name]"
           },
-          "sqlDatabaseContainers": "[if(contains(parameters('sqlDatabases')[copyIndex()], 'containers'), createObject('value', parameters('sqlDatabases')[copyIndex()].containers), createObject('value', createArray()))]",
-          "autoscaleMaxThroughput": "[if(contains(parameters('sqlDatabases')[copyIndex()], 'autoscaleMaxThroughput'), createObject('value', parameters('sqlDatabases')[copyIndex()].autoscaleMaxThroughput), createObject('value', 0))]",
-          "manualProvisionedThroughput": "[if(contains(parameters('sqlDatabases')[copyIndex()], 'manualProvisionedThroughput'), createObject('value', parameters('sqlDatabases')[copyIndex()].manualProvisionedThroughput), createObject('value', 0))]",
+          "databaseContainers": {
+            "value": "[coalesce(tryGet(parameters('sqlDatabases')[copyIndex()], 'containers'), createArray())]"
+          },
+          "autoscaleMaxThroughput": {
+            "value": "[coalesce(tryGet(parameters('sqlDatabases')[copyIndex()], 'autoscaleMaxThroughput'), 0)]"
+          },
+          "manualProvisionedThroughput": {
+            "value": "[coalesce(tryGet(parameters('sqlDatabases')[copyIndex()], 'manualProvisionedThroughput'), 0)]"
+          },
           "enableServerless": {
             "value": "[parameters('enableServerless')]"
           }
@@ -573,7 +588,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.2.56959",
-              "templateHash": "1957925284017373679"
+              "templateHash": "8156066381075135293"
             }
           },
           "parameters": {
@@ -584,10 +599,10 @@
               "type": "bool",
               "defaultValue": false
             },
-            "sqlDatabaseName": {
+            "databaseName": {
               "type": "string"
             },
-            "sqlDatabaseContainers": {
+            "databaseContainers": {
               "type": "array"
             },
             "autoscaleMaxThroughput": {
@@ -601,24 +616,24 @@
             {
               "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
               "apiVersion": "2022-11-15",
-              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), parameters('sqlDatabaseName'))]",
+              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), parameters('databaseName'))]",
               "properties": {
                 "resource": {
-                  "id": "[parameters('sqlDatabaseName')]"
+                  "id": "[parameters('databaseName')]"
                 },
                 "options": "[if(parameters('enableServerless'), createObject(), if(not(equals(parameters('autoscaleMaxThroughput'), 0)), createObject('autoscaleSettings', createObject('maxThroughput', parameters('autoscaleMaxThroughput'))), if(not(equals(parameters('manualProvisionedThroughput'), 0)), createObject('throughput', parameters('manualProvisionedThroughput')), createObject())))]"
               }
             },
             {
               "copy": {
-                "name": "cosmosDBAccount_sqlDatabaseContainers",
-                "count": "[length(parameters('sqlDatabaseContainers'))]",
+                "name": "sqlDatabaseContainers",
+                "count": "[length(parameters('databaseContainers'))]",
                 "mode": "serial",
                 "batchSize": 1
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[parameters('sqlDatabaseContainers')[copyIndex()].name]",
+              "name": "[parameters('databaseContainers')[copyIndex()].name]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -628,11 +643,11 @@
                   "cosmosDBAccountName": {
                     "value": "[parameters('cosmosDBAccountName')]"
                   },
-                  "sqlDatabaseName": {
-                    "value": "[parameters('sqlDatabaseName')]"
+                  "databaseName": {
+                    "value": "[parameters('databaseName')]"
                   },
-                  "sqlDatabaseContainer": {
-                    "value": "[parameters('sqlDatabaseContainers')[copyIndex()]]"
+                  "databaseContainer": {
+                    "value": "[parameters('databaseContainers')[copyIndex()]]"
                   },
                   "enableServerless": {
                     "value": "[parameters('enableServerless')]"
@@ -645,7 +660,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.16.2.56959",
-                      "templateHash": "18433799043757562175"
+                      "templateHash": "5475082331870031970"
                     }
                   },
                   "parameters": {
@@ -656,27 +671,27 @@
                       "type": "bool",
                       "defaultValue": false
                     },
-                    "sqlDatabaseName": {
+                    "databaseName": {
                       "type": "string"
                     },
-                    "sqlDatabaseContainer": {
+                    "databaseContainer": {
                       "type": "object"
                     }
                   },
                   "variables": {
-                    "varStoredProcedures": "[if(contains(parameters('sqlDatabaseContainer'), 'storedProcedures'), parameters('sqlDatabaseContainer').storedProcedures, createArray())]",
-                    "varTriggers": "[if(contains(parameters('sqlDatabaseContainer'), 'triggers'), parameters('sqlDatabaseContainer').triggers, createArray())]",
-                    "varUserDefinedFunctions": "[if(contains(parameters('sqlDatabaseContainer'), 'userDefinedFunctions'), parameters('sqlDatabaseContainer').userDefinedFunctions, createArray())]"
+                    "varStoredProcedures": "[if(contains(parameters('databaseContainer'), 'storedProcedures'), parameters('databaseContainer').storedProcedures, createArray())]",
+                    "varTriggers": "[if(contains(parameters('databaseContainer'), 'triggers'), parameters('databaseContainer').triggers, createArray())]",
+                    "varUserDefinedFunctions": "[if(contains(parameters('databaseContainer'), 'userDefinedFunctions'), parameters('databaseContainer').userDefinedFunctions, createArray())]"
                   },
                   "resources": [
                     {
                       "copy": {
-                        "name": "cosmosDBAccount_sqlDatabasessqlDatabaseContainersStoredProcedures",
+                        "name": "databaseContainersStoredProcedures",
                         "count": "[length(variables('varStoredProcedures'))]"
                       },
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/storedProcedures",
                       "apiVersion": "2022-11-15",
-                      "name": "[format('{0}/{1}/{2}/{3}', parameters('cosmosDBAccountName'), parameters('sqlDatabaseName'), parameters('sqlDatabaseContainer').name, variables('varStoredProcedures')[copyIndex()].name)]",
+                      "name": "[format('{0}/{1}/{2}/{3}', parameters('cosmosDBAccountName'), parameters('databaseName'), parameters('databaseContainer').name, variables('varStoredProcedures')[copyIndex()].name)]",
                       "properties": {
                         "resource": {
                           "id": "[variables('varStoredProcedures')[copyIndex()].name]",
@@ -684,17 +699,17 @@
                         }
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers', parameters('cosmosDBAccountName'), parameters('sqlDatabaseName'), parameters('sqlDatabaseContainer').name)]"
+                        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers', parameters('cosmosDBAccountName'), parameters('databaseName'), parameters('databaseContainer').name)]"
                       ]
                     },
                     {
                       "copy": {
-                        "name": "cosmosDBAccount_sqlDatabasessqlDatabaseContainersUserDefinedFunction",
+                        "name": "databaseContainersUserDefinedFunction",
                         "count": "[length(variables('varUserDefinedFunctions'))]"
                       },
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/userDefinedFunctions",
                       "apiVersion": "2022-11-15",
-                      "name": "[format('{0}/{1}/{2}/{3}', parameters('cosmosDBAccountName'), parameters('sqlDatabaseName'), parameters('sqlDatabaseContainer').name, variables('varUserDefinedFunctions')[copyIndex()].name)]",
+                      "name": "[format('{0}/{1}/{2}/{3}', parameters('cosmosDBAccountName'), parameters('databaseName'), parameters('databaseContainer').name, variables('varUserDefinedFunctions')[copyIndex()].name)]",
                       "properties": {
                         "resource": {
                           "id": "[variables('varUserDefinedFunctions')[copyIndex()].name]",
@@ -702,17 +717,17 @@
                         }
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers', parameters('cosmosDBAccountName'), parameters('sqlDatabaseName'), parameters('sqlDatabaseContainer').name)]"
+                        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers', parameters('cosmosDBAccountName'), parameters('databaseName'), parameters('databaseContainer').name)]"
                       ]
                     },
                     {
                       "copy": {
-                        "name": "cosmosDBAccount_sqlDatabasessqlDatabaseContainersTriggers",
+                        "name": "databaseContainersTriggers",
                         "count": "[length(variables('varTriggers'))]"
                       },
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/triggers",
                       "apiVersion": "2022-11-15",
-                      "name": "[format('{0}/{1}/{2}/{3}', parameters('cosmosDBAccountName'), parameters('sqlDatabaseName'), parameters('sqlDatabaseContainer').name, variables('varTriggers')[copyIndex()].name)]",
+                      "name": "[format('{0}/{1}/{2}/{3}', parameters('cosmosDBAccountName'), parameters('databaseName'), parameters('databaseContainer').name, variables('varTriggers')[copyIndex()].name)]",
                       "properties": {
                         "resource": {
                           "id": "[variables('varTriggers')[copyIndex()].name]",
@@ -722,30 +737,30 @@
                         }
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers', parameters('cosmosDBAccountName'), parameters('sqlDatabaseName'), parameters('sqlDatabaseContainer').name)]"
+                        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers', parameters('cosmosDBAccountName'), parameters('databaseName'), parameters('databaseContainer').name)]"
                       ]
                     },
                     {
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
                       "apiVersion": "2022-11-15",
-                      "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), parameters('sqlDatabaseName'), parameters('sqlDatabaseContainer').name)]",
+                      "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), parameters('databaseName'), parameters('databaseContainer').name)]",
                       "properties": {
                         "resource": {
-                          "id": "[parameters('sqlDatabaseContainer').name]",
-                          "defaultTtl": "[if(contains(parameters('sqlDatabaseContainer'), 'defaultTtl'), parameters('sqlDatabaseContainer').defaultTtl, -1)]",
-                          "conflictResolutionPolicy": "[if(contains(parameters('sqlDatabaseContainer'), 'conflictResolutionPolicy'), parameters('sqlDatabaseContainer').conflictResolutionPolicy, null())]",
-                          "uniqueKeyPolicy": "[if(contains(parameters('sqlDatabaseContainer'), 'uniqueKeyPolicy'), parameters('sqlDatabaseContainer').uniqueKeyPolicy, null())]",
-                          "indexingPolicy": "[if(contains(parameters('sqlDatabaseContainer'), 'indexingPolicy'), parameters('sqlDatabaseContainer').indexingPolicy, null())]",
-                          "partitionKey": "[if(contains(parameters('sqlDatabaseContainer'), 'partitionKey'), parameters('sqlDatabaseContainer').partitionKey, null())]"
+                          "id": "[parameters('databaseContainer').name]",
+                          "defaultTtl": "[coalesce(tryGet(parameters('databaseContainer'), 'defaultTtl'), -1)]",
+                          "conflictResolutionPolicy": "[coalesce(tryGet(parameters('databaseContainer'), 'conflictResolutionPolicy'), null())]",
+                          "uniqueKeyPolicy": "[coalesce(tryGet(parameters('databaseContainer'), 'uniqueKeyPolicy'), null())]",
+                          "indexingPolicy": "[coalesce(tryGet(parameters('databaseContainer'), 'indexingPolicy'), null())]",
+                          "partitionKey": "[coalesce(tryGet(parameters('databaseContainer'), 'partitionKey'), null())]"
                         },
-                        "options": "[if(parameters('enableServerless'), createObject(), if(contains(parameters('sqlDatabaseContainer'), 'autoscaleMaxThroughput'), createObject('autoscaleSettings', createObject('maxThroughput', parameters('sqlDatabaseContainer').autoscaleMaxThroughput)), if(contains(parameters('sqlDatabaseContainer'), 'manualProvisionedThroughput'), createObject('throughput', parameters('sqlDatabaseContainer').manualProvisionedThroughput), createObject())))]"
+                        "options": "[if(parameters('enableServerless'), createObject(), if(contains(parameters('databaseContainer'), 'autoscaleMaxThroughput'), createObject('autoscaleSettings', createObject('maxThroughput', parameters('databaseContainer').autoscaleMaxThroughput)), if(contains(parameters('databaseContainer'), 'manualProvisionedThroughput'), createObject('throughput', parameters('databaseContainer').manualProvisionedThroughput), createObject())))]"
                       }
                     }
                   ]
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('cosmosDBAccountName'), parameters('sqlDatabaseName'))]"
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('cosmosDBAccountName'), parameters('databaseName'))]"
               ]
             }
           ]
@@ -775,12 +790,18 @@
           "cosmosDBAccountName": {
             "value": "[parameters('name')]"
           },
-          "mongodbDatabaseName": {
+          "databaseName": {
             "value": "[parameters('mongodbDatabases')[copyIndex()].name]"
           },
-          "mongodbDatabaseCollections": "[if(contains(parameters('mongodbDatabases')[copyIndex()], 'collections'), createObject('value', parameters('mongodbDatabases')[copyIndex()].collections), createObject('value', createArray()))]",
-          "autoscaleMaxThroughput": "[if(contains(parameters('mongodbDatabases')[copyIndex()], 'autoscaleMaxThroughput'), createObject('value', parameters('mongodbDatabases')[copyIndex()].autoscaleMaxThroughput), createObject('value', 0))]",
-          "manualProvisionedThroughput": "[if(contains(parameters('mongodbDatabases')[copyIndex()], 'manualProvisionedThroughput'), createObject('value', parameters('mongodbDatabases')[copyIndex()].manualProvisionedThroughput), createObject('value', 0))]",
+          "databaseCollections": {
+            "value": "[coalesce(tryGet(parameters('mongodbDatabases')[copyIndex()], 'collections'), createArray())]"
+          },
+          "autoscaleMaxThroughput": {
+            "value": "[coalesce(tryGet(parameters('mongodbDatabases')[copyIndex()], 'autoscaleMaxThroughput'), 0)]"
+          },
+          "manualProvisionedThroughput": {
+            "value": "[coalesce(tryGet(parameters('mongodbDatabases')[copyIndex()], 'manualProvisionedThroughput'), 0)]"
+          },
           "enableServerless": {
             "value": "[parameters('enableServerless')]"
           }
@@ -792,7 +813,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.2.56959",
-              "templateHash": "6432350002984525964"
+              "templateHash": "17478975148356598924"
             }
           },
           "parameters": {
@@ -803,10 +824,10 @@
               "type": "bool",
               "defaultValue": false
             },
-            "mongodbDatabaseName": {
+            "databaseName": {
               "type": "string"
             },
-            "mongodbDatabaseCollections": {
+            "databaseCollections": {
               "type": "array"
             },
             "autoscaleMaxThroughput": {
@@ -819,31 +840,31 @@
           "resources": [
             {
               "copy": {
-                "name": "cosmosDBAccount_mongodbDatabaseCollections",
-                "count": "[length(parameters('mongodbDatabaseCollections'))]"
+                "name": "mongodbDatabaseCollections",
+                "count": "[length(parameters('databaseCollections'))]"
               },
               "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections",
               "apiVersion": "2022-11-15",
-              "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), parameters('mongodbDatabaseName'), parameters('mongodbDatabaseCollections')[copyIndex()].name)]",
+              "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), parameters('databaseName'), parameters('databaseCollections')[copyIndex()].name)]",
               "properties": {
                 "resource": {
-                  "id": "[parameters('mongodbDatabaseCollections')[copyIndex()].name]",
-                  "indexes": "[if(contains(parameters('mongodbDatabaseCollections')[copyIndex()], 'indexes'), parameters('mongodbDatabaseCollections')[copyIndex()].indexes, createArray())]",
-                  "shardKey": "[if(contains(parameters('mongodbDatabaseCollections')[copyIndex()], 'shardKey'), parameters('mongodbDatabaseCollections')[copyIndex()].shardKey, createObject())]"
+                  "id": "[parameters('databaseCollections')[copyIndex()].name]",
+                  "indexes": "[coalesce(tryGet(parameters('databaseCollections')[copyIndex()], 'indexes'), createArray())]",
+                  "shardKey": "[coalesce(tryGet(parameters('databaseCollections')[copyIndex()], 'shardKey'), createObject())]"
                 },
-                "options": "[if(parameters('enableServerless'), createObject(), if(contains(parameters('mongodbDatabaseCollections')[copyIndex()], 'autoscaleMaxThroughput'), createObject('autoscaleSettings', createObject('maxThroughput', parameters('mongodbDatabaseCollections')[copyIndex()].autoscaleMaxThroughput)), if(contains(parameters('mongodbDatabaseCollections')[copyIndex()], 'manualProvisionedThroughput'), createObject('throughput', parameters('mongodbDatabaseCollections')[copyIndex()].manualProvisionedThroughput), createObject())))]"
+                "options": "[if(parameters('enableServerless'), createObject(), if(contains(parameters('databaseCollections')[copyIndex()], 'autoscaleMaxThroughput'), createObject('autoscaleSettings', createObject('maxThroughput', parameters('databaseCollections')[copyIndex()].autoscaleMaxThroughput)), if(contains(parameters('databaseCollections')[copyIndex()], 'manualProvisionedThroughput'), createObject('throughput', parameters('databaseCollections')[copyIndex()].manualProvisionedThroughput), createObject())))]"
               },
               "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts/mongodbDatabases', parameters('cosmosDBAccountName'), parameters('mongodbDatabaseName'))]"
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/mongodbDatabases', parameters('cosmosDBAccountName'), parameters('databaseName'))]"
               ]
             },
             {
               "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases",
               "apiVersion": "2022-11-15",
-              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), parameters('mongodbDatabaseName'))]",
+              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), parameters('databaseName'))]",
               "properties": {
                 "resource": {
-                  "id": "[parameters('mongodbDatabaseName')]"
+                  "id": "[parameters('databaseName')]"
                 },
                 "options": "[if(parameters('enableServerless'), createObject(), if(not(equals(parameters('autoscaleMaxThroughput'), 0)), createObject('autoscaleSettings', createObject('maxThroughput', parameters('autoscaleMaxThroughput'))), if(not(equals(parameters('manualProvisionedThroughput'), 0)), createObject('throughput', parameters('manualProvisionedThroughput')), createObject())))]"
               }
@@ -878,8 +899,12 @@
           "tableName": {
             "value": "[parameters('tables')[copyIndex()].name]"
           },
-          "autoscaleMaxThroughput": "[if(contains(parameters('tables')[copyIndex()], 'autoscaleMaxThroughput'), createObject('value', parameters('tables')[copyIndex()].autoscaleMaxThroughput), createObject('value', 0))]",
-          "manualProvisionedThroughput": "[if(contains(parameters('tables')[copyIndex()], 'manualProvisionedThroughput'), createObject('value', parameters('tables')[copyIndex()].manualProvisionedThroughput), createObject('value', 0))]",
+          "autoscaleMaxThroughput": {
+            "value": "[coalesce(tryGet(parameters('tables')[copyIndex()], 'autoscaleMaxThroughput'), 0)]"
+          },
+          "manualProvisionedThroughput": {
+            "value": "[coalesce(tryGet(parameters('tables')[copyIndex()], 'manualProvisionedThroughput'), 0)]"
+          },
           "enableServerless": {
             "value": "[parameters('enableServerless')]"
           }
@@ -951,12 +976,18 @@
           "cosmosDBAccountName": {
             "value": "[parameters('name')]"
           },
-          "gremlinDatabaseName": {
+          "databaseName": {
             "value": "[parameters('gremlinDatabases')[copyIndex()].name]"
           },
-          "gremlinDatabaseGraphs": "[if(contains(parameters('gremlinDatabases')[copyIndex()], 'graphs'), createObject('value', parameters('gremlinDatabases')[copyIndex()].graphs), createObject('value', createArray()))]",
-          "autoscaleMaxThroughput": "[if(contains(parameters('gremlinDatabases')[copyIndex()], 'autoscaleMaxThroughput'), createObject('value', parameters('gremlinDatabases')[copyIndex()].autoscaleMaxThroughput), createObject('value', 0))]",
-          "manualProvisionedThroughput": "[if(contains(parameters('gremlinDatabases')[copyIndex()], 'manualProvisionedThroughput'), createObject('value', parameters('gremlinDatabases')[copyIndex()].manualProvisionedThroughput), createObject('value', 0))]",
+          "databaseGraphs": {
+            "value": "[coalesce(tryGet(parameters('gremlinDatabases')[copyIndex()], 'graphs'), createArray())]"
+          },
+          "autoscaleMaxThroughput": {
+            "value": "[coalesce(tryGet(parameters('gremlinDatabases')[copyIndex()], 'autoscaleMaxThroughput'), 0)]"
+          },
+          "manualProvisionedThroughput": {
+            "value": "[coalesce(tryGet(parameters('gremlinDatabases')[copyIndex()], 'manualProvisionedThroughput'), 0)]"
+          },
           "enableServerless": {
             "value": "[parameters('enableServerless')]"
           }
@@ -968,7 +999,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.2.56959",
-              "templateHash": "14442659621994621948"
+              "templateHash": "11061240711792122307"
             }
           },
           "parameters": {
@@ -981,10 +1012,10 @@
             "enableServerless": {
               "type": "bool"
             },
-            "gremlinDatabaseGraphs": {
+            "databaseGraphs": {
               "type": "array"
             },
-            "gremlinDatabaseName": {
+            "databaseName": {
               "type": "string"
             },
             "manualProvisionedThroughput": {
@@ -994,34 +1025,34 @@
           "resources": [
             {
               "copy": {
-                "name": "cosmosDBAccount_gremlinDatabaseGraphs",
-                "count": "[length(parameters('gremlinDatabaseGraphs'))]"
+                "name": "gremlinDatabaseGraphs",
+                "count": "[length(parameters('databaseGraphs'))]"
               },
               "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs",
               "apiVersion": "2022-11-15",
-              "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), parameters('gremlinDatabaseName'), parameters('gremlinDatabaseGraphs')[copyIndex()].name)]",
+              "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), parameters('databaseName'), parameters('databaseGraphs')[copyIndex()].name)]",
               "properties": {
                 "resource": {
-                  "id": "[parameters('gremlinDatabaseGraphs')[copyIndex()].name]",
-                  "conflictResolutionPolicy": "[if(contains(parameters('gremlinDatabaseGraphs')[copyIndex()], 'conflictResolutionPolicy'), parameters('gremlinDatabaseGraphs')[copyIndex()].conflictResolutionPolicy, createObject())]",
-                  "defaultTtl": "[if(contains(parameters('gremlinDatabaseGraphs')[copyIndex()], 'defaultTtl'), parameters('gremlinDatabaseGraphs')[copyIndex()].defaultTtl, -1)]",
-                  "indexingPolicy": "[if(contains(parameters('gremlinDatabaseGraphs')[copyIndex()], 'indexingPolicy'), parameters('gremlinDatabaseGraphs')[copyIndex()].indexingPolicy, createObject())]",
-                  "partitionKey": "[if(contains(parameters('gremlinDatabaseGraphs')[copyIndex()], 'partitionKey'), parameters('gremlinDatabaseGraphs')[copyIndex()].partitionKey, createObject())]",
-                  "uniqueKeyPolicy": "[if(contains(parameters('gremlinDatabaseGraphs')[copyIndex()], 'uniqueKeyPolicy'), parameters('gremlinDatabaseGraphs')[copyIndex()].uniqueKeyPolicy, createObject())]"
+                  "id": "[parameters('databaseGraphs')[copyIndex()].name]",
+                  "conflictResolutionPolicy": "[coalesce(tryGet(parameters('databaseGraphs')[copyIndex()], 'conflictResolutionPolicy'), createObject())]",
+                  "defaultTtl": "[coalesce(tryGet(parameters('databaseGraphs')[copyIndex()], 'defaultTtl'), -1)]",
+                  "indexingPolicy": "[coalesce(tryGet(parameters('databaseGraphs')[copyIndex()], 'indexingPolicy'), createObject())]",
+                  "partitionKey": "[coalesce(tryGet(parameters('databaseGraphs')[copyIndex()], 'partitionKey'), createObject())]",
+                  "uniqueKeyPolicy": "[coalesce(tryGet(parameters('databaseGraphs')[copyIndex()], 'uniqueKeyPolicy'), createObject())]"
                 },
-                "options": "[if(parameters('enableServerless'), createObject(), if(contains(parameters('gremlinDatabaseGraphs')[copyIndex()], 'autoscaleMaxThroughput'), createObject('autoscaleSettings', createObject('maxThroughput', parameters('gremlinDatabaseGraphs')[copyIndex()].autoscaleMaxThroughput)), if(contains(parameters('gremlinDatabaseGraphs')[copyIndex()], 'manualProvisionedThroughput'), createObject('throughput', parameters('gremlinDatabaseGraphs')[copyIndex()].manualProvisionedThroughput), createObject())))]"
+                "options": "[if(parameters('enableServerless'), createObject(), if(contains(parameters('databaseGraphs')[copyIndex()], 'autoscaleMaxThroughput'), createObject('autoscaleSettings', createObject('maxThroughput', parameters('databaseGraphs')[copyIndex()].autoscaleMaxThroughput)), if(contains(parameters('databaseGraphs')[copyIndex()], 'manualProvisionedThroughput'), createObject('throughput', parameters('databaseGraphs')[copyIndex()].manualProvisionedThroughput), createObject())))]"
               },
               "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts/gremlinDatabases', parameters('cosmosDBAccountName'), parameters('gremlinDatabaseName'))]"
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/gremlinDatabases', parameters('cosmosDBAccountName'), parameters('databaseName'))]"
               ]
             },
             {
               "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
               "apiVersion": "2022-11-15",
-              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), parameters('gremlinDatabaseName'))]",
+              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), parameters('databaseName'))]",
               "properties": {
                 "resource": {
-                  "id": "[parameters('gremlinDatabaseName')]"
+                  "id": "[parameters('databaseName')]"
                 },
                 "options": "[if(parameters('enableServerless'), createObject(), if(not(equals(parameters('autoscaleMaxThroughput'), 0)), createObject('autoscaleSettings', createObject('maxThroughput', parameters('autoscaleMaxThroughput'))), if(not(equals(parameters('manualProvisionedThroughput'), 0)), createObject('throughput', parameters('manualProvisionedThroughput')), createObject())))]"
               }
@@ -1046,10 +1077,10 @@
           "cosmosDBAccountName": {
             "value": "[parameters('name')]"
           },
-          "sqlRoleDefinitions": {
+          "roleDefinitions": {
             "value": "[parameters('sqlRoleDefinitions')]"
           },
-          "sqlRoleAssignments": {
+          "roleAssignments": {
             "value": "[parameters('sqlRoleAssignments')]"
           }
         },
@@ -1060,75 +1091,75 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.2.56959",
-              "templateHash": "9847349528618158824"
+              "templateHash": "1513355008207078223"
             }
           },
           "parameters": {
             "cosmosDBAccountName": {
               "type": "string"
             },
-            "sqlRoleDefinitions": {
+            "roleDefinitions": {
               "type": "array"
             },
-            "sqlRoleAssignments": {
+            "roleAssignments": {
               "type": "array"
             }
           },
           "resources": [
             {
               "copy": {
-                "name": "cosmosDBAccount_sqlRoleDefinitions",
-                "count": "[length(parameters('sqlRoleDefinitions'))]",
+                "name": "sqlRoleDefinitions",
+                "count": "[length(parameters('roleDefinitions'))]",
                 "mode": "serial",
                 "batchSize": 1
               },
-              "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
+              "type": "Microsoft.DocumentDB/databaseAccounts/roleDefinitions",
               "apiVersion": "2022-11-15",
-              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), parameters('sqlRoleDefinitions')[copyIndex()].roleName))]",
+              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), parameters('roleDefinitions')[copyIndex()].roleName))]",
               "properties": {
                 "copy": [
                   {
                     "name": "assignableScopes",
-                    "count": "[length(parameters('sqlRoleDefinitions')[copyIndex()].assignableScopes)]",
-                    "input": "[format('{0}{1}', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), parameters('sqlRoleDefinitions')[copyIndex()].assignableScopes[copyIndex('assignableScopes')])]"
+                    "count": "[length(parameters('roleDefinitions')[copyIndex()].assignableScopes)]",
+                    "input": "[format('{0}{1}', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), parameters('roleDefinitions')[copyIndex()].assignableScopes[copyIndex('assignableScopes')])]"
                   }
                 ],
-                "roleName": "[parameters('sqlRoleDefinitions')[copyIndex()].roleName]",
+                "roleName": "[parameters('roleDefinitions')[copyIndex()].roleName]",
                 "type": "CustomRole",
-                "permissions": "[parameters('sqlRoleDefinitions')[copyIndex()].permissions]"
+                "permissions": "[parameters('roleDefinitions')[copyIndex()].permissions]"
               }
             },
             {
               "copy": {
-                "name": "cosmosDBAccount_sqlRoleAssignments",
-                "count": "[length(parameters('sqlRoleAssignments'))]",
+                "name": "sqlRoleAssignments",
+                "count": "[length(parameters('roleAssignments'))]",
                 "mode": "serial",
                 "batchSize": 1
               },
-              "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
+              "type": "Microsoft.DocumentDB/databaseAccounts/roleAssignments",
               "apiVersion": "2022-11-15",
-              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), parameters('sqlRoleAssignments')[copyIndex()].roleDefinitionId, parameters('sqlRoleAssignments')[copyIndex()].principalId))]",
+              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), parameters('roleAssignments')[copyIndex()].roleDefinitionId, parameters('roleAssignments')[copyIndex()].principalId))]",
               "properties": {
-                "roleDefinitionId": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDBAccountName'), parameters('sqlRoleAssignments')[copyIndex()].roleDefinitionId)]",
-                "principalId": "[parameters('sqlRoleAssignments')[copyIndex()].principalId]",
-                "scope": "[format('{0}{1}', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), parameters('sqlRoleAssignments')[copyIndex()].scope)]"
+                "roleDefinitionId": "[resourceId('Microsoft.DocumentDB/databaseAccounts/roleDefinitions', parameters('cosmosDBAccountName'), parameters('roleAssignments')[copyIndex()].roleDefinitionId)]",
+                "principalId": "[parameters('roleAssignments')[copyIndex()].principalId]",
+                "scope": "[format('{0}{1}', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), parameters('roleAssignments')[copyIndex()].scope)]"
               },
               "dependsOn": [
-                "cosmosDBAccount_sqlRoleDefinitions"
+                "sqlRoleDefinitions"
               ]
             }
           ],
           "outputs": {
-            "sqlRoleDefinitionIds": {
+            "roleDefinitionIds": {
               "type": "array",
               "metadata": {
                 "description": "The role definition ids of the created role definitions."
               },
               "copy": {
-                "count": "[length(parameters('sqlRoleDefinitions'))]",
+                "count": "[length(parameters('roleDefinitions'))]",
                 "input": {
-                  "name": "[parameters('sqlRoleDefinitions')[copyIndex()].roleName]",
-                  "id": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDBAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), parameters('sqlRoleDefinitions')[copyIndex()].roleName))]"
+                  "name": "[parameters('roleDefinitions')[copyIndex()].roleName]",
+                  "id": "[parameters('roleDefinitions')[copyIndex()].id]"
                 }
               }
             }
@@ -1155,14 +1186,18 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
+          "description": {
+            "value": "[coalesce(tryGet(parameters('roleAssignments')[copyIndex()], 'description'), '')]"
+          },
           "principalIds": {
             "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
           },
           "roleDefinitionIdOrName": {
             "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
           },
-          "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
+          "principalType": {
+            "value": "[coalesce(tryGet(parameters('roleAssignments')[copyIndex()], 'principalType'), '')]"
+          },
           "cosmosDBAccountName": {
             "value": "[parameters('name')]"
           }
@@ -1264,7 +1299,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.16.2.56959",
-              "templateHash": "9050958236782304652"
+              "templateHash": "5781174049967211056"
             }
           },
           "parameters": {
@@ -1288,9 +1323,9 @@
                   "privateLinkServiceId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].privateLinkServiceId]",
                   "groupIds": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].groupIds]",
                   "subnetId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].subnetId]",
-                  "privateDnsZones": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'privateDnsZones'), parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].privateDnsZones, createArray())]",
-                  "customNetworkInterfaceName": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'customNetworkInterfaceName'), parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].customNetworkInterfaceName, null())]",
-                  "manualApprovalEnabled": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'manualApprovalEnabled'), parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].manualApprovalEnabled, false())]"
+                  "privateDnsZones": "[coalesce(tryGet(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'privateDnsZones'), createArray())]",
+                  "customNetworkInterfaceName": "[coalesce(tryGet(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'customNetworkInterfaceName'), null())]",
+                  "manualApprovalEnabled": "[coalesce(tryGet(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'manualApprovalEnabled'), false())]"
                 }
               }
             ]
@@ -1333,7 +1368,7 @@
                     "name": "privateDnsZoneConfigs",
                     "count": "[length(variables('varPrivateEndpoints')[copyIndex()].privateDnsZones)]",
                     "input": {
-                      "name": "[if(contains(variables('varPrivateEndpoints')[copyIndex()].privateDnsZones[copyIndex('privateDnsZoneConfigs')], 'name'), variables('varPrivateEndpoints')[copyIndex()].privateDnsZones[copyIndex('privateDnsZoneConfigs')].name, 'default')]",
+                      "name": "[coalesce(tryGet(variables('varPrivateEndpoints')[copyIndex()].privateDnsZones[copyIndex('privateDnsZoneConfigs')], 'name'), 'default')]",
                       "properties": {
                         "privateDnsZoneId": "[variables('varPrivateEndpoints')[copyIndex()].privateDnsZones[copyIndex('privateDnsZoneConfigs')].zoneId]"
                       }
@@ -1380,7 +1415,7 @@
       "metadata": {
         "description": "Resource Ids of sql role definition resources created for this Cosmos DB account."
       },
-      "value": "[if(not(empty(parameters('sqlRoleDefinitions'))), reference(resourceId('Microsoft.Resources/deployments', format('sql-role-{0}', uniqueString(parameters('name'), resourceGroup().name))), '2022-09-01').outputs.sqlRoleDefinitionIds.value, createArray())]"
+      "value": "[if(not(empty(parameters('sqlRoleDefinitions'))), reference(resourceId('Microsoft.Resources/deployments', format('sql-role-{0}', uniqueString(parameters('name'), resourceGroup().name))), '2022-09-01').outputs.roleDefinitionIds.value, createArray())]"
     }
   }
 }

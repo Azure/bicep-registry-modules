@@ -7,9 +7,9 @@ var varPrivateEndpoints = [for (p, i) in privateEndpoints: {
   privateLinkServiceId: p.privateLinkServiceId
   groupIds: p.groupIds
   subnetId: p.subnetId
-  privateDnsZones: contains(p, 'privateDnsZones') ? p.privateDnsZones : []
-  customNetworkInterfaceName: contains(p, 'customNetworkInterfaceName') ? p.customNetworkInterfaceName : null
-  manualApprovalEnabled: contains(p, 'manualApprovalEnabled') ? p.manualApprovalEnabled : false
+  privateDnsZones: p.?privateDnsZones ?? []
+  customNetworkInterfaceName: p.?customNetworkInterfaceName ?? null
+  manualApprovalEnabled: p.?manualApprovalEnabled ?? false
 }]
 
 @batchSize(1)
@@ -49,7 +49,7 @@ resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
   parent: privateEndpoint[i]
   properties: {
     privateDnsZoneConfigs: [for privateDnsZone in endpoint.privateDnsZones: {
-      name: contains(privateDnsZone, 'name') ? privateDnsZone.name : 'default'
+      name: privateDnsZone.?name ?? 'default'
       properties: {
         privateDnsZoneId: privateDnsZone.zoneId
       }
