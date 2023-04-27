@@ -1,6 +1,6 @@
 # Public Ip Prefix
 
-Bicep Module for creating Public Ip Prefix.
+Bicep Module for creating Public Ip Prefix
 
 ## Description
 
