@@ -4,7 +4,9 @@ This module deploys PostgreSQL Single Server (Microsoft.DBforPostgreSQL/servers)
 
 ## Description
 
-{{ Add detailed description for the module. }}
+This Bicep module deploys a PostgreSQL Single Server instance in Azure with configurable options such as backup retention, firewall rules, private endpoints, and SSL enforcement.
+
+It also supports role-based access control, storage autogrow, and infrastructure encryption.
 
 ## Parameters
 
