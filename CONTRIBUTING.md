@@ -121,44 +121,6 @@ param isZoneRedundant bool = false
 ##### Virtual Network
 Including Virtual Network is also recommended. This support should be designed with the Virtual-Network module in the repository.
 
-##### New Or Existing
-When offering the user the option to create a new or existing resource, the newOrExisting parameter should be used. This aligns with the values returned when using [CreateUiDefinition](https://learn.microsoft.com/en-us/azure/azure-resource-manager/managed-applications/create-uidefinition-elements) elements.
-
-```bicep
-@description('Deployment Location')
-param location string
-
-@description('Prefix of Resource Name')
-param prefix string = 'pre'
-
-@minLength(3)
-@maxLength(24)
-@description('Name of the Resource')
-param name string = take('${prefix}-${uniqueString(resourceGroup().id)}', 24)
-
-@allowed([ 'new', 'existing' ])
-@description('Whether to create a new or use an existing resource')
-param newOrExisting string = 'new'
-
-resource newResource 'Microsoft.Resource/resource@latest-version' = if(newOrExisting == 'new') {
-  name: name
-  location: location
-  properties: {
-    ...
-  }
-}
-
-resource resource 'Microsoft.Resource/resource@latest-version' existing = if(newOrExisting == 'existing') {
-  name: name
-}
-
-@description('Resource Id')
-output id string = newOrExisting == 'new' ? newResource.id : resource.id
-
-@description('Resource Name')
-output name string = newOrExisting == 'new' ? newResource.name : resource.name
-```
-
 #### `main.test.bicep`
 
 The `test/main.test.bicep` file is the test file for `main.bicep`. It will be deployed to a test environment in the PR merge pipeline to make sure `main.bicep` is deployable. You must add at least one test to the file. To add a test, simply create a module referencing `main.bicep` and provide values for the required parameters. You may write multiple tests to ensure different paths of the module are covered. If any of the parameters are secrets, make sure to provide generated values instead of hard-coded ones. If additional resources are required, they should be included in a `prereq.test.bicep` file in the same directory. Additional test files may be provided that follow the format, `<test-name>.test.bicep`. Below is an example showing how to use the combination of some string functions to construct a dynamic azure-compatible password for a virtual machine:
