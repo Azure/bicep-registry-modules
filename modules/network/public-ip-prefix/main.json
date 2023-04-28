@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "289519777271466117"
+      "templateHash": "11826943076831411493"
     }
   },
   "parameters": {
@@ -32,7 +32,7 @@
       "type": "string",
       "defaultValue": "Regional",
       "metadata": {
-        "description": "Optional. tier for the Public IP Prefix, default value is Regional."
+        "description": "Optional. tier for the Public IP Prefix, Default set to Regional"
       },
       "allowedValues": [
         "Global",
@@ -66,7 +66,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. A list of availability zones denoting the IP allocated for the resource needs to come from."
+        "description": "Optional. A list of availability zones denoting the IP allocated for the resource needs to come from. Default set to []"
       }
     }
   },

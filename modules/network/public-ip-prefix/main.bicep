@@ -7,40 +7,20 @@ param location string
 @description('Optional. Tags for Public IP Prefix.')
 param tags object = {}
 
-@allowed([
-  'Global'
-  'Regional'
-])
-@description('Optional. tier for the Public IP Prefix, default value is Regional.')
+@allowed([ 'Global', 'Regional' ])
+@description('Optional. tier for the Public IP Prefix, Default set to Regional')
 param tier string = 'Regional'
 
 @description('Optional. IP address version.')
-@allowed([
-  'IPv4'
-  'IPv6'
-])
+@allowed([ 'IPv4', 'IPv6' ])
 param publicIPAddressVersion string = 'IPv4'
 
-@allowed([
-  28
-  29
-  30
-  31
-])
+@allowed([ 28, 29, 30, 31 ])
 @description('Required. The Length of the Public IP Prefix.')
 param prefixLength int
 
-@description('Optional. A list of availability zones denoting the IP allocated for the resource needs to come from.')
+@description('Optional. A list of availability zones denoting the IP allocated for the resource needs to come from. Default set to []')
 param availabilityZones array = []
-/*
-Example:
-  availabilityZones:
-  [
-    '1'
-    '2'
-    '3'
-  ]
-*/
 
 resource publicIPPrefix 'Microsoft.Network/publicIPPrefixes@2022-09-01' = {
   name: name
