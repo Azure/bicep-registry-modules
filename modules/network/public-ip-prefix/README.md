@@ -11,15 +11,15 @@ A public IP address prefix is a reserved range of public IP addresses in Azure. 
 
 ## Parameters
 
-| Name                     | Type     | Required | Description                                                                                           |
-| :----------------------- | :------: | :------: | :---------------------------------------------------------------------------------------------------- |
-| `name`                   | `string` | Yes      | Required. Name of the public IP Prefix.                                                               |
-| `location`               | `string` | Yes      | Required. Define the Azure Location that the Public IP Prefix should be created within.               |
-| `tags`                   | `object` | No       | Optional. Tags for Public IP Prefix.                                                                  |
-| `tier`                   | `string` | No       | Optional. tier for the Public IP Prefix, default value is Regional.                                   |
-| `publicIPAddressVersion` | `string` | No       | Optional. IP address version.                                                                         |
-| `prefixLength`           | `int`    | Yes      | Required. The Length of the Public IP Prefix.                                                         |
-| `availabilityZones`      | `array`  | No       | Optional. A list of availability zones denoting the IP allocated for the resource needs to come from. |
+| Name                     | Type     | Required | Description                                                                                                             |
+| :----------------------- | :------: | :------: | :---------------------------------------------------------------------------------------------------------------------- |
+| `name`                   | `string` | Yes      | Required. Name of the public IP Prefix.                                                                                 |
+| `location`               | `string` | Yes      | Required. Define the Azure Location that the Public IP Prefix should be created within.                                 |
+| `tags`                   | `object` | No       | Optional. Tags for Public IP Prefix.                                                                                    |
+| `tier`                   | `string` | No       | Optional. tier for the Public IP Prefix, Default set to Regional                                                        |
+| `publicIPAddressVersion` | `string` | No       | Optional. IP address version.                                                                                           |
+| `prefixLength`           | `int`    | Yes      | Required. The Length of the Public IP Prefix.                                                                           |
+| `availabilityZones`      | `array`  | No       | Optional. A list of availability zones denoting the IP allocated for the resource needs to come from. Default set to [] |
 
 ## Outputs
 
@@ -59,6 +59,11 @@ module publicIpPrefix2 'br/public:network/public-ip-prefixes:1.0.1' = {
     prefixLength: 30
     publicIPAddressVersion: 'IPv4'
     tier: 'Regional'
+    availabilityZones: [
+      1
+      2
+      3
+    ]
   }
 }
 ```

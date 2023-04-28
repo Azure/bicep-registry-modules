@@ -6,7 +6,7 @@ module file is a deployment test. Make sure at least one test is added.
 targetScope = 'resourceGroup'
 
 param name string = deployment().name
-param location string = resourceGroup().location
+param location string = 'eastus'
 
 param tags object = {
   costcenter: '000'
@@ -33,5 +33,10 @@ module test1 '../main.bicep' = {
     prefixLength: 30
     publicIPAddressVersion: 'IPv4'
     tier: 'Regional'
+    availabilityZones: [
+      1
+      2
+      3
+    ]
   }
 }
