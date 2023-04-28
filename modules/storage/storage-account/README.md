@@ -25,7 +25,10 @@ The output of the module is the ID of the created or existing Storage Account, w
 | `subnetID`           | `string` | No       | ID of the subnet where the Storage Account will be deployed, if virtual network access is enabled. |
 | `enableVNET`         | `bool`   | No       | Toggle to enable or disable virtual network access for the Storage Account.                        |
 | `isZoneRedundant`    | `bool`   | No       | Toggle to enable or disable zone redundancy for the Storage Account.                               |
-| `storageAccountType` | `string` | No       | Storage Account Type. Use Zonal Redundant Storage when able.                                       |
+| `storageAccountType` | `string` | No       | Storage Account Type. Use Zonal Redundant Storage when
+able.
+| `blobType`           | `string` | No       | Specifies the type of blob to manage the lifecycle policy.
+
 
 ## Outputs
 
