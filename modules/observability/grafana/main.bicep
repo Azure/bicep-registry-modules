@@ -142,7 +142,7 @@ resource grafana 'Microsoft.Dashboard/grafana@2022-08-01' = {
   }
 }
 
-module grafana_rbac '.bicep/nested_rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
+module grafana_rbac 'modules/nested_rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
   name: '${uniqueString(deployment().name, location)}-grafana-rbac-${index}'
   params: {
     description: contains(roleAssignment, 'description') ? roleAssignment.description : ''
@@ -153,7 +153,7 @@ module grafana_rbac '.bicep/nested_rbac.bicep' = [for (roleAssignment, index) in
   }
 }]
 
-module grafana_privateEndpoint '.bicep/nested_privateEndpoint.bicep' = {
+module grafana_privateEndpoint 'modules/nested_privateEndpoint.bicep' = {
   name: '${uniqueString(deployment().name, location)}-grafana-private-endpoints'
   params: {
     location: location
