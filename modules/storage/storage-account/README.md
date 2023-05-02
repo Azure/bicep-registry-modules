@@ -17,18 +17,46 @@ The output of the module is the ID of the created or existing Storage Account, w
 
 ## Parameters
 
-| Name                 | Type     | Required | Description                                                                                        |
-| :------------------- | :------: | :------: | :------------------------------------------------------------------------------------------------- |
-| `location`           | `string` | Yes      | Deployment Location                                                                                |
-| `prefix`             | `string` | No       | Prefix of Storage Account Resource Name. This param is ignored when name is provided.              |
-| `name`               | `string` | No       | Name of Storage Account. Must be unique within Azure.                                              |
-| `subnetID`           | `string` | No       | ID of the subnet where the Storage Account will be deployed, if virtual network access is enabled. |
-| `enableVNET`         | `bool`   | No       | Toggle to enable or disable virtual network access for the Storage Account.                        |
-| `isZoneRedundant`    | `bool`   | No       | Toggle to enable or disable zone redundancy for the Storage Account.                               |
-| `storageAccountType` | `string` | No       | Storage Account Type. Use Zonal Redundant Storage when
-able.
-| `blobType`           | `string` | No       | Specifies the type of blob to manage the lifecycle policy.
-
+| Name                              | Type     | Required | Description                                                                                                                          |
+| :-------------------------------- | :------: | :------: | :----------------------------------------------------------------------------------------------------------------------------------- |
+| `location`                        | `string` | Yes      | Deployment Location                                                                                                                  |
+| `prefix`                          | `string` | No       | Prefix of Storage Account Resource Name. This param is ignored when name is provided.                                                |
+| `name`                            | `string` | No       | Name of Storage Account. Must be unique within Azure.                                                                                |
+| `subnetID`                        | `string` | No       | ID of the subnet where the Storage Account will be deployed, if virtual network access is enabled.                                   |
+| `enableVNET`                      | `bool`   | No       | Toggle to enable or disable virtual network access for the Storage Account.                                                          |
+| `isZoneRedundant`                 | `bool`   | No       | Toggle to enable or disable zone redundancy for the Storage Account.                                                                 |
+| `storageAccountType`              | `string` | No       | Storage Account Type. Use Zonal Redundant Storage when able.                                                                         |
+| `daysAfterLastModification`       | `int`    | No       | It will be moved to the cool tier after the given amount of days.                                                                    |
+| `blobType`                        | `string` | No       | Specifies the type of blob to manage the lifecycle policy.                                                                           |
+| `changeFeedEnabled`               | `bool`   | No       | Indicates whether change feed event logging is enabled for the Blob service.                                                         |
+| `versioningEnabled`               | `bool`   | No       | Versioning is enabled if set to true. To the storage account, set true.                                                              |
+| `supportHttpsTrafficOnly`         | `bool`   | No       | Allows https traffic only to storage service if sets to true.                                                                        |
+| `allowBlobPublicAccess`           | `bool`   | No       | Allow or disallow public access to all blobs or containers in the storage account.                                                   |
+| `allowCrossTenantReplication`     | `bool`   | No       | Replication of objects between AAD tenants is allowed or not. For this property, the default interpretation is true.                 |
+| `publicNetworkAccess`             | `string` | No       | Allow or disallow public network access to Storage Account. Value is optional but if passed in, must be Enabled or Disabled.         |
+| `minimumTlsVersion`               | `string` | No       | Set the minimum TLS version to be permitted on requests to storage. The default interpretation is TLS 1.0 for this property.         |
+| `destPrefix`                      | `string` | No       | Prefix of destination Storage Account Resource Name. This param is ignored when name is provided.                                    |
+| `destStorageAccountName`          | `string` | No       | Name of destination Storage Account. Must be unique within Azure.                                                                    |
+| `destLocation`                    | `string` | Yes      | Deployment Location                                                                                                                  |
+| `destKind`                        | `string` | Yes      | Indicates the type of storage account.                                                                                               |
+| `destSupportHttpsTrafficOnly`     | `bool`   | No       | Allows https traffic only to storage service if sets to true.                                                                        |
+| `destAllowBlobPublicAccess`       | `bool`   | No       | Allow or disallow public access to all blobs or containers in the destination storage account.                                       |
+| `destAllowCrossTenantReplication` | `bool`   | No       | Replication of objects between AAD tenants is allowed or not. For this property, the default interpretation is true.                 |
+| `destPublicNetworkAccess`         | `string` | No       | Allow or disallow public network access to Storage Account. Value is optional but if passed in, must be Enabled or Disabled.         |
+| `destMinimumTlsVersion`           | `string` | No       | Set the minimum TLS version to be permitted on requests to storage. The default interpretation is TLS 1.0 for this property.         |
+| `destDaysAfterLastModification`   | `int`    | No       | It will be deleted after the given amount of days.                                                                                   |
+| `destBlobType`                    | `string` | No       | Specifies the type of blob to manage the lifecycle policy.                                                                           |
+| `destChangeFeedEnabled`           | `bool`   | No       | Indicates whether change feed event logging is enabled for the Blob service.                                                         |
+| `destVersioningEnabled`           | `bool`   | No       | Versioning is enabled if set to true. To the destination storage account, set true.                                                  |
+| `destSkuName`                     | `string` | Yes      | The SKU name required for account creation; optional for update.                                                                     |
+| `ruleId`                          | `string` | No       | Rule Id is auto-generated for each new rule on destination account. It is required for put policy on source account.                 |
+| `policyId`                        | `string` | No       | This is the name to provide for objectReplicationPolicies.                                                                           |
+| `objectReplicationPolicy`         | `bool`   | No       | When performing object replication, it must be true and all resources necessary for the destination storage account will be created. |
+| `managedIdentityName`             | `string` | Yes      | User defined name to provide userAssignedIdentities resource.                                                                        |
+| `managedIdentityLocation`         | `string` | Yes      | Location to provide userAssignedIdentities resource.                                                                                 |
+| `roleDefinitionIdOrName`          | `string` | Yes      | This is the subscription name or id to provide.                                                                                      |
+| `privateEndpoints`                | `array`  | No       | Define Private Endpoints that should be created for Azure Storage Account.                                                           |
+| `privateEndpointsApprovalEnabled` | `bool`   | No       | Toggle if Private Endpoints manual approval for Azure Storage Account should be enabled.                                             |
 
 ## Outputs
 

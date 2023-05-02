@@ -25,12 +25,25 @@ param daysAfterLastModification int = 30
 @description('Specifies the type of blob to manage the lifecycle policy.')
 param blobType string = 'blockBlob'
 
+@description('Indicates whether change feed event logging is enabled for the Blob service.')
 param changeFeedEnabled bool = false
+
+@description('Versioning is enabled if set to true. To the storage account, set true. ')
 param versioningEnabled bool = false
+
+@description('Allows https traffic only to storage service if sets to true.')
 param supportHttpsTrafficOnly bool = true
+
+@description('Allow or disallow public access to all blobs or containers in the storage account.')
 param allowBlobPublicAccess bool = false
+
+@description('Replication of objects between AAD tenants is allowed or not. For this property, the default interpretation is true.')
 param allowCrossTenantReplication bool = false
+
+@description('Allow or disallow public network access to Storage Account. Value is optional but if passed in, must be Enabled or Disabled.')
 param publicNetworkAccess string = 'Disabled'
+
+@description('Set the minimum TLS version to be permitted on requests to storage. The default interpretation is TLS 1.0 for this property.')
 param minimumTlsVersion string = 'TLS1_2'
 
 @description('Prefix of destination Storage Account Resource Name. This param is ignored when name is provided.')
@@ -42,11 +55,22 @@ param destStorageAccountName string = '${destPrefix}${uniqueString(resourceGroup
 @description('Deployment Location')
 param destLocation string
 
+@description('Indicates the type of storage account.')
 param destKind string
+
+@description('Allows https traffic only to storage service if sets to true.')
 param destSupportHttpsTrafficOnly bool = true
+
+@description('Allow or disallow public access to all blobs or containers in the destination storage account.')
 param destAllowBlobPublicAccess bool = false
+
+@description('Replication of objects between AAD tenants is allowed or not. For this property, the default interpretation is true.')
 param destAllowCrossTenantReplication bool = false
+
+@description('Allow or disallow public network access to Storage Account. Value is optional but if passed in, must be Enabled or Disabled.')
 param destPublicNetworkAccess string = 'Disabled'
+
+@description('Set the minimum TLS version to be permitted on requests to storage. The default interpretation is TLS 1.0 for this property.')
 param destMinimumTlsVersion string = 'TLS1_2'
 
 @description('It will be deleted after the given amount of days.')
@@ -55,8 +79,13 @@ param destDaysAfterLastModification int = 30
 @description('Specifies the type of blob to manage the lifecycle policy.')
 param destBlobType string = 'blockBlob'
 
+@description('Indicates whether change feed event logging is enabled for the Blob service.')
 param destChangeFeedEnabled bool = true
+
+@description('Versioning is enabled if set to true. To the destination storage account, set true. ')
 param destVersioningEnabled bool = true
+
+@description('The SKU name required for account creation; optional for update.')
 @allowed([
   'Standard_LRS'
   'Standard_GRS'
@@ -66,11 +95,22 @@ param destVersioningEnabled bool = true
 ])
 param destSkuName string
 
+@description('Rule Id is auto-generated for each new rule on destination account. It is required for put policy on source account.')
 param ruleId  string = ''
+
+@description('This is the name to provide for objectReplicationPolicies. ')
 param policyId string = 'default'
-param sourcePolicy bool = false
+
+@description('When performing object replication, it must be true and all resources necessary for the destination storage account will be created.')
+param objectReplicationPolicy bool = false
+
+@description('User defined name to provide userAssignedIdentities resource.')
 param managedIdentityName string
+
+@description('Location to provide userAssignedIdentities resource.')
 param managedIdentityLocation string
+
+@description('This is the subscription name or id to provide. ')
 param roleDefinitionIdOrName string
 
 @description('Define Private Endpoints that should be created for Azure Storage Account.')
@@ -90,8 +130,8 @@ var networkAcls = enableVNET ? {
 } : {}
 
 var builtInRoleNames = {
-  'Storage Blob Data Contributor' : 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-  'Reader' : 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+  StorageBlobDataContributor : 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  Reader : 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
 }
 
 var varPrivateEndpoints = [for privateEndpoint in privateEndpoints: {
@@ -137,7 +177,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   }
 }
 
-resource destinationStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
+resource destinationStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = if(objectReplicationPolicy) {
     name: destStorageAccountName
     location: destLocation
     sku: {
@@ -189,11 +229,11 @@ resource managementpolicy 'Microsoft.Storage/storageAccounts/managementPolicies@
                 ]}
             }
         }]
-        }
+      }
     }
 }
 
-resource destinationmanagementpolicy 'Microsoft.Storage/storageAccounts/managementPolicies@2021-04-01' = {
+resource destinationmanagementpolicy 'Microsoft.Storage/storageAccounts/managementPolicies@2021-04-01' = if(objectReplicationPolicy) {
     name: 'default'
     parent: destinationStorageAccount
     properties: {
@@ -232,7 +272,7 @@ resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01'
     }
 }
 
-resource destinationBlobService 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' = {
+resource destinationBlobService 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' = if (objectReplicationPolicy) {
     name: 'default'
     parent: destinationStorageAccount
     properties: {
@@ -251,7 +291,7 @@ resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@20
     }
 }
 
-resource destinationContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01' = {
+resource destinationContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01' = if (objectReplicationPolicy) {
     name: 'destinationcontainer'
     parent: destinationBlobService
     properties: {
@@ -278,7 +318,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
     }
 }
 
-resource destinationOrPolicy 'Microsoft.Storage/storageAccounts/objectReplicationPolicies@2022-09-01' = if (!sourcePolicy) {
+resource destinationOrPolicy 'Microsoft.Storage/storageAccounts/objectReplicationPolicies@2022-09-01' = if (objectReplicationPolicy) {
     name: policyId
     parent: destinationStorageAccount
     properties: {
@@ -288,22 +328,6 @@ resource destinationOrPolicy 'Microsoft.Storage/storageAccounts/objectReplicatio
             {
                 destinationContainer: 'destinationcontainer'
                 sourceContainer: 'sourcecontainer'
-                ruleId: ((ruleId == '' ) ? null : ruleId)
-            }
-        ]
-    }
-}
-
-resource sourceOrPolicy 'Microsoft.Storage/storageAccounts/objectReplicationPolicies@2022-09-01' = if (sourcePolicy) {
-    name: policyId
-    parent: storageAccount
-    properties: {
-        sourceAccount: destinationStorageAccount.id
-        destinationAccount: storageAccount.id
-        rules: [
-            {
-                destinationContainer: 'sourcecontainer'
-                sourceContainer: 'destinationcontainer'
                 ruleId: ((ruleId == '' ) ? null : ruleId)
             }
         ]

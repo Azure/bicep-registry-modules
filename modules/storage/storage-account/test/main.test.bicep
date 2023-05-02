@@ -7,9 +7,9 @@ param location string = resourceGroup().location
 param blobType string = 'blockBlob'
 param minimumTlsVersion string = 'TLS1_2'
 param kind string = 'StorageV2'
-param sourcePolicy bool = false
+param objectReplicationPolicy bool = false
 param managedIdentityName string = 'MyManagedIdentity'
-param roleDefinitionIdOrName string = 'Storage Blob Data Contributor'
+param roleDefinitionIdOrName string = 'StorageBlobDataContributor'
 var uniqueName = uniqueString(resourceGroup().id, deployment().name, location)
 param serviceShort string = 'storageAccount'
 
@@ -41,6 +41,12 @@ module test0 '../main.bicep' = {
       versioningEnabled: false
       minimumTlsVersion: minimumTlsVersion
 
+      objectReplicationPolicy: objectReplicationPolicy
+      managedIdentityName: managedIdentityName
+      managedIdentityLocation: location
+      roleDefinitionIdOrName: roleDefinitionIdOrName
+
+      // If objectReplicationPolicies is true then only provide these destination related values
       destLocation: location
       destKind: kind
       destSkuName: 'Standard_GRS'
@@ -54,10 +60,6 @@ module test0 '../main.bicep' = {
       destPublicNetworkAccess: 'Disabled'
       destMinimumTlsVersion: minimumTlsVersion
 
-      sourcePolicy: sourcePolicy
-      managedIdentityName: managedIdentityName
-      managedIdentityLocation: location
-      roleDefinitionIdOrName: roleDefinitionIdOrName
       privateEndpoints: [
       {
         name: 'endpoint1'
