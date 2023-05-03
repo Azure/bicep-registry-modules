@@ -2,8 +2,6 @@ targetScope = 'resourceGroup'
 
 // params
 @description('''
-  Required.
-
   Definition of secrets to be auto-rotated. Includes name of the CosmosDB, name of the KeyVault, name of the Secret, name of the Resource Group etc.
   Example:
   [
@@ -21,75 +19,75 @@ targetScope = 'resourceGroup'
   ''')
 param secrets array
 
-@description('Required. Resource ID of the log analytic workspace to be used by the function app.')
+@description('Resource ID of the log analytic workspace to be used by the function app.')
 param analyticWorkspaceId string
 
-@description('Required. Storage account name for the function app.')
+@description('Storage account name for the function app.')
 param functionStorageAccountName string
 
-@description('Optional. Resource group of the storage account, default to current resource group.')
+@description('Resource group of the storage account, default to current resource group.')
 param functionStorageAccountRg string = resourceGroup().name
 
-@description('Optional. Location to be used. Default to resource group\'s location.')
+@description('Location to be used. Default to resource group\'s location.')
 param location string = resourceGroup().location
 
-@description('Optional. Tags to be added to the resources created by this module.')
+@description('Tags to be added to the resources created by this module.')
 param tags object = {}
 
-@description('Optional. The type of App Service hosting plan. Premium must be used to access key vaults behind firewall. Default is EP1.')
+@description('The type of App Service hosting plan. Premium must be used to access key vaults behind firewall. Default is EP1.')
 @allowed([ 'EP1', 'EP2', 'EP3', 'Y1' ])
 param appServicePlanSku string = 'EP1'
 
-@description('Optional. The name of the function app that you wish to create. Default is {resource group name}-rotation-fnapp.')
+@description('The name of the function app that you wish to create. Default is {resource group name}-rotation-fnapp.')
 param functionAppName string = '${resourceGroup().name}-rotation-fnapp'
 
-@description('Optional. True if vnet integration should be enabled. If set to false, the vnet related parameters will be ignored. Default to false.')
+@description('True if vnet integration should be enabled. If set to false, the vnet related parameters will be ignored. Default to false.')
 param isEnableVnet bool = false
 
-@description('Optional. Name of the subnet to be assigned to function app. Leave empty if private network is not used.')
+@description('Name of the subnet to be assigned to function app. Leave empty if private network is not used.')
 param functionAppSubnetId string = ''
 
-@description('Optional. True if the file share needs to be created in the storage account, this file share will host the function app files. The function app name will be used as the file share name. Default to true. NOTE: This seems required if using deployment script to provision the contents of the function app, if the fileshare does not exist at the time of creation, the deployment will fail.')
+@description('True if the file share needs to be created in the storage account, this file share will host the function app files. The function app name will be used as the file share name. Default to true. NOTE: This seems required if using deployment script to provision the contents of the function app, if the fileshare does not exist at the time of creation, the deployment will fail.')
 param isCreateFileShare bool = true
 
-@description('Optional. Name of the file share to be created, default to functionAppName.')
+@description('Name of the file share to be created, default to functionAppName.')
 param fileShareName string = functionAppName
 
-@description('Optional. True if this module should assigned the role defined by param \'storageRoleId\' to the function app identity. Supports user assigned identity only. Default is false.')
+@description('True if this module should assigned the role defined by param \'storageRoleId\' to the function app identity. Supports user assigned identity only. Default is false.')
 param isAssignStorageRole bool = false
 
-@description('Optional. Id of role that should be assigned to the function identity for the storage account. Default to storage account contributor role ID.')
+@description('Id of role that should be assigned to the function identity for the storage account. Default to storage account contributor role ID.')
 param storageRoleId string = resourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')
 
-@description('Optional. True if the storage on which the function will be created is accessible only from private network(vnet). Default to false.')
+@description('True if the storage on which the function will be created is accessible only from private network(vnet). Default to false.')
 param isStoragePrivate bool = false
 
-@description('Optional. Function app identity type. Default is SystemAssigned, which means the identity created with the function app will be used.')
+@description('Function app identity type. Default is SystemAssigned, which means the identity created with the function app will be used.')
 @allowed([ 'UserAssigned', 'SystemAssigned' ])
 param functionAppIdentityType string = 'SystemAssigned'
 
-@description('Optional. Name of the user assigned identity used to execute the deployment script for uploading function app source code. Must be provided if NOT using MSDeploy option. If user assigned identity is chosen for the function app, this will also be the identity used. Only effective when \'functionAppIdentityType\' is set to \'UserAssigned\'.')
+@description('Name of the user assigned identity used to execute the deployment script for uploading function app source code. Must be provided if NOT using MSDeploy option. If user assigned identity is chosen for the function app, this will also be the identity used. Only effective when \'functionAppIdentityType\' is set to \'UserAssigned\'.')
 param userAssignedIdentityName string = ''
 
-@description('Optional. Resource group name of the user assigned identity, default to current resource group.')
+@description('Resource group name of the user assigned identity, default to current resource group.')
 param userAssignedIdentityRg string = resourceGroup().name
 
-@description('Optional. Storage account name to be used by the deployment scripts. Deployment script by default create a temporary storage account during its execution but it is also possible to assign an existing storage instead.')
+@description('Storage account name to be used by the deployment scripts. Deployment script by default create a temporary storage account during its execution but it is also possible to assign an existing storage instead.')
 param deploymentScriptStorage string = ''
 
-@description('Optional. Resource group of the deployment script storage, if `deploymentScriptStorage`, this param will be ignored. Default to current resource group.')
+@description('Resource group of the deployment script storage, if `deploymentScriptStorage`, this param will be ignored. Default to current resource group.')
 param deploymentScriptStorageRg string = resourceGroup().name
 
-@description('Optional. True if the role with necessary permissions needed to execute the scripts for the function app is to be granted to the identity, either user assigned or system. Default to false.')
+@description('True if the role with necessary permissions needed to execute the scripts for the function app is to be granted to the identity, either user assigned or system. Default to false.')
 param isGrantExecutorRole bool = false
 
-@description('Optional. Depends on the resource type, whether to assign necessary role so that the identity can perform certain operations. E.g. for CosmosDB, granting function app permission to regenerate access key. Sometimes the user assigned identity is already assigned the roles so no need to do it again. Note! This param will be discarded if system assigned identity is used.')
+@description('Depends on the resource type, whether to assign necessary role so that the identity can perform certain operations. E.g. for CosmosDB, granting function app permission to regenerate access key. Sometimes the user assigned identity is already assigned the roles so no need to do it again. Note! This param will be discarded if system assigned identity is used.')
 param isAssignResourceRole bool = true
 
-@description('Optional. Event grid topic name, to which the keyvault near expiry event will be subscribed.')
+@description('Event grid topic name, to which the keyvault near expiry event will be subscribed.')
 param systemTopicName string = ''
 
-@description('Optional. Resource group name of the event topic, default to current group. Will be ignored if system topic name is not provided.')
+@description('Resource group name of the event topic, default to current group. Will be ignored if system topic name is not provided.')
 param systemTopicRg string = resourceGroup().name
 
 // variables
