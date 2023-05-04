@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
+  "name": "Azure Managed Grafana",
+  "summary": "Azure Managed Grafana is a data visualization platform built on top of the Grafana software by Grafana Labs.",
+  "owner": "vlahane"
+}
