@@ -37,7 +37,7 @@ module test01 '../main.bicep' = {
   }
 }
 
-// Test 02 - Deployment with Standard SKU - softDeleteRetentionInDays - enablePurgeProtection - RoleAssignments
+// Test 02 - Deployment with Standard SKU - softDeleteRetentionInDays - enablePurgeProtection - RoleAssignments - diagnostics
 module test02 '../main.bicep' = {
   name: 'test02-${uniqueName}'
   params: {
@@ -46,6 +46,7 @@ module test02 '../main.bicep' = {
     skuName: 'Standard'
     softDeleteRetentionInDays: 2
     enablePurgeProtection: true
+    diagnosticWorkspaceId: dependencies.outputs.workspaceId
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'App Configuration Data Owner'

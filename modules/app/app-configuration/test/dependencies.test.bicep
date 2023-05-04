@@ -108,6 +108,11 @@ resource keyVaultKey 'Microsoft.KeyVault/vaults/keys@2023-02-01' = {
   }
 }
 
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
+  name: '${name}-${prefix}-law'
+  location: location
+}
+
 output vnetId string = virtualNetwork.id
 output subnetIds array = [
   virtualNetwork.properties.subnets[0].id
@@ -132,3 +137,5 @@ output identityIds array = [
 
 output keyVaultId string = keyVault.id
 output keyVaultKeyUri string = keyVaultKey.properties.keyUriWithVersion
+
+output workspaceId string = logAnalyticsWorkspace.id
