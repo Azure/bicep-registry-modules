@@ -54,6 +54,60 @@ param roleAssignments array = []
 @description('Private Endpoints that should be created for Azure Cosmos DB account.')
 param privateEndpoints array = []
 
+@description('Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely.')
+@minValue(0)
+@maxValue(365)
+param diagnosticLogsRetentionInDays int = 365
+
+@description('Resource ID of the diagnostic storage account.')
+param diagnosticStorageAccountId string = ''
+
+@description('Resource ID of the diagnostic log analytics workspace.')
+param diagnosticWorkspaceId string = ''
+
+@description('Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
+param diagnosticEventHubAuthorizationRuleId string = ''
+
+@description('Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category.')
+param diagnosticEventHubName string = ''
+
+@description('The name of logs that will be streamed.')
+@allowed([
+  'HttpRequest'
+  'Audit'
+])
+param logsToEnable array = [
+  'HttpRequest'
+  'Audit'
+]
+
+@description('The name of metrics that will be streamed.')
+@allowed([
+  'AllMetrics'
+])
+param metricsToEnable array = [
+  'AllMetrics'
+]
+
+var diagnosticsLogsWithDefaults = [for log in logsToEnable: {
+  category: log
+  enabled: true
+  retentionPolicy: {
+    enabled: diagnosticLogsRetentionInDays != 0 ? true : false
+    days: diagnosticLogsRetentionInDays
+  }
+}]
+
+var diagnosticsMetricsWithDefaults = [for metric in metricsToEnable: {
+  category: metric
+  timeGrain: null
+  enabled: true
+  retentionPolicy: {
+    enabled: diagnosticLogsRetentionInDays != 0 ? true : false
+    days: diagnosticLogsRetentionInDays
+  }
+}]
+
 var privateEndpointsWithDefaults = [for endpoint in privateEndpoints: {
   name: '${appConfiguration.name}-${endpoint.name}'
   privateLinkServiceId: appConfiguration.id
@@ -101,6 +155,19 @@ resource appConfigurationReplicas 'Microsoft.AppConfiguration/configurationStore
   parent: appConfiguration
   location: replica.location
 }]
+
+resource appConfigurationDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(diagnosticStorageAccountId) || !empty(diagnosticWorkspaceId) || !empty(diagnosticEventHubAuthorizationRuleId) || !empty(diagnosticEventHubName)) {
+  name: '${appConfiguration.name}-diagnosticSettings'
+  properties: {
+    storageAccountId: !empty(diagnosticStorageAccountId) ? diagnosticStorageAccountId : null
+    workspaceId: !empty(diagnosticWorkspaceId) ? diagnosticWorkspaceId : null
+    eventHubAuthorizationRuleId: !empty(diagnosticEventHubAuthorizationRuleId) ? diagnosticEventHubAuthorizationRuleId : null
+    eventHubName: !empty(diagnosticEventHubName) ? diagnosticEventHubName : null
+    metrics: diagnosticsMetricsWithDefaults
+    logs: diagnosticsLogsWithDefaults
+  }
+  scope: appConfiguration
+}
 
 module appConfiguration_rbac 'modules/rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
   name: 'cosmosdb-rbac-${uniqueString(deployment().name, location)}-${index}'
