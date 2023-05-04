@@ -17,7 +17,7 @@ param tags object = {
 module basicTest '../main.bicep' = {
   name: 'test-${name}'
   params: {
-    name: take('test-${name}', 50)
+    name: take(replace('test-${name}', '.', '-'), 5)
     location: location
     tags: tags
     roles: [
