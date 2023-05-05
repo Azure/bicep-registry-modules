@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.11.1.770",
-      "templateHash": "13165983190383749949"
+      "version": "0.16.2.56959",
+      "templateHash": "10364089875087163701"
     }
   },
   "parameters": {
@@ -86,7 +86,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'"
+        "description": "Array of role assignment objects that contain the 'roleDefinitionIdOrName'(string) and 'principalIds'(array of strings) to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'"
       }
     },
     "lock": {
@@ -345,11 +345,11 @@
       }
     },
     {
-      "condition": "[variables('IS_PREMIUM_SKU')]",
       "copy": {
         "name": "replications",
         "count": "[length(variables('varReplicationLocations'))]"
       },
+      "condition": "[variables('IS_PREMIUM_SKU')]",
       "type": "Microsoft.ContainerRegistry/registries/replications",
       "apiVersion": "2021-09-01",
       "name": "[format('{0}/{1}', parameters('name'), variables('varReplicationLocations')[copyIndex()].location)]",
@@ -401,7 +401,7 @@
         "count": "[length(parameters('roleAssignments'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-acr-rbac-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -409,18 +409,14 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "description": {
-            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), parameters('roleAssignments')[copyIndex()].description, '')]"
-          },
+          "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
           "principalIds": {
             "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
           },
           "roleDefinitionIdOrName": {
             "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
           },
-          "principalType": {
-            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), parameters('roleAssignments')[copyIndex()].principalType, '')]"
-          },
+          "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
           "resourceId": {
             "value": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('name'))]"
           }
@@ -431,8 +427,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "17936491673323073022"
+              "version": "0.16.2.56959",
+              "templateHash": "11760706098243327351"
             }
           },
           "parameters": {
@@ -520,7 +516,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-acr-private-endpoints', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -547,8 +543,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "15991841577347853697"
+              "version": "0.16.2.56959",
+              "templateHash": "8728918711703682047"
             }
           },
           "parameters": {
@@ -642,31 +638,31 @@
   "outputs": {
     "resourceGroupName": {
       "type": "string",
-      "value": "[resourceGroup().name]",
       "metadata": {
         "description": "The resource group the Azure Container Registry was deployed into."
-      }
+      },
+      "value": "[resourceGroup().name]"
     },
     "resourceId": {
       "type": "string",
-      "value": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('name'))]",
       "metadata": {
         "description": "The resource ID of the Azure Container Registry."
-      }
+      },
+      "value": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('name'))]"
     },
     "name": {
       "type": "string",
-      "value": "[parameters('name')]",
       "metadata": {
         "description": "The name of the Azure Container Registry."
-      }
+      },
+      "value": "[parameters('name')]"
     },
     "loginServer": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('name'))).loginServer]",
       "metadata": {
         "description": "The login server URL of the Azure Container Registry."
-      }
+      },
+      "value": "[reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('name')), '2021-09-01').loginServer]"
     }
   }
 }
