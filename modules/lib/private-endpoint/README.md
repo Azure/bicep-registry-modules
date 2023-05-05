@@ -40,11 +40,11 @@ This example mimics integrating with the Azure Container Registry Module.
       }
     ]
 */
-@description('Define Private Endpoints that should be created for Azure Container Registry.')
+@description('Define Private Endpoints that should be created for Azure -0[] Registry.')
 param privateEndpoints array = []
 
 @description('Should Private Endpoints be created with manual approval only?')
-param privateEndpointsManualApproval bool = []
+param privateEndpointsApprovalEnabled bool = []
 
 /* The module then has a variable that consumes the privateEndpoint param and
     injects some other default configuration, specific to the module.
@@ -67,12 +67,12 @@ var varPrivateEndpoints = [for privateEndpoint in privateEndpoints: {
 /* The module can then be called from the Public Registry, and the
     variable varPrivateEndpoints is set.
 */
-module test_02 'br/public:lib/private-endpoint:1.0.1' = {
+module privateEndpoint 'br/public:lib/private-endpoint:1.0.1' = {
   name: '${uniqueString(deployment().name, location)}-acr-private-endpoints'
   params: {
     location: location
     privateEndpoints: varPrivateEndpoints
-    manualApprovalEnabled: privateEndpointsManualApproval
+    manualApprovalEnabled: privateEndpointsApprovalEnabled
   }
 }
 ```
