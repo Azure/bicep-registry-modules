@@ -1,0 +1,147 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.16.2.56959",
+      "templateHash": "18212039306959495780"
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the Log Analytics Workspace."
+      },
+      "maxLength": 63,
+      "minLength": 4
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Define the Azure Location that the Log Analytics Workspace should be created within."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Tags for Log Analytics Workspace."
+      }
+    },
+    "skuName": {
+      "type": "string",
+      "defaultValue": "PerGB2018",
+      "metadata": {
+        "description": "Optional. sku of Log Analytics Workspace. Default set to PerGB2018"
+      },
+      "allowedValues": [
+        "CapacityReservation",
+        "Free",
+        "LACluster",
+        "PerGB2018",
+        "PerNode",
+        "Premium",
+        "Standalone",
+        "Standard"
+      ]
+    },
+    "retentionInDays": {
+      "type": "int",
+      "defaultValue": 30,
+      "metadata": {
+        "description": "Optional. The workspace data retention in days. Default set to 30"
+      },
+      "allowedValues": [
+        30,
+        31,
+        90,
+        120,
+        180,
+        270,
+        365,
+        550,
+        730
+      ],
+      "maxValue": 730,
+      "minValue": 30
+    },
+    "publicNetworkAccessForIngestion": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "metadata": {
+        "description": "Optional. The network access type for operating on the Log Analytics Workspace. By default it is Enabled"
+      },
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ]
+    },
+    "publicNetworkAccessForQuery": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "metadata": {
+        "description": "Optional. The network access type for operating on the Log Analytics Workspace. By default it is Enabled"
+      },
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ]
+    },
+    "dailyQuotaGb": {
+      "type": "int",
+      "defaultValue": -1,
+      "metadata": {
+        "description": "Optional. The workspace daily quota for ingestion. Default set to -1"
+      }
+    },
+    "forceCmkForQuery": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Indicates whether customer managed storage is mandatory for query management."
+      }
+    }
+  },
+  "variables": {
+    "sku": {
+      "name": "[parameters('skuName')]"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "sku": "[variables('sku')]",
+        "retentionInDays": "[parameters('retentionInDays')]",
+        "publicNetworkAccessForIngestion": "[parameters('publicNetworkAccessForIngestion')]",
+        "publicNetworkAccessForQuery": "[parameters('publicNetworkAccessForQuery')]",
+        "workspaceCapping": {
+          "dailyQuotaGb": "[parameters('dailyQuotaGb')]"
+        },
+        "forceCmkForQuery": "[parameters('forceCmkForQuery')]"
+      }
+    }
+  ],
+  "outputs": {
+    "id": {
+      "type": "string",
+      "metadata": {
+        "description": "Id of the Log Analytics Workspace."
+      },
+      "value": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Log Analytics Workspace."
+      },
+      "value": "[parameters('name')]"
+    }
+  }
+}

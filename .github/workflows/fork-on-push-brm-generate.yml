@@ -44,6 +44,37 @@ jobs:
           chmod +x ./bicep
           sudo mv ./bicep /usr/local/bin/bicep
           bicep --version
+      - uses: jungwinter/split@master
+        id: branch
+        with:
+          msg: ${{ needs.get-module-to-validate.outputs.module_dir }}
+          separator: "/"
+          maxsplit: -1
+
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag_prefix: "${{ steps.branch.outputs._1 }}/${{ steps.branch.outputs._2 }}/"
+          dry_run: true
+          default_bump: false
+
+      - name: Update Version
+        if: steps.tag_version.outputs.release_type
+        shell: bash
+        env:
+          OLD_VERSION: ${{ steps.tag_version.outputs.previous_version }}
+          VERSION: ${{ steps.tag_version.outputs.new_version }}
+          SAMPLEFOLDER_PATH: ${{ needs.get-module-to-validate.outputs.module_dir }}
+          MODULE: "${{ steps.branch.outputs._1 }}/${{ steps.branch.outputs._2 }}"
+        run: |
+          cd $SAMPLEFOLDER_PATH
+          NEW_VERSION=${VERSION%%-*}
+          # The following sed command searches for the specified module in README.md and replaces its version number
+          # (in formats X.Y.Z, X.Y, X, or a single lowercase letter) or adds a version number if it's not present.
+          REGEX=$(echo "s|($MODULE:)([0-9]+(\.[0-9]+){0,2})?|\1$NEW_VERSION|")
+          sed -ri "$REGEX" "README.md" || exit 1
 
       - name: Run brm generate
         env:

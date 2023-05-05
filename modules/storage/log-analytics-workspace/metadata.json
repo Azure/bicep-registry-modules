@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
+  "name": "Log Analytics Workspace",
+  "summary": "This module deploys Log Analytics workspace and optionally available integrations.",
+  "owner": "RahulTipole-Microsoft"
+}
