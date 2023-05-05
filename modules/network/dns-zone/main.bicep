@@ -1,5 +1,8 @@
+@description('Prefix of DNS Resource Name. This param is ignored when name is provided.')
+param prefix string = 'azure-'
+
 @description('Required. Specifies the resource name')
-param name string
+param name string = '${prefix}${uniqueString(resourceGroup().id, subscription().id)}'
 
 @description('Optional. Tags to assign to the resources used in dns-zones.')
 param tags object = {}

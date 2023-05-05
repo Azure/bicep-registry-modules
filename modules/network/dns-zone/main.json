@@ -5,12 +5,20 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "1042643898197654158"
+      "templateHash": "2439625640065370104"
     }
   },
   "parameters": {
+    "prefix": {
+      "type": "string",
+      "defaultValue": "azure-",
+      "metadata": {
+        "description": "Prefix of DNS Resource Name. This param is ignored when name is provided."
+      }
+    },
     "name": {
       "type": "string",
+      "defaultValue": "[format('{0}{1}', parameters('prefix'), uniqueString(resourceGroup().id, subscription().id))]",
       "metadata": {
         "description": "Required. Specifies the resource name"
       }

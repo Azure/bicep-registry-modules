@@ -14,14 +14,15 @@ Reference : https://learn.microsoft.com/en-us/azure/dns/dns-overview
 
 ## Parameters
 
-| Name           | Type     | Required | Description                                                  |
-| :------------- | :------: | :------: | :----------------------------------------------------------- |
-| `name`         | `string` | Yes      | Required. Specifies the resource name                        |
-| `tags`         | `object` | No       | Optional. Tags to assign to the resources used in dns-zones. |
-| `zoneType`     | `string` | No       | Optional. The type of this DNS zone, default set to Public.  |
-| `aRecords`     | `array`  | No       | Optional. Specifies the "A" Records array                    |
-| `cnameRecords` | `array`  | No       | Optional. Specifies the "CNAME" Records array                |
-| `AAAARecords`  | `array`  | No       | Optional. Specifies the "AAAA" Records array                 |
+| Name           | Type     | Required | Description                                                               |
+| :------------- | :------: | :------: | :------------------------------------------------------------------------ |
+| `prefix`       | `string` | No       | Prefix of DNS Resource Name. This param is ignored when name is provided. |
+| `name`         | `string` | No       | Required. Specifies the resource name                                     |
+| `tags`         | `object` | No       | Optional. Tags to assign to the resources used in dns-zones.              |
+| `zoneType`     | `string` | No       | Optional. The type of this DNS zone, default set to Public.               |
+| `aRecords`     | `array`  | No       | Optional. Specifies the "A" Records array                                 |
+| `cnameRecords` | `array`  | No       | Optional. Specifies the "CNAME" Records array                             |
+| `AAAARecords`  | `array`  | No       | Optional. Specifies the "AAAA" Records array                              |
 
 ## Outputs
 
