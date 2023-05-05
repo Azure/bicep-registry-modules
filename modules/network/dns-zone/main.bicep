@@ -29,6 +29,7 @@ resource dnszones 'Microsoft.Network/dnsZones@2018-05-01' = {
   }
 }
 
+@batchSize(1)
 resource A 'Microsoft.Network/dnsZones/A@2018-05-01' = [for record in aRecords: {
   name: record.name
   parent: dnszones
@@ -41,6 +42,7 @@ resource A 'Microsoft.Network/dnsZones/A@2018-05-01' = [for record in aRecords: 
   }
 }]
 
+@batchSize(1)
 resource CName 'Microsoft.Network/dnsZones/CNAME@2018-05-01' = [for record in cnameRecords: {
   name: record.name
   parent: dnszones
@@ -55,6 +57,7 @@ resource CName 'Microsoft.Network/dnsZones/CNAME@2018-05-01' = [for record in cn
   }
 }]
 
+@batchSize(1)
 resource AAAA 'Microsoft.Network/dnsZones/AAAA@2018-05-01' = [for record in AAAARecords: {
   name: record.name
   parent: dnszones

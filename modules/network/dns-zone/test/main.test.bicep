@@ -46,11 +46,11 @@ module simpleTest '../main.bicep' = {
           }
         ]
       }
-      /*{
+      {
         name: '@'
         aliasRecordSet: true
         targetResource: prereq.outputs.trafficManagerId
-      }*/
+      }
     ]
     cnameRecords: [
       {

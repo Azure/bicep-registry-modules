@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "1446817132416604027"
+      "templateHash": "1042643898197654158"
     }
   },
   "parameters": {
@@ -69,7 +69,9 @@
     {
       "copy": {
         "name": "A",
-        "count": "[length(parameters('aRecords'))]"
+        "count": "[length(parameters('aRecords'))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Network/dnsZones/A",
       "apiVersion": "2018-05-01",
@@ -86,7 +88,9 @@
     {
       "copy": {
         "name": "CName",
-        "count": "[length(parameters('cnameRecords'))]"
+        "count": "[length(parameters('cnameRecords'))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Network/dnsZones/CNAME",
       "apiVersion": "2018-05-01",
@@ -103,7 +107,9 @@
     {
       "copy": {
         "name": "AAAA",
-        "count": "[length(parameters('AAAARecords'))]"
+        "count": "[length(parameters('AAAARecords'))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Network/dnsZones/AAAA",
       "apiVersion": "2018-05-01",
