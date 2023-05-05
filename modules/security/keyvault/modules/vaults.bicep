@@ -37,7 +37,7 @@ param skuFamily string = 'A'
 @description('Specifies whether RBAC authorization should be enabled for the Key Vault.')
 param enableRbacAuthorization bool = true
 
-@description('Define Private Endpoints that should be created for Azure Container Registry.')
+@description('Define Private Endpoints that should be created for the Key Vault instance.')
 param privateEndpoints array
 
 var networkAcls = enableVNet ? {

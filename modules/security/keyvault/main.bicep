@@ -52,7 +52,7 @@ param skuName string = 'standard'
 @description('The SKU family of the Key Vault.')
 param skuFamily string = 'A'
 
-@description('Define Private Endpoints that should be created for Azure Container Registry.')
+@description('Define Private Endpoints that should be created for the Key Vault instance.')
 param privateEndpoints array = []
 
 @description('Should Private Endpoints be created with manual approval only?')
