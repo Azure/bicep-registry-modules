@@ -35,7 +35,7 @@ Reference : https://learn.microsoft.com/en-us/azure/dns/dns-overview
 ### Example 1
 
 ```bicep
-module test01 'br/public:network/dns-zone:1.0.1' = {
+module test01 'br/public:network/dns-zone:0.1.0' = {
   name: '${name}-minimal'
   params: {
     name: 'myendpoint1.example.com'
@@ -46,7 +46,7 @@ module test01 'br/public:network/dns-zone:1.0.1' = {
 ### Example 2
 
 ```bicep
-module test02 'br/public:network/dns-zone:1.0.1' = {
+module test02 'br/public:network/dns-zone:0.1.0' = {
   name: '${name}-simple'
   params: {
     name: 'myendpoint2.example.com'
