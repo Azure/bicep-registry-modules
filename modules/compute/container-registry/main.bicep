@@ -244,7 +244,7 @@ resource containerRegistry_diagnosticSettings 'Microsoft.Insights/diagnosticSett
   scope: containerRegistry
 }
 
-module containerRegistry_rbac '.bicep/nested_rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
+module containerRegistry_rbac 'modules/nested_rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
   name: '${uniqueString(deployment().name, location)}-acr-rbac-${index}'
   params: {
     description: contains(roleAssignment, 'description') ? roleAssignment.description : ''
@@ -255,7 +255,7 @@ module containerRegistry_rbac '.bicep/nested_rbac.bicep' = [for (roleAssignment,
   }
 }]
 
-module containerRegistry_privateEndpoint '.bicep/nested_privateEndpoint.bicep' = {
+module containerRegistry_privateEndpoint 'modules/nested_privateEndpoint.bicep' = {
   name: '${uniqueString(deployment().name, location)}-acr-private-endpoints'
   params: {
     location: location
