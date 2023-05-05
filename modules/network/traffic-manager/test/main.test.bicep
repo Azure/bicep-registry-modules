@@ -25,7 +25,6 @@ module test0 '../main.bicep' = {
     tags: {
       env: 'test'
     }
-    trafficManagerDnsName: 'tmp0-${uniqueString(resourceGroup().id, subscription().id, prefix)}'
   }
 }
 
