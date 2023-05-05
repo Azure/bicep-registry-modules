@@ -17,7 +17,8 @@ The module also allows for the configuration of monitor settings such as protoco
 
 | Name                                    | Type     | Required | Description                                                                                                                                                       |
 | :-------------------------------------- | :------: | :------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`                                  | `string` | Yes      | Name of Traffic Manager Profile Resource                                                                                                                          |
+| `prefix`                                | `string` | No       | Prefix of Storage Account Resource Name. This param is ignored when name is provided.                                                                             |
+| `name`                                  | `string` | No       | Name of Traffic Manager Profile Resource                                                                                                                          |
 | `trafficManagerDnsName`                 | `string` | Yes      | Relative DNS name for the traffic manager profile, must be globally unique.                                                                                       |
 | `tags`                                  | `object` | No       | Tags for the module resources.                                                                                                                                    |
 | `trafficRoutingMethod`                  | `string` | No       | The traffic routing method of the Traffic Manager profile. default is "Performance".                                                                              |
