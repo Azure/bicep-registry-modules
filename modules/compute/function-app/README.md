@@ -70,7 +70,7 @@ This is a low-level Bicep module for managing Azure Functions, it supports an ar
 In example, function app is using pre-built docker image,
 deploy your code to Azure Functions as a custom Docker container using a image provided.
 ''')
-module funcApp 'br/public:bicep/compute/function-app:1.1.0' = {
+module funcApp 'br/public:bicep/compute/function-app:1.1.1' = {
   name: 'func1${uniqueString(name)}'
   dependsOn: [
     dependencies
@@ -101,7 +101,7 @@ module funcApp 'br/public:bicep/compute/function-app:1.1.0' = {
 In example, function app uses source control option for
 Continuous deployment for Azure Functions ie. repoUrl param value.
 ''')
-module funcApp 'br/public:bicep/compute/function-app:1.1.0' = {
+module funcApp 'br/public:bicep/compute/function-app:1.1.1' = {
   name: 'func2-${uniqueString(name)}'
   scope: resourceGroup()
   dependsOn: [
