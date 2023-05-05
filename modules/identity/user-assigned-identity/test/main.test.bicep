@@ -6,6 +6,7 @@ targetScope = 'resourceGroup'
 
 param name string = deployment().name
 param location string = resourceGroup().location
+
 param tags object = {
   LOB: 'ENT'
   costcenter: '000'
@@ -15,18 +16,18 @@ param tags object = {
 }
 
 module test1 '../main.bicep' = {
-  name: 'test1-${name}'
+  name: 'test1-${name}-${uniqueString(resourceGroup().id)}'
   params: {
-    name: take(replace('test1-${name}', '.', '-'), 50)
+    name: 'test1-${uniqueString(resourceGroup().id)}'
     location: location
     tags: tags
   }
 }
 
 module test2 '../main.bicep' = {
-  name: 'test2-${name}'
+  name: 'test2-${name}-${uniqueString(resourceGroup().id)}'
   params: {
-    name: take(replace('test2-${name}', '.', '-'), 50)
+    name: 'test2-${uniqueString(resourceGroup().id)}'
     location: location
     tags: tags
     roles: [
@@ -43,7 +44,7 @@ module test2 '../main.bicep' = {
     ]
     federatedCredentials: [
       {
-        name: take(replace('federatedCredential-github-test2-${name}', '.', '-'), 50)
+        name: 'federatedCredential-github-test2--${uniqueString(resourceGroup().id)}'
         issuer: 'https://token.actions.githubusercontent.com'
         subject: 'repo:Azure/https://github.com/Azure/bicep-registry-modules:ref:refs/heads/main'
         audiences: [
@@ -51,7 +52,7 @@ module test2 '../main.bicep' = {
         ]
       }
       {
-        name: take(replace('federatedCredential-aks-test2-${name}', '.', '-'), 50)
+        name: 'federatedCredential-aks-test2--${uniqueString(resourceGroup().id)}'
         issuer: 'https://cluster.issuer.url/xxxxx/xxxxx/'
         subject: 'system:serviceaccount:mynamespace-name:myserviceaccount-name'
         audiences: [
