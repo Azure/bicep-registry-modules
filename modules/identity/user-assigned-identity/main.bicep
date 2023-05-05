@@ -9,28 +9,30 @@ param location string
 @description('Optional. Tags for Azure User Assigned Identity')
 param tags object = {}
 
-@description('Optional. roles list which will create roleAssignment for userAssignedIdentities.')
+@description('Optional. List of federatedCredentials to be configured with Managed Identity, default set to []')
+param federatedCredentials array = []
+
+@description('Optional. roles list which will create roleAssignment for userAssignedIdentities, default set to []')
 param roles array = []
-/* Example
-[
-  {
-    name: 'Contributor'
-    roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-    principalType: 'ServicePrincipal'
-  }
-  {
-    name: 'Azure Kubernetes Service RBAC Admin'
-    roleDefinitionId: '3498e952-d568-435e-9b2c-8d77e338d7f7'
-    principalType: 'ServicePrincipal'
-  }
-]
-*/
+
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: name
   location: location
   tags: tags
 }
 
+@batchSize(1)
+resource federatedCredential 'Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials@2023-01-31' = [for federatedCredential in federatedCredentials: {
+  name: federatedCredential.name
+  parent: managedIdentity
+  properties: {
+    audiences: federatedCredential.audiences
+    issuer: federatedCredential.issuer
+    subject: federatedCredential.subject
+  }
+}]
+
+@batchSize(1)
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for role in roles: {
   name: guid(managedIdentity.id, role.name)
   properties: {

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "10423793471221718565"
+      "templateHash": "14914824183475274573"
     }
   },
   "parameters": {
@@ -30,11 +30,18 @@
         "description": "Optional. Tags for Azure User Assigned Identity"
       }
     },
+    "federatedCredentials": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of federatedCredentials to be configured with Managed Identity, default set to []"
+      }
+    },
     "roles": {
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. roles list which will create roleAssignment for userAssignedIdentities."
+        "description": "Optional. roles list which will create roleAssignment for userAssignedIdentities, default set to []"
       }
     }
   },
@@ -48,8 +55,29 @@
     },
     {
       "copy": {
+        "name": "federatedCredential",
+        "count": "[length(parameters('federatedCredentials'))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials",
+      "apiVersion": "2023-01-31",
+      "name": "[format('{0}/{1}', parameters('name'), parameters('federatedCredentials')[copyIndex()].name)]",
+      "properties": {
+        "audiences": "[parameters('federatedCredentials')[copyIndex()].audiences]",
+        "issuer": "[parameters('federatedCredentials')[copyIndex()].issuer]",
+        "subject": "[parameters('federatedCredentials')[copyIndex()].subject]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))]"
+      ]
+    },
+    {
+      "copy": {
         "name": "roleAssignment",
-        "count": "[length(parameters('roles'))]"
+        "count": "[length(parameters('roles'))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",

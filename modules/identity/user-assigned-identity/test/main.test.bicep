@@ -11,13 +11,22 @@ param tags object = {
   costcenter: '000'
   environment: 'dev'
   location: resourceGroup().location
-  team: 'coredev'
+  team: 'core-dev'
 }
 
-module basicTest '../main.bicep' = {
-  name: 'test-${name}'
+module test1 '../main.bicep' = {
+  name: 'test1-${name}'
   params: {
-    name: take(replace('test-${name}', '.', '-'), 5)
+    name: take(replace('test1-${name}', '.', '-'), 50)
+    location: location
+    tags: tags
+  }
+}
+
+module test2 '../main.bicep' = {
+  name: 'test2-${name}'
+  params: {
+    name: take(replace('test2-${name}', '.', '-'), 50)
     location: location
     tags: tags
     roles: [
@@ -30,6 +39,24 @@ module basicTest '../main.bicep' = {
         name: 'Azure Kubernetes Service RBAC Admin'
         roleDefinitionId: '3498e952-d568-435e-9b2c-8d77e338d7f7'
         principalType: 'ServicePrincipal'
+      }
+    ]
+    federatedCredentials: [
+      {
+        name: take(replace('federatedCredential-github-test2-${name}', '.', '-'), 50)
+        issuer: 'https://token.actions.githubusercontent.com'
+        subject: 'repo:Azure/https://github.com/Azure/bicep-registry-modules:ref:refs/heads/main'
+        audiences: [
+          'api://AzureADTokenExchange'
+        ]
+      }
+      {
+        name: take(replace('federatedCredential-aks-test2-${name}', '.', '-'), 50)
+        issuer: 'https://cluster.issuer.url/xxxxx/xxxxx/'
+        subject: 'system:serviceaccount:mynamespace-name:myserviceaccount-name'
+        audiences: [
+          'api://AzureADTokenExchange'
+        ]
       }
     ]
   }
