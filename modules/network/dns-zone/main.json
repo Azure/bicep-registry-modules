@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "14941227006070030909"
+      "templateHash": "1446817132416604027"
     }
   },
   "parameters": {
@@ -76,7 +76,7 @@
       "name": "[format('{0}/{1}', parameters('name'), parameters('aRecords')[copyIndex()].name)]",
       "properties": {
         "ARecords": "[if(parameters('aRecords')[copyIndex()].aliasRecordSet, null(), parameters('aRecords')[copyIndex()].aRecord)]",
-        "TTL": "[if(parameters('aRecords')[copyIndex()].aliasRecordSet, 0, parameters('aRecords')[copyIndex()].ttl)]",
+        "TTL": "[if(parameters('aRecords')[copyIndex()].aliasRecordSet, null(), parameters('aRecords')[copyIndex()].ttl)]",
         "targetResource": "[if(parameters('aRecords')[copyIndex()].aliasRecordSet, createObject('id', parameters('aRecords')[copyIndex()].targetResource), createObject())]"
       },
       "dependsOn": [

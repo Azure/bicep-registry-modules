@@ -34,7 +34,7 @@ resource A 'Microsoft.Network/dnsZones/A@2018-05-01' = [for record in aRecords: 
   parent: dnszones
   properties: {
     ARecords: (record.aliasRecordSet) ? null : record.aRecord
-    TTL: record.aliasRecordSet ? 0 : record.ttl
+    TTL: record.aliasRecordSet ? null : record.ttl
     targetResource: record.aliasRecordSet ? {
       id: record.targetResource
     } : {}

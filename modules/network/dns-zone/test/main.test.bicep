@@ -13,12 +13,9 @@ param tags object = {
   location: location
 }
 
-/*
-Disable for testing
 module prereq 'prereq.test.bicep' = {
   name: '${name}-prereq'
 }
-*/
 
 module minimalTest '../main.bicep' = {
   name: '${name}-minimal'
@@ -27,8 +24,6 @@ module minimalTest '../main.bicep' = {
   }
 }
 
-/*
-Disable for testing
 module simpleTest '../main.bicep' = {
   name: '${name}-simple'
   params: {
@@ -51,11 +46,11 @@ module simpleTest '../main.bicep' = {
           }
         ]
       }
-      {
+      /*{
         name: '@'
         aliasRecordSet: true
         targetResource: prereq.outputs.trafficManagerId
-      }
+      }*/
     ]
     cnameRecords: [
       {
@@ -79,4 +74,3 @@ module simpleTest '../main.bicep' = {
     ]
   }
 }
-*/
