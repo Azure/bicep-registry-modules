@@ -255,12 +255,11 @@ module containerRegistry_rbac 'modules/nested_rbac.bicep' = [for (roleAssignment
   }
 }]
 
-module containerRegistry_privateEndpoint 'modules/nested_privateEndpoint.bicep' = {
+module containerRegistry_privateEndpoint 'br/public:lib/private-endpoint:1.0.1' = {
   name: '${uniqueString(deployment().name, location)}-acr-private-endpoints'
   params: {
     location: location
     privateEndpoints: varPrivateEndpoints
-    tags: tags
     manualApprovalEnabled: privateEndpointsApprovalEnabled
   }
 }
