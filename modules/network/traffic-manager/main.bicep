@@ -1,7 +1,10 @@
+@description('Prefix of Storage Account Resource Name. This param is ignored when name is provided.')
+param prefix string = 'traf'
+
 @description('Name of Traffic Manager Profile Resource')
 @minLength(1)
 @maxLength(63)
-param name string
+param name string = take('${prefix}${uniqueString(resourceGroup().id, subscription().id)}', 63)
 
 @description('Relative DNS name for the traffic manager profile, must be globally unique.')
 param trafficManagerDnsName string

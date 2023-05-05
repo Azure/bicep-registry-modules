@@ -4,13 +4,21 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.16.2.56959",
-      "templateHash": "6651179765317651627"
+      "version": "0.17.1.54307",
+      "templateHash": "5185879263923069505"
     }
   },
   "parameters": {
+    "prefix": {
+      "type": "string",
+      "defaultValue": "traf",
+      "metadata": {
+        "description": "Prefix of Storage Account Resource Name. This param is ignored when name is provided."
+      }
+    },
     "name": {
       "type": "string",
+      "defaultValue": "[take(format('{0}{1}', parameters('prefix'), uniqueString(resourceGroup().id, subscription().id)), 63)]",
       "maxLength": 63,
       "minLength": 1,
       "metadata": {
