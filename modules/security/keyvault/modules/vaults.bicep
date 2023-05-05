@@ -37,6 +37,9 @@ param skuFamily string = 'A'
 @description('Specifies whether RBAC authorization should be enabled for the Key Vault.')
 param enableRbacAuthorization bool = true
 
+@description('Define Private Endpoints that should be created for Azure Container Registry.')
+param privateEndpoints array
+
 var networkAcls = enableVNet ? {
   defaultAction: 'Deny'
   virtualNetworkRules: [
@@ -46,6 +49,21 @@ var networkAcls = enableVNet ? {
     }
   ]
 } : {}
+
+var varPrivateEndpoints = [for privateEndpoint in privateEndpoints: {
+  name: '${privateEndpoint.name}-${keyVault.name}'
+  privateLinkServiceId: keyVault.id
+  groupIds: [
+    'vault'
+  ]
+  subnetId: privateEndpoint.subnetId
+  privateDnsZones: contains(privateEndpoint, 'privateDnsZoneId') ? [
+    {
+      name: 'default'
+      zoneId: privateEndpoint.privateDnsZoneId
+    }
+  ] : []
+}]
 
 resource newKeyVault 'Microsoft.KeyVault/vaults@2022-11-01' = if(newOrExisting == 'new') {
   name: name
@@ -72,3 +90,6 @@ output id string = newOrExisting == 'new' ? newKeyVault.id : keyVault.id
 
 @description('Key Vault Name')
 output name string = name
+
+@description('Array of Private Endpoint Configuration.')
+output privateEndpoints array = varPrivateEndpoints

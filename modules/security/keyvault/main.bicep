@@ -52,6 +52,12 @@ param skuName string = 'standard'
 @description('The SKU family of the Key Vault.')
 param skuFamily string = 'A'
 
+@description('Define Private Endpoints that should be created for Azure Container Registry.')
+param privateEndpoints array = []
+
+@description('Should Private Endpoints be created with manual approval only?')
+param privateEndpointsManualApproval bool = false
+
 module keyVault 'modules/vaults.bicep' = {
   name: guid(name, 'deploy')
   params: {
@@ -65,6 +71,7 @@ module keyVault 'modules/vaults.bicep' = {
     tenantId: tenantId
     subnetID: subnetID
     enableVNet: enableVNet
+    privateEndpoints: privateEndpoints
   }
 }
 
@@ -85,6 +92,15 @@ module secret 'modules/secrets.bicep' = if (createSecret) {
     keyVaultName: keyVault.outputs.name
     secretName: secretName
     secretValue: secretValue
+  }
+}
+
+module privateEndpoint 'br/public:lib/private-endpoint:1.0.1' = {
+  name: guid(name, 'private-endpoints')
+  params: {
+    location: location
+    privateEndpoints: keyVault.outputs.privateEndpoints
+    manualApprovalEnabled: privateEndpointsManualApproval
   }
 }
 
