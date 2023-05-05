@@ -7,7 +7,7 @@ param prefix string = 'traf'
 param name string = take('${prefix}${uniqueString(resourceGroup().id, subscription().id)}', 63)
 
 @description('Relative DNS name for the traffic manager profile, must be globally unique.')
-param trafficManagerDnsName string
+param trafficManagerDnsName string = 'tmp-${uniqueString(resourceGroup().id, subscription().id, name)}'
 
 @description('Tags for the module resources.')
 param tags object = {}
