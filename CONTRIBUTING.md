@@ -68,7 +68,7 @@ The `metadata.json` file contains metadata of the module including `name`, `desc
 
 #### `main.bicep`
 
-The `main.bicep` file is the public interface of the module. When authoring `main.bicep`, make sure to provide a description for each parameter and output. You are free to create other Bicep files inside the module folder and reference them as local modules in `main.bicep` if needed. You may also reference other registry modules to help build your module. If you do so, make sure to add them as external references with specific version numbers. You should not reference other registry modules through local file path, since they may get updated overtime. The `main.bicep` most follow various static code analysis checks, such as including descriptions on every parameter and output. This will be used to automatically generate the `README.md`. 
+The `main.bicep` file is the public interface of the module. When authoring `main.bicep`, make sure to provide a description for each parameter and output. You are free to create other Bicep files inside the module folder and reference them as local modules in `main.bicep` if needed. You may also reference other registry modules to help build your module. If you do so, make sure to add them as external references with specific version numbers. You should not reference other registry modules through local file path, since they may get updated overtime. The `main.bicep` most follow various static code analysis checks, such as including descriptions on every parameter and output. This will be used to automatically generate the `README.md`.
 
 ```bicep
 @description('Deployment Location')
@@ -103,22 +103,26 @@ Each template should include the following 3 parameters: `location`, `prefix` an
 
 ##### Parameters
 
-- The `location` parameter is set to `resourceGroup().name` in only the `main.bicep`, and should be required when present in nested templates. 
-- The `prefix` should use the recommended abbreviations collected [here](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations). 
+- The `location` parameter is set to `resourceGroup().name` in only the `main.bicep`, and should be required when present in nested templates.
+- The `prefix` should use the recommended abbreviations collected [here](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations).
 - The `name` should include a min and max length constraint. It should also generate a unique name for the user, that will remain the same when redeployed with the same parameters, such as with `uniqueString(resourceGroup().id, location)`. If multiple resources are including in a module, the default values of other names should be based on this value.
 
 ##### Outputs
+
 - The `name` output should link to the `name` parameter.
 - THe `id` output should link to the main resource of the deployment. Additional ID parameters may be provided.
 
 ##### Zone Redudancy
+
 Including an option to enable Zone Redudancy is recommended, but not required. When it is included, it should be enabled using the following parameter.
 
 ```bicep
 @description('Flag to indicate whether or not this region is an AvailabilityZone region')
 param isZoneRedundant bool = false
 ```
+
 ##### Virtual Network
+
 Including Virtual Network is also recommended. This support should be designed with the Virtual-Network module in the repository.
 
 #### `main.test.bicep`
