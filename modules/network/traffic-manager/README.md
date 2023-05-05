@@ -15,16 +15,24 @@ The module also allows for the configuration of monitor settings such as protoco
 
 ## Parameters
 
-| Name                    | Type     | Required | Description                                                                                                                                                       |
-| :---------------------- | :------: | :------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`                  | `string` | Yes      | Name of Traffic Manager Profile Resource                                                                                                                          |
-| `trafficManagerDnsName` | `string` | Yes      | Relative DNS name for the traffic manager profile, must be globally unique.                                                                                       |
-| `tags`                  | `object` | No       | Tags for the module resources.                                                                                                                                    |
-| `trafficRoutingMethod`  | `string` | No       | The traffic routing method of the Traffic Manager profile. default is "Performance".                                                                              |
-| `ttl`                   | `int`    | No       | The DNS Time-To-Live (TTL), in seconds. default is 30.                                                                                                            |
-| `profileStatus`         | `string` | No       | Optional. The status of the Traffic Manager profile. default is Enabled.                                                                                          |
-| `endpoints`             | `array`  | No       | An array of objects that represent the endpoints in the Traffic Manager profile. {name: string, target: string, endpointStatus: string, endpointLocation: string} |
-| `monitorConfig`         | `object` | No       | An object that represents the monitoring configuration for the Traffic Manager profile.                                                                           |
+| Name                                    | Type     | Required | Description                                                                                                                                                       |
+| :-------------------------------------- | :------: | :------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `prefix`                                | `string` | No       | Prefix of Storage Account Resource Name. This param is ignored when name is provided.                                                                             |
+| `name`                                  | `string` | No       | Name of Traffic Manager Profile Resource                                                                                                                          |
+| `trafficManagerDnsName`                 | `string` | No       | Relative DNS name for the traffic manager profile, must be globally unique.                                                                                       |
+| `tags`                                  | `object` | No       | Tags for the module resources.                                                                                                                                    |
+| `trafficRoutingMethod`                  | `string` | No       | The traffic routing method of the Traffic Manager profile. default is "Performance".                                                                              |
+| `ttl`                                   | `int`    | No       | The DNS Time-To-Live (TTL), in seconds. default is 30.                                                                                                            |
+| `profileStatus`                         | `string` | No       | The status of the Traffic Manager profile. default is Enabled.                                                                                                    |
+| `endpoints`                             | `array`  | No       | An array of objects that represent the endpoints in the Traffic Manager profile. {name: string, target: string, endpointStatus: string, endpointLocation: string} |
+| `monitorConfig`                         | `object` | No       | An object that represents the monitoring configuration for the Traffic Manager profile.                                                                           |
+| `enableDiagnostics`                     | `bool`   | No       | Enable Diagnostic Capture . default is false                                                                                                                      |
+| `diagnosticLogsRetentionInDays`         | `int`    | No       | Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely. default is 365.                                              |
+| `diagnosticStorageAccountId`            | `string` | No       | Resource ID of the diagnostic storage account.                                                                                                                    |
+| `diagnosticWorkspaceId`                 | `string` | No       | Resource ID of the diagnostic log analytics workspace.                                                                                                            |
+| `diagnosticEventHubAuthorizationRuleId` | `string` | No       | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.                  |
+| `diagnosticEventHubName`                | `string` | No       | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category.                    |
+| `logsToEnable`                          | `string` | No       | The name of logs that will be streamed. default is allLogs.                                                                                                       |
 
 ## Outputs
 
@@ -43,7 +51,7 @@ This example creates a new Traffic Manager profile with the name "my-traffic-man
 param name string = 'my-traffic-manager'
 param dnsName string = 'my-traffic-manager-dns'
 
-module trafficManager 'br/public:network/traffic-manager:1.0.1' = { = {
+module trafficManager 'br/public:network/traffic-manager:2.3.1' = { = {
   name: 'myTrafficManager'
   params: {
     name: name
@@ -74,12 +82,17 @@ param endpoints array = [
   }
 ]
 
-module trafficManagerProfile 'br/public:network/traffic-manager:2.0.1' = { = {
+module trafficManagerProfile 'br/public:network/traffic-manager:2.3.1' = {
   name: 'trafficManagerProfile'
   params: {
     name: name
     trafficManagerDnsName: trafficManagerDnsName
     endpoints: endpoints
+    enableDiagnostics: true
+    diagnosticStorageAccountId: prereq.outputs.storageAccountId
+    diagnosticWorkspaceId: prereq.outputs.workspaceId
+    diagnosticEventHubName: prereq.outputs.eventHubName
+    diagnosticEventHubAuthorizationRuleId: prereq.outputs.authorizationRuleId
   }
 }
 ```

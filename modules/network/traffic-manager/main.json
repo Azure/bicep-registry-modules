@@ -4,13 +4,21 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.16.2.56959",
-      "templateHash": "14602496474047091233"
+      "version": "0.17.1.54307",
+      "templateHash": "6737182096453596144"
     }
   },
   "parameters": {
+    "prefix": {
+      "type": "string",
+      "defaultValue": "traf",
+      "metadata": {
+        "description": "Prefix of Storage Account Resource Name. This param is ignored when name is provided."
+      }
+    },
     "name": {
       "type": "string",
+      "defaultValue": "[take(format('{0}{1}', parameters('prefix'), uniqueString(resourceGroup().id, subscription().id)), 63)]",
       "maxLength": 63,
       "minLength": 1,
       "metadata": {
@@ -19,6 +27,7 @@
     },
     "trafficManagerDnsName": {
       "type": "string",
+      "defaultValue": "[format('tmp-{0}', uniqueString(resourceGroup().id, subscription().id, parameters('name')))]",
       "metadata": {
         "description": "Relative DNS name for the traffic manager profile, must be globally unique."
       }
@@ -60,7 +69,7 @@
         "Disabled"
       ],
       "metadata": {
-        "description": "Optional. The status of the Traffic Manager profile. default is Enabled."
+        "description": "The status of the Traffic Manager profile. default is Enabled."
       }
     },
     "endpoints": {
@@ -90,7 +99,93 @@
       "metadata": {
         "description": "An object that represents the monitoring configuration for the Traffic Manager profile."
       }
+    },
+    "enableDiagnostics": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enable Diagnostic Capture . default is false"
+      }
+    },
+    "diagnosticLogsRetentionInDays": {
+      "type": "int",
+      "defaultValue": 365,
+      "maxValue": 365,
+      "minValue": 0,
+      "metadata": {
+        "description": "Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely. default is 365."
+      }
+    },
+    "diagnosticStorageAccountId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Resource ID of the diagnostic storage account."
+      }
+    },
+    "diagnosticWorkspaceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Resource ID of the diagnostic log analytics workspace."
+      }
+    },
+    "diagnosticEventHubAuthorizationRuleId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+      }
+    },
+    "diagnosticEventHubName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category."
+      }
+    },
+    "logsToEnable": {
+      "type": "string",
+      "defaultValue": "allLogs",
+      "allowedValues": [
+        "allLogs",
+        "ProbeHealthStatusEvents"
+      ],
+      "metadata": {
+        "description": "The name of logs that will be streamed. default is allLogs."
+      }
     }
+  },
+  "variables": {
+    "copy": [
+      {
+        "name": "diagnosticsMetrics",
+        "count": "[length(variables('metricsToEnable'))]",
+        "input": {
+          "category": "[variables('metricsToEnable')[copyIndex('diagnosticsMetrics')]]",
+          "timeGrain": null,
+          "enabled": true,
+          "retentionPolicy": {
+            "enabled": true,
+            "days": "[parameters('diagnosticLogsRetentionInDays')]"
+          }
+        }
+      }
+    ],
+    "metricsToEnable": [
+      "AllMetrics"
+    ],
+    "diagnosticsLogs": [
+      {
+        "category": "[if(equals(parameters('logsToEnable'), 'allLogs'), null(), parameters('logsToEnable'))]",
+        "categoryGroup": "[if(equals(parameters('logsToEnable'), 'allLogs'), parameters('logsToEnable'), null())]",
+        "enabled": true,
+        "retentionPolicy": {
+          "enabled": true,
+          "days": "[parameters('diagnosticLogsRetentionInDays')]"
+        }
+      }
+    ]
   },
   "resources": [
     {
@@ -127,6 +222,24 @@
         "target": "[parameters('endpoints')[copyIndex()].target]",
         "endpointStatus": "[if(contains(parameters('endpoints')[copyIndex()], 'endpointStatus'), parameters('endpoints')[copyIndex()].endpointStatus, 'Enabled')]",
         "endpointLocation": "[parameters('endpoints')[copyIndex()].endpointLocation]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/trafficmanagerprofiles', parameters('name'))]"
+      ]
+    },
+    {
+      "condition": "[parameters('enableDiagnostics')]",
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[format('Microsoft.Network/trafficmanagerprofiles/{0}', parameters('name'))]",
+      "name": "[format('{0}-diagnosticSettings', parameters('name'))]",
+      "properties": {
+        "storageAccountId": "[if(not(empty(parameters('diagnosticStorageAccountId'))), parameters('diagnosticStorageAccountId'), null())]",
+        "workspaceId": "[if(not(empty(parameters('diagnosticWorkspaceId'))), parameters('diagnosticWorkspaceId'), null())]",
+        "eventHubAuthorizationRuleId": "[if(not(empty(parameters('diagnosticEventHubAuthorizationRuleId'))), parameters('diagnosticEventHubAuthorizationRuleId'), null())]",
+        "eventHubName": "[if(not(empty(parameters('diagnosticEventHubName'))), parameters('diagnosticEventHubName'), null())]",
+        "metrics": "[variables('diagnosticsMetrics')]",
+        "logs": "[variables('diagnosticsLogs')]"
       },
       "dependsOn": [
         "[resourceId('Microsoft.Network/trafficmanagerprofiles', parameters('name'))]"
