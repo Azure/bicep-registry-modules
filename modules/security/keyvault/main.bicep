@@ -56,7 +56,7 @@ param skuFamily string = 'A'
 param privateEndpoints array = []
 
 @description('Should Private Endpoints be created with manual approval only?')
-param privateEndpointsManualApproval bool = false
+param privateEndpointsApprovalEnabled bool = false
 
 module keyVault 'modules/vaults.bicep' = {
   name: guid(name, 'deploy')
@@ -100,7 +100,7 @@ module privateEndpoint 'br/public:lib/private-endpoint:1.0.1' = {
   params: {
     location: location
     privateEndpoints: keyVault.outputs.privateEndpoints
-    manualApprovalEnabled: privateEndpointsManualApproval
+    manualApprovalEnabled: privateEndpointsApprovalEnabled
   }
 }
 
