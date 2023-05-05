@@ -1,4 +1,4 @@
-module trafficManager 'br/public:network/traffic-manager:1.0.1' = {
+module trafficManager 'br/public:network/traffic-manager:2.2.0' = {
   name: 'traffic-manager-${uniqueString(resourceGroup().id)}'
   params: {
     prefix: 'trafdns'
