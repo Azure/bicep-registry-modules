@@ -17,7 +17,7 @@ The module also allows for the configuration of monitor settings such as protoco
 
 | Name                                    | Type     | Required | Description                                                                                                                                                       |
 | :-------------------------------------- | :------: | :------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `prefix`                                | `string` | No       | Prefix of traffic manager profile Resource Name. This param is ignored when name is provided.                                                                     |
+| `prefix`                                | `string` | No       | Prefix of traffic manager profile resource name. This param is ignored when name is provided.                                                                     |
 | `name`                                  | `string` | No       | Name of Traffic Manager Profile Resource                                                                                                                          |
 | `trafficManagerDnsName`                 | `string` | No       | Relative DNS name for the traffic manager profile, must be globally unique.                                                                                       |
 | `tags`                                  | `object` | No       | Tags for the module resources.                                                                                                                                    |

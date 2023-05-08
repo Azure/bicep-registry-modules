@@ -13,7 +13,7 @@
       "type": "string",
       "defaultValue": "traf",
       "metadata": {
-        "description": "Prefix of traffic manager profile Resource Name. This param is ignored when name is provided."
+        "description": "Prefix of traffic manager profile resource name. This param is ignored when name is provided."
       }
     },
     "name": {
