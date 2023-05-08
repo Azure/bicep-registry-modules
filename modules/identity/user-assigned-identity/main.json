@@ -5,12 +5,20 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "5575325597609467936"
+      "templateHash": "3975942133301411082"
     }
   },
   "parameters": {
+    "prefix": {
+      "type": "string",
+      "defaultValue": "uai",
+      "metadata": {
+        "description": "Prefix of User Assigned Identity Resource Name. This param is ignored when name is provided."
+      }
+    },
     "name": {
       "type": "string",
+      "defaultValue": "[take(format('{0}{1}', parameters('prefix'), uniqueString(resourceGroup().id, subscription().id)), 50)]",
       "metadata": {
         "description": "Required. Name of User Assigned Identity."
       },

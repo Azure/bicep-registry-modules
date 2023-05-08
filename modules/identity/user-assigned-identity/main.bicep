@@ -1,7 +1,10 @@
+@description('Prefix of User Assigned Identity Resource Name. This param is ignored when name is provided.')
+param prefix string = 'uai'
+
 @minLength(5)
 @maxLength(50)
 @description('Required. Name of User Assigned Identity.')
-param name string
+param name string = take('${prefix}${uniqueString(resourceGroup().id, subscription().id)}', 50)
 
 @description('Required. Define the Azure Location that the Azure User Assigned Identity should be created within.')
 param location string

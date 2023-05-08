@@ -11,7 +11,8 @@ Ref: [https://learn.microsoft.com/en-us/azure/active-directory/managed-identitie
 
 | Name                   | Type     | Required | Description                                                                                         |
 | :--------------------- | :------: | :------: | :-------------------------------------------------------------------------------------------------- |
-| `name`                 | `string` | Yes      | Required. Name of User Assigned Identity.                                                           |
+| `prefix`               | `string` | No       | Prefix of User Assigned Identity Resource Name. This param is ignored when name is provided.        |
+| `name`                 | `string` | No       | Required. Name of User Assigned Identity.                                                           |
 | `location`             | `string` | Yes      | Required. Define the Azure Location that the Azure User Assigned Identity should be created within. |
 | `tags`                 | `object` | No       | Optional. Tags for Azure User Assigned Identity                                                     |
 | `federatedCredentials` | `array`  | No       | Optional. List of federatedCredentials to be configured with Managed Identity, default set to []    |
@@ -33,7 +34,7 @@ Ref: [https://learn.microsoft.com/en-us/azure/active-directory/managed-identitie
 
 ```bicep
 @description('Simple example, only creates Managed Identity.')
-module managedIdentity 'br/public:identity/user-assigned-identity:0.1.0' = {
+module managedIdentity 'br/public:identity/user-assigned-identity:1.0.1' = {
   name: 'test-${name}'
   params: {
     name: 'my-managedIdentity-1'
@@ -50,7 +51,7 @@ module managedIdentity 'br/public:identity/user-assigned-identity:0.1.0' = {
 In example, It will create Managed Identity, assign given role assignments at resource Group level,
 lastly also creates Federated credentials as per given input list of federatedCredentials array param.
 ''')
-module managedIdentity 'br/public:identity/user-assigned-identity:0.1.0' = {
+module managedIdentity 'br/public:identity/user-assigned-identity:1.0.1' = {
   name: 'test-${name}'
   params: {
     name: 'my-managedIdentity-2'

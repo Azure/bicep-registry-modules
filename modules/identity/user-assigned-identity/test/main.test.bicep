@@ -18,7 +18,6 @@ param tags object = {
 module test1 '../main.bicep' = {
   name: 'test1-${name}-${uniqueString(resourceGroup().id)}'
   params: {
-    name: 'test1-${uniqueString(resourceGroup().id)}'
     location: location
     tags: tags
   }
