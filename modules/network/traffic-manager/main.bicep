@@ -1,4 +1,4 @@
-@description('Prefix of Storage Account Resource Name. This param is ignored when name is provided.')
+@description('Prefix of traffic manager profile Resource Name. This param is ignored when name is provided.')
 param prefix string = 'traf'
 
 @description('Name of Traffic Manager Profile Resource')
