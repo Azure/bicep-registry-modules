@@ -34,7 +34,7 @@ Ref: [https://learn.microsoft.com/en-us/azure/active-directory/managed-identitie
 
 ```bicep
 @description('Simple example, only creates Managed Identity.')
-module managedIdentity 'br/public:identity/user-assigned-identity:1.0.1' = {
+module managedIdentity 'br/public:identity/user-assigned-identity:0.1.0' = {
   name: 'test-${name}'
   params: {
     name: 'my-managedIdentity-1'
@@ -51,7 +51,7 @@ module managedIdentity 'br/public:identity/user-assigned-identity:1.0.1' = {
 In example, It will create Managed Identity, assign given role assignments at resource Group level,
 lastly also creates Federated credentials as per given input list of federatedCredentials array param.
 ''')
-module managedIdentity 'br/public:identity/user-assigned-identity:1.0.1' = {
+module managedIdentity 'br/public:identity/user-assigned-identity:0.1.0' = {
   name: 'test-${name}'
   params: {
     name: 'my-managedIdentity-2'
