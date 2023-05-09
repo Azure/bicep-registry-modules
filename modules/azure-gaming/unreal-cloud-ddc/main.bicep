@@ -368,7 +368,7 @@ module setuplocations 'modules/ddc-setup-locations.bicep' = if (assignRole && ep
     helmNamespace: helmNamespace
     siteName: siteName
     imageVersion: imageVersion
-    useExistingManagedIdentity: true  // Reuse ID Created for Key Vault
+    useExistingManagedIdentity: enableCert  // If created, Reuse ID from Cert
     managedIdentityPrefix: managedIdentityPrefix
     existingManagedIdentitySubId: existingManagedIdentitySubId
     existingManagedIdentityResourceGroupName: existingManagedIdentityResourceGroupName
