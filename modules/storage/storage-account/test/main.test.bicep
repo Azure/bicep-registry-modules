@@ -6,9 +6,7 @@ module file is a deployment test. Make sure at least one test is added.
 param location string = resourceGroup().location
 param blobType string = 'blockBlob'
 param minimumTlsVersion string = 'TLS1_2'
-param kind string = 'StorageV2'
-param objectReplicationPolicy bool = false
-param managedIdentityName string = 'MyManagedIdentity'
+param objectReplicationPolicy bool = true
 param roleDefinitionIdOrName string = 'StorageBlobDataContributor'
 var uniqueName = uniqueString(resourceGroup().id, deployment().name, location)
 param serviceShort string = 'storageAccount'
@@ -42,15 +40,11 @@ module test0 '../main.bicep' = {
       minimumTlsVersion: minimumTlsVersion
 
       objectReplicationPolicy: objectReplicationPolicy
-      managedIdentityName: managedIdentityName
-      managedIdentityLocation: location
       roleDefinitionIdOrName: roleDefinitionIdOrName
 
-      // If objectReplicationPolicies is true then only provide these destination related values
+      // Only provide values related to destination storage accounts if objectReplicationPolicies is true. By default, the primary storage account's values will be applied to destination parameters.
+      // By adding a param here, we can override. Added few paramaters below as an example.
       destLocation: location
-      destKind: kind
-      destSkuName: 'Standard_GRS'
-      destBlobType: blobType
       destDaysAfterLastModification: 60
       destChangeFeedEnabled: true
       destVersioningEnabled: true
@@ -58,7 +52,6 @@ module test0 '../main.bicep' = {
       destAllowBlobPublicAccess: false
       destAllowCrossTenantReplication: false
       destPublicNetworkAccess: 'Disabled'
-      destMinimumTlsVersion: minimumTlsVersion
 
       privateEndpoints: [
       {

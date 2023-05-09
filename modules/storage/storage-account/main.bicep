@@ -28,7 +28,7 @@ param blobType string = 'blockBlob'
 @description('Indicates whether change feed event logging is enabled for the Blob service.')
 param changeFeedEnabled bool = false
 
-@description('Versioning is enabled if set to true. To the storage account, set true. ')
+@description('Versioning is enabled if set to true. ')
 param versioningEnabled bool = false
 
 @description('Allows https traffic only to storage service if sets to true.')
@@ -52,11 +52,8 @@ param destPrefix string = 'dt'
 @description('Name of destination Storage Account. Must be unique within Azure.')
 param destStorageAccountName string = '${destPrefix}${uniqueString(resourceGroup().id, subscription().id)}'
 
-@description('Deployment Location')
-param destLocation string
-
-@description('Indicates the type of storage account.')
-param destKind string
+@description('Destination Storage Account Location.')
+param destLocation string = location
 
 @description('Allows https traffic only to storage service if sets to true.')
 param destSupportHttpsTrafficOnly bool = true
@@ -71,13 +68,13 @@ param destAllowCrossTenantReplication bool = false
 param destPublicNetworkAccess string = 'Disabled'
 
 @description('Set the minimum TLS version to be permitted on requests to storage. The default interpretation is TLS 1.0 for this property.')
-param destMinimumTlsVersion string = 'TLS1_2'
+param destMinimumTlsVersion string = minimumTlsVersion
 
 @description('It will be deleted after the given amount of days.')
 param destDaysAfterLastModification int = 30
 
 @description('Specifies the type of blob to manage the lifecycle policy.')
-param destBlobType string = 'blockBlob'
+param destBlobType string = blobType
 
 @description('Indicates whether change feed event logging is enabled for the Blob service.')
 param destChangeFeedEnabled bool = true
@@ -85,7 +82,7 @@ param destChangeFeedEnabled bool = true
 @description('Versioning is enabled if set to true. To the destination storage account, set true. ')
 param destVersioningEnabled bool = true
 
-@description('The SKU name required for account creation; optional for update.')
+@description('The SKU name to provide for account creation. Default is Standard_LRS. ')
 @allowed([
   'Standard_LRS'
   'Standard_GRS'
@@ -93,7 +90,7 @@ param destVersioningEnabled bool = true
   'Standard_RAGRS'
   'Standard_RAGZRS'
 ])
-param destSkuName string
+param destSkuName string = 'Standard_LRS'
 
 @description('Rule Id is auto-generated for each new rule on destination account. It is required for put policy on source account.')
 param ruleId  string = ''
@@ -104,13 +101,10 @@ param policyId string = 'default'
 @description('When performing object replication, it must be true and all resources necessary for the destination storage account will be created.')
 param objectReplicationPolicy bool = false
 
-@description('User defined name to provide userAssignedIdentities resource.')
-param managedIdentityName string
+@description('Managed Identity name for userAssignedIdentities resource.')
+param managedIdentityName string = 'MyManagedIdentity'
 
-@description('Location to provide userAssignedIdentities resource.')
-param managedIdentityLocation string
-
-@description('This is the subscription name or id to provide. ')
+@description('It specifies the name or Id of the Role Definitions.')
 param roleDefinitionIdOrName string
 
 @description('Define Private Endpoints that should be created for Azure Storage Account.')
@@ -175,6 +169,51 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     publicNetworkAccess: publicNetworkAccess
     minimumTlsVersion: minimumTlsVersion
   }
+
+  resource blobServices 'blobServices@2022-09-01' = {
+    name: 'default'
+    properties: {
+        changeFeed: {
+            enabled: changeFeedEnabled
+        }
+        isVersioningEnabled: versioningEnabled
+    }
+
+    resource container 'containers@2022-09-01' = {
+      name: 'sourcecontainer'
+      properties: {
+        publicAccess: 'None'
+      }
+    }
+  }
+
+  resource managementpolicy 'managementPolicies@2021-04-01' = {
+    name: 'default'
+    properties: {
+      policy: {
+        rules: [
+        {
+          enabled: true
+          name: 'move-to-cool'
+          type: 'Lifecycle'
+          definition: {
+          actions: {
+            baseBlob: {
+              tierToCool: {
+                daysAfterModificationGreaterThan: daysAfterLastModification
+                }
+            }
+          }
+          filters: {
+            blobTypes: [
+              blobType
+              ]
+            }
+          }
+        }]
+      }
+    }
+  }
 }
 
 resource destinationStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = if(objectReplicationPolicy) {
@@ -183,119 +222,70 @@ resource destinationStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01
     sku: {
         name: destSkuName
     }
-    kind: destKind
+    kind: 'StorageV2'
     properties: {
       encryption: {
-      keySource: 'Microsoft.Storage'
-      services: {
-        blob: {
-          enabled: true
+        keySource: 'Microsoft.Storage'
+        services: {
+          blob: {
+            enabled: true
+          }
+          file: {
+           enabled: true
+          }
         }
-        file: {
-          enabled: true
+      }
+      networkAcls: networkAcls
+      supportsHttpsTrafficOnly: destSupportHttpsTrafficOnly
+      allowBlobPublicAccess: destAllowBlobPublicAccess
+      allowCrossTenantReplication: destAllowCrossTenantReplication
+      publicNetworkAccess: destPublicNetworkAccess
+      minimumTlsVersion: destMinimumTlsVersion
+    }
+
+    resource destinationBlobService 'blobServices@2022-09-01' = {
+      name: 'default'
+      properties: {
+        changeFeed: {
+          enabled: destChangeFeedEnabled
+        }
+        isVersioningEnabled: destVersioningEnabled
+      }
+
+      resource destinationContainer 'containers@2022-09-01' = {
+        name: 'destinationcontainer'
+        properties: {
+          publicAccess: 'None'
         }
       }
     }
-    networkAcls: networkAcls
-    supportsHttpsTrafficOnly: destSupportHttpsTrafficOnly
-    allowBlobPublicAccess: destAllowBlobPublicAccess
-    allowCrossTenantReplication: destAllowCrossTenantReplication
-    publicNetworkAccess: destPublicNetworkAccess
-    minimumTlsVersion: destMinimumTlsVersion
-  }
-}
 
-resource managementpolicy 'Microsoft.Storage/storageAccounts/managementPolicies@2021-04-01' = {
-    name: 'default'
-    parent: storageAccount
-    properties: {
+    resource destinationmanagementpolicy 'managementPolicies@2021-04-01' = {
+      name: 'default'
+      properties: {
         policy: {
-            rules: [
-            {
+          rules: [
+          {
             enabled: true
-            name: 'move-to-cool'
+            name: 'delete'
             type: 'Lifecycle'
             definition: {
             actions: {
-                baseBlob: {
-                    tierToCool: {
-                        daysAfterModificationGreaterThan: daysAfterLastModification
-                    }
+              baseBlob: {
+                delete: {
+                  daysAfterModificationGreaterThan: destDaysAfterLastModification
                 }
+              }
             }
             filters: {
-                blobTypes: [
-                    blobType
-                ]}
+              blobTypes: [
+                destBlobType
+              ]
             }
-        }]
+            }
+          }]
+        }
       }
-    }
-}
-
-resource destinationmanagementpolicy 'Microsoft.Storage/storageAccounts/managementPolicies@2021-04-01' = if(objectReplicationPolicy) {
-    name: 'default'
-    parent: destinationStorageAccount
-    properties: {
-        policy: {
-            rules: [
-                {
-                enabled: true
-                name: 'delete'
-                type: 'Lifecycle'
-                definition: {
-                actions: {
-                    baseBlob: {
-                        delete: {
-                            daysAfterModificationGreaterThan: destDaysAfterLastModification
-                        }
-                    }
-                }
-                filters: {
-                    blobTypes: [
-                        destBlobType
-                    ]}
-                }
-            }]
-        }
-    }
-}
-
-resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' = {
-    name: 'default'
-    parent: storageAccount
-    properties: {
-        changeFeed: {
-            enabled: changeFeedEnabled
-        }
-        isVersioningEnabled: versioningEnabled
-    }
-}
-
-resource destinationBlobService 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' = if (objectReplicationPolicy) {
-    name: 'default'
-    parent: destinationStorageAccount
-    properties: {
-        changeFeed: {
-            enabled: destChangeFeedEnabled
-        }
-        isVersioningEnabled: destVersioningEnabled
-    }
-}
-
-resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01' = {
-    name: 'sourcecontainer'
-    parent: blobService
-    properties: {
-        publicAccess: 'None'
-    }
-}
-
-resource destinationContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01' = if (objectReplicationPolicy) {
-    name: 'destinationcontainer'
-    parent: destinationBlobService
-    properties: {
-        publicAccess: 'None'
     }
 }
 
@@ -306,7 +296,7 @@ resource contributorRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
     name: managedIdentityName
-    location: managedIdentityLocation
+    location: location
 }
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {

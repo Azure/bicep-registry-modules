@@ -29,7 +29,7 @@ The output of the module is the ID of the created or existing Storage Account, w
 | `daysAfterLastModification`       | `int`    | No       | It will be moved to the cool tier after the given amount of days.                                                                    |
 | `blobType`                        | `string` | No       | Specifies the type of blob to manage the lifecycle policy.                                                                           |
 | `changeFeedEnabled`               | `bool`   | No       | Indicates whether change feed event logging is enabled for the Blob service.                                                         |
-| `versioningEnabled`               | `bool`   | No       | Versioning is enabled if set to true. To the storage account, set true.                                                              |
+| `versioningEnabled`               | `bool`   | No       | Versioning is enabled if set to true.                                                                                                |
 | `supportHttpsTrafficOnly`         | `bool`   | No       | Allows https traffic only to storage service if sets to true.                                                                        |
 | `allowBlobPublicAccess`           | `bool`   | No       | Allow or disallow public access to all blobs or containers in the storage account.                                                   |
 | `allowCrossTenantReplication`     | `bool`   | No       | Replication of objects between AAD tenants is allowed or not. For this property, the default interpretation is true.                 |
@@ -37,8 +37,7 @@ The output of the module is the ID of the created or existing Storage Account, w
 | `minimumTlsVersion`               | `string` | No       | Set the minimum TLS version to be permitted on requests to storage. The default interpretation is TLS 1.0 for this property.         |
 | `destPrefix`                      | `string` | No       | Prefix of destination Storage Account Resource Name. This param is ignored when name is provided.                                    |
 | `destStorageAccountName`          | `string` | No       | Name of destination Storage Account. Must be unique within Azure.                                                                    |
-| `destLocation`                    | `string` | Yes      | Deployment Location                                                                                                                  |
-| `destKind`                        | `string` | Yes      | Indicates the type of storage account.                                                                                               |
+| `destLocation`                    | `string` | No       | Destination Storage Account Location.                                                                                                |
 | `destSupportHttpsTrafficOnly`     | `bool`   | No       | Allows https traffic only to storage service if sets to true.                                                                        |
 | `destAllowBlobPublicAccess`       | `bool`   | No       | Allow or disallow public access to all blobs or containers in the destination storage account.                                       |
 | `destAllowCrossTenantReplication` | `bool`   | No       | Replication of objects between AAD tenants is allowed or not. For this property, the default interpretation is true.                 |
@@ -48,13 +47,12 @@ The output of the module is the ID of the created or existing Storage Account, w
 | `destBlobType`                    | `string` | No       | Specifies the type of blob to manage the lifecycle policy.                                                                           |
 | `destChangeFeedEnabled`           | `bool`   | No       | Indicates whether change feed event logging is enabled for the Blob service.                                                         |
 | `destVersioningEnabled`           | `bool`   | No       | Versioning is enabled if set to true. To the destination storage account, set true.                                                  |
-| `destSkuName`                     | `string` | Yes      | The SKU name required for account creation; optional for update.                                                                     |
+| `destSkuName`                     | `string` | No       | The SKU name to provide for account creation. Default is Standard_LRS.                                                               |
 | `ruleId`                          | `string` | No       | Rule Id is auto-generated for each new rule on destination account. It is required for put policy on source account.                 |
 | `policyId`                        | `string` | No       | This is the name to provide for objectReplicationPolicies.                                                                           |
 | `objectReplicationPolicy`         | `bool`   | No       | When performing object replication, it must be true and all resources necessary for the destination storage account will be created. |
-| `managedIdentityName`             | `string` | Yes      | User defined name to provide userAssignedIdentities resource.                                                                        |
-| `managedIdentityLocation`         | `string` | Yes      | Location to provide userAssignedIdentities resource.                                                                                 |
-| `roleDefinitionIdOrName`          | `string` | Yes      | This is the subscription name or id to provide.                                                                                      |
+| `managedIdentityName`             | `string` | No       | Managed Identity name for userAssignedIdentities resource.                                                                           |
+| `roleDefinitionIdOrName`          | `string` | Yes      | It specifies the name or Id of the Role Definitions.                                                                                 |
 | `privateEndpoints`                | `array`  | No       | Define Private Endpoints that should be created for Azure Storage Account.                                                           |
 | `privateEndpointsApprovalEnabled` | `bool`   | No       | Toggle if Private Endpoints manual approval for Azure Storage Account should be enabled.                                             |
 
