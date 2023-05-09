@@ -47,3 +47,22 @@ module helmContour '../main.bicep' = {
     ]
   }
 }
+
+// Test3. Mllvus
+module helmContour '../main.bicep' = {
+  name: 'helmContour'
+  params: {
+    managedIdentityName: 'helmContourIngress'
+    aksName: prereq.outputs.aksName
+    location: location
+    helmRepo: 'milvus'
+    helmRepoURL: 'https://milvus-io.github.io/milvus-helm/'
+    helmApps: [
+      {
+        helmApp: 'milvus/milvus'
+        helmAppName: 'vector-db'
+        helmAppParams: '--set service.type=LoadBalancer'
+      }
+    ]
+  }
+}
