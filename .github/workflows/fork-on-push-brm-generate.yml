@@ -1,7 +1,6 @@
 name: On push run brm generate # fork only, optional
 
 on:
-  workflow_dispatch:
   push:
     branches-ignore:
       - main
