@@ -8,7 +8,7 @@ If you are using ...Azure CLI, you can force a refresh of your role assignment c
 param location string = resourceGroup().location
 param aksName string =  'crtest${uniqueString(newGuid())}'
 
-//Prerequisites
+// Prerequisites
 module prereq 'prereq.test.bicep' = {
   name: 'test-prereqs'
   params: {
@@ -17,7 +17,7 @@ module prereq 'prereq.test.bicep' = {
   }
 }
 
-//Test 1. Install Sample Helm Chart
+// Test 1. Install Sample Helm Chart
 module sampleHelmChart '../main.bicep' = {
   name: 'sampleHelmChart'
   params: {
@@ -29,7 +29,7 @@ module sampleHelmChart '../main.bicep' = {
 }
 
 
-//Test 2. Helm
+// Test 2. Helm
 module helmContour '../main.bicep' = {
   name: 'helmContour'
   params: {
@@ -48,11 +48,11 @@ module helmContour '../main.bicep' = {
   }
 }
 
-// Test3. Mllvus
-module helmContour '../main.bicep' = {
-  name: 'helmContour'
+// Test 3. Mllvus
+module milvus '../main.bicep' = {
+  name: 'milvus'
   params: {
-    managedIdentityName: 'helmContourIngress'
+    managedIdentityName: 'helmMilvus'
     aksName: prereq.outputs.aksName
     location: location
     helmRepo: 'milvus'
