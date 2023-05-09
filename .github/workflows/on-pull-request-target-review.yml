@@ -1,8 +1,7 @@
-on: [pull_request]
+on: [pull_request_target]
 
 jobs:
   add_pr_comment:
-    permissions: write-all
     runs-on: ubuntu-latest
     name: OpenAI PR Comment
     steps:
@@ -11,7 +10,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 2
       - id: review
-        uses: dciborow/action-gpt@0.0.9
+        uses: microsoft/gpt-review@0.7.1
         with:
           GIT_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
