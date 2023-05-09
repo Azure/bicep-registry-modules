@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
+  "name": "Azure Cache for Redis",
+  "summary": "This module deploys Azure Cache for Redis(Microsoft.Cache/redis) and optionally available integrations.",
+  "owner": "sumit-salunke"
+}
