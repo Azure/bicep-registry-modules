@@ -52,7 +52,7 @@ The output of the module is the ID of the created or existing Storage Account, w
 | `policyId`                        | `string` | No       | This is the name to provide for objectReplicationPolicies.                                                                           |
 | `objectReplicationPolicy`         | `bool`   | No       | When performing object replication, it must be true and all resources necessary for the destination storage account will be created. |
 | `managedIdentityName`             | `string` | No       | Managed Identity name for userAssignedIdentities resource.                                                                           |
-| `roleDefinitionIdOrName`          | `string` | Yes      | It specifies the name or Id of the Role Definitions.                                                                                 |
+| `roleDefinitionIdOrName`          | `string` | No       | roleDefinition for the assignment - default is Reader.                                                                               |
 | `privateEndpoints`                | `array`  | No       | Define Private Endpoints that should be created for Azure Storage Account.                                                           |
 | `privateEndpointsApprovalEnabled` | `bool`   | No       | Toggle if Private Endpoints manual approval for Azure Storage Account should be enabled.                                             |
 

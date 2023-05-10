@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "3109379350056151926"
+      "templateHash": "6182003951724059214"
     }
   },
   "parameters": {
@@ -109,6 +109,10 @@
     "publicNetworkAccess": {
       "type": "string",
       "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
       "metadata": {
         "description": "Allow or disallow public network access to Storage Account. Value is optional but if passed in, must be Enabled or Disabled."
       }
@@ -116,6 +120,11 @@
     "minimumTlsVersion": {
       "type": "string",
       "defaultValue": "TLS1_2",
+      "allowedValues": [
+        "TLS1_0",
+        "TLS1_1",
+        "TLS1_2"
+      ],
       "metadata": {
         "description": "Set the minimum TLS version to be permitted on requests to storage. The default interpretation is TLS 1.0 for this property."
       }
@@ -165,6 +174,10 @@
     "destPublicNetworkAccess": {
       "type": "string",
       "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
       "metadata": {
         "description": "Allow or disallow public network access to Storage Account. Value is optional but if passed in, must be Enabled or Disabled."
       }
@@ -172,6 +185,11 @@
     "destMinimumTlsVersion": {
       "type": "string",
       "defaultValue": "[parameters('minimumTlsVersion')]",
+      "allowedValues": [
+        "TLS1_0",
+        "TLS1_1",
+        "TLS1_2"
+      ],
       "metadata": {
         "description": "Set the minimum TLS version to be permitted on requests to storage. The default interpretation is TLS 1.0 for this property."
       }
@@ -248,8 +266,9 @@
     },
     "roleDefinitionIdOrName": {
       "type": "string",
+      "defaultValue": "Reader",
       "metadata": {
-        "description": "It specifies the name or Id of the Role Definitions."
+        "description": "roleDefinition for the assignment - default is Reader. "
       }
     },
     "privateEndpoints": {

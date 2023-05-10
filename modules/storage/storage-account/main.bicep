@@ -41,9 +41,18 @@ param allowBlobPublicAccess bool = false
 param allowCrossTenantReplication bool = false
 
 @description('Allow or disallow public network access to Storage Account. Value is optional but if passed in, must be Enabled or Disabled.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
 param publicNetworkAccess string = 'Disabled'
 
 @description('Set the minimum TLS version to be permitted on requests to storage. The default interpretation is TLS 1.0 for this property.')
+@allowed([
+  'TLS1_0'
+  'TLS1_1'
+  'TLS1_2'
+])
 param minimumTlsVersion string = 'TLS1_2'
 
 @description('Prefix of destination Storage Account Resource Name. This param is ignored when name is provided.')
@@ -65,9 +74,18 @@ param destAllowBlobPublicAccess bool = false
 param destAllowCrossTenantReplication bool = false
 
 @description('Allow or disallow public network access to Storage Account. Value is optional but if passed in, must be Enabled or Disabled.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
 param destPublicNetworkAccess string = 'Disabled'
 
 @description('Set the minimum TLS version to be permitted on requests to storage. The default interpretation is TLS 1.0 for this property.')
+@allowed([
+  'TLS1_0'
+  'TLS1_1'
+  'TLS1_2'
+])
 param destMinimumTlsVersion string = minimumTlsVersion
 
 @description('It will be deleted after the given amount of days.')
@@ -104,8 +122,8 @@ param objectReplicationPolicy bool = false
 @description('Managed Identity name for userAssignedIdentities resource.')
 param managedIdentityName string = 'MyManagedIdentity'
 
-@description('It specifies the name or Id of the Role Definitions.')
-param roleDefinitionIdOrName string
+@description('roleDefinition for the assignment - default is Reader. ')
+param roleDefinitionIdOrName string = 'Reader'
 
 @description('Define Private Endpoints that should be created for Azure Storage Account.')
 param privateEndpoints array = []
