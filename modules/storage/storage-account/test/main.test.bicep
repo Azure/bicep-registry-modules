@@ -55,7 +55,6 @@ module test1 '../main.bicep' = {
 module test2 '../main.bicep' = {
   name: 'test2'
   params: {
-      name: 'sourcestorageaccount1843'
       location: location
       blobType: blobType
       daysAfterLastModification: 60
@@ -67,7 +66,6 @@ module test2 '../main.bicep' = {
 
       // Only provide values related to destination storage accounts if objectReplicationPolicies is true. By default, the primary storage account's values will be applied to destination parameters.
       // By adding a param here, we can override. Added few paramaters below as an example.
-      destStorageAccountName: 'deststorageaccount1843'
       destLocation: location
       destDaysAfterLastModification: 60
       destChangeFeedEnabled: true
