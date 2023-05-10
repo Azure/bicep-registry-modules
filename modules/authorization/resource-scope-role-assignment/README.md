@@ -63,7 +63,7 @@ module storageAccount 'br/public:storage/storage-account:1.0.1' = {
 }
 
 // module call with all parameters
-module roleAssignmentOperator 'br/public:authorization/resource-scope-role-assignment:1.0.0' = {
+module roleAssignmentOperator 'br/public:authorization/resource-scope-role-assignment:1.0.1' = {
   name: take('roleAssignment-storage-accountKeyOperator',64)
   params: {
     name: guid(UAI.properties.principalId, roleInfoOperator.roleDefinitionId, storageAccount.outputs.id)
@@ -119,7 +119,7 @@ module storageAccount 'br/public:storage/storage-account:1.0.1' = {
 }
 
 // module call with only required parameters
-module roleAssignmentContributor 'br/public:authorization/resource-scope-role-assignment:1.0.0' = {
+module roleAssignmentContributor 'br/public:authorization/resource-scope-role-assignment:1.0.1' = {
   name: take('roleAssignment-storage-accountContributor',64)
   params: {
     name: guid(UAI.properties.principalId, roleInfoContributor.roleDefinitionId, storageAccount.outputs.id)
