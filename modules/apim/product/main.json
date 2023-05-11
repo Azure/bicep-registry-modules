@@ -1,0 +1,140 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.17.1.54307",
+      "templateHash": "17550814469082218250"
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "defaultValue": "[deployment().name]",
+      "metadata": {
+        "description": "A unique name of the product."
+      },
+      "maxLength": 80,
+      "minLength": 1
+    },
+    "displayName": {
+      "type": "string",
+      "defaultValue": "[parameters('name')]",
+      "metadata": {
+        "description": "A display name of the product."
+      }
+    },
+    "description": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "A description for the product."
+      }
+    },
+    "serviceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource Id to the API Management service.",
+        "strongType": "Microsoft.ApiManagement/service"
+      }
+    },
+    "published": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Determines if the product is published."
+      }
+    },
+    "approvalRequired": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Determines if the product requires approval to subscribe."
+      }
+    },
+    "subscriptionRequired": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Determines of the product requires a subscription to use."
+      }
+    },
+    "terms": {
+      "type": "string",
+      "metadata": {
+        "description": "Configures the legal terms to accept prior to subscribing to the product."
+      }
+    },
+    "groups": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Configures a list of groups that are added to the product."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ApiManagement/service/products",
+      "apiVersion": "2022-08-01",
+      "name": "[format('{0}/{1}', split(parameters('serviceId'), '/')[8], parameters('name'))]",
+      "properties": {
+        "state": "[if(parameters('published'), 'published', 'notPublished')]",
+        "displayName": "[parameters('displayName')]",
+        "approvalRequired": "[parameters('approvalRequired')]",
+        "subscriptionRequired": "[parameters('subscriptionRequired')]",
+        "description": "[parameters('description')]",
+        "terms": "[parameters('terms')]"
+      },
+      "metadata": {
+        "description": "Create or update an API Management Product."
+      }
+    },
+    {
+      "copy": {
+        "name": "group",
+        "count": "[length(parameters('groups'))]"
+      },
+      "type": "Microsoft.ApiManagement/service/products/groups",
+      "apiVersion": "2022-08-01",
+      "name": "[format('{0}/{1}/{2}', split(parameters('serviceId'), '/')[8], parameters('name'), parameters('groups')[copyIndex()])]",
+      "dependsOn": [
+        "[resourceId('Microsoft.ApiManagement/service/products', split(parameters('serviceId'), '/')[8], parameters('name'))]"
+      ],
+      "metadata": {
+        "description": "Configures a list of groups that are added to the product."
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the API Management Product"
+      },
+      "value": "[parameters('name')]"
+    },
+    "id": {
+      "type": "string",
+      "metadata": {
+        "description": "A unique identifier for the API Management Product."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service/products', split(parameters('serviceId'), '/')[8], parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group where the API Management Product is deployed."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "subscriptionId": {
+      "type": "string",
+      "metadata": {
+        "description": "The guid for the subscription where the API Management Product is deployed."
+      },
+      "value": "[subscription().subscriptionId]"
+    }
+  }
+}

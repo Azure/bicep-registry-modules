@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
+  "name": "API Management product",
+  "summary": "An API Management product for grouping and controlling access to APIs.",
+  "owner": "BernieWhite"
+}
