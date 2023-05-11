@@ -1,12 +1,25 @@
 // Test API Management Product module
 targetScope = 'resourceGroup'
 
+@description('Get test location.')
+param location string = resourceGroup().location
+
 // ----------
 // REFERENCES
 // ----------
 
-resource service 'Microsoft.ApiManagement/service@2022-08-01' existing = {
-  name: 'apim-001'
+@description('An APIM service for testing.')
+resource service 'Microsoft.ApiManagement/service@2022-08-01' = {
+  name: 'apim-${uniqueString(resourceGroup().id)}'
+  location: location
+  sku: {
+    name: 'Basic'
+    capacity: 1
+  }
+  properties: {
+    publisherEmail: 'noreply@contoso.com'
+    publisherName: 'Contoso'
+  }
 }
 
 // ---------
