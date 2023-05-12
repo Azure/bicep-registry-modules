@@ -71,4 +71,3 @@ jobs:
 
       - name: Publish module
         run: bicep publish "modules/${{ steps.parse-tag.outputs.module_path }}/main.json" --target "br:${{ secrets.PUBLISH_REGISTRY_SERVER }}/public/bicep/${{ steps.parse-tag.outputs.module_path }}:${{ steps.parse-tag.outputs.version }}" --documentationUri "${{ steps.parse-tag.outputs.documentation_uri }}" --force
-
