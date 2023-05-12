@@ -22,7 +22,6 @@ param principalId string
 param principalType string = ''
 
 @sys.description('The name for the role, used for logging')
-#disable-next-line no-unused-params
 param roleName string = ''
 
 @sys.description('The Description of role assignment')
@@ -61,6 +60,9 @@ resource resourceRoleAssignment 'Microsoft.Resources/deployments@2022-09-01' = {
 
 @sys.description('The unique name guid used for the roleAssignment')
 output name string = name
+
+@sys.description('The name for the role, used for logging')
+output roleName string = roleName
 
 @sys.description('The roleAssignmentId created on the scope of the resourceId')
 output id string = resourceRoleAssignment.properties.outputs.roleAssignmentId.value

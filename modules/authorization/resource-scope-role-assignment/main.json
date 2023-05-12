@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.17.1.54307",
-      "templateHash": "10126657644886339409"
+      "version": "0.17.31.8712",
+      "templateHash": "116803431937761815"
     }
   },
   "parameters": {
@@ -150,6 +150,13 @@
         "description": "The unique name guid used for the roleAssignment"
       },
       "value": "[parameters('name')]"
+    },
+    "roleName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name for the role, used for logging"
+      },
+      "value": "[parameters('roleName')]"
     },
     "id": {
       "type": "string",

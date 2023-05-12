@@ -30,10 +30,11 @@ guid(principalId|objectId, roleDefinitionId|roleName, resourceId)
 
 ## Outputs
 
-| Name | Type   | Description                                                 |
-| :--- | :----: | :---------------------------------------------------------- |
-| name | string | The unique name guid used for the roleAssignment            |
-| id   | string | The roleAssignmentId created on the scope of the resourceId |
+| Name     | Type   | Description                                                 |
+| :------- | :----: | :---------------------------------------------------------- |
+| name     | string | The unique name guid used for the roleAssignment            |
+| roleName | string | The name for the role, used for logging                     |
+| id       | string | The roleAssignmentId created on the scope of the resourceId |
 
 ## Examples
 
