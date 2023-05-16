@@ -122,8 +122,7 @@ type blobServiceContainerProperties = {
   immutableStorageWithVersioning: {
     enabled: bool
   }?
-  @allowed['Blob', 'Container', 'None']
-  publicAccess: string?
+  publicAccess: ('Blob' | 'Container' | 'None')?
 }
 
 type roleAssignmentsArray = {
