@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "4538864969766493394"
+      "templateHash": "11424182613689950397"
     }
   },
   "definitions": {
@@ -31,7 +31,7 @@
           "nullable": true
         },
         "isVersioningEnabled": {
-          "$ref": "#/definitions/isBlobVersioningEnabled",
+          "$ref": "#/definitions/isVersioningEnabled",
           "nullable": true
         },
         "lastAccessTimeTrackingPolicy": {
@@ -42,6 +42,9 @@
           "$ref": "#/definitions/restorePolicy",
           "nullable": true
         }
+      },
+      "metadata": {
+        "description": "The properties of a storage account’s Blob service."
       }
     },
     "changeFeed": {
@@ -51,15 +54,15 @@
           "type": "bool"
         },
         "retentionInDays": {
-          "$ref": "#/definitions/changeFeedretentionInDays",
-          "nullable": true
+          "type": "int",
+          "nullable": true,
+          "maxValue": 146000,
+          "minValue": 1
         }
+      },
+      "metadata": {
+        "description": "The blob service properties for change feed events."
       }
-    },
-    "changeFeedretentionInDays": {
-      "type": "int",
-      "maxValue": 146000,
-      "minValue": 1
     },
     "containerDeleteRetentionPolicy": {
       "type": "object",
@@ -68,18 +71,18 @@
           "type": "bool"
         },
         "days": {
-          "$ref": "#/definitions/containerDeleteRetensionPolicyDays",
-          "nullable": true
+          "type": "int",
+          "nullable": true,
+          "maxValue": 365,
+          "minValue": 1
         },
         "enabled": {
           "type": "bool"
         }
+      },
+      "metadata": {
+        "description": "The blob service properties for container soft delete."
       }
-    },
-    "containerDeleteRetensionPolicyDays": {
-      "type": "int",
-      "maxValue": 365,
-      "minValue": 1
     },
     "cors": {
       "type": "object",
@@ -146,6 +149,9 @@
           ],
           "items": false
         }
+      },
+      "metadata": {
+        "description": "Specifies CORS rules for the Blob service. You can include up to five CorsRule elements in the request. If no CorsRule elements are included in the request body, all CORS rules will be deleted, and CORS will be disabled for the Blob service."
       }
     },
     "deleteRetentionPolicy": {
@@ -155,20 +161,20 @@
           "type": "bool"
         },
         "days": {
-          "$ref": "#/definitions/deleteRetentionPolicyDays",
-          "nullable": true
+          "type": "int",
+          "nullable": true,
+          "maxValue": 365,
+          "minValue": 1
         },
         "enabled": {
           "type": "bool"
         }
+      },
+      "metadata": {
+        "description": "The blob service properties for blob soft delete."
       }
     },
-    "deleteRetentionPolicyDays": {
-      "type": "int",
-      "maxValue": 365,
-      "minValue": 1
-    },
-    "isBlobVersioningEnabled": {
+    "isVersioningEnabled": {
       "type": "bool",
       "metadata": {
         "description": "Toggle to enable or disable versioning for Blob service of the Storage Account. Used only if enableBlobService is set to true."
@@ -199,72 +205,62 @@
           ]
         },
         "trackingGranularityInDays": {
-          "$ref": "#/definitions/trackingGranularityInDays",
+          "type": "int",
+          "allowedValues": [
+            1
+          ],
           "nullable": true
         }
+      },
+      "metadata": {
+        "description": "The blob service property to configure last access time based tracking policy."
       }
-    },
-    "trackingGranularityInDays": {
-      "type": "int",
-      "allowedValues": [
-        1
-      ]
     },
     "restorePolicy": {
       "type": "object",
       "properties": {
         "days": {
-          "$ref": "#/definitions/restorePolicyDays",
-          "nullable": true
+          "type": "int",
+          "nullable": true,
+          "maxValue": 365,
+          "minValue": 1
         },
         "enabled": {
           "type": "bool"
         }
+      },
+      "metadata": {
+        "description": "The blob service property to configure last access time based tracking policy."
       }
-    },
-    "restorePolicyDays": {
-      "type": "int",
-      "maxValue": 365,
-      "minValue": 1
     },
     "blobServiceContainerProperties": {
       "type": "object",
       "properties": {
         "defaultEncryptionScope": {
-          "$ref": "#/definitions/defaultEncryptionScope",
+          "type": "string",
           "nullable": true
         },
         "denyEncryptionScopeOverride": {
-          "$ref": "#/definitions/denyEncryptionScopeOverride",
+          "type": "string",
           "nullable": true
         },
         "immutableStorageWithVersioning": {
-          "$ref": "#/definitions/immutableStorageWithVersioning",
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "bool"
+            }
+          },
           "nullable": true
         },
         "publicAccess": {
-          "$ref": "#/definitions/blobContainerPublicAccess",
+          "type": "string",
+          "allowedValues": [
+            "Blob",
+            "Container",
+            "None"
+          ],
           "nullable": true
-        }
-      }
-    },
-    "blobContainerPublicAccess": {
-      "type": "string",
-      "metadata": {
-        "description": "Allowed values are 'Blob', 'Container' or 'None'"
-      }
-    },
-    "defaultEncryptionScope": {
-      "type": "string"
-    },
-    "denyEncryptionScopeOverride": {
-      "type": "string"
-    },
-    "immutableStorageWithVersioning": {
-      "type": "object",
-      "properties": {
-        "enabled": {
-          "type": "bool"
         }
       }
     },
@@ -274,45 +270,30 @@
         "type": "object",
         "properties": {
           "description": {
-            "$ref": "#/definitions/roleAssignmentDescription",
+            "type": "string",
             "nullable": true
           },
           "roleDefinitionIdOrName": {
-            "$ref": "#/definitions/roleDefinitionIdOrName",
+            "type": "string",
             "nullable": true
           },
           "principalIds": {
-            "$ref": "#/definitions/principalIds",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
             "nullable": true
           },
           "principalType": {
-            "$ref": "#/definitions/principalType",
+            "type": "string",
             "nullable": true
           },
           "resourceType": {
-            "$ref": "#/definitions/resourceType",
+            "type": "string",
             "nullable": true
           }
         }
       }
-    },
-    "roleAssignmentDescription": {
-      "type": "string"
-    },
-    "roleDefinitionIdOrName": {
-      "type": "string"
-    },
-    "principalIds": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "principalType": {
-      "type": "string"
-    },
-    "resourceType": {
-      "type": "string"
     }
   },
   "parameters": {
