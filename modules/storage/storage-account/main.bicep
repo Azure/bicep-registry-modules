@@ -37,6 +37,75 @@ param blobContainerProperties blobServiceContainerProperties = {}
 @description('Array of role assignment objects that contain the \'roleDefinitionIdOrName\', \'principalId\' and \'resourceType\' as \'storageAccount\' or \'blobContainer\' to define RBAC role assignments on that resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'')
 param roleAssignments roleAssignmentsArray = []
 
+var networkAcls = enableVNET ? {
+  defaultAction: 'Deny'
+  virtualNetworkRules: [
+    {
+      action: 'Allow'
+      id: subnetID
+    }
+  ]
+} : {}
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
+  name: name
+  location: location
+  sku: {
+    name: storageAccountType
+  }
+  kind: 'StorageV2'
+  properties: {
+    encryption: {
+      keySource: 'Microsoft.Storage'
+      services: {
+        blob: {
+          enabled: true
+        }
+        file: {
+          enabled: true
+        }
+      }
+    }
+    supportsHttpsTrafficOnly: true
+    allowBlobPublicAccess: false
+    networkAcls: networkAcls
+    minimumTlsVersion: 'TLS1_2'
+  }
+  resource blobService 'blobServices' = if (blobName != '') {
+    name: blobName
+    properties: blobProperties
+    resource container 'containers' = if (blobContainerName != '') {
+      name: blobContainerName
+      properties: blobContainerProperties
+    }
+  }
+}
+
+module storageRbac 'modules/rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
+  name: 'sa-rbac-${index}-${uniqueString(deployment().name, location)}'
+  dependsOn: [
+    storageAccount
+  ]
+  params: {
+    description: contains(roleAssignment, 'description') ? roleAssignment.description : 'role assignment'
+    principalIds: roleAssignment.principalIds
+    roleDefinitionIdOrName: roleAssignment.roleDefinitionIdOrName
+    principalType: contains(roleAssignment, 'principalType') ? roleAssignment.principalType : 'ServicePrincipal'
+    resourceType: contains(roleAssignment, 'resourceType') ? roleAssignment.resourceType : 'storageAccount'
+    name: name
+    blobName: blobName
+    containerName: blobContainerName
+  }
+}]
+
+
+@description('The name of the Storage Account resource')
+output name string = name
+
+@description('The ID of the Storage Account. Use this ID to reference the Storage Account in other Azure resource deployments.')
+output id string = storageAccount.id
+
+
 @description('The properties of a storage account’s Blob service.')
 type blobServiceProperties = {
   changeFeed: changeFeed?
@@ -132,71 +201,3 @@ type roleAssignmentsArray = {
   principalType: string?
   resourceType: string?
 }[]
-
-var networkAcls = enableVNET ? {
-  defaultAction: 'Deny'
-  virtualNetworkRules: [
-    {
-      action: 'Allow'
-      id: subnetID
-    }
-  ]
-} : {}
-
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
-  name: name
-  location: location
-  sku: {
-    name: storageAccountType
-  }
-  kind: 'StorageV2'
-  properties: {
-    encryption: {
-      keySource: 'Microsoft.Storage'
-      services: {
-        blob: {
-          enabled: true
-        }
-        file: {
-          enabled: true
-        }
-      }
-    }
-    supportsHttpsTrafficOnly: true
-    allowBlobPublicAccess: false
-    networkAcls: networkAcls
-    minimumTlsVersion: 'TLS1_2'
-  }
-  resource blobService 'blobServices' = if (blobName != '') {
-    name: blobName
-    properties: blobProperties
-    resource container 'containers' = if (blobContainerName != '') {
-      name: blobContainerName
-      properties: blobContainerProperties
-    }
-  }
-}
-
-module storageRbac 'modules/rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
-  name: 'sa-rbac-${index}-${uniqueString(deployment().name, location)}'
-  dependsOn: [
-    storageAccount
-  ]
-  params: {
-    description: contains(roleAssignment, 'description') ? roleAssignment.description : 'role assignment'
-    principalIds: roleAssignment.principalIds
-    roleDefinitionIdOrName: roleAssignment.roleDefinitionIdOrName
-    principalType: contains(roleAssignment, 'principalType') ? roleAssignment.principalType : 'ServicePrincipal'
-    resourceType: contains(roleAssignment, 'resourceType') ? roleAssignment.resourceType : 'storageAccount'
-    name: name
-    blobName: blobName
-    containerName: blobContainerName
-  }
-}]
-
-
-@description('The name of the Storage Account resource')
-output name string = name
-
-@description('The ID of the Storage Account. Use this ID to reference the Storage Account in other Azure resource deployments.')
-output id string = storageAccount.id
