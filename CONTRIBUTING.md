@@ -183,7 +183,7 @@ The repository has been setup to leverage the preview feature, [user-defined typ
 
 While the feature is in Preview, [to enable](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/user-defined-data-types#enable-the-preview-feature) include a `bicepconfig.json` in your module directory.
 
-`type` assignments should be declared and the end of the file, after the `outputs` are declarationed. Types should include descriptions, which can be copied from the Azure API documentation when wrapping existing RP objects. Nested `type` declartions do not need a description. `type` should be reserved for use in complex cases, and should not be used to in place of primative types.
+`type` assignments should be declared to the end of the file, after the declaration of `outputs`. Types should include descriptions, which can be copied from the Azure API documentation when wrapping existing RP objects. Nested `type` declarations do not need a description. `type` should be reserved for use in complex cases and should not be used to in place of primitive types.
 
 ```bicep
 @description('The properties of a storage account’s Blob service.')
