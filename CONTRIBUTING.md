@@ -216,6 +216,7 @@ type containerDeleteRetentionPolicy = {
 ```
 
 Avoid these patterns.
+
 ```bicep
 type enabled = bool  // Avoid using types to wrap simple primatives
 type retentionInDays = int
@@ -230,8 +231,8 @@ type blobServiceProperties = {
     @maxValue(146000)
     retentionInDays: retentionInDays?
   }?
-  
-  // Avoid nesting complex type definitions 
+
+  // Avoid nesting complex type definitions
   @description('The blob service properties for container soft delete.')
   containerDeleteRetentionPolicy: {
     allowPermanentDelete: bool
@@ -246,7 +247,7 @@ type blobServiceProperties = {
   isVersioningEnabled: isVersioningEnabled?
   lastAccessTimeTrackingPolicy: lastAccessTimeTrackingPolicy?
   restorePolicy: restorePolicy?
-} 
+}
 ```
 
 ## Updating an existing module
