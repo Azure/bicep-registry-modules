@@ -37,124 +37,6 @@ param blobContainerProperties blobServiceContainerProperties = {}
 @description('Array of role assignment objects that contain the \'roleDefinitionIdOrName\', \'principalId\' and \'resourceType\' as \'storageAccount\' or \'blobContainer\' to define RBAC role assignments on that resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'')
 param roleAssignments roleAssignmentsArray = []
 
-type blobServiceProperties = {
-  changeFeed: changeFeed?
-  containerDeleteRetentionPolicy: containerDeleteRetentionPolicy?
-  cors: cors?
-  deleteRetentionPolicy: deleteRetentionPolicy?
-  isVersioningEnabled: isBlobVersioningEnabled?
-  lastAccessTimeTrackingPolicy: lastAccessTimeTrackingPolicy?
-  restorePolicy: restorePolicy?
-}
-
-type changeFeed = {
-  enabled: bool
-  retentionInDays: changeFeedretentionInDays?
-}
-
-@minValue(1)
-@maxValue(146000)
-type changeFeedretentionInDays = int
-
-type containerDeleteRetentionPolicy = {
-  allowPermanentDelete: bool
-  days: containerDeleteRetensionPolicyDays?
-  enabled: bool
-}
-
-@minValue(1)
-@maxValue(365)
-type containerDeleteRetensionPolicyDays = int
-
-type cors = {
-  corsRules: [
-    {
-      allowedHeaders: [
-        'string'
-      ]
-      allowedMethods: [
-        'string'
-      ]
-      allowedOrigins: [
-        'string'
-      ]
-      exposedHeaders: [
-        'string'
-      ]
-      maxAgeInSeconds: int
-    }
-  ]
-}
-
-type deleteRetentionPolicy = {
-  allowPermanentDelete: bool
-  days: deleteRetentionPolicyDays?
-  enabled: bool
-}
-
-@minValue(1)
-@maxValue(365)
-type deleteRetentionPolicyDays = int
-
-@description('Toggle to enable or disable versioning for Blob service of the Storage Account. Used only if enableBlobService is set to true.')
-type isBlobVersioningEnabled = bool
-
-type lastAccessTimeTrackingPolicy = {
-  blobType: [
-    'string'
-  ]
-  enable: bool
-  name: 'AccessTimeTracking'
-  trackingGranularityInDays: trackingGranularityInDays?
-}
-
-type trackingGranularityInDays = 1
-
-type restorePolicy = {
-  days: restorePolicyDays?
-  enabled: bool
-}
-
-@minValue(1)
-@maxValue(365)
-type restorePolicyDays = int
-
-type blobServiceContainerProperties = {
-  defaultEncryptionScope: defaultEncryptionScope?
-  denyEncryptionScopeOverride: denyEncryptionScopeOverride?
-  immutableStorageWithVersioning: immutableStorageWithVersioning?
-  publicAccess: blobContainerPublicAccess?
-}
-
-@description('Allowed values are \'Blob\', \'Container\' or \'None\'')
-type blobContainerPublicAccess = string
-
-type defaultEncryptionScope = string
-
-type denyEncryptionScopeOverride = string
-
-type immutableStorageWithVersioning = {
-  enabled: bool
-}
-
-type roleAssignmentsArray = {
-  description: roleAssignmentDescription?
-  roleDefinitionIdOrName: roleDefinitionIdOrName?
-  principalIds: principalIds?
-  principalType: principalType?
-  resourceType: resourceType?
-}[]
-
-type roleAssignmentDescription = string
-
-type roleDefinitionIdOrName = string
-
-type principalIds = string[]
-
-type principalType = string
-
-type resourceType = string      
-
 var networkAcls = enableVNET ? {
   defaultAction: 'Deny'
   virtualNetworkRules: [
@@ -214,7 +96,7 @@ module storageRbac 'modules/rbac.bicep' = [for (roleAssignment, index) in roleAs
     blobName: blobName
     containerName: blobContainerName
   }
-}]    
+}]
 
 
 @description('The name of the Storage Account resource')
@@ -222,3 +104,100 @@ output name string = name
 
 @description('The ID of the Storage Account. Use this ID to reference the Storage Account in other Azure resource deployments.')
 output id string = storageAccount.id
+
+
+@description('The properties of a storage account’s Blob service.')
+type blobServiceProperties = {
+  changeFeed: changeFeed?
+  containerDeleteRetentionPolicy: containerDeleteRetentionPolicy?
+  cors: cors?
+  deleteRetentionPolicy: deleteRetentionPolicy?
+  isVersioningEnabled: isVersioningEnabled?
+  lastAccessTimeTrackingPolicy: lastAccessTimeTrackingPolicy?
+  restorePolicy: restorePolicy?
+}
+
+@description('The blob service properties for change feed events.')
+type changeFeed = {
+  enabled: bool
+  @minValue(1)
+  @maxValue(146000)
+  retentionInDays: int?
+}
+
+@description('The blob service properties for container soft delete.')
+type containerDeleteRetentionPolicy = {
+  allowPermanentDelete: bool
+  @minValue(1)
+  @maxValue(365)
+  days: int?
+  enabled: bool
+}
+
+@description('Specifies CORS rules for the Blob service. You can include up to five CorsRule elements in the request. If no CorsRule elements are included in the request body, all CORS rules will be deleted, and CORS will be disabled for the Blob service.')
+type cors = {
+  corsRules: [
+    {
+      allowedHeaders: [
+        'string'
+      ]
+      allowedMethods: [
+        'string'
+      ]
+      allowedOrigins: [
+        'string'
+      ]
+      exposedHeaders: [
+        'string'
+      ]
+      maxAgeInSeconds: int
+    }
+  ]
+}
+
+@description('The blob service properties for blob soft delete.')
+type deleteRetentionPolicy = {
+  allowPermanentDelete: bool
+  @minValue(1)
+  @maxValue(365)
+  days: int?
+  enabled: bool
+}
+
+@description('Toggle to enable or disable versioning for Blob service of the Storage Account. Used only if enableBlobService is set to true.')
+type isVersioningEnabled = bool
+
+@description('The blob service property to configure last access time based tracking policy.')
+type lastAccessTimeTrackingPolicy = {
+  blobType: [
+    'string'
+  ]
+  enable: bool
+  name: 'AccessTimeTracking'
+  trackingGranularityInDays: 1?
+}
+
+@description('The blob service property to configure last access time based tracking policy.')
+type restorePolicy = {
+  @minValue(1)
+  @maxValue(365)
+  days: int?
+  enabled: bool
+}
+
+type blobServiceContainerProperties = {
+  defaultEncryptionScope: string?
+  denyEncryptionScopeOverride: string?
+  immutableStorageWithVersioning: {
+    enabled: bool
+  }?
+  publicAccess: ('Blob' | 'Container' | 'None')?
+}
+
+type roleAssignmentsArray = {
+  description: string?
+  roleDefinitionIdOrName: string?
+  principalIds: string[]?
+  principalType: string?
+  resourceType: string?
+}[]
