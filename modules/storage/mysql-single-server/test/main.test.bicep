@@ -18,7 +18,7 @@ param administratorLoginPassword string = 'test@passw0rd123'
 // Dependencies //
 // ============ //
 
-module dependencies 'dependencies.test.bicep' = {
+module dependencies 'prereq.test.bicep' = {
   name: 'test-dependencies'
   params: {
     name: serviceShort
