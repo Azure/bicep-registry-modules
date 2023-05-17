@@ -5,7 +5,8 @@
 This Bicep Module is used for the deployment of MySQL DB  Single Server with reusable set of parameters and resources.
 It allows for the creation of a new MySQL DB or use of an existing one and offets support for adding private endpoints.
 
-The MySQL Server bicep module is a piece of infrastructure as code (IaC) that defines and deploys a MySQL database server in Microsoft Azure using the Bicep language. Bicep is a domain-specific language that simplifies the process of deploying and managing cloud resources in Azure.
+The MySQL Server bicep module is a piece of infrastructure as code (IaC) that defines and deploys a MySQL database server in Microsoft Azure using the Bicep language.
+ Bicep is a domain-specific language that simplifies the process of deploying and managing cloud resources in Azure.
 
 The MySQL Server bicep module includes the necessary code to create a MySQL server, along with the associated resources required to support the server, such as a virtual network, a subnet, and a private endpoint.
 The module also allows for the configuration of additional settings, such as the server's admin username and password, and the server's location.
