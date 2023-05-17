@@ -218,7 +218,7 @@ type containerDeleteRetentionPolicy = {
 Avoid these patterns.
 
 ```bicep
-type enabled = bool  // Avoid using types to wrap simple primatives
+type enabled = bool  // Avoid setting aliases for primitive types
 type retentionInDays = int
 
 @description('The properties of a storage account’s Blob service.')
