@@ -17,20 +17,15 @@ The output of the module is the ID of the created or existing Storage Account, w
 
 ## Parameters
 
-| Name                      | Type     | Required | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| :------------------------ | :------: | :------: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `location`                | `string` | Yes      | Deployment Location                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| `prefix`                  | `string` | No       | Prefix of Storage Account Resource Name. This param is ignored when name is provided.                                                                                                                                                                                                                                                                                                                                                                       |
-| `name`                    | `string` | No       | Name of Storage Account. Must be unique within Azure.                                                                                                                                                                                                                                                                                                                                                                                                       |
-| `subnetID`                | `string` | No       | ID of the subnet where the Storage Account will be deployed, if virtual network access is enabled.                                                                                                                                                                                                                                                                                                                                                          |
-| `enableVNET`              | `bool`   | No       | Toggle to enable or disable virtual network access for the Storage Account.                                                                                                                                                                                                                                                                                                                                                                                 |
-| `isZoneRedundant`         | `bool`   | No       | Toggle to enable or disable zone redundancy for the Storage Account.                                                                                                                                                                                                                                                                                                                                                                                        |
-| `storageAccountType`      | `string` | No       | Storage Account Type. Use Zonal Redundant Storage when able.                                                                                                                                                                                                                                                                                                                                                                                                |
-| `blobName`                | `string` | No       | Name of a blob service to be created.                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| `blobProperties`          | `object` | No       | Properties object for a Blob service of a Storage Account.                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `blobContainerName`       | `string` | No       | Name of a blob container to be created                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| `blobContainerProperties` | `object` | No       | Properties object for a Blob container of a Storage Account.                                                                                                                                                                                                                                                                                                                                                                                                |
-| `roleAssignments`         | `array`  | No       | Array of role assignment objects that contain the 'roleDefinitionIdOrName', 'principalId' and 'resourceType' as 'storageAccount' or 'blobContainer' to define RBAC role assignments on that resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11' |
+| Name                 | Type     | Required | Description                                                                                        |
+| :------------------- | :------: | :------: | :------------------------------------------------------------------------------------------------- |
+| `location`           | `string` | Yes      | Deployment Location                                                                                |
+| `prefix`             | `string` | No       | Prefix of Storage Account Resource Name. This param is ignored when name is provided.              |
+| `name`               | `string` | No       | Name of Storage Account. Must be unique within Azure.                                              |
+| `subnetID`           | `string` | No       | ID of the subnet where the Storage Account will be deployed, if virtual network access is enabled. |
+| `enableVNET`         | `bool`   | No       | Toggle to enable or disable virtual network access for the Storage Account.                        |
+| `isZoneRedundant`    | `bool`   | No       | Toggle to enable or disable zone redundancy for the Storage Account.                               |
+| `storageAccountType` | `string` | No       | Storage Account Type. Use Zonal Redundant Storage when able.                                       |
 
 ## Outputs
 
@@ -46,7 +41,7 @@ The output of the module is the ID of the created or existing Storage Account, w
 This example creates a new Storage Account with a unique name in the East US region using the default Storage Account configuration settings. The module output is the ID of the created Storage Account, which can be used in other Azure resource deployments.
 
 ```bicep
-module storageAccount 'br/public:storage/storage-account:2.0.2' = {
+module storageAccount 'br/public:storage/storage-account:1.0.1' = {
   name: 'mystorageaccount'
   params: {
     location: 'eastus'
@@ -67,7 +62,7 @@ param newOrExisting string = 'new'
 param resourceGroupName string = 'myresourcegroup'
 param isZoneRedundant bool = true
 
-module storageAccount 'br/public:storage/storage-account:2.0.2' = {
+module storageAccount 'br/public:storage/storage-account:1.0.1' = {
   name: 'mystorageaccount'
   params: {
     location: location

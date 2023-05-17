@@ -35,25 +35,25 @@ module dependencies 'dependencies.test.bicep' = {
 module test01 '../main.bicep' = {
   name: 'test01-${uniqueName}'
   params: {
-    prefix: 'mysql-test01'
     location: location
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
+    serverName: 'test01-${uniqueName}'
   }
 }
 
 // Test 02 -  Mysql Deployment - with login creds
+
+
 module test02 '../main.bicep' = {
-  dependsOn: [
-    dependencies
-   ]
   name: 'test02-${uniqueName}'
   params: {
-    prefix: 'mysql-test02'
     location: location
     createMode : 'Default'
+    serverName: 'test02-${uniqueName}'
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
+    skuName: 'GP_Gen5_2'
     publicNetworkAccess: 'Enabled'
     privateEndpoints: [
       {
@@ -91,13 +91,14 @@ module test02 '../main.bicep' = {
 }
 
 // Test-03 - Primary server with a replica in paired region
+
 module test_03_primaryMysqlServer '../main.bicep' = {
   name: 'test-03-primary-${uniqueName}'
   params: {
-    prefix: 'mysql-test03'
     location: location
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
+    serverName: 'test-03-pri-${uniqueName}'
   }
 }
 
@@ -107,23 +108,27 @@ module test_03_replicaMysqlServer '../main.bicep' = {
     test_03_primaryMysqlServer
   ]
   params: {
-    prefix: 'mysql-test03-replica'
     location: location
     createMode: 'Replica'
     sourceServerResourceId: test_03_primaryMysqlServer.outputs.id
+    administratorLogin: administratorLogin
+    administratorLoginPassword: administratorLoginPassword
+    serverName: 'test-03-replica-${uniqueName}'
   }
 }
 
 // Test 04 -  MySQL Deployment - with Role Assignments
+
 module test04 '../main.bicep' = {
   name: 'test04-${uniqueName}'
   params: {
-    prefix: 'mysql-test04'
     location: location
     createMode : 'Default'
+    serverName: 'test04-${uniqueName}'
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
     publicNetworkAccess: 'Enabled'
+    skuName: 'GP_Gen5_2'
     roleAssignments: [
        {
          roleDefinitionIdOrName: 'SQL DB Contributor'
@@ -169,48 +174,3 @@ module test04 '../main.bicep' = {
   }
 }
 
-// Test 05 -  Disable TLS
-module test05 '../main.bicep' = {
-  name: 'test05-${uniqueName}'
-  params: {
-    prefix: 'mysql-test05'
-    location: location
-    administratorLogin: administratorLogin
-    administratorLoginPassword: administratorLoginPassword
-    minimalTlsVersion: 'TLSEnforcementDisabled'
-  }
-}
-
-// Test 06 -  Enable TLS - Enable Diagnostic Settings
-module test06 '../main.bicep' = {
-  name: 'test06-${uniqueName}'
-  params: {
-    prefix: 'mysql-test06'
-    location: location
-    administratorLogin: administratorLogin
-    administratorLoginPassword: administratorLoginPassword
-    minimalTlsVersion: 'TLS1_0'
-    diagnosticSettingsProperties: {
-      logs: [{
-          categoryGroup: 'allLogs'
-          enabled: true
-      }]
-      metrics: [{
-        category: 'AllMetrics'
-        enabled: true
-        retentionPolicy: {
-          days: 2
-          enabled: true
-        }
-      }]
-      diagnosticReceivers: {
-        eventHub: {
-          EventHubName: dependencies.outputs.eventHubName
-          EventHubAuthorizationRuleId: dependencies.outputs.eventHubAuthorizationRuleId
-        }
-        storageAccountId: dependencies.outputs.storageAccountId
-        workspaceId: dependencies.outputs.workspaceId
-      }
-    }
-  }
-}
