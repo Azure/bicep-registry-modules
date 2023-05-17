@@ -5,12 +5,12 @@
 
 version: 2
 updates:
-- package-ecosystem: "github-actions"
-  directory: "/"
-  schedule:
-    interval: daily
-    time: "13:00"
-  commit-message:
-    prefix: "fix: "
-  reviewers:
-  - Azure-Bicep-Registery-Reviewers
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "13:00"
+    commit-message:
+      prefix: "fix: "
+    reviewers:
+      - Azure-Bicep-Registery-Reviewers
