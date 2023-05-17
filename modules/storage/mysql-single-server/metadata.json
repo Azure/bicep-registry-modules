@@ -2,5 +2,5 @@
   "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
   "name": "mysql-single-server",
   "summary": "This Bicep Module is used for the deployment of MySQL DB  Single Server with reusable set of parameters and resources.",
-  "owner": "pceron@microsoft.com"
+  "owner": "tanujbhatia1708"
 }
