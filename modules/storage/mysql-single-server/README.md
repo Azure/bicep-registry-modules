@@ -57,7 +57,7 @@ This module requires the namespace 'Microsoft.DBforMySQL' to be registered  for 
 This example deploys a MySQL Single Server database.
 
 ```
-module test01 'br/public:database/mysql-single-server:1.0' = {
+module test01 'br/public:database/mysql-single-server:1.0.1' = {
   name: 'test01-${serverName}'
   params: {
     location: location
@@ -72,7 +72,7 @@ module test01 'br/public:database/mysql-single-server:1.0' = {
 This example deploys a MySQL Single Server database with login and password with the sku name and firewall rules , server configurations and private endpoints.
 
 ```
-module test02 'br/public:database/mysql-single-server:1.0' = {
+module test02 'br/public:database/mysql-single-server:1.0.1' = {
   name: 'mysqldb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'westus'
@@ -123,7 +123,7 @@ module test02 'br/public:database/mysql-single-server:1.0' = {
 This example deploys a MySQL Single Server database with Role Assignments.
 
 ```
-module test03 'br/public:database/mysql-single-server:1.0' = {
+module test03 'br/public:database/mysql-single-server:1.0.1' = {
   name: 'mysqldb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'westus'
