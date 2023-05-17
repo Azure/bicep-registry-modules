@@ -18,13 +18,9 @@ param tags object = {}
 @description('Required. The administrator username of the server. Can only be specified when createMode is \'Default\'.')
 param administratorLogin string = ''
 
-var validAdministratorLogin = createMode == 'Default' && !empty(administratorLogin) ? administratorLogin: null
-
 @secure()
 @description('Required. The administrator password of the server. Can only be specified when the server is being created.')
 param administratorLoginPassword string = ''
-
-var validAdministratorLoginPassword = createMode == 'Default' && !empty(administratorLoginPassword) ? administratorLoginPassword: null
 
 @description('Optional. The number of days a backup is retained.')
 @minValue(7)
@@ -140,8 +136,8 @@ resource mysqlServer 'Microsoft.DBforMySQL/servers@2017-12-01' = {
   }
   properties: {
     createMode: createMode
-    administratorLogin: validAdministratorLogin ?? null
-    administratorLoginPassword: validAdministratorLoginPassword ?? null
+    administratorLogin: administratorLogin
+    administratorLoginPassword: administratorLoginPassword
     version: version
     sslEnforcement: sslEnforcement
     minimalTlsVersion: minimalTlsVersion

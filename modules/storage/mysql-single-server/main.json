@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "4334461267163637947"
+      "templateHash": "32809948458584360"
     }
   },
   "definitions": {
@@ -511,8 +511,6 @@
         }
       }
     ],
-    "validAdministratorLogin": "[if(and(equals(parameters('createMode'), 'Default'), not(empty(parameters('administratorLogin')))), parameters('administratorLogin'), null())]",
-    "validAdministratorLoginPassword": "[if(and(equals(parameters('createMode'), 'Default'), not(empty(parameters('administratorLoginPassword')))), parameters('administratorLoginPassword'), null())]",
     "sslEnforcement": "[if(equals(parameters('minimalTlsVersion'), 'TLSEnforcementDisabled'), 'Disabled', 'Enabled')]",
     "validStorageAutogrow": "[if(equals(parameters('createMode'), 'Replica'), '', if(parameters('enableStorageAutogrow'), 'Enabled', 'Disabled'))]",
     "enableMysqlDiagnosticSettings": "[if(and(and(and(empty(tryGet(tryGet(parameters('diagnosticSettingsProperties'), 'diagnosticReceivers'), 'workspaceId')), empty(tryGet(tryGet(parameters('diagnosticSettingsProperties'), 'diagnosticReceivers'), 'eventHub'))), empty(tryGet(tryGet(parameters('diagnosticSettingsProperties'), 'diagnosticReceivers'), 'storageAccountId'))), empty(tryGet(tryGet(parameters('diagnosticSettingsProperties'), 'diagnosticReceivers'), 'marketplacePartnerId'))), false(), true())]"
@@ -536,8 +534,8 @@
       },
       "properties": {
         "createMode": "[parameters('createMode')]",
-        "administratorLogin": "[coalesce(variables('validAdministratorLogin'), null())]",
-        "administratorLoginPassword": "[coalesce(variables('validAdministratorLoginPassword'), null())]",
+        "administratorLogin": "[parameters('administratorLogin')]",
+        "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
         "version": "[parameters('version')]",
         "sslEnforcement": "[variables('sslEnforcement')]",
         "minimalTlsVersion": "[parameters('minimalTlsVersion')]",

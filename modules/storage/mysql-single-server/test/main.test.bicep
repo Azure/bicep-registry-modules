@@ -107,6 +107,8 @@ module test_03_replicaMysqlServer '../main.bicep' = {
     test_03_primaryMysqlServer
   ]
   params: {
+    administratorLogin: administratorLogin
+    administratorLoginPassword: administratorLoginPassword
     prefix: 'mysql-test03-replica'
     location: location
     createMode: 'Replica'
