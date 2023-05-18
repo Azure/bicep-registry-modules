@@ -1,15 +1,11 @@
-@description('Deployment region name. Default is the location of the resource group.')
-param location string = resourceGroup().location
-
 @description('The bakend API type of Cosmos DB database account. The API selection cannot be changed after account creation. Possible values: "cassandra", "gremlin", "mongodb", "sql", "table".')
 @allowed([ 'cassandra', 'gremlin', 'mongodb', 'sql', 'table' ])
 param backendApi string = 'sql'
 
-@description('Prefix of Cosmos DB Resource Name. Not used if name is provided.')
-param prefix string = { cassandra: 'coscas', gremlin: 'cosgrm', mongodb: 'cosmon', sql: 'cosmos', table: 'costab' }[backendApi]
-
 @description('The name of the Cosmos DB account. Character limit: 3-44, valid characters: lowercase letters, numbers, and hyphens. It must me unique across Azure.')
-param name string = take('${prefix}-${uniqueString(resourceGroup().id, location)}', 44)
+@maxLength(44)
+@minLength(3)
+param name string = uniqueString(resourceGroup().id, resourceGroup().location)
 
 @description('Enables automatic failover of the write region in the rare event that the region is unavailable due to an outage. Automatic failover will result in a new write region for the account and is chosen based on the failover priorities configured for the account.')
 param enableAutomaticFailover bool = true
@@ -20,9 +16,6 @@ param enableMultipleWriteLocations bool = true
 @description('Enable Serverless for consumption-based usage.')
 param enableServerless bool = false
 
-@description('Flag to indicate whether or not this region is an AvailabilityZone region')
-param isZoneRedundant bool = false
-
 @description('Flag to indicate whether Free Tier is enabled, up to one account per subscription is allowed.')
 param enableFreeTier bool = false
 
@@ -30,55 +23,86 @@ param enableFreeTier bool = false
 @minValue(-1)
 param totalThroughputLimit int = -1
 
-@description('The array of secondary locations.')
-param secondaryLocations array = []
-
-@allowed([ 'Eventual', 'ConsistentPrefix', 'Session', 'BoundedStaleness', 'Strong' ])
-@description('The default consistency level. Possible values: "Eventual", "ConsistentPrefix", "Session", "BoundedStaleness", "Strong".')
-param defaultConsistencyLevel string = 'Session'
-
-@description('Max stale requests required for "BoundedStaleness" Consistency Level. Valid ranges, Single Region: 10 to 2147483647. Multi Region: 100000 to 2147483647.')
-@minValue(10)
-@maxValue(2147483647)
-param maxStalenessPrefix int = 100000
-
-@description('Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400.')
-@minValue(5)
-@maxValue(86400)
-param maxIntervalInSeconds int = 300
+@minLength(1)
+@description('''
+The array of secondary locations.
+Each element defines a region of georeplication. The first element in this array is the primary region which is a write region of the Cosmos DB account.
+The order of regions in this list is the order of regions to be used for failover.
+Parameters:
+- Name: name
+  Description: The name of the Azure region.
+- Name: isZoneRedundant
+  Description: Flag to indicate whether or not this region is an AvailabilityZone region
+''')
+param locations {
+  name: string
+  isZoneRedundant: bool?
+}[]
 
 @description('MongoDB server version. Required for mongodb API type Cosmos DB account')
 @allowed([ '3.2', '3.6', '4.0', '4.2' ])
-param serverVersion string = '4.2'
+param MongoDBServerVersion string = '4.2'
 
-@description('List of CORS rules.')
-param cors array = []
+@description('''
+List of CORS rules. Each CORS rule allows or denies requests from a set of origins to a Cosmos DB account or a database.
+parameters:
+- Name: allowedOrigins
+  Description: The origin domains that are permitted to make a request against the service via CORS.
+- Name: allowedMethods
+  Description: The methods (HTTP request verbs) that the origin domain may use for a CORS request. (comma separated)
+- Name: allowedHeaders
+  Description: The response headers that should be sent back to the client for CORS requests. (comma separated)
+- Name: exposedHeaders
+  Description: The response headers that should be exposed to the client for CORS requests. (comma separated)
+- Name: maxAgeInSeconds
+  Description: The maximum amount time that a browser should cache the preflight OPTIONS request.
+''')
+param cors {
+  allowedOrigins: string
+  allowedMethods: string?
+  allowedHeaders: string?
+  exposedHeaders: string?
+  maxAgeInSeconds: int?
+}[] = []
+
+@description('The mode of the Cosmos Account creation. Set to Restore to restore from an existing account.')
+@allowed([ 'Default', 'Restore' ])
+param createMode string = 'Default'
 
 @description('Disable write operations on metadata resources (databases, containers, throughput) via account keys.')
 param disableKeyBasedMetadataWriteAccess bool = false
 
 @description('Whether requests from public network allowed.')
-@allowed([ 'Enabled', 'Disabled' ])
-param publicNetworkAccess string = 'Enabled'
-
-@description('Flag to indicate whether to enable/disable Virtual Network ACL rules.')
-param isVirtualNetworkFilterEnabled bool = false
+param enablePublicNetworkAccess bool = 'Enabled'
 
 @allowed([ 'AzureServices', 'None' ])
 @description('Indicates what services are allowed to bypass firewall checks.')
-param networkAclBypass string = 'None'
+param networkAclBypass string = 'AzureServices'
 
-@description('List of IpRules to be allowed. A single IPv4 address or a single IPv4 address range in CIDR format.')
-param ipRules array = []
+@description('''
+List of IpRules to be allowed.
+Each element in this array is either a single IPv4 address or a single IPv4 address range in CIDR format.
+''')
+param ipRules string[] = []
 
-@description('The list of virtual network ACL rules, "isVirtualNetworkFilterEnabled" must be set to "true". format: {id: string, ignoreMissingVNetServiceEndpoint: bool}')
-param virtualNetworkRules array = []
+@description('''
+The list of virtual network ACL rules.
+parameters:
+- Name: id
+  Description: The id of the subnet. For example: /subscriptions/{subscriptionId}/resourceGroups/{groupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}.
+- Name: ignoreMissingVNetServiceEndpoint
+  Description: Whether to ignore missing virtual network service endpoint.
+''')
+param virtualNetworkRules {
+  id: string
+  ignoreMissingVNetServiceEndpoint: bool?
+}[] = []
 
 @description('An array that contains the Resource Ids for Network Acl Bypass.')
-param networkAclBypassResourceIds array = []
+param networkAclBypassResourceIds string[] = []
 
-@description('Non-default extra capabilities.')
-param capabilities array = []
+@description('Extra capabilities besides the ones required by param.backendApi and param.enableServerless.')
+param extraCapabilities string[] = []
 
 @description('Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.')
 param disableLocalAuth bool = false
@@ -90,8 +114,32 @@ param enableAnalyticalStorage bool = false
 @allowed([ 'FullFidelity', 'WellDefined' ])
 param analyticalStorageSchemaType string = 'WellDefined'
 
-@description('The list of Cassandra keyspaces configurations with tables.')
-param cassandraKeyspaces array = []
+type casandrakeyspace = {
+  enableThroughputAutoScale: bool
+  @maxValue(100000)
+  @minValue(400)
+  throughput: int
+  tables:{}
+  tags: objectOfString
+}
+
+type objectOfString = {
+  *: string
+}
+
+@description('''
+The object of Cassandra keyspaces configurations with tables.
+The key of each element is the name of the Cassandra keyspace.
+The value of each element is an object with the following parameters:
+- Name: enableThroughputAutoScale
+  Description: Flag to enable/disable automatic throughput scaling for this keyspace.
+- Name: throughput
+  Description: When enableThroughputAutoScale is set to true, this parameter is the static throughput capability of Cassandra keyspace expressed in units of 100 requests per second. 400 RU/s is the minimum for production workloads. It ranges from 400 to 100,000 inclusive.
+               When enableThroughputAutoScale is set to false, this parameter is the maximum of the autoscaled throughput capability of Cassandra keyspace. It would scale down to a minimum of 10% of this max throughput based on usage. It ranges from 4000 to 100,000 inclusive.
+- Name: tags
+  Description: The tags that will be assigned to the Cassandra keyspace.
+''')
+param cassandraKeyspaces { *: casandrakeyspace } = {}
 
 @description('The list of SQL databases configurations with containers, its triggers, storedProcedures and userDefinedFunctions.')
 param sqlDatabases array = []
@@ -119,7 +167,7 @@ param roleAssignments array = []
 param identityType string = 'None'
 
 @description('The list of user-assigned managed identities. The user identity dictionary key references will be ARM resource ids in the form: "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}"')
-param userAssignedIdentities object = {}
+param userAssignedIdentities string[] = []
 
 @description('Private Endpoints that should be created for Azure Cosmos DB account.')
 param privateEndpoints array = []
@@ -135,46 +183,57 @@ param tags object = {}
 @description('Specify the type of lock on Cosmos DB account resource.')
 param lock string = 'NotSpecified'
 
-var varConsistencyPolicy = (defaultConsistencyLevel == 'BoundedStaleness') ? {
-  defaultConsistencyLevel: 'BoundedStaleness'
-  maxStalenessPrefix: maxStalenessPrefix
-  maxIntervalInSeconds: maxIntervalInSeconds
-} : {
-  defaultConsistencyLevel: defaultConsistencyLevel
+@description('''
+The consistency policy for the Cosmos DB account.
+parameters:
+- Name: defaultConsistencyLevel
+  Description: The default consistency level and configuration settings of the Cosmos DB account.
+- Name: maxStalenessPrefix
+  Required: Required only when defaultConsistencyPolicy is set to 'BoundedStaleness'.
+  Description: When used with the Bounded Staleness consistency level, this value represents the time amount of staleness (in seconds) tolerated.
+  Valid ranges:
+  - Single Region: 10 to 2147483647
+  - Multi Region: 100000 to 2147483647.
+- Name: maxIntervalInSeconds
+  Required: Required only when defaultConsistencyPolicy is set to 'BoundedStaleness'.
+  Description: When used with the Bounded Staleness consistency level, this value represents the number of stale requests tolerated.
+  Valid ranges:
+  - Single Region: 5 to 84600.
+  - Multi Region: 300 to 86400.
+''')
+param consistencyPolicy {
+  defaultConsistencyLevel: 'Eventual' | 'ConsistentPrefix' | 'Session' | 'BoundedStaleness' | 'Strong'
+  @minValue(10)
+  @maxValue(2147483647)
+  maxStalenessPrefix: int?
+  @minValue(5)
+  @maxValue(86400)
+  maxIntervalInSeconds: int?
+} = {
+  defaultConsistencyLevel: 'Session'
 }
 
-var secondaryRegionsWithDefaults = [for (region, i) in secondaryLocations: {
-  locationName: region.?locationName ?? region
-  failoverPriority: region.?failoverPriority ?? i + 1
-  isZoneRedundant: region.?isZoneRedundant ?? isZoneRedundant
+var primaryLocation = locations[0].name
+
+var locationsWithCompleteInfo = [for (location, i) in locations: {
+  locationName: location.name
+  failoverPriority: i
+  isZoneRedundant: location.?isZoneRedundant
 }]
 
-var locationsWithDefaults = union([
-    {
-      locationName: location
-      failoverPriority: 0
-      isZoneRedundant: isZoneRedundant
-    }
-  ],
-  enableServerless ? [] : secondaryRegionsWithDefaults
-)
-
-var capabilityMappings = {
+var capabilityNeededForBackendApi = {
   cassandra: 'EnableCassandra'
   gremlin: 'EnableGremlin'
   mongodb: 'EnableMongo'
   table: 'EnableTable'
+  sql: ''
 }
 
-var capabilitiesWithDefaults = union(
-  capabilities,
+var capabilitiesCompleteList = [for capability in union(
+  extraCapabilities,
   enableServerless ? [ 'EnableServerless' ] : [],
-  contains(capabilityMappings, backendApi) ? [ capabilityMappings[backendApi] ] : []
-)
-
-var ipRulesWithDefaults = [for ipRule in ipRules: {
-  ipAddressOrRange: ipRule
-}]
+  [ capabilityNeededForBackendApi[backendApi] ]
+): { name: capability }]
 
 var privateEndpointsWithDefaults = [for endpoint in privateEndpoints: {
   name: '${cosmosDBAccount.name}-${endpoint.name}'
@@ -192,18 +251,18 @@ var privateEndpointsWithDefaults = [for endpoint in privateEndpoints: {
   manualApprovalEnabled: endpoint.?manualApprovalEnabled ?? false
 }]
 
-resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2022-11-15' = {
+resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
   name: toLower(name)
-  location: location
+  location: primaryLocation
   kind: (backendApi == 'mongodb') ? 'MongoDB' : 'GlobalDocumentDB'
   properties: {
     analyticalStorageConfiguration: enableAnalyticalStorage ? { schemaType: analyticalStorageSchemaType } : null
-    apiProperties: (backendApi == 'mongodb') ? { serverVersion: serverVersion } : null
-
-    capabilities: [for capability in capabilitiesWithDefaults: { name: capability }]
+    apiProperties: (backendApi == 'mongodb') ? { serverVersion: MongoDBServerVersion } : null
+    capabilities: capabilitiesCompleteList
     capacity: enableServerless ? null : { totalThroughputLimit: totalThroughputLimit }
-    consistencyPolicy: varConsistencyPolicy
+    consistencyPolicy: consistencyPolicy
     cors: cors
+    createMode: createMode
     databaseAccountOfferType: 'Standard'
     disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
     disableLocalAuth: disableLocalAuth
@@ -211,33 +270,29 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2022-11-15' = {
     enableAutomaticFailover: enableAutomaticFailover
     enableFreeTier: enableFreeTier
     enableMultipleWriteLocations: enableServerless ? false : enableMultipleWriteLocations
-    ipRules: ipRulesWithDefaults
-    isVirtualNetworkFilterEnabled: isVirtualNetworkFilterEnabled
-    locations: locationsWithDefaults
+    ipRules: [for ipRule in ipRules: { ipAddressOrRange: ipRule }]
+    locations: enableServerless ? [ locationsWithCompleteInfo[0] ] : locationsWithCompleteInfo
     networkAclBypass: networkAclBypass
     networkAclBypassResourceIds: networkAclBypassResourceIds
-    publicNetworkAccess: publicNetworkAccess
+    publicNetworkAccess: enablePublicNetworkAccess ? 'Enabled' : 'Disabled'
+    isVirtualNetworkFilterEnabled: length(virtualNetworkRules) > 0
     virtualNetworkRules: virtualNetworkRules
   }
-  identity: contains(identityType, 'UserAssigned') ? {
+  identity: {
     type: identityType
-    userAssignedIdentities: contains(identityType, 'UserAssigned') ? userAssignedIdentities : {}
-  } : { type: identityType }
+    userAssignedIdentities: contains(identityType, 'UserAssigned') ? toObject(userAssignedIdentities, id => id, id => {}) : null
+  }
   tags: tags
 }
 
 @batchSize(1)
-module cosmosDBAccount_cassandraKeyspaces 'modules/cassandra.bicep' = [for (keyspace, index) in cassandraKeyspaces: if (backendApi == 'cassandra') {
-  name: 'cassandra-keyspace-${uniqueString(keyspace.name, resourceGroup().name)}-${index}'
-  dependsOn: [
-    cosmosDBAccount
-  ]
+module cosmosDBAccount_cassandraKeyspaces 'modules/cassandra.bicep' = [for keyspace in cassandraKeyspaces: if (backendApi == 'cassandra') {
+  dependsOn: [ cosmosDBAccount ]
+
+  name: keyspace.key
   params: {
     cosmosDBAccountName: name
-    keyspaceName: keyspace.name
-    tables: keyspace.tables
-    autoscaleMaxThroughput: keyspace.?autoscaleMaxThroughput ?? 0
-    manualProvisionedThroughput: keyspace.?manualProvisionedThroughput ?? 0
+    keySpace: keyspace.value
     enableServerless: enableServerless
   }
 }]
@@ -319,7 +374,7 @@ module cosmosDBAccount_sqlRoles 'modules/sql_roles.bicep' = {
 
 @batchSize(1)
 module cosmosDBAccount_rbac 'modules/rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
-  name: 'cosmosdb-rbac-${uniqueString(deployment().name, location)}-${index}'
+  name: 'cosmosdb-rbac-${uniqueString(deployment().name, primaryLocation)}-${index}'
   dependsOn: [
     cosmosDBAccount
   ]
@@ -333,9 +388,9 @@ module cosmosDBAccount_rbac 'modules/rbac.bicep' = [for (roleAssignment, index) 
 }]
 
 module cosmosDBAccount_privateEndpoint 'modules/privateEndpoint.bicep' = {
-  name: '${name}-${uniqueString(deployment().name, location)}-private-endpoints'
+  name: '${name}-${uniqueString(deployment().name, primaryLocation)}-private-endpoints'
   params: {
-    location: location
+    location: primaryLocation
     privateEndpoints: privateEndpointsWithDefaults
     tags: tags
   }

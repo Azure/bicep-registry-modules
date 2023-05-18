@@ -1,26 +1,29 @@
 param cosmosDBAccountName string
-param enableServerless bool = false
+param enableServerless bool
+type objectOfString = {
+  *: string
+}
+type casandrakeyspace ={
+  enableThroughputAutoScale: bool
+  @maxValue(100000)
+  @minValue(400)
+  throughput: int
+  tables: {}
+  tags: objectOfString
+}
+param keyspaceConfig casandrakeyspace
 param keyspaceName string
-param tables array
-param autoscaleMaxThroughput int
-param manualProvisionedThroughput int
 
-resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2022-11-15' existing = {
+resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
   name: cosmosDBAccountName
 
-  resource cassandraKeyspaces 'cassandraKeyspaces@2022-11-15' = {
+  resource cassandraKeyspaces 'cassandraKeyspaces' = {
     name: keyspaceName
     properties: {
       resource: {
         id: keyspaceName
       }
-      options: !enableServerless ? (autoscaleMaxThroughput != 0 ? {
-        autoscaleSettings: {
-          maxThroughput: autoscaleMaxThroughput
-        }
-      } : manualProvisionedThroughput != 0 ? {
-        throughput: manualProvisionedThroughput
-      } : {}) : {}
+      options: enableServerless ? {} : (keyspaceConfig.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: keyspaceConfig.throughput } } :  { throughput: keyspaceConfig.throughput } )
     }
 
     resource cassandraTables 'tables' = [for table in tables: {
