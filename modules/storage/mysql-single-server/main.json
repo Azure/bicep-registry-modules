@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "32809948458584360"
+      "templateHash": "8810475103278548264"
     }
   },
   "definitions": {
@@ -749,7 +749,10 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "mysqlServer"
+      ]
     },
     "mysqlPrivateEndpoint": {
       "type": "Microsoft.Resources/deployments",
