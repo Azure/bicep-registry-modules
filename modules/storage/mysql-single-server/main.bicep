@@ -77,11 +77,7 @@ param skuCapacity int = 2
 param SkuSizeMB int = 5120
 
 @description('Optional. Azure database for MySQL pricing tier')
-@allowed([
-  'Basic'
-  'GeneralPurpose'
-  'MemoryOptimized'
-])
+@allowed(['Basic', 'GeneralPurpose', 'MemoryOptimized'])
 param SkuTier string = 'GeneralPurpose'
 
 @description('Optional. Azure database for MySQL sku family')
