@@ -1,165 +1,163 @@
-@description('The location into which your Azure resources should be deployed.')
+@description('Optional.  The location into which your Azure resources should be deployed.')
 param location string = resourceGroup().location
+
+@description('Optional. Prefix of postgres resource name. Not used if name is provided.')
+param prefix string = 'postgres'
+
+@description('Optional. The name of the Postgresql DB resources. Character limit: 3-44, valid characters: lowercase letters, numbers, and hyphens. It must me unique across Azure.')
+param name string = take('${prefix}-${uniqueString(resourceGroup().id, location)}', 44)
 
 @minLength(3)
 @maxLength(63)
 // Must contain only lowercase letters, hyphens and numbers
 // Must contain at least 3 through 63 characters
 // Can't start or end with hyphen
-@description('The name of the Postgresql Single Server instance.')
-param sqlServerName string
+@description('Optional. Override the name of the server.')
+param serverName string = name
 
-@description('The tags to apply to each resource.')
+@description('Optional. Deployment tags.')
 param tags object = {}
 
-@description('The administrator username of the server. Can only be specified when the server is being created.')
+@description('Required. The administrator username of the server. Can only be specified when createMode is \'Default\'.')
 // The user name for the admin user can't be azure_superuser, admin, administrator, root, guest, or public
-param sqlServerAdministratorLogin string
+param administratorLogin string
 
 @secure()
 @minLength(8)
 @maxLength(128)
-@description('The administrator login password for the SQL server. Can only be specified when the server is being created.')
-// The password must contain 8 to 128 characters
-// Only English uppercase letters, English lowercase letters, numbers, and non-alphanumeric characters
-param sqlServerAdministratorPassword string
+@description('Required. The administrator login password for the SQL server. Can only be specified when the server is being created.')
+param administratorLoginPassword string
 
-@description('Number of days a backup is retained for point-in-time restores.')
+@description('Optional. The number of days a backup is retained.')
 @minValue(7)
 @maxValue(35)
-param backupRetentionDays int = 7
+param backupRetentionDays int = 35
 
-@description('The mode to create a new server.')
-@allowed(['Default', 'PointInTimeRestore', 'GeoRestore', 'Replica'
-])
+@description('Optional. The mode to create a new server.')
+@allowed(['Default', 'GeoRestore', 'PointInTimeRestore', 'Replica'])
 param createMode string = 'Default'
 
-@description('List of databases to create on server.')
-param databases array = []
-/*
-e.g.
-[{
-    name: 'postgres'            // Database names must contain 1-63 characters
-    charset: 'UTF8'             // Default: 'UTF8'
-    collation: 'en_US.UTF8'     //Default: 'en_US.UTF8'
-  }
-]
-*/
+@description('Optional. List of databases to create on server.')
+param databases databaseType[] = []
 
-@description('List of firewall rules to create on server.')
-param firewallRules array = []
-/*
-e.g.
-[{
-    name: 'AllowAll'
-    startIpAddress: ''
-    endIpAddress: ''
-  }
-]
-*/
+@description('Optional. List of firewall rules to create on server.')
+param firewallRules firewallRulesType[] = []
 
-@description('Toggle geo-redundant backups. Cannot be changed after server creation.')
-param geoRedundantBackup bool = true
+@description('Optional. List of virtualNetworkRules to create on postgres server.')
+param virtualNetworkRules virtualNetworkRuleType[] = []
 
-@description('Toggle infrastructure double encryption. Cannot be changed after server creation.')
-param infrastructureEncryption bool = false
+@description('Optional. Status showing whether the server enabled infrastructure encryption.')
+@allowed(['Enabled', 'Disabled'])
+param infrastructureEncryption string = 'Disabled'
 
-@description('Minimal supported TLS version.')
+@description('Optional. Enforce a minimal Tls version for the server.')
 @allowed(['TLS1_0', 'TLS1_1', 'TLS1_2', 'TLSEnforcementDisabled'])
 param minimalTlsVersion string = 'TLS1_2'
 
-@description('Toggle public network access.')
-param publicNetworkAccess bool = false
+var sslEnforcement = (minimalTlsVersion == 'TLSEnforcementDisabled') ? 'Disabled' : 'Enabled'
 
-@description('PostgreSQL version')
+@description('Optional. Whether or not public network access is allowed for this server.')
+@allowed(['Enabled','Disabled'])
+param publicNetworkAccess string = 'Disabled'
+
+@description('Optional. The version of the PostgreSQL server.')
 @allowed(['9.5', '9.6', '10', '10.0', '10.2', '11'])
-param sqlServerPostgresqlVersion string = '11'
+param version string = '11'
 
-@description('List of privateEndpoints to create on server.')
+@description('Optional. List of privateEndpoints to create on postgres server.')
 param privateEndpoints array = []
 
-@description('The point in time (ISO8601 format) of the source server to restore from.')
+@description('Optional. Enable or disable geo-redundant backups. It requires at least a GeneralPurpose or MemoryOptimized skuTier.')
+@allowed(['Enabled','Disabled'])
+param geoRedundantBackup string = 'Disabled'
+
+@description('Optional. Restore point creation time (ISO8601 format), specifying the time to restore from.')
 param restorePointInTime string = ''
 
-@description('List of server configurations to create on server.')
-param sqlServerConfigurations array = []
-/*
-e.g.
-[{
-    name: 'backend_flush_after'
-    value: '256'
-  }
-]
-*/
+@description('Optional. List of server configurations to create on server.')
+param serverConfigurations array = []
 
-@description('The name of the sku, typically, tier + family + cores, e.g. B_Gen4_1.')
+@description('Optional. The name of the sku, typically, tier + family + cores, e.g. B_Gen4_1, GP_Gen5_8.')
 param skuName string = 'GP_Gen5_2'
 
-@description('Storage size for Postgresql Single Server. Expressed in Mebibytes. Cannot be scaled down.')
-param sqlServerStorageSize int = 51200
+@description('Optional. Azure database for Postgres compute capacity in vCores (2,4,8,16,32)')
+param skuCapacity int = 2
 
-@description('The source server id to restore from. Leave empty if creating from scratch.')
+@description('Optional. Azure database for Postgres Sku Size ')
+param SkuSizeMB int = 5120
+
+@description('Optional. Azure database for Postgres pricing tier')
+@allowed(['Basic', 'GeneralPurpose', 'MemoryOptimized'])
+param SkuTier string = 'GeneralPurpose'
+
+@description('Optional. Azure database for Postgres sku family')
+param skuFamily string = 'Gen5'
+
+@description('Optional. Storage size for Postgresql Single Server. Expressed in Mebibytes. Cannot be scaled down.')
+param storageSizeGB int = 32
+
+@description('Optional. The source server resource id to restore from. It\'s required when "createMode" is "GeoRestore" or "Replica" or "PointInTimeRestore".')
 param sourceServerResourceId string = ''
 
-@description('Toggle SSL enforcement for incoming connections.')
-param sslEnforcement bool = true
+@description('Optional. Auto grow of storage.')
+param enableStorageAutogrow bool = true
 
-@description('Toggle storage autogrow.')
-param storageAutogrow bool = true
+@description('Validate input parameter for storageAutogrow')
+var validStorageAutogrow = createMode == 'Replica' ? '' : (enableStorageAutogrow ? 'Enabled' : 'Disabled')
 
 @description('Array of role assignment objects that contain the "roleDefinitionIdOrName" and "principalId" to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, provide either the display name of the role definition, or its fully qualified ID in the following format: "/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11"')
 param roleAssignments array = []
 
 var varPrivateEndpoints = [for endpoint in privateEndpoints: {
-  name: '${postgresqlSingleServer.name}-${endpoint.name}'
-  privateLinkServiceId: postgresqlSingleServer.id
+  name: '${postgresServer.name}-${endpoint.name}'
+  privateLinkServiceId: postgresServer.id
   groupIds: [
     endpoint.groupId
   ]
   subnetId: endpoint.subnetId
-  privateDnsZones: contains(endpoint, 'privateDnsZoneId') ? [
-    {
-      name: 'default'
-      zoneId: endpoint.privateDnsZoneId
-    }
-  ] : []
-  manualApprovalEnabled: contains(endpoint, 'manualApprovalEnabled') ? endpoint.manualApprovalEnabled : false
+  privateDnsZoneConfigs: endpoint.?privateDnsZoneConfigs ?? []
+  customNetworkInterfaceName: endpoint.?customNetworkInterfaceName ?? null
+  manualApprovalEnabled: endpoint.?manualApprovalEnabled ?? false
 }]
 
-resource postgresqlSingleServer 'Microsoft.DBforPostgreSQL/servers@2017-12-01' = {
-  name: toLower(sqlServerName)
+resource postgresServer 'Microsoft.DBforPostgreSQL/servers@2017-12-01' = {
+  name: serverName
   location: location
   tags: tags
   sku: {
     name: skuName
+    tier: SkuTier
+    capacity: skuCapacity
+    size: '${SkuSizeMB}'  //a string is expected here but a int for the storageProfile...
+    family: skuFamily
   }
   identity: {
     type: 'SystemAssigned'
   }
   properties: {
-    administratorLogin: sqlServerAdministratorLogin
-    administratorLoginPassword: sqlServerAdministratorPassword
     createMode: createMode
-    storageProfile: {
-      backupRetentionDays: backupRetentionDays
-      geoRedundantBackup: geoRedundantBackup ? 'Enabled' : 'Disabled'
-      storageMB: sqlServerStorageSize
-      storageAutogrow: createMode == 'Replica' ? null : (storageAutogrow ? 'Enabled' : 'Disabled')
-    }
-    version: sqlServerPostgresqlVersion
-    sslEnforcement: sslEnforcement ? 'Enabled' : 'Disabled'
-    publicNetworkAccess: publicNetworkAccess ? 'Enabled' : 'Disabled'
+    administratorLogin: administratorLogin
+    administratorLoginPassword: administratorLoginPassword
+    version: version
+    sslEnforcement: sslEnforcement
     minimalTlsVersion: minimalTlsVersion
-    infrastructureEncryption: infrastructureEncryption ? 'Enabled' : 'Disabled'
+    infrastructureEncryption: infrastructureEncryption
+    storageProfile: {
+      storageMB: storageSizeGB * 1024
+      backupRetentionDays: backupRetentionDays
+      geoRedundantBackup: geoRedundantBackup
+      enableStorageAutogrow: validStorageAutogrow ?? null
+    }
+    publicNetworkAccess: publicNetworkAccess
     sourceServerId: createMode != 'Default' ? sourceServerResourceId : null
     restorePointInTime: createMode == 'PointInTimeRestore' ? restorePointInTime : null
   }
 }
 
 @batchSize(1)
-resource postgresqlSingleServerFirewallRules 'Microsoft.DBforPostgreSQL/servers/firewallRules@2017-12-01' = [for firewallRule in firewallRules: {
+resource postgresServerFirewallRules 'Microsoft.DBforPostgreSQL/servers/firewallRules@2017-12-01' = [for firewallRule in firewallRules: {
   name: firewallRule.name
-  parent: postgresqlSingleServer
+  parent: postgresServer
 
   properties: {
     startIpAddress: firewallRule.startIpAddress
@@ -167,24 +165,32 @@ resource postgresqlSingleServerFirewallRules 'Microsoft.DBforPostgreSQL/servers/
   }
 }]
 
-@batchSize(1)
-resource postgresqlSingleServerDatabases 'Microsoft.DBforPostgreSQL/servers/databases@2017-12-01' = [for database in databases: {
-  name: database.name
-  parent: postgresqlSingleServer
-
+resource postgresServerVirtualNetworkRules 'Microsoft.DBforPostgreSQL/servers/virtualNetworkRules@2017-12-01' = [for virtualNetworkRule in virtualNetworkRules: {
+  name: virtualNetworkRule.name
   properties: {
-    charset: contains(database, 'charset') ? database.charset : 'UTF8'
-    collation: contains(database, 'collation') ? database.collation : 'English_United States.1252'
+    ignoreMissingVnetServiceEndpoint: virtualNetworkRule.ignoreMissingVnetServiceEndpoint
+    virtualNetworkSubnetId: virtualNetworkRule.virtualNetworkSubnetId
   }
 }]
 
 @batchSize(1)
-resource postgresqlSingleServerConfig 'Microsoft.DBforPostgreSQL/servers/configurations@2017-12-01' = [for configuration in sqlServerConfigurations: {
+resource postgresServerDatabases 'Microsoft.DBforPostgreSQL/servers/databases@2017-12-01' = [for database in databases: {
+  name: database.name
+  parent: postgresServer
+
+  properties: {
+    charset: database.?charset ?? 'utf32'
+    collation: database.?collation ?? 'utf32_general_ci'
+  }
+}]
+
+@batchSize(1)
+resource postgresServerConfig 'Microsoft.DBforPostgreSQL/servers/configurations@2017-12-01' = [for configuration in serverConfigurations: {
   name: configuration.name
   dependsOn: [
-    postgresqlSingleServerFirewallRules
+    postgresServerFirewallRules
   ]
-  parent: postgresqlSingleServer
+  parent: postgresServer
 
   properties: {
     value: configuration.value
@@ -193,19 +199,22 @@ resource postgresqlSingleServerConfig 'Microsoft.DBforPostgreSQL/servers/configu
 }]
 
 @batchSize(1)
-module postgresqlSingleServerRBAC 'modules/rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
-  name: 'postgresql-rbac-${uniqueString(deployment().name, location)}-${index}'
+module postgresServerRBAC 'modules/rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
+  dependsOn: [
+    postgresServer
+  ]
+  name: '${serverName}-rbac-${index}'
   params: {
-    description: contains(roleAssignment, 'description') ? roleAssignment.description : ''
+    description: roleAssignment.?description ?? ''
     principalIds: roleAssignment.principalIds
     roleDefinitionIdOrName: roleAssignment.roleDefinitionIdOrName
-    principalType: contains(roleAssignment, 'principalType') ? roleAssignment.principalType : ''
-    serverName: sqlServerName
+    principalType: roleAssignment.?principalType ?? ''
+    serverName: serverName
   }
 }]
 
-module postgresqlSingleServerPrivateEndpoint 'modules/privateEndpoint.bicep' = {
-  name: '${sqlServerName}-${uniqueString(deployment().name, location)}-private-endpoints'
+module postgresServerPrivateEndpoint 'modules/privateEndpoint.bicep' = {
+  name: '${serverName}-private-endpoints'
   params: {
     location: location
     privateEndpoints: varPrivateEndpoints
@@ -213,11 +222,127 @@ module postgresqlSingleServerPrivateEndpoint 'modules/privateEndpoint.bicep' = {
   }
 }
 
+// ------ Diagnostics settings ------
+// May the diagnosticSettings become a module? How can I share the type cross module?
+@description('Provide postgres diagnostic settings properties.')
+param diagnosticSettingsProperties diagnosticSettingsPropertiesType = {}
+
+@description('Enable postgres diagnostic settings resource.')
+var enablePostgresDiagnosticSettings  = (empty(diagnosticSettingsProperties.?diagnosticReceivers.?workspaceId) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?eventHub) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?storageAccountId) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?marketplacePartnerId)) ? false : true
+
+resource postgresDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enablePostgresDiagnosticSettings) {
+  name: '${serverName}-diagnostic-settings'
+  properties: {
+    eventHubAuthorizationRuleId: diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?EventHubAuthorizationRuleId ?? null
+    eventHubName:  diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?EventHubName ?? null
+    logAnalyticsDestinationType: diagnosticSettingsProperties.diagnosticReceivers.?logAnalyticsDestinationType ?? null
+    logs: diagnosticSettingsProperties.?logs ?? null
+    marketplacePartnerId: diagnosticSettingsProperties.diagnosticReceivers.?marketplacePartnerId ?? null
+    metrics: diagnosticSettingsProperties.?metrics ?? null
+    serviceBusRuleId: diagnosticSettingsProperties.?serviceBusRuleId ?? null
+    storageAccountId: diagnosticSettingsProperties.diagnosticReceivers.?storageAccountId ?? null
+    workspaceId: diagnosticSettingsProperties.diagnosticReceivers.?workspaceId ?? null
+  }
+  scope: postgresServer
+}
+
 @description('The resource group the Postgresql Single Server was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
 @description('FQDN of the generated Postgresql Single Server')
-output fqdn string = postgresqlSingleServer.properties.fullyQualifiedDomainName
+output fqdn string = createMode != 'Replica' ? postgresServer.properties.fullyQualifiedDomainName : ''
 
 @description('The resource ID of the Postgresql Single Server.')
-output id string = postgresqlSingleServer.id
+output id string = postgresServer.id
+
+
+
+// user-defined types
+type diagnosticSettingsRetentionPolicyType = {
+  @description('the number of days for the retention in days. A value of 0 will retain the events indefinitely.')
+  days: int
+  @description('a value indicating whether the retention policy is enabled.')
+  enabled: bool
+}
+
+type diagnosticSettingsLogsType = {
+  @description('Name of a Diagnostic Log category for a resource type this setting is applied to.')
+  category: string?
+  @description('Create firewall rule before the virtual network has vnet service endpoint enabled.')
+  categoryGroup: string?
+  @description('A value indicating whether this log is enabled.')
+  enabled: bool
+  @description('The retention policy for this log.')
+  retentionPolicy: diagnosticSettingsRetentionPolicyType?
+}
+
+type diagnosticSettingsMetricsType = {
+  @description('Name of a Diagnostic Metric category for a resource type this setting is applied to.')
+  category: string?
+  @description('A value indicating whether this log is enabled.')
+  enabled: bool
+  @description('The retention policy for this log.')
+  retentionPolicy: diagnosticSettingsRetentionPolicyType?
+  @description('the timegrain of the metric in ISO8601 format.')
+  timeGrain: string?
+}
+
+type diagnosticSettingsEventHubType = {
+  @description('The resource Id for the event hub authorization rule.')
+  EventHubAuthorizationRuleId: string
+  @description('The name of the event hub.')
+  EventHubName: string
+}
+
+type diagnosticSettingsReceiversType = {
+  @description('The settings required to use EventHub.')
+  eventHub: diagnosticSettingsEventHubType?
+  @description('A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or a target type created as follows: {normalized service identity}_{normalized category name}.')
+  logAnalyticsDestinationType: string?
+  @description('The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
+  marketplacePartnerId: string?
+  @description('The resource ID of the storage account to which you would like to send Diagnostic Logs.')
+  storageAccountId: string?
+  @description('The full ARM resource ID of the Log Analytics workspace to which you would like to send Diagnostic Logs.')
+  workspaceId: string?
+}
+
+type diagnosticSettingsPropertiesType = {
+  @description('The list of logs settings.')
+  logs: diagnosticSettingsLogsType[]?
+  @description('The list of metric settings.')
+  metrics: diagnosticSettingsMetricsType[]?
+  @description('The service bus rule Id of the diagnostic setting. This is here to maintain backwards compatibility.')
+  serviceBusRuleId: string?
+  @description('Destiantion options.')
+  diagnosticReceivers: diagnosticSettingsReceiversType?
+}
+
+type firewallRulesType = {
+  @minLength(1)
+  @maxLength(128)
+  @description('The resource name.')
+  name: string
+  @description('The start IP address of the server firewall rule. Must be IPv4 format.')
+  startIpAddress: string
+  @description('The end IP address of the server firewall rule. Must be IPv4 format.')
+  endIpAddress: string
+}
+
+type virtualNetworkRuleType = {
+  @minLength(1)
+  @maxLength(128)
+  @description('The resource name.')
+  name: string
+  @description('Create firewall rule before the virtual network has vnet service endpoint enabled.')
+  ignoreMissingVnetServiceEndpoint: bool
+  @description('The ARM resource id of the virtual network subnet.')
+  virtualNetworkSubnetId: string
+}
+
+@description('Optional. Database definition in the postrges instance.')
+type databaseType = {
+  name: string
+  charset: string?
+  collation: string?
+}
