@@ -198,6 +198,9 @@ resource mysqlServerConfig 'Microsoft.DBforMySQL/servers/configurations@2017-12-
 
 @batchSize(1)
 module mysqlRbac 'modules/rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
+  dependsOn: [
+    mysqlServer
+  ]
   name: '${serverName}-rbac-${index}'
   params: {
     description: roleAssignment.?description ?? ''

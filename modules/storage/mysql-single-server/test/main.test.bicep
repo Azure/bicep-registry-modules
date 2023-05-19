@@ -118,6 +118,9 @@ module test_03_replicaMysqlServer '../main.bicep' = {
 
 // Test 04 -  MySQL Deployment - with Role Assignments
 module test04 '../main.bicep' = {
+  dependsOn: [
+    dependencies
+   ]
   name: 'test04-${uniqueName}'
   params: {
     prefix: 'mysql-test04'
@@ -140,7 +143,7 @@ module test04 '../main.bicep' = {
       {
         name: 'endpoint1'
         subnetId: dependencies.outputs.subnetIds[0]
-        manualApprovalEnabled: true
+        manualApprovalEnabled: false
         groupId: 'mysqlServer'
       }
     ]
@@ -155,7 +158,7 @@ module test04 '../main.bicep' = {
     {
         name: 'allowip'
         startIpAddress: '10.0.0.1'
-        endIpAddress: '10.0.0.1'
+        endIpAddress: '10.0.0.254'
     }
     ]
     serverConfigurations: [
