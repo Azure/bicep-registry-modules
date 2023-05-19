@@ -16,11 +16,11 @@ param serverName string = name
 param tags object = {}
 
 @description('Required. The administrator username of the server. Can only be specified when createMode is \'Default\'.')
-param administratorLogin string = ''
+param administratorLogin string
 
 @secure()
 @description('Required. The administrator password of the server. Can only be specified when the server is being created.')
-param administratorLoginPassword string = ''
+param administratorLoginPassword string
 
 @description('Optional. The number of days a backup is retained.')
 @minValue(7)

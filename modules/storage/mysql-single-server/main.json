@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "8810475103278548264"
+      "templateHash": "16435649151215790393"
     }
   },
   "definitions": {
@@ -277,14 +277,12 @@
     },
     "administratorLogin": {
       "type": "string",
-      "defaultValue": "",
       "metadata": {
         "description": "Required. The administrator username of the server. Can only be specified when createMode is 'Default'."
       }
     },
     "administratorLoginPassword": {
       "type": "securestring",
-      "defaultValue": "",
       "metadata": {
         "description": "Required. The administrator password of the server. Can only be specified when the server is being created."
       }
