@@ -30,11 +30,7 @@ param sqlServerAdministratorPassword string
 param backupRetentionDays int = 7
 
 @description('The mode to create a new server.')
-@allowed([
-  'Default'
-  'PointInTimeRestore'
-  'GeoRestore'
-  'Replica'
+@allowed(['Default', 'PointInTimeRestore', 'GeoRestore', 'Replica'
 ])
 param createMode string = 'Default'
 
@@ -69,26 +65,14 @@ param geoRedundantBackup bool = true
 param infrastructureEncryption bool = false
 
 @description('Minimal supported TLS version.')
-@allowed([
-  'TLS1_0'
-  'TLS1_1'
-  'TLS1_2'
-  'TLSEnforcementDisabled'
-])
+@allowed(['TLS1_0', 'TLS1_1', 'TLS1_2', 'TLSEnforcementDisabled'])
 param minimalTlsVersion string = 'TLS1_2'
 
 @description('Toggle public network access.')
 param publicNetworkAccess bool = false
 
 @description('PostgreSQL version')
-@allowed([
-  '9.5'
-  '9.6'
-  '10'
-  '10.0'
-  '10.2'
-  '11'
-])
+@allowed(['9.5', '9.6', '10', '10.0', '10.2', '11'])
 param sqlServerPostgresqlVersion string = '11'
 
 @description('List of privateEndpoints to create on server.')
