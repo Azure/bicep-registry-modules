@@ -1,17 +1,7 @@
 param cosmosDBAccountName string
 param enableServerless bool
-type objectOfString = {
-  *: string
-}
-type casandrakeyspace ={
-  enableThroughputAutoScale: bool
-  @maxValue(100000)
-  @minValue(400)
-  throughput: int
-  tables: {}
-  tags: objectOfString
-}
-param keyspaceConfig casandrakeyspace
+
+param keyspaceConfig object
 param keyspaceName string
 
 resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
@@ -23,31 +13,27 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
       resource: {
         id: keyspaceName
       }
-      options: enableServerless ? {} : (keyspaceConfig.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: keyspaceConfig.throughput } } :  { throughput: keyspaceConfig.throughput } )
+      options: enableServerless ? {} : (keyspaceConfig.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: keyspaceConfig.throughput } } : { throughput: keyspaceConfig.throughput })
     }
+    tags: keyspaceConfig.tags
 
-    resource cassandraTables 'tables' = [for table in tables: {
-      name: table.name
+    resource cassandraTables 'tables' = [for table in items(keyspaceConfig.?tables ?? {}): {
+      name: table.key
       properties: {
         resource: {
-          id: table.name
-          // https://github.com/Azure/azure-rest-api-specs/issues/19695
-          // analyticalStorageTtl: contains(table, 'analyticalStorageTtl') ? table.analyticalStorageTtl : null
-          defaultTtl: table.?defaultTtl ?? null
+          id: table.key
+          //TODO: check if https://github.com/Azure/azure-rest-api-specs/issues/19695 is still relevant
+          analyticalStorageTtl: table.value.?analyticalStorageTtl
+          defaultTtl: table.value.?defaultTtl
           schema: {
-            columns: table.?schemaColumns ?? []
-            partitionKeys: table.?schemaPartitionKeys ?? []
-            clusterKeys: table.?schemaClusteringKeys ?? []
+            columns: table.?value.?schema.?columns
+            partitionKeys: table.?value.?schema.?partitionKeys
+            clusterKeys: table.?value.?schema.?clusterKeys
           }
         }
-        options: !enableServerless ? (contains(table, 'autoscaleMaxThroughput') ? {
-          autoscaleSettings: {
-            maxThroughput: table.autoscaleMaxThroughput
-          }
-        } : contains(table, 'manualProvisionedThroughput') ? {
-          throughput: table.manualProvisionedThroughput
-        } : {}) : {}
+        options: enableServerless ? {} : (table.value.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: table.value.throughput } } : { throughput: table.value.throughput })
       }
+      tags: table.value.tags
     }]
   }
 }

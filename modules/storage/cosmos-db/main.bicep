@@ -5,7 +5,7 @@ param backendApi string = 'sql'
 @description('The name of the Cosmos DB account. Character limit: 3-44, valid characters: lowercase letters, numbers, and hyphens. It must me unique across Azure.')
 @maxLength(44)
 @minLength(3)
-param name string = uniqueString(resourceGroup().id, resourceGroup().location)
+param name string = uniqueString(resourceGroup().id, resourceGroup().location, 'cosmosdb', backendApi)
 
 @description('Enables automatic failover of the write region in the rare event that the region is unavailable due to an outage. Automatic failover will result in a new write region for the account and is chosen based on the failover priorities configured for the account.')
 param enableAutomaticFailover bool = true
@@ -43,27 +43,21 @@ param locations {
 @allowed([ '3.2', '3.6', '4.0', '4.2' ])
 param MongoDBServerVersion string = '4.2'
 
-@description('''
-List of CORS rules. Each CORS rule allows or denies requests from a set of origins to a Cosmos DB account or a database.
-parameters:
-- Name: allowedOrigins
-  Description: The origin domains that are permitted to make a request against the service via CORS.
-- Name: allowedMethods
-  Description: The methods (HTTP request verbs) that the origin domain may use for a CORS request. (comma separated)
-- Name: allowedHeaders
-  Description: The response headers that should be sent back to the client for CORS requests. (comma separated)
-- Name: exposedHeaders
-  Description: The response headers that should be exposed to the client for CORS requests. (comma separated)
-- Name: maxAgeInSeconds
-  Description: The maximum amount time that a browser should cache the preflight OPTIONS request.
-''')
-param cors {
+type corsType = {
+  @description('The origin domains that are permitted to make a request against the service via CORS.')
   allowedOrigins: string
+  @description('The methods (HTTP request verbs) that the origin domain may use for a CORS request. (comma separated)')
   allowedMethods: string?
+  @description('The response headers that should be sent back to the client for CORS requests. (comma separated)')
   allowedHeaders: string?
+  @description('The response headers that should be exposed to the client for CORS requests. (comma separated)')
   exposedHeaders: string?
+  @description('The maximum amount time that a browser should cache the preflight OPTIONS request.')
   maxAgeInSeconds: int?
-}[] = []
+}
+
+@description('List of CORS rules. Each CORS rule allows or denies requests from a set of origins to a Cosmos DB account or a database')
+param cors corsType[] = []
 
 @description('The mode of the Cosmos Account creation. Set to Restore to restore from an existing account.')
 @allowed([ 'Default', 'Restore' ])
@@ -73,7 +67,7 @@ param createMode string = 'Default'
 param disableKeyBasedMetadataWriteAccess bool = false
 
 @description('Whether requests from public network allowed.')
-param enablePublicNetworkAccess bool = 'Enabled'
+param enablePublicNetworkAccess bool = true
 
 @allowed([ 'AzureServices', 'None' ])
 @description('Indicates what services are allowed to bypass firewall checks.')
@@ -114,32 +108,70 @@ param enableAnalyticalStorage bool = false
 @allowed([ 'FullFidelity', 'WellDefined' ])
 param analyticalStorageSchemaType string = 'WellDefined'
 
-type casandrakeyspace = {
-  enableThroughputAutoScale: bool
-  @maxValue(100000)
-  @minValue(400)
-  throughput: int
-  tables:{}
-  tags: objectOfString
+@description('Schema of the Cosmos DB Cassandra table.')
+type schema = {
+  @description('List of Cassandra table columns.')
+  columns: {
+    name: string
+    type: string
+  }[]?
+  @description('List of Cassandra table partition keys.')
+  partitionKeys: {
+    name: string
+  }[]?
+  @description('List of Cassandra table cluster keys.')
+  clusterKeys: {
+    name: string
+    orderBy: string
+  }[]?
 }
 
-type objectOfString = {
-  *: string
+@description('Cassandra throughput configurations.')
+type throughputConfig = {
+  @description('Flag to enable/disable automatic throughput scaling.')
+  enableAutoScale: bool
+  @maxValue(100000)
+  @minValue(400)
+  @description('''
+  When enableAutoScale is set to true, this parameter is the static throughput capability of Cassandra keyspace expressed in units of 100 requests per second. 400 RU/s is the minimum for production workloads. It ranges from 400 to 100,000 inclusive.
+  When enableAutoScale is set to false, this parameter is the maximum of the autoscaled throughput capability of Cassandra keyspace. It would scale down to a minimum of 10% of this max throughput based on usage. It ranges from 4000 to 100,000 inclusive.
+  ''')
+  throughput: int
+}
+
+@description('Cassandra table configurations.')
+type cassandraTable = {
+  @description('Throughtput configuration.')
+  throughput: throughputConfig
+  @description('Default time to live (TTL) in seconds.')
+  defaultTtl: int?
+  @description('The analytical storage TTL in seconds.')
+  analyticalStorageTtl: int?
+  @description('The schema of the Cassandra table.')
+  schema: schema?
+  @description('Tags for the Cassandra table.')
+  tags: { *: string }
+}
+
+@description('Cassandra keyspaces configurations.')
+type cassandrakeyspace = {
+  @description('Throughtput configuration.')
+  throughput: throughputConfig
+  @description('''
+  The object of Cassandra table configurations.
+  The key of each element is the name of the  table.
+  The value of each element is an configuration object.''')
+  tables: { *: cassandraTable }
+  @description('Tags for the Cassandra keyspace.')
+  tags: { *: string }
 }
 
 @description('''
 The object of Cassandra keyspaces configurations with tables.
 The key of each element is the name of the Cassandra keyspace.
-The value of each element is an object with the following parameters:
-- Name: enableThroughputAutoScale
-  Description: Flag to enable/disable automatic throughput scaling for this keyspace.
-- Name: throughput
-  Description: When enableThroughputAutoScale is set to true, this parameter is the static throughput capability of Cassandra keyspace expressed in units of 100 requests per second. 400 RU/s is the minimum for production workloads. It ranges from 400 to 100,000 inclusive.
-               When enableThroughputAutoScale is set to false, this parameter is the maximum of the autoscaled throughput capability of Cassandra keyspace. It would scale down to a minimum of 10% of this max throughput based on usage. It ranges from 4000 to 100,000 inclusive.
-- Name: tags
-  Description: The tags that will be assigned to the Cassandra keyspace.
+The value of each element is an configuration object.
 ''')
-param cassandraKeyspaces { *: casandrakeyspace } = {}
+param cassandraKeyspaces { *: cassandrakeyspace } = {}
 
 @description('The list of SQL databases configurations with containers, its triggers, storedProcedures and userDefinedFunctions.')
 param sqlDatabases array = []
@@ -173,7 +205,7 @@ param userAssignedIdentities string[] = []
 param privateEndpoints array = []
 
 @description('List of key-value pairs that describe the resource.')
-param tags object = {}
+param tags { *: string } = {}
 
 @allowed([
   'CanNotDelete'
@@ -286,14 +318,15 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
 }
 
 @batchSize(1)
-module cosmosDBAccount_cassandraKeyspaces 'modules/cassandra.bicep' = [for keyspace in cassandraKeyspaces: if (backendApi == 'cassandra') {
+module cosmosDBAccount_cassandraKeyspaces 'modules/cassandra.bicep' = [for keyspace in items(cassandraKeyspaces): if (backendApi == 'cassandra') {
   dependsOn: [ cosmosDBAccount ]
 
   name: keyspace.key
   params: {
     cosmosDBAccountName: name
-    keySpace: keyspace.value
+    keyspaceConfig: keyspace.value
     enableServerless: enableServerless
+    keyspaceName: keyspace.key
   }
 }]
 
