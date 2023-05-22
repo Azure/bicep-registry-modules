@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "5695772206671444510"
+      "templateHash": "1761833960528350829"
     }
   },
   "definitions": {
@@ -644,7 +644,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "15700940952334310761"
+              "templateHash": "16927135025396608320"
             }
           },
           "parameters": {
@@ -700,7 +700,7 @@
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
               "scope": "[format('Microsoft.AppConfiguration/configurationStores/{0}', last(split(parameters('resourceId'), '/')))]",
-              "name": "[guid(last(split(parameters('resourceId'), '/')), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+              "name": "[guid(last(split(parameters('resourceId'), '/')), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'), uniqueString(resourceGroup().id))]",
               "properties": {
                 "description": "[parameters('description')]",
                 "roleDefinitionId": "[variables('roleDefinitionId')]",
