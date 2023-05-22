@@ -233,15 +233,15 @@ var enablePostgresDiagnosticSettings  = (empty(diagnosticSettingsProperties.?dia
 resource postgresDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enablePostgresDiagnosticSettings) {
   name: '${serverName}-diagnostic-settings'
   properties: {
-    eventHubAuthorizationRuleId: diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?EventHubAuthorizationRuleId ?? null
-    eventHubName:  diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?EventHubName ?? null
-    logAnalyticsDestinationType: diagnosticSettingsProperties.diagnosticReceivers.?logAnalyticsDestinationType ?? null
-    logs: diagnosticSettingsProperties.?logs ?? null
-    marketplacePartnerId: diagnosticSettingsProperties.diagnosticReceivers.?marketplacePartnerId ?? null
-    metrics: diagnosticSettingsProperties.?metrics ?? null
-    serviceBusRuleId: diagnosticSettingsProperties.?serviceBusRuleId ?? null
-    storageAccountId: diagnosticSettingsProperties.diagnosticReceivers.?storageAccountId ?? null
-    workspaceId: diagnosticSettingsProperties.diagnosticReceivers.?workspaceId ?? null
+    eventHubAuthorizationRuleId: diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?EventHubAuthorizationRuleId
+    eventHubName:  diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?EventHubName
+    logAnalyticsDestinationType: diagnosticSettingsProperties.diagnosticReceivers.?logAnalyticsDestinationType
+    logs: diagnosticSettingsProperties.?logs
+    marketplacePartnerId: diagnosticSettingsProperties.diagnosticReceivers.?marketplacePartnerId
+    metrics: diagnosticSettingsProperties.?metrics
+    serviceBusRuleId: diagnosticSettingsProperties.?serviceBusRuleId
+    storageAccountId: diagnosticSettingsProperties.diagnosticReceivers.?storageAccountId
+    workspaceId: diagnosticSettingsProperties.diagnosticReceivers.?workspaceId
   }
   scope: postgresServer
 }
@@ -258,6 +258,7 @@ output id string = postgresServer.id
 
 
 // user-defined types
+@description('The retention policy for this log or metric.')
 type diagnosticSettingsRetentionPolicyType = {
   @description('the number of days for the retention in days. A value of 0 will retain the events indefinitely.')
   days: int
@@ -265,6 +266,7 @@ type diagnosticSettingsRetentionPolicyType = {
   enabled: bool
 }
 
+@description('The list of logs settings.')
 type diagnosticSettingsLogsType = {
   @description('Name of a Diagnostic Log category for a resource type this setting is applied to.')
   category: string?
@@ -276,17 +278,19 @@ type diagnosticSettingsLogsType = {
   retentionPolicy: diagnosticSettingsRetentionPolicyType?
 }
 
+@description('The list of metrics settings.')
 type diagnosticSettingsMetricsType = {
   @description('Name of a Diagnostic Metric category for a resource type this setting is applied to.')
   category: string?
-  @description('A value indicating whether this log is enabled.')
+  @description('A value indicating whether this metric is enabled.')
   enabled: bool
-  @description('The retention policy for this log.')
+  @description('The retention policy for metric.')
   retentionPolicy: diagnosticSettingsRetentionPolicyType?
   @description('the timegrain of the metric in ISO8601 format.')
   timeGrain: string?
 }
 
+@description('The settings required to use EventHub as destination.')
 type diagnosticSettingsEventHubType = {
   @description('The resource Id for the event hub authorization rule.')
   EventHubAuthorizationRuleId: string
@@ -294,8 +298,8 @@ type diagnosticSettingsEventHubType = {
   EventHubName: string
 }
 
+@description('Destiantion options.')
 type diagnosticSettingsReceiversType = {
-  @description('The settings required to use EventHub.')
   eventHub: diagnosticSettingsEventHubType?
   @description('A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or a target type created as follows: {normalized service identity}_{normalized category name}.')
   logAnalyticsDestinationType: string?
@@ -308,13 +312,10 @@ type diagnosticSettingsReceiversType = {
 }
 
 type diagnosticSettingsPropertiesType = {
-  @description('The list of logs settings.')
   logs: diagnosticSettingsLogsType[]?
-  @description('The list of metric settings.')
   metrics: diagnosticSettingsMetricsType[]?
   @description('The service bus rule Id of the diagnostic setting. This is here to maintain backwards compatibility.')
   serviceBusRuleId: string?
-  @description('Destiantion options.')
   diagnosticReceivers: diagnosticSettingsReceiversType?
 }
 
