@@ -1,11 +1,41 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "1.10-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
+    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.16.2.56959",
-      "templateHash": "16913245589958538752"
+      "version": "0.17.1.54307",
+      "templateHash": "2260315475960566740"
+    }
+  },
+  "definitions": {
+    "appConfigurationStoreKeyValueType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "contentType": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "See as examples: https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-leverage-json-content-type#valid-json-content-type"
+          }
+        },
+        "value": {
+          "type": "string",
+          "nullable": true
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "description": "Create a key-value pair in appConfiguration."
+      }
     }
   },
   "parameters": {
@@ -34,6 +64,17 @@
       ],
       "metadata": {
         "description": "The SKU name of the configuration store."
+      }
+    },
+    "createMode": {
+      "type": "string",
+      "defaultValue": "Default",
+      "allowedValues": [
+        "Default",
+        "Recover"
+      ],
+      "metadata": {
+        "description": "Indicates whether the configuration store need to be recovered."
       }
     },
     "softDeleteRetentionInDays": {
@@ -68,6 +109,16 @@
       "defaultValue": false,
       "metadata": {
         "description": "Enables the purge protection feature for the configuration store.  This field only works for \"Standard\" sku."
+      }
+    },
+    "appConfigurationStoreKeyValues": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/appConfigurationStoreKeyValueType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "List of key-value pair to add in the appConfiguration"
       }
     },
     "identityClientId": {
@@ -251,8 +302,8 @@
       }
     ]
   },
-  "resources": [
-    {
+  "resources": {
+    "appConfiguration": {
       "type": "Microsoft.AppConfiguration/configurationStores",
       "apiVersion": "2023-03-01",
       "name": "[parameters('name')]",
@@ -261,16 +312,17 @@
         "name": "[parameters('skuName')]"
       },
       "properties": {
+        "createMode": "[parameters('createMode')]",
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "disableLocalAuth": "[parameters('disableLocalAuth')]",
-        "enablePurgeProtection": "[if(equals(parameters('skuName'), 'Standard'), parameters('enablePurgeProtection'), null())]",
+        "enablePurgeProtection": "[if(and(equals(parameters('skuName'), 'Standard'), parameters('enablePurgeProtection')), true(), false())]",
         "encryption": "[if(and(not(empty(parameters('keyVaultKeyIdentifier'))), not(empty(parameters('identityClientId')))), createObject('keyVaultProperties', createObject('keyIdentifier', parameters('keyVaultKeyIdentifier'), 'identityClientId', parameters('identityClientId'))), null())]",
         "softDeleteRetentionInDays": "[if(equals(parameters('skuName'), 'Standard'), parameters('softDeleteRetentionInDays'), null())]"
       },
       "tags": "[parameters('tags')]",
       "identity": "[if(contains(parameters('identityType'), 'UserAssigned'), createObject('type', parameters('identityType'), 'userAssignedIdentities', if(contains(parameters('identityType'), 'UserAssigned'), parameters('userAssignedIdentities'), createObject())), createObject('type', parameters('identityType')))]"
     },
-    {
+    "appConfigurationReplicas": {
       "copy": {
         "name": "appConfigurationReplicas",
         "count": "[length(parameters('replicas'))]",
@@ -282,10 +334,27 @@
       "name": "[format('{0}/{1}', parameters('name'), parameters('replicas')[copyIndex()].name)]",
       "location": "[parameters('replicas')[copyIndex()].location]",
       "dependsOn": [
-        "[resourceId('Microsoft.AppConfiguration/configurationStores', parameters('name'))]"
+        "appConfiguration"
       ]
     },
-    {
+    "appConfigurationStoreKeyValue": {
+      "copy": {
+        "name": "appConfigurationStoreKeyValue",
+        "count": "[length(parameters('appConfigurationStoreKeyValues'))]"
+      },
+      "type": "Microsoft.AppConfiguration/configurationStores/keyValues",
+      "apiVersion": "2023-03-01",
+      "name": "[format('{0}/{1}', parameters('name'), parameters('appConfigurationStoreKeyValues')[copyIndex()].name)]",
+      "properties": {
+        "contentType": "[tryGet(parameters('appConfigurationStoreKeyValues')[copyIndex()], 'contentType')]",
+        "tags": "[tryGet(parameters('appConfigurationStoreKeyValues')[copyIndex()], 'tags')]",
+        "value": "[tryGet(parameters('appConfigurationStoreKeyValues')[copyIndex()], 'value')]"
+      },
+      "dependsOn": [
+        "appConfiguration"
+      ]
+    },
+    "appConfigurationDiagnosticSettings": {
       "condition": "[or(or(or(not(empty(parameters('diagnosticStorageAccountId'))), not(empty(parameters('diagnosticWorkspaceId')))), not(empty(parameters('diagnosticEventHubAuthorizationRuleId')))), not(empty(parameters('diagnosticEventHubName'))))]",
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
@@ -300,10 +369,10 @@
         "logs": "[variables('diagnosticsLogsWithDefaults')]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.AppConfiguration/configurationStores', parameters('name'))]"
+        "appConfiguration"
       ]
     },
-    {
+    "appConfiguration_lock": {
       "condition": "[not(equals(parameters('lock'), 'NotSpecified'))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
@@ -314,10 +383,10 @@
         "notes": "[if(equals(parameters('lock'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot modify the resource or child resources.')]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.AppConfiguration/configurationStores', parameters('name'))]"
+        "appConfiguration"
       ]
     },
-    {
+    "appConfiguration_rbac": {
       "copy": {
         "name": "appConfiguration_rbac",
         "count": "[length(parameters('roleAssignments'))]"
@@ -349,12 +418,14 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "6726558242263499767"
+              "version": "0.17.1.54307",
+              "templateHash": "9669063533884523832"
             }
           },
           "parameters": {
@@ -394,8 +465,14 @@
               "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]"
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "appConfiguration": {
+              "existing": true,
+              "type": "Microsoft.AppConfiguration/configurationStores",
+              "apiVersion": "2023-03-01",
+              "name": "[last(split(parameters('resourceId'), '/'))]"
+            },
+            "roleAssignment": {
               "copy": {
                 "name": "roleAssignment",
                 "count": "[length(parameters('principalIds'))]"
@@ -411,14 +488,14 @@
                 "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]"
               }
             }
-          ]
+          }
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.AppConfiguration/configurationStores', parameters('name'))]"
+        "appConfiguration"
       ]
     },
-    {
+    "appConfiguration_privateEndpoint": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}-private-endpoints', parameters('name'), uniqueString(deployment().name, parameters('location')))]",
@@ -440,12 +517,14 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "5781174049967211056"
+              "version": "0.17.1.54307",
+              "templateHash": "13282094562279343646"
             }
           },
           "parameters": {
@@ -476,8 +555,8 @@
               }
             ]
           },
-          "resources": [
-            {
+          "resources": {
+            "privateEndpoint": {
               "copy": {
                 "name": "privateEndpoint",
                 "count": "[length(variables('varPrivateEndpoints'))]",
@@ -498,7 +577,7 @@
                 "customNetworkInterfaceName": "[variables('varPrivateEndpoints')[copyIndex()].customNetworkInterfaceName]"
               }
             },
-            {
+            "privateDnsZoneGroup": {
               "copy": {
                 "name": "privateDnsZoneGroup",
                 "count": "[length(variables('varPrivateEndpoints'))]",
@@ -523,17 +602,17 @@
                 ]
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Network/privateEndpoints', format('{0}-{1}', variables('varPrivateEndpoints')[copyIndex()].name, uniqueString(variables('varPrivateEndpoints')[copyIndex()].name, variables('varPrivateEndpoints')[copyIndex()].subnetId, variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId)))]"
+                "[format('privateEndpoint[{0}]', copyIndex())]"
               ]
             }
-          ]
+          }
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.AppConfiguration/configurationStores', parameters('name'))]"
+        "appConfiguration"
       ]
     }
-  ],
+  },
   "outputs": {
     "id": {
       "type": "string",
@@ -554,7 +633,7 @@
       "metadata": {
         "description": "Object Id of system assigned managed identity for Cosmos DB account (if enabled)."
       },
-      "value": "[if(contains(parameters('identityType'), 'SystemAssigned'), reference(resourceId('Microsoft.AppConfiguration/configurationStores', parameters('name')), '2023-03-01', 'full').identity.principalId, '')]"
+      "value": "[if(contains(parameters('identityType'), 'SystemAssigned'), reference('appConfiguration', '2023-03-01', 'full').identity.principalId, '')]"
     }
   }
 }

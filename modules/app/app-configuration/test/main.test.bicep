@@ -124,3 +124,29 @@ module test05 '../main.bicep' = {
     identityClientId: dependencies.outputs.identityClientIds[0]
   }
 }
+
+
+// Test 06 -  Basic Deployment - Minimal Parameters
+module test06 '../main.bicep' = {
+  name: 'test06-${uniqueName}'
+  params: {
+    location: location
+    skuName: 'Standard'
+    name: 'test06-${uniqueName}'
+    appConfigurationStoreKeyValues: [{
+      name: 'json-example'
+      value: '{"ObjectSetting":{"Targeting":{"Default":true,"Level":"Information"}}}'
+      tags: {
+        example: 'use a json'
+      }
+      contentType: 'application/json'
+    }, {
+      name: 'key-1'
+      value: 'value-1'
+      tags: {
+        example: 'use a key-value pair'
+      }
+    }
+  ]
+  }
+}

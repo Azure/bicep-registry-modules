@@ -10,6 +10,10 @@ param name string = 'appconf-${uniqueString(resourceGroup().id, subscription().i
 @allowed([ 'Free', 'Standard' ])
 param skuName string = 'Free'
 
+@description('Indicates whether the configuration store need to be recovered.')
+@allowed([ 'Default', 'Recover' ])
+param createMode string = 'Default'
+
 @minValue(1)
 @maxValue(7)
 @description('The amount of time in days that the configuration store will be retained when it is soft deleted.  This field only works for "Standard" sku.')
@@ -24,6 +28,9 @@ param disableLocalAuth bool = false
 
 @description('Enables the purge protection feature for the configuration store.  This field only works for "Standard" sku.')
 param enablePurgeProtection bool = false
+
+@description('List of key-value pair to add in the appConfiguration')
+param appConfigurationStoreKeyValues appConfigurationStoreKeyValueType[] = []
 
 @description('The client id of the identity which will be used to access key vault.')
 param identityClientId string = ''
@@ -131,9 +138,10 @@ resource appConfiguration 'Microsoft.AppConfiguration/configurationStores@2023-0
     name: skuName
   }
   properties: {
+    createMode: createMode
     publicNetworkAccess: publicNetworkAccess
     disableLocalAuth: disableLocalAuth
-    enablePurgeProtection: (skuName == 'Standard') ? enablePurgeProtection : null
+    enablePurgeProtection: (skuName == 'Standard' && enablePurgeProtection) ? true : false
     encryption: !empty(keyVaultKeyIdentifier) && !empty(identityClientId) ? {
       keyVaultProperties: {
         keyIdentifier: keyVaultKeyIdentifier
@@ -154,6 +162,16 @@ resource appConfigurationReplicas 'Microsoft.AppConfiguration/configurationStore
   name: replica.name
   parent: appConfiguration
   location: replica.location
+}]
+
+resource appConfigurationStoreKeyValue 'Microsoft.AppConfiguration/configurationStores/keyValues@2023-03-01' = [ for appConfiguartion in appConfigurationStoreKeyValues: {
+  name: appConfiguartion.name
+  parent: appConfiguration
+  properties: {
+    contentType: appConfiguartion.?contentType
+    tags: appConfiguartion.?tags
+    value: appConfiguartion.?value
+  }
 }]
 
 resource appConfigurationDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(diagnosticStorageAccountId) || !empty(diagnosticWorkspaceId) || !empty(diagnosticEventHubAuthorizationRuleId) || !empty(diagnosticEventHubName)) {
@@ -206,3 +224,14 @@ output name string = appConfiguration.name
 
 @description('Object Id of system assigned managed identity for Cosmos DB account (if enabled).')
 output systemAssignedIdentityPrincipalId string = contains(identityType, 'SystemAssigned') ? appConfiguration.identity.principalId : ''
+
+
+// user defined types
+@description('Create a key-value pair in appConfiguration.')
+type appConfigurationStoreKeyValueType = {
+  name: string
+  @description('See as examples: https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-leverage-json-content-type#valid-json-content-type')
+  contentType: string?
+  value: string?
+  tags: object?
+}
