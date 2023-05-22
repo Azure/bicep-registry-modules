@@ -13,8 +13,8 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-05-01' = [for 
       {
         name: endpoint.name
         properties: {
-          privateLinkServiceId: endpoint.privateLinkServiceId ?? null
-          groupIds: endpoint.groupIds ?? null
+          privateLinkServiceId: endpoint.privateLinkServiceId
+          groupIds: endpoint.groupIds
         }
       }
     ]
@@ -22,15 +22,15 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-05-01' = [for 
       {
         name: endpoint.name
         properties: {
-          privateLinkServiceId: endpoint.?privateLinkServiceId ?? null
-          groupIds: endpoint.groupIds ?? null
+          privateLinkServiceId: endpoint.?privateLinkServiceId
+          groupIds: endpoint.groupIds
         }
       }
     ] : null
     subnet: {
       id: endpoint.subnetId
     }
-    customNetworkInterfaceName: endpoint.?customNetworkInterfaceName ?? null
+    customNetworkInterfaceName: endpoint.?customNetworkInterfaceName
   }
 }]
 
