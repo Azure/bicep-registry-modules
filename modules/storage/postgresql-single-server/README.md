@@ -61,12 +61,12 @@ Deploy a Postgresql Single Server with minimal parameters
 @secure
 param administratorLoginPassword string
 
-module postgresqlSingleServer 'br/public:storage/postgresql-single-server:1.1.1' = {
+module postgresqlSingleServer 'br/public:storage/postgresql-single-server:1.1.0' = {
   name: 'postgresqlSingleServer'
   params: {
-    sqlServerAdministratorLogin: 'testlogin'
-    sqlServerAdministratorPassword: administratorLoginPassword
-    sqlServerName: 'postgresql-${uniqueString(deployment().name, location)}'
+    prefix: 'postgresql-test01'
+    administratorLogin: 'testlogin'
+    administratorLoginPassword: administratorLoginPassword
   }
 }
 ```
@@ -79,25 +79,28 @@ Deploy a Postgresql Single Server primary + replica set
 @secure
 param administratorLoginPassword string
 
-module primaryPostgresqlServer 'br/public:storage/postgresql-single-server:1.1.1' = {
+module primaryPostgresqlServer 'br/public:storage/postgresql-single-server:1.1.0' = {
   name: 'primary-server'
   params: {
+    prefix: 'primary-server'
     location: location
-    sqlServerAdministratorLogin: 'testlogin'
-    sqlServerAdministratorPassword: administratorLoginPassword
-    sqlServerName: 'primary-server-${uniqueString(deployment().name, location)}'
+    administratorLogin: 'testlogin'
+    administratorLoginPassword: administratorLoginPassword
   }
 }
 
-module replicaPostgresqlServer 'br/public:storage/postgresql-single-server:1.1.1' = {
+module replicaPostgresqlServer 'br/public:storage/postgresql-single-server:1.1.0' = {
   name: 'replica-server'
+  dependsOn: [
+    primaryPostgresqlServer
+  ]
   params: {
+    prefix: 'replica-server'
     location: location
     createMode: 'Replica'
     sourceServerResourceId: primaryPostgresqlServer.outputs.id
-    sqlServerAdministratorLogin: 'testlogin'
-    sqlServerAdministratorPassword: administratorLoginPassword
-    sqlServerName: 'replica-server-${uniqueString(deployment().name, location)}'
+    administratorLogin: 'testlogin'
+    administratorLoginPassword: administratorLoginPassword
   }
 }
 ```
@@ -136,7 +139,7 @@ var firewallRules = [
   }
 ]
 
-var sqlServerConfigurations = [
+var serverConfigurations = [
   {
     name: 'backend_flush_after'
     value: '256'
@@ -151,18 +154,18 @@ var sqlServerConfigurations = [
   }
 ]
 
-module postgresqlSingleServer 'br/public:storage/postgresql-single-server:1.1.1' = {
+module postgresqlSingleServer 'br/public:storage/postgresql-single-server:1.1.0' = {
   name: 'postgresqlSingleServer'
   params: {
+    prefix: 'postgresql-test02'
     location: location
-    publicNetworkAccess: true
+    publicNetworkAccess: 'Enabled'
     tags: tags
-    sqlServerAdministratorLogin: 'testlogin'
-    sqlServerAdministratorPassword: administratorLoginPassword
-    sqlServerName: 'postgresql-${uniqueString(deployment().name, location)}'
+    administratorLogin: 'testlogin'
+    administratorLoginPassword: administratorLoginPassword
     databases: databases
     firewallRules: firewallRules
-    sqlServerConfigurations: sqlServerConfigurations
+    serverConfigurations: serverConfigurations
   }
 }
 ```
