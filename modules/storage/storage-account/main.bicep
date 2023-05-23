@@ -28,7 +28,7 @@ param blobType string = 'blockBlob'
 @description('Indicates whether change feed event logging is enabled for the Blob service.')
 param changeFeedEnabled bool = false
 
-@description('Versioning is enabled if set to true. ')
+@description('Versioning is enabled if set to true.')
 param versioningEnabled bool = false
 
 @description('Allows https traffic only to storage service if sets to true.')
@@ -97,10 +97,10 @@ param destBlobType string = blobType
 @description('Indicates whether change feed event logging is enabled for the Blob service.')
 param destChangeFeedEnabled bool = true
 
-@description('Versioning is enabled if set to true. To the destination storage account, set true. ')
+@description('Versioning is enabled if set to true. To the destination storage account, set true.')
 param destVersioningEnabled bool = true
 
-@description('The SKU name to provide for account creation. Default is Standard_LRS. ')
+@description('The SKU name to provide for account creation. Default is Standard_LRS.')
 @allowed([
   'Standard_LRS'
   'Standard_GRS'
@@ -113,7 +113,7 @@ param destSkuName string = 'Standard_LRS'
 @description('Rule Id is auto-generated for each new rule on destination account. It is required for put policy on source account.')
 param ruleId  string = ''
 
-@description('This is the name to provide for objectReplicationPolicies. ')
+@description('This is the name to provide for objectReplicationPolicies.')
 param policyId string = 'default'
 
 @description('When performing object replication, it must be true and all resources necessary for the destination storage account will be created.')
@@ -122,7 +122,7 @@ param objectReplicationPolicy bool = false
 @description('Managed Identity name for userAssignedIdentities resource.')
 param managedIdentityName string = 'MyManagedIdentity'
 
-@description('roleDefinition for the assignment - default is Reader. ')
+@description('roleDefinition for the assignment - default is Reader.')
 param roleDefinitionIdOrName string = 'Reader'
 
 @description('Define Private Endpoints that should be created for Azure Storage Account.')

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "6182003951724059214"
+      "templateHash": "5366495398291742279"
     }
   },
   "parameters": {
@@ -82,7 +82,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Versioning is enabled if set to true. "
+        "description": "Versioning is enabled if set to true."
       }
     },
     "supportHttpsTrafficOnly": {
@@ -219,7 +219,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Versioning is enabled if set to true. To the destination storage account, set true. "
+        "description": "Versioning is enabled if set to true. To the destination storage account, set true."
       }
     },
     "destSkuName": {
@@ -233,7 +233,7 @@
         "Standard_RAGZRS"
       ],
       "metadata": {
-        "description": "The SKU name to provide for account creation. Default is Standard_LRS. "
+        "description": "The SKU name to provide for account creation. Default is Standard_LRS."
       }
     },
     "ruleId": {
@@ -247,7 +247,7 @@
       "type": "string",
       "defaultValue": "default",
       "metadata": {
-        "description": "This is the name to provide for objectReplicationPolicies. "
+        "description": "This is the name to provide for objectReplicationPolicies."
       }
     },
     "objectReplicationPolicy": {
@@ -268,7 +268,7 @@
       "type": "string",
       "defaultValue": "Reader",
       "metadata": {
-        "description": "roleDefinition for the assignment - default is Reader. "
+        "description": "roleDefinition for the assignment - default is Reader."
       }
     },
     "privateEndpoints": {
