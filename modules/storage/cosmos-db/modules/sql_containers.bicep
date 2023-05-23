@@ -1,69 +1,63 @@
 param cosmosDBAccountName string
-param enableServerless bool = false
 param databaseName string
-param databaseContainer object
+param enableServerless bool
+param container object
+var containerName = container.key
+var containerConfig = container.value
 
-var varStoredProcedures = databaseContainer.?storedProcedures ?? []
-var varTriggers = databaseContainer.?triggers ?? []
-var varUserDefinedFunctions = databaseContainer.?userDefinedFunctions ?? []
-
-resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2022-11-15' existing = {
+resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
   name: cosmosDBAccountName
 
-  resource sqlDatabase 'sqlDatabases@2022-11-15' existing = {
+  resource sqlDatabase 'sqlDatabases' existing = {
     name: databaseName
 
-    resource databaseContainers 'Containers@2022-11-15' = {
-      name: databaseContainer.name
+    resource databaseContainers 'Containers' = {
+      name: containerName
       properties: {
         resource: {
-          id: databaseContainer.name
-          // https://github.com/Azure/azure-rest-api-specs/issues/19695
-          // analyticalStorageTtl: (contains(databaseContainer, 'analyticalStorageTtl') ? databaseContainer.analyticalStorageTtl : -1
-          defaultTtl: databaseContainer.?defaultTtl ?? -1
-          conflictResolutionPolicy: databaseContainer.?conflictResolutionPolicy ?? null
-          uniqueKeyPolicy: databaseContainer.?uniqueKeyPolicy ?? null
-          indexingPolicy: databaseContainer.?indexingPolicy ?? null
-          partitionKey: databaseContainer.?partitionKey ?? null
+          id: containerName
+          // TODO: check if https://github.com/Azure/azure-rest-api-specs/issues/19695 is still relevant
+          analyticalStorageTtl: containerConfig.?analyticalStorageTtl
+          defaultTtl: containerConfig.?defaultTtl
+          clientEncryptionPolicy: containerConfig.?clientEncryptionPolicy
+          conflictResolutionPolicy: containerConfig.?conflictResolutionPolicy
+          uniqueKeyPolicy: containerConfig.?uniqueKeyPolicy
+          indexingPolicy: containerConfig.?indexingPolicy
+          partitionKey: containerConfig.?partitionKey
         }
 
-        options: enableServerless ? {} : (contains(databaseContainer, 'autoscaleMaxThroughput') ? {
-          autoscaleSettings: {
-            maxThroughput: databaseContainer.autoscaleMaxThroughput
-          }
-        } : (contains(databaseContainer, 'manualProvisionedThroughput') ? {
-          throughput: databaseContainer.manualProvisionedThroughput
-        } : {}))
+        options: enableServerless ? {} : (containerConfig.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: containerConfig.performance.throughput } } : { throughput: containerConfig.performance.throughput })
       }
 
-      resource databaseContainersStoredProcedures 'storedProcedures' = [for storedProcedure in varStoredProcedures: {
-        name: storedProcedure.name
+      resource databaseContainersStoredProcedures 'storedProcedures' = [for procedure in items(containerConfig.?storedProcedures ??{}): {
+        name: procedure.key
         properties: {
           resource: {
-            id: storedProcedure.name
-            body: storedProcedure.body
+            id: procedure.key
+            body: procedure.value.body
+          }
+          options:enableServerless ? {} : (procedure.value.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: procedure.value.performance.throughput } } : { throughput: procedure.value.performance.throughput })
+        }
+      }]
+
+      resource databaseContainersUserDefinedFunction 'userDefinedFunctions' = [for function in items(containerConfig.?userDefinedFunctions ??{}): {
+        name: function.key
+        properties: {
+          resource: {
+            id: function.key
+            body: function.value.body
           }
         }
       }]
 
-      resource databaseContainersUserDefinedFunction 'userDefinedFunctions' = [for userDefinedFunction in varUserDefinedFunctions: {
-        name: userDefinedFunction.name
+      resource databaseContainersTriggers 'triggers' = [for trigger in items(containerConfig.?triggers ??{}): {
+        name: trigger.key
         properties: {
           resource: {
-            id: userDefinedFunction.name
-            body: userDefinedFunction.body
-          }
-        }
-      }]
-
-      resource databaseContainersTriggers 'triggers' = [for trigger in varTriggers: {
-        name: trigger.name
-        properties: {
-          resource: {
-            id: trigger.name
-            body: trigger.body
-            triggerOperation: trigger.operation
-            triggerType: trigger.type
+            id: trigger.key
+            body: trigger.value.body
+            triggerOperation: trigger.value.triggerOperation
+            triggerType: trigger.value.triggerType
           }
         }
       }]

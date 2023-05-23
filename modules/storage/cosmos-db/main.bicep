@@ -39,6 +39,8 @@ param locations {
   isZoneRedundant: bool?
 }[]
 
+var primaryLocation = locations[0].name
+
 @description('MongoDB server version. Required for mongodb API type Cosmos DB account')
 @allowed([ '3.2', '3.6', '4.0', '4.2' ])
 param MongoDBServerVersion string = '4.2'
@@ -126,23 +128,23 @@ type schema = {
   }[]?
 }
 
-@description('Cassandra throughput configurations.')
-type throughputConfig = {
+@description('Performance configurations.')
+type performanceConfig = {
   @description('Flag to enable/disable automatic throughput scaling.')
   enableAutoScale: bool
   @maxValue(100000)
   @minValue(400)
   @description('''
-  When enableAutoScale is set to true, this parameter is the static throughput capability of Cassandra keyspace expressed in units of 100 requests per second. 400 RU/s is the minimum for production workloads. It ranges from 400 to 100,000 inclusive.
-  When enableAutoScale is set to false, this parameter is the maximum of the autoscaled throughput capability of Cassandra keyspace. It would scale down to a minimum of 10% of this max throughput based on usage. It ranges from 4000 to 100,000 inclusive.
+  When enableAutoScale is set to true, this parameter is the static throughput capability  expressed in units of 100 requests per second. 400 RU/s is the minimum for production workloads. It ranges from 400 to 100,000 inclusive.
+  When enableAutoScale is set to false, this parameter is the maximum of the autoscaled throughput capability. It would scale down to a minimum of 10% of this max throughput based on usage. It ranges from 4000 to 100,000 inclusive.
   ''')
   throughput: int
 }
 
 @description('Cassandra table configurations.')
 type cassandraTable = {
-  @description('Throughtput configuration.')
-  throughput: throughputConfig
+  @description('Performance configuration.')
+  performance: performanceConfig
   @description('Default time to live (TTL) in seconds.')
   defaultTtl: int?
   @description('The analytical storage TTL in seconds.')
@@ -156,7 +158,7 @@ type cassandraTable = {
 @description('Cassandra keyspaces configurations.')
 type cassandrakeyspace = {
   @description('Throughtput configuration.')
-  throughput: throughputConfig
+  performance: performanceConfig
   @description('''
   The object of Cassandra table configurations.
   The key of each element is the name of the  table.
@@ -167,14 +169,150 @@ type cassandrakeyspace = {
 }
 
 @description('''
-The object of Cassandra keyspaces configurations with tables.
+The object of Cassandra keyspaces configurations.
 The key of each element is the name of the Cassandra keyspace.
 The value of each element is an configuration object.
 ''')
 param cassandraKeyspaces { *: cassandrakeyspace } = {}
 
-@description('The list of SQL databases configurations with containers, its triggers, storedProcedures and userDefinedFunctions.')
-param sqlDatabases array = []
+@description('Type definition of client encryption policy for the container.')
+type ClientEncryptionPolicyType = {
+  @description('Paths of the item that need encryption along with path-specific settings.')
+  includedPaths: {
+    @description('The identifier of the Client Encryption Key to be used to encrypt the path.')
+    clientEncryptionKeyId: string
+    @description('The encryption algorithm which will be used. Eg - AEAD_AES_256_CBC_HMAC_SHA256.')
+    encryptionAlgorithm: string
+    @description('The type of encryption to be performed. Eg - Deterministic, Randomized.')
+    encryptionType: string
+    @description('Path that needs to be encrypted.')
+    path: string
+  }
+  @description('Version of the client encryption policy definition. Supported versions are 1 and 2. Version 2 supports id and partition key path encryption.')
+  policyFormatVersion: 1 | 2
+}
+
+type sqlDatabaseContainerIndexingPolicyType = {
+  @description('The indexing mode.')
+  indexingMode: 'consistent' | 'lazy' | 'none'?
+  @description('Indicates if the indexing policy is automatic.')
+  automatic: bool?
+  @description('The indexing paths')
+  includedPaths: {
+    @description('The path for which the indexing behavior applies to. Index paths typically start with root and end with wildcard (/path/*).')
+    path: string?
+    @description('List of indexes for this path.')
+    indexes: {
+      @description('The type of index.')
+      kind: 'Hash' | 'Range' | 'Spatial'?
+      @description('The precision of the index. -1 is maximum precision.')
+      precision: int?
+      @description('The datatype for which the indexing behavior is applied to.')
+      dataType: 'String' | 'Number' | 'Point' | 'Polygon' | 'LineString' | 'MultiPolygon'?
+    }[]?
+  }[]?
+  @description('List of paths to exclude from indexing.')
+  excludedPaths: {
+    @description('The path for which the indexing behavior applies to. Index paths typically start with root and end with wildcard (/path/*).')
+    path: string?
+  }[]?
+  @description('List of composite path list.')
+  compositeIndexes: {
+    @description('The path for which the indexing behavior applies to. Index paths typically start with root and end with wildcard (/path/*).')
+    path: string?
+    @description('The sort order for composite paths.')
+    order: 'ascending' | 'descending'?
+  }[]?
+  @description('The spatial indexes')
+  spatialIndexes: {
+    @description('The path for which the indexing behavior applies to. Index paths typically start with root and end with wildcard (/path/*).')
+    path: string?
+    @description('The spatial type')
+    types: 'Point' | 'Polygon' | 'LineString' | 'MultiPolygon'?
+  }[]?
+}
+
+@description('The type definition of SQL database container.')
+type sqlContainerType = {
+  @description('The analytical storage TTL in seconds.')
+  analyticalStorageTtl: int?
+  @description('Default time to live (TTL) in seconds.')
+  defaultTtl: int?
+  @description('The client encryption policy for the container.')
+  clientEncryptionPolicy: ClientEncryptionPolicyType?
+  @description('The conflict resolution policy for the container.')
+  conflictResolutionPolicy: {
+    @description('The conflict resolution path in the container.')
+    conflictResolutionPath: string?
+    @description('The conflict resolution procedure in the container.')
+    conflictResolutionProcedure: string?
+    @description('The conflict resolution mode.')
+    mode: 'Custom' | 'LastWriterWins'?
+  }?
+  @description('The indexing policy for the container. The configuration of the indexing policy. By default, the indexing is automatic for all document paths within the container.')
+  indexingPolicy: sqlDatabaseContainerIndexingPolicyType?
+  @description('The configuration of the partition key to be used for partitioning data into multiple partitions.')
+  partitionKey: {
+    @description('Indicates the kind of algorithm used for partitioning. For MultiHash, multiple partition keys (upto three maximum) are supported for container create')
+    kind: 'Hash' | 'MultiHash' | 'Range'?
+    @description('List of paths using which data within the container can be partitioned.')
+    paths: string[]?
+    @description('Indicates the version of the partition key definition.')
+    version: int?
+  }?
+  @description('The unique key policy configuration for specifying uniqueness constraints on documents in the collection in the Azure Cosmos DB service.')
+  uniqueKeyPolicy: {
+    @description('List of unique keys.')
+    uniqueKeys: {
+      @description('List of paths must be unique for each document in the Azure Cosmos DB service.')
+      paths: string[]?
+    }[]?
+  }?
+  @description('Configuration of stored procedures in the container.')
+  storedProcedures: { *: {
+      @description('The body of the stored procedure.')
+      body: string?
+      @description('Performance configs.')
+      performance: performanceConfig?
+    } }?
+  @description('Configuration of user defined functions in the container.')
+  userDefinedFunctions: { *: {
+      @description('The body of the user defined functions.')
+      body: string?
+      @description('Performance configs.')
+      performance: performanceConfig?
+    } }?
+  @description('Configuration of triggers in the container.')
+  triggers: { *: {
+      @description('The body of the triggers.')
+      body: string?
+      @description('Performance configs.')
+      performance: performanceConfig?
+      @description('Type of the Trigger')
+      triggerType: 'Pre' | 'Post'?
+      @description('The operation the trigger is associated with.')
+      triggerOperation: ('Create' | 'Delete' | 'Replace' | 'Update')[]?
+    } }?
+}
+
+@description('The type definition of SQL database configuration.')
+type sqlDatabasetype = {
+  @description('The throughput of SQL database.')
+  performance: performanceConfig
+
+  @description('sql Container configurations.')
+  containers: { *: sqlContainerType }?
+
+  @description('Tags for the SQL database.')
+  tags: { *: string }
+}
+
+@description('''
+The object of sql database configurations.
+The key of each element is the name of the sql database.
+The value of each element is an configuration object.
+''')
+param sqlDatabases { *: sqlDatabasetype } = {}
 
 @description('The list of SQL role definitions.')
 param sqlRoleDefinitions array = []
@@ -215,37 +353,35 @@ param tags { *: string } = {}
 @description('Specify the type of lock on Cosmos DB account resource.')
 param lock string = 'NotSpecified'
 
-@description('''
-The consistency policy for the Cosmos DB account.
-parameters:
-- Name: defaultConsistencyLevel
-  Description: The default consistency level and configuration settings of the Cosmos DB account.
-- Name: maxStalenessPrefix
-  Required: Required only when defaultConsistencyPolicy is set to 'BoundedStaleness'.
-  Description: When used with the Bounded Staleness consistency level, this value represents the time amount of staleness (in seconds) tolerated.
+type consistencyPolicyType = {
+  @description('The default consistency level and configuration settings of the Cosmos DB account.')
+  defaultConsistencyLevel: 'Eventual' | 'ConsistentPrefix' | 'Session' | 'BoundedStaleness' | 'Strong'
+  @description('''
+  When used with the Bounded Staleness consistency level, this value represents the time amount of staleness (in seconds) tolerated.
+  Required only when defaultConsistencyPolicy is set to 'BoundedStaleness'.
   Valid ranges:
   - Single Region: 10 to 2147483647
   - Multi Region: 100000 to 2147483647.
-- Name: maxIntervalInSeconds
-  Required: Required only when defaultConsistencyPolicy is set to 'BoundedStaleness'.
-  Description: When used with the Bounded Staleness consistency level, this value represents the number of stale requests tolerated.
-  Valid ranges:
-  - Single Region: 5 to 84600.
-  - Multi Region: 300 to 86400.
-''')
-param consistencyPolicy {
-  defaultConsistencyLevel: 'Eventual' | 'ConsistentPrefix' | 'Session' | 'BoundedStaleness' | 'Strong'
+  ''')
   @minValue(10)
   @maxValue(2147483647)
   maxStalenessPrefix: int?
+  @description('''
+  When used with the Bounded Staleness consistency level, this value represents the number of stale requests tolerated.
+  Required only when defaultConsistencyPolicy is set to 'BoundedStaleness'.
+  Valid ranges:
+  - Single Region: 5 to 84600.
+  - Multi Region: 300 to 86400.
+  ''')
   @minValue(5)
   @maxValue(86400)
   maxIntervalInSeconds: int?
-} = {
-  defaultConsistencyLevel: 'Session'
 }
 
-var primaryLocation = locations[0].name
+@description('The consistency policy for the Cosmos DB account.')
+param consistencyPolicy consistencyPolicyType = {
+  defaultConsistencyLevel: 'Session'
+}
 
 var locationsWithCompleteInfo = [for (location, i) in locations: {
   locationName: location.name
@@ -324,24 +460,19 @@ module cosmosDBAccount_cassandraKeyspaces 'modules/cassandra.bicep' = [for keysp
   name: keyspace.key
   params: {
     cosmosDBAccountName: name
-    keyspaceConfig: keyspace.value
+    keyspace: keyspace
     enableServerless: enableServerless
-    keyspaceName: keyspace.key
   }
 }]
 
 @batchSize(1)
-module cosmosDBAccount_sqlDatabases 'modules/sql.bicep' = [for (sqlDatabase, index) in sqlDatabases: if (backendApi == 'sql') {
-  name: 'sql-database-${uniqueString(sqlDatabase.name, resourceGroup().name)}-${index}'
-  dependsOn: [
-    cosmosDBAccount
-  ]
+module cosmosDBAccount_sqlDatabases 'modules/sql.bicep' = [for sql in items(sqlDatabases): if (backendApi == 'sql') {
+  dependsOn: [ cosmosDBAccount ]
+
+  name: sql.key
   params: {
     cosmosDBAccountName: name
-    databaseName: sqlDatabase.name
-    databaseContainers: sqlDatabase.?containers ?? []
-    autoscaleMaxThroughput: sqlDatabase.?autoscaleMaxThroughput ?? 0
-    manualProvisionedThroughput: sqlDatabase.?manualProvisionedThroughput ?? 0
+    database: sql.value
     enableServerless: enableServerless
   }
 }]

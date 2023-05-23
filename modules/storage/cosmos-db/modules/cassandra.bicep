@@ -1,8 +1,9 @@
 param cosmosDBAccountName string
 param enableServerless bool
 
-param keyspaceConfig object
-param keyspaceName string
+param keyspace object
+var keyspaceName = keyspace.key
+var keyspaceConfig = keyspace.value
 
 resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
   name: cosmosDBAccountName
@@ -13,7 +14,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
       resource: {
         id: keyspaceName
       }
-      options: enableServerless ? {} : (keyspaceConfig.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: keyspaceConfig.throughput } } : { throughput: keyspaceConfig.throughput })
+      options: enableServerless ? {} : (keyspaceConfig.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: keyspaceConfig.performance.throughput } } : { throughput: keyspaceConfig.performance.throughput })
     }
     tags: keyspaceConfig.tags
 
@@ -31,7 +32,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
             clusterKeys: table.?value.?schema.?clusterKeys
           }
         }
-        options: enableServerless ? {} : (table.value.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: table.value.throughput } } : { throughput: table.value.throughput })
+        options: enableServerless ? {} : (table.value.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: table.value.performance.throughput } } : { throughput: table.value.performance.throughput })
       }
       tags: table.value.tags
     }]
