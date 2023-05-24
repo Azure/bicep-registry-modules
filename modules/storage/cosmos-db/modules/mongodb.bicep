@@ -1,43 +1,31 @@
 param cosmosDBAccountName string
 param enableServerless bool = false
-param databaseName string
-param databaseCollections array
-param autoscaleMaxThroughput int
-param manualProvisionedThroughput int
+param database object
 
-resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2022-11-15' existing = {
+var databaseName = database.key
+var databaseConfig = database.value
+
+resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
   name: cosmosDBAccountName
 
-  resource mongodbDatabase 'mongodbDatabases@2022-11-15' = {
+  resource mongodbDatabase 'mongodbDatabases' = {
     name: databaseName
     properties: {
       resource: {
         id: databaseName
       }
-      options: enableServerless ? {} : (autoscaleMaxThroughput != 0 ? {
-        autoscaleSettings: {
-          maxThroughput: autoscaleMaxThroughput
-        }
-      } : (manualProvisionedThroughput != 0 ? {
-        throughput: manualProvisionedThroughput
-      } : {}))
+      options: enableServerless ? {} : (databaseConfig.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: databaseConfig.performance.throughput } } : { throughput: databaseConfig.performance.throughput })
     }
 
-    resource mongodbDatabaseCollections 'collections' = [for collection in databaseCollections: {
-      name: collection.name
+    resource mongodbDatabaseCollections 'collections' = [for collection in items(databaseConfig.?collections ?? {}): {
+      name: collection.key
       properties: {
         resource: {
-          id: collection.name
-          indexes: collection.?indexes ?? []
-          shardKey: collection.?shardKey ?? {}
+          id: collection.key
+          indexes: collection.value.?indexes
+          shardKey: collection.value.?shardKey
         }
-        options: enableServerless ? {} : (contains(collection, 'autoscaleMaxThroughput') ? {
-          autoscaleSettings: {
-            maxThroughput: collection.autoscaleMaxThroughput
-          }
-        } : (contains(collection, 'manualProvisionedThroughput') ? {
-          throughput: collection.manualProvisionedThroughput
-        } : {}))
+        options: enableServerless ? {} : (collection.value.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: collection.value.performance.throughput } } : { throughput: collection.value.performance.throughput })
       }
     }]
   }

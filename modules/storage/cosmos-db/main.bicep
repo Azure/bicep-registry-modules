@@ -175,61 +175,132 @@ The value of each element is an configuration object.
 ''')
 param cassandraKeyspaces { *: cassandrakeyspace } = {}
 
+@description('The type definition of sql container client encryption policy included paths.')
+type sqlContainerClientEncryptionPolicyIncludedPathsType = {
+  @description('The identifier of the Client Encryption Key to be used to encrypt the path.')
+  clientEncryptionKeyId: string
+  @description('The encryption algorithm which will be used. Eg - AEAD_AES_256_CBC_HMAC_SHA256.')
+  encryptionAlgorithm: string
+  @description('The type of encryption to be performed. Eg - Deterministic, Randomized.')
+  encryptionType: string
+  @description('Path that needs to be encrypted.')
+  path: string
+}
+
 @description('Type definition of client encryption policy for the container.')
-type ClientEncryptionPolicyType = {
+type sqlContainerClientEncryptionPolicyType = {
   @description('Paths of the item that need encryption along with path-specific settings.')
-  includedPaths: {
-    @description('The identifier of the Client Encryption Key to be used to encrypt the path.')
-    clientEncryptionKeyId: string
-    @description('The encryption algorithm which will be used. Eg - AEAD_AES_256_CBC_HMAC_SHA256.')
-    encryptionAlgorithm: string
-    @description('The type of encryption to be performed. Eg - Deterministic, Randomized.')
-    encryptionType: string
-    @description('Path that needs to be encrypted.')
-    path: string
-  }
+  includedPaths: sqlContainerClientEncryptionPolicyIncludedPathsType
   @description('Version of the client encryption policy definition. Supported versions are 1 and 2. Version 2 supports id and partition key path encryption.')
   policyFormatVersion: 1 | 2
 }
 
-type sqlDatabaseContainerIndexingPolicyType = {
+type sqlContainerIndexingPolicyIncludedPathsIndexesType = {
+  @description('The type of index.')
+  kind: 'Hash' | 'Range' | 'Spatial'?
+  @description('The precision of the index. -1 is maximum precision.')
+  precision: int?
+  @description('The datatype for which the indexing behavior is applied to.')
+  dataType: 'String' | 'Number' | 'Point' | 'Polygon' | 'LineString' | 'MultiPolygon'?
+}
+
+@description('Type definition of container indexing policy\'s included paths.')
+type sqlContainerIndexingPolicyIncludedPathsType = {
+  @description('The path for which the indexing behavior applies to. Index paths typically start with root and end with wildcard (/path/*).')
+  path: string?
+  @description('List of indexes for this path.')
+  indexes: sqlContainerIndexingPolicyIncludedPathsIndexesType[]?
+}
+
+@description('Type definition of container indexing policy\'s composite indexes.')
+type sqlContainerIndexingPolicyCompositeIndexesType = {
+  @description('The path for which the indexing behavior applies to. Index paths typically start with root and end with wildcard (/path/*).')
+  path: string?
+  @description('The sort order for composite paths.')
+  order: 'ascending' | 'descending'?
+}
+
+@description('Type definition of container indexing policy\'s spatial indexes.')
+type sqlContainerIndexingPolicySpatialIndexesType = {
+  @description('The path for which the indexing behavior applies to. Index paths typically start with root and end with wildcard (/path/*).')
+  path: string?
+  @description('The spatial type')
+  types: 'Point' | 'Polygon' | 'LineString' | 'MultiPolygon'?
+}
+
+type sqlContainerIndexingPolicyType = {
   @description('The indexing mode.')
   indexingMode: 'consistent' | 'lazy' | 'none'?
   @description('Indicates if the indexing policy is automatic.')
   automatic: bool?
   @description('The indexing paths')
-  includedPaths: {
-    @description('The path for which the indexing behavior applies to. Index paths typically start with root and end with wildcard (/path/*).')
-    path: string?
-    @description('List of indexes for this path.')
-    indexes: {
-      @description('The type of index.')
-      kind: 'Hash' | 'Range' | 'Spatial'?
-      @description('The precision of the index. -1 is maximum precision.')
-      precision: int?
-      @description('The datatype for which the indexing behavior is applied to.')
-      dataType: 'String' | 'Number' | 'Point' | 'Polygon' | 'LineString' | 'MultiPolygon'?
-    }[]?
-  }[]?
+  includedPaths: sqlContainerIndexingPolicyIncludedPathsType[]?
   @description('List of paths to exclude from indexing.')
   excludedPaths: {
     @description('The path for which the indexing behavior applies to. Index paths typically start with root and end with wildcard (/path/*).')
     path: string?
   }[]?
   @description('List of composite path list.')
-  compositeIndexes: {
-    @description('The path for which the indexing behavior applies to. Index paths typically start with root and end with wildcard (/path/*).')
-    path: string?
-    @description('The sort order for composite paths.')
-    order: 'ascending' | 'descending'?
-  }[]?
+  compositeIndexes: sqlContainerIndexingPolicyCompositeIndexesType[]?
   @description('The spatial indexes')
-  spatialIndexes: {
-    @description('The path for which the indexing behavior applies to. Index paths typically start with root and end with wildcard (/path/*).')
-    path: string?
-    @description('The spatial type')
-    types: 'Point' | 'Polygon' | 'LineString' | 'MultiPolygon'?
+  spatialIndexes: sqlContainerIndexingPolicySpatialIndexesType[]?
+}
+
+@description('The type definition of SQL database container conflict resolution policy.')
+type sqlContainerConflictResolutionPolicyType = {
+  @description('The conflict resolution path in the container.')
+  conflictResolutionPath: string?
+  @description('The conflict resolution procedure in the container.')
+  conflictResolutionProcedure: string?
+  @description('The conflict resolution mode.')
+  mode: 'Custom' | 'LastWriterWins'?
+}
+
+@description('The type definition of SQL database container partition key.')
+type sqlContainerPartitionKeyType = {
+  @description('Indicates the kind of algorithm used for partitioning. For MultiHash, multiple partition keys (upto three maximum) are supported for container create')
+  kind: 'Hash' | 'MultiHash' | 'Range'?
+  @description('List of paths using which data within the container can be partitioned.')
+  paths: string[]?
+  @description('Indicates the version of the partition key definition.')
+  version: int?
+}
+
+@description('The type definition of SQL database container unique key policy.')
+type sqlContainerUniqueKeyPolicyType = {
+  @description('List of unique keys.')
+  uniqueKeys: {
+    @description('List of paths must be unique for each document in the Azure Cosmos DB service.')
+    paths: string[]?
   }[]?
+}
+
+@description('The type definition of SQL database container stored procedures.')
+type sqlContainerStoredProceduresType = {
+  @description('The body of the stored procedure.')
+  body: string?
+  @description('Performance configs.')
+  performance: performanceConfig?
+}
+
+@description('The type definition of SQL database container user defined functions.')
+type sqlContainerUserDefinedFunctionsType = {
+  @description('The body of the user defined functions.')
+  body: string?
+  @description('Performance configs.')
+  performance: performanceConfig?
+}
+
+@description('The type definition of SQL database container triggers.')
+type sqlContainerTriggersType = {
+  @description('The body of the triggers.')
+  body: string?
+  @description('Performance configs.')
+  performance: performanceConfig?
+  @description('Type of the Trigger')
+  triggerType: 'Pre' | 'Post'?
+  @description('The operation the trigger is associated with.')
+  triggerOperation: ('Create' | 'Delete' | 'Replace' | 'Update')[]?
 }
 
 @description('The type definition of SQL database container.')
@@ -239,60 +310,21 @@ type sqlContainerType = {
   @description('Default time to live (TTL) in seconds.')
   defaultTtl: int?
   @description('The client encryption policy for the container.')
-  clientEncryptionPolicy: ClientEncryptionPolicyType?
+  clientEncryptionPolicy: sqlContainerClientEncryptionPolicyType?
   @description('The conflict resolution policy for the container.')
-  conflictResolutionPolicy: {
-    @description('The conflict resolution path in the container.')
-    conflictResolutionPath: string?
-    @description('The conflict resolution procedure in the container.')
-    conflictResolutionProcedure: string?
-    @description('The conflict resolution mode.')
-    mode: 'Custom' | 'LastWriterWins'?
-  }?
+  conflictResolutionPolicy: sqlContainerConflictResolutionPolicyType?
   @description('The indexing policy for the container. The configuration of the indexing policy. By default, the indexing is automatic for all document paths within the container.')
-  indexingPolicy: sqlDatabaseContainerIndexingPolicyType?
+  indexingPolicy: sqlContainerIndexingPolicyType?
   @description('The configuration of the partition key to be used for partitioning data into multiple partitions.')
-  partitionKey: {
-    @description('Indicates the kind of algorithm used for partitioning. For MultiHash, multiple partition keys (upto three maximum) are supported for container create')
-    kind: 'Hash' | 'MultiHash' | 'Range'?
-    @description('List of paths using which data within the container can be partitioned.')
-    paths: string[]?
-    @description('Indicates the version of the partition key definition.')
-    version: int?
-  }?
+  partitionKey: sqlContainerPartitionKeyType?
   @description('The unique key policy configuration for specifying uniqueness constraints on documents in the collection in the Azure Cosmos DB service.')
-  uniqueKeyPolicy: {
-    @description('List of unique keys.')
-    uniqueKeys: {
-      @description('List of paths must be unique for each document in the Azure Cosmos DB service.')
-      paths: string[]?
-    }[]?
-  }?
+  uniqueKeyPolicy: sqlContainerUniqueKeyPolicyType?
   @description('Configuration of stored procedures in the container.')
-  storedProcedures: { *: {
-      @description('The body of the stored procedure.')
-      body: string?
-      @description('Performance configs.')
-      performance: performanceConfig?
-    } }?
+  storedProcedures: { *: sqlContainerStoredProceduresType }?
   @description('Configuration of user defined functions in the container.')
-  userDefinedFunctions: { *: {
-      @description('The body of the user defined functions.')
-      body: string?
-      @description('Performance configs.')
-      performance: performanceConfig?
-    } }?
+  userDefinedFunctions: { *: sqlContainerUserDefinedFunctionsType }?
   @description('Configuration of triggers in the container.')
-  triggers: { *: {
-      @description('The body of the triggers.')
-      body: string?
-      @description('Performance configs.')
-      performance: performanceConfig?
-      @description('Type of the Trigger')
-      triggerType: 'Pre' | 'Post'?
-      @description('The operation the trigger is associated with.')
-      triggerOperation: ('Create' | 'Delete' | 'Replace' | 'Update')[]?
-    } }?
+  triggers: { *: sqlContainerTriggersType }?
 }
 
 @description('The type definition of SQL database configuration.')
@@ -319,9 +351,6 @@ param sqlRoleDefinitions array = []
 
 @description('The list of SQL role assignments.')
 param sqlRoleAssignments array = []
-
-@description('The list of MongoDB databases configurations with collections, its indexes, Shard Keys.')
-param mongodbDatabases array = []
 
 @description('The list of Gremlin databases configurations with graphs.')
 param gremlinDatabases array = []
@@ -477,18 +506,48 @@ module cosmosDBAccount_sqlDatabases 'modules/sql.bicep' = [for sql in items(sqlD
   }
 }]
 
+type mongodbDatabaseIndexOptions = {
+  @description('Expire after seconds.')
+  expireAfterSeconds: int?
+  @description('Is it unique or not.')
+  unique: bool?
+}
+
+type mongodbDatabaseIndex = {
+  @description('Cosmos DB MongoDB collection index keys.')
+  key: {
+    @description('List of keys for the MongoDB collection.')
+    keys: string[]?
+  }?
+  @description('Cosmos DB MongoDB collection index key options.')
+  options: mongodbDatabaseIndexOptions
+}
+
+type mongodbDatabaseCollection={
+  indexes: mongodbDatabaseIndex[]?
+  @description('A key-value pair of shard keys to be applied for the request.')
+  shardKey: { *: string }?
+}
+
+type mongodbDatabase = {
+  performance: performanceConfig
+  @description('The analytical storage TTL in seconds.')
+  analyticalStorageTtl: int?
+  collections:{*:mongodbDatabaseCollection}?
+
+}
+
+@description('The list of MongoDB databases configurations with collections, its indexes, Shard Keys.')
+param mongodbDatabases { *: mongodbDatabase } = {}
+
 @batchSize(1)
-module cosmosDBAccount_mongodbDatabases 'modules/mongodb.bicep' = [for (mongodbDatabase, index) in mongodbDatabases: if (backendApi == 'mongodb') {
-  name: 'mongodb-database-${uniqueString(mongodbDatabase.name, resourceGroup().name)}-${index}'
-  dependsOn: [
-    cosmosDBAccount
-  ]
+module cosmosDBAccount_mongodbDatabases 'modules/mongodb.bicep' = [for database in items(mongodbDatabases): if (backendApi == 'mongodb') {
+  dependsOn: [ cosmosDBAccount ]
+
+  name: database.key
   params: {
     cosmosDBAccountName: name
-    databaseName: mongodbDatabase.name
-    databaseCollections: mongodbDatabase.?collections ?? []
-    autoscaleMaxThroughput: mongodbDatabase.?autoscaleMaxThroughput ?? 0
-    manualProvisionedThroughput: mongodbDatabase.?manualProvisionedThroughput ?? 0
+    database: database
     enableServerless: enableServerless
   }
 }]
