@@ -35,7 +35,7 @@ param createMode string = 'Default'
 param databases databaseType[] = []
 
 @description('Optional. List of server configurations to create on server.')
-param serverConfigurations array = []
+param serverConfigurations serverConfigurationType[] = []
 
 @description('Optional. Status showing whether the server enabled infrastructure encryption..')
 @allowed(['Enabled', 'Disabled'])
@@ -333,4 +333,10 @@ type databaseType = {
   name: string
   charset: string?
   collation: string?
+}
+
+@description('Optional. Configuration definition in the postrges instance.')
+type serverConfigurationType = {
+  name: string
+  value: string
 }
