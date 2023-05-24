@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "10293928334133679338"
+      "templateHash": "4792359155737200648"
     }
   },
   "definitions": {
@@ -251,7 +251,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Enabled or Disable Insights for Azure functions"
+        "description": "Optional. Enabled or Disable Insights for Azure functions."
       }
     },
     "workspaceResourceId": {
@@ -350,7 +350,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Enable docker image deployment"
+        "description": "Optional. Enable docker image deployment."
       }
     },
     "dockerImage": {
