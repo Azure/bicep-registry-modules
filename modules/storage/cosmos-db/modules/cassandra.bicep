@@ -2,23 +2,23 @@ param cosmosDBAccountName string
 param enableServerless bool
 
 param keyspace object
-var keyspaceName = keyspace.key
-var keyspaceConfig = keyspace.value
+var name = keyspace.key
+var config = keyspace.value
 
 resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
   name: cosmosDBAccountName
 
   resource cassandraKeyspaces 'cassandraKeyspaces' = {
-    name: keyspaceName
+    name: name
     properties: {
       resource: {
-        id: keyspaceName
+        id: name
       }
-      options: enableServerless ? {} : (keyspaceConfig.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: keyspaceConfig.performance.throughput } } : { throughput: keyspaceConfig.performance.throughput })
+      options: enableServerless ? {} : (config.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput })
     }
-    tags: keyspaceConfig.tags
+    tags: config.tags
 
-    resource cassandraTables 'tables' = [for table in items(keyspaceConfig.?tables ?? {}): {
+    resource cassandraTables 'tables' = [for table in items(config.?tables ?? {}): {
       name: table.key
       properties: {
         resource: {

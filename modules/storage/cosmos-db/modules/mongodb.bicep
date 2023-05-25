@@ -2,22 +2,22 @@ param cosmosDBAccountName string
 param enableServerless bool = false
 param database object
 
-var databaseName = database.key
-var databaseConfig = database.value
+var name = database.key
+var config = database.value
 
 resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
   name: cosmosDBAccountName
 
   resource mongodbDatabase 'mongodbDatabases' = {
-    name: databaseName
+    name: name
     properties: {
       resource: {
-        id: databaseName
+        id: name
       }
-      options: enableServerless ? {} : (databaseConfig.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: databaseConfig.performance.throughput } } : { throughput: databaseConfig.performance.throughput })
+      options: enableServerless ? {} : (config.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput })
     }
 
-    resource mongodbDatabaseCollections 'collections' = [for collection in items(databaseConfig.?collections ?? {}): {
+    resource mongodbDatabaseCollections 'collections' = [for collection in items(config.?collections ?? {}): {
       name: collection.key
       properties: {
         resource: {

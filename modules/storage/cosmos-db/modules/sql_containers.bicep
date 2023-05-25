@@ -2,8 +2,8 @@ param cosmosDBAccountName string
 param databaseName string
 param enableServerless bool
 param container object
-var containerName = container.key
-var containerConfig = container.value
+var name = container.key
+var config = container.value
 
 resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
   name: cosmosDBAccountName
@@ -12,24 +12,24 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
     name: databaseName
 
     resource databaseContainers 'Containers' = {
-      name: containerName
+      name: name
       properties: {
         resource: {
-          id: containerName
+          id: name
           // TODO: check if https://github.com/Azure/azure-rest-api-specs/issues/19695 is still relevant
-          analyticalStorageTtl: containerConfig.?analyticalStorageTtl
-          defaultTtl: containerConfig.?defaultTtl
-          clientEncryptionPolicy: containerConfig.?clientEncryptionPolicy
-          conflictResolutionPolicy: containerConfig.?conflictResolutionPolicy
-          uniqueKeyPolicy: containerConfig.?uniqueKeyPolicy
-          indexingPolicy: containerConfig.?indexingPolicy
-          partitionKey: containerConfig.?partitionKey
+          analyticalStorageTtl: config.?analyticalStorageTtl
+          defaultTtl: config.?defaultTtl
+          clientEncryptionPolicy: config.?clientEncryptionPolicy
+          conflictResolutionPolicy: config.?conflictResolutionPolicy
+          uniqueKeyPolicy: config.?uniqueKeyPolicy
+          indexingPolicy: config.?indexingPolicy
+          partitionKey: config.?partitionKey
         }
 
-        options: enableServerless ? {} : (containerConfig.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: containerConfig.performance.throughput } } : { throughput: containerConfig.performance.throughput })
+        options: enableServerless ? {} : (config.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput })
       }
 
-      resource databaseContainersStoredProcedures 'storedProcedures' = [for procedure in items(containerConfig.?storedProcedures ??{}): {
+      resource databaseContainersStoredProcedures 'storedProcedures' = [for procedure in items(config.?storedProcedures ??{}): {
         name: procedure.key
         properties: {
           resource: {
@@ -40,7 +40,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
         }
       }]
 
-      resource databaseContainersUserDefinedFunction 'userDefinedFunctions' = [for function in items(containerConfig.?userDefinedFunctions ??{}): {
+      resource databaseContainersUserDefinedFunction 'userDefinedFunctions' = [for function in items(config.?userDefinedFunctions ??{}): {
         name: function.key
         properties: {
           resource: {
@@ -50,7 +50,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
         }
       }]
 
-      resource databaseContainersTriggers 'triggers' = [for trigger in items(containerConfig.?triggers ??{}): {
+      resource databaseContainersTriggers 'triggers' = [for trigger in items(config.?triggers ??{}): {
         name: trigger.key
         properties: {
           resource: {

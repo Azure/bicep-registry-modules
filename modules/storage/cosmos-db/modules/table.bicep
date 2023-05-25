@@ -1,25 +1,20 @@
 param cosmosDBAccountName string
-param enableServerless bool = false
-param tableName string
-param autoscaleMaxThroughput int
-param manualProvisionedThroughput int
+param enableServerless bool
+param table object
 
-resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2022-11-15' existing = {
+var name = table.key
+var config= table.value
+
+resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
   name: cosmosDBAccountName
 
-  resource tables 'tables@2022-11-15' = {
-    name: tableName
+  resource tables 'tables' = {
+    name: name
     properties: {
       resource: {
-        id: tableName
+        id: name
       }
-      options: enableServerless ? {} : (autoscaleMaxThroughput != 0 ? {
-        autoscaleSettings: {
-          maxThroughput: autoscaleMaxThroughput
-        }
-      } : (manualProvisionedThroughput != 0 ? {
-        throughput: manualProvisionedThroughput
-      } : {}))
+      options: enableServerless ? {} : (config.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput })
     }
   }
 }

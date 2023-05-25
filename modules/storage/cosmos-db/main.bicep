@@ -27,15 +27,12 @@ param totalThroughputLimit int = -1
 @description('''
 The array of secondary locations.
 Each element defines a region of georeplication. The first element in this array is the primary region which is a write region of the Cosmos DB account.
-The order of regions in this list is the order of regions to be used for failover.
-Parameters:
-- Name: name
-  Description: The name of the Azure region.
-- Name: isZoneRedundant
-  Description: Flag to indicate whether or not this region is an AvailabilityZone region
+The order of regions in this list is the order for region failover.
 ''')
 param locations {
+  @description('The name of the Azure region.')
   name: string
+  @description('Flag to indicate whether or not this region is an AvailabilityZone region')
   isZoneRedundant: bool?
 }[]
 
@@ -81,16 +78,11 @@ Each element in this array is either a single IPv4 address or a single IPv4 addr
 ''')
 param ipRules string[] = []
 
-@description('''
-The list of virtual network ACL rules.
-parameters:
-- Name: id
-  Description: The id of the subnet. For example: /subscriptions/{subscriptionId}/resourceGroups/{groupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}.
-- Name: ignoreMissingVNetServiceEndpoint
-  Description: Whether to ignore missing virtual network service endpoint.
-''')
+@description('The list of virtual network ACL rules.')
 param virtualNetworkRules {
+  @description('The id of the subnet. For example: /subscriptions/{subscriptionId}/resourceGroups/{groupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}.')
   id: string
+  @description('Whether to ignore missing virtual network service endpoint.')
   ignoreMissingVNetServiceEndpoint: bool?
 }[] = []
 
@@ -228,7 +220,7 @@ type sqlContainerIndexingPolicySpatialIndexesType = {
   types: 'Point' | 'Polygon' | 'LineString' | 'MultiPolygon'?
 }
 
-type sqlContainerIndexingPolicyType = {
+type graphIndexingPolicyTypeForSqlContainerAndGremlinGraph = {
   @description('The indexing mode.')
   indexingMode: 'consistent' | 'lazy' | 'none'?
   @description('Indicates if the indexing policy is automatic.')
@@ -247,7 +239,7 @@ type sqlContainerIndexingPolicyType = {
 }
 
 @description('The type definition of SQL database container conflict resolution policy.')
-type sqlContainerConflictResolutionPolicyType = {
+type conflictResolutionPolicyTypeForSqlContainerAndGremlinGraph = {
   @description('The conflict resolution path in the container.')
   conflictResolutionPath: string?
   @description('The conflict resolution procedure in the container.')
@@ -257,7 +249,7 @@ type sqlContainerConflictResolutionPolicyType = {
 }
 
 @description('The type definition of SQL database container partition key.')
-type sqlContainerPartitionKeyType = {
+type partitionKeyTypeForSqlContainerAndGremlinGraph = {
   @description('Indicates the kind of algorithm used for partitioning. For MultiHash, multiple partition keys (upto three maximum) are supported for container create')
   kind: 'Hash' | 'MultiHash' | 'Range'?
   @description('List of paths using which data within the container can be partitioned.')
@@ -267,7 +259,7 @@ type sqlContainerPartitionKeyType = {
 }
 
 @description('The type definition of SQL database container unique key policy.')
-type sqlContainerUniqueKeyPolicyType = {
+type graphUniqueKeyPolicyTypeForSqlContainerAndGremlinGraph = {
   @description('List of unique keys.')
   uniqueKeys: {
     @description('List of paths must be unique for each document in the Azure Cosmos DB service.')
@@ -312,13 +304,13 @@ type sqlContainerType = {
   @description('The client encryption policy for the container.')
   clientEncryptionPolicy: sqlContainerClientEncryptionPolicyType?
   @description('The conflict resolution policy for the container.')
-  conflictResolutionPolicy: sqlContainerConflictResolutionPolicyType?
+  conflictResolutionPolicy: conflictResolutionPolicyTypeForSqlContainerAndGremlinGraph?
   @description('The indexing policy for the container. The configuration of the indexing policy. By default, the indexing is automatic for all document paths within the container.')
-  indexingPolicy: sqlContainerIndexingPolicyType?
+  indexingPolicy: graphIndexingPolicyTypeForSqlContainerAndGremlinGraph?
   @description('The configuration of the partition key to be used for partitioning data into multiple partitions.')
-  partitionKey: sqlContainerPartitionKeyType?
+  partitionKey: partitionKeyTypeForSqlContainerAndGremlinGraph?
   @description('The unique key policy configuration for specifying uniqueness constraints on documents in the collection in the Azure Cosmos DB service.')
-  uniqueKeyPolicy: sqlContainerUniqueKeyPolicyType?
+  uniqueKeyPolicy: graphUniqueKeyPolicyTypeForSqlContainerAndGremlinGraph?
   @description('Configuration of stored procedures in the container.')
   storedProcedures: { *: sqlContainerStoredProceduresType }?
   @description('Configuration of user defined functions in the container.')
@@ -329,7 +321,7 @@ type sqlContainerType = {
 
 @description('The type definition of SQL database configuration.')
 type sqlDatabasetype = {
-  @description('The throughput of SQL database.')
+  @description('Performance configs.')
   performance: performanceConfig
 
   @description('sql Container configurations.')
@@ -345,18 +337,6 @@ The key of each element is the name of the sql database.
 The value of each element is an configuration object.
 ''')
 param sqlDatabases { *: sqlDatabasetype } = {}
-
-@description('The list of SQL role definitions.')
-param sqlRoleDefinitions array = []
-
-@description('The list of SQL role assignments.')
-param sqlRoleAssignments array = []
-
-@description('The list of Gremlin databases configurations with graphs.')
-param gremlinDatabases array = []
-
-@description('The list of Table databases configurations.')
-param tables array = []
 
 @description('Array of role assignment objects that contain the "roleDefinitionIdOrName" and "principalId" to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, provide either the display name of the role definition, or its fully qualified ID in the following format: "/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11"')
 param roleAssignments array = []
@@ -506,39 +486,40 @@ module cosmosDBAccount_sqlDatabases 'modules/sql.bicep' = [for sql in items(sqlD
   }
 }]
 
-type mongodbDatabaseIndexOptions = {
+type mongodbDatabaseIndexOptionsType = {
   @description('Expire after seconds.')
   expireAfterSeconds: int?
   @description('Is it unique or not.')
   unique: bool?
 }
 
-type mongodbDatabaseIndex = {
+type mongodbDatabaseIndexType = {
   @description('Cosmos DB MongoDB collection index keys.')
   key: {
     @description('List of keys for the MongoDB collection.')
     keys: string[]?
   }?
   @description('Cosmos DB MongoDB collection index key options.')
-  options: mongodbDatabaseIndexOptions
+  options: mongodbDatabaseIndexOptionsType
 }
 
-type mongodbDatabaseCollection={
-  indexes: mongodbDatabaseIndex[]?
+type mongodbDatabaseCollectionType = {
+  indexes: mongodbDatabaseIndexType[]?
   @description('A key-value pair of shard keys to be applied for the request.')
   shardKey: { *: string }?
 }
 
-type mongodbDatabase = {
+type mongodbDatabaseType = {
+  @description('Performance configs.')
   performance: performanceConfig
   @description('The analytical storage TTL in seconds.')
   analyticalStorageTtl: int?
-  collections:{*:mongodbDatabaseCollection}?
+  collections: { *: mongodbDatabaseCollectionType }?
 
 }
 
 @description('The list of MongoDB databases configurations with collections, its indexes, Shard Keys.')
-param mongodbDatabases { *: mongodbDatabase } = {}
+param mongodbDatabases { *: mongodbDatabaseType } = {}
 
 @batchSize(1)
 module cosmosDBAccount_mongodbDatabases 'modules/mongodb.bicep' = [for database in items(mongodbDatabases): if (backendApi == 'mongodb') {
@@ -552,48 +533,104 @@ module cosmosDBAccount_mongodbDatabases 'modules/mongodb.bicep' = [for database 
   }
 }]
 
-@batchSize(1)
-module cosmosDBAccount_tables 'modules/table.bicep' = [for (table, index) in tables: if (backendApi == 'table') {
-  name: 'table-${uniqueString(table.name, resourceGroup().name)}-${index}'
-  dependsOn: [
-    cosmosDBAccount
-  ]
-  params: {
-    cosmosDBAccountName: name
-    tableName: table.name
-    autoscaleMaxThroughput: table.?autoscaleMaxThroughput ?? 0
-    manualProvisionedThroughput: table.?manualProvisionedThroughput ?? 0
-    enableServerless: enableServerless
-  }
-}]
-
-@batchSize(1)
-module cosmosDBAccount_gremlinDatabases 'modules/gremlin.bicep' = [for (gremlinDatabase, index) in gremlinDatabases: if (backendApi == 'gremlin') {
-  name: 'gremlin-database-${uniqueString(gremlinDatabase.name, resourceGroup().name)}-${index}'
-  dependsOn: [
-    cosmosDBAccount
-  ]
-  params: {
-    cosmosDBAccountName: name
-    databaseName: gremlinDatabase.name
-    databaseGraphs: gremlinDatabase.?graphs ?? []
-    autoscaleMaxThroughput: gremlinDatabase.?autoscaleMaxThroughput ?? 0
-    manualProvisionedThroughput: gremlinDatabase.?manualProvisionedThroughput ?? 0
-    enableServerless: enableServerless
-  }
-}]
-
-module cosmosDBAccount_sqlRoles 'modules/sql_roles.bicep' = {
-  name: 'sql-role-${uniqueString(name, resourceGroup().name)}'
-  dependsOn: [
-    cosmosDBAccount
-  ]
-  params: {
-    cosmosDBAccountName: name
-    roleDefinitions: sqlRoleDefinitions
-    roleAssignments: sqlRoleAssignments
-  }
+type tableType = {
+  @description('Performance configs.')
+  performance: performanceConfig
 }
+
+@description('The object of Table databases configurations.')
+param tables { *: tableType } = {}
+
+@batchSize(1)
+module cosmosDBAccount_tables 'modules/table.bicep' = [for table in items(tables): if (backendApi == 'table') {
+  name: table.key
+  dependsOn: [ cosmosDBAccount ]
+  params: {
+    cosmosDBAccountName: name
+    table: table
+    enableServerless: enableServerless
+  }
+}]
+
+type gremlinGraphType = {
+  @description('Performance configs.')
+  performance: performanceConfig
+  @description('The analytical storage TTL in seconds.')
+  analyticalStorageTtl: int?
+  @description('The default time to live in seconds.')
+  defaultTtl: int?
+  @description('The conflict resolution policy for the graph.')
+  conflictResolutionPolicy: conflictResolutionPolicyTypeForSqlContainerAndGremlinGraph?
+  @description('The configuration of the indexing policy. By default, the indexing is automatic for all document paths within the graph.')
+  indexingPolicy: graphIndexingPolicyTypeForSqlContainerAndGremlinGraph?
+  @description('The configuration of the partition key to be used for partitioning data into multiple partitions.')
+  partitionKey: partitionKeyTypeForSqlContainerAndGremlinGraph?
+  @description('The unique key policy configuration for specifying uniqueness constraints on documents in the collection in the Azure Cosmos DB service.')
+  uniqueKeyPolicy: graphUniqueKeyPolicyTypeForSqlContainerAndGremlinGraph?
+}
+
+type gremlinDatabaseType = {
+  @description('Performance configs.')
+  performance: performanceConfig
+  tags: { *: string }?
+  @description('The object of Gremlin database graphs.')
+  graphs: { *: gremlinGraphType }?
+}
+
+@description('The list of Gremlin databases configurations with graphs.')
+param gremlinDatabases { *: gremlinDatabaseType } = {}
+
+@batchSize(1)
+module cosmosDBAccount_gremlinDatabases 'modules/gremlin.bicep' = [for database in items(gremlinDatabases): if (backendApi == 'gremlin') {
+  name: database.key
+  dependsOn: [ cosmosDBAccount ]
+  params: {
+    cosmosDBAccountName: name
+    database: database
+    enableServerless: enableServerless
+  }
+}]
+
+@description('Type definition for the SQL Role Definition Permission.')
+type sqlRoleDefinitionPermissionType = {
+  @description('The set of permissions that the role definition contains.')
+  actions: string[]?
+  @description('The set of Data Actions that the role definition contains.')
+  dataActions: string[]?
+}
+
+type sqlRoleAssignmentType = {
+  @description('The principal ID of the assigment.')
+  principalId: string
+  @description('The scope of the assignment.')
+  scope: string
+}
+
+type sqlRoleDefinitionType = {
+  @description('''
+  Indicates whether the Role Definition was built-in or user created.
+  If type=BuiltInRole, the name of this role should be a Azure built-in role name, like Contributor, Reader, etc, and permissions should be null or omitted.
+  ''')
+  roleType: 'BuiltInRole' | 'CustomRole'
+  permissions: sqlRoleDefinitionPermissionType[]?
+  @description('The list of SQL role assignments.')
+  assisgnments: sqlRoleAssignmentType[]?
+}
+
+@description('''
+The list of SQL role definitions.
+The keys are the names of the role definitions.
+The values are the role definition configurations.''')
+param sqlRoleDefinitions { *: sqlRoleDefinitionType } = {}
+
+module cosmosDBAccount_sqlRoles 'modules/sql_roles.bicep' = [for role in items(sqlRoleDefinitions): {
+  name: role.key
+  dependsOn: [ cosmosDBAccount ]
+  params: {
+    cosmosDBAccountName: name
+    role: role
+  }
+}]
 
 @batchSize(1)
 module cosmosDBAccount_rbac 'modules/rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
@@ -637,5 +674,6 @@ output name string = cosmosDBAccount.name
 @description('Object Id of system assigned managed identity for Cosmos DB account (if enabled).')
 output systemAssignedIdentityPrincipalId string = contains(identityType, 'SystemAssigned') ? cosmosDBAccount.identity.principalId : ''
 
-@description('Resource Ids of sql role definition resources created for this Cosmos DB account.')
-output sqlRoleDefinitionIds array = !empty(sqlRoleDefinitions) ? cosmosDBAccount_sqlRoles.outputs.roleDefinitionIds : []
+//TODO: fix it
+// @description('Resource Ids of sql role definition resources created for this Cosmos DB account.')
+// output sqlRoleDefinitionIds array = [for role in items(sqlRoleDefinitions):cosmosDBAccount_sqlRoles[role.key].outputs.roleDefinitionId]
