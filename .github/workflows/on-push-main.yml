@@ -17,7 +17,7 @@ jobs:
       tag: ${{ steps.create-tag.outputs.result }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
