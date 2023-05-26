@@ -338,18 +338,12 @@ The value of each element is an configuration object.
 ''')
 param sqlDatabases { *: sqlDatabasetype } = {}
 
-@description('Array of role assignment objects that contain the "roleDefinitionIdOrName" and "principalId" to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, provide either the display name of the role definition, or its fully qualified ID in the following format: "/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11"')
-param roleAssignments array = []
-
 @description('The type of identity used for the Cosmos DB account. The type "SystemAssigned, UserAssigned" includes both an implicitly created identity and a set of user-assigned identities. The type "None" will remove any identities from the Cosmos DB account.')
 @allowed([ 'None', 'SystemAssigned', 'SystemAssigned,UserAssigned', 'UserAssigned' ])
 param identityType string = 'None'
 
 @description('The list of user-assigned managed identities. The user identity dictionary key references will be ARM resource ids in the form: "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}"')
 param userAssignedIdentities string[] = []
-
-@description('Private Endpoints that should be created for Azure Cosmos DB account.')
-param privateEndpoints array = []
 
 @description('List of key-value pairs that describe the resource.')
 param tags { *: string } = {}
@@ -411,22 +405,6 @@ var capabilitiesCompleteList = [for capability in union(
   enableServerless ? [ 'EnableServerless' ] : [],
   [ capabilityNeededForBackendApi[backendApi] ]
 ): { name: capability }]
-
-var privateEndpointsWithDefaults = [for endpoint in privateEndpoints: {
-  name: '${cosmosDBAccount.name}-${endpoint.name}'
-  privateLinkServiceId: cosmosDBAccount.id
-  groupIds: [
-    endpoint.groupId
-  ]
-  subnetId: endpoint.subnetId
-  privateDnsZones: contains(endpoint, 'privateDnsZoneId') ? [
-    {
-      name: 'default'
-      zoneId: endpoint.privateDnsZoneId
-    }
-  ] : []
-  manualApprovalEnabled: endpoint.?manualApprovalEnabled ?? false
-}]
 
 resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
   name: toLower(name)
@@ -602,8 +580,11 @@ type sqlRoleDefinitionPermissionType = {
 type sqlRoleAssignmentType = {
   @description('The principal ID of the assigment.')
   principalId: string
-  @description('The scope of the assignment.')
-  scope: string
+  @description('''
+  The scope of the assignment. It can be the entire cosmosDB account, or a specific database or container.
+  If omitted, it means the entire cosmosDB account.
+  ''')
+  scope: string?
 }
 
 type sqlRoleDefinitionType = {
@@ -619,8 +600,8 @@ type sqlRoleDefinitionType = {
 
 @description('''
 The list of SQL role definitions.
-The keys are the names of the role definitions.
-The values are the role definition configurations.''')
+The keys are the role name.
+The values are the role definition.''')
 param sqlRoleDefinitions { *: sqlRoleDefinitionType } = {}
 
 module cosmosDBAccount_sqlRoles 'modules/sql_roles.bicep' = [for role in items(sqlRoleDefinitions): {
@@ -632,29 +613,35 @@ module cosmosDBAccount_sqlRoles 'modules/sql_roles.bicep' = [for role in items(s
   }
 }]
 
-@batchSize(1)
-module cosmosDBAccount_rbac 'modules/rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
-  name: 'cosmosdb-rbac-${uniqueString(deployment().name, primaryLocation)}-${index}'
-  dependsOn: [
-    cosmosDBAccount
-  ]
+type privateEndpointType = {
+  subnetId: string
+  groupId: string
+  privateDnsZoneId: string?
+  isManualApproval: bool?
+}
+
+@description('Private Endpoints that should be created for Azure Cosmos DB account.')
+param privateEndpoints { *: privateEndpointType } = {}
+
+var privateEndpointsWithDefaults = [for endpoint in items(privateEndpoints): {
+  name: '${cosmosDBAccount.name}-${endpoint.key}'
+  groupIds: [ endpoint.value.groupId ]
+  subnetId: endpoint.value.subnetId
+  privateDnsZoneId: endpoint.value.privateDnsZoneId
+  manualApprovalEnabled: endpoint.value.isManualApproval ?? false
+}]
+
+
+module cosmosDBAccount_privateEndpoints 'modules/privateEndpoint.bicep' = [for endpoint in privateEndpointsWithDefaults: {
+  name: endpoint.name
   params: {
-    description: roleAssignment.?description ?? ''
-    principalIds: roleAssignment.principalIds
-    roleDefinitionIdOrName: roleAssignment.roleDefinitionIdOrName
-    principalType: roleAssignment.?principalType ?? ''
-    cosmosDBAccountName: name
+    cosmosDBAccount: cosmosDBAccount
+    location:primaryLocation
+    endpoint: endpoint
   }
 }]
 
-module cosmosDBAccount_privateEndpoint 'modules/privateEndpoint.bicep' = {
-  name: '${name}-${uniqueString(deployment().name, primaryLocation)}-private-endpoints'
-  params: {
-    location: primaryLocation
-    privateEndpoints: privateEndpointsWithDefaults
-    tags: tags
-  }
-}
+
 
 resource cosmosDBAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (lock != 'NotSpecified') {
   name: '${cosmosDBAccount.name}-${toLower(lock)}-lock'
@@ -674,6 +661,5 @@ output name string = cosmosDBAccount.name
 @description('Object Id of system assigned managed identity for Cosmos DB account (if enabled).')
 output systemAssignedIdentityPrincipalId string = contains(identityType, 'SystemAssigned') ? cosmosDBAccount.identity.principalId : ''
 
-//TODO: fix it
-// @description('Resource Ids of sql role definition resources created for this Cosmos DB account.')
-// output sqlRoleDefinitionIds array = [for role in items(sqlRoleDefinitions):cosmosDBAccount_sqlRoles[role.key].outputs.roleDefinitionId]
+@description('Resource Ids of sql role definition resources created for this Cosmos DB account.')
+output sqlRoleDefinitionIds array = [for (role, i) in items(sqlRoleDefinitions): cosmosDBAccount_sqlRoles[i].outputs.roleDefinitionId]
