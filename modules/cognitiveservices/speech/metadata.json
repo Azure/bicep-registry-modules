@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
+  "name": "Speech Service",
+  "summary": "This module deploys a Speech Service instance (Microsoft.CognitiveServices/accounts) with optional additions.",
+  "owner": "rabbh"
+}
