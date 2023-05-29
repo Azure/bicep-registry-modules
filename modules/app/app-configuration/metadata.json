@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
+  "name": "Azure App Configuration",
+  "summary": "Bicep module for simplified deployment Azure App Configuration resources and optionally available integrations.",
+  "owner": "sunilthorat09"
+}

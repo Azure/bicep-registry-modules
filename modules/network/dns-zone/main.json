@@ -1,0 +1,151 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.17.1.54307",
+      "templateHash": "2439625640065370104"
+    }
+  },
+  "parameters": {
+    "prefix": {
+      "type": "string",
+      "defaultValue": "azure-",
+      "metadata": {
+        "description": "Prefix of DNS Resource Name. This param is ignored when name is provided."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "[format('{0}{1}', parameters('prefix'), uniqueString(resourceGroup().id, subscription().id))]",
+      "metadata": {
+        "description": "Required. Specifies the resource name"
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Tags to assign to the resources used in dns-zones."
+      }
+    },
+    "zoneType": {
+      "type": "string",
+      "defaultValue": "Public",
+      "metadata": {
+        "description": "Optional. The type of this DNS zone, default set to Public."
+      },
+      "allowedValues": [
+        "Public",
+        "Private"
+      ]
+    },
+    "aRecords": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Specifies the \"A\" Records array"
+      }
+    },
+    "cnameRecords": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Specifies the \"CNAME\" Records array"
+      }
+    },
+    "AAAARecords": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Specifies the \"AAAA\" Records array"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/dnsZones",
+      "apiVersion": "2018-05-01",
+      "name": "[parameters('name')]",
+      "location": "global",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "zoneType": "[parameters('zoneType')]"
+      }
+    },
+    {
+      "copy": {
+        "name": "A",
+        "count": "[length(parameters('aRecords'))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "type": "Microsoft.Network/dnsZones/A",
+      "apiVersion": "2018-05-01",
+      "name": "[format('{0}/{1}', parameters('name'), parameters('aRecords')[copyIndex()].name)]",
+      "properties": {
+        "ARecords": "[if(parameters('aRecords')[copyIndex()].aliasRecordSet, null(), parameters('aRecords')[copyIndex()].aRecord)]",
+        "TTL": "[if(parameters('aRecords')[copyIndex()].aliasRecordSet, null(), parameters('aRecords')[copyIndex()].ttl)]",
+        "targetResource": "[if(parameters('aRecords')[copyIndex()].aliasRecordSet, createObject('id', parameters('aRecords')[copyIndex()].targetResource), createObject())]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/dnsZones', parameters('name'))]"
+      ]
+    },
+    {
+      "copy": {
+        "name": "CName",
+        "count": "[length(parameters('cnameRecords'))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "type": "Microsoft.Network/dnsZones/CNAME",
+      "apiVersion": "2018-05-01",
+      "name": "[format('{0}/{1}', parameters('name'), parameters('cnameRecords')[copyIndex()].name)]",
+      "properties": {
+        "CNAMERecord": "[if(parameters('cnameRecords')[copyIndex()].aliasRecordSet, null(), createObject('cname', parameters('cnameRecords')[copyIndex()].cname))]",
+        "TTL": "[parameters('cnameRecords')[copyIndex()].ttl]",
+        "targetResource": "[if(parameters('cnameRecords')[copyIndex()].aliasRecordSet, createObject('id', parameters('cnameRecords')[copyIndex()].targetResource), createObject())]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/dnsZones', parameters('name'))]"
+      ]
+    },
+    {
+      "copy": {
+        "name": "AAAA",
+        "count": "[length(parameters('AAAARecords'))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "type": "Microsoft.Network/dnsZones/AAAA",
+      "apiVersion": "2018-05-01",
+      "name": "[format('{0}/{1}', parameters('name'), parameters('AAAARecords')[copyIndex()].name)]",
+      "properties": {
+        "AAAARecords": "[if(parameters('AAAARecords')[copyIndex()].aliasRecordSet, null(), parameters('AAAARecords')[copyIndex()].aaaaRecord)]",
+        "TTL": "[parameters('AAAARecords')[copyIndex()].ttl]",
+        "targetResource": "[if(parameters('AAAARecords')[copyIndex()].aliasRecordSet, createObject('id', parameters('AAAARecords')[copyIndex()].targetResource), createObject())]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/dnsZones', parameters('name'))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "id": {
+      "type": "string",
+      "metadata": {
+        "description": "Id for DNS zone"
+      },
+      "value": "[resourceId('Microsoft.Network/dnsZones', parameters('name'))]"
+    },
+    "nameServers": {
+      "type": "array",
+      "metadata": {
+        "description": "The name servers for this DNS zone."
+      },
+      "value": "[reference(resourceId('Microsoft.Network/dnsZones', parameters('name')), '2018-05-01').nameServers]"
+    }
+  }
+}
