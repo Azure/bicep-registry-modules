@@ -1,21 +1,1100 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "1.10-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
+    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.16.2.56959",
-      "templateHash": "4184963345518952719"
+      "version": "0.17.1.54307",
+      "templateHash": "8008327921010034505"
+    }
+  },
+  "definitions": {
+    "schema": {
+      "type": "object",
+      "properties": {
+        "columns": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "List of Cassandra table columns."
+          }
+        },
+        "partitionKeys": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "List of Cassandra table partition keys."
+          }
+        },
+        "clusterKeys": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "orderBy": {
+                "type": "string"
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "List of Cassandra table cluster keys."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Schema of the Cosmos DB Cassandra table."
+      }
+    },
+    "performanceConfig": {
+      "type": "object",
+      "properties": {
+        "enableAutoScale": {
+          "type": "bool",
+          "metadata": {
+            "description": "Flag to enable/disable automatic throughput scaling."
+          }
+        },
+        "throughput": {
+          "type": "int",
+          "metadata": {
+            "description": "  When enableAutoScale is set to true, this parameter is the static throughput capability  expressed in units of 100 requests per second. 400 RU/s is the minimum for production workloads. It ranges from 400 to 100,000 inclusive.\n  When enableAutoScale is set to false, this parameter is the maximum of the autoscaled throughput capability. It would scale down to a minimum of 10% of this max throughput based on usage. It ranges from 4000 to 100,000 inclusive.\n  "
+          },
+          "minValue": 400,
+          "maxValue": 100000
+        }
+      },
+      "metadata": {
+        "description": "Performance configurations."
+      }
+    },
+    "cassandraTable": {
+      "type": "object",
+      "properties": {
+        "performance": {
+          "$ref": "#/definitions/performanceConfig",
+          "metadata": {
+            "description": "Performance configuration."
+          }
+        },
+        "defaultTtl": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Default time to live (TTL) in seconds."
+          }
+        },
+        "analyticalStorageTtl": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "The analytical storage TTL in seconds."
+          }
+        },
+        "schema": {
+          "$ref": "#/definitions/schema",
+          "nullable": true,
+          "metadata": {
+            "description": "The schema of the Cassandra table."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Tags for the Cassandra table."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Cassandra table configurations."
+      }
+    },
+    "cassandrakeyspace": {
+      "type": "object",
+      "properties": {
+        "performance": {
+          "$ref": "#/definitions/performanceConfig",
+          "metadata": {
+            "description": "Throughtput configuration."
+          }
+        },
+        "tables": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/cassandraTable"
+          },
+          "metadata": {
+            "description": "  The object of Cassandra table configurations.\n  The key of each element is the name of the  table.\n  The value of each element is an configuration object."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Tags for the Cassandra keyspace."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Cassandra keyspaces configurations."
+      }
+    },
+    "sqlContainerClientEncryptionPolicyIncludedPathsType": {
+      "type": "object",
+      "properties": {
+        "clientEncryptionKeyId": {
+          "type": "string",
+          "metadata": {
+            "description": "The identifier of the Client Encryption Key to be used to encrypt the path."
+          }
+        },
+        "encryptionAlgorithm": {
+          "type": "string",
+          "metadata": {
+            "description": "The encryption algorithm which will be used. Eg - AEAD_AES_256_CBC_HMAC_SHA256."
+          }
+        },
+        "encryptionType": {
+          "type": "string",
+          "metadata": {
+            "description": "The type of encryption to be performed. Eg - Deterministic, Randomized."
+          }
+        },
+        "path": {
+          "type": "string",
+          "metadata": {
+            "description": "Path that needs to be encrypted."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type definition of sql container client encryption policy included paths."
+      }
+    },
+    "sqlContainerClientEncryptionPolicyType": {
+      "type": "object",
+      "properties": {
+        "includedPaths": {
+          "$ref": "#/definitions/sqlContainerClientEncryptionPolicyIncludedPathsType",
+          "metadata": {
+            "description": "Paths of the item that need encryption along with path-specific settings."
+          }
+        },
+        "policyFormatVersion": {
+          "type": "int",
+          "allowedValues": [
+            1,
+            2
+          ],
+          "metadata": {
+            "description": "Version of the client encryption policy definition. Supported versions are 1 and 2. Version 2 supports id and partition key path encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Type definition of client encryption policy for the container."
+      }
+    },
+    "sqlContainerIndexingPolicyIncludedPathsIndexesType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "Hash",
+            "Range",
+            "Spatial",
+            null
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "The type of index."
+          }
+        },
+        "precision": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "The precision of the index. -1 is maximum precision."
+          }
+        },
+        "dataType": {
+          "type": "string",
+          "allowedValues": [
+            "LineString",
+            "MultiPolygon",
+            "Number",
+            "Point",
+            "Polygon",
+            "String",
+            null
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "The datatype for which the indexing behavior is applied to."
+          }
+        }
+      }
+    },
+    "sqlContainerIndexingPolicyIncludedPathsType": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The path for which the indexing behavior applies to. Index paths typically start with root and end with wildcard (/path/*)."
+          }
+        },
+        "indexes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/sqlContainerIndexingPolicyIncludedPathsIndexesType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "List of indexes for this path."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Type definition of container indexing policy's included paths."
+      }
+    },
+    "sqlContainerIndexingPolicyCompositeIndexesType": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The path for which the indexing behavior applies to. Index paths typically start with root and end with wildcard (/path/*)."
+          }
+        },
+        "order": {
+          "type": "string",
+          "allowedValues": [
+            "ascending",
+            "descending",
+            null
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "The sort order for composite paths."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Type definition of container indexing policy's composite indexes."
+      }
+    },
+    "sqlContainerIndexingPolicySpatialIndexesType": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The path for which the indexing behavior applies to. Index paths typically start with root and end with wildcard (/path/*)."
+          }
+        },
+        "types": {
+          "type": "string",
+          "allowedValues": [
+            "LineString",
+            "MultiPolygon",
+            "Point",
+            "Polygon",
+            null
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "The spatial type"
+          }
+        }
+      },
+      "metadata": {
+        "description": "Type definition of container indexing policy's spatial indexes."
+      }
+    },
+    "graphIndexingPolicyTypeForSqlContainerAndGremlinGraph": {
+      "type": "object",
+      "properties": {
+        "indexingMode": {
+          "type": "string",
+          "allowedValues": [
+            "consistent",
+            "lazy",
+            "none",
+            null
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "The indexing mode."
+          }
+        },
+        "automatic": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Indicates if the indexing policy is automatic."
+          }
+        },
+        "includedPaths": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/sqlContainerIndexingPolicyIncludedPathsType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "The indexing paths"
+          }
+        },
+        "excludedPaths": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "The path for which the indexing behavior applies to. Index paths typically start with root and end with wildcard (/path/*)."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "List of paths to exclude from indexing."
+          }
+        },
+        "compositeIndexes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/sqlContainerIndexingPolicyCompositeIndexesType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "List of composite path list."
+          }
+        },
+        "spatialIndexes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/sqlContainerIndexingPolicySpatialIndexesType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "The spatial indexes"
+          }
+        }
+      }
+    },
+    "conflictResolutionPolicyTypeForSqlContainerAndGremlinGraph": {
+      "type": "object",
+      "properties": {
+        "conflictResolutionPath": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The conflict resolution path in the container."
+          }
+        },
+        "conflictResolutionProcedure": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The conflict resolution procedure in the container."
+          }
+        },
+        "mode": {
+          "type": "string",
+          "allowedValues": [
+            "Custom",
+            "LastWriterWins",
+            null
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "The conflict resolution mode."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type definition of SQL database container conflict resolution policy."
+      }
+    },
+    "partitionKeyTypeForSqlContainerAndGremlinGraph": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "Hash",
+            "MultiHash",
+            "Range",
+            null
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Indicates the kind of algorithm used for partitioning. For MultiHash, multiple partition keys (upto three maximum) are supported for container create"
+          }
+        },
+        "paths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "List of paths using which data within the container can be partitioned."
+          }
+        },
+        "version": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Indicates the version of the partition key definition."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type definition of SQL database container partition key."
+      }
+    },
+    "graphUniqueKeyPolicyTypeForSqlContainerAndGremlinGraph": {
+      "type": "object",
+      "properties": {
+        "uniqueKeys": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "paths": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "List of paths must be unique for each document in the Azure Cosmos DB service."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "List of unique keys."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type definition of SQL database container unique key policy."
+      }
+    },
+    "sqlContainerStoredProceduresType": {
+      "type": "object",
+      "properties": {
+        "body": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The body of the stored procedure."
+          }
+        },
+        "performance": {
+          "$ref": "#/definitions/performanceConfig",
+          "nullable": true,
+          "metadata": {
+            "description": "Performance configs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type definition of SQL database container stored procedures."
+      }
+    },
+    "sqlContainerUserDefinedFunctionsType": {
+      "type": "object",
+      "properties": {
+        "body": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The body of the user defined functions."
+          }
+        },
+        "performance": {
+          "$ref": "#/definitions/performanceConfig",
+          "nullable": true,
+          "metadata": {
+            "description": "Performance configs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type definition of SQL database container user defined functions."
+      }
+    },
+    "sqlContainerTriggersType": {
+      "type": "object",
+      "properties": {
+        "body": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The body of the triggers."
+          }
+        },
+        "performance": {
+          "$ref": "#/definitions/performanceConfig",
+          "nullable": true,
+          "metadata": {
+            "description": "Performance configs."
+          }
+        },
+        "triggerType": {
+          "type": "string",
+          "allowedValues": [
+            "Post",
+            "Pre",
+            null
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Type of the Trigger"
+          }
+        },
+        "triggerOperation": {
+          "type": "array",
+          "allowedValues": [
+            "Create",
+            "Delete",
+            "Replace",
+            "Update"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "The operation the trigger is associated with."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type definition of SQL database container triggers."
+      }
+    },
+    "sqlContainerType": {
+      "type": "object",
+      "properties": {
+        "analyticalStorageTtl": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "The analytical storage TTL in seconds."
+          }
+        },
+        "defaultTtl": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Default time to live (TTL) in seconds."
+          }
+        },
+        "clientEncryptionPolicy": {
+          "$ref": "#/definitions/sqlContainerClientEncryptionPolicyType",
+          "nullable": true,
+          "metadata": {
+            "description": "The client encryption policy for the container."
+          }
+        },
+        "conflictResolutionPolicy": {
+          "$ref": "#/definitions/conflictResolutionPolicyTypeForSqlContainerAndGremlinGraph",
+          "nullable": true,
+          "metadata": {
+            "description": "The conflict resolution policy for the container."
+          }
+        },
+        "indexingPolicy": {
+          "$ref": "#/definitions/graphIndexingPolicyTypeForSqlContainerAndGremlinGraph",
+          "nullable": true,
+          "metadata": {
+            "description": "The indexing policy for the container. The configuration of the indexing policy. By default, the indexing is automatic for all document paths within the container."
+          }
+        },
+        "partitionKey": {
+          "$ref": "#/definitions/partitionKeyTypeForSqlContainerAndGremlinGraph",
+          "nullable": true,
+          "metadata": {
+            "description": "The configuration of the partition key to be used for partitioning data into multiple partitions."
+          }
+        },
+        "uniqueKeyPolicy": {
+          "$ref": "#/definitions/graphUniqueKeyPolicyTypeForSqlContainerAndGremlinGraph",
+          "nullable": true,
+          "metadata": {
+            "description": "The unique key policy configuration for specifying uniqueness constraints on documents in the collection in the Azure Cosmos DB service."
+          }
+        },
+        "storedProcedures": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/sqlContainerStoredProceduresType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Configuration of stored procedures in the container."
+          }
+        },
+        "userDefinedFunctions": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/sqlContainerUserDefinedFunctionsType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Configuration of user defined functions in the container."
+          }
+        },
+        "triggers": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/sqlContainerTriggersType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Configuration of triggers in the container."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type definition of SQL database container."
+      }
+    },
+    "sqlDatabasetype": {
+      "type": "object",
+      "properties": {
+        "performance": {
+          "$ref": "#/definitions/performanceConfig",
+          "metadata": {
+            "description": "Performance configs."
+          }
+        },
+        "containers": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/sqlContainerType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "sql Container configurations."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Tags for the SQL database."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type definition of SQL database configuration."
+      }
+    },
+    "consistencyPolicyType": {
+      "type": "object",
+      "properties": {
+        "defaultConsistencyLevel": {
+          "type": "string",
+          "allowedValues": [
+            "BoundedStaleness",
+            "ConsistentPrefix",
+            "Eventual",
+            "Session",
+            "Strong"
+          ],
+          "metadata": {
+            "description": "The default consistency level and configuration settings of the Cosmos DB account."
+          }
+        },
+        "maxStalenessPrefix": {
+          "type": "int",
+          "nullable": true,
+          "maxValue": 2147483647,
+          "minValue": 10,
+          "metadata": {
+            "description": "  When used with the Bounded Staleness consistency level, this value represents the time amount of staleness (in seconds) tolerated.\n  Required only when defaultConsistencyPolicy is set to 'BoundedStaleness'.\n  Valid ranges:\n  - Single Region: 10 to 2147483647\n  - Multi Region: 100000 to 2147483647.\n  "
+          }
+        },
+        "maxIntervalInSeconds": {
+          "type": "int",
+          "nullable": true,
+          "maxValue": 86400,
+          "minValue": 5,
+          "metadata": {
+            "description": "  When used with the Bounded Staleness consistency level, this value represents the number of stale requests tolerated.\n  Required only when defaultConsistencyPolicy is set to 'BoundedStaleness'.\n  Valid ranges:\n  - Single Region: 5 to 84600.\n  - Multi Region: 300 to 86400.\n  "
+          }
+        }
+      }
+    },
+    "mongodbDatabaseIndexOptionsType": {
+      "type": "object",
+      "properties": {
+        "expireAfterSeconds": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Expire after seconds."
+          }
+        },
+        "unique": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Is it unique or not."
+          }
+        }
+      }
+    },
+    "mongodbDatabaseIndexType": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "object",
+          "properties": {
+            "keys": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "List of keys for the MongoDB collection."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Cosmos DB MongoDB collection index keys."
+          }
+        },
+        "options": {
+          "$ref": "#/definitions/mongodbDatabaseIndexOptionsType",
+          "metadata": {
+            "description": "Cosmos DB MongoDB collection index key options."
+          }
+        }
+      }
+    },
+    "mongodbDatabaseCollectionType": {
+      "type": "object",
+      "properties": {
+        "indexes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/mongodbDatabaseIndexType"
+          },
+          "nullable": true
+        },
+        "shardKey": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "A key-value pair of shard keys to be applied for the request."
+          }
+        }
+      }
+    },
+    "mongodbDatabaseType": {
+      "type": "object",
+      "properties": {
+        "performance": {
+          "$ref": "#/definitions/performanceConfig",
+          "metadata": {
+            "description": "Performance configs."
+          }
+        },
+        "analyticalStorageTtl": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "The analytical storage TTL in seconds."
+          }
+        },
+        "collections": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/mongodbDatabaseCollectionType"
+          },
+          "nullable": true
+        }
+      }
+    },
+    "tableType": {
+      "type": "object",
+      "properties": {
+        "performance": {
+          "$ref": "#/definitions/performanceConfig",
+          "metadata": {
+            "description": "Performance configs."
+          }
+        }
+      }
+    },
+    "gremlinGraphType": {
+      "type": "object",
+      "properties": {
+        "performance": {
+          "$ref": "#/definitions/performanceConfig",
+          "metadata": {
+            "description": "Performance configs."
+          }
+        },
+        "analyticalStorageTtl": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "The analytical storage TTL in seconds."
+          }
+        },
+        "defaultTtl": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "The default time to live in seconds."
+          }
+        },
+        "conflictResolutionPolicy": {
+          "$ref": "#/definitions/conflictResolutionPolicyTypeForSqlContainerAndGremlinGraph",
+          "nullable": true,
+          "metadata": {
+            "description": "The conflict resolution policy for the graph."
+          }
+        },
+        "indexingPolicy": {
+          "$ref": "#/definitions/graphIndexingPolicyTypeForSqlContainerAndGremlinGraph",
+          "nullable": true,
+          "metadata": {
+            "description": "The configuration of the indexing policy. By default, the indexing is automatic for all document paths within the graph."
+          }
+        },
+        "partitionKey": {
+          "$ref": "#/definitions/partitionKeyTypeForSqlContainerAndGremlinGraph",
+          "nullable": true,
+          "metadata": {
+            "description": "The configuration of the partition key to be used for partitioning data into multiple partitions."
+          }
+        },
+        "uniqueKeyPolicy": {
+          "$ref": "#/definitions/graphUniqueKeyPolicyTypeForSqlContainerAndGremlinGraph",
+          "nullable": true,
+          "metadata": {
+            "description": "The unique key policy configuration for specifying uniqueness constraints on documents in the collection in the Azure Cosmos DB service."
+          }
+        }
+      }
+    },
+    "gremlinDatabaseType": {
+      "type": "object",
+      "properties": {
+        "performance": {
+          "$ref": "#/definitions/performanceConfig",
+          "metadata": {
+            "description": "Performance configs."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "nullable": true
+        },
+        "graphs": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/gremlinGraphType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "The object of Gremlin database graphs."
+          }
+        }
+      }
+    },
+    "sqlRoleDefinitionPermissionType": {
+      "type": "object",
+      "properties": {
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "The set of permissions that the role definition contains."
+          }
+        },
+        "dataActions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "The set of Data Actions that the role definition contains."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Type definition for the SQL Role Definition Permission."
+      }
+    },
+    "sqlRoleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "The principal ID of the assigment."
+          }
+        },
+        "scope": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "  The scope of the assignment. It can be the entire cosmosDB account, or a specific database or container.\n  If omitted, it means the entire cosmosDB account.\n  "
+          }
+        }
+      }
+    },
+    "sqlRoleDefinitionType": {
+      "type": "object",
+      "properties": {
+        "roleType": {
+          "type": "string",
+          "allowedValues": [
+            "BuiltInRole",
+            "CustomRole"
+          ],
+          "metadata": {
+            "description": "  Indicates whether the Role Definition was built-in or user created.\n  If type=BuiltInRole, the name of this role should be a Azure built-in role name, like Contributor, Reader, etc, and permissions should be null or omitted.\n  "
+          }
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/sqlRoleDefinitionPermissionType"
+          },
+          "nullable": true
+        },
+        "assisgnments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/sqlRoleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "The list of SQL role assignments."
+          }
+        }
+      }
+    },
+    "privateEndpointType": {
+      "type": "object",
+      "properties": {
+        "subnetId": {
+          "type": "string"
+        },
+        "groupId": {
+          "type": "string"
+        },
+        "privateDnsZoneId": {
+          "type": "string",
+          "nullable": true
+        },
+        "isManualApproval": {
+          "type": "bool",
+          "nullable": true
+        }
+      }
+    },
+    "corsType": {
+      "type": "object",
+      "properties": {
+        "allowedOrigins": {
+          "type": "string",
+          "metadata": {
+            "description": "The origin domains that are permitted to make a request against the service via CORS."
+          }
+        },
+        "allowedMethods": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The methods (HTTP request verbs) that the origin domain may use for a CORS request. (comma separated)"
+          }
+        },
+        "allowedHeaders": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The response headers that should be sent back to the client for CORS requests. (comma separated)"
+          }
+        },
+        "exposedHeaders": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The response headers that should be exposed to the client for CORS requests. (comma separated)"
+          }
+        },
+        "maxAgeInSeconds": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "The maximum amount time that a browser should cache the preflight OPTIONS request."
+          }
+        }
+      }
     }
   },
   "parameters": {
-    "location": {
-      "type": "string",
-      "defaultValue": "[resourceGroup().location]",
-      "metadata": {
-        "description": "Deployment region name. Default is the location of the resource group."
-      }
-    },
     "backendApi": {
       "type": "string",
       "defaultValue": "sql",
@@ -39,7 +1118,9 @@
     },
     "name": {
       "type": "string",
-      "defaultValue": "[take(format('{0}-{1}', parameters('prefix'), uniqueString(resourceGroup().id, parameters('location'))), 44)]",
+      "defaultValue": "[format('{0}-{1}', parameters('prefix'), uniqueString(resourceGroup().id, resourceGroup().location, 'cosmosdb', parameters('backendApi')))]",
+      "minLength": 3,
+      "maxLength": 44,
       "metadata": {
         "description": "The name of the Cosmos DB account. Character limit: 3-44, valid characters: lowercase letters, numbers, and hyphens. It must me unique across Azure."
       }
@@ -65,13 +1146,6 @@
         "description": "Enable Serverless for consumption-based usage."
       }
     },
-    "isZoneRedundant": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Flag to indicate whether or not this region is an AvailabilityZone region"
-      }
-    },
     "enableFreeTier": {
       "type": "bool",
       "defaultValue": false,
@@ -87,46 +1161,37 @@
         "description": "The total throughput limit of the Cosmos DB account in measurement of requests units (RUs) per second, -1 indicates no limits on provisioning of throughput."
       }
     },
-    "secondaryLocations": {
+    "locations": {
       "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "The array of secondary locations."
-      }
-    },
-    "defaultConsistencyLevel": {
-      "type": "string",
-      "defaultValue": "Session",
-      "metadata": {
-        "description": "The default consistency level. Possible values: \"Eventual\", \"ConsistentPrefix\", \"Session\", \"BoundedStaleness\", \"Strong\"."
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "The name of the Azure region."
+            }
+          },
+          "isZoneRedundant": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Flag to indicate whether or not this region is an AvailabilityZone region"
+            }
+          }
+        }
       },
-      "allowedValues": [
-        "Eventual",
-        "ConsistentPrefix",
-        "Session",
-        "BoundedStaleness",
-        "Strong"
-      ]
-    },
-    "maxStalenessPrefix": {
-      "type": "int",
-      "defaultValue": 100000,
-      "maxValue": 2147483647,
-      "minValue": 10,
+      "defaultValue": [
+        {
+          "name": "[resourceGroup().location]"
+        }
+      ],
       "metadata": {
-        "description": "Max stale requests required for \"BoundedStaleness\" Consistency Level. Valid ranges, Single Region: 10 to 2147483647. Multi Region: 100000 to 2147483647."
-      }
+        "description": "The array of secondary locations.\nEach element defines a region of georeplication. The first element in this array is the primary region which is a write region of the Cosmos DB account.\nThe order of regions in this list is the order for region failover.\n"
+      },
+      "minLength": 1
     },
-    "maxIntervalInSeconds": {
-      "type": "int",
-      "defaultValue": 300,
-      "maxValue": 86400,
-      "minValue": 5,
-      "metadata": {
-        "description": "Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400."
-      }
-    },
-    "serverVersion": {
+    "MongoDBServerVersion": {
       "type": "string",
       "defaultValue": "4.2",
       "allowedValues": [
@@ -141,9 +1206,23 @@
     },
     "cors": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/corsType"
+      },
       "defaultValue": [],
       "metadata": {
-        "description": "List of CORS rules."
+        "description": "List of CORS rules. Each CORS rule allows or denies requests from a set of origins to a Cosmos DB account or a database"
+      }
+    },
+    "createMode": {
+      "type": "string",
+      "defaultValue": "Default",
+      "allowedValues": [
+        "Default",
+        "Restore"
+      ],
+      "metadata": {
+        "description": "The mode of the Cosmos Account creation. Set to Restore to restore from an existing account."
       }
     },
     "disableKeyBasedMetadataWriteAccess": {
@@ -153,27 +1232,16 @@
         "description": "Disable write operations on metadata resources (databases, containers, throughput) via account keys."
       }
     },
-    "publicNetworkAccess": {
-      "type": "string",
-      "defaultValue": "Enabled",
-      "allowedValues": [
-        "Enabled",
-        "Disabled"
-      ],
+    "enablePublicNetworkAccess": {
+      "type": "bool",
+      "defaultValue": true,
       "metadata": {
         "description": "Whether requests from public network allowed."
       }
     },
-    "isVirtualNetworkFilterEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Flag to indicate whether to enable/disable Virtual Network ACL rules."
-      }
-    },
     "networkAclBypass": {
       "type": "string",
-      "defaultValue": "None",
+      "defaultValue": "AzureServices",
       "metadata": {
         "description": "Indicates what services are allowed to bypass firewall checks."
       },
@@ -184,30 +1252,57 @@
     },
     "ipRules": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "defaultValue": [],
       "metadata": {
-        "description": "List of IpRules to be allowed. A single IPv4 address or a single IPv4 address range in CIDR format."
+        "description": "List of IpRules to be allowed.\nEach element in this array is either a single IPv4 address or a single IPv4 address range in CIDR format.\n"
       }
     },
     "virtualNetworkRules": {
       "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "metadata": {
+              "description": "The id of the subnet. For example: /subscriptions/{subscriptionId}/resourceGroups/{groupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}."
+            }
+          },
+          "ignoreMissingVNetServiceEndpoint": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Whether to ignore missing virtual network service endpoint."
+            }
+          }
+        }
+      },
       "defaultValue": [],
       "metadata": {
-        "description": "The list of virtual network ACL rules, \"isVirtualNetworkFilterEnabled\" must be set to \"true\". format: {id: string, ignoreMissingVNetServiceEndpoint: bool}"
+        "description": "The list of virtual network ACL rules."
       }
     },
     "networkAclBypassResourceIds": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "An array that contains the Resource Ids for Network Acl Bypass."
       }
     },
-    "capabilities": {
+    "extraCapabilities": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "defaultValue": [],
       "metadata": {
-        "description": "Non-default extra capabilities."
+        "description": "Extra capabilities besides the ones required by param.backendApi and param.enableServerless."
       }
     },
     "disableLocalAuth": {
@@ -236,59 +1331,23 @@
       }
     },
     "cassandraKeyspaces": {
-      "type": "array",
-      "defaultValue": [],
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/cassandrakeyspace"
+      },
+      "defaultValue": {},
       "metadata": {
-        "description": "The list of Cassandra keyspaces configurations with tables."
+        "description": "The object of Cassandra keyspaces configurations.\nThe key of each element is the name of the Cassandra keyspace.\nThe value of each element is an configuration object.\n"
       }
     },
     "sqlDatabases": {
-      "type": "array",
-      "defaultValue": [],
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/sqlDatabasetype"
+      },
+      "defaultValue": {},
       "metadata": {
-        "description": "The list of SQL databases configurations with containers, its triggers, storedProcedures and userDefinedFunctions."
-      }
-    },
-    "sqlRoleDefinitions": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "The list of SQL role definitions."
-      }
-    },
-    "sqlRoleAssignments": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "The list of SQL role assignments."
-      }
-    },
-    "mongodbDatabases": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "The list of MongoDB databases configurations with collections, its indexes, Shard Keys."
-      }
-    },
-    "gremlinDatabases": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "The list of Gremlin databases configurations with graphs."
-      }
-    },
-    "tables": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "The list of Table databases configurations."
-      }
-    },
-    "roleAssignments": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Array of role assignment objects that contain the \"roleDefinitionIdOrName\" and \"principalId\" to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, provide either the display name of the role definition, or its fully qualified ID in the following format: \"/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\""
+        "description": "The object of sql database configurations.\nThe key of each element is the name of the sql database.\nThe value of each element is an configuration object.\n"
       }
     },
     "identityType": {
@@ -305,21 +1364,20 @@
       }
     },
     "userAssignedIdentities": {
-      "type": "object",
-      "defaultValue": {},
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "defaultValue": [],
       "metadata": {
         "description": "The list of user-assigned managed identities. The user identity dictionary key references will be ARM resource ids in the form: \"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}\""
       }
     },
-    "privateEndpoints": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Private Endpoints that should be created for Azure Cosmos DB account."
-      }
-    },
     "tags": {
       "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
       "defaultValue": {},
       "metadata": {
         "description": "List of key-value pairs that describe the resource."
@@ -336,73 +1394,132 @@
         "NotSpecified",
         "ReadOnly"
       ]
+    },
+    "consistencyPolicy": {
+      "$ref": "#/definitions/consistencyPolicyType",
+      "defaultValue": {
+        "defaultConsistencyLevel": "Session"
+      },
+      "metadata": {
+        "description": "The consistency policy for the Cosmos DB account."
+      }
+    },
+    "mongodbDatabases": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/mongodbDatabaseType"
+      },
+      "defaultValue": {},
+      "metadata": {
+        "description": "The list of MongoDB databases configurations with collections, its indexes, Shard Keys."
+      }
+    },
+    "tables": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/tableType"
+      },
+      "defaultValue": {},
+      "metadata": {
+        "description": "The object of Table databases configurations."
+      }
+    },
+    "gremlinDatabases": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/gremlinDatabaseType"
+      },
+      "defaultValue": {},
+      "metadata": {
+        "description": "The list of Gremlin databases configurations with graphs."
+      }
+    },
+    "sqlRoleDefinitions": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/sqlRoleDefinitionType"
+      },
+      "defaultValue": {},
+      "metadata": {
+        "description": "The list of SQL role definitions.\nThe keys are the role name.\nThe values are the role definition."
+      }
+    },
+    "privateEndpoints": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/definitions/privateEndpointType"
+      },
+      "defaultValue": {},
+      "metadata": {
+        "description": "Private Endpoints that should be created for Azure Cosmos DB account."
+      }
     }
   },
   "variables": {
     "copy": [
       {
-        "name": "secondaryRegionsWithDefaults",
-        "count": "[length(parameters('secondaryLocations'))]",
+        "name": "locationsWithCompleteInfo",
+        "count": "[length(parameters('locations'))]",
         "input": {
-          "locationName": "[coalesce(tryGet(parameters('secondaryLocations')[copyIndex('secondaryRegionsWithDefaults')], 'locationName'), parameters('secondaryLocations')[copyIndex('secondaryRegionsWithDefaults')])]",
-          "failoverPriority": "[coalesce(tryGet(parameters('secondaryLocations')[copyIndex('secondaryRegionsWithDefaults')], 'failoverPriority'), add(copyIndex('secondaryRegionsWithDefaults'), 1))]",
-          "isZoneRedundant": "[coalesce(tryGet(parameters('secondaryLocations')[copyIndex('secondaryRegionsWithDefaults')], 'isZoneRedundant'), parameters('isZoneRedundant'))]"
+          "locationName": "[parameters('locations')[copyIndex('locationsWithCompleteInfo')].name]",
+          "failoverPriority": "[copyIndex('locationsWithCompleteInfo')]",
+          "isZoneRedundant": "[tryGet(parameters('locations')[copyIndex('locationsWithCompleteInfo')], 'isZoneRedundant')]"
         }
       },
       {
-        "name": "ipRulesWithDefaults",
-        "count": "[length(parameters('ipRules'))]",
+        "name": "capabilitiesCompleteList",
+        "count": "[length(union(parameters('extraCapabilities'), if(parameters('enableServerless'), createArray('EnableServerless'), createArray()), createArray(variables('capabilityNeededForBackendApi')[parameters('backendApi')])))]",
         "input": {
-          "ipAddressOrRange": "[parameters('ipRules')[copyIndex('ipRulesWithDefaults')]]"
+          "name": "[union(parameters('extraCapabilities'), if(parameters('enableServerless'), createArray('EnableServerless'), createArray()), createArray(variables('capabilityNeededForBackendApi')[parameters('backendApi')]))[copyIndex('capabilitiesCompleteList')]]"
         }
       },
       {
         "name": "privateEndpointsWithDefaults",
-        "count": "[length(parameters('privateEndpoints'))]",
+        "count": "[length(items(parameters('privateEndpoints')))]",
         "input": {
-          "name": "[format('{0}-{1}', toLower(parameters('name')), parameters('privateEndpoints')[copyIndex('privateEndpointsWithDefaults')].name)]",
-          "privateLinkServiceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name')))]",
+          "name": "[format('{0}-{1}', toLower(parameters('name')), items(parameters('privateEndpoints'))[copyIndex('privateEndpointsWithDefaults')].key)]",
           "groupIds": [
-            "[parameters('privateEndpoints')[copyIndex('privateEndpointsWithDefaults')].groupId]"
+            "[items(parameters('privateEndpoints'))[copyIndex('privateEndpointsWithDefaults')].value.groupId]"
           ],
-          "subnetId": "[parameters('privateEndpoints')[copyIndex('privateEndpointsWithDefaults')].subnetId]",
-          "privateDnsZones": "[if(contains(parameters('privateEndpoints')[copyIndex('privateEndpointsWithDefaults')], 'privateDnsZoneId'), createArray(createObject('name', 'default', 'zoneId', parameters('privateEndpoints')[copyIndex('privateEndpointsWithDefaults')].privateDnsZoneId)), createArray())]",
-          "manualApprovalEnabled": "[coalesce(tryGet(parameters('privateEndpoints')[copyIndex('privateEndpointsWithDefaults')], 'manualApprovalEnabled'), false())]"
+          "subnetId": "[items(parameters('privateEndpoints'))[copyIndex('privateEndpointsWithDefaults')].value.subnetId]",
+          "privateDnsZoneId": "[items(parameters('privateEndpoints'))[copyIndex('privateEndpointsWithDefaults')].value.privateDnsZoneId]",
+          "manualApprovalEnabled": "[coalesce(items(parameters('privateEndpoints'))[copyIndex('privateEndpointsWithDefaults')].value.isManualApproval, false())]"
         }
       }
     ],
-    "varConsistencyPolicy": "[if(equals(parameters('defaultConsistencyLevel'), 'BoundedStaleness'), createObject('defaultConsistencyLevel', 'BoundedStaleness', 'maxStalenessPrefix', parameters('maxStalenessPrefix'), 'maxIntervalInSeconds', parameters('maxIntervalInSeconds')), createObject('defaultConsistencyLevel', parameters('defaultConsistencyLevel')))]",
-    "locationsWithDefaults": "[union(createArray(createObject('locationName', parameters('location'), 'failoverPriority', 0, 'isZoneRedundant', parameters('isZoneRedundant'))), if(parameters('enableServerless'), createArray(), variables('secondaryRegionsWithDefaults')))]",
-    "capabilityMappings": {
+    "primaryLocation": "[parameters('locations')[0].name]",
+    "capabilityNeededForBackendApi": {
       "cassandra": "EnableCassandra",
       "gremlin": "EnableGremlin",
       "mongodb": "EnableMongo",
-      "table": "EnableTable"
-    },
-    "capabilitiesWithDefaults": "[union(parameters('capabilities'), if(parameters('enableServerless'), createArray('EnableServerless'), createArray()), if(contains(variables('capabilityMappings'), parameters('backendApi')), createArray(variables('capabilityMappings')[parameters('backendApi')]), createArray()))]"
+      "table": "EnableTable",
+      "sql": ""
+    }
   },
-  "resources": [
-    {
+  "resources": {
+    "cosmosDBAccount": {
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2022-11-15",
+      "apiVersion": "2023-04-15",
       "name": "[toLower(parameters('name'))]",
-      "location": "[parameters('location')]",
+      "location": "[variables('primaryLocation')]",
       "kind": "[if(equals(parameters('backendApi'), 'mongodb'), 'MongoDB', 'GlobalDocumentDB')]",
       "properties": {
         "copy": [
           {
-            "name": "capabilities",
-            "count": "[length(variables('capabilitiesWithDefaults'))]",
+            "name": "ipRules",
+            "count": "[length(parameters('ipRules'))]",
             "input": {
-              "name": "[variables('capabilitiesWithDefaults')[copyIndex('capabilities')]]"
+              "ipAddressOrRange": "[parameters('ipRules')[copyIndex('ipRules')]]"
             }
           }
         ],
         "analyticalStorageConfiguration": "[if(parameters('enableAnalyticalStorage'), createObject('schemaType', parameters('analyticalStorageSchemaType')), null())]",
-        "apiProperties": "[if(equals(parameters('backendApi'), 'mongodb'), createObject('serverVersion', parameters('serverVersion')), null())]",
+        "apiProperties": "[if(equals(parameters('backendApi'), 'mongodb'), createObject('serverVersion', parameters('MongoDBServerVersion')), null())]",
+        "capabilities": "[variables('capabilitiesCompleteList')]",
         "capacity": "[if(parameters('enableServerless'), null(), createObject('totalThroughputLimit', parameters('totalThroughputLimit')))]",
-        "consistencyPolicy": "[variables('varConsistencyPolicy')]",
+        "consistencyPolicy": "[parameters('consistencyPolicy')]",
         "cors": "[parameters('cors')]",
+        "createMode": "[parameters('createMode')]",
         "databaseAccountOfferType": "Standard",
         "disableKeyBasedMetadataWriteAccess": "[parameters('disableKeyBasedMetadataWriteAccess')]",
         "disableLocalAuth": "[parameters('disableLocalAuth')]",
@@ -410,18 +1527,20 @@
         "enableAutomaticFailover": "[parameters('enableAutomaticFailover')]",
         "enableFreeTier": "[parameters('enableFreeTier')]",
         "enableMultipleWriteLocations": "[if(parameters('enableServerless'), false(), parameters('enableMultipleWriteLocations'))]",
-        "ipRules": "[variables('ipRulesWithDefaults')]",
-        "isVirtualNetworkFilterEnabled": "[parameters('isVirtualNetworkFilterEnabled')]",
-        "locations": "[variables('locationsWithDefaults')]",
+        "locations": "[if(parameters('enableServerless'), createArray(variables('locationsWithCompleteInfo')[0]), variables('locationsWithCompleteInfo'))]",
         "networkAclBypass": "[parameters('networkAclBypass')]",
         "networkAclBypassResourceIds": "[parameters('networkAclBypassResourceIds')]",
-        "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
+        "publicNetworkAccess": "[if(parameters('enablePublicNetworkAccess'), 'Enabled', 'Disabled')]",
+        "isVirtualNetworkFilterEnabled": "[greater(length(parameters('virtualNetworkRules')), 0)]",
         "virtualNetworkRules": "[parameters('virtualNetworkRules')]"
       },
-      "identity": "[if(contains(parameters('identityType'), 'UserAssigned'), createObject('type', parameters('identityType'), 'userAssignedIdentities', if(contains(parameters('identityType'), 'UserAssigned'), parameters('userAssignedIdentities'), createObject())), createObject('type', parameters('identityType')))]",
+      "identity": {
+        "type": "[parameters('identityType')]",
+        "userAssignedIdentities": "[if(contains(parameters('identityType'), 'UserAssigned'), toObject(parameters('userAssignedIdentities'), lambda('id', lambdaVariables('id')), lambda('id', createObject())), null())]"
+      },
       "tags": "[parameters('tags')]"
     },
-    {
+    "cosmosDBAccount_lock": {
       "condition": "[not(equals(parameters('lock'), 'NotSpecified'))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
@@ -432,20 +1551,20 @@
         "notes": "[if(equals(parameters('lock'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot modify the resource or child resources.')]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name')))]"
+        "cosmosDBAccount"
       ]
     },
-    {
+    "cosmosDBAccount_cassandraKeyspaces": {
       "copy": {
         "name": "cosmosDBAccount_cassandraKeyspaces",
-        "count": "[length(parameters('cassandraKeyspaces'))]",
+        "count": "[length(items(parameters('cassandraKeyspaces')))]",
         "mode": "serial",
         "batchSize": 1
       },
       "condition": "[equals(parameters('backendApi'), 'cassandra')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('cassandra-keyspace-{0}-{1}', uniqueString(parameters('cassandraKeyspaces')[copyIndex()].name, resourceGroup().name), copyIndex())]",
+      "name": "[items(parameters('cassandraKeyspaces'))[copyIndex()].key]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -455,17 +1574,8 @@
           "cosmosDBAccountName": {
             "value": "[parameters('name')]"
           },
-          "keyspaceName": {
-            "value": "[parameters('cassandraKeyspaces')[copyIndex()].name]"
-          },
-          "tables": {
-            "value": "[parameters('cassandraKeyspaces')[copyIndex()].tables]"
-          },
-          "autoscaleMaxThroughput": {
-            "value": "[coalesce(tryGet(parameters('cassandraKeyspaces')[copyIndex()], 'autoscaleMaxThroughput'), 0)]"
-          },
-          "manualProvisionedThroughput": {
-            "value": "[coalesce(tryGet(parameters('cassandraKeyspaces')[copyIndex()], 'manualProvisionedThroughput'), 0)]"
+          "keyspace": {
+            "value": "[items(parameters('cassandraKeyspaces'))[copyIndex()]]"
           },
           "enableServerless": {
             "value": "[parameters('enableServerless')]"
@@ -473,12 +1583,14 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "2510971043502111441"
+              "version": "0.17.1.54307",
+              "templateHash": "3622116679688784936"
             }
           },
           "parameters": {
@@ -486,76 +1598,79 @@
               "type": "string"
             },
             "enableServerless": {
-              "type": "bool",
-              "defaultValue": false
+              "type": "bool"
             },
-            "keyspaceName": {
-              "type": "string"
-            },
-            "tables": {
-              "type": "array"
-            },
-            "autoscaleMaxThroughput": {
-              "type": "int"
-            },
-            "manualProvisionedThroughput": {
-              "type": "int"
+            "keyspace": {
+              "type": "object"
             }
           },
-          "resources": [
-            {
+          "variables": {
+            "name": "[parameters('keyspace').key]",
+            "config": "[parameters('keyspace').value]"
+          },
+          "resources": {
+            "cosmosDBAccount::cassandraKeyspaces::cassandraTables": {
               "copy": {
                 "name": "cassandraTables",
-                "count": "[length(parameters('tables'))]"
+                "count": "[length(items(coalesce(tryGet(variables('config'), 'tables'), createObject())))]"
               },
               "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables",
-              "apiVersion": "2022-11-15",
-              "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), parameters('keyspaceName'), parameters('tables')[copyIndex()].name)]",
+              "apiVersion": "2023-04-15",
+              "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), variables('name'), items(coalesce(tryGet(variables('config'), 'tables'), createObject()))[copyIndex()].key)]",
               "properties": {
                 "resource": {
-                  "id": "[parameters('tables')[copyIndex()].name]",
-                  "defaultTtl": "[coalesce(tryGet(parameters('tables')[copyIndex()], 'defaultTtl'), null())]",
+                  "id": "[items(coalesce(tryGet(variables('config'), 'tables'), createObject()))[copyIndex()].key]",
+                  "analyticalStorageTtl": "[tryGet(items(coalesce(tryGet(variables('config'), 'tables'), createObject()))[copyIndex()].value, 'analyticalStorageTtl')]",
+                  "defaultTtl": "[tryGet(items(coalesce(tryGet(variables('config'), 'tables'), createObject()))[copyIndex()].value, 'defaultTtl')]",
                   "schema": {
-                    "columns": "[coalesce(tryGet(parameters('tables')[copyIndex()], 'schemaColumns'), createArray())]",
-                    "partitionKeys": "[coalesce(tryGet(parameters('tables')[copyIndex()], 'schemaPartitionKeys'), createArray())]",
-                    "clusterKeys": "[coalesce(tryGet(parameters('tables')[copyIndex()], 'schemaClusteringKeys'), createArray())]"
+                    "columns": "[tryGet(tryGet(tryGet(items(coalesce(tryGet(variables('config'), 'tables'), createObject()))[copyIndex()], 'value'), 'schema'), 'columns')]",
+                    "partitionKeys": "[tryGet(tryGet(tryGet(items(coalesce(tryGet(variables('config'), 'tables'), createObject()))[copyIndex()], 'value'), 'schema'), 'partitionKeys')]",
+                    "clusterKeys": "[tryGet(tryGet(tryGet(items(coalesce(tryGet(variables('config'), 'tables'), createObject()))[copyIndex()], 'value'), 'schema'), 'clusterKeys')]"
                   }
                 },
-                "options": "[if(not(parameters('enableServerless')), if(contains(parameters('tables')[copyIndex()], 'autoscaleMaxThroughput'), createObject('autoscaleSettings', createObject('maxThroughput', parameters('tables')[copyIndex()].autoscaleMaxThroughput)), if(contains(parameters('tables')[copyIndex()], 'manualProvisionedThroughput'), createObject('throughput', parameters('tables')[copyIndex()].manualProvisionedThroughput), createObject())), createObject())]"
+                "options": "[if(parameters('enableServerless'), createObject(), if(items(coalesce(tryGet(variables('config'), 'tables'), createObject()))[copyIndex()].value.performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', items(coalesce(tryGet(variables('config'), 'tables'), createObject()))[copyIndex()].value.performance.throughput)), createObject('throughput', items(coalesce(tryGet(variables('config'), 'tables'), createObject()))[copyIndex()].value.performance.throughput)))]"
               },
+              "tags": "[items(coalesce(tryGet(variables('config'), 'tables'), createObject()))[copyIndex()].value.tags]",
               "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces', parameters('cosmosDBAccountName'), parameters('keyspaceName'))]"
+                "cosmosDBAccount::cassandraKeyspaces"
               ]
             },
-            {
+            "cosmosDBAccount::cassandraKeyspaces": {
               "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces",
-              "apiVersion": "2022-11-15",
-              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), parameters('keyspaceName'))]",
+              "apiVersion": "2023-04-15",
+              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), variables('name'))]",
               "properties": {
                 "resource": {
-                  "id": "[parameters('keyspaceName')]"
+                  "id": "[variables('name')]"
                 },
-                "options": "[if(not(parameters('enableServerless')), if(not(equals(parameters('autoscaleMaxThroughput'), 0)), createObject('autoscaleSettings', createObject('maxThroughput', parameters('autoscaleMaxThroughput'))), if(not(equals(parameters('manualProvisionedThroughput'), 0)), createObject('throughput', parameters('manualProvisionedThroughput')), createObject())), createObject())]"
-              }
+                "options": "[if(parameters('enableServerless'), createObject(), if(variables('config').performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', variables('config').performance.throughput)), createObject('throughput', variables('config').performance.throughput)))]"
+              },
+              "tags": "[variables('config').tags]"
+            },
+            "cosmosDBAccount": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2023-04-15",
+              "name": "[parameters('cosmosDBAccountName')]"
             }
-          ]
+          }
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name')))]"
+        "cosmosDBAccount"
       ]
     },
-    {
+    "cosmosDBAccount_sqlDatabases": {
       "copy": {
         "name": "cosmosDBAccount_sqlDatabases",
-        "count": "[length(parameters('sqlDatabases'))]",
+        "count": "[length(items(parameters('sqlDatabases')))]",
         "mode": "serial",
         "batchSize": 1
       },
       "condition": "[equals(parameters('backendApi'), 'sql')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('sql-database-{0}-{1}', uniqueString(parameters('sqlDatabases')[copyIndex()].name, resourceGroup().name), copyIndex())]",
+      "name": "[items(parameters('sqlDatabases'))[copyIndex()].key]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -565,17 +1680,8 @@
           "cosmosDBAccountName": {
             "value": "[parameters('name')]"
           },
-          "databaseName": {
-            "value": "[parameters('sqlDatabases')[copyIndex()].name]"
-          },
-          "databaseContainers": {
-            "value": "[coalesce(tryGet(parameters('sqlDatabases')[copyIndex()], 'containers'), createArray())]"
-          },
-          "autoscaleMaxThroughput": {
-            "value": "[coalesce(tryGet(parameters('sqlDatabases')[copyIndex()], 'autoscaleMaxThroughput'), 0)]"
-          },
-          "manualProvisionedThroughput": {
-            "value": "[coalesce(tryGet(parameters('sqlDatabases')[copyIndex()], 'manualProvisionedThroughput'), 0)]"
+          "database": {
+            "value": "[items(parameters('sqlDatabases'))[copyIndex()].value]"
           },
           "enableServerless": {
             "value": "[parameters('enableServerless')]"
@@ -583,12 +1689,14 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "14470324069343215151"
+              "version": "0.17.1.54307",
+              "templateHash": "15065590820445801127"
             }
           },
           "parameters": {
@@ -596,44 +1704,44 @@
               "type": "string"
             },
             "enableServerless": {
-              "type": "bool",
-              "defaultValue": false
+              "type": "bool"
             },
-            "databaseName": {
-              "type": "string"
-            },
-            "databaseContainers": {
-              "type": "array"
-            },
-            "autoscaleMaxThroughput": {
-              "type": "int"
-            },
-            "manualProvisionedThroughput": {
-              "type": "int"
+            "database": {
+              "type": "object"
             }
           },
-          "resources": [
-            {
+          "variables": {
+            "name": "[parameters('database').key]",
+            "config": "[parameters('database').value]"
+          },
+          "resources": {
+            "cosmosDBAccount": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2022-11-15",
+              "name": "[parameters('cosmosDBAccountName')]"
+            },
+            "sqlDatabase": {
               "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
               "apiVersion": "2022-11-15",
-              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), parameters('databaseName'))]",
+              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), variables('name'))]",
               "properties": {
                 "resource": {
-                  "id": "[parameters('databaseName')]"
+                  "id": "[variables('name')]"
                 },
-                "options": "[if(parameters('enableServerless'), createObject(), if(not(equals(parameters('autoscaleMaxThroughput'), 0)), createObject('autoscaleSettings', createObject('maxThroughput', parameters('autoscaleMaxThroughput'))), if(not(equals(parameters('manualProvisionedThroughput'), 0)), createObject('throughput', parameters('manualProvisionedThroughput')), createObject())))]"
+                "options": "[if(parameters('enableServerless'), createObject(), if(variables('config').performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', variables('config').performance.throughput)), createObject('throughput', variables('config').performance.throughput)))]"
               }
             },
-            {
+            "sqlDatabaseContainers": {
               "copy": {
                 "name": "sqlDatabaseContainers",
-                "count": "[length(parameters('databaseContainers'))]",
+                "count": "[length(items(coalesce(tryGet(variables('config'), 'containers'), createObject())))]",
                 "mode": "serial",
                 "batchSize": 1
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[parameters('databaseContainers')[copyIndex()].name]",
+              "name": "[items(coalesce(tryGet(variables('config'), 'containers'), createObject()))[copyIndex()].key]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -644,10 +1752,10 @@
                     "value": "[parameters('cosmosDBAccountName')]"
                   },
                   "databaseName": {
-                    "value": "[parameters('databaseName')]"
+                    "value": "[variables('name')]"
                   },
-                  "databaseContainer": {
-                    "value": "[parameters('databaseContainers')[copyIndex()]]"
+                  "container": {
+                    "value": "[items(coalesce(tryGet(variables('config'), 'containers'), createObject()))[copyIndex()]]"
                   },
                   "enableServerless": {
                     "value": "[parameters('enableServerless')]"
@@ -655,132 +1763,147 @@
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "1.10-experimental",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
+                    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.16.2.56959",
-                      "templateHash": "13969499250039756413"
+                      "version": "0.17.1.54307",
+                      "templateHash": "12221898098512611965"
                     }
                   },
                   "parameters": {
                     "cosmosDBAccountName": {
                       "type": "string"
                     },
-                    "enableServerless": {
-                      "type": "bool",
-                      "defaultValue": false
-                    },
                     "databaseName": {
                       "type": "string"
                     },
-                    "databaseContainer": {
+                    "enableServerless": {
+                      "type": "bool"
+                    },
+                    "container": {
                       "type": "object"
                     }
                   },
                   "variables": {
-                    "varStoredProcedures": "[coalesce(tryGet(parameters('databaseContainer'), 'storedProcedures'), createArray())]",
-                    "varTriggers": "[coalesce(tryGet(parameters('databaseContainer'), 'triggers'), createArray())]",
-                    "varUserDefinedFunctions": "[coalesce(tryGet(parameters('databaseContainer'), 'userDefinedFunctions'), createArray())]"
+                    "name": "[parameters('container').key]",
+                    "config": "[parameters('container').value]"
                   },
-                  "resources": [
-                    {
+                  "resources": {
+                    "cosmosDBAccount::sqlDatabase::databaseContainers::databaseContainersStoredProcedures": {
                       "copy": {
                         "name": "databaseContainersStoredProcedures",
-                        "count": "[length(variables('varStoredProcedures'))]"
+                        "count": "[length(items(coalesce(tryGet(variables('config'), 'storedProcedures'), createObject())))]"
                       },
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/storedProcedures",
-                      "apiVersion": "2022-11-15",
-                      "name": "[format('{0}/{1}/{2}/{3}', parameters('cosmosDBAccountName'), parameters('databaseName'), parameters('databaseContainer').name, variables('varStoredProcedures')[copyIndex()].name)]",
+                      "apiVersion": "2023-04-15",
+                      "name": "[format('{0}/{1}/{2}/{3}', parameters('cosmosDBAccountName'), parameters('databaseName'), variables('name'), items(coalesce(tryGet(variables('config'), 'storedProcedures'), createObject()))[copyIndex()].key)]",
                       "properties": {
                         "resource": {
-                          "id": "[variables('varStoredProcedures')[copyIndex()].name]",
-                          "body": "[variables('varStoredProcedures')[copyIndex()].body]"
-                        }
+                          "id": "[items(coalesce(tryGet(variables('config'), 'storedProcedures'), createObject()))[copyIndex()].key]",
+                          "body": "[items(coalesce(tryGet(variables('config'), 'storedProcedures'), createObject()))[copyIndex()].value.body]"
+                        },
+                        "options": "[if(parameters('enableServerless'), createObject(), if(items(coalesce(tryGet(variables('config'), 'storedProcedures'), createObject()))[copyIndex()].value.performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', items(coalesce(tryGet(variables('config'), 'storedProcedures'), createObject()))[copyIndex()].value.performance.throughput)), createObject('throughput', items(coalesce(tryGet(variables('config'), 'storedProcedures'), createObject()))[copyIndex()].value.performance.throughput)))]"
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers', parameters('cosmosDBAccountName'), parameters('databaseName'), parameters('databaseContainer').name)]"
+                        "cosmosDBAccount::sqlDatabase::databaseContainers"
                       ]
                     },
-                    {
+                    "cosmosDBAccount::sqlDatabase::databaseContainers::databaseContainersUserDefinedFunction": {
                       "copy": {
                         "name": "databaseContainersUserDefinedFunction",
-                        "count": "[length(variables('varUserDefinedFunctions'))]"
+                        "count": "[length(items(coalesce(tryGet(variables('config'), 'userDefinedFunctions'), createObject())))]"
                       },
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/userDefinedFunctions",
-                      "apiVersion": "2022-11-15",
-                      "name": "[format('{0}/{1}/{2}/{3}', parameters('cosmosDBAccountName'), parameters('databaseName'), parameters('databaseContainer').name, variables('varUserDefinedFunctions')[copyIndex()].name)]",
+                      "apiVersion": "2023-04-15",
+                      "name": "[format('{0}/{1}/{2}/{3}', parameters('cosmosDBAccountName'), parameters('databaseName'), variables('name'), items(coalesce(tryGet(variables('config'), 'userDefinedFunctions'), createObject()))[copyIndex()].key)]",
                       "properties": {
                         "resource": {
-                          "id": "[variables('varUserDefinedFunctions')[copyIndex()].name]",
-                          "body": "[variables('varUserDefinedFunctions')[copyIndex()].body]"
+                          "id": "[items(coalesce(tryGet(variables('config'), 'userDefinedFunctions'), createObject()))[copyIndex()].key]",
+                          "body": "[items(coalesce(tryGet(variables('config'), 'userDefinedFunctions'), createObject()))[copyIndex()].value.body]"
                         }
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers', parameters('cosmosDBAccountName'), parameters('databaseName'), parameters('databaseContainer').name)]"
+                        "cosmosDBAccount::sqlDatabase::databaseContainers"
                       ]
                     },
-                    {
+                    "cosmosDBAccount::sqlDatabase::databaseContainers::databaseContainersTriggers": {
                       "copy": {
                         "name": "databaseContainersTriggers",
-                        "count": "[length(variables('varTriggers'))]"
+                        "count": "[length(items(coalesce(tryGet(variables('config'), 'triggers'), createObject())))]"
                       },
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/triggers",
-                      "apiVersion": "2022-11-15",
-                      "name": "[format('{0}/{1}/{2}/{3}', parameters('cosmosDBAccountName'), parameters('databaseName'), parameters('databaseContainer').name, variables('varTriggers')[copyIndex()].name)]",
+                      "apiVersion": "2023-04-15",
+                      "name": "[format('{0}/{1}/{2}/{3}', parameters('cosmosDBAccountName'), parameters('databaseName'), variables('name'), items(coalesce(tryGet(variables('config'), 'triggers'), createObject()))[copyIndex()].key)]",
                       "properties": {
                         "resource": {
-                          "id": "[variables('varTriggers')[copyIndex()].name]",
-                          "body": "[variables('varTriggers')[copyIndex()].body]",
-                          "triggerOperation": "[variables('varTriggers')[copyIndex()].operation]",
-                          "triggerType": "[variables('varTriggers')[copyIndex()].type]"
+                          "id": "[items(coalesce(tryGet(variables('config'), 'triggers'), createObject()))[copyIndex()].key]",
+                          "body": "[items(coalesce(tryGet(variables('config'), 'triggers'), createObject()))[copyIndex()].value.body]",
+                          "triggerOperation": "[items(coalesce(tryGet(variables('config'), 'triggers'), createObject()))[copyIndex()].value.triggerOperation]",
+                          "triggerType": "[items(coalesce(tryGet(variables('config'), 'triggers'), createObject()))[copyIndex()].value.triggerType]"
                         }
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers', parameters('cosmosDBAccountName'), parameters('databaseName'), parameters('databaseContainer').name)]"
+                        "cosmosDBAccount::sqlDatabase::databaseContainers"
                       ]
                     },
-                    {
+                    "cosmosDBAccount::sqlDatabase::databaseContainers": {
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
-                      "apiVersion": "2022-11-15",
-                      "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), parameters('databaseName'), parameters('databaseContainer').name)]",
+                      "apiVersion": "2023-04-15",
+                      "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), parameters('databaseName'), variables('name'))]",
                       "properties": {
                         "resource": {
-                          "id": "[parameters('databaseContainer').name]",
-                          "defaultTtl": "[coalesce(tryGet(parameters('databaseContainer'), 'defaultTtl'), -1)]",
-                          "conflictResolutionPolicy": "[coalesce(tryGet(parameters('databaseContainer'), 'conflictResolutionPolicy'), null())]",
-                          "uniqueKeyPolicy": "[coalesce(tryGet(parameters('databaseContainer'), 'uniqueKeyPolicy'), null())]",
-                          "indexingPolicy": "[coalesce(tryGet(parameters('databaseContainer'), 'indexingPolicy'), null())]",
-                          "partitionKey": "[coalesce(tryGet(parameters('databaseContainer'), 'partitionKey'), null())]"
+                          "id": "[variables('name')]",
+                          "analyticalStorageTtl": "[tryGet(variables('config'), 'analyticalStorageTtl')]",
+                          "defaultTtl": "[tryGet(variables('config'), 'defaultTtl')]",
+                          "clientEncryptionPolicy": "[tryGet(variables('config'), 'clientEncryptionPolicy')]",
+                          "conflictResolutionPolicy": "[tryGet(variables('config'), 'conflictResolutionPolicy')]",
+                          "uniqueKeyPolicy": "[tryGet(variables('config'), 'uniqueKeyPolicy')]",
+                          "indexingPolicy": "[tryGet(variables('config'), 'indexingPolicy')]",
+                          "partitionKey": "[tryGet(variables('config'), 'partitionKey')]"
                         },
-                        "options": "[if(parameters('enableServerless'), createObject(), if(contains(parameters('databaseContainer'), 'autoscaleMaxThroughput'), createObject('autoscaleSettings', createObject('maxThroughput', parameters('databaseContainer').autoscaleMaxThroughput)), if(contains(parameters('databaseContainer'), 'manualProvisionedThroughput'), createObject('throughput', parameters('databaseContainer').manualProvisionedThroughput), createObject())))]"
+                        "options": "[if(parameters('enableServerless'), createObject(), if(variables('config').performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', variables('config').performance.throughput)), createObject('throughput', variables('config').performance.throughput)))]"
                       }
+                    },
+                    "cosmosDBAccount::sqlDatabase": {
+                      "existing": true,
+                      "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
+                      "apiVersion": "2023-04-15",
+                      "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), parameters('databaseName'))]"
+                    },
+                    "cosmosDBAccount": {
+                      "existing": true,
+                      "type": "Microsoft.DocumentDB/databaseAccounts",
+                      "apiVersion": "2023-04-15",
+                      "name": "[parameters('cosmosDBAccountName')]"
                     }
-                  ]
+                  }
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('cosmosDBAccountName'), parameters('databaseName'))]"
+                "sqlDatabase"
               ]
             }
-          ]
+          }
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name')))]"
+        "cosmosDBAccount"
       ]
     },
-    {
+    "cosmosDBAccount_mongodbDatabases": {
       "copy": {
         "name": "cosmosDBAccount_mongodbDatabases",
-        "count": "[length(parameters('mongodbDatabases'))]",
+        "count": "[length(items(parameters('mongodbDatabases')))]",
         "mode": "serial",
         "batchSize": 1
       },
       "condition": "[equals(parameters('backendApi'), 'mongodb')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('mongodb-database-{0}-{1}', uniqueString(parameters('mongodbDatabases')[copyIndex()].name, resourceGroup().name), copyIndex())]",
+      "name": "[items(parameters('mongodbDatabases'))[copyIndex()].key]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -790,17 +1913,8 @@
           "cosmosDBAccountName": {
             "value": "[parameters('name')]"
           },
-          "databaseName": {
-            "value": "[parameters('mongodbDatabases')[copyIndex()].name]"
-          },
-          "databaseCollections": {
-            "value": "[coalesce(tryGet(parameters('mongodbDatabases')[copyIndex()], 'collections'), createArray())]"
-          },
-          "autoscaleMaxThroughput": {
-            "value": "[coalesce(tryGet(parameters('mongodbDatabases')[copyIndex()], 'autoscaleMaxThroughput'), 0)]"
-          },
-          "manualProvisionedThroughput": {
-            "value": "[coalesce(tryGet(parameters('mongodbDatabases')[copyIndex()], 'manualProvisionedThroughput'), 0)]"
+          "database": {
+            "value": "[items(parameters('mongodbDatabases'))[copyIndex()]]"
           },
           "enableServerless": {
             "value": "[parameters('enableServerless')]"
@@ -808,12 +1922,14 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "17478975148356598924"
+              "version": "0.17.1.54307",
+              "templateHash": "16187990618121454845"
             }
           },
           "parameters": {
@@ -824,69 +1940,70 @@
               "type": "bool",
               "defaultValue": false
             },
-            "databaseName": {
-              "type": "string"
-            },
-            "databaseCollections": {
-              "type": "array"
-            },
-            "autoscaleMaxThroughput": {
-              "type": "int"
-            },
-            "manualProvisionedThroughput": {
-              "type": "int"
+            "database": {
+              "type": "object"
             }
           },
-          "resources": [
-            {
+          "variables": {
+            "name": "[parameters('database').key]",
+            "config": "[parameters('database').value]"
+          },
+          "resources": {
+            "cosmosDBAccount::mongodbDatabase::mongodbDatabaseCollections": {
               "copy": {
                 "name": "mongodbDatabaseCollections",
-                "count": "[length(parameters('databaseCollections'))]"
+                "count": "[length(items(coalesce(tryGet(variables('config'), 'collections'), createObject())))]"
               },
               "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections",
-              "apiVersion": "2022-11-15",
-              "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), parameters('databaseName'), parameters('databaseCollections')[copyIndex()].name)]",
+              "apiVersion": "2023-04-15",
+              "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), variables('name'), items(coalesce(tryGet(variables('config'), 'collections'), createObject()))[copyIndex()].key)]",
               "properties": {
                 "resource": {
-                  "id": "[parameters('databaseCollections')[copyIndex()].name]",
-                  "indexes": "[coalesce(tryGet(parameters('databaseCollections')[copyIndex()], 'indexes'), createArray())]",
-                  "shardKey": "[coalesce(tryGet(parameters('databaseCollections')[copyIndex()], 'shardKey'), createObject())]"
+                  "id": "[items(coalesce(tryGet(variables('config'), 'collections'), createObject()))[copyIndex()].key]",
+                  "indexes": "[tryGet(items(coalesce(tryGet(variables('config'), 'collections'), createObject()))[copyIndex()].value, 'indexes')]",
+                  "shardKey": "[tryGet(items(coalesce(tryGet(variables('config'), 'collections'), createObject()))[copyIndex()].value, 'shardKey')]"
                 },
-                "options": "[if(parameters('enableServerless'), createObject(), if(contains(parameters('databaseCollections')[copyIndex()], 'autoscaleMaxThroughput'), createObject('autoscaleSettings', createObject('maxThroughput', parameters('databaseCollections')[copyIndex()].autoscaleMaxThroughput)), if(contains(parameters('databaseCollections')[copyIndex()], 'manualProvisionedThroughput'), createObject('throughput', parameters('databaseCollections')[copyIndex()].manualProvisionedThroughput), createObject())))]"
+                "options": "[if(parameters('enableServerless'), createObject(), if(items(coalesce(tryGet(variables('config'), 'collections'), createObject()))[copyIndex()].value.performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', items(coalesce(tryGet(variables('config'), 'collections'), createObject()))[copyIndex()].value.performance.throughput)), createObject('throughput', items(coalesce(tryGet(variables('config'), 'collections'), createObject()))[copyIndex()].value.performance.throughput)))]"
               },
               "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts/mongodbDatabases', parameters('cosmosDBAccountName'), parameters('databaseName'))]"
+                "cosmosDBAccount::mongodbDatabase"
               ]
             },
-            {
+            "cosmosDBAccount::mongodbDatabase": {
               "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases",
-              "apiVersion": "2022-11-15",
-              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), parameters('databaseName'))]",
+              "apiVersion": "2023-04-15",
+              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), variables('name'))]",
               "properties": {
                 "resource": {
-                  "id": "[parameters('databaseName')]"
+                  "id": "[variables('name')]"
                 },
-                "options": "[if(parameters('enableServerless'), createObject(), if(not(equals(parameters('autoscaleMaxThroughput'), 0)), createObject('autoscaleSettings', createObject('maxThroughput', parameters('autoscaleMaxThroughput'))), if(not(equals(parameters('manualProvisionedThroughput'), 0)), createObject('throughput', parameters('manualProvisionedThroughput')), createObject())))]"
+                "options": "[if(parameters('enableServerless'), createObject(), if(variables('config').performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', variables('config').performance.throughput)), createObject('throughput', variables('config').performance.throughput)))]"
               }
+            },
+            "cosmosDBAccount": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2023-04-15",
+              "name": "[parameters('cosmosDBAccountName')]"
             }
-          ]
+          }
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name')))]"
+        "cosmosDBAccount"
       ]
     },
-    {
+    "cosmosDBAccount_tables": {
       "copy": {
         "name": "cosmosDBAccount_tables",
-        "count": "[length(parameters('tables'))]",
+        "count": "[length(items(parameters('tables')))]",
         "mode": "serial",
         "batchSize": 1
       },
       "condition": "[equals(parameters('backendApi'), 'table')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('table-{0}-{1}', uniqueString(parameters('tables')[copyIndex()].name, resourceGroup().name), copyIndex())]",
+      "name": "[items(parameters('tables'))[copyIndex()].key]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -896,14 +2013,8 @@
           "cosmosDBAccountName": {
             "value": "[parameters('name')]"
           },
-          "tableName": {
-            "value": "[parameters('tables')[copyIndex()].name]"
-          },
-          "autoscaleMaxThroughput": {
-            "value": "[coalesce(tryGet(parameters('tables')[copyIndex()], 'autoscaleMaxThroughput'), 0)]"
-          },
-          "manualProvisionedThroughput": {
-            "value": "[coalesce(tryGet(parameters('tables')[copyIndex()], 'manualProvisionedThroughput'), 0)]"
+          "table": {
+            "value": "[items(parameters('tables'))[copyIndex()]]"
           },
           "enableServerless": {
             "value": "[parameters('enableServerless')]"
@@ -911,486 +2022,351 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "6674095214885143679"
+              "version": "0.17.1.54307",
+              "templateHash": "7234473760278075397"
             }
           },
           "parameters": {
-            "cosmosDBAccountName": {
-              "type": "string"
-            },
-            "enableServerless": {
-              "type": "bool",
-              "defaultValue": false
-            },
-            "tableName": {
-              "type": "string"
-            },
-            "autoscaleMaxThroughput": {
-              "type": "int"
-            },
-            "manualProvisionedThroughput": {
-              "type": "int"
-            }
-          },
-          "resources": [
-            {
-              "type": "Microsoft.DocumentDB/databaseAccounts/tables",
-              "apiVersion": "2022-11-15",
-              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), parameters('tableName'))]",
-              "properties": {
-                "resource": {
-                  "id": "[parameters('tableName')]"
-                },
-                "options": "[if(parameters('enableServerless'), createObject(), if(not(equals(parameters('autoscaleMaxThroughput'), 0)), createObject('autoscaleSettings', createObject('maxThroughput', parameters('autoscaleMaxThroughput'))), if(not(equals(parameters('manualProvisionedThroughput'), 0)), createObject('throughput', parameters('manualProvisionedThroughput')), createObject())))]"
-              }
-            }
-          ]
-        }
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name')))]"
-      ]
-    },
-    {
-      "copy": {
-        "name": "cosmosDBAccount_gremlinDatabases",
-        "count": "[length(parameters('gremlinDatabases'))]",
-        "mode": "serial",
-        "batchSize": 1
-      },
-      "condition": "[equals(parameters('backendApi'), 'gremlin')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('gremlin-database-{0}-{1}', uniqueString(parameters('gremlinDatabases')[copyIndex()].name, resourceGroup().name), copyIndex())]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "cosmosDBAccountName": {
-            "value": "[parameters('name')]"
-          },
-          "databaseName": {
-            "value": "[parameters('gremlinDatabases')[copyIndex()].name]"
-          },
-          "databaseGraphs": {
-            "value": "[coalesce(tryGet(parameters('gremlinDatabases')[copyIndex()], 'graphs'), createArray())]"
-          },
-          "autoscaleMaxThroughput": {
-            "value": "[coalesce(tryGet(parameters('gremlinDatabases')[copyIndex()], 'autoscaleMaxThroughput'), 0)]"
-          },
-          "manualProvisionedThroughput": {
-            "value": "[coalesce(tryGet(parameters('gremlinDatabases')[copyIndex()], 'manualProvisionedThroughput'), 0)]"
-          },
-          "enableServerless": {
-            "value": "[parameters('enableServerless')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "11061240711792122307"
-            }
-          },
-          "parameters": {
-            "autoscaleMaxThroughput": {
-              "type": "int"
-            },
             "cosmosDBAccountName": {
               "type": "string"
             },
             "enableServerless": {
               "type": "bool"
             },
-            "databaseGraphs": {
-              "type": "array"
-            },
-            "databaseName": {
-              "type": "string"
-            },
-            "manualProvisionedThroughput": {
-              "type": "int"
-            }
-          },
-          "resources": [
-            {
-              "copy": {
-                "name": "gremlinDatabaseGraphs",
-                "count": "[length(parameters('databaseGraphs'))]"
-              },
-              "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs",
-              "apiVersion": "2022-11-15",
-              "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), parameters('databaseName'), parameters('databaseGraphs')[copyIndex()].name)]",
-              "properties": {
-                "resource": {
-                  "id": "[parameters('databaseGraphs')[copyIndex()].name]",
-                  "conflictResolutionPolicy": "[coalesce(tryGet(parameters('databaseGraphs')[copyIndex()], 'conflictResolutionPolicy'), createObject())]",
-                  "defaultTtl": "[coalesce(tryGet(parameters('databaseGraphs')[copyIndex()], 'defaultTtl'), -1)]",
-                  "indexingPolicy": "[coalesce(tryGet(parameters('databaseGraphs')[copyIndex()], 'indexingPolicy'), createObject())]",
-                  "partitionKey": "[coalesce(tryGet(parameters('databaseGraphs')[copyIndex()], 'partitionKey'), createObject())]",
-                  "uniqueKeyPolicy": "[coalesce(tryGet(parameters('databaseGraphs')[copyIndex()], 'uniqueKeyPolicy'), createObject())]"
-                },
-                "options": "[if(parameters('enableServerless'), createObject(), if(contains(parameters('databaseGraphs')[copyIndex()], 'autoscaleMaxThroughput'), createObject('autoscaleSettings', createObject('maxThroughput', parameters('databaseGraphs')[copyIndex()].autoscaleMaxThroughput)), if(contains(parameters('databaseGraphs')[copyIndex()], 'manualProvisionedThroughput'), createObject('throughput', parameters('databaseGraphs')[copyIndex()].manualProvisionedThroughput), createObject())))]"
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.DocumentDB/databaseAccounts/gremlinDatabases', parameters('cosmosDBAccountName'), parameters('databaseName'))]"
-              ]
-            },
-            {
-              "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
-              "apiVersion": "2022-11-15",
-              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), parameters('databaseName'))]",
-              "properties": {
-                "resource": {
-                  "id": "[parameters('databaseName')]"
-                },
-                "options": "[if(parameters('enableServerless'), createObject(), if(not(equals(parameters('autoscaleMaxThroughput'), 0)), createObject('autoscaleSettings', createObject('maxThroughput', parameters('autoscaleMaxThroughput'))), if(not(equals(parameters('manualProvisionedThroughput'), 0)), createObject('throughput', parameters('manualProvisionedThroughput')), createObject())))]"
-              }
-            }
-          ]
-        }
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name')))]"
-      ]
-    },
-    {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('sql-role-{0}', uniqueString(parameters('name'), resourceGroup().name))]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "cosmosDBAccountName": {
-            "value": "[parameters('name')]"
-          },
-          "roleDefinitions": {
-            "value": "[parameters('sqlRoleDefinitions')]"
-          },
-          "roleAssignments": {
-            "value": "[parameters('sqlRoleAssignments')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "7616646655512683661"
-            }
-          },
-          "parameters": {
-            "cosmosDBAccountName": {
-              "type": "string"
-            },
-            "roleDefinitions": {
-              "type": "array"
-            },
-            "roleAssignments": {
-              "type": "array"
-            }
-          },
-          "resources": [
-            {
-              "copy": {
-                "name": "sqlRoleDefinitions",
-                "count": "[length(parameters('roleDefinitions'))]",
-                "mode": "serial",
-                "batchSize": 1
-              },
-              "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
-              "apiVersion": "2022-11-15",
-              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), parameters('roleDefinitions')[copyIndex()].roleName))]",
-              "properties": {
-                "copy": [
-                  {
-                    "name": "assignableScopes",
-                    "count": "[length(parameters('roleDefinitions')[copyIndex()].assignableScopes)]",
-                    "input": "[format('{0}{1}', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), parameters('roleDefinitions')[copyIndex()].assignableScopes[copyIndex('assignableScopes')])]"
-                  }
-                ],
-                "roleName": "[parameters('roleDefinitions')[copyIndex()].roleName]",
-                "type": "CustomRole",
-                "permissions": "[parameters('roleDefinitions')[copyIndex()].permissions]"
-              }
-            },
-            {
-              "copy": {
-                "name": "sqlRoleAssignments",
-                "count": "[length(parameters('roleAssignments'))]",
-                "mode": "serial",
-                "batchSize": 1
-              },
-              "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
-              "apiVersion": "2022-11-15",
-              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), parameters('roleAssignments')[copyIndex()].roleDefinitionId, parameters('roleAssignments')[copyIndex()].principalId))]",
-              "properties": {
-                "roleDefinitionId": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDBAccountName'), parameters('roleAssignments')[copyIndex()].roleDefinitionId)]",
-                "principalId": "[parameters('roleAssignments')[copyIndex()].principalId]",
-                "scope": "[format('{0}{1}', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), parameters('roleAssignments')[copyIndex()].scope)]"
-              },
-              "dependsOn": [
-                "sqlRoleDefinitions"
-              ]
-            }
-          ],
-          "outputs": {
-            "roleDefinitionIds": {
-              "type": "array",
-              "metadata": {
-                "description": "The role definition ids of the created role definitions."
-              },
-              "copy": {
-                "count": "[length(parameters('roleDefinitions'))]",
-                "input": {
-                  "name": "[parameters('roleDefinitions')[copyIndex()].roleName]",
-                  "id": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDBAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), parameters('roleDefinitions')[copyIndex()].roleName))]"
-                }
-              }
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name')))]"
-      ]
-    },
-    {
-      "copy": {
-        "name": "cosmosDBAccount_rbac",
-        "count": "[length(parameters('roleAssignments'))]",
-        "mode": "serial",
-        "batchSize": 1
-      },
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('cosmosdb-rbac-{0}-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "description": {
-            "value": "[coalesce(tryGet(parameters('roleAssignments')[copyIndex()], 'description'), '')]"
-          },
-          "principalIds": {
-            "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
-          },
-          "roleDefinitionIdOrName": {
-            "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
-          },
-          "principalType": {
-            "value": "[coalesce(tryGet(parameters('roleAssignments')[copyIndex()], 'principalType'), '')]"
-          },
-          "cosmosDBAccountName": {
-            "value": "[parameters('name')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "11005349213797858385"
-            }
-          },
-          "parameters": {
-            "description": {
-              "type": "string",
-              "defaultValue": ""
-            },
-            "principalIds": {
-              "type": "array"
-            },
-            "principalType": {
-              "type": "string",
-              "defaultValue": ""
-            },
-            "roleDefinitionIdOrName": {
-              "type": "string"
-            },
-            "cosmosDBAccountName": {
-              "type": "string"
+            "table": {
+              "type": "object"
             }
           },
           "variables": {
-            "builtInRoleNames": {
-              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
-              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-              "Cosmos DB Account Reader Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fbdf93bf-df7d-467e-a4d2-9458aa1360c8')]",
-              "Cosmos DB Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '230815da-be43-4aae-9cb4-875f7bd000aa')]",
-              "CosmosBackupOperator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'db7b14f2-5adf-42da-9f96-f2ee17bab5cb')]",
-              "DocumentDB Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5bd9cd88-fe45-4216-938b-f97437e15450')]",
-              "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
-              "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
-              "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
-              "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
-              "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
-              "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
-              "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
-              "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
-              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]"
-            }
+            "name": "[parameters('table').key]",
+            "config": "[parameters('table').value]"
           },
-          "resources": [
-            {
-              "copy": {
-                "name": "roleAssignment",
-                "count": "[length(parameters('principalIds'))]"
-              },
-              "type": "Microsoft.Authorization/roleAssignments",
-              "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.DocumentDB/databaseAccounts/{0}', parameters('cosmosDBAccountName'))]",
-              "name": "[guid(parameters('cosmosDBAccountName'), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+          "resources": {
+            "cosmosDBAccount::tables": {
+              "type": "Microsoft.DocumentDB/databaseAccounts/tables",
+              "apiVersion": "2023-04-15",
+              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), variables('name'))]",
               "properties": {
-                "description": "[parameters('description')]",
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionIdOrName')))]",
-                "principalId": "[parameters('principalIds')[copyIndex()]]",
-                "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]"
+                "resource": {
+                  "id": "[variables('name')]"
+                },
+                "options": "[if(parameters('enableServerless'), createObject(), if(variables('config').performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', variables('config').performance.throughput)), createObject('throughput', variables('config').performance.throughput)))]"
               }
+            },
+            "cosmosDBAccount": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2023-04-15",
+              "name": "[parameters('cosmosDBAccountName')]"
             }
-          ]
+          }
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name')))]"
+        "cosmosDBAccount"
       ]
     },
-    {
+    "cosmosDBAccount_gremlinDatabases": {
+      "copy": {
+        "name": "cosmosDBAccount_gremlinDatabases",
+        "count": "[length(items(parameters('gremlinDatabases')))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "condition": "[equals(parameters('backendApi'), 'gremlin')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}-private-endpoints', parameters('name'), uniqueString(deployment().name, parameters('location')))]",
+      "name": "[items(parameters('gremlinDatabases'))[copyIndex()].key]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
         },
         "mode": "Incremental",
         "parameters": {
-          "location": {
-            "value": "[parameters('location')]"
+          "cosmosDBAccountName": {
+            "value": "[parameters('name')]"
           },
-          "privateEndpoints": {
-            "value": "[variables('privateEndpointsWithDefaults')]"
+          "database": {
+            "value": "[items(parameters('gremlinDatabases'))[copyIndex()]]"
           },
-          "tags": {
-            "value": "[parameters('tags')]"
+          "enableServerless": {
+            "value": "[parameters('enableServerless')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "5781174049967211056"
+              "version": "0.17.1.54307",
+              "templateHash": "4035635625782874404"
             }
           },
           "parameters": {
-            "location": {
+            "cosmosDBAccountName": {
               "type": "string"
             },
-            "tags": {
-              "type": "object"
+            "enableServerless": {
+              "type": "bool"
             },
-            "privateEndpoints": {
-              "type": "array"
+            "database": {
+              "type": "object"
+            }
+          },
+          "variables": {
+            "name": "[parameters('database').key]",
+            "config": "[parameters('database').value]"
+          },
+          "resources": {
+            "cosmosDBAccount::gremlinDatabase::gremlinDatabaseGraphs": {
+              "copy": {
+                "name": "gremlinDatabaseGraphs",
+                "count": "[length(coalesce(tryGet(variables('config'), 'graphs'), createObject()))]"
+              },
+              "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs",
+              "apiVersion": "2023-04-15",
+              "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), variables('name'), coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].key)]",
+              "properties": {
+                "resource": {
+                  "id": "[coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].key]",
+                  "analyticalStorageTtl": "[tryGet(coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].value, 'analyticalStorageTtl')]",
+                  "conflictResolutionPolicy": "[tryGet(coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].value, 'conflictResolutionPolicy')]",
+                  "defaultTtl": "[tryGet(coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].value, 'defaultTtl')]",
+                  "indexingPolicy": "[tryGet(coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].value, 'indexingPolicy')]",
+                  "partitionKey": "[tryGet(coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].value, 'partitionKey')]",
+                  "uniqueKeyPolicy": "[tryGet(coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].value, 'uniqueKeyPolicy')]"
+                },
+                "options": "[if(parameters('enableServerless'), createObject(), if(coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].value.performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].value.performance.throughput)), createObject('throughput', coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].value.performance.throughput)))]"
+              },
+              "dependsOn": [
+                "cosmosDBAccount::gremlinDatabase"
+              ]
+            },
+            "cosmosDBAccount::gremlinDatabase": {
+              "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
+              "apiVersion": "2023-04-15",
+              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), variables('name'))]",
+              "properties": {
+                "resource": {
+                  "id": "[variables('name')]"
+                },
+                "options": "[if(parameters('enableServerless'), createObject(), if(variables('config').performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', variables('config').performance.throughput)), createObject('throughput', variables('config').performance.throughput)))]"
+              }
+            },
+            "cosmosDBAccount": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2023-04-15",
+              "name": "[parameters('cosmosDBAccountName')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "cosmosDBAccount"
+      ]
+    },
+    "cosmosDBAccount_sqlRoles": {
+      "copy": {
+        "name": "cosmosDBAccount_sqlRoles",
+        "count": "[length(items(parameters('sqlRoleDefinitions')))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[items(parameters('sqlRoleDefinitions'))[copyIndex()].key]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "cosmosDBAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "role": {
+            "value": "[items(parameters('sqlRoleDefinitions'))[copyIndex()]]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
+            "_generator": {
+              "name": "bicep",
+              "version": "0.17.1.54307",
+              "templateHash": "9513074807341607061"
+            }
+          },
+          "parameters": {
+            "cosmosDBAccountName": {
+              "type": "string"
+            },
+            "role": {
+              "type": "object"
             }
           },
           "variables": {
             "copy": [
               {
-                "name": "varPrivateEndpoints",
-                "count": "[length(parameters('privateEndpoints'))]",
-                "input": {
-                  "name": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].name]",
-                  "privateLinkServiceId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].privateLinkServiceId]",
-                  "groupIds": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].groupIds]",
-                  "subnetId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].subnetId]",
-                  "privateDnsZones": "[coalesce(tryGet(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'privateDnsZones'), createArray())]",
-                  "customNetworkInterfaceName": "[coalesce(tryGet(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'customNetworkInterfaceName'), null())]",
-                  "manualApprovalEnabled": "[coalesce(tryGet(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'manualApprovalEnabled'), false())]"
-                }
+                "name": "allScopes",
+                "count": "[length(variables('roleConfig').assignments)]",
+                "input": "[coalesce(variables('roleConfig').assignments[copyIndex('allScopes')].scope, '')]"
               }
-            ]
+            ],
+            "roleName": "[parameters('role').key]",
+            "roleConfig": "[parameters('role').value]",
+            "assignableScopes": "[filter(variables('allScopes'), lambda('scope', equals(empty(lambdaVariables('scope')), false())))]"
           },
-          "resources": [
-            {
-              "copy": {
-                "name": "privateEndpoint",
-                "count": "[length(variables('varPrivateEndpoints'))]",
-                "mode": "serial",
-                "batchSize": 1
-              },
-              "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2022-05-01",
-              "name": "[format('{0}-{1}', variables('varPrivateEndpoints')[copyIndex()].name, uniqueString(variables('varPrivateEndpoints')[copyIndex()].name, variables('varPrivateEndpoints')[copyIndex()].subnetId, variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId))]",
-              "location": "[parameters('location')]",
-              "tags": "[parameters('tags')]",
+          "resources": {
+            "cosmosDBAccount": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2023-04-15",
+              "name": "[parameters('cosmosDBAccountName')]"
+            },
+            "sqlRoleDefinitions": {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
+              "apiVersion": "2023-04-15",
+              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), variables('roleName'))]",
               "properties": {
-                "privateLinkServiceConnections": "[if(variables('varPrivateEndpoints')[copyIndex()].manualApprovalEnabled, null(), createArray(createObject('name', variables('varPrivateEndpoints')[copyIndex()].name, 'properties', createObject('privateLinkServiceId', variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId, 'groupIds', if(not(empty(variables('varPrivateEndpoints')[copyIndex()].groupIds)), variables('varPrivateEndpoints')[copyIndex()].groupIds, null())))))]",
-                "manualPrivateLinkServiceConnections": "[if(variables('varPrivateEndpoints')[copyIndex()].manualApprovalEnabled, createArray(createObject('name', variables('varPrivateEndpoints')[copyIndex()].name, 'properties', createObject('privateLinkServiceId', variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId, 'groupIds', if(not(empty(variables('varPrivateEndpoints')[copyIndex()].groupIds)), variables('varPrivateEndpoints')[copyIndex()].groupIds, null())))), null())]",
-                "subnet": {
-                  "id": "[variables('varPrivateEndpoints')[copyIndex()].subnetId]"
-                },
-                "customNetworkInterfaceName": "[variables('varPrivateEndpoints')[copyIndex()].customNetworkInterfaceName]"
+                "roleName": "[variables('roleName')]",
+                "type": "[variables('roleConfig').roleType]",
+                "assignableScopes": "[if(empty(variables('assignableScopes')), createArray(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName'))), variables('assignableScopes'))]",
+                "permissions": "[if(equals(variables('roleConfig').roleType, 'BuiltInRole'), null(), variables('roleConfig').permissions)]"
               }
             },
-            {
+            "sqlRoleAssignments": {
               "copy": {
-                "name": "privateDnsZoneGroup",
-                "count": "[length(variables('varPrivateEndpoints'))]",
-                "mode": "serial",
-                "batchSize": 1
+                "name": "sqlRoleAssignments",
+                "count": "[length(variables('roleConfig').assignments)]"
               },
-              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-              "apiVersion": "2022-05-01",
-              "name": "[format('{0}/{1}', format('{0}-{1}', variables('varPrivateEndpoints')[copyIndex()].name, uniqueString(variables('varPrivateEndpoints')[copyIndex()].name, variables('varPrivateEndpoints')[copyIndex()].subnetId, variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId)), 'default')]",
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
+              "apiVersion": "2023-04-15",
+              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), uniqueString(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDBAccountName'), variables('roleName')), variables('roleConfig').assignments[copyIndex()].principalId))]",
               "properties": {
-                "copy": [
+                "roleDefinitionId": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDBAccountName'), variables('roleName'))]",
+                "principalId": "[variables('roleConfig').assignments[copyIndex()].principalId]",
+                "scope": "[coalesce(variables('roleConfig').assignments[copyIndex()].scope, reference('cosmosDBAccount', '2023-04-15', 'full'))]"
+              },
+              "dependsOn": [
+                "sqlRoleDefinitions"
+              ]
+            }
+          },
+          "outputs": {
+            "roleDefinitionId": {
+              "type": "string",
+              "metadata": {
+                "description": "The role definition ids of the created role definitions."
+              },
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDBAccountName'), variables('roleName'))]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "cosmosDBAccount"
+      ]
+    },
+    "cosmosDBAccount_privateEndpoints": {
+      "copy": {
+        "name": "cosmosDBAccount_privateEndpoints",
+        "count": "[length(variables('privateEndpointsWithDefaults'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[variables('privateEndpointsWithDefaults')[copyIndex()].name]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "cosmosDBAccount": {
+            "value": "[reference('cosmosDBAccount', '2023-04-15', 'full')]"
+          },
+          "location": {
+            "value": "[variables('primaryLocation')]"
+          },
+          "endpoint": {
+            "value": "[variables('privateEndpointsWithDefaults')[copyIndex()]]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
+            "_generator": {
+              "name": "bicep",
+              "version": "0.17.1.54307",
+              "templateHash": "623370458953509343"
+            }
+          },
+          "parameters": {
+            "cosmosDBAccount": {
+              "type": "object"
+            },
+            "location": {
+              "type": "string"
+            },
+            "endpoint": {
+              "type": "object"
+            }
+          },
+          "resources": {
+            "privateEndpoint::privateDnsZoneGroup": {
+              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+              "apiVersion": "2022-07-01",
+              "name": "[format('{0}/{1}', parameters('endpoint').name, 'default')]",
+              "properties": {
+                "privateDnsZoneConfigs": [
                   {
-                    "name": "privateDnsZoneConfigs",
-                    "count": "[length(variables('varPrivateEndpoints')[copyIndex()].privateDnsZones)]",
-                    "input": {
-                      "name": "[coalesce(tryGet(variables('varPrivateEndpoints')[copyIndex()].privateDnsZones[copyIndex('privateDnsZoneConfigs')], 'name'), 'default')]",
-                      "properties": {
-                        "privateDnsZoneId": "[variables('varPrivateEndpoints')[copyIndex()].privateDnsZones[copyIndex('privateDnsZoneConfigs')].zoneId]"
-                      }
+                    "name": "default",
+                    "properties": {
+                      "privateDnsZoneId": "[parameters('endpoint').privateDnsZoneId]"
                     }
                   }
                 ]
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Network/privateEndpoints', format('{0}-{1}', variables('varPrivateEndpoints')[copyIndex()].name, uniqueString(variables('varPrivateEndpoints')[copyIndex()].name, variables('varPrivateEndpoints')[copyIndex()].subnetId, variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId)))]"
+                "privateEndpoint"
               ]
+            },
+            "privateEndpoint": {
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2022-07-01",
+              "name": "[parameters('endpoint').name]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('endpoint').tags]",
+              "properties": {
+                "privateLinkServiceConnections": "[if(parameters('endpoint').manualApprovalEnabled, null(), createArray(createObject('name', parameters('endpoint').name, 'properties', createObject('privateLinkServiceId', parameters('cosmosDBAccount'), 'groupIds', parameters('endpoint').groupIds))))]",
+                "manualPrivateLinkServiceConnections": "[if(parameters('endpoint').manualApprovalEnabled, createArray(createObject('name', parameters('endpoint').name, 'properties', createObject('privateLinkServiceId', parameters('cosmosDBAccount'), 'groupIds', parameters('endpoint').groupIds))), null())]",
+                "subnet": {
+                  "id": "[parameters('endpoint').subnetId]"
+                }
+              }
             }
-          ]
+          }
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name')))]"
+        "cosmosDBAccount"
       ]
     }
-  ],
+  },
   "outputs": {
     "id": {
       "type": "string",
@@ -1411,14 +2387,17 @@
       "metadata": {
         "description": "Object Id of system assigned managed identity for Cosmos DB account (if enabled)."
       },
-      "value": "[if(contains(parameters('identityType'), 'SystemAssigned'), reference(resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name'))), '2022-11-15', 'full').identity.principalId, '')]"
+      "value": "[if(contains(parameters('identityType'), 'SystemAssigned'), reference('cosmosDBAccount', '2023-04-15', 'full').identity.principalId, '')]"
     },
     "sqlRoleDefinitionIds": {
       "type": "array",
       "metadata": {
         "description": "Resource Ids of sql role definition resources created for this Cosmos DB account."
       },
-      "value": "[if(not(empty(parameters('sqlRoleDefinitions'))), reference(resourceId('Microsoft.Resources/deployments', format('sql-role-{0}', uniqueString(parameters('name'), resourceGroup().name))), '2022-09-01').outputs.roleDefinitionIds.value, createArray())]"
+      "copy": {
+        "count": "[length(items(parameters('sqlRoleDefinitions')))]",
+        "input": "[reference(format('cosmosDBAccount_sqlRoles[{0}]', copyIndex())).outputs.roleDefinitionId.value]"
+      }
     }
   }
 }

@@ -13,6 +13,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
 
     resource databaseContainers 'Containers' = {
       name: name
+      tags: toObject(config.tags, tag => tag.key, tag => tag.value)
       properties: {
         resource: {
           id: name
@@ -29,19 +30,21 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
         options: enableServerless ? {} : (config.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput })
       }
 
-      resource databaseContainersStoredProcedures 'storedProcedures' = [for procedure in items(config.?storedProcedures ??{}): {
+      resource databaseContainersStoredProcedures 'storedProcedures' = [for procedure in items(config.?storedProcedures ?? {}): {
         name: procedure.key
+        tags: toObject(procedure.value.tags, tag => tag.key, tag => tag.value)
         properties: {
           resource: {
             id: procedure.key
             body: procedure.value.body
           }
-          options:enableServerless ? {} : (procedure.value.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: procedure.value.performance.throughput } } : { throughput: procedure.value.performance.throughput })
+          options: enableServerless ? {} : (procedure.value.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: procedure.value.performance.throughput } } : { throughput: procedure.value.performance.throughput })
         }
       }]
 
-      resource databaseContainersUserDefinedFunction 'userDefinedFunctions' = [for function in items(config.?userDefinedFunctions ??{}): {
+      resource databaseContainersUserDefinedFunction 'userDefinedFunctions' = [for function in items(config.?userDefinedFunctions ?? {}): {
         name: function.key
+        tags: toObject(function.value.tags, tag => tag.key, tag => tag.value)
         properties: {
           resource: {
             id: function.key
@@ -50,8 +53,9 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
         }
       }]
 
-      resource databaseContainersTriggers 'triggers' = [for trigger in items(config.?triggers ??{}): {
+      resource databaseContainersTriggers 'triggers' = [for trigger in items(config.?triggers ?? {}): {
         name: trigger.key
+        tags: toObject(trigger.value.tags, tag => tag.key, tag => tag.value)
         properties: {
           resource: {
             id: trigger.key

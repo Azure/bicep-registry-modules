@@ -2,8 +2,8 @@ param cosmosDBAccountName string
 param enableServerless bool
 param database object
 
-var name=database.key
-var config=database.value
+var name = database.key
+var config = database.value
 
 resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
   name: cosmosDBAccountName
@@ -16,8 +16,9 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
       }
       options: enableServerless ? {} : (config.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput })
     }
+    tags: toObject(config.tags, tag => tag.key, tag => tag.value)
 
-    resource gremlinDatabaseGraphs 'graphs' = [for graph in config.?graphs??{}: {
+    resource gremlinDatabaseGraphs 'graphs' = [for graph in config.?graphs ?? {}: {
       name: graph.key
       properties: {
         resource: {
@@ -32,6 +33,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
         }
         options: enableServerless ? {} : (graph.value.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: graph.value.performance.throughput } } : { throughput: graph.value.performance.throughput })
       }
+      tags: toObject(graph.value.tags, tag => tag.key, tag => tag.value)
     }]
   }
 }

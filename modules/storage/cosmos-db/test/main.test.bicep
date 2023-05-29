@@ -29,8 +29,13 @@ module dependencies 'prereq.test.bicep' = {
 module test01 '../main.bicep' = {
   name: 'test01-${uniqueName}'
   params: {
-    location: location
-    prefix: 'test01'
+    name: 'test01-${uniqueName}'
+    locations: [
+      {
+        name: location
+      }
+    ]
+    cors:
   }
 }
 

@@ -2,10 +2,13 @@
 @allowed([ 'cassandra', 'gremlin', 'mongodb', 'sql', 'table' ])
 param backendApi string = 'sql'
 
+@description('Prefix of Cosmos DB Resource Name. Not used if name is provided.')
+param prefix string = { cassandra: 'coscas', gremlin: 'cosgrm', mongodb: 'cosmon', sql: 'cosmos', table: 'costab' }[backendApi]
+
 @description('The name of the Cosmos DB account. Character limit: 3-44, valid characters: lowercase letters, numbers, and hyphens. It must me unique across Azure.')
 @maxLength(44)
 @minLength(3)
-param name string = uniqueString(resourceGroup().id, resourceGroup().location, 'cosmosdb', backendApi)
+param name string = '${prefix}-${uniqueString(resourceGroup().id, resourceGroup().location, 'cosmosdb', backendApi)}'
 
 @description('Enables automatic failover of the write region in the rare event that the region is unavailable due to an outage. Automatic failover will result in a new write region for the account and is chosen based on the failover priorities configured for the account.')
 param enableAutomaticFailover bool = true
@@ -25,35 +28,20 @@ param totalThroughputLimit int = -1
 
 @minLength(1)
 @description('''
-The array of secondary locations.
-Each element defines a region of georeplication. The first element in this array is the primary region which is a write region of the Cosmos DB account.
-The order of regions in this list is the order for region failover.
+The array of geo locations that Cosmos DB account would be hosted in.
+Each element defines a region of georeplication.
+The order of regions in this list is the order for region failover. The first element is the primary region which is a write region of the Cosmos DB account.
 ''')
 param locations {
   @description('The name of the Azure region.')
   name: string
   @description('Flag to indicate whether or not this region is an AvailabilityZone region')
   isZoneRedundant: bool?
-}[]
-
-var primaryLocation = locations[0].name
+}[] = [ { name: resourceGroup().location } ]
 
 @description('MongoDB server version. Required for mongodb API type Cosmos DB account')
 @allowed([ '3.2', '3.6', '4.0', '4.2' ])
 param MongoDBServerVersion string = '4.2'
-
-type corsType = {
-  @description('The origin domains that are permitted to make a request against the service via CORS.')
-  allowedOrigins: string
-  @description('The methods (HTTP request verbs) that the origin domain may use for a CORS request. (comma separated)')
-  allowedMethods: string?
-  @description('The response headers that should be sent back to the client for CORS requests. (comma separated)')
-  allowedHeaders: string?
-  @description('The response headers that should be exposed to the client for CORS requests. (comma separated)')
-  exposedHeaders: string?
-  @description('The maximum amount time that a browser should cache the preflight OPTIONS request.')
-  maxAgeInSeconds: int?
-}
 
 @description('List of CORS rules. Each CORS rule allows or denies requests from a set of origins to a Cosmos DB account or a database')
 param cors corsType[] = []
@@ -78,7 +66,7 @@ Each element in this array is either a single IPv4 address or a single IPv4 addr
 ''')
 param ipRules string[] = []
 
-@description('The list of virtual network ACL rules.')
+@description('The list of virtual network ACL rules. Subnets in this list will be allowed to connect.')
 param virtualNetworkRules {
   @description('The id of the subnet. For example: /subscriptions/{subscriptionId}/resourceGroups/{groupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}.')
   id: string
@@ -102,8 +90,259 @@ param enableAnalyticalStorage bool = false
 @allowed([ 'FullFidelity', 'WellDefined' ])
 param analyticalStorageSchemaType string = 'WellDefined'
 
+@description('''
+The object of Cassandra keyspaces configurations.
+The key of each element is the name of the Cassandra keyspace.
+The value of each element is an configuration object.
+''')
+param cassandraKeyspaces { *: cassandraKeyspaceType } = {}
+
+@description('''
+The object of sql database configurations.
+The key of each element is the name of the sql database.
+The value of each element is an configuration object.
+''')
+param sqlDatabases { *: sqlDatabaseType } = {}
+
+@description('''
+The list of MongoDB databases configurations.
+The key of each element is the name of the MongoDB database.
+The value of each element is an configuration object.
+''')
+param mongodbDatabases { *: mongodbDatabaseType } = {}
+
+@description('''
+The object of Table databases configurations.
+The key of each element is the name of the Table database.
+The value of each element is an configuration object.
+''')
+param tables { *: tableType } = {}
+
+@description('''
+The list of Gremlin databases configurations.
+The key of each element is the name of the Gremlin database.
+The value of each element is an configuration object.
+''')
+param gremlinDatabases { *: gremlinDatabaseType } = {}
+
+@description('''
+The list of SQL role definitions.
+The keys are the role name.
+The values are the role definition.''')
+param sqlRoleDefinitions { *: sqlRoleDefinitionType } = {}
+
+@description('The type of identity used for the Cosmos DB account. The type "SystemAssigned, UserAssigned" includes both an implicitly created identity and a set of user-assigned identities. The type "None" will remove any identities from the Cosmos DB account.')
+@allowed([ 'None', 'SystemAssigned', 'SystemAssigned,UserAssigned', 'UserAssigned' ])
+param identityType string = 'None'
+
+@description('The list of user-assigned managed identities. The user identity dictionary key references will be ARM resource ids in the form: "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}"')
+param userAssignedIdentities string[] = []
+
+type tagType = {
+  @maxLength(128)
+  @description('The tag name.')
+  key: string
+
+  @maxLength(256)
+  @description('The tag value.')
+  value: string
+}
+
+@maxLength(15)
+@description('List of key-value pairs that describe the resource.')
+param tags tagType[] = []
+
+@allowed([
+  'CanNotDelete'
+  'NotSpecified'
+  'ReadOnly'
+])
+@description('Specify the type of lock on Cosmos DB account resource.')
+param lock string = 'NotSpecified'
+
+@description('The consistency policy for the Cosmos DB account.')
+param consistencyPolicy consistencyPolicyType = {
+  defaultConsistencyLevel: 'Session'
+}
+
+@description('Private Endpoints that should be created for Azure Cosmos DB account.')
+param privateEndpoints { *: privateEndpointType } = {}
+
+var privateEndpointsWithDefaults = [for endpoint in items(privateEndpoints): {
+  name: '${cosmosDBAccount.name}-${endpoint.key}'
+  groupIds: [ endpoint.value.groupId ]
+  subnetId: endpoint.value.subnetId
+  privateDnsZoneId: endpoint.value.privateDnsZoneId
+  manualApprovalEnabled: endpoint.value.isManualApproval ?? false
+  tags: endpoint.value.tags
+}]
+
+@description('The primary location of the Cosmos DB account.')
+var primaryLocation = locations[0].name
+
+var locationsWithCompleteInfo = [for (location, i) in locations: {
+  locationName: location.name
+  failoverPriority: i
+  isZoneRedundant: location.?isZoneRedundant
+}]
+
+var capabilityNeededForBackendApi = {
+  cassandra: 'EnableCassandra'
+  gremlin: 'EnableGremlin'
+  mongodb: 'EnableMongo'
+  table: 'EnableTable'
+  sql: ''
+}
+
+var capabilitiesCompleteList = [for capability in union(
+  extraCapabilities,
+  enableServerless ? [ 'EnableServerless' ] : [],
+  [ capabilityNeededForBackendApi[backendApi] ]
+): { name: capability }]
+
+resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
+  name: toLower(name)
+  location: primaryLocation
+  kind: (backendApi == 'mongodb') ? 'MongoDB' : 'GlobalDocumentDB'
+  properties: {
+    analyticalStorageConfiguration: enableAnalyticalStorage ? { schemaType: analyticalStorageSchemaType } : null
+    apiProperties: (backendApi == 'mongodb') ? { serverVersion: MongoDBServerVersion } : null
+    capabilities: capabilitiesCompleteList
+    capacity: enableServerless ? null : { totalThroughputLimit: totalThroughputLimit }
+    consistencyPolicy: consistencyPolicy
+    cors: cors
+    createMode: createMode
+    databaseAccountOfferType: 'Standard'
+    disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
+    disableLocalAuth: disableLocalAuth
+    enableAnalyticalStorage: enableAnalyticalStorage
+    enableAutomaticFailover: enableAutomaticFailover
+    enableFreeTier: enableFreeTier
+    enableMultipleWriteLocations: enableServerless ? false : enableMultipleWriteLocations
+    ipRules: [for ipRule in ipRules: { ipAddressOrRange: ipRule }]
+    isVirtualNetworkFilterEnabled: length(virtualNetworkRules) > 0
+    locations: enableServerless ? [ locationsWithCompleteInfo[0] ] : locationsWithCompleteInfo
+    networkAclBypass: networkAclBypass
+    networkAclBypassResourceIds: networkAclBypassResourceIds
+    publicNetworkAccess: enablePublicNetworkAccess ? 'Enabled' : 'Disabled'
+    virtualNetworkRules: virtualNetworkRules
+  }
+  identity: {
+    type: identityType
+    userAssignedIdentities: contains(identityType, 'UserAssigned') ? toObject(userAssignedIdentities, id => id, id => {}) : null
+  }
+  tags: toObject(tags, tag => tag.key, tag => tag.value)
+}
+
+module cosmosDBAccount_cassandraKeyspaces 'modules/cassandra.bicep' = [for keyspace in items(cassandraKeyspaces): if (backendApi == 'cassandra') {
+  dependsOn: [ cosmosDBAccount ]
+
+  name: keyspace.key
+  params: {
+    cosmosDBAccountName: name
+    keyspace: keyspace
+    enableServerless: enableServerless
+  }
+}]
+
+module cosmosDBAccount_sqlDatabases 'modules/sql.bicep' = [for sql in items(sqlDatabases): if (backendApi == 'sql') {
+  dependsOn: [ cosmosDBAccount ]
+
+  name: sql.key
+  params: {
+    cosmosDBAccountName: name
+    database: sql.value
+    enableServerless: enableServerless
+  }
+}]
+
+module cosmosDBAccount_mongodbDatabases 'modules/mongodb.bicep' = [for database in items(mongodbDatabases): if (backendApi == 'mongodb') {
+  dependsOn: [ cosmosDBAccount ]
+
+  name: database.key
+  params: {
+    cosmosDBAccountName: name
+    database: database
+    enableServerless: enableServerless
+  }
+}]
+
+module cosmosDBAccount_tables 'modules/table.bicep' = [for table in items(tables): if (backendApi == 'table') {
+  dependsOn: [ cosmosDBAccount ]
+
+  name: table.key
+  params: {
+    cosmosDBAccountName: name
+    table: table
+    enableServerless: enableServerless
+  }
+}]
+
+module cosmosDBAccount_gremlinDatabases 'modules/gremlin.bicep' = [for database in items(gremlinDatabases): if (backendApi == 'gremlin') {
+  dependsOn: [ cosmosDBAccount ]
+
+  name: database.key
+  params: {
+    cosmosDBAccountName: name
+    database: database
+    enableServerless: enableServerless
+  }
+}]
+
+module cosmosDBAccount_sqlRoles 'modules/sql_roles.bicep' = [for role in items(sqlRoleDefinitions): {
+  name: role.key
+  dependsOn: [ cosmosDBAccount ]
+  params: {
+    cosmosDBAccountName: name
+    role: role
+  }
+}]
+
+module cosmosDBAccount_privateEndpoints 'modules/privateEndpoint.bicep' = [for endpoint in privateEndpointsWithDefaults: {
+  name: endpoint.name
+  params: {
+    cosmosDBAccount: cosmosDBAccount
+    location: primaryLocation
+    endpoint: endpoint
+  }
+}]
+
+resource cosmosDBAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (lock != 'NotSpecified') {
+  name: '${cosmosDBAccount.name}-${toLower(lock)}-lock'
+  scope: cosmosDBAccount
+  properties: {
+    level: lock
+    notes: lock == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot modify the resource or child resources.'
+  }
+}
+
+@description('Cosmos DB Account Resource ID')
+output id string = cosmosDBAccount.id
+
+@description('Cosmos DB Account Resource Name')
+output name string = cosmosDBAccount.name
+
+@description('Object Id of system assigned managed identity for Cosmos DB account (if enabled).')
+output systemAssignedIdentityPrincipalId string = contains(identityType, 'SystemAssigned') ? cosmosDBAccount.identity.principalId : ''
+
+@description('Resource Ids of sql role definition resources created for this Cosmos DB account.')
+output sqlRoleDefinitionIds array = [for (role, i) in items(sqlRoleDefinitions): cosmosDBAccount_sqlRoles[i].outputs.roleDefinitionId]
+
+type corsType = {
+  @description('The origin domains that are permitted to make a request against the service via CORS.')
+  allowedOrigins: string
+  @description('The methods (HTTP request verbs) that the origin domain may use for a CORS request. (comma separated)')
+  allowedMethods: string?
+  @description('The response headers that should be sent back to the client for CORS requests. (comma separated)')
+  allowedHeaders: string?
+  @description('The response headers that should be exposed to the client for CORS requests. (comma separated)')
+  exposedHeaders: string?
+  @description('The maximum amount time that a browser should cache the preflight OPTIONS request.')
+  maxAgeInSeconds: int?
+}
+
 @description('Schema of the Cosmos DB Cassandra table.')
-type schema = {
+type schemaType = {
   @description('List of Cassandra table columns.')
   columns: {
     name: string
@@ -121,7 +360,7 @@ type schema = {
 }
 
 @description('Performance configurations.')
-type performanceConfig = {
+type performanceConfigType = {
   @description('Flag to enable/disable automatic throughput scaling.')
   enableAutoScale: bool
   @maxValue(100000)
@@ -134,38 +373,31 @@ type performanceConfig = {
 }
 
 @description('Cassandra table configurations.')
-type cassandraTable = {
+type cassandraTableType = {
   @description('Performance configuration.')
-  performance: performanceConfig
+  performance: performanceConfigType
   @description('Default time to live (TTL) in seconds.')
   defaultTtl: int?
   @description('The analytical storage TTL in seconds.')
   analyticalStorageTtl: int?
   @description('The schema of the Cassandra table.')
-  schema: schema?
+  schema: schemaType?
   @description('Tags for the Cassandra table.')
-  tags: { *: string }
+  tags: tagType
 }
 
 @description('Cassandra keyspaces configurations.')
-type cassandrakeyspace = {
+type cassandraKeyspaceType = {
   @description('Throughtput configuration.')
-  performance: performanceConfig
+  performance: performanceConfigType
   @description('''
   The object of Cassandra table configurations.
   The key of each element is the name of the  table.
   The value of each element is an configuration object.''')
-  tables: { *: cassandraTable }
+  tables: { *: cassandraTableType }
   @description('Tags for the Cassandra keyspace.')
-  tags: { *: string }
+  tags: tagType
 }
-
-@description('''
-The object of Cassandra keyspaces configurations.
-The key of each element is the name of the Cassandra keyspace.
-The value of each element is an configuration object.
-''')
-param cassandraKeyspaces { *: cassandrakeyspace } = {}
 
 @description('The type definition of sql container client encryption policy included paths.')
 type sqlContainerClientEncryptionPolicyIncludedPathsType = {
@@ -272,7 +504,9 @@ type sqlContainerStoredProceduresType = {
   @description('The body of the stored procedure.')
   body: string?
   @description('Performance configs.')
-  performance: performanceConfig?
+  performance: performanceConfigType?
+  @description('Tags for the resource.')
+  tags: tagType?
 }
 
 @description('The type definition of SQL database container user defined functions.')
@@ -280,7 +514,9 @@ type sqlContainerUserDefinedFunctionsType = {
   @description('The body of the user defined functions.')
   body: string?
   @description('Performance configs.')
-  performance: performanceConfig?
+  performance: performanceConfigType?
+  @description('Tags for the resource.')
+  tags: tagType?
 }
 
 @description('The type definition of SQL database container triggers.')
@@ -288,11 +524,13 @@ type sqlContainerTriggersType = {
   @description('The body of the triggers.')
   body: string?
   @description('Performance configs.')
-  performance: performanceConfig?
+  performance: performanceConfigType?
   @description('Type of the Trigger')
   triggerType: 'Pre' | 'Post'?
   @description('The operation the trigger is associated with.')
   triggerOperation: ('Create' | 'Delete' | 'Replace' | 'Update')[]?
+  @description('Tags for the resource.')
+  tags: tagType?
 }
 
 @description('The type definition of SQL database container.')
@@ -317,44 +555,19 @@ type sqlContainerType = {
   userDefinedFunctions: { *: sqlContainerUserDefinedFunctionsType }?
   @description('Configuration of triggers in the container.')
   triggers: { *: sqlContainerTriggersType }?
+  @description('Tags for the resource.')
+  tags: tagType?
 }
 
 @description('The type definition of SQL database configuration.')
-type sqlDatabasetype = {
+type sqlDatabaseType = {
   @description('Performance configs.')
-  performance: performanceConfig
-
+  performance: performanceConfigType
   @description('sql Container configurations.')
   containers: { *: sqlContainerType }?
-
   @description('Tags for the SQL database.')
-  tags: { *: string }
+  tags: tagType?
 }
-
-@description('''
-The object of sql database configurations.
-The key of each element is the name of the sql database.
-The value of each element is an configuration object.
-''')
-param sqlDatabases { *: sqlDatabasetype } = {}
-
-@description('The type of identity used for the Cosmos DB account. The type "SystemAssigned, UserAssigned" includes both an implicitly created identity and a set of user-assigned identities. The type "None" will remove any identities from the Cosmos DB account.')
-@allowed([ 'None', 'SystemAssigned', 'SystemAssigned,UserAssigned', 'UserAssigned' ])
-param identityType string = 'None'
-
-@description('The list of user-assigned managed identities. The user identity dictionary key references will be ARM resource ids in the form: "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}"')
-param userAssignedIdentities string[] = []
-
-@description('List of key-value pairs that describe the resource.')
-param tags { *: string } = {}
-
-@allowed([
-  'CanNotDelete'
-  'NotSpecified'
-  'ReadOnly'
-])
-@description('Specify the type of lock on Cosmos DB account resource.')
-param lock string = 'NotSpecified'
 
 type consistencyPolicyType = {
   @description('The default consistency level and configuration settings of the Cosmos DB account.')
@@ -381,89 +594,6 @@ type consistencyPolicyType = {
   maxIntervalInSeconds: int?
 }
 
-@description('The consistency policy for the Cosmos DB account.')
-param consistencyPolicy consistencyPolicyType = {
-  defaultConsistencyLevel: 'Session'
-}
-
-var locationsWithCompleteInfo = [for (location, i) in locations: {
-  locationName: location.name
-  failoverPriority: i
-  isZoneRedundant: location.?isZoneRedundant
-}]
-
-var capabilityNeededForBackendApi = {
-  cassandra: 'EnableCassandra'
-  gremlin: 'EnableGremlin'
-  mongodb: 'EnableMongo'
-  table: 'EnableTable'
-  sql: ''
-}
-
-var capabilitiesCompleteList = [for capability in union(
-  extraCapabilities,
-  enableServerless ? [ 'EnableServerless' ] : [],
-  [ capabilityNeededForBackendApi[backendApi] ]
-): { name: capability }]
-
-resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
-  name: toLower(name)
-  location: primaryLocation
-  kind: (backendApi == 'mongodb') ? 'MongoDB' : 'GlobalDocumentDB'
-  properties: {
-    analyticalStorageConfiguration: enableAnalyticalStorage ? { schemaType: analyticalStorageSchemaType } : null
-    apiProperties: (backendApi == 'mongodb') ? { serverVersion: MongoDBServerVersion } : null
-    capabilities: capabilitiesCompleteList
-    capacity: enableServerless ? null : { totalThroughputLimit: totalThroughputLimit }
-    consistencyPolicy: consistencyPolicy
-    cors: cors
-    createMode: createMode
-    databaseAccountOfferType: 'Standard'
-    disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
-    disableLocalAuth: disableLocalAuth
-    enableAnalyticalStorage: enableAnalyticalStorage
-    enableAutomaticFailover: enableAutomaticFailover
-    enableFreeTier: enableFreeTier
-    enableMultipleWriteLocations: enableServerless ? false : enableMultipleWriteLocations
-    ipRules: [for ipRule in ipRules: { ipAddressOrRange: ipRule }]
-    locations: enableServerless ? [ locationsWithCompleteInfo[0] ] : locationsWithCompleteInfo
-    networkAclBypass: networkAclBypass
-    networkAclBypassResourceIds: networkAclBypassResourceIds
-    publicNetworkAccess: enablePublicNetworkAccess ? 'Enabled' : 'Disabled'
-    isVirtualNetworkFilterEnabled: length(virtualNetworkRules) > 0
-    virtualNetworkRules: virtualNetworkRules
-  }
-  identity: {
-    type: identityType
-    userAssignedIdentities: contains(identityType, 'UserAssigned') ? toObject(userAssignedIdentities, id => id, id => {}) : null
-  }
-  tags: tags
-}
-
-@batchSize(1)
-module cosmosDBAccount_cassandraKeyspaces 'modules/cassandra.bicep' = [for keyspace in items(cassandraKeyspaces): if (backendApi == 'cassandra') {
-  dependsOn: [ cosmosDBAccount ]
-
-  name: keyspace.key
-  params: {
-    cosmosDBAccountName: name
-    keyspace: keyspace
-    enableServerless: enableServerless
-  }
-}]
-
-@batchSize(1)
-module cosmosDBAccount_sqlDatabases 'modules/sql.bicep' = [for sql in items(sqlDatabases): if (backendApi == 'sql') {
-  dependsOn: [ cosmosDBAccount ]
-
-  name: sql.key
-  params: {
-    cosmosDBAccountName: name
-    database: sql.value
-    enableServerless: enableServerless
-  }
-}]
-
 type mongodbDatabaseIndexOptionsType = {
   @description('Expire after seconds.')
   expireAfterSeconds: int?
@@ -485,54 +615,30 @@ type mongodbDatabaseCollectionType = {
   indexes: mongodbDatabaseIndexType[]?
   @description('A key-value pair of shard keys to be applied for the request.')
   shardKey: { *: string }?
+  @description('Tags for the resource.')
+  tags: tagType?
 }
 
 type mongodbDatabaseType = {
   @description('Performance configs.')
-  performance: performanceConfig
+  performance: performanceConfigType
   @description('The analytical storage TTL in seconds.')
   analyticalStorageTtl: int?
   collections: { *: mongodbDatabaseCollectionType }?
-
+  @description('Tags for the resource.')
+  tags: tagType?
 }
-
-@description('The list of MongoDB databases configurations with collections, its indexes, Shard Keys.')
-param mongodbDatabases { *: mongodbDatabaseType } = {}
-
-@batchSize(1)
-module cosmosDBAccount_mongodbDatabases 'modules/mongodb.bicep' = [for database in items(mongodbDatabases): if (backendApi == 'mongodb') {
-  dependsOn: [ cosmosDBAccount ]
-
-  name: database.key
-  params: {
-    cosmosDBAccountName: name
-    database: database
-    enableServerless: enableServerless
-  }
-}]
 
 type tableType = {
   @description('Performance configs.')
-  performance: performanceConfig
+  performance: performanceConfigType
+  @description('Tags for the resource.')
+  tags: tagType?
 }
-
-@description('The object of Table databases configurations.')
-param tables { *: tableType } = {}
-
-@batchSize(1)
-module cosmosDBAccount_tables 'modules/table.bicep' = [for table in items(tables): if (backendApi == 'table') {
-  name: table.key
-  dependsOn: [ cosmosDBAccount ]
-  params: {
-    cosmosDBAccountName: name
-    table: table
-    enableServerless: enableServerless
-  }
-}]
 
 type gremlinGraphType = {
   @description('Performance configs.')
-  performance: performanceConfig
+  performance: performanceConfigType
   @description('The analytical storage TTL in seconds.')
   analyticalStorageTtl: int?
   @description('The default time to live in seconds.')
@@ -545,29 +651,18 @@ type gremlinGraphType = {
   partitionKey: partitionKeyTypeForSqlContainerAndGremlinGraph?
   @description('The unique key policy configuration for specifying uniqueness constraints on documents in the collection in the Azure Cosmos DB service.')
   uniqueKeyPolicy: graphUniqueKeyPolicyTypeForSqlContainerAndGremlinGraph?
+  @description('Tags for the resource.')
+  tags: tagType?
 }
 
 type gremlinDatabaseType = {
   @description('Performance configs.')
-  performance: performanceConfig
-  tags: { *: string }?
+  performance: performanceConfigType
+  @description('Tags for the resource.')
+  tags: tagType?
   @description('The object of Gremlin database graphs.')
   graphs: { *: gremlinGraphType }?
 }
-
-@description('The list of Gremlin databases configurations with graphs.')
-param gremlinDatabases { *: gremlinDatabaseType } = {}
-
-@batchSize(1)
-module cosmosDBAccount_gremlinDatabases 'modules/gremlin.bicep' = [for database in items(gremlinDatabases): if (backendApi == 'gremlin') {
-  name: database.key
-  dependsOn: [ cosmosDBAccount ]
-  params: {
-    cosmosDBAccountName: name
-    database: database
-    enableServerless: enableServerless
-  }
-}]
 
 @description('Type definition for the SQL Role Definition Permission.')
 type sqlRoleDefinitionPermissionType = {
@@ -598,68 +693,11 @@ type sqlRoleDefinitionType = {
   assisgnments: sqlRoleAssignmentType[]?
 }
 
-@description('''
-The list of SQL role definitions.
-The keys are the role name.
-The values are the role definition.''')
-param sqlRoleDefinitions { *: sqlRoleDefinitionType } = {}
-
-module cosmosDBAccount_sqlRoles 'modules/sql_roles.bicep' = [for role in items(sqlRoleDefinitions): {
-  name: role.key
-  dependsOn: [ cosmosDBAccount ]
-  params: {
-    cosmosDBAccountName: name
-    role: role
-  }
-}]
-
 type privateEndpointType = {
   subnetId: string
   groupId: string
   privateDnsZoneId: string?
   isManualApproval: bool?
+  @description('Tags for the resource.')
+  tags: tagType?
 }
-
-@description('Private Endpoints that should be created for Azure Cosmos DB account.')
-param privateEndpoints { *: privateEndpointType } = {}
-
-var privateEndpointsWithDefaults = [for endpoint in items(privateEndpoints): {
-  name: '${cosmosDBAccount.name}-${endpoint.key}'
-  groupIds: [ endpoint.value.groupId ]
-  subnetId: endpoint.value.subnetId
-  privateDnsZoneId: endpoint.value.privateDnsZoneId
-  manualApprovalEnabled: endpoint.value.isManualApproval ?? false
-}]
-
-
-module cosmosDBAccount_privateEndpoints 'modules/privateEndpoint.bicep' = [for endpoint in privateEndpointsWithDefaults: {
-  name: endpoint.name
-  params: {
-    cosmosDBAccount: cosmosDBAccount
-    location:primaryLocation
-    endpoint: endpoint
-  }
-}]
-
-
-
-resource cosmosDBAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (lock != 'NotSpecified') {
-  name: '${cosmosDBAccount.name}-${toLower(lock)}-lock'
-  scope: cosmosDBAccount
-  properties: {
-    level: lock
-    notes: lock == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot modify the resource or child resources.'
-  }
-}
-
-@description('Cosmos DB Account Resource ID')
-output id string = cosmosDBAccount.id
-
-@description('Cosmos DB Account Resource Name')
-output name string = cosmosDBAccount.name
-
-@description('Object Id of system assigned managed identity for Cosmos DB account (if enabled).')
-output systemAssignedIdentityPrincipalId string = contains(identityType, 'SystemAssigned') ? cosmosDBAccount.identity.principalId : ''
-
-@description('Resource Ids of sql role definition resources created for this Cosmos DB account.')
-output sqlRoleDefinitionIds array = [for (role, i) in items(sqlRoleDefinitions): cosmosDBAccount_sqlRoles[i].outputs.roleDefinitionId]

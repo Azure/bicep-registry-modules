@@ -2,10 +2,10 @@ param cosmosDBAccount object
 param location string
 param endpoint object
 
-resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-07-01' =  {
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-07-01' = {
   name: endpoint.name
   location: location
-  tags: endpoint.tags
+  tags: toObject(endpoint.tags, tag => tag.key, tag => tag.value)
   properties: {
     privateLinkServiceConnections: endpoint.manualApprovalEnabled ? null : [
       {

@@ -29,7 +29,7 @@ resource sqlRoleAssignments 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssign
   properties: {
     roleDefinitionId: sqlRoleDefinitions.id
     principalId: assignment.principalId
-    scope: assignment.scope?? cosmosDBAccount
+    scope: assignment.scope ?? cosmosDBAccount
   }
 }]
 
