@@ -10,7 +10,7 @@ You can also use scheduled actions to configure anomaly detection alerts for sub
 
 ## Parameters
 
-| Name                   | Type     | Required | Description                                                                                                                                                                                                                                                                                 |
+| Name | Type | Required | Description |
 | :--------------------- | :------: | :------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `name`                 | `string` | Yes      | Name of the scheduled action used in the resource ID.                                                                                                                                                                                                                                       |
 | `kind`                 | `string` | No       | Indicates the kind of scheduled action. Default: Email.                                                                                                                                                                                                                                     |
@@ -35,7 +35,7 @@ You can also use scheduled actions to configure anomaly detection alerts for sub
 
 ## Outputs
 
-| Name              | Type   | Description                          |
+| Name | Type | Description |
 | :---------------- | :----: | :----------------------------------- |
 | scheduledActionId | string | Resource ID of the scheduled action. |
 
@@ -53,6 +53,7 @@ module dailyCostsAlert 'br/public:cost/subscription-scheduled-action:1.0.1' = {
     displayName: 'My schedule'
     builtInView: 'DailyCosts'
     emailRecipients: [ 'ema@contoso.com' ]
+    notificationEmail: 'ema@contoso.com'
     scheduleFrequency: 'Weekly'
     scheduleDaysOfWeek: [ 'Monday' ]
   }
@@ -72,6 +73,7 @@ module privateAlert 'br/public:cost/subscription-scheduled-action:1.0.1' = {
     private: true
     builtInView: 'DailyCosts'
     emailRecipients: [ 'priya@contoso.com' ]
+    notificationEmail: 'priya@contoso.com'
     scheduleFrequency: 'Monthly'
     scheduleDayOfMonth: 1
     scheduleStartDate: scheduleStartDate
@@ -92,6 +94,7 @@ module anomalyAlert 'br/public:cost/subscription-scheduled-action:1.0.1' = {
     kind: 'InsightAlert'
     displayName: 'My anomaly check'
     emailRecipients: [ 'ana@contoso.com' ]
+    notificationEmail: 'ana@contoso.com'
   }
 }
 ```
