@@ -10,12 +10,12 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
 
   resource tables 'tables' = {
     name: name
-    tags: toObject(config.tags ?? [], tag => tag.key, tag => tag.value)
+    tags: toObject(config.?tags ?? [], tag => tag.key, tag => tag.value)
     properties: {
       resource: {
         id: name
       }
-      options: enableServerless ? null : (config.performance == null ? null : (config.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput }))
+      options: enableServerless ? null : (config.?performance == null ? null : (config.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput }))
     }
   }
 }

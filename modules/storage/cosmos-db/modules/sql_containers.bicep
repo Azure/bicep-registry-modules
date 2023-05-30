@@ -13,38 +13,38 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
 
     resource databaseContainers 'Containers' = {
       name: name
-      tags: toObject(config.tags ?? [], tag => tag.key, tag => tag.value)
+      tags: toObject(config.?tags ?? [], tag => tag.key, tag => tag.value)
       properties: {
         resource: {
           id: name
           // TODO: check if https://github.com/Azure/azure-rest-api-specs/issues/19695 is still relevant
-          analyticalStorageTtl: config.analyticalStorageTtl
-          defaultTtl: config.defaultTtl
-          clientEncryptionPolicy: config.clientEncryptionPolicy
-          conflictResolutionPolicy: config.conflictResolutionPolicy
-          uniqueKeyPolicy: config.uniqueKeyPolicy
-          indexingPolicy: config.indexingPolicy
-          partitionKey: config.partitionKey
+          analyticalStorageTtl: config.?analyticalStorageTtl
+          defaultTtl: config.?defaultTtl
+          clientEncryptionPolicy: config.?clientEncryptionPolicy
+          conflictResolutionPolicy: config.?conflictResolutionPolicy
+          uniqueKeyPolicy: config.?uniqueKeyPolicy
+          indexingPolicy: config.?indexingPolicy
+          partitionKey: config.?partitionKey
         }
 
-        options: enableServerless ? null : (config.performance == null ? null : (config.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput }))
+        options: enableServerless ? null : (config.?performance == null ? null : (config.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput }))
       }
 
-      resource databaseContainersStoredProcedures 'storedProcedures' = [for procedure in items(config.storedProcedures ?? {}): {
+      resource databaseContainersStoredProcedures 'storedProcedures' = [for procedure in items(config.?storedProcedures ?? {}): {
         name: procedure.key
-        tags: toObject(procedure.value.tags ?? [], tag => tag.key, tag => tag.value)
+        tags: toObject(procedure.value.?tags ?? [], tag => tag.key, tag => tag.value)
         properties: {
           resource: {
             id: procedure.key
             body: procedure.value.body
           }
-          options: enableServerless ? null : (procedure.value.performance == null ? null : (procedure.value.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: procedure.value.performance.throughput } } : { throughput: procedure.value.performance.throughput }))
+          options: enableServerless ? null : (procedure.value.?performance == null ? null : (procedure.value.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: procedure.value.performance.throughput } } : { throughput: procedure.value.performance.throughput }))
         }
       }]
 
-      resource databaseContainersUserDefinedFunction 'userDefinedFunctions' = [for function in items(config.userDefinedFunctions ?? {}): {
+      resource databaseContainersUserDefinedFunction 'userDefinedFunctions' = [for function in items(config.?userDefinedFunctions ?? {}): {
         name: function.key
-        tags: toObject(function.value.tags ?? [], tag => tag.key, tag => tag.value)
+        tags: toObject(function.value.?tags ?? [], tag => tag.key, tag => tag.value)
         properties: {
           resource: {
             id: function.key
@@ -53,15 +53,15 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
         }
       }]
 
-      resource databaseContainersTriggers 'triggers' = [for trigger in items(config.triggers ?? {}): {
+      resource databaseContainersTriggers 'triggers' = [for trigger in items(config.?triggers ?? {}): {
         name: trigger.key
-        tags: toObject(trigger.value.tags ?? [], tag => tag.key, tag => tag.value)
+        tags: toObject(trigger.value.?tags ?? [], tag => tag.key, tag => tag.value)
         properties: {
           resource: {
             id: trigger.key
             body: trigger.value.body
-            triggerOperation: trigger.value.triggerOperation
-            triggerType: trigger.value.triggerType
+            triggerOperation: trigger.value.?triggerOperation
+            triggerType: trigger.value.?triggerType
           }
         }
       }]

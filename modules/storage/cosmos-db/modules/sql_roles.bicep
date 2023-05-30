@@ -3,7 +3,7 @@ param role object
 
 var roleName = role.key
 var roleConfig = role.value
-var allScopes = [for roleAssignment in roleConfig.assignments: roleAssignment.scope ?? '']
+var allScopes = [for roleAssignment in roleConfig.?assignments ?? []: roleAssignment.scope ?? '']
 var assignableScopes = filter(allScopes, scope => empty(scope) == false)
 
 resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
@@ -18,18 +18,18 @@ resource sqlRoleDefinitions 'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefini
     roleName: roleName
     type: roleConfig.roleType
     assignableScopes: empty(assignableScopes) ? [ cosmosDBAccount.id ] : assignableScopes
-    permissions: roleConfig.roleType == 'BuiltInRole' ? null : roleConfig.permissions
+    permissions: roleConfig.roleType == 'BuiltInRole' ? null : roleConfig.?permissions
   }
 }
 
-resource sqlRoleAssignments 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2023-04-15' = [for assignment in roleConfig.assignments: {
+resource sqlRoleAssignments 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2023-04-15' = [for assignment in roleConfig.?assignments: {
   parent: cosmosDBAccount
 
   name: uniqueString(cosmosDBAccount.id, sqlRoleDefinitions.id, assignment.principalId)
   properties: {
     roleDefinitionId: sqlRoleDefinitions.id
     principalId: assignment.principalId
-    scope: assignment.scope ?? cosmosDBAccount
+    scope: assignment.?scope ?? cosmosDBAccount
   }
 }]
 
