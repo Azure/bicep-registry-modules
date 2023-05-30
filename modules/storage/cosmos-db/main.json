@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "12407111136252652384"
+      "templateHash": "16386157308987333511"
     }
   },
   "definitions": {
@@ -1740,7 +1740,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "11267904387802309633"
+              "templateHash": "1111658398887296801"
             }
           },
           "parameters": {
@@ -1762,25 +1762,21 @@
             "cosmosDBAccount::cassandraKeyspaces::cassandraTables": {
               "copy": {
                 "name": "cassandraTables",
-                "count": "[length(items(coalesce(variables('config').tables, createObject())))]"
+                "count": "[length(items(coalesce(tryGet(variables('config'), 'tables'), createObject())))]"
               },
               "type": "Microsoft.DocumentDB/databaseAccounts/cassandraKeyspaces/tables",
               "apiVersion": "2023-04-15",
-              "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), variables('name'), items(coalesce(variables('config').tables, createObject()))[copyIndex()].key)]",
+              "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), variables('name'), items(coalesce(tryGet(variables('config'), 'tables'), createObject()))[copyIndex()].key)]",
               "properties": {
                 "resource": {
-                  "id": "[items(coalesce(variables('config').tables, createObject()))[copyIndex()].key]",
-                  "analyticalStorageTtl": "[tryGet(items(coalesce(variables('config').tables, createObject()))[copyIndex()].value, 'analyticalStorageTtl')]",
-                  "defaultTtl": "[tryGet(items(coalesce(variables('config').tables, createObject()))[copyIndex()].value, 'defaultTtl')]",
-                  "schema": {
-                    "columns": "[tryGet(tryGet(tryGet(items(coalesce(variables('config').tables, createObject()))[copyIndex()], 'value'), 'schema'), 'columns')]",
-                    "partitionKeys": "[tryGet(tryGet(tryGet(items(coalesce(variables('config').tables, createObject()))[copyIndex()], 'value'), 'schema'), 'partitionKeys')]",
-                    "clusterKeys": "[tryGet(tryGet(tryGet(items(coalesce(variables('config').tables, createObject()))[copyIndex()], 'value'), 'schema'), 'clusterKeys')]"
-                  }
+                  "id": "[items(coalesce(tryGet(variables('config'), 'tables'), createObject()))[copyIndex()].key]",
+                  "analyticalStorageTtl": "[tryGet(items(coalesce(tryGet(variables('config'), 'tables'), createObject()))[copyIndex()].value, 'analyticalStorageTtl')]",
+                  "defaultTtl": "[tryGet(items(coalesce(tryGet(variables('config'), 'tables'), createObject()))[copyIndex()].value, 'defaultTtl')]",
+                  "schema": "[tryGet(items(coalesce(tryGet(variables('config'), 'tables'), createObject()))[copyIndex()].value, 'schema')]"
                 },
-                "options": "[if(parameters('enableServerless'), null(), if(equals(items(coalesce(variables('config').tables, createObject()))[copyIndex()].value.performance, null()), null(), if(items(coalesce(variables('config').tables, createObject()))[copyIndex()].value.performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', items(coalesce(variables('config').tables, createObject()))[copyIndex()].value.performance.throughput)), createObject('throughput', items(coalesce(variables('config').tables, createObject()))[copyIndex()].value.performance.throughput))))]"
+                "options": "[if(parameters('enableServerless'), null(), if(equals(tryGet(items(coalesce(tryGet(variables('config'), 'tables'), createObject()))[copyIndex()].value, 'performance'), null()), null(), if(items(coalesce(tryGet(variables('config'), 'tables'), createObject()))[copyIndex()].value.performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', items(coalesce(tryGet(variables('config'), 'tables'), createObject()))[copyIndex()].value.performance.throughput)), createObject('throughput', items(coalesce(tryGet(variables('config'), 'tables'), createObject()))[copyIndex()].value.performance.throughput))))]"
               },
-              "tags": "[toObject(coalesce(items(coalesce(variables('config').tables, createObject()))[copyIndex()].value.tags, createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]",
+              "tags": "[toObject(coalesce(tryGet(items(coalesce(tryGet(variables('config'), 'tables'), createObject()))[copyIndex()].value, 'tags'), createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]",
               "dependsOn": [
                 "cosmosDBAccount::cassandraKeyspaces"
               ]
@@ -1793,9 +1789,9 @@
                 "resource": {
                   "id": "[variables('name')]"
                 },
-                "options": "[if(parameters('enableServerless'), null(), if(equals(variables('config').performance, null()), null(), if(variables('config').performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', variables('config').performance.throughput)), createObject('throughput', variables('config').performance.throughput))))]"
+                "options": "[if(parameters('enableServerless'), null(), if(equals(tryGet(variables('config'), 'performance'), null()), null(), if(variables('config').performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', variables('config').performance.throughput)), createObject('throughput', variables('config').performance.throughput))))]"
               },
-              "tags": "[toObject(coalesce(variables('config').tags, createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]"
+              "tags": "[toObject(coalesce(tryGet(variables('config'), 'tags'), createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]"
             },
             "cosmosDBAccount": {
               "existing": true,
@@ -1844,7 +1840,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "12646693188108779260"
+              "templateHash": "14772954779959108754"
             }
           },
           "parameters": {
@@ -1873,22 +1869,22 @@
               "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
               "apiVersion": "2022-11-15",
               "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), variables('name'))]",
-              "tags": "[toObject(coalesce(variables('config').tags, createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]",
+              "tags": "[toObject(coalesce(tryGet(variables('config'), 'tags'), createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]",
               "properties": {
                 "resource": {
                   "id": "[variables('name')]"
                 },
-                "options": "[if(parameters('enableServerless'), null(), if(equals(variables('config').performance, null()), null(), if(variables('config').performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', variables('config').performance.throughput)), createObject('throughput', variables('config').performance.throughput))))]"
+                "options": "[if(parameters('enableServerless'), null(), if(equals(tryGet(variables('config'), 'performance'), null()), null(), if(variables('config').performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', variables('config').performance.throughput)), createObject('throughput', variables('config').performance.throughput))))]"
               }
             },
             "sqlDatabaseContainers": {
               "copy": {
                 "name": "sqlDatabaseContainers",
-                "count": "[length(items(coalesce(variables('config').containers, createObject())))]"
+                "count": "[length(items(coalesce(tryGet(variables('config'), 'containers'), createObject())))]"
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[items(coalesce(variables('config').containers, createObject()))[copyIndex()].key]",
+              "name": "[items(coalesce(tryGet(variables('config'), 'containers'), createObject()))[copyIndex()].key]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -1902,7 +1898,7 @@
                     "value": "[variables('name')]"
                   },
                   "container": {
-                    "value": "[items(coalesce(variables('config').containers, createObject()))[copyIndex()]]"
+                    "value": "[items(coalesce(tryGet(variables('config'), 'containers'), createObject()))[copyIndex()]]"
                   },
                   "enableServerless": {
                     "value": "[parameters('enableServerless')]"
@@ -1917,7 +1913,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "11551959592190476741"
+                      "templateHash": "3044930762524466980"
                     }
                   },
                   "parameters": {
@@ -1942,18 +1938,18 @@
                     "cosmosDBAccount::sqlDatabase::databaseContainers::databaseContainersStoredProcedures": {
                       "copy": {
                         "name": "databaseContainersStoredProcedures",
-                        "count": "[length(items(coalesce(variables('config').storedProcedures, createObject())))]"
+                        "count": "[length(items(coalesce(tryGet(variables('config'), 'storedProcedures'), createObject())))]"
                       },
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/storedProcedures",
                       "apiVersion": "2023-04-15",
-                      "name": "[format('{0}/{1}/{2}/{3}', parameters('cosmosDBAccountName'), parameters('databaseName'), variables('name'), items(coalesce(variables('config').storedProcedures, createObject()))[copyIndex()].key)]",
-                      "tags": "[toObject(coalesce(items(coalesce(variables('config').storedProcedures, createObject()))[copyIndex()].value.tags, createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]",
+                      "name": "[format('{0}/{1}/{2}/{3}', parameters('cosmosDBAccountName'), parameters('databaseName'), variables('name'), items(coalesce(tryGet(variables('config'), 'storedProcedures'), createObject()))[copyIndex()].key)]",
+                      "tags": "[toObject(coalesce(tryGet(items(coalesce(tryGet(variables('config'), 'storedProcedures'), createObject()))[copyIndex()].value, 'tags'), createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]",
                       "properties": {
                         "resource": {
-                          "id": "[items(coalesce(variables('config').storedProcedures, createObject()))[copyIndex()].key]",
-                          "body": "[items(coalesce(variables('config').storedProcedures, createObject()))[copyIndex()].value.body]"
+                          "id": "[items(coalesce(tryGet(variables('config'), 'storedProcedures'), createObject()))[copyIndex()].key]",
+                          "body": "[items(coalesce(tryGet(variables('config'), 'storedProcedures'), createObject()))[copyIndex()].value.body]"
                         },
-                        "options": "[if(parameters('enableServerless'), null(), if(equals(items(coalesce(variables('config').storedProcedures, createObject()))[copyIndex()].value.performance, null()), null(), if(items(coalesce(variables('config').storedProcedures, createObject()))[copyIndex()].value.performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', items(coalesce(variables('config').storedProcedures, createObject()))[copyIndex()].value.performance.throughput)), createObject('throughput', items(coalesce(variables('config').storedProcedures, createObject()))[copyIndex()].value.performance.throughput))))]"
+                        "options": "[if(parameters('enableServerless'), null(), if(equals(tryGet(items(coalesce(tryGet(variables('config'), 'storedProcedures'), createObject()))[copyIndex()].value, 'performance'), null()), null(), if(items(coalesce(tryGet(variables('config'), 'storedProcedures'), createObject()))[copyIndex()].value.performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', items(coalesce(tryGet(variables('config'), 'storedProcedures'), createObject()))[copyIndex()].value.performance.throughput)), createObject('throughput', items(coalesce(tryGet(variables('config'), 'storedProcedures'), createObject()))[copyIndex()].value.performance.throughput))))]"
                       },
                       "dependsOn": [
                         "cosmosDBAccount::sqlDatabase::databaseContainers"
@@ -1962,16 +1958,16 @@
                     "cosmosDBAccount::sqlDatabase::databaseContainers::databaseContainersUserDefinedFunction": {
                       "copy": {
                         "name": "databaseContainersUserDefinedFunction",
-                        "count": "[length(items(coalesce(variables('config').userDefinedFunctions, createObject())))]"
+                        "count": "[length(items(coalesce(tryGet(variables('config'), 'userDefinedFunctions'), createObject())))]"
                       },
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/userDefinedFunctions",
                       "apiVersion": "2023-04-15",
-                      "name": "[format('{0}/{1}/{2}/{3}', parameters('cosmosDBAccountName'), parameters('databaseName'), variables('name'), items(coalesce(variables('config').userDefinedFunctions, createObject()))[copyIndex()].key)]",
-                      "tags": "[toObject(coalesce(items(coalesce(variables('config').userDefinedFunctions, createObject()))[copyIndex()].value.tags, createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]",
+                      "name": "[format('{0}/{1}/{2}/{3}', parameters('cosmosDBAccountName'), parameters('databaseName'), variables('name'), items(coalesce(tryGet(variables('config'), 'userDefinedFunctions'), createObject()))[copyIndex()].key)]",
+                      "tags": "[toObject(coalesce(tryGet(items(coalesce(tryGet(variables('config'), 'userDefinedFunctions'), createObject()))[copyIndex()].value, 'tags'), createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]",
                       "properties": {
                         "resource": {
-                          "id": "[items(coalesce(variables('config').userDefinedFunctions, createObject()))[copyIndex()].key]",
-                          "body": "[items(coalesce(variables('config').userDefinedFunctions, createObject()))[copyIndex()].value.body]"
+                          "id": "[items(coalesce(tryGet(variables('config'), 'userDefinedFunctions'), createObject()))[copyIndex()].key]",
+                          "body": "[items(coalesce(tryGet(variables('config'), 'userDefinedFunctions'), createObject()))[copyIndex()].value.body]"
                         }
                       },
                       "dependsOn": [
@@ -1981,18 +1977,18 @@
                     "cosmosDBAccount::sqlDatabase::databaseContainers::databaseContainersTriggers": {
                       "copy": {
                         "name": "databaseContainersTriggers",
-                        "count": "[length(items(coalesce(variables('config').triggers, createObject())))]"
+                        "count": "[length(items(coalesce(tryGet(variables('config'), 'triggers'), createObject())))]"
                       },
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/triggers",
                       "apiVersion": "2023-04-15",
-                      "name": "[format('{0}/{1}/{2}/{3}', parameters('cosmosDBAccountName'), parameters('databaseName'), variables('name'), items(coalesce(variables('config').triggers, createObject()))[copyIndex()].key)]",
-                      "tags": "[toObject(coalesce(items(coalesce(variables('config').triggers, createObject()))[copyIndex()].value.tags, createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]",
+                      "name": "[format('{0}/{1}/{2}/{3}', parameters('cosmosDBAccountName'), parameters('databaseName'), variables('name'), items(coalesce(tryGet(variables('config'), 'triggers'), createObject()))[copyIndex()].key)]",
+                      "tags": "[toObject(coalesce(tryGet(items(coalesce(tryGet(variables('config'), 'triggers'), createObject()))[copyIndex()].value, 'tags'), createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]",
                       "properties": {
                         "resource": {
-                          "id": "[items(coalesce(variables('config').triggers, createObject()))[copyIndex()].key]",
-                          "body": "[items(coalesce(variables('config').triggers, createObject()))[copyIndex()].value.body]",
-                          "triggerOperation": "[items(coalesce(variables('config').triggers, createObject()))[copyIndex()].value.triggerOperation]",
-                          "triggerType": "[items(coalesce(variables('config').triggers, createObject()))[copyIndex()].value.triggerType]"
+                          "id": "[items(coalesce(tryGet(variables('config'), 'triggers'), createObject()))[copyIndex()].key]",
+                          "body": "[items(coalesce(tryGet(variables('config'), 'triggers'), createObject()))[copyIndex()].value.body]",
+                          "triggerOperation": "[tryGet(items(coalesce(tryGet(variables('config'), 'triggers'), createObject()))[copyIndex()].value, 'triggerOperation')]",
+                          "triggerType": "[tryGet(items(coalesce(tryGet(variables('config'), 'triggers'), createObject()))[copyIndex()].value, 'triggerType')]"
                         }
                       },
                       "dependsOn": [
@@ -2003,19 +1999,19 @@
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
                       "apiVersion": "2023-04-15",
                       "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), parameters('databaseName'), variables('name'))]",
-                      "tags": "[toObject(coalesce(variables('config').tags, createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]",
+                      "tags": "[toObject(coalesce(tryGet(variables('config'), 'tags'), createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]",
                       "properties": {
                         "resource": {
                           "id": "[variables('name')]",
-                          "analyticalStorageTtl": "[variables('config').analyticalStorageTtl]",
-                          "defaultTtl": "[variables('config').defaultTtl]",
-                          "clientEncryptionPolicy": "[variables('config').clientEncryptionPolicy]",
-                          "conflictResolutionPolicy": "[variables('config').conflictResolutionPolicy]",
-                          "uniqueKeyPolicy": "[variables('config').uniqueKeyPolicy]",
-                          "indexingPolicy": "[variables('config').indexingPolicy]",
-                          "partitionKey": "[variables('config').partitionKey]"
+                          "analyticalStorageTtl": "[tryGet(variables('config'), 'analyticalStorageTtl')]",
+                          "defaultTtl": "[tryGet(variables('config'), 'defaultTtl')]",
+                          "clientEncryptionPolicy": "[tryGet(variables('config'), 'clientEncryptionPolicy')]",
+                          "conflictResolutionPolicy": "[tryGet(variables('config'), 'conflictResolutionPolicy')]",
+                          "uniqueKeyPolicy": "[tryGet(variables('config'), 'uniqueKeyPolicy')]",
+                          "indexingPolicy": "[tryGet(variables('config'), 'indexingPolicy')]",
+                          "partitionKey": "[tryGet(variables('config'), 'partitionKey')]"
                         },
-                        "options": "[if(parameters('enableServerless'), null(), if(equals(variables('config').performance, null()), null(), if(variables('config').performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', variables('config').performance.throughput)), createObject('throughput', variables('config').performance.throughput))))]"
+                        "options": "[if(parameters('enableServerless'), null(), if(equals(tryGet(variables('config'), 'performance'), null()), null(), if(variables('config').performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', variables('config').performance.throughput)), createObject('throughput', variables('config').performance.throughput))))]"
                       }
                     },
                     "cosmosDBAccount::sqlDatabase": {
@@ -2078,7 +2074,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "8433183120090471974"
+              "templateHash": "14168541263954149686"
             }
           },
           "parameters": {
@@ -2101,20 +2097,20 @@
             "cosmosDBAccount::mongodbDatabase::mongodbDatabaseCollections": {
               "copy": {
                 "name": "mongodbDatabaseCollections",
-                "count": "[length(items(coalesce(variables('config').collections, createObject())))]"
+                "count": "[length(items(coalesce(tryGet(variables('config'), 'collections'), createObject())))]"
               },
               "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections",
               "apiVersion": "2023-04-15",
-              "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), variables('name'), items(coalesce(variables('config').collections, createObject()))[copyIndex()].key)]",
+              "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), variables('name'), items(coalesce(tryGet(variables('config'), 'collections'), createObject()))[copyIndex()].key)]",
               "properties": {
                 "resource": {
-                  "id": "[items(coalesce(variables('config').collections, createObject()))[copyIndex()].key]",
-                  "indexes": "[tryGet(items(coalesce(variables('config').collections, createObject()))[copyIndex()].value, 'indexes')]",
-                  "shardKey": "[tryGet(items(coalesce(variables('config').collections, createObject()))[copyIndex()].value, 'shardKey')]"
+                  "id": "[items(coalesce(tryGet(variables('config'), 'collections'), createObject()))[copyIndex()].key]",
+                  "indexes": "[tryGet(items(coalesce(tryGet(variables('config'), 'collections'), createObject()))[copyIndex()].value, 'indexes')]",
+                  "shardKey": "[tryGet(items(coalesce(tryGet(variables('config'), 'collections'), createObject()))[copyIndex()].value, 'shardKey')]"
                 },
-                "options": "[if(parameters('enableServerless'), null(), if(equals(items(coalesce(variables('config').collections, createObject()))[copyIndex()].value.performance, null()), null(), if(items(coalesce(variables('config').collections, createObject()))[copyIndex()].value.performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', items(coalesce(variables('config').collections, createObject()))[copyIndex()].value.performance.throughput)), createObject('throughput', items(coalesce(variables('config').collections, createObject()))[copyIndex()].value.performance.throughput))))]"
+                "options": "[if(parameters('enableServerless'), null(), if(equals(tryGet(items(coalesce(tryGet(variables('config'), 'collections'), createObject()))[copyIndex()].value, 'performance'), null()), null(), if(items(coalesce(tryGet(variables('config'), 'collections'), createObject()))[copyIndex()].value.performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', items(coalesce(tryGet(variables('config'), 'collections'), createObject()))[copyIndex()].value.performance.throughput)), createObject('throughput', items(coalesce(tryGet(variables('config'), 'collections'), createObject()))[copyIndex()].value.performance.throughput))))]"
               },
-              "tags": "[toObject(coalesce(items(coalesce(variables('config').collections, createObject()))[copyIndex()].value.tags, createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]",
+              "tags": "[toObject(coalesce(tryGet(items(coalesce(tryGet(variables('config'), 'collections'), createObject()))[copyIndex()].value, 'tags'), createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]",
               "dependsOn": [
                 "cosmosDBAccount::mongodbDatabase"
               ]
@@ -2127,9 +2123,9 @@
                 "resource": {
                   "id": "[variables('name')]"
                 },
-                "options": "[if(parameters('enableServerless'), null(), if(equals(variables('config').performance, null()), null(), if(variables('config').performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', variables('config').performance.throughput)), createObject('throughput', variables('config').performance.throughput))))]"
+                "options": "[if(parameters('enableServerless'), null(), if(equals(tryGet(variables('config'), 'performance'), null()), null(), if(variables('config').performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', variables('config').performance.throughput)), createObject('throughput', variables('config').performance.throughput))))]"
               },
-              "tags": "[toObject(coalesce(variables('config').tags, createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]"
+              "tags": "[toObject(coalesce(tryGet(variables('config'), 'tags'), createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]"
             },
             "cosmosDBAccount": {
               "existing": true,
@@ -2178,7 +2174,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "12732213679105204675"
+              "templateHash": "12678038480873940896"
             }
           },
           "parameters": {
@@ -2201,12 +2197,12 @@
               "type": "Microsoft.DocumentDB/databaseAccounts/tables",
               "apiVersion": "2023-04-15",
               "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), variables('name'))]",
-              "tags": "[toObject(coalesce(variables('config').tags, createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]",
+              "tags": "[toObject(coalesce(tryGet(variables('config'), 'tags'), createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]",
               "properties": {
                 "resource": {
                   "id": "[variables('name')]"
                 },
-                "options": "[if(parameters('enableServerless'), null(), if(equals(variables('config').performance, null()), null(), if(variables('config').performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', variables('config').performance.throughput)), createObject('throughput', variables('config').performance.throughput))))]"
+                "options": "[if(parameters('enableServerless'), null(), if(equals(tryGet(variables('config'), 'performance'), null()), null(), if(variables('config').performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', variables('config').performance.throughput)), createObject('throughput', variables('config').performance.throughput))))]"
               }
             },
             "cosmosDBAccount": {
@@ -2256,7 +2252,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "9413793819739627402"
+              "templateHash": "5224610523140837583"
             }
           },
           "parameters": {
@@ -2278,24 +2274,24 @@
             "cosmosDBAccount::gremlinDatabase::gremlinDatabaseGraphs": {
               "copy": {
                 "name": "gremlinDatabaseGraphs",
-                "count": "[length(coalesce(variables('config').graphs, createObject()))]"
+                "count": "[length(coalesce(tryGet(variables('config'), 'graphs'), createObject()))]"
               },
               "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs",
               "apiVersion": "2023-04-15",
-              "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), variables('name'), coalesce(variables('config').graphs, createObject())[copyIndex()].key)]",
+              "name": "[format('{0}/{1}/{2}', parameters('cosmosDBAccountName'), variables('name'), coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].key)]",
               "properties": {
                 "resource": {
-                  "id": "[coalesce(variables('config').graphs, createObject())[copyIndex()].key]",
-                  "analyticalStorageTtl": "[tryGet(coalesce(variables('config').graphs, createObject())[copyIndex()].value, 'analyticalStorageTtl')]",
-                  "conflictResolutionPolicy": "[tryGet(coalesce(variables('config').graphs, createObject())[copyIndex()].value, 'conflictResolutionPolicy')]",
-                  "defaultTtl": "[tryGet(coalesce(variables('config').graphs, createObject())[copyIndex()].value, 'defaultTtl')]",
-                  "indexingPolicy": "[tryGet(coalesce(variables('config').graphs, createObject())[copyIndex()].value, 'indexingPolicy')]",
-                  "partitionKey": "[tryGet(coalesce(variables('config').graphs, createObject())[copyIndex()].value, 'partitionKey')]",
-                  "uniqueKeyPolicy": "[tryGet(coalesce(variables('config').graphs, createObject())[copyIndex()].value, 'uniqueKeyPolicy')]"
+                  "id": "[coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].key]",
+                  "analyticalStorageTtl": "[tryGet(coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].value, 'analyticalStorageTtl')]",
+                  "conflictResolutionPolicy": "[tryGet(coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].value, 'conflictResolutionPolicy')]",
+                  "defaultTtl": "[tryGet(coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].value, 'defaultTtl')]",
+                  "indexingPolicy": "[tryGet(coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].value, 'indexingPolicy')]",
+                  "partitionKey": "[tryGet(coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].value, 'partitionKey')]",
+                  "uniqueKeyPolicy": "[tryGet(coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].value, 'uniqueKeyPolicy')]"
                 },
-                "options": "[if(parameters('enableServerless'), null(), if(equals(coalesce(variables('config').graphs, createObject())[copyIndex()].value.performance, null()), null(), if(coalesce(variables('config').graphs, createObject())[copyIndex()].value.performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', coalesce(variables('config').graphs, createObject())[copyIndex()].value.performance.throughput)), createObject('throughput', coalesce(variables('config').graphs, createObject())[copyIndex()].value.performance.throughput))))]"
+                "options": "[if(parameters('enableServerless'), null(), if(equals(tryGet(coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].value, 'performance'), null()), null(), if(coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].value.performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].value.performance.throughput)), createObject('throughput', coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].value.performance.throughput))))]"
               },
-              "tags": "[toObject(coalesce(coalesce(variables('config').graphs, createObject())[copyIndex()].value.tags, createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]",
+              "tags": "[toObject(coalesce(tryGet(coalesce(tryGet(variables('config'), 'graphs'), createObject())[copyIndex()].value, 'tags'), createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]",
               "dependsOn": [
                 "cosmosDBAccount::gremlinDatabase"
               ]
@@ -2308,9 +2304,9 @@
                 "resource": {
                   "id": "[variables('name')]"
                 },
-                "options": "[if(parameters('enableServerless'), null(), if(equals(variables('config').performance, null()), null(), if(variables('config').performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', variables('config').performance.throughput)), createObject('throughput', variables('config').performance.throughput))))]"
+                "options": "[if(parameters('enableServerless'), null(), if(equals(tryGet(variables('config'), 'performance'), null()), null(), if(variables('config').performance.enableThroughputAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', variables('config').performance.throughput)), createObject('throughput', variables('config').performance.throughput))))]"
               },
-              "tags": "[toObject(coalesce(variables('config').tags, createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]"
+              "tags": "[toObject(coalesce(tryGet(variables('config'), 'tags'), createArray()), lambda('tag', lambdaVariables('tag').key), lambda('tag', lambdaVariables('tag').value))]"
             },
             "cosmosDBAccount": {
               "existing": true,
@@ -2355,7 +2351,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "9513074807341607061"
+              "templateHash": "8420385602764146571"
             }
           },
           "parameters": {
@@ -2370,8 +2366,8 @@
             "copy": [
               {
                 "name": "allScopes",
-                "count": "[length(variables('roleConfig').assignments)]",
-                "input": "[coalesce(variables('roleConfig').assignments[copyIndex('allScopes')].scope, '')]"
+                "count": "[length(coalesce(tryGet(variables('roleConfig'), 'assignments'), createArray()))]",
+                "input": "[coalesce(coalesce(tryGet(variables('roleConfig'), 'assignments'), createArray())[copyIndex('allScopes')].scope, '')]"
               }
             ],
             "roleName": "[parameters('role').key]",
@@ -2393,21 +2389,21 @@
                 "roleName": "[variables('roleName')]",
                 "type": "[variables('roleConfig').roleType]",
                 "assignableScopes": "[if(empty(variables('assignableScopes')), createArray(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName'))), variables('assignableScopes'))]",
-                "permissions": "[if(equals(variables('roleConfig').roleType, 'BuiltInRole'), null(), variables('roleConfig').permissions)]"
+                "permissions": "[if(equals(variables('roleConfig').roleType, 'BuiltInRole'), null(), tryGet(variables('roleConfig'), 'permissions'))]"
               }
             },
             "sqlRoleAssignments": {
               "copy": {
                 "name": "sqlRoleAssignments",
-                "count": "[length(variables('roleConfig').assignments)]"
+                "count": "[length(tryGet(variables('roleConfig'), 'assignments'))]"
               },
               "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
               "apiVersion": "2023-04-15",
-              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), uniqueString(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDBAccountName'), variables('roleName')), variables('roleConfig').assignments[copyIndex()].principalId))]",
+              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), uniqueString(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDBAccountName'), variables('roleName')), tryGet(variables('roleConfig'), 'assignments')[copyIndex()].principalId))]",
               "properties": {
                 "roleDefinitionId": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDBAccountName'), variables('roleName'))]",
-                "principalId": "[variables('roleConfig').assignments[copyIndex()].principalId]",
-                "scope": "[coalesce(variables('roleConfig').assignments[copyIndex()].scope, reference('cosmosDBAccount', '2023-04-15', 'full'))]"
+                "principalId": "[tryGet(variables('roleConfig'), 'assignments')[copyIndex()].principalId]",
+                "scope": "[coalesce(tryGet(tryGet(variables('roleConfig'), 'assignments')[copyIndex()], 'scope'), reference('cosmosDBAccount', '2023-04-15', 'full'))]"
               },
               "dependsOn": [
                 "sqlRoleDefinitions"
