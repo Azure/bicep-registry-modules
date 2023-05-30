@@ -145,7 +145,7 @@ module test03 '../main.bicep' = {
               version: 1
             }
             indexingPolicy: {
-              indexingMode: 'Consistent'
+              indexingMode: 'consistent'
               automatic: true
               includedPaths: [ { path: '/*' } ]
               excludedPaths: [ { path: '/"_etag"/?' } ]
@@ -211,17 +211,13 @@ module test04 '../main.bicep' = {
             }
             indexes: [
               {
-                key: {
-                  keys: [
-                    '_id'
-                  ]
-                }
+                key: { keys: [ '_id' ] }
+                options: {}
               }
               {
-                key: {
-                  keys: [
-                    '$**'
-                  ]
+                key: { keys: [ '$**' ] }
+                options: {
+                  unique: true
                 }
               }
             ]
