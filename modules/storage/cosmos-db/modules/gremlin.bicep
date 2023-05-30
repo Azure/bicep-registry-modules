@@ -14,9 +14,9 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
       resource: {
         id: name
       }
-      options: enableServerless ? {} : (config.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput })
+      options: enableServerless ? null : (config.performance == null ? null : (config.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput }))
     }
-    tags: toObject(config.tags, tag => tag.key, tag => tag.value)
+    tags: toObject(config.tags ?? [], tag => tag.key, tag => tag.value)
 
     resource gremlinDatabaseGraphs 'graphs' = [for graph in config.?graphs ?? {}: {
       name: graph.key
@@ -31,9 +31,9 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
           partitionKey: graph.value.?partitionKey
           uniqueKeyPolicy: graph.value.?uniqueKeyPolicy
         }
-        options: enableServerless ? {} : (graph.value.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: graph.value.performance.throughput } } : { throughput: graph.value.performance.throughput })
+        options: enableServerless ? null : (graph.value.performance == null ? null : (graph.value.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: graph.value.performance.throughput } } : { throughput: graph.value.performance.throughput }))
       }
-      tags: toObject(graph.value.tags, tag => tag.key, tag => tag.value)
+      tags: toObject(graph.value.tags ?? [], tag => tag.key, tag => tag.value)
     }]
   }
 }

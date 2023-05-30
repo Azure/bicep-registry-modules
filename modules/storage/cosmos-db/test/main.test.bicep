@@ -4,7 +4,7 @@ targetScope = 'resourceGroup'
 // Parameters //
 // ========== //
 
-param location string = 'eastus'
+param location string = resourceGroup().location
 param serviceShort string = 'cosmosdb'
 var uniqueName = uniqueString(resourceGroup().id, deployment().name, location)
 
@@ -28,86 +28,66 @@ module dependencies 'prereq.test.bicep' = {
 // Test 01 -  Basic Deployment - Minimal Parameters
 module test01 '../main.bicep' = {
   name: 'test01-${uniqueName}'
-  params: {
-    name: 'test01-${uniqueName}'
-    locations: [
-      {
-        name: location
-      }
-    ]
-    cors:
-  }
+  params: {}
 }
 
 // Test 02 - Cassandra with Multiple locations - RoleAssignments and Zone redundancy.
 module test02 '../main.bicep' = {
   name: 'test02-${uniqueName}'
   params: {
-    location: location
-    prefix: 'test02'
-    secondaryLocations: [
+    name: 'test02-${uniqueName}'
+    backendApi: 'cassandra'
+    locations: [
       {
-        locationName: 'westus'
+        name: 'westus2'
+        isZoneRedundant: true
+      }
+      {
+        name: 'eastus2'
+        isZoneRedundant: true
       }
     ]
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'CosmosBackupOperator'
-        principalIds: [ dependencies.outputs.identityPrincipalIds[0] ]
+    sqlRoleDefinitions: {
+      CosmosBackupOperator: {
+        roleType: 'BuiltInRole'
+        assisgnments: [ {
+            principalId: dependencies.outputs.identityPrincipalIds[0]
+          } ]
       }
-      {
-        roleDefinitionIdOrName: '5bd9cd88-fe45-4216-938b-f97437e15450' // DocumentDB Account Contributor
-        principalIds: [ dependencies.outputs.identityPrincipalIds[1] ]
+      // DocumentDB Account Contributor
+      '5bd9cd88-fe45-4216-938b-f97437e15450': {
+        roleType: 'BuiltInRole'
+        assisgnments: [ {
+            principalId: dependencies.outputs.identityPrincipalIds[1]
+          } ]
       }
-    ]
-    cassandraKeyspaces: [
-      {
-        name: 'keyspace1'
-        autoscaleMaxThroughput: 1000
-        tables: [
-          {
-            name: 'table1'
+    }
+    cassandraKeyspaces: {
+      keyspace1: {
+        performance: {
+          enableAutoScale: true
+          throughput: 4000
+        }
+        tables: {
+          table1: {
             defaultTtl: 86400
-            schemaColumns: [
-              {
+            analyticalStorageTtl: 86400
+            schema: [ {
                 name: 'id'
                 type: 'text'
-              }
-              {
-                name: 'data'
-                type: 'blob'
-              }
-            ]
-            schemaPartitionKeys: [
-              {
+              } ]
+            partitionKeys: [ {
                 name: 'id'
-              }
-            ]
-            schemaClusteringKeys: [
-              {
+              } ]
+            clusteringKeys: [ {
                 name: 'data'
                 orderBy: 'Desc'
-              }
-            ]
+              } ]
           }
-          {
-            name: 'table2'
-            manualProvisionedThroughput: 400
-            schemaColumns: [
-              {
-                name: 'id'
-                type: 'text'
-              }
-            ]
-            schemaPartitionKeys: [
-              {
-                name: 'id'
-              }
-            ]
-          }
-        ]
+          table2: {}
+        }
       }
-    ]
+    }
   }
 }
 
@@ -115,38 +95,47 @@ module test02 '../main.bicep' = {
 module test03 '../main.bicep' = {
   name: 'test03-${uniqueName}'
   params: {
-    location: location
-    backendApi: 'sql'
-    prefix: 'test03'
-    defaultConsistencyLevel: 'BoundedStaleness'
-    maxIntervalInSeconds: 10000
-    maxStalenessPrefix: 100000
-    totalThroughputLimit: 10000
-    enableMultipleWriteLocations: false
-    secondaryLocations: [
+    name: 'test03-${uniqueName}'
+    consistencyPolicy: {
+      defaultConsistencyLevel: 'BoundedStaleness'
+      maxIntervalInSeconds: 10000
+      maxStalenessPrefix: 100000
+    }
+    locations: [
       {
-        locationName: 'westus'
+        name: 'canadacentral'
+        isZoneRedundant: true
+      }
+      {
+        name: 'centralus'
+        isZoneRedundant: true
+      }
+      {
+        name: 'eastus'
       }
     ]
-    sqlDatabases: [
-      {
-        name: 'testdb1'
-        containers: [
-          {
-            name: 'container1'
-            autoscaleMaxThroughput: 4000
+    totalThroughputLimit: 10000
+    enableMultipleWriteLocations: false
+    sqlDatabases: {
+      testdb1: {
+        containers: {
+          container1: {
+            performance: {
+              enableAutoScale: true
+              throughput: 4000
+            }
             defaultTtl: 3600
             partitionKey: {
-              paths: [
-                '/id'
-              ]
+              paths: [ '/id' ]
               kind: 'Hash'
               version: 1
             }
           }
-          {
-            name: 'container2'
-            manualProvisionedThroughput: 400
+          container2: {
+            performance: {
+              enableAutoScale: false
+              throughput: 4000
+            }
             defaultTtl: 86400
             partitionKey: {
               paths: [
@@ -158,48 +147,34 @@ module test03 '../main.bicep' = {
             indexingPolicy: {
               indexingMode: 'Consistent'
               automatic: true
-              includedPaths: [
-                {
-                  path: '/*'
-                }
-              ]
-              excludedPaths: [
-                {
-                  path: '/"_etag"/?'
-                }
-              ]
-            }
-            uniqueKeyPolicy: {
-              uniqueKeys: []
+              includedPaths: [ { path: '/*' } ]
+              excludedPaths: [ { path: '/"_etag"/?' } ]
             }
             conflictResolutionPolicy: {
               mode: 'LastWriterWins'
               conflictResolutionPath: '/_ts'
             }
-            triggers: [
-              {
-                name: 'trigger1'
-                type: 'Pre'
-                operation: 'All'
+            triggers: {
+              trigger1: {
+                triggerType: 'Pre'
+                triggerOperation: [ 'Create', 'Delete', 'Replace', 'Update' ]
                 body: 'function() { var context = getContext(); var response = context.getResponse(); response.setBody("Pre-trigger body."); }'
               }
-            ]
-            storedProcedures: [
-              {
-                name: 'storedProcedure1'
+            }
+            storedProcedures: {
+              storedProcedure1: {
                 body: 'function() { var context = getContext(); var response = context.getResponse(); response.setBody("Stored procedure body."); }'
               }
-            ]
-            userDefinedFunctions: [
-              {
-                name: 'userDefinedFunction1'
+            }
+            userDefinedFunctions: {
+              userDefinedFunction1: {
                 body: 'function() { var context = getContext(); var response = context.getResponse(); response.setBody("User defined function body."); }'
               }
-            ]
+            }
           }
-        ]
+        }
       }
-    ]
+    }
   }
 }
 
@@ -207,10 +182,10 @@ module test03 '../main.bicep' = {
 module test04 '../main.bicep' = {
   name: 'test04-${uniqueName}'
   params: {
-    location: location
+    name: 'test04-${uniqueName}'
+    locations: [ { name: location } ]
     backendApi: 'mongodb'
-    prefix: 'test04'
-    capabilities: [
+    extraCapabilities: [
       'EnableMongoRetryableWrites'
       'EnableAggregationPipeline'
     ]
@@ -222,14 +197,18 @@ module test04 '../main.bicep' = {
         maxAgeInSeconds: 60
       }
     ]
-    mongodbDatabases: [
-      {
-        name: 'testdb1'
-        autoscaleMaxThroughput: 4000
-        collections: [
-          {
-            name: 'collection1'
-            manualProvisionedThroughput: 400
+    mongodbDatabases: {
+      testdb1: {
+        performance: {
+          enableAutoScale: true
+          throughput: 4000
+        }
+        collections: {
+          collection1: {
+            performance: {
+              enableAutoScale: false
+              throughput: 400
+            }
             indexes: [
               {
                 key: {
@@ -246,13 +225,13 @@ module test04 '../main.bicep' = {
                 }
               }
             ]
-            shardkey: {
+            shardKey: {
               user_id: 'Hash'
             }
           }
-        ]
+        }
       }
-    ]
+    }
   }
 }
 
@@ -260,28 +239,32 @@ module test04 '../main.bicep' = {
 module test05 '../main.bicep' = {
   name: 'test05-${uniqueName}'
   params: {
-    location: location
+    name: 'test05-${uniqueName}'
+    locations: [
+      {
+        name: 'canadacentral'
+        isZoneRedundant: true
+      }
+      {
+        name: 'centralus'
+        isZoneRedundant: true
+      }
+      {
+        name: 'eastus'
+        isZoneRedundant: true
+      }
+    ]
     backendApi: 'table'
-    prefix: 'test05'
     enableServerless: true
-    defaultConsistencyLevel: 'BoundedStaleness'
-    maxIntervalInSeconds: 10000
-    maxStalenessPrefix: 100000
     enableAnalyticalStorage: true
-    tables: [
-      {
-        name: 'table1'
-      }
-      {
-        name: 'table2'
-      }
-    ]
-
+    tables: {
+      table1: {}
+      table2: {}
+    }
     ipRules: [
-      '20.112.52.29'
-      '20.53.0.0/31'
+      '1.2.3.4'
+      '1.2.3.4/24'
     ]
-    isVirtualNetworkFilterEnabled: true
     virtualNetworkRules: [
       {
         id: dependencies.outputs.subnetIds[0]
@@ -295,86 +278,75 @@ module test05 '../main.bicep' = {
 module test06 '../main.bicep' = {
   name: 'test06-${uniqueName}'
   params: {
-    location: location
+    name: 'test06-${uniqueName}'
+    locations: [ { name: location } ]
     backendApi: 'gremlin'
-    prefix: 'test06'
-    gremlinDatabases: [
-      {
-        name: 'testdb01'
-        manualProvisionedThroughput: 500
-        graphs: [
-          {
-            name: 'graph1'
-            autoscaleMaxThroughput: 1000
+    gremlinDatabases: {
+      testdb01: {
+        performance: {
+          enableAutoScale: false
+          throughput: 500
+        }
+        graphs: {
+          graph1: {
+            performance: {
+              enableAutoScale: true
+              throughput: 4000
+            }
             defaultTtl: 3600
             partitionKey: {
-              paths: [
-                '/address'
-              ]
+              paths: [ '/address' ]
               kind: 'Hash'
               version: 1
             }
-            indexingPolicy: {}
-            uniqueKeyPolicy: {}
           }
-        ]
+        }
       }
-    ]
-    publicNetworkAccess: 'Disabled'
-    privateEndpoints: [
-      {
-        name: 'endpoint1'
+    }
+    enablePublicNetworkAccess: false
+    privateEndpoints: {
+      endpoint1: {
         subnetId: dependencies.outputs.subnetIds[0]
-        manualApprovalEnabled: true
+        isManualApproval: true
         groupId: 'Sql'
       }
-      {
-        name: 'endpoint2'
+      endpoint2: {
         subnetId: dependencies.outputs.subnetIds[1]
         privateDnsZoneId: dependencies.outputs.privateDNSZoneId
         groupId: 'Gremlin'
       }
-    ]
+    }
   }
 }
 
-// Test 07 - SQL DB with containers - totalThroughputLimit & BoundedStaleness as defaultConsistencyLevel.
+// Test 07 - SQL DB with sql role definitions
 module test07 '../main.bicep' = {
   name: 'test07-${uniqueName}'
-  dependsOn: [
-    test01 // SQL DB with containers test case causing conflict due to same deployment name.
-    test03
-  ]
   params: {
-    location: location
+    name: 'test07-${uniqueName}'
+    locations: [ { name: location } ]
     backendApi: 'sql'
-    prefix: 'test07'
-    sqlDatabases: [
-      {
-        name: 'testdb1'
-        containers: [
-          {
-            name: 'container1'
-            autoscaleMaxThroughput: 4000
+    sqlDatabases: {
+      testdb1: {
+        containers: {
+          container1: {
+            performance: {
+              enableAutoScale: true
+              throughput: 4000
+            }
             defaultTtl: 3600
             partitionKey: {
-              paths: [
-                '/id'
-              ]
+              paths: [ '/id' ]
               kind: 'Hash'
               version: 1
             }
           }
-        ]
+        }
       }
-    ]
-    sqlRoleDefinitions: [
-      {
-        roleName: 'testReadWriteRole1'
-        assignableScopes: [
-          '/'
-          '/dbs/testdb1'
-        ]
+    }
+    sqlRoleDefinitions: {
+      testReadWriteRole1: {
+        roleType: 'CustomRole'
         permissions: [
           {
             dataActions: [
@@ -384,20 +356,18 @@ module test07 '../main.bicep' = {
             ]
           }
         ]
+        assisgnments: [
+          {
+            principalId: dependencies.outputs.identityPrincipalIds[0]
+            scope: '/'
+          }
+          {
+            principalId: dependencies.outputs.identityPrincipalIds[1]
+            scope: '/dbs/testdb1'
+          }
+        ]
       }
-    ]
-    sqlRoleAssignments: [
-      {
-        principalId: dependencies.outputs.identityPrincipalIds[0]
-        roleDefinitionId: '00000000-0000-0000-0000-000000000001'
-        scope: '/'
-      }
-      {
-        principalId: dependencies.outputs.identityPrincipalIds[1]
-        roleDefinitionId: '00000000-0000-0000-0000-000000000002'
-        scope: '/dbs/testdb1'
-      }
-    ]
+    }
   }
 }
 

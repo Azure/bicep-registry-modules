@@ -14,9 +14,9 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
       resource: {
         id: name
       }
-      options: enableServerless ? {} : (config.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput })
+      options: enableServerless ? null : (config.performance == null ? null : (config.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput }))
     }
-    tags: toObject(config.tags, tag => tag.key, tag => tag.value)
+    tags: toObject(config.tags ?? [], tag => tag.key, tag => tag.value)
 
     resource cassandraTables 'tables' = [for table in items(config.?tables ?? {}): {
       name: table.key
@@ -32,9 +32,9 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
             clusterKeys: table.?value.?schema.?clusterKeys
           }
         }
-        options: enableServerless ? {} : (table.value.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: table.value.performance.throughput } } : { throughput: table.value.performance.throughput })
+        options: enableServerless ? null : (table.value.performance == null ? null : (table.value.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: table.value.performance.throughput } } : { throughput: table.value.performance.throughput }))
       }
-      tags: toObject(table.value.tags.tags, tag => tag.key, tag => tag.value)
+      tags: toObject(table.value.tags ?? [], tag => tag.key, tag => tag.value)
     }]
   }
 }

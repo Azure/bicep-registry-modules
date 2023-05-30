@@ -13,7 +13,9 @@ param name string = '${prefix}-${uniqueString(resourceGroup().id, resourceGroup(
 @description('Enables automatic failover of the write region in the rare event that the region is unavailable due to an outage. Automatic failover will result in a new write region for the account and is chosen based on the failover priorities configured for the account.')
 param enableAutomaticFailover bool = true
 
-@description('Multi-region writes capability allows you to take advantage of the provisioned throughput for your databases and containers across the globe.')
+@description('''
+Enables the account to write in multiple locations. Once enabled, all regions included in the param.locations will be read/write regions.
+Multi-region writes capability allows you to take advantage of the provisioned throughput for your databases and containers across the globe.''')
 param enableMultipleWriteLocations bool = true
 
 @description('Enable Serverless for consumption-based usage.')
@@ -32,12 +34,7 @@ The array of geo locations that Cosmos DB account would be hosted in.
 Each element defines a region of georeplication.
 The order of regions in this list is the order for region failover. The first element is the primary region which is a write region of the Cosmos DB account.
 ''')
-param locations {
-  @description('The name of the Azure region.')
-  name: string
-  @description('Flag to indicate whether or not this region is an AvailabilityZone region')
-  isZoneRedundant: bool?
-}[] = [ { name: resourceGroup().location } ]
+param locations locationType[] = [ { name: resourceGroup().location } ]
 
 @description('MongoDB server version. Required for mongodb API type Cosmos DB account')
 @allowed([ '3.2', '3.6', '4.0', '4.2' ])
@@ -355,6 +352,7 @@ type schemaType = {
   @description('List of Cassandra table cluster keys.')
   clusterKeys: {
     name: string
+    @description('Order of the Cosmos DB Cassandra table cluster key, only support "Asc" and "Desc"')
     orderBy: string
   }[]?
 }
@@ -363,11 +361,10 @@ type schemaType = {
 type performanceConfigType = {
   @description('Flag to enable/disable automatic throughput scaling.')
   enableAutoScale: bool
-  @maxValue(100000)
   @minValue(400)
   @description('''
-  When enableAutoScale is set to true, this parameter is the static throughput capability  expressed in units of 100 requests per second. 400 RU/s is the minimum for production workloads. It ranges from 400 to 100,000 inclusive.
-  When enableAutoScale is set to false, this parameter is the maximum of the autoscaled throughput capability. It would scale down to a minimum of 10% of this max throughput based on usage. It ranges from 4000 to 100,000 inclusive.
+  When enableAutoScale is set to false, this parameter is the static throughput capability. 400 RU/s is the minimum for production workloads and must be set in increments of 100. The maxium is 100,000 unless a higher limit is requested via Azure Support.
+  When enableAutoScale is set to true, this parameter is the maximum of the autoscaled throughput capability. It would scale down to a minimum of 10% of this max throughput based on usage. It ranges from 1000 to 100,000 inclusive.
   ''')
   throughput: int
 }
@@ -375,7 +372,7 @@ type performanceConfigType = {
 @description('Cassandra table configurations.')
 type cassandraTableType = {
   @description('Performance configuration.')
-  performance: performanceConfigType
+  performance: performanceConfigType?
   @description('Default time to live (TTL) in seconds.')
   defaultTtl: int?
   @description('The analytical storage TTL in seconds.')
@@ -383,20 +380,20 @@ type cassandraTableType = {
   @description('The schema of the Cassandra table.')
   schema: schemaType?
   @description('Tags for the Cassandra table.')
-  tags: tagType
+  tags: tagType[]?
 }
 
 @description('Cassandra keyspaces configurations.')
 type cassandraKeyspaceType = {
   @description('Throughtput configuration.')
-  performance: performanceConfigType
+  performance: performanceConfigType?
   @description('''
   The object of Cassandra table configurations.
   The key of each element is the name of the  table.
   The value of each element is an configuration object.''')
-  tables: { *: cassandraTableType }
+  tables: { *: cassandraTableType }?
   @description('Tags for the Cassandra keyspace.')
-  tags: tagType
+  tags: tagType[]?
 }
 
 @description('The type definition of sql container client encryption policy included paths.')
@@ -506,7 +503,7 @@ type sqlContainerStoredProceduresType = {
   @description('Performance configs.')
   performance: performanceConfigType?
   @description('Tags for the resource.')
-  tags: tagType?
+  tags: tagType[]?
 }
 
 @description('The type definition of SQL database container user defined functions.')
@@ -516,7 +513,7 @@ type sqlContainerUserDefinedFunctionsType = {
   @description('Performance configs.')
   performance: performanceConfigType?
   @description('Tags for the resource.')
-  tags: tagType?
+  tags: tagType[]?
 }
 
 @description('The type definition of SQL database container triggers.')
@@ -530,11 +527,13 @@ type sqlContainerTriggersType = {
   @description('The operation the trigger is associated with.')
   triggerOperation: ('Create' | 'Delete' | 'Replace' | 'Update')[]?
   @description('Tags for the resource.')
-  tags: tagType?
+  tags: tagType[]?
 }
 
 @description('The type definition of SQL database container.')
 type sqlContainerType = {
+  @description('Performance configs.')
+  performance: performanceConfigType?
   @description('The analytical storage TTL in seconds.')
   analyticalStorageTtl: int?
   @description('Default time to live (TTL) in seconds.')
@@ -556,17 +555,17 @@ type sqlContainerType = {
   @description('Configuration of triggers in the container.')
   triggers: { *: sqlContainerTriggersType }?
   @description('Tags for the resource.')
-  tags: tagType?
+  tags: tagType[]?
 }
 
 @description('The type definition of SQL database configuration.')
 type sqlDatabaseType = {
   @description('Performance configs.')
-  performance: performanceConfigType
+  performance: performanceConfigType?
   @description('sql Container configurations.')
   containers: { *: sqlContainerType }?
   @description('Tags for the SQL database.')
-  tags: tagType?
+  tags: tagType[]?
 }
 
 type consistencyPolicyType = {
@@ -612,33 +611,34 @@ type mongodbDatabaseIndexType = {
 }
 
 type mongodbDatabaseCollectionType = {
+  @description('Performance configs.')
+  performance: performanceConfigType?
+  @description('	List of index keys.')
   indexes: mongodbDatabaseIndexType[]?
   @description('A key-value pair of shard keys to be applied for the request.')
   shardKey: { *: string }?
   @description('Tags for the resource.')
-  tags: tagType?
+  tags: tagType[]?
 }
 
 type mongodbDatabaseType = {
   @description('Performance configs.')
-  performance: performanceConfigType
-  @description('The analytical storage TTL in seconds.')
-  analyticalStorageTtl: int?
+  performance: performanceConfigType?
   collections: { *: mongodbDatabaseCollectionType }?
   @description('Tags for the resource.')
-  tags: tagType?
+  tags: tagType[]?
 }
 
 type tableType = {
   @description('Performance configs.')
-  performance: performanceConfigType
+  performance: performanceConfigType?
   @description('Tags for the resource.')
-  tags: tagType?
+  tags: tagType[]?
 }
 
 type gremlinGraphType = {
   @description('Performance configs.')
-  performance: performanceConfigType
+  performance: performanceConfigType?
   @description('The analytical storage TTL in seconds.')
   analyticalStorageTtl: int?
   @description('The default time to live in seconds.')
@@ -652,14 +652,14 @@ type gremlinGraphType = {
   @description('The unique key policy configuration for specifying uniqueness constraints on documents in the collection in the Azure Cosmos DB service.')
   uniqueKeyPolicy: graphUniqueKeyPolicyTypeForSqlContainerAndGremlinGraph?
   @description('Tags for the resource.')
-  tags: tagType?
+  tags: tagType[]?
 }
 
 type gremlinDatabaseType = {
   @description('Performance configs.')
-  performance: performanceConfigType
+  performance: performanceConfigType?
   @description('Tags for the resource.')
-  tags: tagType?
+  tags: tagType[]?
   @description('The object of Gremlin database graphs.')
   graphs: { *: gremlinGraphType }?
 }
@@ -694,10 +694,22 @@ type sqlRoleDefinitionType = {
 }
 
 type privateEndpointType = {
+  @description('The subnet that the private endpoint should be created in.')
   subnetId: string
+
+  @description('The subresource name of the target Azure resource that private endpoint will connect to.')
   groupId: string
+  @description('The ID of the private DNS zone in which private endpoint will register its private IP address.')
   privateDnsZoneId: string?
+  @description('When set to true, users will need to manually approve the private endpoint connection request.')
   isManualApproval: bool?
   @description('Tags for the resource.')
-  tags: tagType?
+  tags: tagType[]?
+}
+
+type locationType = {
+  @description('The name of the Azure region.')
+  name: string
+  @description('Flag to indicate whether or not this region is an AvailabilityZone region')
+  isZoneRedundant: bool?
 }

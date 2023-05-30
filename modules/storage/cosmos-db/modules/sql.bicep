@@ -11,12 +11,12 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
 resource sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2022-11-15' = {
   name: name
   parent: cosmosDBAccount
-  tags: toObject(config.tags, tag => tag.key, tag => tag.value)
+  tags: toObject(config.tags ?? [], tag => tag.key, tag => tag.value)
   properties: {
     resource: {
       id: name
     }
-    options: enableServerless ? {} : (config.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput })
+    options: enableServerless ? null : (config.performance == null ? null : (config.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput }))
   }
 }
 

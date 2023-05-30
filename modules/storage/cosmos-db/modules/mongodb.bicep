@@ -14,9 +14,9 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
       resource: {
         id: name
       }
-      options: enableServerless ? {} : (config.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput })
+      options: enableServerless ? null : (config.performance == null ? null : (config.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput }))
     }
-    tags: toObject(config.tags, tag => tag.key, tag => tag.value)
+    tags: toObject(config.tags ?? [], tag => tag.key, tag => tag.value)
 
     resource mongodbDatabaseCollections 'collections' = [for collection in items(config.?collections ?? {}): {
       name: collection.key
@@ -26,9 +26,9 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
           indexes: collection.value.?indexes
           shardKey: collection.value.?shardKey
         }
-        options: enableServerless ? {} : (collection.value.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: collection.value.performance.throughput } } : { throughput: collection.value.performance.throughput })
+        options: enableServerless ? null : (collection.value.performance == null ? null : (collection.value.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: collection.value.performance.throughput } } : { throughput: collection.value.performance.throughput }))
       }
-      tags: toObject(collection.value.tags, tag => tag.key, tag => tag.value)
+      tags: toObject(collection.value.tags ?? [], tag => tag.key, tag => tag.value)
     }]
   }
 }
