@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "12388776905372341604"
+      "version": "0.17.1.54307",
+      "templateHash": "10669418079724940131"
     }
   },
   "parameters": {
@@ -72,7 +72,6 @@
     },
     "notificationEmail": {
       "type": "string",
-      "defaultValue": "",
       "metadata": {
         "description": "Email address of the person or team responsible for this scheduled action. This email address will be included in emails. Default: (email address of user deploying the template)."
       }
@@ -274,10 +273,10 @@
   "outputs": {
     "scheduledActionId": {
       "type": "string",
-      "value": "[resourceId('Microsoft.CostManagement/scheduledActions', parameters('name'))]",
       "metadata": {
         "description": "Resource ID of the scheduled action."
-      }
+      },
+      "value": "[resourceId('Microsoft.CostManagement/scheduledActions', parameters('name'))]"
     }
   }
 }
