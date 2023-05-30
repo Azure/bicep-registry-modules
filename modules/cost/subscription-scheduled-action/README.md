@@ -10,7 +10,7 @@ You can also use scheduled actions to configure anomaly detection alerts for sub
 
 ## Parameters
 
-| Name | Type | Required | Description |
+| Name                   | Type     | Required | Description                                                                                                                                                                                                                                                                                 |
 | :--------------------- | :------: | :------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `name`                 | `string` | Yes      | Name of the scheduled action used in the resource ID.                                                                                                                                                                                                                                       |
 | `kind`                 | `string` | No       | Indicates the kind of scheduled action. Default: Email.                                                                                                                                                                                                                                     |
@@ -19,7 +19,7 @@ You can also use scheduled actions to configure anomaly detection alerts for sub
 | `viewId`               | `string` | No       | Required if kind is "Email" and builtInView is not set. The resource ID of the view to which the scheduled action will send. The view must either be private (tenant level) or owned by the same scope as the scheduled action. Ignored if kind is "InsightAlert" or if builtInView is set. |
 | `displayName`          | `string` | No       | The display name to show in the portal when viewing the list of scheduled actions. Default: (scheduled action name).                                                                                                                                                                        |
 | `status`               | `string` | No       | The status of the scheduled action. Default: Enabled.                                                                                                                                                                                                                                       |
-| `notificationEmail`    | `string` | No       | Email address of the person or team responsible for this scheduled action. This email address will be included in emails. Default: (email address of user deploying the template).                                                                                                          |
+| `notificationEmail`    | `string` | Yes      | Email address of the person or team responsible for this scheduled action. This email address will be included in emails. Default: (email address of user deploying the template).                                                                                                          |
 | `emailRecipients`      | `array`  | Yes      | List of email addresses that should receive emails. At least one valid email address is required.                                                                                                                                                                                           |
 | `emailSubject`         | `string` | No       | The subject of the email that will be sent to the email recipients. Default: (view name).                                                                                                                                                                                                   |
 | `emailMessage`         | `string` | No       | Include a message for recipients to add context about why they are getting the email, what to do, and/or who to contact. Default: "" (no message).                                                                                                                                          |
@@ -35,7 +35,7 @@ You can also use scheduled actions to configure anomaly detection alerts for sub
 
 ## Outputs
 
-| Name | Type | Description |
+| Name              | Type   | Description                          |
 | :---------------- | :----: | :----------------------------------- |
 | scheduledActionId | string | Resource ID of the scheduled action. |
 

@@ -1,11 +1,11 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "7305037417857947127"
+      "version": "0.17.1.54307",
+      "templateHash": "15316306672498633940"
     }
   },
   "parameters": {
@@ -73,7 +73,6 @@
     },
     "notificationEmail": {
       "type": "string",
-      "defaultValue": "",
       "metadata": {
         "description": "Email address of the person or team responsible for this scheduled action. This email address will be included in emails. Default: (email address of user deploying the template)."
       }
@@ -275,10 +274,10 @@
   "outputs": {
     "scheduledActionId": {
       "type": "string",
-      "value": "[subscriptionResourceId('Microsoft.CostManagement/scheduledActions', parameters('name'))]",
       "metadata": {
         "description": "Resource ID of the scheduled action."
-      }
+      },
+      "value": "[subscriptionResourceId('Microsoft.CostManagement/scheduledActions', parameters('name'))]"
     }
   }
 }
