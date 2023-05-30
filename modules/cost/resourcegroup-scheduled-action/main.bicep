@@ -1,8 +1,13 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 // See https://learn.microsoft.com/rest/api/cost-management/scheduled-actions/create-or-update
 
-//===| Parameters |============================================================
-
 targetScope = 'resourceGroup'
+
+//==============================================================================
+// Parameters
+//==============================================================================
 
 @description('Name of the scheduled action used in the resource ID.')
 param name string
@@ -39,7 +44,7 @@ param displayName string = name
 param status string = 'Enabled'
 
 @description('Email address of the person or team responsible for this scheduled action. This email address will be included in emails. Default: (email address of user deploying the template).')
-param notificationEmail string = ''
+param notificationEmail string
 
 @description('List of email addresses that should receive emails. At least one valid email address is required.')
 param emailRecipients array
@@ -130,11 +135,17 @@ param scheduleStartDate string = utcNow('yyyy-MM-ddTHH:00Z')
 @description('The last day the schedule should run. Must be in the format yyyy-MM-dd. Default = 1 year from start date.')
 param scheduleEndDate string = ''
 
+//==============================================================================
+// Variables
+//==============================================================================
+
 var scope = resourceGroup().id
 
 var internalViewId = builtInView == null ? viewId : '${scope}/providers/Microsoft.CostManagement/views/ms:${builtInView}'
 
-//===| Resources |=============================================================
+//==============================================================================
+// Resources
+//==============================================================================
 
 resource sa 'Microsoft.CostManagement/scheduledActions@2022-10-01' = {
   name: name

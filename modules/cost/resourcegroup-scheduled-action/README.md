@@ -1,8 +1,12 @@
 # Cost Management scheduled action for resource groups
 
+Creates a scheduled action to notify recipients about the latest costs on a recurring schedule.
+
 ## Description
 
-Creates a Cost Management scheduled action to notify recipients about the latest resource group costs on a recurring schedule.
+Scheduled actions allow you to configure email alerts on a daily, weekly, or monthly basis. Scheduled actions are configured based on a Cost Management view, which can be opened and edited in Cost analysis in the Azure portal. Email alerts include a picture of the selected view and optionally a link to a CSV file with the summarized cost data. To learn more about scheduled alerts, see [Subscribe to scheduled alerts](https://learn.microsoft.com/azure/cost-management-billing/costs/save-share-views#subscribe-to-scheduled-alerts).
+
+You can also use scheduled actions to configure anomaly detection alerts for subscriptions. To learn more about Cost Management anomaly detection, see [Identify anomalies and unexpected changes in cost](https://learn.microsoft.com/azure/cost-management-billing/understand/analyze-unexpected-charges).
 
 ## Parameters
 
@@ -42,13 +46,14 @@ Creates a Cost Management scheduled action to notify recipients about the latest
 Creates a shared scheduled action for the DailyCosts built-in view.
 
 ```bicep
-module dailyCostsAlert 'br/public:cost/resourcegroup-scheduled-action:1.0' = {
+module dailyCostsAlert 'br/public:cost/resourcegroup-scheduled-action:1.0.1' = {
   name: 'dailyCostsAlert'
   params: {
     name: 'DailyCostsAlert'
     displayName: 'My schedule'
     builtInView: 'DailyCosts'
     emailRecipients: [ 'ema@contoso.com' ]
+    notificationEmail: 'ema@contoso.com'
     scheduleFrequency: 'Weekly'
     scheduleDaysOfWeek: [ 'Monday' ]
   }
@@ -60,7 +65,7 @@ module dailyCostsAlert 'br/public:cost/resourcegroup-scheduled-action:1.0' = {
 Creates a private scheduled action for the DailyCosts built-in view with custom start/end dates.
 
 ```bicep
-module privateAlert 'br/public:cost/resourcegroup-scheduled-action:1.0' = {
+module privateAlert 'br/public:cost/resourcegroup-scheduled-action:1.0.1' = {
   name: 'privateAlert'
   params: {
     name: 'PrivateAlert'
@@ -68,6 +73,7 @@ module privateAlert 'br/public:cost/resourcegroup-scheduled-action:1.0' = {
     private: true
     builtInView: 'DailyCosts'
     emailRecipients: [ 'priya@contoso.com' ]
+    notificationEmail: 'priya@contoso.com'
     scheduleFrequency: 'Monthly'
     scheduleDayOfMonth: 1
     scheduleStartDate: scheduleStartDate

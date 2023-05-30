@@ -1,3 +1,6 @@
+// Copyright (c) Microsoft Corporation.
+// Licensed under the MIT License.
+
 targetScope = 'resourceGroup'
 
 param startTime string = utcNow('yyyy-MM-dd')
@@ -13,6 +16,7 @@ module dailyCostsAlert '../main.bicep' = {
     displayName: 'My schedule'
     builtInView: 'DailyCosts'
     emailRecipients: [ 'ema@contoso.com' ]
+    notificationEmail: 'ema@contoso.com'
     scheduleFrequency: 'Weekly'
     scheduleDaysOfWeek: [ 'Monday' ]
   }
@@ -27,6 +31,7 @@ module privateAlert '../main.bicep' = {
     private: true
     builtInView: 'DailyCosts'
     emailRecipients: [ 'priya@contoso.com' ]
+    notificationEmail: 'priya@contoso.com'
     scheduleFrequency: 'Monthly'
     scheduleDayOfMonth: 1
     scheduleStartDate: scheduleStartDate
