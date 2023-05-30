@@ -9,42 +9,42 @@ It allows for the creation of a new Cosmos DB account or use of an existing one 
 
 ## Parameters
 
-| Name                                 | Type     | Required | Description                                                                                                                                                                                                                                                                    |
-| :----------------------------------- | :------: | :------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `backendApi`                         | `string` | No       | The bakend API type of Cosmos DB database account. The API selection cannot be changed after account creation. Possible values: "cassandra", "gremlin", "mongodb", "sql", "table".                                                                                             |
-| `prefix`                             | `string` | No       | Prefix of Cosmos DB Resource Name. Not used if name is provided.                                                                                                                                                                                                               |
-| `name`                               | `string` | No       | The name of the Cosmos DB account. Character limit: 3-44, valid characters: lowercase letters, numbers, and hyphens. It must me unique across Azure.                                                                                                                           |
-| `enableAutomaticFailover`            | `bool`   | No       | Enables automatic failover of the write region in the rare event that the region is unavailable due to an outage. Automatic failover will result in a new write region for the account and is chosen based on the failover priorities configured for the account.              |
-| `enableMultipleWriteLocations`       | `bool`   | No       | Multi-region writes capability allows you to take advantage of the provisioned throughput for your databases and containers across the globe.                                                                                                                                  |
-| `enableServerless`                   | `bool`   | No       | Enable Serverless for consumption-based usage.                                                                                                                                                                                                                                 |
-| `enableFreeTier`                     | `bool`   | No       | Flag to indicate whether Free Tier is enabled, up to one account per subscription is allowed.                                                                                                                                                                                  |
-| `totalThroughputLimit`               | `int`    | No       | The total throughput limit of the Cosmos DB account in measurement of requests units (RUs) per second, -1 indicates no limits on provisioning of throughput.                                                                                                                   |
-| `locations`                          | `array`  | No       | The array of secondary locations.<br />Each element defines a region of georeplication. The first element in this array is the primary region which is a write region of the Cosmos DB account.<br />The order of regions in this list is the order for region failover.       |
-| `MongoDBServerVersion`               | `string` | No       | MongoDB server version. Required for mongodb API type Cosmos DB account                                                                                                                                                                                                        |
-| `cors`                               | `array`  | No       | List of CORS rules. Each CORS rule allows or denies requests from a set of origins to a Cosmos DB account or a database                                                                                                                                                        |
-| `createMode`                         | `string` | No       | The mode of the Cosmos Account creation. Set to Restore to restore from an existing account.                                                                                                                                                                                   |
-| `disableKeyBasedMetadataWriteAccess` | `bool`   | No       | Disable write operations on metadata resources (databases, containers, throughput) via account keys.                                                                                                                                                                           |
-| `enablePublicNetworkAccess`          | `bool`   | No       | Whether requests from public network allowed.                                                                                                                                                                                                                                  |
-| `networkAclBypass`                   | `string` | No       | Indicates what services are allowed to bypass firewall checks.                                                                                                                                                                                                                 |
-| `ipRules`                            | `array`  | No       | List of IpRules to be allowed.<br />Each element in this array is either a single IPv4 address or a single IPv4 address range in CIDR format.                                                                                                                                  |
-| `virtualNetworkRules`                | `array`  | No       | The list of virtual network ACL rules.                                                                                                                                                                                                                                         |
-| `networkAclBypassResourceIds`        | `array`  | No       | An array that contains the Resource Ids for Network Acl Bypass.                                                                                                                                                                                                                |
-| `extraCapabilities`                  | `array`  | No       | Extra capabilities besides the ones required by param.backendApi and param.enableServerless.                                                                                                                                                                                   |
-| `disableLocalAuth`                   | `bool`   | No       | Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.                                                                                                                                                                        |
-| `enableAnalyticalStorage`            | `bool`   | No       | Flag to indicate whether to enable storage analytics.                                                                                                                                                                                                                          |
-| `analyticalStorageSchemaType`        | `string` | No       | The type of schema for analytical storage.                                                                                                                                                                                                                                     |
-| `cassandraKeyspaces`                 | `object` | No       | The object of Cassandra keyspaces configurations.<br />The key of each element is the name of the Cassandra keyspace.<br />The value of each element is an configuration object.                                                                                               |
-| `sqlDatabases`                       | `object` | No       | The object of sql database configurations.<br />The key of each element is the name of the sql database.<br />The value of each element is an configuration object.                                                                                                            |
-| `identityType`                       | `string` | No       | The type of identity used for the Cosmos DB account. The type "SystemAssigned, UserAssigned" includes both an implicitly created identity and a set of user-assigned identities. The type "None" will remove any identities from the Cosmos DB account.                        |
-| `userAssignedIdentities`             | `array`  | No       | The list of user-assigned managed identities. The user identity dictionary key references will be ARM resource ids in the form: "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}" |
-| `tags`                               | `object` | No       | List of key-value pairs that describe the resource.                                                                                                                                                                                                                            |
-| `lock`                               | `string` | No       | Specify the type of lock on Cosmos DB account resource.                                                                                                                                                                                                                        |
-| `consistencyPolicy`                  | `object` | No       | The consistency policy for the Cosmos DB account.                                                                                                                                                                                                                              |
-| `mongodbDatabases`                   | `object` | No       | The list of MongoDB databases configurations with collections, its indexes, Shard Keys.                                                                                                                                                                                        |
-| `tables`                             | `object` | No       | The object of Table databases configurations.                                                                                                                                                                                                                                  |
-| `gremlinDatabases`                   | `object` | No       | The list of Gremlin databases configurations with graphs.                                                                                                                                                                                                                      |
-| `sqlRoleDefinitions`                 | `object` | No       | The list of SQL role definitions.<br />The keys are the role name.<br />The values are the role definition.                                                                                                                                                                    |
-| `privateEndpoints`                   | `object` | No       | Private Endpoints that should be created for Azure Cosmos DB account.                                                                                                                                                                                                          |
+| Name                                 | Type     | Required | Description                                                                                                                                                                                                                                                                                    |
+| :----------------------------------- | :------: | :------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `backendApi`                         | `string` | No       | The bakend API type of Cosmos DB database account. The API selection cannot be changed after account creation. Possible values: "cassandra", "gremlin", "mongodb", "sql", "table".                                                                                                             |
+| `prefix`                             | `string` | No       | Prefix of Cosmos DB Resource Name. Not used if name is provided.                                                                                                                                                                                                                               |
+| `name`                               | `string` | No       | The name of the Cosmos DB account. Character limit: 3-44, valid characters: lowercase letters, numbers, and hyphens. It must me unique across Azure.                                                                                                                                           |
+| `enableAutomaticFailover`            | `bool`   | No       | Enables automatic failover of the write region in the rare event that the region is unavailable due to an outage. Automatic failover will result in a new write region for the account and is chosen based on the failover priorities configured for the account.                              |
+| `enableMultipleWriteLocations`       | `bool`   | No       | Enables the account to write in multiple locations. Once enabled, all regions included in the param.locations will be read/write regions.<br />Multi-region writes capability allows you to take advantage of the provisioned throughput for your databases and containers across the globe.   |
+| `enableServerless`                   | `bool`   | No       | Enable Serverless for consumption-based usage.                                                                                                                                                                                                                                                 |
+| `enableFreeTier`                     | `bool`   | No       | Flag to indicate whether Free Tier is enabled, up to one account per subscription is allowed.                                                                                                                                                                                                  |
+| `totalThroughputLimit`               | `int`    | No       | The total throughput limit of the Cosmos DB account in measurement of requests units (RUs) per second, -1 indicates no limits on provisioning of throughput.                                                                                                                                   |
+| `locations`                          | `array`  | No       | The array of geo locations that Cosmos DB account would be hosted in.<br />Each element defines a region of georeplication.<br />The order of regions in this list is the order for region failover. The first element is the primary region which is a write region of the Cosmos DB account. |
+| `MongoDBServerVersion`               | `string` | No       | MongoDB server version. Required for mongodb API type Cosmos DB account                                                                                                                                                                                                                        |
+| `cors`                               | `array`  | No       | List of CORS rules. Each CORS rule allows or denies requests from a set of origins to a Cosmos DB account or a database                                                                                                                                                                        |
+| `createMode`                         | `string` | No       | The mode of the Cosmos Account creation. Set to Restore to restore from an existing account.                                                                                                                                                                                                   |
+| `disableKeyBasedMetadataWriteAccess` | `bool`   | No       | Disable write operations on metadata resources (databases, containers, throughput) via account keys.                                                                                                                                                                                           |
+| `enablePublicNetworkAccess`          | `bool`   | No       | Whether requests from public network allowed.                                                                                                                                                                                                                                                  |
+| `networkAclBypass`                   | `string` | No       | Indicates what services are allowed to bypass firewall checks.                                                                                                                                                                                                                                 |
+| `ipRules`                            | `array`  | No       | List of IpRules to be allowed.<br />Each element in this array is either a single IPv4 address or a single IPv4 address range in CIDR format.                                                                                                                                                  |
+| `virtualNetworkRules`                | `array`  | No       | The list of virtual network ACL rules. Subnets in this list will be allowed to connect.                                                                                                                                                                                                        |
+| `networkAclBypassResourceIds`        | `array`  | No       | An array that contains the Resource Ids for Network Acl Bypass.                                                                                                                                                                                                                                |
+| `extraCapabilities`                  | `array`  | No       | Extra capabilities besides the ones required by param.backendApi and param.enableServerless.                                                                                                                                                                                                   |
+| `disableLocalAuth`                   | `bool`   | No       | Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.                                                                                                                                                                                        |
+| `enableAnalyticalStorage`            | `bool`   | No       | Flag to indicate whether to enable storage analytics.                                                                                                                                                                                                                                          |
+| `analyticalStorageSchemaType`        | `string` | No       | The type of schema for analytical storage.                                                                                                                                                                                                                                                     |
+| `cassandraKeyspaces`                 | `object` | No       | The object of Cassandra keyspaces configurations.<br />The key of each element is the name of the Cassandra keyspace.<br />The value of each element is an configuration object.                                                                                                               |
+| `sqlDatabases`                       | `object` | No       | The object of sql database configurations.<br />The key of each element is the name of the sql database.<br />The value of each element is an configuration object.                                                                                                                            |
+| `mongodbDatabases`                   | `object` | No       | The list of MongoDB databases configurations.<br />The key of each element is the name of the MongoDB database.<br />The value of each element is an configuration object.                                                                                                                     |
+| `tables`                             | `object` | No       | The object of Table databases configurations.<br />The key of each element is the name of the Table database.<br />The value of each element is an configuration object.                                                                                                                       |
+| `gremlinDatabases`                   | `object` | No       | The list of Gremlin databases configurations.<br />The key of each element is the name of the Gremlin database.<br />The value of each element is an configuration object.                                                                                                                     |
+| `sqlRoleDefinitions`                 | `object` | No       | The list of SQL role definitions.<br />The keys are the role name.<br />The values are the role definition.                                                                                                                                                                                    |
+| `identityType`                       | `string` | No       | The type of identity used for the Cosmos DB account. The type "SystemAssigned, UserAssigned" includes both an implicitly created identity and a set of user-assigned identities. The type "None" will remove any identities from the Cosmos DB account.                                        |
+| `userAssignedIdentities`             | `array`  | No       | The list of user-assigned managed identities. The user identity dictionary key references will be ARM resource ids in the form: "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}"                 |
+| `tags`                               | `array`  | No       | List of key-value pairs that describe the resource.                                                                                                                                                                                                                                            |
+| `lock`                               | `string` | No       | Specify the type of lock on Cosmos DB account resource.                                                                                                                                                                                                                                        |
+| `consistencyPolicy`                  | `object` | No       | The consistency policy for the Cosmos DB account.                                                                                                                                                                                                                                              |
+| `privateEndpoints`                   | `object` | No       | Private Endpoints that should be created for Azure Cosmos DB account.                                                                                                                                                                                                                          |
 
 ## Outputs
 
@@ -62,7 +62,7 @@ It allows for the creation of a new Cosmos DB account or use of an existing one 
 An example of how to deploy Azure Cosmosdb Account with _Apache Cassanda backend_ using the minimum required parameters.
 
 ```bicep
-module cosmosDbAccount 'br/public:storage/cosmos-db:2.0.0' = {
+module cosmosDbAccount 'br/public:storage/cosmos-db:0.0.1' = {
  name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     backendApi = 'cassandra'
@@ -77,7 +77,7 @@ output cosmosDbAccountResourceId string = cosmosDbAccount.outputs.id
 An example of how to deploy a _multi-region_ enabled cassandra backend Cosmosdb account along with access _role assignments_ and _zone redundancy_ for one of secondary locations.
 
 ```bicep
-module cosmosCassandraDb 'br/public:storage/cosmos-db:2.0.0' = {
+module cosmosCassandraDb 'br/public:storage/cosmos-db:0.0.1' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'eastus'
@@ -158,11 +158,11 @@ output cosmosCassandraDbResourceId string = cosmosCassandraDb.outputs.id
 
 > **Importanat note on setting up throughput parameters**<br><br>
 > Make sure to provide only one of **_manualProvisionedThroughput_** and **_autoscaleMaxThroughput_** at any scope level.
->
+> 
 > Throughtput can be povisioned for both Keyspaces and tables within it or just for Tables. Provisioned throughput at the keyspace level will be shared across all tables within the keyspace.
->
+> 
 > You can optionally provision dedicated throughput for a table within a keyspace that has throughput provisioned. This dedicated throughput amount will not be shared with other tables in the keyspace and does not count towards the throughput you provisioned for the keyspace. This throughput amount will be billed in addition to the throughput amount you provisioned at the keyspace level.
->
+> 
 > This is applicable for all other backend api type Cosmos DB account resources.
 
 ### Example 3
@@ -170,7 +170,7 @@ output cosmosCassandraDbResourceId string = cosmosCassandraDb.outputs.id
 An example of how to deploy a SQL Databses with Containers with _CORS Policies_, _totalThroughputLimit_ and different _defaultConsistencyLevel_ options.
 
 ```bicep
-module cosmosSqlDb 'br/public:storage/cosmos-db:2.0.0' = {
+module cosmosSqlDb 'br/public:storage/cosmos-db:0.0.1' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'westus'
@@ -264,7 +264,7 @@ output cosmosSqlDbResourceId string = cosmosSqlDb.outputs.id
 An example of how to deploy a MongoDB Databases with collections with _CORS Policies_, extra non-default _capabilities_ options and with _systemAssigned managed identity_ enabled.
 
 ```bicep
-module cosmosMongoDb 'br/public:storage/cosmos-db:2.0.0' = {
+module cosmosMongoDb 'br/public:storage/cosmos-db:0.0.1' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'eastus'
@@ -325,7 +325,7 @@ output systemAssignedIdentityPrincipalId string = cosmosMongoDb.outputs.systemAs
 An example of how to deploy a Cosmmos DB Tables with networking IP and VNet firewall bypass rules.
 
 ```bicep
-module cosmosTable 'br/public:storage/cosmos-db:2.0.0' = {
+module cosmosTable 'br/public:storage/cosmos-db:0.0.1' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'westus'
@@ -366,7 +366,7 @@ output cosmosTableDbResourceId string = cosmosTable.outputs.id
 An example of how to deploy a Gremlin DB with graphs along with _private endpoints_.
 
 ```bicep
-module cosmosGremlinDb 'br/public:storage/cosmos-db:2.0.0' = {
+module cosmosGremlinDb 'br/public:storage/cosmos-db:0.0.1' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'westus'
@@ -420,7 +420,7 @@ output cosmosGremlinDbResourceId string = cosmosGremlinDb.outputs.id
 An example of how to deploy a Cosmos DB account with sqlRoleDefinitions and sqlRoleAssignments.
 
 ```bicep
-module cosmosDb 'br/public:storage/cosmos-db:2.0.0' = {
+module cosmosDb 'br/public:storage/cosmos-db:0.0.1' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'westus'
