@@ -18,7 +18,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
     }
     tags: toObject(config.tags ?? [], tag => tag.key, tag => tag.value)
 
-    resource gremlinDatabaseGraphs 'graphs' = [for graph in config.?graphs ?? {}: {
+    resource gremlinDatabaseGraphs 'graphs' = [for graph in config.graphs ?? {}: {
       name: graph.key
       properties: {
         resource: {

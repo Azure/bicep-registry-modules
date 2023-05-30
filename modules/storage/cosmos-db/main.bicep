@@ -248,7 +248,7 @@ module cosmosDBAccount_sqlDatabases 'modules/sql.bicep' = [for sql in items(sqlD
   name: sql.key
   params: {
     cosmosDBAccountName: name
-    database: sql.value
+    database: sql
     enableServerless: enableServerless
   }
 }]

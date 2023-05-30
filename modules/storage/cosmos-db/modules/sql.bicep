@@ -20,7 +20,7 @@ resource sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2022-11
   }
 }
 
-module sqlDatabaseContainers 'sql_containers.bicep' = [for container in items(config.?containers ?? {}): {
+module sqlDatabaseContainers 'sql_containers.bicep' = [for container in items(config.containers ?? {}): {
   dependsOn: [ sqlDatabase ]
 
   name: container.key

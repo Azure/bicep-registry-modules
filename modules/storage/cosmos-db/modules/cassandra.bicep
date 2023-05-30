@@ -18,7 +18,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
     }
     tags: toObject(config.tags ?? [], tag => tag.key, tag => tag.value)
 
-    resource cassandraTables 'tables' = [for table in items(config.?tables ?? {}): {
+    resource cassandraTables 'tables' = [for table in items(config.tables ?? {}): {
       name: table.key
       properties: {
         resource: {

@@ -18,7 +18,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
     }
     tags: toObject(config.tags ?? [], tag => tag.key, tag => tag.value)
 
-    resource mongodbDatabaseCollections 'collections' = [for collection in items(config.?collections ?? {}): {
+    resource mongodbDatabaseCollections 'collections' = [for collection in items(config.collections ?? {}): {
       name: collection.key
       properties: {
         resource: {
