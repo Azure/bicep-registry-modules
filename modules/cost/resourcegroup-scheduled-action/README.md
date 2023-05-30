@@ -46,7 +46,7 @@ You can also use scheduled actions to configure anomaly detection alerts for sub
 Creates a shared scheduled action for the DailyCosts built-in view.
 
 ```bicep
-module dailyCostsAlert 'br/public:cost/resourcegroup-scheduled-action:1.0.1' = {
+module dailyCostsAlert 'br/public:cost/resourcegroup-scheduled-action:1.1' = {
   name: 'dailyCostsAlert'
   params: {
     name: 'DailyCostsAlert'
@@ -65,7 +65,7 @@ module dailyCostsAlert 'br/public:cost/resourcegroup-scheduled-action:1.0.1' = {
 Creates a private scheduled action for the DailyCosts built-in view with custom start/end dates.
 
 ```bicep
-module privateAlert 'br/public:cost/resourcegroup-scheduled-action:1.0.1' = {
+module privateAlert 'br/public:cost/resourcegroup-scheduled-action:1.1' = {
   name: 'privateAlert'
   params: {
     name: 'PrivateAlert'
