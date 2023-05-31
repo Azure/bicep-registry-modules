@@ -4,9 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.4.1318.3566",
-      "templateHash": "8019017868553956840"
-    }
+      "version": "0.17.1.54307",
+      "templateHash": "8585225941353157912"
+    },
+    "description": "A \"שָׁלוֹם עוֹלָם\" sample Bicep registry module",
+    "owner": "bicep-admins"
   },
   "parameters": {
     "name": {
@@ -20,10 +22,10 @@
   "outputs": {
     "greeting": {
       "type": "string",
-      "value": "[format('Hello from Bicep registry - Hi {0}!', parameters('name'))]",
       "metadata": {
         "description": "The hello message."
-      }
+      },
+      "value": "[format('Hello from Bicep registry - Hi {0}!', parameters('name'))]"
     }
   }
 }

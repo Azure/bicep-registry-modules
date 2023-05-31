@@ -2,6 +2,10 @@
 
 A "Hello World" sample Bicep registry module
 
+## Description
+
+{{ Add detailed description for the module. }}
+
 ## Parameters
 
 | Name   | Type     | Required | Description                       |
