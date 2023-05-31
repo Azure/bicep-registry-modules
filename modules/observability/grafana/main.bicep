@@ -1,10 +1,13 @@
 @description('The geo-location where the grafana resource lives.')
 param location string
 
+@description('Prefix of Grafana Resource Name')
+param prefix string = 'grafana'
+
 @minLength(2)
 @maxLength(23)
-@description('The resource name.')
-param name string
+@description('The grafana resource name.')
+param name string = take('${prefix}-${uniqueString(resourceGroup().id)}', 23)
 
 @description('The tags for grafana resource.')
 param tags object = {}
