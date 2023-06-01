@@ -11,8 +11,6 @@ param roleDefinitionIdOrName string = 'StorageBlobDataContributor'
 var uniqueName = uniqueString(resourceGroup().id, deployment().name, location)
 param serviceShort string = 'storageAccount'
 
-var uniqueName = uniqueString(resourceGroup().id, deployment().name, location)
-
 module prereq 'prereq.test.bicep' = {
   name: 'test-prereqs'
   params: {
@@ -27,15 +25,6 @@ module test0 '../main.bicep' = {
   name: 'test0'
   params: {
     location: location
-  }
-}
-
-module prerequisites 'prereq.test.bicep' = {
-  name: 'test-prereqs'
-  params: {
-    name: serviceShort
-    location: location
-    prefix: uniqueName
   }
 }
 
@@ -125,12 +114,12 @@ module test4 '../main.bicep' = {
       privateEndpoints: [
       {
         name: 'endpoint1'
-        subnetId: prerequisites.outputs.subnetIds[0]
+        subnetId: prereq.outputs.subnetIds[0]
       }
       {
         name: 'endpoint2'
-        subnetId: prerequisites.outputs.subnetIds[1]
-        privateDnsZoneId: prerequisites.outputs.privateDNSZoneId
+        subnetId: prereq.outputs.subnetIds[1]
+        privateDnsZoneId: prereq.outputs.privateDNSZoneId
       }
     ]
   }
