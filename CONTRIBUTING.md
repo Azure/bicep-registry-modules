@@ -66,11 +66,80 @@ The `metadata.json` file contains metadata of the module including `name`, `desc
 
 ```
 
-The `main.bicep` file is the public interface of the module. When authoring `main.bicep`, make sure to provide a description for each parameter and output. You are free to create other Bicep files inside the module folder and reference them as local modules in `main.bicep` if needed. You may also reference other registry modules to help build your module. If you do so, make sure to add them as external references with specific version numbers. You should not reference other registry modules through local file path, since they may get updated overtime.
+#### `main.bicep`
 
-The `test/main.test.bicep` file is the test file for `main.bicep`. It will be deployed to a test environment in the PR merge pipeline to make sure `main.bicep` is deployable. You must add at least one test to the file. To add a test, simply create a module referencing `main.bicep` and provide values for the required parameters. You may write multiple tests to ensure different paths of the module are covered. If any of the parameters are secrets, make sure to provide generated values instead of hard-coded ones. Below is an example showing how to use the combination of some string functions to construct a dynamic azure-compatible password for a virtual machine:
+The `main.bicep` file is the public interface of the module. When authoring `main.bicep`, make sure to provide a description for each parameter and output. You are free to create other Bicep files inside the module folder and reference them as local modules in `main.bicep` if needed. You may also reference other registry modules to help build your module. If you do so, make sure to add them as external references with specific version numbers. You should not reference other registry modules through local file path, since they may get updated overtime. The `main.bicep` most follow various static code analysis checks, such as including descriptions on every parameter and output. This will be used to automatically generate the `README.md`.
 
 ```bicep
+@description('Deployment Location')
+param location string = resourceGroup().location
+
+@description('Prefix of Resource Name. Not used if name is provided')
+param prefix string = 'pre'
+
+@minLength(3)
+@maxLength(INT)
+@description('Name of the Resource')
+param name string = take('${prefix}-${uniqueString(resourceGroup().id, location)}', INT)
+
+resource resource 'Microsoft.Resource/resource@latest-version' = {
+  name: name
+  location: location
+  properties: {
+    ...
+  }
+}
+
+@description('Resource Name')
+output name string = name
+
+@description('Resource Id')
+output id string = resource.id
+```
+
+We try to maintain the consistancies demostrated above.
+
+Each template should include the following 3 parameters: `location`, `prefix` and `name`; and following 2 outputs: `name` and `id`.
+
+##### Parameters
+
+- The `location` parameter is set to `resourceGroup().name` in only the `main.bicep`, and should be required when present in nested templates.
+- The `prefix` should use the recommended abbreviations collected [here](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations).
+- The `name` should include a min and max length constraint. It should also generate a unique name for the user, that will remain the same when redeployed with the same parameters, such as with `uniqueString(resourceGroup().id, location)`. If multiple resources are including in a module, the default values of other names should be based on this value.
+
+##### Outputs
+
+- The `name` output should link to the `name` parameter.
+- THe `id` output should link to the main resource of the deployment. Additional ID parameters may be provided.
+
+##### Zone Redudancy
+
+Including an option to enable Zone Redudancy is recommended, but not required. When it is included, it should be enabled using the following parameter.
+
+```bicep
+@description('Flag to indicate whether or not this region is an AvailabilityZone region')
+param isZoneRedundant bool = false
+```
+
+##### Virtual Network
+
+Including Virtual Network is also recommended. This support should be designed with the Virtual-Network module in the repository.
+
+#### `main.test.bicep`
+
+The `test/main.test.bicep` file is the test file for `main.bicep`. It will be deployed to a test environment in the PR merge pipeline to make sure `main.bicep` is deployable. You must add at least one test to the file. To add a test, simply create a module referencing `main.bicep` and provide values for the required parameters. You may write multiple tests to ensure different paths of the module are covered. If any of the parameters are secrets, make sure to provide generated values instead of hard-coded ones. If additional resources are required, they should be included in a `prereq.test.bicep` file in the same directory. Additional test files may be provided that follow the format, `<test-name>.test.bicep`. Below is an example showing how to use the combination of some string functions to construct a dynamic azure-compatible password for a virtual machine:
+
+```bicep
+param location string = resourceGroup().location
+
+//Prerequisites
+// module prereq 'prereq.test.bicep' = {
+//   name: 'test-prereqs'
+//   params: {
+//     location: location
+//   }
+// }
+
 @secure()
 param vmPasswordSuffix string = uniqueString(newGuid())
 
@@ -107,6 +176,79 @@ Instead go with:
 - `./main.bicep`
 - `./modules/storage.bicep`
 - `./modules/compute.bicep`
+
+## User-Defined Types (Preview)
+
+The repository has been setup to leverage the preview feature, [user-defined types](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/user-defined-data-types), on a per module basis.
+
+While the feature is in Preview, [to enable](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/user-defined-data-types#enable-the-preview-feature) include a `bicepconfig.json` in your module directory.
+
+`type` assignments should be declared to the end of the file, after the declaration of `outputs`. Types should include descriptions, which can be copied from the Azure API documentation when wrapping existing RP objects. Nested `type` declarations do not need a description. `type` should be reserved for use in complex cases and should not be used to in place of primitive types.
+
+```bicep
+@description('The properties of a storage account’s Blob service.')
+type blobServiceProperties = {
+  changeFeed: changeFeed?
+  containerDeleteRetentionPolicy: containerDeleteRetentionPolicy?
+  cors: cors?
+  deleteRetentionPolicy: deleteRetentionPolicy?
+  isVersioningEnabled: isVersioningEnabled?
+  lastAccessTimeTrackingPolicy: lastAccessTimeTrackingPolicy?
+  restorePolicy: restorePolicy?
+}
+
+@description('The blob service properties for change feed events.')
+type changeFeed = {
+  enabled: boo
+  @minValue(1)
+  @maxValue(146000)
+  retentionInDays: int?
+}
+
+@description('The blob service properties for container soft delete.')
+type containerDeleteRetentionPolicy = {
+  allowPermanentDelete: bool
+  @minValue(1)
+  @maxValue(365)
+  days: int?
+  enabled: bool
+}
+```
+
+Avoid these patterns.
+
+```bicep
+type enabled = bool  // Avoid setting aliases for primitive types
+type retentionInDays = int
+
+@description('The properties of a storage account’s Blob service.')
+type blobServiceProperties = {
+  @description('The blob service properties for change feed events.')
+  changeFeed: {
+    enabled: enabled
+
+    @minValue(1)
+    @maxValue(146000)
+    retentionInDays: retentionInDays?
+  }?
+
+  // Avoid nesting complex type definitions
+  @description('The blob service properties for container soft delete.')
+  containerDeleteRetentionPolicy: {
+    allowPermanentDelete: bool
+    @minValue(1)
+    @maxValue(365)
+    days: int?
+    enabled: bool
+  }?
+
+  cors: cors?
+  deleteRetentionPolicy: deleteRetentionPolicy?
+  isVersioningEnabled: isVersioningEnabled?
+  lastAccessTimeTrackingPolicy: lastAccessTimeTrackingPolicy?
+  restorePolicy: restorePolicy?
+}
+```
 
 ## Updating an existing module
 

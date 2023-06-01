@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
+  "name": "Managed Identity",
+  "summary": "Azure managed identities provide an easy way for applications to access resources securely in Azure.",
+  "owner": "vlahane"
+}

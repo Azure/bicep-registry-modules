@@ -15,10 +15,10 @@ jobs:
     if: needs.get-module-to-validate.outputs.module_dir
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 7.0.x
 
@@ -52,7 +52,7 @@ jobs:
     needs: get-module-to-validate
     if: needs.get-module-to-validate.outputs.module_dir
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
 
       - name: shellcheck
         uses: reviewdog/action-shellcheck@v1
@@ -66,10 +66,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: "16"
 

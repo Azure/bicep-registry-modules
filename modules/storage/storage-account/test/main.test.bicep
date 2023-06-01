@@ -11,13 +11,16 @@ param roleDefinitionIdOrName string = 'StorageBlobDataContributor'
 var uniqueName = uniqueString(resourceGroup().id, deployment().name, location)
 param serviceShort string = 'storageAccount'
 
-//Prerequisites
-// module prereq 'prereq.test.bicep' = {
-//   name: 'test-prereqs'
-//   params: {
-//     location: location
-//   }
-// }
+var uniqueName = uniqueString(resourceGroup().id, deployment().name, location)
+
+module prereq 'prereq.test.bicep' = {
+  name: 'test-prereqs'
+  params: {
+    name: 'storage'
+    location: location
+    prefix: uniqueName
+  }
+}
 
 //Test 0.
 module test0 '../main.bicep' = {
@@ -36,9 +39,53 @@ module prerequisites 'prereq.test.bicep' = {
   }
 }
 
-// One storage account will be created because the objectReplicationPolicy has been disabled and object replication will not take place.
+//Test 1.
 module test1 '../main.bicep' = {
   name: 'test1'
+  params: {
+    name: 'test1blobcontainers'
+    location: location
+    blobProperties: {
+      isVersioningEnabled: true
+    }
+    blobContainerProperties: {
+      publicAccess: 'None'
+    }
+  }
+}
+
+//Test 2.
+module test2 '../main.bicep' = {
+  name: 'test2'
+  dependsOn: [
+    prereq
+  ]
+  params: {
+    name: 'test2rbac'
+    location: location
+    blobProperties: {
+      isVersioningEnabled: true
+    }
+    blobContainerProperties: {
+      publicAccess: 'None'
+    }
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Reader and Data Access'
+        principalIds: [ prereq.outputs.identityPrincipalIds[0], prereq.outputs.identityPrincipalIds[1] ]
+      }
+      {
+        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+        principalIds: [ prereq.outputs.identityPrincipalIds[0] ]
+        resourceType: 'blobContainer'
+      }
+    ]
+  }
+}
+
+// One storage account will be created because the objectReplicationPolicy has been disabled and object replication will not take place.
+module test3 '../main.bicep' = {
+  name: 'test3'
   params: {
       location: location
       blobType: blobType
@@ -52,8 +99,8 @@ module test1 '../main.bicep' = {
 }
 
 // Since the objectReplicationPolicy has been enabled, two storage accounts will be created, and object replication will take place using the source and destination storage accounts.
-module test2 '../main.bicep' = {
-  name: 'test2'
+module test4 '../main.bicep' = {
+  name: 'test4'
   params: {
       location: location
       blobType: blobType
