@@ -26,7 +26,7 @@ param customNetworkInterfaceName string = ''
 param tags object = {}
 
 resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-11-01' = {
-  name: '${name}-${uniqueString(name, subnetId, privateLinkServiceId)}'
+  name: name
   location: location
   tags: tags
   properties: {
