@@ -60,7 +60,7 @@ resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneG
   parent: privateEndpoint
   properties: {
     privateDnsZoneConfigs: [for privateDnsZone in privateDnsZones: {
-      name: contains(privateDnsZone, 'name') ? privateDnsZone.name : 'default'
+      name: privateDnsZone.?name ?? 'default'
       properties: {
         privateDnsZoneId: privateDnsZone.zoneId
       }
