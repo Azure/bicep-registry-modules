@@ -422,7 +422,7 @@ resource moduleTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (!dis
 }
 
 module createSubscription 'src/self/Microsoft.Subscription/aliases/deploy.bicep' = if (subscriptionAliasEnabled && empty(existingSubscriptionId)) {
-  scope: tenant()
+  scope: managementGroup()
   name: deploymentNames.createSubscription
   params: {
     subscriptionBillingScope: subscriptionBillingScope
