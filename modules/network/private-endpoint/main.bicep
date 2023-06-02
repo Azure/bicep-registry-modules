@@ -25,7 +25,7 @@ param customNetworkInterfaceName string = ''
 @description('Optional. Tags to assign too the Private Endpoint.')
 param tags object = {}
 
-resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-05-01' = {
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-11-01' = {
   name: '${name}-${uniqueString(name, subnetId, privateLinkServiceId)}'
   location: location
   tags: tags
@@ -55,7 +55,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-05-01' = {
   }
 }
 
-resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-05-01' = if (!empty(privateDnsZones)) {
+resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-11-01' = if (!empty(privateDnsZones)) {
   name: 'default'
   parent: privateEndpoint
   properties: {
