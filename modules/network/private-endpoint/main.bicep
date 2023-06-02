@@ -4,7 +4,7 @@
 param name string
 
 @description('Required. Location for the Private Endpoint.')
-param location string
+param location string = resourceGroup().location
 
 @description('Required. The ID of the Private Link Service.')
 param privateLinkServiceId string
