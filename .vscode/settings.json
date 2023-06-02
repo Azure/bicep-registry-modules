@@ -3,7 +3,7 @@
   "files.autoSave": "onFocusChange",
   "git.autofetch": true,
   "githubPullRequests.pullBranch": "always",
-  "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "modificationsIfAvailable"
 }
