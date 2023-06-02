@@ -79,10 +79,10 @@ module test3 '../main.bicep' = {
       blobType: blobType
       daysAfterLastModification: 60
       blobProperties: {
-      isVersioningEnabled: false
+        isVersioningEnabled: false
       }
       blobContainerProperties: {
-      publicAccess: 'None'
+        publicAccess: 'None'
       }
       minimumTlsVersion: minimumTlsVersion
       objectReplicationPolicy: objectReplicationPolicy
@@ -97,17 +97,16 @@ module test4 '../main.bicep' = {
       blobType: blobType
       daysAfterLastModification: 60
       blobProperties: {
-      isVersioningEnabled: true
-      changeFeed: {
-      enabled: true
-      }
+        isVersioningEnabled: true
+        changeFeed: {
+         enabled: true
+        }
       }
       blobContainerProperties: {
-      publicAccess: 'None'
+        publicAccess: 'None'
       }
       minimumTlsVersion: minimumTlsVersion
       objectReplicationPolicy: true
-
       // Only provide values related to destination storage accounts if objectReplicationPolicies is true. By default, the primary storage account's values will be applied to destination parameters.
       // By adding a param here, we can override. Added few paramaters below as an example.
       destLocation: location
@@ -118,7 +117,6 @@ module test4 '../main.bicep' = {
       destAllowBlobPublicAccess: false
       destAllowCrossTenantReplication: false
       destPublicNetworkAccess: 'Disabled'
-
       privateEndpoints: [
       {
         name: 'endpoint1'
