@@ -84,17 +84,6 @@ module test3 '../main.bicep' = {
       blobContainerProperties: {
       publicAccess: 'None'
       }
-      roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Reader and Data Access'
-        principalIds: [ prereq.outputs.identityPrincipalIds[0], prereq.outputs.identityPrincipalIds[1] ]
-      }
-      {
-        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-        principalIds: [ prereq.outputs.identityPrincipalIds[0] ]
-        resourceType: 'blobContainer'
-      }
-    ]
       minimumTlsVersion: minimumTlsVersion
       objectReplicationPolicy: objectReplicationPolicy
   }
@@ -109,21 +98,13 @@ module test4 '../main.bicep' = {
       daysAfterLastModification: 60
       blobProperties: {
       isVersioningEnabled: true
+      changeFeed: {
+      enabled: true
+      }
       }
       blobContainerProperties: {
       publicAccess: 'None'
       }
-      roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Reader and Data Access'
-        principalIds: [ prereq.outputs.identityPrincipalIds[0], prereq.outputs.identityPrincipalIds[1] ]
-      }
-      {
-        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-        principalIds: [ prereq.outputs.identityPrincipalIds[0] ]
-        resourceType: 'blobContainer'
-      }
-    ]
       minimumTlsVersion: minimumTlsVersion
       objectReplicationPolicy: true
 
