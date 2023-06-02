@@ -161,6 +161,7 @@ var networkAcls = enableVNET ? {
 var builtInRoleNames = {
   StorageBlobDataContributor : 'b24988ac-6180-42a0-ab88-20f7382dd24c'
   Reader : 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+  Contributor: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
 }
 
 var varPrivateEndpoints = [for privateEndpoint in privateEndpoints: {
@@ -203,23 +204,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     allowCrossTenantReplication: allowCrossTenantReplication
     publicNetworkAccess: publicNetworkAccess
     minimumTlsVersion: minimumTlsVersion
-  }
-
-  resource blobServices 'blobServices@2022-09-01' = {
-    name: 'default'
-    properties: {
-        changeFeed: {
-            enabled: changeFeedEnabled
-        }
-        isVersioningEnabled: versioningEnabled
-    }
-
-    resource container 'containers@2022-09-01' = {
-      name: 'sourcecontainer'
-      properties: {
-        publicAccess: 'None'
-      }
-    }
   }
 
   resource managementpolicy 'managementPolicies@2021-04-01' = {
@@ -360,7 +344,7 @@ resource destinationOrPolicy 'Microsoft.Storage/storageAccounts/objectReplicatio
         rules: [
             {
                 destinationContainer: 'destinationcontainer'
-                sourceContainer: 'sourcecontainer'
+                sourceContainer: blobContainerName
                 ruleId: ((ruleId == '' ) ? null : ruleId)
             }
         ]

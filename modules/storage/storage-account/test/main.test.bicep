@@ -79,8 +79,12 @@ module test3 '../main.bicep' = {
       location: location
       blobType: blobType
       daysAfterLastModification: 60
-      changeFeedEnabled: false
-      versioningEnabled: false
+      blobProperties: {
+      isVersioningEnabled: false
+      }
+      blobContainerProperties: {
+      publicAccess: 'None'
+      }
       minimumTlsVersion: minimumTlsVersion
       objectReplicationPolicy: objectReplicationPolicy
       roleDefinitionIdOrName: roleDefinitionIdOrName
@@ -95,7 +99,12 @@ module test4 '../main.bicep' = {
       blobType: blobType
       daysAfterLastModification: 60
       changeFeedEnabled: true
-      versioningEnabled: true
+      blobProperties: {
+      isVersioningEnabled: true
+      }
+      blobContainerProperties: {
+      publicAccess: 'None'
+      }
       minimumTlsVersion: minimumTlsVersion
       objectReplicationPolicy: true
       roleDefinitionIdOrName: roleDefinitionIdOrName
