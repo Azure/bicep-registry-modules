@@ -10,17 +10,17 @@ Additionally, this can be used for integrating with other Bicep Modules in this 
 
 ## Parameters
 
-| Name                         | Type     | Required | Description                                                                                |
-| :--------------------------- | :------: | :------: | :----------------------------------------------------------------------------------------- |
-| `name`                       | `string` | Yes      | Required. The name of the Private Endpoint.                                                |
-| `location`                   | `string` | Yes      | Required. Location for the Private Endpoint.                                               |
-| `privateLinkServiceId`       | `string` | Yes      | Required. The ID of the Private Link Service.                                              |
-| `subnetId`                   | `string` | Yes      | Required. The ID of the Subnet to associate with the Private Endpoint.                     |
-| `groupIds`                   | `array`  | No       | Optional. The group IDs to associate with the Private Endpoint.                            |
-| `privateDnsZones`            | `array`  | No       | Optional. The Private DNS Zones to associate with the Private Endpoint.                    |
-| `manualApprovalEnabled`      | `bool`   | No       | Optional. Flag to enable manual approval for the Private Endpoint.                         |
-| `customNetworkInterfaceName` | `string` | No       | Optional. The name of the custom Network Interface to associate with the Private Endpoint. |
-| `tags`                       | `object` | No       | Optional. Tags to assign too the Private Endpoint.                                         |
+| Name                         | Type     | Required | Description                                                                      |
+| :--------------------------- | :------: | :------: | :------------------------------------------------------------------------------- |
+| `name`                       | `string` | Yes      | The name of the Private Endpoint.                                                |
+| `location`                   | `string` | No       | Location for the Private Endpoint.                                               |
+| `privateLinkServiceId`       | `string` | Yes      | The ID of the Private Link Service.                                              |
+| `subnetId`                   | `string` | Yes      | The ID of the Subnet to associate with the Private Endpoint.                     |
+| `groupIds`                   | `array`  | No       | The group IDs to associate with the Private Endpoint.                            |
+| `privateDnsZones`            | `array`  | No       | The Private DNS Zones to associate with the Private Endpoint.                    |
+| `manualApprovalEnabled`      | `bool`   | No       | Flag to enable manual approval for the Private Endpoint.                         |
+| `customNetworkInterfaceName` | `string` | No       | The name of the custom Network Interface to associate with the Private Endpoint. |
+| `tags`                       | `object` | No       | Tags to assign too the Private Endpoint.                                         |
 
 ## Outputs
 
