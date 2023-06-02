@@ -25,7 +25,7 @@ param manualApprovalEnabled bool = false
 param customNetworkInterfaceName string = ''
 
 @description('Optional. Tags to assign too the Private Endpoint.')
-param tags object = {}
+param tags {*:string} = {} 
 
 resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-11-01' = {
   name: name
