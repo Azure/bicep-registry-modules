@@ -1,4 +1,6 @@
 @description('Required. The name of the Private Endpoint.')
+@minLength(2)
+@maxLength(64)
 param name string
 
 @description('Required. Location for the Private Endpoint.')
