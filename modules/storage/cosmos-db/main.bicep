@@ -10,6 +10,18 @@ param prefix string = { cassandra: 'coscas', gremlin: 'cosgrm', mongodb: 'cosmon
 @minLength(3)
 param name string = '${prefix}-${uniqueString(resourceGroup().id, resourceGroup().location, 'cosmosdb', backendApi)}'
 
+@description('''
+The primary location of the Cosmos DB account. Default is the location of the resource group.
+This would be the write region if param.additionalLocations contains more regions for georeplication.
+''')
+param location string = resourceGroup().location
+
+@description('''
+Indicate whether or not to enable zone redundancy for region specified by param.location. It must be an AvailabilityZone region.
+To enable this feature for other regions, please enable parameter isZoneRedundant in param.additionalLocations.
+''')
+param isZoneRedundant bool = false
+
 @description('Enables automatic failover of the write region in the rare event that the region is unavailable due to an outage. Automatic failover will result in a new write region for the account and is chosen based on the failover priorities configured for the account.')
 param enableAutomaticFailover bool = true
 
@@ -28,13 +40,12 @@ param enableFreeTier bool = false
 @minValue(-1)
 param totalThroughputLimit int = -1
 
-@minLength(1)
 @description('''
 The array of geo locations that Cosmos DB account would be hosted in.
 Each element defines a region of georeplication.
 The order of regions in this list is the order for region failover. The first element is the primary region which is a write region of the Cosmos DB account.
 ''')
-param locations locationType[] = [ { name: resourceGroup().location } ]
+param additionalLocations locationType[] = []
 
 @description('MongoDB server version. Required for mongodb API type Cosmos DB account')
 @allowed([ '3.2', '3.6', '4.0', '4.2' ])
@@ -123,10 +134,13 @@ The value of each element is an configuration object.
 param gremlinDatabases { *: gremlinDatabaseType } = {}
 
 @description('''
-The list of SQL role definitions.
-The keys are the role name.
+The list of SQL role definitions. Only valis when param.backendApi is set to "Sql".
+The keys are the name which will be used to generate the actual role name which is a GUID.
 The values are the role definition.''')
-param sqlRoleDefinitions { *: sqlRoleDefinitionType } = {}
+param sqlCustomRoleDefinitions { *: sqlCustomRoleDefinitionType } = {}
+
+@description('The list of role assignments for the Cosmos DB account.')
+param roleAssignments roleAssignmentType[] = []
 
 @description('The type of identity used for the Cosmos DB account. The type "SystemAssigned, UserAssigned" includes both an implicitly created identity and a set of user-assigned identities. The type "None" will remove any identities from the Cosmos DB account.')
 @allowed([ 'None', 'SystemAssigned', 'SystemAssigned,UserAssigned', 'UserAssigned' ])
@@ -165,46 +179,53 @@ param consistencyPolicy consistencyPolicyType = {
 @description('Private Endpoints that should be created for Azure Cosmos DB account.')
 param privateEndpoints { *: privateEndpointType } = {}
 
+@allowed([ 'Tls', 'Tls11', 'Tls12' ])
+@description('The minimum TLS version to support on this account.')
+param minimalTlsVersion string = 'Tls12'
+
+@description('Flag to indicate enabling/disabling of Partition Merge feature on the account.')
+param enablePartitionMerge bool = false
+
+@description('Flag to indicate enabling/disabling of Partition Split feature on the account.')
+param enablePartitionKeyMonitor bool = true
+
 var privateEndpointsWithDefaults = [for endpoint in items(privateEndpoints): {
   name: '${cosmosDBAccount.name}-${endpoint.key}'
   groupIds: [ endpoint.value.groupId ]
   subnetId: endpoint.value.subnetId
-  privateDnsZoneId: endpoint.value.privateDnsZoneId
-  manualApprovalEnabled: endpoint.value.isManualApproval ?? false
-  tags: endpoint.value.tags
+  privateDnsZoneId: endpoint.value.?privateDnsZoneId
+  manualApprovalEnabled: endpoint.value.?isManualApproval ?? false
+  tags: endpoint.value.?tags
 }]
 
-@description('The primary location of the Cosmos DB account.')
-var primaryLocation = locations[0].name
-
-var locationsWithCompleteInfo = [for (location, i) in locations: {
+var allLocations = [for (location, i) in union([ { name: location, isZoneRedundant: isZoneRedundant } ], additionalLocations): {
   locationName: location.name
   failoverPriority: i
-  isZoneRedundant: location.?isZoneRedundant
+  isZoneRedundant: location.?isZoneRedundant ?? false
 }]
 
 var capabilityNeededForBackendApi = {
-  cassandra: 'EnableCassandra'
-  gremlin: 'EnableGremlin'
-  mongodb: 'EnableMongo'
-  table: 'EnableTable'
-  sql: ''
+  cassandra: [ 'EnableCassandra' ]
+  gremlin: [ 'EnableGremlin' ]
+  mongodb: [ 'EnableMongo' ]
+  table: [ 'EnableTable' ]
+  sql: []
 }
 
-var capabilitiesCompleteList = [for capability in union(
+var capabilities = [for capability in union(
   extraCapabilities,
   enableServerless ? [ 'EnableServerless' ] : [],
-  [ capabilityNeededForBackendApi[backendApi] ]
+  capabilityNeededForBackendApi[backendApi]
 ): { name: capability }]
 
 resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
   name: toLower(name)
-  location: primaryLocation
+  location: location
   kind: (backendApi == 'mongodb') ? 'MongoDB' : 'GlobalDocumentDB'
   properties: {
     analyticalStorageConfiguration: enableAnalyticalStorage ? { schemaType: analyticalStorageSchemaType } : null
     apiProperties: (backendApi == 'mongodb') ? { serverVersion: MongoDBServerVersion } : null
-    capabilities: capabilitiesCompleteList
+    capabilities: capabilities
     capacity: enableServerless ? null : { totalThroughputLimit: totalThroughputLimit }
     consistencyPolicy: consistencyPolicy
     cors: cors
@@ -216,9 +237,12 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
     enableAutomaticFailover: enableAutomaticFailover
     enableFreeTier: enableFreeTier
     enableMultipleWriteLocations: enableServerless ? false : enableMultipleWriteLocations
+    enablePartitionMerge: enablePartitionMerge
+    enablePartitionKeyMonitor: enablePartitionKeyMonitor
     ipRules: [for ipRule in ipRules: { ipAddressOrRange: ipRule }]
     isVirtualNetworkFilterEnabled: length(virtualNetworkRules) > 0
-    locations: enableServerless ? [ locationsWithCompleteInfo[0] ] : locationsWithCompleteInfo
+    locations: enableServerless ? [ allLocations[0] ] : allLocations
+    minimalTlsVersion: minimalTlsVersion
     networkAclBypass: networkAclBypass
     networkAclBypassResourceIds: networkAclBypassResourceIds
     publicNetworkAccess: enablePublicNetworkAccess ? 'Enabled' : 'Disabled'
@@ -232,9 +256,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
 }
 
 module cosmosDBAccount_cassandraKeyspaces 'modules/cassandra.bicep' = [for keyspace in items(cassandraKeyspaces): if (backendApi == 'cassandra') {
-  dependsOn: [ cosmosDBAccount ]
-
-  name: keyspace.key
+  name: uniqueString(cosmosDBAccount.id, keyspace.key)
   params: {
     cosmosDBAccountName: name
     keyspace: keyspace
@@ -243,9 +265,7 @@ module cosmosDBAccount_cassandraKeyspaces 'modules/cassandra.bicep' = [for keysp
 }]
 
 module cosmosDBAccount_sqlDatabases 'modules/sql.bicep' = [for sql in items(sqlDatabases): if (backendApi == 'sql') {
-  dependsOn: [ cosmosDBAccount ]
-
-  name: sql.key
+  name: uniqueString(cosmosDBAccount.id, sql.key)
   params: {
     cosmosDBAccountName: name
     database: sql
@@ -254,9 +274,7 @@ module cosmosDBAccount_sqlDatabases 'modules/sql.bicep' = [for sql in items(sqlD
 }]
 
 module cosmosDBAccount_mongodbDatabases 'modules/mongodb.bicep' = [for database in items(mongodbDatabases): if (backendApi == 'mongodb') {
-  dependsOn: [ cosmosDBAccount ]
-
-  name: database.key
+  name: uniqueString(cosmosDBAccount.id, database.key)
   params: {
     cosmosDBAccountName: name
     database: database
@@ -265,9 +283,7 @@ module cosmosDBAccount_mongodbDatabases 'modules/mongodb.bicep' = [for database 
 }]
 
 module cosmosDBAccount_tables 'modules/table.bicep' = [for table in items(tables): if (backendApi == 'table') {
-  dependsOn: [ cosmosDBAccount ]
-
-  name: table.key
+  name: uniqueString(cosmosDBAccount.id, table.key)
   params: {
     cosmosDBAccountName: name
     table: table
@@ -276,9 +292,7 @@ module cosmosDBAccount_tables 'modules/table.bicep' = [for table in items(tables
 }]
 
 module cosmosDBAccount_gremlinDatabases 'modules/gremlin.bicep' = [for database in items(gremlinDatabases): if (backendApi == 'gremlin') {
-  dependsOn: [ cosmosDBAccount ]
-
-  name: database.key
+  name: uniqueString(cosmosDBAccount.id, database.key)
   params: {
     cosmosDBAccountName: name
     database: database
@@ -286,26 +300,37 @@ module cosmosDBAccount_gremlinDatabases 'modules/gremlin.bicep' = [for database 
   }
 }]
 
-module cosmosDBAccount_sqlRoles 'modules/sql_roles.bicep' = [for role in items(sqlRoleDefinitions): {
-  name: role.key
-  dependsOn: [ cosmosDBAccount ]
+module cosmosDBAccount_sqlRoles 'modules/sql_roles.bicep' = [for role in items(sqlCustomRoleDefinitions): if (backendApi == 'sql') {
+  name: uniqueString(cosmosDBAccount.id, role.key)
   params: {
     cosmosDBAccountName: name
     role: role
   }
 }]
 
+resource cosmosDBAccount_roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for assignment in roleAssignments: {
+  name: guid(cosmosDBAccount.id, assignment.roleDefinitionId, assignment.principalId)
+  scope: cosmosDBAccount
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', assignment.roleDefinitionId)
+    principalId: assignment.principalId
+    principalType: assignment.?principalType
+    description: assignment.?description
+    delegatedManagedIdentityResourceId: assignment.?delegatedManagedIdentityResourceId
+  }
+}]
+
 module cosmosDBAccount_privateEndpoints 'modules/privateEndpoint.bicep' = [for endpoint in privateEndpointsWithDefaults: {
-  name: endpoint.name
+  name: uniqueString(cosmosDBAccount.id, endpoint.name)
   params: {
-    cosmosDBAccount: cosmosDBAccount
-    location: primaryLocation
+    cosmosDBAccountId: cosmosDBAccount.id
+    location: location
     endpoint: endpoint
   }
 }]
 
 resource cosmosDBAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (lock != 'NotSpecified') {
-  name: '${cosmosDBAccount.name}-${toLower(lock)}-lock'
+  name: uniqueString(cosmosDBAccount.id, lock)
   scope: cosmosDBAccount
   properties: {
     level: lock
@@ -323,7 +348,7 @@ output name string = cosmosDBAccount.name
 output systemAssignedIdentityPrincipalId string = contains(identityType, 'SystemAssigned') ? cosmosDBAccount.identity.principalId : ''
 
 @description('Resource Ids of sql role definition resources created for this Cosmos DB account.')
-output sqlRoleDefinitionIds array = [for (role, i) in items(sqlRoleDefinitions): cosmosDBAccount_sqlRoles[i].outputs.roleDefinitionId]
+output sqlRoleDefinitionIds array = [for (role, i) in items(sqlCustomRoleDefinitions): cosmosDBAccount_sqlRoles[i].outputs.roleDefinitionId]
 
 type corsType = {
   @description('The origin domains that are permitted to make a request against the service via CORS.')
@@ -344,11 +369,11 @@ type schemaType = {
   columns: {
     name: string
     type: string
-  }[]?
+  }[]
   @description('List of Cassandra table partition keys.')
   partitionKeys: {
     name: string
-  }[]?
+  }[]
   @description('List of Cassandra table cluster keys.')
   clusterKeys: {
     name: string
@@ -375,10 +400,8 @@ type cassandraTableType = {
   performance: performanceConfigType?
   @description('Default time to live (TTL) in seconds.')
   defaultTtl: int?
-  @description('The analytical storage TTL in seconds.')
-  analyticalStorageTtl: int?
   @description('The schema of the Cassandra table.')
-  schema: schemaType?
+  schema: schemaType
   @description('Tags for the Cassandra table.')
   tags: tagType[]?
 }
@@ -523,9 +546,9 @@ type sqlContainerTriggersType = {
   @description('Performance configs.')
   performance: performanceConfigType?
   @description('Type of the Trigger')
-  triggerType: 'Pre' | 'Post'?
+  triggerType: ('Pre' | 'Post')?
   @description('The operation the trigger is associated with.')
-  triggerOperation: ('Create' | 'Delete' | 'Replace' | 'Update')[]?
+  triggerOperation: ('Create' | 'Delete' | 'Replace' | 'Update' | 'All')?
   @description('Tags for the resource.')
   tags: tagType[]?
 }
@@ -534,12 +557,8 @@ type sqlContainerTriggersType = {
 type sqlContainerType = {
   @description('Performance configs.')
   performance: performanceConfigType?
-  @description('The analytical storage TTL in seconds.')
-  analyticalStorageTtl: int?
   @description('Default time to live (TTL) in seconds.')
   defaultTtl: int?
-  @description('The client encryption policy for the container.')
-  clientEncryptionPolicy: sqlContainerClientEncryptionPolicyType?
   @description('The conflict resolution policy for the container.')
   conflictResolutionPolicy: conflictResolutionPolicyTypeForSqlContainerAndGremlinGraph?
   @description('The indexing policy for the container. The configuration of the indexing policy. By default, the indexing is automatic for all document paths within the container.')
@@ -639,8 +658,6 @@ type tableType = {
 type gremlinGraphType = {
   @description('Performance configs.')
   performance: performanceConfigType?
-  @description('The analytical storage TTL in seconds.')
-  analyticalStorageTtl: int?
   @description('The default time to live in seconds.')
   defaultTtl: int?
   @description('The conflict resolution policy for the graph.')
@@ -682,12 +699,7 @@ type sqlRoleAssignmentType = {
   scope: string?
 }
 
-type sqlRoleDefinitionType = {
-  @description('''
-  Indicates whether the Role Definition was built-in or user created.
-  If type=BuiltInRole, the name of this role should be a Azure built-in role name, like Contributor, Reader, etc, and permissions should be null or omitted.
-  ''')
-  roleType: 'BuiltInRole' | 'CustomRole'
+type sqlCustomRoleDefinitionType = {
   permissions: sqlRoleDefinitionPermissionType[]?
   @description('The list of SQL role assignments.')
   assisgnments: sqlRoleAssignmentType[]?
@@ -712,4 +724,17 @@ type locationType = {
   name: string
   @description('Flag to indicate whether or not this region is an AvailabilityZone region')
   isZoneRedundant: bool?
+}
+
+type roleAssignmentType = {
+  @description('The ID of the role definition.')
+  roleDefinitionId: string
+  @description('The ID of the principal to whom the role is assigned.')
+  principalId: string
+  @description('The type of principal to whom the role is assigned.')
+  principalType: ('Device' | 'ForeignGroup' | 'Group' | 'ServicePrincipal' | 'User')?
+  @description('The description of the role assignment.')
+  description: string?
+  @description('The ID of the delegated managed identity resource.')
+  delegatedManagedIdentityResourceId: string?
 }

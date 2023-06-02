@@ -1,4 +1,4 @@
-param cosmosDBAccount object
+param cosmosDBAccountId string
 param location string
 param endpoint object
 
@@ -11,7 +11,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-07-01' = {
       {
         name: endpoint.name
         properties: {
-          privateLinkServiceId: cosmosDBAccount
+          privateLinkServiceId: cosmosDBAccountId
           groupIds: endpoint.groupIds
         }
       }
@@ -20,7 +20,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-07-01' = {
       {
         name: endpoint.name
         properties: {
-          privateLinkServiceId: cosmosDBAccount
+          privateLinkServiceId: cosmosDBAccountId
           groupIds: endpoint.groupIds
         }
       }
@@ -29,7 +29,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-07-01' = {
       id: endpoint.subnetId
     }
   }
-  resource privateDnsZoneGroup 'privateDnsZoneGroups' = {
+  resource privateDnsZoneGroup 'privateDnsZoneGroups' = if (endpoint.privateDnsZoneId != null) {
     name: 'default'
     properties: {
       privateDnsZoneConfigs: [ {

@@ -16,14 +16,12 @@ resource sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2022-11
     resource: {
       id: name
     }
-    options: enableServerless ? null : (config.?performance == null ? null : (config.performance.enableThroughputAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput }))
+    options: enableServerless ? null : (config.?performance == null ? null : (config.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput }))
   }
 }
 
 module sqlDatabaseContainers 'sql_containers.bicep' = [for container in items(config.?containers ?? {}): {
-  dependsOn: [ sqlDatabase ]
-
-  name: container.key
+  name: uniqueString(cosmosDBAccount.id, sqlDatabase.id, container.key)
   params: {
     cosmosDBAccountName: cosmosDBAccountName
     databaseName: name
