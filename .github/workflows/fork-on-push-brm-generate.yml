@@ -31,7 +31,7 @@ jobs:
     needs: get-module-to-validate
     if: needs.get-module-to-validate.outputs.module_dir
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v3
         with:
           token: ${{ secrets.PAT }} # A PAT must be used to re-trigger workflows after commit. This PAT should NOT have the workflow scope.
 
@@ -52,7 +52,7 @@ jobs:
 
       - name: Bump version and push tag
         id: tag_version
-        uses: mathieudutour/github-tag-action@v6.0
+        uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           tag_prefix: "${{ steps.branch.outputs._1 }}/${{ steps.branch.outputs._2 }}/"

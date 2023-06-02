@@ -8,7 +8,7 @@ If you are using ...Azure CLI, you can force a refresh of your role assignment c
 param location string = resourceGroup().location
 param aksName string =  'crtest${uniqueString(newGuid())}'
 
-//Prerequisites
+// Prerequisites
 module prereq 'prereq.test.bicep' = {
   name: 'test-prereqs'
   params: {
@@ -17,7 +17,7 @@ module prereq 'prereq.test.bicep' = {
   }
 }
 
-//Test 1. Install Sample Helm Chart
+// Test 1. Install Sample Helm Chart
 module sampleHelmChart '../main.bicep' = {
   name: 'sampleHelmChart'
   params: {
@@ -29,7 +29,7 @@ module sampleHelmChart '../main.bicep' = {
 }
 
 
-//Test 2. Helm
+// Test 2. Helm
 module helmContour '../main.bicep' = {
   name: 'helmContour'
   params: {
@@ -43,6 +43,25 @@ module helmContour '../main.bicep' = {
         helmApp: 'bitnami/contour'
         helmAppName: 'contour-ingress'
         helmAppParams: '--version 7.7.1 --namespace ingress-basic --create_namespace --set envoy.kind=deployment --set contour.service.externalTrafficPolicy=cluster'
+      }
+    ]
+  }
+}
+
+// Test 3. Mllvus
+module milvus '../main.bicep' = {
+  name: 'milvus'
+  params: {
+    managedIdentityName: 'helmMilvus'
+    aksName: prereq.outputs.aksName
+    location: location
+    helmRepo: 'milvus'
+    helmRepoURL: 'https://milvus-io.github.io/milvus-helm/'
+    helmApps: [
+      {
+        helmApp: 'milvus/milvus'
+        helmAppName: 'vector-db'
+        helmAppParams: '--set service.type=LoadBalancer'
       }
     ]
   }

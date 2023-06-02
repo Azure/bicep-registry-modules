@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
+  "name": "Azure DNS zones",
+  "summary": "Azure DNS is a hosting service for DNS domains that provides name resolution.",
+  "owner": "vlahane"
+}

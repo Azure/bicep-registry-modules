@@ -21,6 +21,7 @@ module testSubCreateAndMgPlacementNoNetworking '../main.bicep' = {
     subscriptionWorkload: 'Production'
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'corp'
+    virtualNetworkLocation: location
   }
 }
 

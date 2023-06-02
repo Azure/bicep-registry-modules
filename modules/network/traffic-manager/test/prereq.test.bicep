@@ -1,5 +1,5 @@
 param location string
-param name string
+param name string = take('${prefix}-${uniqueString(resourceGroup().id, subscription().id)}', 60)
 param prefix string
 
 var maxStorageAccountLength = 22
