@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.17.1.54307",
-      "templateHash": "7999666910390877077"
+      "version": "0.15.31.15270",
+      "templateHash": "2646559463810385786"
     }
   },
   "parameters": {
@@ -106,14 +106,14 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Define Private Endpoints that should be created for Azure Container Registry."
+        "description": "Define Private Endpoints that should be created for Azure EventHub Namespace."
       }
     },
     "privateEndpointsApprovalEnabled": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Toggle if Private Endpoints manual approval for Azure Container Registry should be enabled."
+        "description": "Toggle if Private Endpoints manual approval for Azure EventHub Namespace should be enabled."
       }
     }
   },
@@ -210,7 +210,7 @@
         "name": "varNamespaceRoleAssignments",
         "count": "[length(items(parameters('namespaceRoleAssignments')))]",
         "input": {
-          "eventHubNamespaceAuthorizationRuleName": "[items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].key]",
+          "eventHubNamespaceRoleAssignmentsName": "[items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].key]",
           "description": "[if(contains(items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value, 'description'), items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.description, '')]",
           "principalIds": "[items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.principalIds]",
           "principalType": "[if(contains(items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value, 'principalType'), items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.principalType, '')]",
@@ -281,7 +281,7 @@
         "count": "[length(variables('varNamespaceAuthorizationRules'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2020-10-01",
       "name": "[format('{0}-EvhbNamespace-AuthRule-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -305,8 +305,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "6334119818039425552"
+              "version": "0.15.31.15270",
+              "templateHash": "839285984078692729"
             }
           },
           "parameters": {
@@ -343,7 +343,7 @@
         "count": "[length(variables('varDisasterRecoveryConfigs'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2020-10-01",
       "name": "[format('{0}-EvhbNamespace-DisRecConfig-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -367,8 +367,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "15417594676504453116"
+              "version": "0.15.31.15270",
+              "templateHash": "17506546971128354478"
             }
           },
           "parameters": {
@@ -405,7 +405,7 @@
         "count": "[length(variables('varNamespaceRoleAssignments'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2020-10-01",
       "name": "[format('{0}-Namespace-Rbac-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -413,6 +413,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "roleAssignmentsName": {
+            "value": "[variables('varNamespaceRoleAssignments')[copyIndex()].eventHubNamespaceRoleAssignmentsName]"
+          },
           "description": {
             "value": "[variables('varNamespaceRoleAssignments')[copyIndex()].description]"
           },
@@ -435,8 +438,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "2416065137185875572"
+              "version": "0.15.31.15270",
+              "templateHash": "13834599125193128483"
             }
           },
           "parameters": {
@@ -456,6 +459,9 @@
             "principalType": {
               "type": "string",
               "defaultValue": ""
+            },
+            "roleAssignmentsName": {
+              "type": "string"
             }
           },
           "variables": {
@@ -489,7 +495,7 @@
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
               "scope": "[format('Microsoft.EventHub/namespaces/{0}', parameters('eventHubNamespaceName'))]",
-              "name": "[guid(parameters('eventHubNamespaceName'), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+              "name": "[guid(parameters('roleAssignmentsName'), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
               "properties": {
                 "description": "[parameters('description')]",
                 "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
@@ -510,7 +516,7 @@
         "count": "[length(variables('varEventHubs'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2020-10-01",
       "name": "[format('{0}-EvhbNamespace-EventHub-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -570,8 +576,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "5279551973597977397"
+              "version": "0.15.31.15270",
+              "templateHash": "14996355472161180767"
             }
           },
           "parameters": {
@@ -674,7 +680,7 @@
                 "count": "[length(parameters('roleAssignments'))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2020-10-01",
               "name": "[format('{0}-Rbac-{1}', deployment().name, copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -692,6 +698,12 @@
                   },
                   "resourceId": {
                     "value": "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaceName'), parameters('name'))]"
+                  },
+                  "namespaceName": {
+                    "value": "[parameters('namespaceName')]"
+                  },
+                  "eventHubName": {
+                    "value": "[parameters('name')]"
                   }
                 },
                 "template": {
@@ -700,8 +712,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "1819008984003057535"
+                      "version": "0.15.31.15270",
+                      "templateHash": "13115586654723553235"
                     }
                   },
                   "parameters": {
@@ -721,6 +733,12 @@
                     "principalType": {
                       "type": "string",
                       "defaultValue": ""
+                    },
+                    "namespaceName": {
+                      "type": "string"
+                    },
+                    "eventHubName": {
+                      "type": "string"
                     }
                   },
                   "variables": {
@@ -753,7 +771,7 @@
                       },
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.EventHub/namespaces/{0}/eventhubs/{1}', split(format('{0}/{1}}}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10]), '/')[0], split(format('{0}/{1}}}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10]), '/')[1])]",
+                      "scope": "[format('Microsoft.EventHub/namespaces/{0}/eventhubs/{1}', parameters('namespaceName'), parameters('eventHubName'))]",
                       "name": "[guid(split(parameters('resourceId'), '/')[0], split(parameters('resourceId'), '/')[1], parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
                       "properties": {
                         "description": "[parameters('description')]",
@@ -782,7 +800,7 @@
         "count": "[length(variables('varEventHubAuthorizationRules'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2020-10-01",
       "name": "[format('{0}-Evhub-AuthRule-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -809,8 +827,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "8200836686756721657"
+              "version": "0.15.31.15270",
+              "templateHash": "504898429823367626"
             }
           },
           "parameters": {
@@ -850,7 +868,7 @@
         "count": "[length(variables('varConsumerGroups'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2020-10-01",
       "name": "[format('{0}-ConsumerGroup-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -877,8 +895,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "10174095528917220663"
+              "version": "0.15.31.15270",
+              "templateHash": "13809606714854574129"
             }
           },
           "parameters": {
@@ -918,7 +936,7 @@
         "count": "[length(variables('varDiagnosticSettings'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2020-10-01",
       "name": "[format('{0}-diagnosticSettings-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -957,8 +975,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "15471641910519975356"
+              "version": "0.15.31.15270",
+              "templateHash": "14495540543207388439"
             }
           },
           "parameters": {
@@ -1015,7 +1033,7 @@
         "count": "[length(variables('varPrivateEndpoints'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2020-10-01",
       "name": "[format('{0}-eventnamespace-private-endpoints-{1}', uniqueString(deployment().name), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1055,8 +1073,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "11107361545483996372"
+              "version": "0.15.31.15270",
+              "templateHash": "4890749713602361970"
             }
           },
           "parameters": {
@@ -1137,16 +1155,13 @@
   "outputs": {
     "resourceGroupName": {
       "type": "string",
+      "value": "[resourceGroup().name]",
       "metadata": {
         "description": "The resource group the Azure Event Hub was deployed into."
-      },
-      "value": "[resourceGroup().name]"
+      }
     },
     "eventHubNamespaceDetails": {
       "type": "array",
-      "metadata": {
-        "description": "Azure Event Hub namespace details."
-      },
       "copy": {
         "count": "[length(variables('varEventHubNamespaces'))]",
         "input": {
@@ -1154,6 +1169,9 @@
           "serviceBusEndpoint": "[reference(variables('varEventHubNamespaces')[copyIndex()].eventHubNamespaceName, '2021-11-01', 'Full').properties.serviceBusEndpoint]",
           "status": "[reference(variables('varEventHubNamespaces')[copyIndex()].eventHubNamespaceName, '2021-11-01', 'Full').properties.status]"
         }
+      },
+      "metadata": {
+        "description": "Azure Event Hub namespace details."
       }
     }
   }
