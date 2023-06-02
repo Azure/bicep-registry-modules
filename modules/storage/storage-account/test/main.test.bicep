@@ -7,7 +7,6 @@ param location string = resourceGroup().location
 param blobType string = 'blockBlob'
 param minimumTlsVersion string = 'TLS1_2'
 param objectReplicationPolicy bool = false
-param roleDefinitionIdOrName string = 'StorageBlobDataContributor'
 var uniqueName = uniqueString(resourceGroup().id, deployment().name, location)
 param serviceShort string = 'storageAccount'
 
@@ -85,9 +84,19 @@ module test3 '../main.bicep' = {
       blobContainerProperties: {
       publicAccess: 'None'
       }
+      roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Reader and Data Access'
+        principalIds: [ prereq.outputs.identityPrincipalIds[0], prereq.outputs.identityPrincipalIds[1] ]
+      }
+      {
+        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+        principalIds: [ prereq.outputs.identityPrincipalIds[0] ]
+        resourceType: 'blobContainer'
+      }
+    ]
       minimumTlsVersion: minimumTlsVersion
       objectReplicationPolicy: objectReplicationPolicy
-      roleDefinitionIdOrName: roleDefinitionIdOrName
   }
 }
 
@@ -98,16 +107,25 @@ module test4 '../main.bicep' = {
       location: location
       blobType: blobType
       daysAfterLastModification: 60
-      changeFeedEnabled: true
       blobProperties: {
       isVersioningEnabled: true
       }
       blobContainerProperties: {
       publicAccess: 'None'
       }
+      roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Reader and Data Access'
+        principalIds: [ prereq.outputs.identityPrincipalIds[0], prereq.outputs.identityPrincipalIds[1] ]
+      }
+      {
+        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+        principalIds: [ prereq.outputs.identityPrincipalIds[0] ]
+        resourceType: 'blobContainer'
+      }
+    ]
       minimumTlsVersion: minimumTlsVersion
       objectReplicationPolicy: true
-      roleDefinitionIdOrName: roleDefinitionIdOrName
 
       // Only provide values related to destination storage accounts if objectReplicationPolicies is true. By default, the primary storage account's values will be applied to destination parameters.
       // By adding a param here, we can override. Added few paramaters below as an example.

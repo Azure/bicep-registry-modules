@@ -28,9 +28,7 @@ The output of the module is the ID of the created or existing Storage Account, w
 | `isZoneRedundant`                 | `bool`   | No       | Toggle to enable or disable zone redundancy for the Storage Account.                                                                 |
 | `storageAccountType`              | `string` | No       | Storage Account Type. Use Zonal Redundant Storage when able.                                                                         |
 | `daysAfterLastModification`       | `int`    | No       | It will be moved to the cool tier after the given amount of days.                                                                    |
-| `blobType`                        | `string` | No       | Specifies the type of blob to manage the lifecycle policy.                                                                           |
-| `changeFeedEnabled`               | `bool`   | No       | Indicates whether change feed event logging is enabled for the Blob service.                                                         |
-| `versioningEnabled`               | `bool`   | No       | Versioning is enabled if set to true.                                                                                                |
+| `blobType`                        | `string` | No       | Specifies the type of blob to manage the lifecycle policy.                                                                                      |
 | `supportHttpsTrafficOnly`         | `bool`   | No       | Allows https traffic only to storage service if sets to true.                                                                        |
 | `allowBlobPublicAccess`           | `bool`   | No       | Allow or disallow public access to all blobs or containers in the storage account.                                                   |
 | `allowCrossTenantReplication`     | `bool`   | No       | Replication of objects between AAD tenants is allowed or not. For this property, the default interpretation is true.                 |
@@ -52,8 +50,6 @@ The output of the module is the ID of the created or existing Storage Account, w
 | `ruleId`                          | `string` | No       | Rule Id is auto-generated for each new rule on destination account. It is required for put policy on source account.                 |
 | `policyId`                        | `string` | No       | This is the name to provide for objectReplicationPolicies.                                                                           |
 | `objectReplicationPolicy`         | `bool`   | No       | When performing object replication, it must be true and all resources necessary for the destination storage account will be created. |
-| `managedIdentityName`             | `string` | No       | Managed Identity name for userAssignedIdentities resource.                                                                           |
-| `roleDefinitionIdOrName`          | `string` | No       | roleDefinition for the assignment - default is Reader.                                                                               |
 | `privateEndpoints`                | `array`  | No       | Define Private Endpoints that should be created for Azure Storage Account.                                                           |
 | `privateEndpointsApprovalEnabled` | `bool`   | No       | Toggle if Private Endpoints manual approval for Azure Storage Account should be enabled.                                                                                                      |
 | `blobName`                | `string` | No       | Name of a blob service to be created.

@@ -25,12 +25,6 @@ param daysAfterLastModification int = 30
 @description('Specifies the type of blob to manage the lifecycle policy.')
 param blobType string = 'blockBlob'
 
-@description('Indicates whether change feed event logging is enabled for the Blob service.')
-param changeFeedEnabled bool = false
-
-@description('Versioning is enabled if set to true.')
-param versioningEnabled bool = false
-
 @description('Allows https traffic only to storage service if sets to true.')
 param supportHttpsTrafficOnly bool = true
 
@@ -119,12 +113,6 @@ param policyId string = 'default'
 @description('When performing object replication, it must be true and all resources necessary for the destination storage account will be created.')
 param objectReplicationPolicy bool = false
 
-@description('Managed Identity name for userAssignedIdentities resource.')
-param managedIdentityName string = 'MyManagedIdentity'
-
-@description('roleDefinition for the assignment - default is Reader.')
-param roleDefinitionIdOrName string = 'Reader'
-
 @description('Define Private Endpoints that should be created for Azure Storage Account.')
 param privateEndpoints array = []
 
@@ -157,12 +145,6 @@ var networkAcls = enableVNET ? {
     }
   ]
 } : {}
-
-var builtInRoleNames = {
-  StorageBlobDataContributor : 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-  Reader : 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-  Contributor: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-}
 
 var varPrivateEndpoints = [for privateEndpoint in privateEndpoints: {
   name: '${privateEndpoint.name}-${storageAccount.name}'
@@ -313,25 +295,6 @@ resource destinationStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01
           }]
         }
       }
-    }
-}
-
-resource contributorRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
-    scope: subscription()
-    name: contains(builtInRoleNames, roleDefinitionIdOrName) ? builtInRoleNames[roleDefinitionIdOrName] : roleDefinitionIdOrName
-}
-
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
-    name: managedIdentityName
-    location: location
-}
-
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-    name: guid(resourceGroup().id, managedIdentity.id, contributorRoleDefinition.id)
-    properties: {
-        roleDefinitionId: contributorRoleDefinition.id
-        principalId: managedIdentity.properties.principalId
-        principalType: 'ServicePrincipal'
     }
 }
 

@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "8853982442360616397"
+      "templateHash": "7215066853811288245"
     }
   },
   "definitions": {
@@ -359,20 +359,6 @@
         "description": "Specifies the type of blob to manage the lifecycle policy."
       }
     },
-    "changeFeedEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Indicates whether change feed event logging is enabled for the Blob service."
-      }
-    },
-    "versioningEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Versioning is enabled if set to true."
-      }
-    },
     "supportHttpsTrafficOnly": {
       "type": "bool",
       "defaultValue": true,
@@ -545,20 +531,6 @@
         "description": "When performing object replication, it must be true and all resources necessary for the destination storage account will be created."
       }
     },
-    "managedIdentityName": {
-      "type": "string",
-      "defaultValue": "MyManagedIdentity",
-      "metadata": {
-        "description": "Managed Identity name for userAssignedIdentities resource."
-      }
-    },
-    "roleDefinitionIdOrName": {
-      "type": "string",
-      "defaultValue": "Reader",
-      "metadata": {
-        "description": "roleDefinition for the assignment - default is Reader."
-      }
-    },
     "privateEndpoints": {
       "type": "array",
       "defaultValue": [],
@@ -625,13 +597,7 @@
         }
       }
     ],
-    "networkAcls": "[if(parameters('enableVNET'), createObject('defaultAction', 'Deny', 'virtualNetworkRules', createArray(createObject('action', 'Allow', 'id', parameters('subnetID')))), createObject())]",
-    "builtInRoleNames": {
-      "StorageBlobDataContributor": "b24988ac-6180-42a0-ab88-20f7382dd24c",
-      "Reader": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
-      "Contributor": "b24988ac-6180-42a0-ab88-20f7382dd24c",
-      "AzureKubernetesServiceContributorRole": "ed7f3fbd-7b88-4dd4-9017-9adb7ce333f8"
-    }
+    "networkAcls": "[if(parameters('enableVNET'), createObject('defaultAction', 'Deny', 'virtualNetworkRules', createArray(createObject('action', 'Allow', 'id', parameters('subnetID')))), createObject())]"
   },
   "resources": {
     "storageAccount::blobService::container": {
@@ -806,32 +772,6 @@
         "publicNetworkAccess": "[parameters('destPublicNetworkAccess')]",
         "minimumTlsVersion": "[parameters('destMinimumTlsVersion')]"
       }
-    },
-    "contributorRoleDefinition": {
-      "existing": true,
-      "type": "Microsoft.Authorization/roleDefinitions",
-      "apiVersion": "2022-04-01",
-      "subscriptionId": "[subscription().subscriptionId]",
-      "name": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]"
-    },
-    "managedIdentity": {
-      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-      "apiVersion": "2022-01-31-preview",
-      "name": "[parameters('managedIdentityName')]",
-      "location": "[parameters('location')]"
-    },
-    "roleAssignment": {
-      "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01",
-      "name": "[guid(resourceGroup().id, resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))))]",
-      "properties": {
-        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName')))]",
-        "principalId": "[reference('managedIdentity').principalId]",
-        "principalType": "ServicePrincipal"
-      },
-      "dependsOn": [
-        "managedIdentity"
-      ]
     },
     "destinationOrPolicy": {
       "condition": "[parameters('objectReplicationPolicy')]",
