@@ -68,8 +68,8 @@ It allows for the creation of a new Cosmos DB account or use of an existing one 
 An example of how to deploy Azure Cosmosdb Account with _Apache Cassanda backend_ using the minimum required parameters.
 
 ```bicep
-module cosmosDbAccount 'br/public:storage/cosmos-db:0.0.1' = {
- name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
+module cosmosDbAccount 'br/public:storage/cosmos-db:3.0.1' = {
+ name: 'cosmosdb-${uniqueString(deployment().name, resourceGroup().location)}-deployment'
   params: {
     backendApi = 'cassandra'
   }
@@ -83,92 +83,77 @@ output cosmosDbAccountResourceId string = cosmosDbAccount.outputs.id
 An example of how to deploy a _multi-region_ enabled cassandra backend Cosmosdb account along with access _role assignments_ and _zone redundancy_ for one of secondary locations.
 
 ```bicep
-module cosmosCassandraDb 'br/public:storage/cosmos-db:0.0.1' = {
-  name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
+module cosmosCassandraDb 'br/public:storage/cosmos-db:3.0.1' = {
+  name: 'cosmosdb-${uniqueString(deployment().name, resourceGroup().location)}-deployment'
   params: {
     location: 'eastus'
-    name: 'cosmosdb-${uniqueString(deployment().name, location)}'
-    secondaryLocations: [
-        {
-          locationName: 'westus'
-        }
-        {
-          locationName: 'centralus'
-          isZoneRedundant: true
-        }
+    name: 'cosmosdb-${uniqueString(deployment().name, resourceGroup().location)}'
+    backendApi: 'cassandra'
+    location: location
+    isZoneRedundant: false
+    additionalLocations: [
+      {
+        name: 'Norway West'
+      }
+      {
+        name: 'Canada East'
+        isZoneRedundant: true
+      }
     ]
     roleAssignments: [
       {
-        roleDefinitionIdOrName: 'CosmosBackupOperator'
-        principalIds: [ '5f82d7a7-1d09-401a-b473-c723972e8676' ]
+        roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor
+        principalId: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'
       }
       {
-        roleDefinitionIdOrName: '5bd9cd88-fe45-4216-938b-f97437e15450' // DocumentDB Account Contributor
-        principalIds: [ 'cdac5946-f757-43a9-8657-31f59048deb5' ]
+        roleDefinitionId: 'acdd72a7-3385-48ef-bd42-f606fba81ae7' // Reader
+        principalId: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'
       }
     ]
-    cassandraKeyspaces: [
-      {
-        name: 'keyspace1'
-        autoscaleMaxThroughput: 1000
-        tables: [
-          {
-            name: 'table1'
-            // Optional: autoscaleMaxThroughput: int or manualProvisionedThroughput: int
+    cassandraKeyspaces: {
+      keyspace1: {
+        performance: {
+          enableAutoScale: true
+          throughput: 4000
+        }
+        tables: {
+          table1: {
             defaultTtl: 86400
-            schemaColumns: [
-              {
-                name: 'id'
-                type: 'text'
-              }
-              {
-                name: 'data'
-                type: 'blob'
-              }
-            ]
-            schemaPartitionKeys: [
-              {
-                name: 'id'
-              }
-            ]
-            schemaClusteringKeys: [
-              {
-                name: 'data'
-                orderBy: 'Desc'
-              }
-            ]
+            schema: {
+              columns: [ {
+                  name: 'test1'
+                  type: 'int'
+                } ]
+              partitionKeys: [ {
+                  name: 'test1'
+                } ]
+            }
           }
-          {
-            name: 'table2'
-            manualProvisionedThroughput: 400
-            schemaColumns: [
-              {
-                name: 'id'
-                type: 'text'
-              }
-            ]
-            schemaPartitionKeys: [
-              {
-                name: 'id'
-              }
-            ]
+          table2: {
+            schema: {
+              columns: [ {
+                  name: 'test2'
+                  type: 'int'
+                } ]
+              partitionKeys: [ {
+                  name: 'test2'
+                } ]
+            }
           }
-        ]
+        }
       }
-    ]
+    }
   }
-}
 
 output cosmosCassandraDbResourceId string = cosmosCassandraDb.outputs.id
 ```
 
 > **Importanat note on setting up throughput parameters**<br><br>
-> Make sure to provide only one of **_manualProvisionedThroughput_** and **_autoscaleMaxThroughput_** at any scope level.
-> 
+>
 > Throughtput can be povisioned for both Keyspaces and tables within it or just for Tables. Provisioned throughput at the keyspace level will be shared across all tables within the keyspace.
-> 
+>
 > You can optionally provision dedicated throughput for a table within a keyspace that has throughput provisioned. This dedicated throughput amount will not be shared with other tables in the keyspace and does not count towards the throughput you provisioned for the keyspace. This throughput amount will be billed in addition to the throughput amount you provisioned at the keyspace level.
-> 
+>
 > This is applicable for all other backend api type Cosmos DB account resources.
 
 ### Example 3
@@ -176,36 +161,54 @@ output cosmosCassandraDbResourceId string = cosmosCassandraDb.outputs.id
 An example of how to deploy a SQL Databses with Containers with _CORS Policies_, _totalThroughputLimit_ and different _defaultConsistencyLevel_ options.
 
 ```bicep
-module cosmosSqlDb 'br/public:storage/cosmos-db:0.0.1' = {
+module cosmosSqlDb 'br/public:storage/cosmos-db:3.0.1' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
+    name: 'cosmosdb-${uniqueString(deployment().name, location)}'
     location: 'westus'
     backendApi: 'sql'
-    name: 'cosmosdb-${uniqueString(deployment().name, location)}'
-    defaultConsistencyLevel: 'BoundedStaleness'
-    maxIntervalInSeconds: 3600
-    maxStalenessPrefix: 86400
-    totalThroughputLimit: 10000
-    sqlDatabases: [
+    consistencyPolicy: {
+      defaultConsistencyLevel: 'BoundedStaleness'
+      maxIntervalInSeconds: 10000
+      maxStalenessPrefix: 100000
+    }
+    additionalLocations: [
       {
-        name: 'testdb1'
-        // Optional: autoscaleMaxThroughput: int or manualProvisionedThroughput: int
-        containers: [
-          {
-            name: 'container1'
-            autoscaleMaxThroughput: 4000
+        name: 'Canada Central'
+        isZoneRedundant: false
+      }
+      {
+        name: 'Brazil South'
+        isZoneRedundant: true
+      }
+    ]
+    totalThroughputLimit: 100000
+    enableMultipleWriteLocations: true
+    sqlDatabases: {
+      testdb1: {
+        containers: {
+          container1: {
+            performance: {
+              enableAutoScale: true
+              throughput: 4000
+            }
             defaultTtl: 3600
             partitionKey: {
-              paths: [
-                '/id'
-              ]
+              paths: [ '/definition/id' ]
               kind: 'Hash'
-              version: 1
+            }
+            indexingPolicy: {
+              indexingMode: 'consistent'
+              automatic: true
+              includedPaths: [ { path: '/*' } ]
+              excludedPaths: [ { path: '/"_etag"/?' } ]
             }
           }
-          {
-            name: 'container2'
-            manualProvisionedThroughput: 400
+          container2: {
+            performance: {
+              enableAutoScale: false
+              throughput: 4000
+            }
             defaultTtl: 86400
             partitionKey: {
               paths: [
@@ -215,50 +218,36 @@ module cosmosSqlDb 'br/public:storage/cosmos-db:0.0.1' = {
               version: 1
             }
             indexingPolicy: {
-              indexingMode: 'Consistent'
+              indexingMode: 'consistent'
               automatic: true
-              includedPaths: [
-                {
-                  path: '/*'
-                }
-              ]
-              excludedPaths: [
-                {
-                  path: '/"_etag"/?'
-                }
-              ]
-            }
-            uniqueKeyPolicy: {
-              uniqueKeys: []
+              includedPaths: [ { path: '/*' } ]
+              excludedPaths: [ { path: '/"_etag"/?' } ]
             }
             conflictResolutionPolicy: {
               mode: 'LastWriterWins'
               conflictResolutionPath: '/_ts'
             }
-            triggers: [
-              {
-                name: 'trigger1'
-                type: 'Pre'
-                operation: 'All'
+            triggers: {
+              trigger1: {
+                triggerType: 'Pre'
+                triggerOperation: 'All'
                 body: 'function() { var context = getContext(); var response = context.getResponse(); response.setBody("Pre-trigger body."); }'
               }
-            ]
-            storedProcedures: [
-              {
-                name: 'storedProcedure1'
+            }
+            storedProcedures: {
+              storedProcedure1: {
                 body: 'function() { var context = getContext(); var response = context.getResponse(); response.setBody("Stored procedure body."); }'
               }
-            ]
-            userDefinedFunctions: [
-              {
-                name: 'userDefinedFunction1'
+            }
+            userDefinedFunctions: {
+              userDefinedFunction1: {
                 body: 'function() { var context = getContext(); var response = context.getResponse(); response.setBody("User defined function body."); }'
               }
-            ]
+            }
           }
-        ]
+        }
       }
-    ]
+    }
   }
 }
 
@@ -270,13 +259,13 @@ output cosmosSqlDbResourceId string = cosmosSqlDb.outputs.id
 An example of how to deploy a MongoDB Databases with collections with _CORS Policies_, extra non-default _capabilities_ options and with _systemAssigned managed identity_ enabled.
 
 ```bicep
-module cosmosMongoDb 'br/public:storage/cosmos-db:0.0.1' = {
+module cosmosMongoDb 'br/public:storage/cosmos-db:3.0.1' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'eastus'
     backendApi: 'mongodb'
     name: 'cosmosdb-${uniqueString(deployment().name, location)}'
-    capabilities: [
+    extraCapabilities: [
       'EnableMongoRetryableWrites'
       'EnableAggregationPipeline'
     ]
@@ -288,37 +277,37 @@ module cosmosMongoDb 'br/public:storage/cosmos-db:0.0.1' = {
         maxAgeInSeconds: 60
       }
     ]
-    mongodbDatabases: [
-      {
-        name: 'testdb1'
-        autoscaleMaxThroughput: 4000
-        collections: [
-          {
-            name: 'collection1'
-            manualProvisionedThroughput: 400
+    mongodbDatabases: {
+      testdb1: {
+        performance: {
+          enableAutoScale: true
+          throughput: 4000
+        }
+        collections: {
+          collection1: {
+            performance: {
+              enableAutoScale: false
+              throughput: 400
+            }
             indexes: [
               {
-                key: {
-                  keys: [
-                    '_id'
-                  ]
+                key: { keys: [ '_id' ] }
+                options: {
+                  unique: true
                 }
               }
               {
-                key: {
-                  keys: [
-                    '$**'
-                  ]
-                }
+                key: { keys: [ '$**' ] }
+                options: {}
               }
             ]
-            shardkey: {
+            shardKey: {
               user_id: 'Hash'
             }
           }
-        ]
+        }
       }
-    ]
+    }
   }
 }
 
@@ -331,30 +320,35 @@ output systemAssignedIdentityPrincipalId string = cosmosMongoDb.outputs.systemAs
 An example of how to deploy a Cosmmos DB Tables with networking IP and VNet firewall bypass rules.
 
 ```bicep
-module cosmosTable 'br/public:storage/cosmos-db:0.0.1' = {
+module cosmosTable 'br/public:storage/cosmos-db:3.0.1' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'westus'
     backendApi: 'table'
     name: 'cosmosdb-${uniqueString(deployment().name, location)}'
+    additionalLocations: [
+      {
+        name: 'canadacentral'
+        isZoneRedundant: true
+      }
+      {
+        name: 'centralus'
+      }
+      {
+        name: 'eastus'
+      }
+    ]
+    backendApi: 'table'
     enableServerless: true
-    defaultConsistencyLevel: 'BoundedStaleness'
-    maxIntervalInSeconds: 10000
-    maxStalenessPrefix: 100000
-    tables: [
-      {
-        name: 'table1'
-      }
-      {
-        name: 'table2'
-      }
-    ]
-    publicNetworkAccess: 'Enabled'
+    enableAnalyticalStorage: true
+    tables: {
+      table1: {}
+      table2: {}
+    }
     ipRules: [
-      '20.112.52.29'
-      '20.53.0.0/31'
+      '1.2.3.4'
+      '1.2.3.4/24'
     ]
-    isVirtualNetworkFilterEnabled: true
     virtualNetworkRules: [
       {
         id: dependencies.outputs.subnetIds[0]
@@ -372,49 +366,47 @@ output cosmosTableDbResourceId string = cosmosTable.outputs.id
 An example of how to deploy a Gremlin DB with graphs along with _private endpoints_.
 
 ```bicep
-module cosmosGremlinDb 'br/public:storage/cosmos-db:0.0.1' = {
+module cosmosGremlinDb 'br/public:storage/cosmos-db:3.0.1' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'westus'
     backendApi: 'gremlin'
     name: 'cosmosdb-${uniqueString(deployment().name, location)}'
-    gremlinDatabases: [
-      {
-        name: 'testdb01'
-        manualProvisionedThroughput: 500
-        graphs: [
-          {
-            name: 'graph1'
-            autoscaleMaxThroughput: 1000
+    gremlinDatabases: {
+      testdb01: {
+        performance: {
+          enableAutoScale: false
+          throughput: 500
+        }
+        graphs: {
+          graph1: {
+            performance: {
+              enableAutoScale: true
+              throughput: 4000
+            }
             defaultTtl: 3600
             partitionKey: {
-              paths: [
-                '/address'
-              ]
+              paths: [ '/address' ]
               kind: 'Hash'
               version: 1
             }
-            indexingPolicy: {}
-            uniqueKeyPolicy: {}
           }
-        ]
+        }
       }
-    ]
-    publicNetworkAccess: 'Disabled'
-    privateEndpoints: [
-      {
-        name: 'endpoint1'
-        subnetId: "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}"
-        manualApprovalEnabled: true
+    }
+    enablePublicNetworkAccess: false
+    privateEndpoints: {
+      endpoint1: {
+        subnetId: dependencies.outputs.subnetIds[0]
+        isManualApproval: true
         groupId: 'Sql'
       }
-      {
-        name: 'endpoint2'
-        subnetId: "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}"
-        privateDnsZoneId: "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/privateDnsZones/{privateDnsZoneName}"
+      endpoint2: {
+        subnetId: dependencies.outputs.subnetIds[1]
+        privateDnsZoneId: dependencies.outputs.privateDNSZoneId
         groupId: 'Gremlin'
       }
-    ]
+    }
   }
 }
 
@@ -426,41 +418,32 @@ output cosmosGremlinDbResourceId string = cosmosGremlinDb.outputs.id
 An example of how to deploy a Cosmos DB account with sqlRoleDefinitions and sqlRoleAssignments.
 
 ```bicep
-module cosmosDb 'br/public:storage/cosmos-db:0.0.1' = {
+module cosmosDb 'br/public:storage/cosmos-db:3.0.1' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'westus'
     backendApi: 'sql'
     name: 'cosmosdb-${uniqueString(deployment().name, location)}'
-    sqlDatabases: [
-      {
-        name: 'testdb1'
-        containers: [
-          {
-            name: 'container1'
-            autoscaleMaxThroughput: 4000
+    sqlDatabases: {
+      testdb1: {
+        containers: {
+          container1: {
+            performance: {
+              enableAutoScale: true
+              throughput: 4000
+            }
             defaultTtl: 3600
             partitionKey: {
-              paths: [
-                '/id'
-              ]
+              paths: [ '/id' ]
               kind: 'Hash'
               version: 1
             }
           }
-        ]
+        }
       }
-    ]
-    sqlRoleDefinitions: [
-      {
-        // A user-friendly name for the Role Definition. Must be unique for the database account.
-        roleName: 'testReadWriteRole'
-        // A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Collection.
-        // Must have at least one element.
-        assignableScopes: [
-          '/' // This role definition can be assigned at the database account level
-        ]
-        // The set of operations allowed through this Role Definition.
+    }
+    sqlCustomRoleDefinitions: {
+      testReadWriteRole1: {
         permissions: [
           {
             dataActions: [
@@ -470,20 +453,17 @@ module cosmosDb 'br/public:storage/cosmos-db:0.0.1' = {
             ]
           }
         ]
+        assisgnments: [
+          {
+            principalId: dependencies.outputs.identityPrincipalIds[0]
+          }
+          {
+            principalId: dependencies.outputs.identityPrincipalIds[1]
+            scope: '/dbs/testdb1'
+          }
+        ]
       }
-    ]
-    sqlRoleAssignments: [
-      {
-        principalId: dependencies.outputs.identityPrincipalIds[0]
-        roleDefinitionId: '00000000-0000-0000-0000-000000000001'
-        scope: '/'
-      }
-      {
-        principalId: dependencies.outputs.identityPrincipalIds[1]
-        roleDefinitionId: '00000000-0000-0000-0000-000000000002'
-        scope: '/dbs/testdb1'
-      }
-    ]
+    }
   }
 }
 

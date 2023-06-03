@@ -111,7 +111,7 @@ module test03 '../main.bicep' = {
     additionalLocations: [
       {
         name: 'Canada Central'
-        isZoneRedundant: true
+        isZoneRedundant: false
       }
       {
         name: 'Brazil South'
