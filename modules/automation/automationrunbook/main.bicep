@@ -27,9 +27,17 @@ param diagnosticCategories array = [
 type schedule = {
   dayType : 'Day' | 'Weekday'
   
-  hour : int
-  minute : int
+  hour : hour
+  minute : minute
 }
+
+@minValue(0)
+@maxValue(23)
+type hour = int
+
+@minValue(0)
+@maxValue(59)
+type minute = int
 
 @description('Automation Schedules to create')
 param schedulesToCreate schedule[] = [
@@ -60,14 +68,14 @@ param schedulesToCreate schedule[] = [
   }
   {
     dayType:'Weekday'
-    hour:0
+    hour: 0
     minute:0
   }
 ]
 
 type runbookJob = {
   scheduleName: string
-  parameters?: object
+  parameters: object?
 }
 
 @description('The Runbook-Schedule Jobs to create with workflow specific parameters')
@@ -159,10 +167,10 @@ resource runbook 'Microsoft.Automation/automationAccounts/runbooks@2022-08-08' =
 
 resource automationJobs 'Microsoft.Automation/automationAccounts/jobSchedules@2022-08-08' = [for job in runbookJobSchedule : if(!empty(runbookName)) {
   parent: automationAccount
-  name: guid(automationAccount.id, runbook.name, job.schedule)
+  name: guid(automationAccount.id, runbook.name, job.scheduleName)
   properties: {
     schedule: {
-      name: job.schedule
+      name: job.scheduleName
     }
     runbook: {
       name: runbook.name
