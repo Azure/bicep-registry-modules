@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "11493889452551048378"
+      "templateHash": "7622341569099935884"
     }
   },
   "definitions": {
@@ -200,6 +200,7 @@
   "variables": {
     "runbookVersion": "1.0.0.0",
     "tomorrow": "[dateTimeAdd(parameters('today'), 'P1D', 'yyyy-MM-dd')]",
+    "timebase": "1900-01-01",
     "scheduleNoExpiry": "9999-12-31T23:59:00+00:00",
     "workWeek": {
       "weekDays": [
@@ -256,9 +257,9 @@
       },
       "type": "Microsoft.Automation/automationAccounts/schedules",
       "apiVersion": "2022-08-08",
-      "name": "[format('{0}/{1}', parameters('automationAccountName'), format('{0} - {1}:{2}', parameters('schedulesToCreate')[copyIndex()].dayType, dateTimeAdd('1970-01-01', format('P{0}H', parameters('schedulesToCreate')[copyIndex()].hour), 'HH'), dateTimeAdd('1970-01-01', format('P{0}H', parameters('schedulesToCreate')[copyIndex()].hour), 'mm')))]",
+      "name": "[format('{0}/{1}', parameters('automationAccountName'), format('{0} - {1}:{2}', parameters('schedulesToCreate')[copyIndex()].dayType, dateTimeAdd(variables('timebase'), format('PT{0}H', parameters('schedulesToCreate')[copyIndex()].hour), 'HH'), dateTimeAdd(variables('timebase'), format('PT{0}M', parameters('schedulesToCreate')[copyIndex()].minute), 'mm')))]",
       "properties": {
-        "startTime": "[dateTimeAdd(dateTimeAdd(variables('tomorrow'), format('P{0}H', parameters('schedulesToCreate')[copyIndex()].hour)), format('P{0}M', parameters('schedulesToCreate')[copyIndex()].minute), 'yyyy-MM-ddTHH:mm:00+00:00')]",
+        "startTime": "[dateTimeAdd(dateTimeAdd(variables('tomorrow'), format('PT{0}H', parameters('schedulesToCreate')[copyIndex()].hour)), format('PT{0}M', parameters('schedulesToCreate')[copyIndex()].minute), 'yyyy-MM-ddTHH:mm:00+00:00')]",
         "expiryTime": "[variables('scheduleNoExpiry')]",
         "interval": 1,
         "frequency": "[if(equals(parameters('schedulesToCreate')[copyIndex()].dayType, 'Daily'), 'Day', 'Week')]",
