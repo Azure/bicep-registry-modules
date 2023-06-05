@@ -6,8 +6,8 @@
     "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "7622341569099935884"
+      "version": "0.17.1.54307",
+      "templateHash": "9020973447730506140"
     }
   },
   "definitions": {
@@ -318,10 +318,10 @@
   "outputs": {
     "automationAccountPrincipalId": {
       "type": "string",
-      "value": "[reference('automationAccount', '2022-08-08', 'full').identity.principalId]",
       "metadata": {
         "description": "The Automation Account Principal Id"
-      }
+      },
+      "value": "[reference('automationAccount', '2022-08-08', 'full').identity.principalId]"
     }
   }
 }
