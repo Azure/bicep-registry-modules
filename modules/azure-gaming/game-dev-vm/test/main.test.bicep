@@ -6,19 +6,20 @@ param vmSize string = 'Standard_D4s_v3'
 @secure()
 param adminPass string = newGuid()
 
+var osType = 'win11'
 var engines = [
-  'ue_4_27_2'
+  'no_engine'
 ]
 
 @batchSize(1)
 module win10 '../main.bicep' = [for engine in engines: {
-  name: 'win10_${engine}'
+  name: 'win11_${engine}'
   params: {
     location  : location
     vmName    : vmName
     adminName : adminName
     adminPass : adminPass
-    osType    : 'win10'
+    osType    : osType
     gameEngine: engine
     vmSize    : vmSize
   }

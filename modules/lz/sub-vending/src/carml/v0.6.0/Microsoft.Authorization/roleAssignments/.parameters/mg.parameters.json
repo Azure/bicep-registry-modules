@@ -1,0 +1,21 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "roleDefinitionIdOrName": {
+            "value": "Backup Reader"
+        },
+        "description": {
+            "value": "Role Assignment (management group scope)"
+        },
+        "principalId": {
+            "value": "<<deploymentSpId>>"
+        },
+        "principalType": {
+            "value": "ServicePrincipal"
+        },
+        "managementGroupId": {
+            "value": "<<managementGroupId>>"
+        }
+    }
+}
