@@ -23,6 +23,27 @@ module justAccount '../main.bicep' = {
   }
 }
 
+@description('Pacific Standard Time')
+var pst = 'America/Los_Angeles'
+
+module differentZone '../main.bicep' = {
+  name: 'differentZone-pst'
+  params: {
+    location: location
+    automationAccountName: 'differentZone-${uniqueString(resourceGroup().id, deployment().name)}'
+    runbookName: '' //empty will skip runbook creation
+    runbookJobSchedule: [] //with no runbook being created, we'll skip job creation too.
+    timezone: pst
+    schedulesToCreate: [
+      {
+        frequency:'Day'
+        hour:8
+        minute:30
+      }
+    ]
+  }
+}
+
 module VmStartStop '../main.bicep' = {
   name: 'VmStart'
   params: {
@@ -62,7 +83,7 @@ module AksStartStop '../main.bicep' = {
         }
       }
       {
-        scheduleName: 'Day - 19:00'  
+        scheduleName: 'Day - 19:00'
         parameters: {
           ResourceGroupName : 'myRG'
           AksClusterName : 'myVM'

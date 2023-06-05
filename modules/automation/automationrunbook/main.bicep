@@ -25,7 +25,7 @@ param diagnosticCategories array = [
 ]
 
 type schedule = {
-  dayType : 'Day' | 'Weekday'
+  frequency : 'Day' | 'Weekday' | 'Week'
 
   hour : hour
   minute : minute
@@ -44,32 +44,32 @@ type minute = int
 @description('Automation Schedules to create')
 param schedulesToCreate schedule[] = [
   {
-    dayType:'Day'
+    frequency:'Day'
     hour:9
     minute:0
   }
   {
-    dayType:'Weekday'
+    frequency:'Weekday'
     hour:9
     minute:0
   }
   {
-    dayType:'Day'
+    frequency:'Day'
     hour:19
     minute:0
   }
   {
-    dayType:'Weekday'
+    frequency:'Weekday'
     hour:19
     minute:0
   }
   {
-    dayType:'Day'
+    frequency:'Day'
     hour:0
     minute:0
   }
   {
-    dayType:'Weekday'
+    frequency:'Weekday'
     hour: 0
     minute:0
   }
@@ -139,16 +139,14 @@ resource automationAccountDiagLogging 'Microsoft.Insights/diagnosticSettings@202
 
 resource schedules 'Microsoft.Automation/automationAccounts/schedules@2022-08-08' = [for schedule in schedulesToCreate : {
   parent: automationAccount
-  name: '${schedule.dayType} - ${dateTimeAdd(timebase,'PT${schedule.hour}H','HH')}:${dateTimeAdd(timebase,'PT${schedule.minute}M','mm')}'
+  name: '${schedule.frequency} - ${dateTimeAdd(timebase,'PT${schedule.hour}H','HH')}:${dateTimeAdd(timebase,'PT${schedule.minute}M','mm')}'
   properties: {
     startTime: dateTimeAdd(dateTimeAdd(tomorrow,'PT${schedule.hour}H'), 'PT${schedule.minute}M','yyyy-MM-ddTHH:mm:00+00:00')
-    //startTime: '${take(tomorrow,10)}T${schedule.hour}:${schedule.minute}}+00:00'
-    //startTime: '${take(tomorrow,10)}T${endsWith(schedule, '9am') ? '09:00:00' : endsWith(schedule, '7pm') ? '19:00:00' : endsWith(schedule, 'Midnight') ? '23:59:59' : '12:00:00'}+00:00'
     expiryTime: scheduleNoExpiry
     interval: 1
-    frequency: schedule.dayType == 'Daily' ? 'Day' : 'Week'
+    frequency: schedule.frequency == 'Day' ? 'Day' : 'Week'
     timeZone: timezone
-    advancedSchedule: schedule.dayType == 'Weekday' ?  workWeek : {}
+    advancedSchedule: schedule.frequency == 'Weekday' ?  workWeek : {}
   }
 }]
 

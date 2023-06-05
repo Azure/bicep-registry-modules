@@ -50,8 +50,8 @@ module VmStartStop  'br/public:automation/automationrunbook:1.0.1' = {
     location: location
     automationAccountName: 'VmManagement'
     runbookName: 'StartAzureVMs'
-    runbookUri: 'https://raw.githubusercontent.com/azureautomation/start-azure-v2-vms/master/StartAzureV2Vm.graphrunbook'
-    runbookType: 'GraphPowerShell'
+    runbookUri: 'https://raw.githubusercontent.com/azureautomation/update-management-turn-on-vms/master/UpdateManagement-TurnOnVms.ps1'
+    runbookType: ''
     runbookDescription: 'This Graphical PowerShell runbook connects to Azure using an Automation Run As account and starts all V2 VMs in an Azure subscription or in a resource group or a single named V2 VM. You can attach a recurring schedule to this runbook to run it at a specific time.'
     runbookJobSchedule: [
       {
@@ -64,7 +64,6 @@ module VmStartStop  'br/public:automation/automationrunbook:1.0.1' = {
   }
 }
 
-//TODO: Create RunAs Account which is a prerequisite of this particular runbook
 ```
 
 ### Starting and Stopping AKS Clusters
@@ -115,12 +114,38 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
 ### Creating an Automation Account and Schedules without Runbook
 
 ```bicep
-module AksStartStop 'br/public:automation/automationrunbook:1.0.1' = {
-  name: 'AksStartStop'
+module noRunbook 'br/public:automation/automationrunbook:1.0.1' = {
+  name: 'noRunbook'
   params: {
     location: location
     automationAccountName: 'Automatron'
     runbookName: ''
+  }
+}
+```
+
+
+### Creating an Automation Account and custom Schedules without Runbook
+
+```bicep
+@description('Pacific Standard Time')
+var pst = '00-07:00'
+
+module customSchedule 'br/public:automation/automationrunbook:1.0.1' = {
+  name: 'customSchedule'
+  params: {
+    location: location
+    automationAccountName: 'noRunbook'
+    runbookName: '' //empty will skip runbook creation
+    runbookJobSchedule: [] //with no runbook being created, we'll skip job creation too.
+    timezone: pst
+    schedulesToCreate: [
+      {
+        frequency:'Day'
+        hour:8
+        minute:30
+      }
+    ]
   }
 }
 ```
