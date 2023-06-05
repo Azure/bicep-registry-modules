@@ -101,6 +101,7 @@ param runbookDescription string = ''
 
 var runbookVersion = '1.0.0.0'
 var tomorrow = dateTimeAdd(today, 'P1D','yyyy-MM-dd')
+var timebase = '1900-01-01'
 var scheduleNoExpiry = '9999-12-31T23:59:00+00:00'
 var workWeek = {weekDays: [
                   'Monday'
@@ -138,9 +139,9 @@ resource automationAccountDiagLogging 'Microsoft.Insights/diagnosticSettings@202
 
 resource schedules 'Microsoft.Automation/automationAccounts/schedules@2022-08-08' = [for schedule in schedulesToCreate : {
   parent: automationAccount
-  name: '${schedule.dayType} - ${dateTimeAdd('1970-01-01','P${schedule.hour}H','HH')}:${dateTimeAdd('1970-01-01','P${schedule.hour}H','mm')}'
+  name: '${schedule.dayType} - ${dateTimeAdd(timebase,'PT${schedule.hour}H','HH')}:${dateTimeAdd(timebase,'PT${schedule.minute}M','mm')}'
   properties: {
-    startTime: dateTimeAdd(dateTimeAdd(tomorrow,'P${schedule.hour}H'), 'P${schedule.minute}M','yyyy-MM-ddTHH:mm:00+00:00')
+    startTime: dateTimeAdd(dateTimeAdd(tomorrow,'PT${schedule.hour}H'), 'PT${schedule.minute}M','yyyy-MM-ddTHH:mm:00+00:00')
     //startTime: '${take(tomorrow,10)}T${schedule.hour}:${schedule.minute}}+00:00'
     //startTime: '${take(tomorrow,10)}T${endsWith(schedule, '9am') ? '09:00:00' : endsWith(schedule, '7pm') ? '19:00:00' : endsWith(schedule, 'Midnight') ? '23:59:59' : '12:00:00'}+00:00'
     expiryTime: scheduleNoExpiry
