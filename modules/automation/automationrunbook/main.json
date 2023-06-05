@@ -1,23 +1,18 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "1.9-experimental",
+  "languageVersion": "1.10-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.12.40.16777",
-      "templateHash": "1770697343864214818"
+      "version": "0.15.31.15270",
+      "templateHash": "204678809531882322"
     }
   },
   "definitions": {
     "schedule": {
       "type": "object",
-      "required": [
-        "dayType",
-        "hour",
-        "minute"
-      ],
       "properties": {
         "dayType": {
           "type": "string",
@@ -27,24 +22,32 @@
           ]
         },
         "hour": {
-          "type": "int"
+          "$ref": "#/definitions/hour"
         },
         "minute": {
-          "type": "int"
+          "$ref": "#/definitions/minute"
         }
       }
     },
+    "hour": {
+      "type": "int",
+      "maxValue": 23,
+      "minValue": 0
+    },
+    "minute": {
+      "type": "int",
+      "maxValue": 59,
+      "minValue": 0
+    },
     "runbookJob": {
       "type": "object",
-      "required": [
-        "scheduleName"
-      ],
       "properties": {
-        "parameters": {
-          "type": "object"
-        },
         "scheduleName": {
           "type": "string"
+        },
+        "parameters": {
+          "type": "object",
+          "nullable": true
         }
       }
     }
@@ -109,23 +112,7 @@
     "schedulesToCreate": {
       "type": "array",
       "items": {
-        "type": "object",
-        "required": [
-          "dayType",
-          "hour",
-          "minute"
-        ],
-        "properties": {
-          "dayType": {
-            "type": "string"
-          },
-          "hour": {
-            "type": "int"
-          },
-          "minute": {
-            "type": "int"
-          }
-        }
+        "$ref": "#/definitions/schedule"
       },
       "defaultValue": [
         {
@@ -166,18 +153,7 @@
     "runbookJobSchedule": {
       "type": "array",
       "items": {
-        "type": "object",
-        "required": [
-          "scheduleName"
-        ],
-        "properties": {
-          "parameters": {
-            "type": "object"
-          },
-          "scheduleName": {
-            "type": "string"
-          }
-        }
+        "$ref": "#/definitions/runbookJob"
       },
       "metadata": {
         "description": "The Runbook-Schedule Jobs to create with workflow specific parameters"
@@ -308,20 +284,20 @@
       ]
     },
     "automationJobs": {
-      "condition": "[not(empty(parameters('runbookName')))]",
       "copy": {
         "name": "automationJobs",
         "count": "[length(parameters('runbookJobSchedule'))]"
       },
+      "condition": "[not(empty(parameters('runbookName')))]",
       "type": "Microsoft.Automation/automationAccounts/jobSchedules",
       "apiVersion": "2022-08-08",
-      "name": "[format('{0}/{1}', parameters('automationAccountName'), guid(resourceInfo('automationAccount').id, resourceInfo('runbook').name, parameters('runbookJobSchedule')[copyIndex()].schedule))]",
+      "name": "[format('{0}/{1}', parameters('automationAccountName'), guid(resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName')), if(not(empty(parameters('runbookName'))), parameters('runbookName'), 'armtemplatevalidationissue'), parameters('runbookJobSchedule')[copyIndex()].scheduleName))]",
       "properties": {
         "schedule": {
-          "name": "[parameters('runbookJobSchedule')[copyIndex()].schedule]"
+          "name": "[parameters('runbookJobSchedule')[copyIndex()].scheduleName]"
         },
         "runbook": {
-          "name": "[resourceInfo('runbook').name]"
+          "name": "[if(not(empty(parameters('runbookName'))), parameters('runbookName'), 'armtemplatevalidationissue')]"
         },
         "parameters": "[parameters('runbookJobSchedule')[copyIndex()].parameters]"
       },
