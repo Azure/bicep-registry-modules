@@ -124,7 +124,6 @@ module noRunbook 'br/public:automation/automationrunbook:1.0.1' = {
 }
 ```
 
-
 ### Creating an Automation Account and custom Schedules without Runbook
 
 ```bicep

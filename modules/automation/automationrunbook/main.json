@@ -7,17 +7,18 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "9020973447730506140"
+      "templateHash": "13528181945649498307"
     }
   },
   "definitions": {
     "schedule": {
       "type": "object",
       "properties": {
-        "dayType": {
+        "frequency": {
           "type": "string",
           "allowedValues": [
             "Day",
+            "Week",
             "Weekday"
           ]
         },
@@ -122,32 +123,32 @@
       },
       "defaultValue": [
         {
-          "dayType": "Day",
+          "frequency": "Day",
           "hour": 9,
           "minute": 0
         },
         {
-          "dayType": "Weekday",
+          "frequency": "Weekday",
           "hour": 9,
           "minute": 0
         },
         {
-          "dayType": "Day",
+          "frequency": "Day",
           "hour": 19,
           "minute": 0
         },
         {
-          "dayType": "Weekday",
+          "frequency": "Weekday",
           "hour": 19,
           "minute": 0
         },
         {
-          "dayType": "Day",
+          "frequency": "Day",
           "hour": 0,
           "minute": 0
         },
         {
-          "dayType": "Weekday",
+          "frequency": "Weekday",
           "hour": 0,
           "minute": 0
         }
@@ -257,14 +258,14 @@
       },
       "type": "Microsoft.Automation/automationAccounts/schedules",
       "apiVersion": "2022-08-08",
-      "name": "[format('{0}/{1}', parameters('automationAccountName'), format('{0} - {1}:{2}', parameters('schedulesToCreate')[copyIndex()].dayType, dateTimeAdd(variables('timebase'), format('PT{0}H', parameters('schedulesToCreate')[copyIndex()].hour), 'HH'), dateTimeAdd(variables('timebase'), format('PT{0}M', parameters('schedulesToCreate')[copyIndex()].minute), 'mm')))]",
+      "name": "[format('{0}/{1}', parameters('automationAccountName'), format('{0} - {1}:{2}', parameters('schedulesToCreate')[copyIndex()].frequency, dateTimeAdd(variables('timebase'), format('PT{0}H', parameters('schedulesToCreate')[copyIndex()].hour), 'HH'), dateTimeAdd(variables('timebase'), format('PT{0}M', parameters('schedulesToCreate')[copyIndex()].minute), 'mm')))]",
       "properties": {
         "startTime": "[dateTimeAdd(dateTimeAdd(variables('tomorrow'), format('PT{0}H', parameters('schedulesToCreate')[copyIndex()].hour)), format('PT{0}M', parameters('schedulesToCreate')[copyIndex()].minute), 'yyyy-MM-ddTHH:mm:00+00:00')]",
         "expiryTime": "[variables('scheduleNoExpiry')]",
         "interval": 1,
-        "frequency": "[if(equals(parameters('schedulesToCreate')[copyIndex()].dayType, 'Daily'), 'Day', 'Week')]",
+        "frequency": "[if(equals(parameters('schedulesToCreate')[copyIndex()].frequency, 'Day'), 'Day', 'Week')]",
         "timeZone": "[parameters('timezone')]",
-        "advancedSchedule": "[if(equals(parameters('schedulesToCreate')[copyIndex()].dayType, 'Weekday'), variables('workWeek'), createObject())]"
+        "advancedSchedule": "[if(equals(parameters('schedulesToCreate')[copyIndex()].frequency, 'Weekday'), variables('workWeek'), createObject())]"
       },
       "dependsOn": [
         "automationAccount"
