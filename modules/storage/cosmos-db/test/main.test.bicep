@@ -4,7 +4,7 @@ targetScope = 'resourceGroup'
 // Parameters //
 // ========== //
 
-param location string = resourceGroup().location
+param location string = 'East US'
 param serviceShort string = 'cosmosdb'
 var uniqueName = uniqueString(resourceGroup().id, deployment().name, location)
 
@@ -48,7 +48,7 @@ module test02 '../main.bicep' = {
         isZoneRedundant: false
       }
       {
-        name: 'Canada East'
+        name: 'North Europe'
       }
     ]
     roleAssignments: [
@@ -252,10 +252,10 @@ module test05 '../main.bicep' = {
         isZoneRedundant: true
       }
       {
-        name: 'centralus'
+        name: 'South Central US'
       }
       {
-        name: 'eastus'
+        name: 'West US 3'
       }
     ]
     backendApi: 'table'
