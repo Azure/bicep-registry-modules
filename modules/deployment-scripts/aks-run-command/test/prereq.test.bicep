@@ -4,6 +4,7 @@ param location string = resourceGroup().location
 
 resource aks 'Microsoft.ContainerService/managedClusters@2022-01-02-preview' = {
   location: location
+#disable-next-line use-stable-resource-identifiers
   name: aksName
   properties: {
     dnsPrefix: aksName

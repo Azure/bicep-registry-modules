@@ -1,0 +1,606 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "1.10-experimental",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
+    "_generator": {
+      "name": "bicep",
+      "version": "0.17.1.54307",
+      "templateHash": "11424182613689950397"
+    }
+  },
+  "definitions": {
+    "blobServiceProperties": {
+      "type": "object",
+      "properties": {
+        "changeFeed": {
+          "$ref": "#/definitions/changeFeed",
+          "nullable": true
+        },
+        "containerDeleteRetentionPolicy": {
+          "$ref": "#/definitions/containerDeleteRetentionPolicy",
+          "nullable": true
+        },
+        "cors": {
+          "$ref": "#/definitions/cors",
+          "nullable": true
+        },
+        "deleteRetentionPolicy": {
+          "$ref": "#/definitions/deleteRetentionPolicy",
+          "nullable": true
+        },
+        "isVersioningEnabled": {
+          "$ref": "#/definitions/isVersioningEnabled",
+          "nullable": true
+        },
+        "lastAccessTimeTrackingPolicy": {
+          "$ref": "#/definitions/lastAccessTimeTrackingPolicy",
+          "nullable": true
+        },
+        "restorePolicy": {
+          "$ref": "#/definitions/restorePolicy",
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "description": "The properties of a storage account’s Blob service."
+      }
+    },
+    "changeFeed": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "bool"
+        },
+        "retentionInDays": {
+          "type": "int",
+          "nullable": true,
+          "maxValue": 146000,
+          "minValue": 1
+        }
+      },
+      "metadata": {
+        "description": "The blob service properties for change feed events."
+      }
+    },
+    "containerDeleteRetentionPolicy": {
+      "type": "object",
+      "properties": {
+        "allowPermanentDelete": {
+          "type": "bool"
+        },
+        "days": {
+          "type": "int",
+          "nullable": true,
+          "maxValue": 365,
+          "minValue": 1
+        },
+        "enabled": {
+          "type": "bool"
+        }
+      },
+      "metadata": {
+        "description": "The blob service properties for container soft delete."
+      }
+    },
+    "cors": {
+      "type": "object",
+      "properties": {
+        "corsRules": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "object",
+              "properties": {
+                "allowedHeaders": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "allowedValues": [
+                        "string"
+                      ]
+                    }
+                  ],
+                  "items": false
+                },
+                "allowedMethods": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "allowedValues": [
+                        "string"
+                      ]
+                    }
+                  ],
+                  "items": false
+                },
+                "allowedOrigins": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "allowedValues": [
+                        "string"
+                      ]
+                    }
+                  ],
+                  "items": false
+                },
+                "exposedHeaders": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "allowedValues": [
+                        "string"
+                      ]
+                    }
+                  ],
+                  "items": false
+                },
+                "maxAgeInSeconds": {
+                  "type": "int"
+                }
+              }
+            }
+          ],
+          "items": false
+        }
+      },
+      "metadata": {
+        "description": "Specifies CORS rules for the Blob service. You can include up to five CorsRule elements in the request. If no CorsRule elements are included in the request body, all CORS rules will be deleted, and CORS will be disabled for the Blob service."
+      }
+    },
+    "deleteRetentionPolicy": {
+      "type": "object",
+      "properties": {
+        "allowPermanentDelete": {
+          "type": "bool"
+        },
+        "days": {
+          "type": "int",
+          "nullable": true,
+          "maxValue": 365,
+          "minValue": 1
+        },
+        "enabled": {
+          "type": "bool"
+        }
+      },
+      "metadata": {
+        "description": "The blob service properties for blob soft delete."
+      }
+    },
+    "isVersioningEnabled": {
+      "type": "bool",
+      "metadata": {
+        "description": "Toggle to enable or disable versioning for Blob service of the Storage Account. Used only if enableBlobService is set to true."
+      }
+    },
+    "lastAccessTimeTrackingPolicy": {
+      "type": "object",
+      "properties": {
+        "blobType": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "string",
+              "allowedValues": [
+                "string"
+              ]
+            }
+          ],
+          "items": false
+        },
+        "enable": {
+          "type": "bool"
+        },
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "AccessTimeTracking"
+          ]
+        },
+        "trackingGranularityInDays": {
+          "type": "int",
+          "allowedValues": [
+            1
+          ],
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "description": "The blob service property to configure last access time based tracking policy."
+      }
+    },
+    "restorePolicy": {
+      "type": "object",
+      "properties": {
+        "days": {
+          "type": "int",
+          "nullable": true,
+          "maxValue": 365,
+          "minValue": 1
+        },
+        "enabled": {
+          "type": "bool"
+        }
+      },
+      "metadata": {
+        "description": "The blob service property to configure last access time based tracking policy."
+      }
+    },
+    "blobServiceContainerProperties": {
+      "type": "object",
+      "properties": {
+        "defaultEncryptionScope": {
+          "type": "string",
+          "nullable": true
+        },
+        "denyEncryptionScopeOverride": {
+          "type": "string",
+          "nullable": true
+        },
+        "immutableStorageWithVersioning": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "bool"
+            }
+          },
+          "nullable": true
+        },
+        "publicAccess": {
+          "type": "string",
+          "allowedValues": [
+            "Blob",
+            "Container",
+            "None"
+          ],
+          "nullable": true
+        }
+      }
+    },
+    "roleAssignmentsArray": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "roleDefinitionIdOrName": {
+            "type": "string",
+            "nullable": true
+          },
+          "principalIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "principalType": {
+            "type": "string",
+            "nullable": true
+          },
+          "resourceType": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      }
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Deployment Location"
+      }
+    },
+    "prefix": {
+      "type": "string",
+      "defaultValue": "st",
+      "metadata": {
+        "description": "Prefix of Storage Account Resource Name. This param is ignored when name is provided."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "[format('{0}{1}', parameters('prefix'), uniqueString(resourceGroup().id, subscription().id))]",
+      "metadata": {
+        "description": "Name of Storage Account. Must be unique within Azure."
+      }
+    },
+    "subnetID": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "ID of the subnet where the Storage Account will be deployed, if virtual network access is enabled."
+      }
+    },
+    "enableVNET": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Toggle to enable or disable virtual network access for the Storage Account."
+      }
+    },
+    "isZoneRedundant": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Toggle to enable or disable zone redundancy for the Storage Account."
+      }
+    },
+    "storageAccountType": {
+      "type": "string",
+      "defaultValue": "[if(parameters('isZoneRedundant'), 'Standard_ZRS', 'Standard_LRS')]",
+      "metadata": {
+        "description": "Storage Account Type. Use Zonal Redundant Storage when able."
+      }
+    },
+    "blobName": {
+      "type": "string",
+      "defaultValue": "default",
+      "metadata": {
+        "description": "Name of a blob service to be created."
+      }
+    },
+    "blobProperties": {
+      "$ref": "#/definitions/blobServiceProperties",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Properties object for a Blob service of a Storage Account."
+      }
+    },
+    "blobContainerName": {
+      "type": "string",
+      "defaultValue": "default",
+      "metadata": {
+        "description": "Name of a blob container to be created"
+      }
+    },
+    "blobContainerProperties": {
+      "$ref": "#/definitions/blobServiceContainerProperties",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Properties object for a Blob container of a Storage Account."
+      }
+    },
+    "roleAssignments": {
+      "$ref": "#/definitions/roleAssignmentsArray",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Array of role assignment objects that contain the 'roleDefinitionIdOrName', 'principalId' and 'resourceType' as 'storageAccount' or 'blobContainer' to define RBAC role assignments on that resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'"
+      }
+    }
+  },
+  "variables": {
+    "networkAcls": "[if(parameters('enableVNET'), createObject('defaultAction', 'Deny', 'virtualNetworkRules', createArray(createObject('action', 'Allow', 'id', parameters('subnetID')))), createObject())]"
+  },
+  "resources": {
+    "storageAccount::blobService::container": {
+      "condition": "[and(not(equals(parameters('blobName'), '')), not(equals(parameters('blobContainerName'), '')))]",
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}/{1}/{2}', parameters('name'), parameters('blobName'), parameters('blobContainerName'))]",
+      "properties": "[parameters('blobContainerProperties')]",
+      "dependsOn": [
+        "storageAccount::blobService"
+      ]
+    },
+    "storageAccount::blobService": {
+      "condition": "[not(equals(parameters('blobName'), ''))]",
+      "type": "Microsoft.Storage/storageAccounts/blobServices",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}/{1}', parameters('name'), parameters('blobName'))]",
+      "properties": "[parameters('blobProperties')]",
+      "dependsOn": [
+        "storageAccount"
+      ]
+    },
+    "storageAccount": {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2022-09-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('storageAccountType')]"
+      },
+      "kind": "StorageV2",
+      "properties": {
+        "encryption": {
+          "keySource": "Microsoft.Storage",
+          "services": {
+            "blob": {
+              "enabled": true
+            },
+            "file": {
+              "enabled": true
+            }
+          }
+        },
+        "supportsHttpsTrafficOnly": true,
+        "allowBlobPublicAccess": false,
+        "networkAcls": "[variables('networkAcls')]",
+        "minimumTlsVersion": "TLS1_2"
+      }
+    },
+    "storageRbac": {
+      "copy": {
+        "name": "storageRbac",
+        "count": "[length(parameters('roleAssignments'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('sa-rbac-{0}-{1}', copyIndex(), uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', 'role assignment'))]",
+          "principalIds": {
+            "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
+          },
+          "roleDefinitionIdOrName": {
+            "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
+          },
+          "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', 'ServicePrincipal'))]",
+          "resourceType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'resourceType'), createObject('value', parameters('roleAssignments')[copyIndex()].resourceType), createObject('value', 'storageAccount'))]",
+          "name": {
+            "value": "[parameters('name')]"
+          },
+          "blobName": {
+            "value": "[parameters('blobName')]"
+          },
+          "containerName": {
+            "value": "[parameters('blobContainerName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
+            "_generator": {
+              "name": "bicep",
+              "version": "0.17.1.54307",
+              "templateHash": "6569897640071376055"
+            }
+          },
+          "parameters": {
+            "description": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "principalIds": {
+              "type": "array"
+            },
+            "principalType": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "roleDefinitionIdOrName": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "blobName": {
+              "type": "string"
+            },
+            "containerName": {
+              "type": "string"
+            },
+            "resourceType": {
+              "type": "string",
+              "defaultValue": "storageAccount"
+            }
+          },
+          "variables": {
+            "builtInRoleNames": {
+              "Owner": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
+              "Contributor": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+              "Reader": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
+              "Avere Contributor": "4f8fab4f-1852-4a58-a46a-8eaf358af14a",
+              "Avere Operator": "c025889f-8102-4ebf-b32c-fc0c6f0c6bd9",
+              "Backup Contributor": "5e467623-bb1f-42f4-a55d-6e525e11384b",
+              "Backup Operator": "00c29273-979b-4161-815c-10b084fb9324",
+              "Backup Reader": "a795c7a0-d4a2-40c1-ae25-d81f01202912",
+              "Classic Storage Account Contributor": "86e8f5dc-a6e9-4c67-9d15-de283e8eac25",
+              "Classic Storage Account Key Operator Service Role": "985d6b00-f706-48f5-a6fe-d0ca12fb668d",
+              "Data Box Contributor": "add466c9-e687-43fc-8d98-dfcf8d720be5",
+              "Data Box Reader": "028f4ed7-e2a9-465e-a8f4-9c0ffdfdc027",
+              "Data Lake Analytics Developer": "47b7735b-770e-4598-a7da-8b91488b4c88",
+              "Elastic SAN Owner": "80dcbedb-47ef-405d-95bd-188a1b4ac406",
+              "Elastic SAN Reader": "af6a70f8-3c9f-4105-acf1-d719e9fca4ca",
+              "Elastic SAN Volume Group Owner": "a8281131-f312-4f34-8d98-ae12be9f0d23",
+              "Reader and Data Access": "c12c1c16-33a1-487b-954d-41c89c60f349",
+              "Storage Account Backup Contributor": "e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1",
+              "Storage Account Contributor": "17d1049b-9a84-46fb-8f53-869881c3d3ab",
+              "Storage Account Key Operator Service Role": "81a9662b-bebf-436f-a333-f67b29880f12",
+              "Storage Blob Data Contributor": "ba92f5b4-2d11-453d-a403-e96b0029c9fe",
+              "Storage Blob Data Owner": "b7e6dc6d-f1e8-4753-8033-0f276bb0955b",
+              "Storage Blob Data Reader": "2a2b9908-6ea1-4ae2-8e65-a410df84e7d1",
+              "Storage Blob Delegator": "db58b8e5-c6ad-4a2a-8342-4190687cbf4a",
+              "Storage File Data SMB Share Contributor": "0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb",
+              "Storage File Data SMB Share Elevated Contributor": "a7264617-510b-434b-a828-9731dc254ea7",
+              "Storage File Data SMB Share Reader": "aba4ae5f-2193-4029-9191-0cb91df5e314",
+              "Storage Queue Data Contributor": "974c5e8b-45b9-4653-ba55-5f855dd0fb88",
+              "Storage Queue Data Message Processor": "8a0f0c08-91a1-4084-bc3d-661d67233fed",
+              "Storage Queue Data Message Sender": "c6a89b2d-59bc-44d0-9896-0f6e12d7b80a",
+              "Storage Queue Data Reader": "19e7f393-937e-4f77-808e-94535e297925",
+              "Storage Table Data Contributor": "0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3",
+              "Storage Table Data Reader": "76199698-9eea-4c19-bc75-cec21354c6b6"
+            }
+          },
+          "resources": {
+            "storage::blob::container": {
+              "condition": "[and(not(equals(parameters('blobName'), '')), not(equals(parameters('containerName'), '')))]",
+              "existing": true,
+              "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}/{1}/{2}', parameters('name'), parameters('blobName'), parameters('containerName'))]"
+            },
+            "storage::blob": {
+              "condition": "[not(equals(parameters('blobName'), ''))]",
+              "existing": true,
+              "type": "Microsoft.Storage/storageAccounts/blobServices",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}/{1}', parameters('name'), parameters('blobName'))]"
+            },
+            "storage": {
+              "existing": true,
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2022-09-01",
+              "name": "[parameters('name')]"
+            },
+            "roleAssignment": {
+              "copy": {
+                "name": "roleAssignment",
+                "count": "[length(parameters('principalIds'))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid(if(equals(parameters('resourceType'), 'blobContainer'), parameters('containerName'), parameters('name')), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+              "properties": {
+                "description": "[parameters('description')]",
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')]), parameters('roleDefinitionIdOrName'))]",
+                "principalId": "[parameters('principalIds')[copyIndex()]]",
+                "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]"
+              }
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "storageAccount"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Storage Account resource"
+      },
+      "value": "[parameters('name')]"
+    },
+    "id": {
+      "type": "string",
+      "metadata": {
+        "description": "The ID of the Storage Account. Use this ID to reference the Storage Account in other Azure resource deployments."
+      },
+      "value": "[resourceId('Microsoft.Storage/storageAccounts', parameters('name'))]"
+    }
+  }
+}

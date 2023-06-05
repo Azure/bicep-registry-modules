@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.11.1.770",
-      "templateHash": "12363648850858759275"
+      "version": "0.13.1.58284",
+      "templateHash": "1371553491347240684"
     }
   },
   "parameters": {
@@ -96,11 +96,25 @@
         "description": "The name of the repository branch to use"
       }
     },
-    "gitRepoDirectory": {
+    "buildWorkingDirectory": {
+      "type": "string",
+      "defaultValue": ".",
+      "metadata": {
+        "description": "The docker context working directory, change this when your Dockerfile and source files are ALL located in a repo subdirectory"
+      }
+    },
+    "dockerfileDirectory": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "The directory in the repo that contains the dockerfile"
+        "description": "The subdirectory relative to the working directory that contains the Dockerfile"
+      }
+    },
+    "dockerfileName": {
+      "type": "string",
+      "defaultValue": "Dockerfile",
+      "metadata": {
+        "description": "The name of the dockerfile"
       }
     },
     "imageName": {
@@ -125,11 +139,12 @@
     }
   },
   "variables": {
-    "$fxv#0": "#!/bin/bash\nset -e\n\necho \"Waiting on RBAC replication ($initialDelay)\"\nsleep $initialDelay\n\naz acr build --resource-group $acrResourceGroup \\\n  --registry $acrName \\\n  --image $taggedImageName $repo \\\n  --platform $platform",
-    "repo": "[format('{0}#{1}:{2}', parameters('gitRepositoryUrl'), parameters('gitBranch'), parameters('gitRepoDirectory'))]",
+    "$fxv#0": "#!/bin/bash\nset -e\n\necho \"Waiting on RBAC replication ($initialDelay)\"\nsleep $initialDelay\n\naz acr build --resource-group $acrResourceGroup \\\n  --registry $acrName \\\n  --image $taggedImageName $repo \\\n  --file $dockerfilePath \\\n  --platform $platform",
+    "repo": "[format('{0}#{1}:{2}', parameters('gitRepositoryUrl'), parameters('gitBranch'), parameters('buildWorkingDirectory'))]",
     "cleanRepoName": "[last(split(parameters('gitRepositoryUrl'), '/'))]",
     "cleanImageName": "[replace(parameters('imageName'), '/', '')]",
-    "taggedImageName": "[format('{0}:{1}', parameters('imageName'), parameters('imageTag'))]"
+    "taggedImageName": "[format('{0}:{1}', parameters('imageName'), parameters('imageTag'))]",
+    "dockerfilePath": "[if(not(empty(parameters('dockerfileDirectory'))), format('{0}/{1}', parameters('dockerfileDirectory'), parameters('dockerfileName')), parameters('dockerfileName'))]"
   },
   "resources": [
     {
@@ -187,6 +202,10 @@
           {
             "name": "repo",
             "value": "[variables('repo')]"
+          },
+          {
+            "name": "dockerfilePath",
+            "value": "[variables('dockerfilePath')]"
           },
           {
             "name": "platform",
