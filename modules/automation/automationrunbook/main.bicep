@@ -26,17 +26,19 @@ param diagnosticCategories array = [
 
 type schedule = {
   dayType : 'Day' | 'Weekday'
-  
+
   hour : hour
   minute : minute
 }
 
 @minValue(0)
 @maxValue(23)
+@description('Seperately declaring as a type allows for min/max validation')
 type hour = int
 
 @minValue(0)
 @maxValue(59)
+@description('Seperately declaring as a type allows for min/max validation')
 type minute = int
 
 @description('Automation Schedules to create')
@@ -131,7 +133,7 @@ resource automationAccountDiagLogging 'Microsoft.Insights/diagnosticSettings@202
       category: diagCategory
       enabled: true
     }]
-  } 
+  }
 }
 
 resource schedules 'Microsoft.Automation/automationAccounts/schedules@2022-08-08' = [for schedule in schedulesToCreate : {

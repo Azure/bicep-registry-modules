@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.15.31.15270",
-      "templateHash": "204678809531882322"
+      "templateHash": "11493889452551048378"
     }
   },
   "definitions": {
@@ -31,11 +31,17 @@
     },
     "hour": {
       "type": "int",
+      "metadata": {
+        "description": "Seperately declaring as a type allows for min/max validation"
+      },
       "maxValue": 23,
       "minValue": 0
     },
     "minute": {
       "type": "int",
+      "metadata": {
+        "description": "Seperately declaring as a type allows for min/max validation"
+      },
       "maxValue": 59,
       "minValue": 0
     },
