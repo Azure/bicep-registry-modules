@@ -7,29 +7,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "16794123128203955384"
+      "templateHash": "13805408051808111874"
     }
   },
   "definitions": {
-    "tagType": {
-      "type": "object",
-      "properties": {
-        "key": {
-          "type": "string",
-          "metadata": {
-            "description": "The tag name."
-          },
-          "maxLength": 128
-        },
-        "value": {
-          "type": "string",
-          "metadata": {
-            "description": "The tag value."
-          },
-          "maxLength": 256
-        }
-      }
-    },
     "corsType": {
       "type": "object",
       "properties": {
@@ -1259,6 +1240,25 @@
           "metadata": {
             "description": "The ID of the delegated managed identity resource."
           }
+        }
+      }
+    },
+    "tagType": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "metadata": {
+            "description": "The tag name."
+          },
+          "maxLength": 128
+        },
+        "value": {
+          "type": "string",
+          "metadata": {
+            "description": "The tag value."
+          },
+          "maxLength": 256
         }
       }
     }
