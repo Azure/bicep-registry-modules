@@ -149,16 +149,6 @@ param identityType string = 'None'
 @description('The list of user-assigned managed identities. The user identity dictionary key references will be ARM resource ids in the form: "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}"')
 param userAssignedIdentities string[] = []
 
-type tagType = {
-  @maxLength(128)
-  @description('The tag name.')
-  key: string
-
-  @maxLength(256)
-  @description('The tag value.')
-  value: string
-}
-
 @maxLength(15)
 @description('List of key-value pairs that describe the resource.')
 param tags tagType[] = []
@@ -737,4 +727,14 @@ type roleAssignmentType = {
   description: string?
   @description('The ID of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
+}
+
+type tagType = {
+  @maxLength(128)
+  @description('The tag name.')
+  key: string
+
+  @maxLength(256)
+  @description('The tag value.')
+  value: string
 }
