@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "7999666910390877077"
+      "templateHash": "10995657503432400336"
     }
   },
   "parameters": {
@@ -106,14 +106,14 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Define Private Endpoints that should be created for Azure Container Registry."
+        "description": "Define Private Endpoints that should be created for Azure EventHub Namespace."
       }
     },
     "privateEndpointsApprovalEnabled": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Toggle if Private Endpoints manual approval for Azure Container Registry should be enabled."
+        "description": "Toggle if Private Endpoints manual approval for Azure EventHub Namespace should be enabled."
       }
     }
   },
@@ -210,7 +210,7 @@
         "name": "varNamespaceRoleAssignments",
         "count": "[length(items(parameters('namespaceRoleAssignments')))]",
         "input": {
-          "eventHubNamespaceAuthorizationRuleName": "[items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].key]",
+          "eventHubNamespaceRoleAssignmentsName": "[items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].key]",
           "description": "[if(contains(items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value, 'description'), items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.description, '')]",
           "principalIds": "[items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.principalIds]",
           "principalType": "[if(contains(items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value, 'principalType'), items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.principalType, '')]",
@@ -413,6 +413,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "roleAssignmentsName": {
+            "value": "[variables('varNamespaceRoleAssignments')[copyIndex()].eventHubNamespaceRoleAssignmentsName]"
+          },
           "description": {
             "value": "[variables('varNamespaceRoleAssignments')[copyIndex()].description]"
           },
@@ -436,7 +439,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "2416065137185875572"
+              "templateHash": "11615617359408971468"
             }
           },
           "parameters": {
@@ -456,6 +459,9 @@
             "principalType": {
               "type": "string",
               "defaultValue": ""
+            },
+            "roleAssignmentsName": {
+              "type": "string"
             }
           },
           "variables": {
@@ -489,7 +495,7 @@
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
               "scope": "[format('Microsoft.EventHub/namespaces/{0}', parameters('eventHubNamespaceName'))]",
-              "name": "[guid(parameters('eventHubNamespaceName'), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+              "name": "[guid(parameters('roleAssignmentsName'), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
               "properties": {
                 "description": "[parameters('description')]",
                 "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
@@ -571,7 +577,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "5279551973597977397"
+              "templateHash": "14858084276366130362"
             }
           },
           "parameters": {
@@ -692,6 +698,12 @@
                   },
                   "resourceId": {
                     "value": "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaceName'), parameters('name'))]"
+                  },
+                  "namespaceName": {
+                    "value": "[parameters('namespaceName')]"
+                  },
+                  "eventHubName": {
+                    "value": "[parameters('name')]"
                   }
                 },
                 "template": {
@@ -701,7 +713,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "1819008984003057535"
+                      "templateHash": "3430624729635912537"
                     }
                   },
                   "parameters": {
@@ -721,6 +733,12 @@
                     "principalType": {
                       "type": "string",
                       "defaultValue": ""
+                    },
+                    "namespaceName": {
+                      "type": "string"
+                    },
+                    "eventHubName": {
+                      "type": "string"
                     }
                   },
                   "variables": {
@@ -753,7 +771,7 @@
                       },
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
-                      "scope": "[format('Microsoft.EventHub/namespaces/{0}/eventhubs/{1}', split(format('{0}/{1}}}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10]), '/')[0], split(format('{0}/{1}}}', split(parameters('resourceId'), '/')[8], split(parameters('resourceId'), '/')[10]), '/')[1])]",
+                      "scope": "[format('Microsoft.EventHub/namespaces/{0}/eventhubs/{1}', parameters('namespaceName'), parameters('eventHubName'))]",
                       "name": "[guid(split(parameters('resourceId'), '/')[0], split(parameters('resourceId'), '/')[1], parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
                       "properties": {
                         "description": "[parameters('description')]",

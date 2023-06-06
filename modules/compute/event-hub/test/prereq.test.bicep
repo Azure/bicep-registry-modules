@@ -99,6 +99,16 @@ resource virtualNetworkLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLi
   }
 }
 
+resource managedIdentity_01 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+  name: '${prefix}-${name}-01'
+  location: location
+}
+
+resource managedIdentity_02 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+  name: '${prefix}-${name}-02'
+  location: location
+}
+
 output storageAccountId string = storageAccount.id
 output containerName string = container.name
 output workspaceId string = logAnalyticsWorkspace.id
@@ -110,3 +120,7 @@ output subnetIds array = [
   virtualNetwork.properties.subnets[1].id
 ]
 output privateDNSZoneId string = privateDNSZone.id
+output identityPrincipalIds array = [
+  managedIdentity_01.properties.principalId
+  managedIdentity_02.properties.principalId
+]
