@@ -36,7 +36,7 @@ param initialScriptDelay string = '120s'
 @description('When the script resource is cleaned up')
 param cleanupPreference string = 'OnSuccess'
 
-@description('Set to true when deploying template across tenants') 
+@description('Set to true when deploying template across tenants')
 param isCrossTenant bool = false
 
 var useExistingManagedIdentity = newOrExistingManagedIdentity == 'existing'

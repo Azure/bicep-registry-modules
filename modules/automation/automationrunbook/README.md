@@ -75,7 +75,7 @@ module AksStartStop 'br/public:automation/automationrunbook:1.0.1' = {
     location: location
     automationAccountName: 'AksAutomation'
     runbookName: 'aks-cluster-changestate'
-    runbookUri: 'https://raw.githubusercontent.com/Gordonby/aks-cluster-changestate/main/aks-cluster-changestate.ps1'
+    runbookUri: 'https://raw.githubusercontent.com/finoops/aks-cluster-changestate/main/aks-cluster-changestate.ps1'
     runbookType: 'Script'
     runbookJobSchedule: [
       {

@@ -71,7 +71,7 @@ module AksStartStop '../main.bicep' = {
     location: location
     automationAccountName: 'aksstartstop-${uniqueString(resourceGroup().id, deployment().name)}'
     runbookName: 'aks-cluster-changestate'
-    runbookUri: 'https://raw.githubusercontent.com/Gordonby/aks-cluster-changestate/main/aks-cluster-changestate.ps1'
+    runbookUri: 'https://raw.githubusercontent.com/finoops/aks-cluster-changestate/main/aks-cluster-changestate.ps1'
     runbookType: 'Script'
     runbookJobSchedule: [
       {
