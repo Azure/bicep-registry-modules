@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "2646559463810385786"
+      "version": "0.17.1.54307",
+      "templateHash": "10995657503432400336"
     }
   },
   "parameters": {
@@ -281,7 +281,7 @@
         "count": "[length(variables('varNamespaceAuthorizationRules'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-EvhbNamespace-AuthRule-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -305,8 +305,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "839285984078692729"
+              "version": "0.17.1.54307",
+              "templateHash": "6334119818039425552"
             }
           },
           "parameters": {
@@ -343,7 +343,7 @@
         "count": "[length(variables('varDisasterRecoveryConfigs'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-EvhbNamespace-DisRecConfig-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -367,8 +367,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "17506546971128354478"
+              "version": "0.17.1.54307",
+              "templateHash": "15417594676504453116"
             }
           },
           "parameters": {
@@ -405,7 +405,7 @@
         "count": "[length(variables('varNamespaceRoleAssignments'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-Namespace-Rbac-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -438,8 +438,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "13834599125193128483"
+              "version": "0.17.1.54307",
+              "templateHash": "11615617359408971468"
             }
           },
           "parameters": {
@@ -516,7 +516,7 @@
         "count": "[length(variables('varEventHubs'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-EvhbNamespace-EventHub-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -576,8 +576,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "14996355472161180767"
+              "version": "0.17.1.54307",
+              "templateHash": "14858084276366130362"
             }
           },
           "parameters": {
@@ -680,7 +680,7 @@
                 "count": "[length(parameters('roleAssignments'))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2022-09-01",
               "name": "[format('{0}-Rbac-{1}', deployment().name, copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -712,8 +712,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.15.31.15270",
-                      "templateHash": "13115586654723553235"
+                      "version": "0.17.1.54307",
+                      "templateHash": "3430624729635912537"
                     }
                   },
                   "parameters": {
@@ -800,7 +800,7 @@
         "count": "[length(variables('varEventHubAuthorizationRules'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-Evhub-AuthRule-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -827,8 +827,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "504898429823367626"
+              "version": "0.17.1.54307",
+              "templateHash": "8200836686756721657"
             }
           },
           "parameters": {
@@ -868,7 +868,7 @@
         "count": "[length(variables('varConsumerGroups'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-ConsumerGroup-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -895,8 +895,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "13809606714854574129"
+              "version": "0.17.1.54307",
+              "templateHash": "10174095528917220663"
             }
           },
           "parameters": {
@@ -936,7 +936,7 @@
         "count": "[length(variables('varDiagnosticSettings'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-diagnosticSettings-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -975,8 +975,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "14495540543207388439"
+              "version": "0.17.1.54307",
+              "templateHash": "15471641910519975356"
             }
           },
           "parameters": {
@@ -1033,7 +1033,7 @@
         "count": "[length(variables('varPrivateEndpoints'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-eventnamespace-private-endpoints-{1}', uniqueString(deployment().name), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -1073,8 +1073,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "4890749713602361970"
+              "version": "0.17.1.54307",
+              "templateHash": "11107361545483996372"
             }
           },
           "parameters": {
@@ -1155,13 +1155,16 @@
   "outputs": {
     "resourceGroupName": {
       "type": "string",
-      "value": "[resourceGroup().name]",
       "metadata": {
         "description": "The resource group the Azure Event Hub was deployed into."
-      }
+      },
+      "value": "[resourceGroup().name]"
     },
     "eventHubNamespaceDetails": {
       "type": "array",
+      "metadata": {
+        "description": "Azure Event Hub namespace details."
+      },
       "copy": {
         "count": "[length(variables('varEventHubNamespaces'))]",
         "input": {
@@ -1169,9 +1172,6 @@
           "serviceBusEndpoint": "[reference(variables('varEventHubNamespaces')[copyIndex()].eventHubNamespaceName, '2021-11-01', 'Full').properties.serviceBusEndpoint]",
           "status": "[reference(variables('varEventHubNamespaces')[copyIndex()].eventHubNamespaceName, '2021-11-01', 'Full').properties.status]"
         }
-      },
-      "metadata": {
-        "description": "Azure Event Hub namespace details."
       }
     }
   }
