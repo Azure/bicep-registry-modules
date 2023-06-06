@@ -333,3 +333,4 @@ output eventHubNamespaceDetails array = [for varEventHubNamespace in varEventHub
   serviceBusEndpoint: reference(varEventHubNamespace.eventHubNamespaceName,'2021-11-01','Full').properties.serviceBusEndpoint
   status: reference(varEventHubNamespace.eventHubNamespaceName,'2021-11-01','Full').properties.status
 }]
+
