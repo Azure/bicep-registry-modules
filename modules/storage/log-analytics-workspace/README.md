@@ -10,7 +10,8 @@ This module deploys Log Analytics workspace and optionally available integration
 
 | Name                              | Type     | Required | Description                                                                                              |
 | :-------------------------------- | :------: | :------: | :------------------------------------------------------------------------------------------------------- |
-| `name`                            | `string` | Yes      | Required. Name of the Log Analytics Workspace.                                                           |
+| `prefix`                          | `string` | No       | Prefix of Log Analytics Workspace Resource Name.This param is ignored when name is provided.             |
+| `name`                            | `string` | No       | Required. Name of the Log Analytics Workspace.                                                           |
 | `location`                        | `string` | Yes      | Required. Define the Azure Location that the Log Analytics Workspace should be created within.           |
 | `tags`                            | `object` | No       | Optional. Tags for Log Analytics Workspace.                                                              |
 | `skuName`                         | `string` | No       | Optional. sku of Log Analytics Workspace. Default set to PerGB2018                                       |
@@ -35,7 +36,7 @@ This module deploys Log Analytics workspace and optionally available integration
 param name string = 'my-logAnalyticsWorkspace-01'
 param location = 'eastus'
 
-module logAnalyticsWorkspace 'br/public:storage/log-analytics-workspace:1.0.1' = {
+module logAnalyticsWorkspace 'br/public:storage/log-analytics-workspace:0.0.1' = {
   name: 'my-logAnalyticsWorkspace-01'
   params: {
     name: name

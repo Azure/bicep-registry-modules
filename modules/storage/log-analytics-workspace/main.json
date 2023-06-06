@@ -4,13 +4,21 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.16.2.56959",
-      "templateHash": "18212039306959495780"
+      "version": "0.17.1.54307",
+      "templateHash": "5884364183646171566"
     }
   },
   "parameters": {
+    "prefix": {
+      "type": "string",
+      "defaultValue": "law",
+      "metadata": {
+        "description": "Prefix of Log Analytics Workspace Resource Name.This param is ignored when name is provided."
+      }
+    },
     "name": {
       "type": "string",
+      "defaultValue": "[take(format('{0}{1}', parameters('prefix'), uniqueString(resourceGroup().id, subscription().id)), 63)]",
       "metadata": {
         "description": "Required. Name of the Log Analytics Workspace."
       },
