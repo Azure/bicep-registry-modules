@@ -13,7 +13,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
 
     resource databaseContainers 'Containers' = {
       name: name
-      tags: toObject(config.?tags ?? [], tag => tag.key, tag => tag.value)
+      tags: config.?tags ?? {}
       properties: {
         resource: {
           id: name
@@ -30,7 +30,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
 
       resource databaseContainersStoredProcedures 'storedProcedures' = [for procedure in items(config.?storedProcedures ?? {}): {
         name: procedure.key
-        tags: toObject(procedure.value.?tags ?? [], tag => tag.key, tag => tag.value)
+        tags: procedure.value.?tags ?? {}
         properties: {
           resource: {
             id: procedure.key
@@ -42,7 +42,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
 
       resource databaseContainersUserDefinedFunction 'userDefinedFunctions' = [for function in items(config.?userDefinedFunctions ?? {}): {
         name: function.key
-        tags: toObject(function.value.?tags ?? [], tag => tag.key, tag => tag.value)
+        tags: function.value.?tags ?? {}
         properties: {
           resource: {
             id: function.key
@@ -53,7 +53,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
 
       resource databaseContainersTriggers 'triggers' = [for trigger in items(config.?triggers ?? {}): {
         name: trigger.key
-        tags: toObject(trigger.value.?tags ?? [], tag => tag.key, tag => tag.value)
+        tags: trigger.value.?tags ?? {}
         properties: {
           resource: {
             id: trigger.key

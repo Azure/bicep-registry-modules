@@ -16,7 +16,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
       }
       options: enableServerless ? null : (config.?performance == null ? null : (config.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput }))
     }
-    tags: toObject(config.?tags ?? [], tag => tag.key, tag => tag.value)
+    tags: config.?tags ?? {}
 
     resource gremlinDatabaseGraphs 'graphs' = [for graph in items(config.?graphs ?? {}): {
       name: graph.key
@@ -31,7 +31,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
         }
         options: enableServerless ? null : (graph.value.?performance == null ? null : (graph.value.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: graph.value.performance.throughput } } : { throughput: graph.value.performance.throughput }))
       }
-      tags: toObject(graph.value.?tags ?? [], tag => tag.key, tag => tag.value)
+      tags: graph.value.?tags ?? {}
     }]
   }
 }

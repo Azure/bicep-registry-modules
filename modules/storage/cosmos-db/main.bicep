@@ -149,9 +149,8 @@ param identityType string = 'None'
 @description('The list of user-assigned managed identities. The user identity dictionary key references will be ARM resource ids in the form: "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}"')
 param userAssignedIdentities string[] = []
 
-@maxLength(15)
-@description('List of key-value pairs that describe the resource.')
-param tags tagType[] = []
+@description('A object of key-value pairs that describe the resource.')
+param tags { *: string } = {}
 
 @allowed([
   'CanNotDelete'
@@ -242,7 +241,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
     type: identityType
     userAssignedIdentities: contains(identityType, 'UserAssigned') ? toObject(userAssignedIdentities, id => id, id => {}) : null
   }
-  tags: toObject(tags, tag => tag.key, tag => tag.value)
+  tags: tags
 }
 
 module cosmosDBAccount_cassandraKeyspaces 'modules/cassandra.bicep' = [for keyspace in items(cassandraKeyspaces): if (backendApi == 'cassandra') {
@@ -393,7 +392,7 @@ type cassandraTableType = {
   @description('The schema of the Cassandra table.')
   schema: schemaType
   @description('Tags for the Cassandra table.')
-  tags: tagType[]?
+  tags: { *: string }?
 }
 
 @description('Cassandra keyspaces configurations.')
@@ -406,7 +405,7 @@ type cassandraKeyspaceType = {
   The value of each element is an configuration object.''')
   tables: { *: cassandraTableType }?
   @description('Tags for the Cassandra keyspace.')
-  tags: tagType[]?
+  tags: { *: string }?
 }
 
 @description('The type definition of sql container client encryption policy included paths.')
@@ -516,7 +515,7 @@ type sqlContainerStoredProceduresType = {
   @description('Performance configs.')
   performance: performanceConfigType?
   @description('Tags for the resource.')
-  tags: tagType[]?
+  tags: { *: string }?
 }
 
 @description('The type definition of SQL database container user defined functions.')
@@ -526,7 +525,7 @@ type sqlContainerUserDefinedFunctionsType = {
   @description('Performance configs.')
   performance: performanceConfigType?
   @description('Tags for the resource.')
-  tags: tagType[]?
+  tags: { *: string }?
 }
 
 @description('The type definition of SQL database container triggers.')
@@ -540,7 +539,7 @@ type sqlContainerTriggersType = {
   @description('The operation the trigger is associated with.')
   triggerOperation: ('Create' | 'Delete' | 'Replace' | 'Update' | 'All')?
   @description('Tags for the resource.')
-  tags: tagType[]?
+  tags: { *: string }?
 }
 
 @description('The type definition of SQL database container.')
@@ -564,7 +563,7 @@ type sqlContainerType = {
   @description('Configuration of triggers in the container.')
   triggers: { *: sqlContainerTriggersType }?
   @description('Tags for the resource.')
-  tags: tagType[]?
+  tags: { *: string }?
 }
 
 @description('The type definition of SQL database configuration.')
@@ -574,7 +573,7 @@ type sqlDatabaseType = {
   @description('sql Container configurations.')
   containers: { *: sqlContainerType }?
   @description('Tags for the SQL database.')
-  tags: tagType[]?
+  tags: { *: string }?
 }
 
 type consistencyPolicyType = {
@@ -627,7 +626,7 @@ type mongodbDatabaseCollectionType = {
   @description('A key-value pair of shard keys to be applied for the request.')
   shardKey: { *: string }?
   @description('Tags for the resource.')
-  tags: tagType[]?
+  tags: { *: string }?
 }
 
 type mongodbDatabaseType = {
@@ -635,14 +634,14 @@ type mongodbDatabaseType = {
   performance: performanceConfigType?
   collections: { *: mongodbDatabaseCollectionType }?
   @description('Tags for the resource.')
-  tags: tagType[]?
+  tags: { *: string }?
 }
 
 type tableType = {
   @description('Performance configs.')
   performance: performanceConfigType?
   @description('Tags for the resource.')
-  tags: tagType[]?
+  tags: { *: string }?
 }
 
 type gremlinGraphType = {
@@ -659,14 +658,14 @@ type gremlinGraphType = {
   @description('The unique key policy configuration for specifying uniqueness constraints on documents in the collection in the Azure Cosmos DB service.')
   uniqueKeyPolicy: graphUniqueKeyPolicyTypeForSqlContainerAndGremlinGraph?
   @description('Tags for the resource.')
-  tags: tagType[]?
+  tags: { *: string }?
 }
 
 type gremlinDatabaseType = {
   @description('Performance configs.')
   performance: performanceConfigType?
   @description('Tags for the resource.')
-  tags: tagType[]?
+  tags: { *: string }?
   @description('The object of Gremlin database graphs.')
   graphs: { *: gremlinGraphType }?
 }
@@ -706,7 +705,7 @@ type privateEndpointType = {
   @description('When set to true, users will need to manually approve the private endpoint connection request.')
   isManualApproval: bool?
   @description('Tags for the resource.')
-  tags: tagType[]?
+  tags: { *: string }?
 }
 
 type locationType = {
@@ -727,14 +726,4 @@ type roleAssignmentType = {
   description: string?
   @description('The ID of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
-}
-
-type tagType = {
-  @maxLength(128)
-  @description('The tag name.')
-  key: string
-
-  @maxLength(256)
-  @description('The tag value.')
-  value: string
 }

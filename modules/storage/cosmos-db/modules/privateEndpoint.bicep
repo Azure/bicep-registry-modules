@@ -5,7 +5,7 @@ param endpoint object
 resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-07-01' = {
   name: endpoint.name
   location: location
-  tags: toObject(endpoint.tags ?? [], tag => tag.key, tag => tag.value)
+  tags: endpoint.?tags ?? {}
   properties: {
     privateLinkServiceConnections: endpoint.manualApprovalEnabled ? null : [
       {

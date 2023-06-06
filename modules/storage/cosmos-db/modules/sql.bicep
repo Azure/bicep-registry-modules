@@ -11,7 +11,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
 resource sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2022-11-15' = {
   name: name
   parent: cosmosDBAccount
-  tags: toObject(config.?tags ?? [], tag => tag.key, tag => tag.value)
+  tags: config.?tags ?? {}
   properties: {
     resource: {
       id: name

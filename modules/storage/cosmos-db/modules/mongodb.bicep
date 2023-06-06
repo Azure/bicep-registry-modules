@@ -16,7 +16,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
       }
       options: enableServerless ? null : (config.?performance == null ? null : (config.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput }))
     }
-    tags: toObject(config.?tags ?? [], tag => tag.key, tag => tag.value)
+    tags: config.?tags ?? {}
 
     resource mongodbDatabaseCollections 'collections' = [for collection in items(config.?collections ?? {}): {
       name: collection.key
@@ -28,7 +28,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
         }
         options: enableServerless ? null : (collection.value.?performance == null ? null : (collection.value.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: collection.value.performance.throughput } } : { throughput: collection.value.performance.throughput }))
       }
-      tags: toObject(collection.value.?tags ?? [], tag => tag.key, tag => tag.value)
+      tags: collection.value.?tags ?? {}
     }]
   }
 }

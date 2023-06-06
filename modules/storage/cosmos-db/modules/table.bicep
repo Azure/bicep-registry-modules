@@ -10,7 +10,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
 
   resource tables 'tables' = {
     name: name
-    tags: toObject(config.?tags ?? [], tag => tag.key, tag => tag.value)
+    tags: config.?tags ?? {}
     properties: {
       resource: {
         id: name
