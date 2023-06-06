@@ -1,7 +1,10 @@
+@description('Prefix of Log Analytics Workspace Resource Name. This param is ignored when name is provided.')
+param prefix string = 'law'
+
 @minLength(4)
 @maxLength(63)
 @description('Required. Name of the Log Analytics Workspace.')
-param name string
+param name string = take('${prefix}${uniqueString(resourceGroup().id, subscription().id)}', 63)
 
 @description('Required. Define the Azure Location that the Log Analytics Workspace should be created within.')
 param location string
