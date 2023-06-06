@@ -3,6 +3,8 @@ param principalIds array
 param roleDefinitionIdOrName string
 param resourceId string
 param principalType string = ''
+param namespaceName string
+param eventHubName string
 
 var builtInRoleNames = {
   'Azure Event Hubs Data Owner': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f526a384-b230-433a-b45c-95f59c4a2dec')
@@ -25,8 +27,13 @@ var builtInRoleNames = {
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
-resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2021-11-01' existing = {
-  name: '${split(resourceId, '/')[8]}/${split(resourceId, '/')[10]}}'
+resource namespace 'Microsoft.EventHub/namespaces@2021-11-01' existing = {
+  name: namespaceName
+}
+
+resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2021-11-01' existing= {
+  name: eventHubName
+  parent: namespace
 }
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for principalId in principalIds: {
