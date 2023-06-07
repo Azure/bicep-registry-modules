@@ -1,7 +1,7 @@
 param location string
 param name string
 
-resource virutalNetwork 'Microsoft.Network/virtualNetworks@2022-11-01' = {
+resource virutalNetwork 'Microsoft.Network/virtualNetworks@2022-09-01' = {
   name: 'network-${uniqueString(name)}'
   location: location
   properties: {
