@@ -1,0 +1,140 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.17.1.54307",
+      "templateHash": "3975942133301411082"
+    }
+  },
+  "parameters": {
+    "prefix": {
+      "type": "string",
+      "defaultValue": "uai",
+      "metadata": {
+        "description": "Prefix of User Assigned Identity Resource Name. This param is ignored when name is provided."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "[take(format('{0}{1}', parameters('prefix'), uniqueString(resourceGroup().id, subscription().id)), 50)]",
+      "metadata": {
+        "description": "Required. Name of User Assigned Identity."
+      },
+      "maxLength": 50,
+      "minLength": 5
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Define the Azure Location that the Azure User Assigned Identity should be created within."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Tags for Azure User Assigned Identity"
+      }
+    },
+    "federatedCredentials": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of federatedCredentials to be configured with Managed Identity, default set to []"
+      }
+    },
+    "roles": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. roles list which will create roleAssignment for userAssignedIdentities, default set to []"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]"
+    },
+    {
+      "copy": {
+        "name": "federatedCredential",
+        "count": "[length(parameters('federatedCredentials'))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials",
+      "apiVersion": "2023-01-31",
+      "name": "[format('{0}/{1}', parameters('name'), parameters('federatedCredentials')[copyIndex()].name)]",
+      "properties": {
+        "audiences": "[parameters('federatedCredentials')[copyIndex()].audiences]",
+        "issuer": "[parameters('federatedCredentials')[copyIndex()].issuer]",
+        "subject": "[parameters('federatedCredentials')[copyIndex()].subject]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))]"
+      ]
+    },
+    {
+      "copy": {
+        "name": "roleAssignment",
+        "count": "[length(parameters('roles'))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name')), parameters('roles')[copyIndex()].name)]",
+      "properties": {
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roles')[copyIndex()].roleDefinitionId)]",
+        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name')), '2023-01-31').principalId]",
+        "principalType": "[parameters('roles')[copyIndex()].principalType]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "id": {
+      "type": "string",
+      "metadata": {
+        "description": "Id of the User Assigned Identity created."
+      },
+      "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the User Assigned Identity created."
+      },
+      "value": "[parameters('name')]"
+    },
+    "principalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The id of the service principal object associated with the created identity."
+      },
+      "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name')), '2023-01-31').principalId]"
+    },
+    "tenantId": {
+      "type": "string",
+      "metadata": {
+        "description": "The id of the tenant which the identity belongs to."
+      },
+      "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name')), '2023-01-31').tenantId]"
+    },
+    "clientId": {
+      "type": "string",
+      "metadata": {
+        "description": "The id of the app associated with the identity. This is a random generated UUID by MSI."
+      },
+      "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('name')), '2023-01-31').clientId]"
+    }
+  }
+}

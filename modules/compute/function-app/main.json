@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.16.2.56959",
-      "templateHash": "7644818069097581785"
+      "version": "0.17.1.54307",
+      "templateHash": "2980795028760736514"
     }
   },
   "parameters": {
@@ -258,7 +258,7 @@
     },
     "branch": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "main",
       "metadata": {
         "description": "Optional. Name of branch to use for deployment."
       }
@@ -308,6 +308,13 @@
       "defaultValue": false,
       "metadata": {
         "description": "Optional. Enable docker image deployment"
+      }
+    },
+    "dockerImage": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. This will be required when enableDockerContainer passed as true."
       }
     },
     "extraAppSettings": {
@@ -368,7 +375,7 @@
       },
       "properties": {
         "siteConfig": {
-          "linuxFxVersion": "[if(parameters('enableDockerContainer'), 'DOCKER|mcr.microsoft.com/azure-functions/dotnet:4-appservice-quickstart', null())]"
+          "linuxFxVersion": "[if(parameters('enableDockerContainer'), format('DOCKER|{0}', parameters('dockerImage')), null())]"
         },
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('name'))]",
         "httpsOnly": "[parameters('httpsOnly')]",

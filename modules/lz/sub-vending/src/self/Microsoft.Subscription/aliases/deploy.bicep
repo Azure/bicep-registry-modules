@@ -1,4 +1,4 @@
-targetScope = 'tenant'
+targetScope = 'managementGroup'
 
 @maxLength(63)
 @description('The name of the subscription alias. The string must be comprised of a-z, A-Z, 0-9, - and _. The maximum length is 63 characters.')
@@ -19,6 +19,7 @@ param subscriptionBillingScope string
 param subscriptionWorkload string = 'Production'
 
 resource subscriptionAlias 'Microsoft.Subscription/aliases@2021-10-01' = {
+  scope: tenant()
   name: subscriptionAliasName
   properties: {
     workload: subscriptionWorkload

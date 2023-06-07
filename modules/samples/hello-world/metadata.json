@@ -1,6 +1,6 @@
 {
-  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema#",
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
   "name": "Hello World",
-  "description": "A \u0022Hello World\u0022 sample Bicep registry module",
+  "summary": "A \u0022Hello World\u0022 sample Bicep registry module",
   "owner": "bicep-admins"
 }

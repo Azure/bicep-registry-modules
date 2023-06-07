@@ -1,7 +1,5 @@
-param name string = replace(take(deployment().name, 55), '.', '')
+param name string = deployment().name
 param location string = resourceGroup().location
-
-param enableDockerContainer bool = true
 
 param tags object = {
   costcenter: '000'
@@ -19,23 +17,13 @@ module dependencies 'prereq.test.bicep' = {
   }
 }
 
-@description('''
-- This test setup the Azure Function without appInsights (Microsoft.Insights/components).
-- enableaInsights default value is false and workspaceResourceId default value is empty so both params not required to pass.
-- without any function
-
-Dependency list:
-- Microsoft.ManagedIdentity/userAssignedIdentities
-
-''')
-
 module test1 '../main.bicep' = {
   name: 'func1${uniqueString(name)}'
   dependsOn: [
     dependencies
   ]
   params: {
-    name: 'fun1-${name}'
+    name: take(replace('fun1-${name}', '.', ''), 55)
     location: location
     sku: {
       name: 'Y1'
@@ -48,15 +36,13 @@ module test1 '../main.bicep' = {
     storageAccountName: dependencies.outputs.saAccountName
     storgeAccountResourceGroup: resourceGroup().name
     enableSourceControl: false
-    enableDockerContainer: enableDockerContainer
+    enableDockerContainer: true
+    dockerImage: 'mcr.microsoft.com/azure-functions/dotnet:4-appservice-quickstart'
     serverOS: 'Linux'
-
   }
   scope: resourceGroup()
-
 }
 
-// TODO: should add test case using sourcecontrol extension later
 module test2 '../main.bicep' = {
   name: 'func2-${uniqueString(name)}'
   scope: resourceGroup()
@@ -64,7 +50,7 @@ module test2 '../main.bicep' = {
     dependencies
   ]
   params: {
-    name: 'func2-${name}'
+    name: take(replace('fun2-${name}', '.', ''), 55)
     location: location
     sku: {
       name: 'EP1'
@@ -78,11 +64,13 @@ module test2 '../main.bicep' = {
     enableVnetIntegration: true
     enableInsights: true
     workspaceResourceId: dependencies.outputs.workspacesId
-    subnetId: dependencies.outputs.subnets
+    subnetId: dependencies.outputs.subnetResourceIds
     functionsExtensionVersion: '~4'
     functionsWorkerRuntime: 'powershell'
     storageAccountName: dependencies.outputs.saAccountName
     storgeAccountResourceGroup: resourceGroup().name
-    enablePackageDeploy: true
+    enableSourceControl: true
+    repoUrl: 'https://github.com/Azure/KeyVault-Secrets-Rotation-Redis-PowerShell.git'
+    enableDockerContainer: false
   }
 }

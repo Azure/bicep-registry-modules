@@ -20,7 +20,6 @@ param sku object = {
 
 @description('Optional. Kind of server OS.')
 @allowed([ 'Windows', 'Linux' ])
-
 param serverOS string = 'Windows'
 
 @description('Optional. If true, apps assigned to this app service plan can be scaled independently. If false, apps assigned to this app service plan will scale to all instances of the plan.')
@@ -115,7 +114,7 @@ param enableSourceControl bool = false
 param repoUrl string = ''
 
 @description('Optional. Name of branch to use for deployment.')
-param branch string = ''
+param branch string = 'main'
 
 @description('Required. Name of the storage account used by function app.')
 param storageAccountName string
@@ -137,6 +136,9 @@ param functionPackageUri string = ''
 
 @description('Optional. Enable docker image deployment')
 param enableDockerContainer bool = false
+
+@description('Optional. This will be required when enableDockerContainer passed as true.')
+param dockerImage string = ''
 
 @description('''Optional. Extra app settings that should be provisioned while creating the function app. Note! Settings below should not be included unless absolutely necessary, because settings in this param will override the ones added by the module:
 AzureWebJobsStorage
@@ -200,7 +202,7 @@ resource sites 'Microsoft.Web/sites@2022-03-01' = {
   }
   properties: {
     siteConfig: {
-      linuxFxVersion: enableDockerContainer ? 'DOCKER|mcr.microsoft.com/azure-functions/dotnet:4-appservice-quickstart' : null
+      linuxFxVersion: enableDockerContainer ? 'DOCKER|${dockerImage}' : null
     }
     serverFarmId: serverfarms.id
     httpsOnly: httpsOnly

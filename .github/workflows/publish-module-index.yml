@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install packages
         run: npm ci
@@ -54,7 +54,7 @@ jobs:
     needs: upload-index-data
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install packages
         run: npm ci
@@ -81,7 +81,7 @@ jobs:
 
       - name: Setup Pages
         id: pages
-        uses: actions/configure-pages@v2
+        uses: actions/configure-pages@v3
 
       - name: Build with Jekyll
         working-directory: ./docs/jekyll
