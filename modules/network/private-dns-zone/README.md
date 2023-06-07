@@ -1,6 +1,6 @@
 # Azure Private DNS zones
 
-Azure Private DNS is a hosting service for Private DNS domains that provides name resolution.
+Azure Private DNS provides a reliable, secure DNS service to manage.
 
 ## Description
 
