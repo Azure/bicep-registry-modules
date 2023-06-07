@@ -84,17 +84,16 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 }
 
 resource virtualNetworkLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = [for virtualNetworkLink in virtualNetworkLinksArray: {
+  parent: privateDnsZone
   name: virtualNetworkLink.name
   tags: virtualNetworkLink.tags
   location: virtualNetworkLink.location
-
   properties: {
     registrationEnabled: virtualNetworkLink.registrationEnabled
     virtualNetwork: {
       id: virtualNetworkLink.virtualNetworkId
     }
   }
-  parent: privateDnsZone
 }]
 
 resource A 'Microsoft.Network/privateDnsZones/A@2020-06-01' = [for record in aRecords: {
