@@ -6,15 +6,13 @@ targetScope = 'resourceGroup'
 
 param location string = 'eastus'
 param serviceShort string = 'appconf'
-
-@maxLength(6)
-param uniqueName string = substring(newGuid(), 0, 6)
+var uniqueName = uniqueString(resourceGroup().id, deployment().name, location)
 
 // ============ //
 // Dependencies //
 // ============ //
 
-module dependencies 'dependencies.test.bicep' = {
+module dependencies 'prereq.test.bicep' = {
   name: 'test-dependencies'
   params: {
     name: serviceShort
@@ -31,29 +29,28 @@ module dependencies 'dependencies.test.bicep' = {
 module test01 '../main.bicep' = {
   name: 'test01-${uniqueName}'
   params: {
+    prefix: 'appconf-test01'
     location: location
     skuName: 'Standard'
-    name: 'test01-${uniqueName}'
   }
 }
 
-// Test 02 - Deployment with Standard SKU - softDeleteRetentionInDays - enablePurgeProtection - RoleAssignments - diagnostics
+// Test 02 - Deployment with Standard SKU - softDeleteRetentionInDays - RoleAssignments
 module test02 '../main.bicep' = {
   name: 'test02-${uniqueName}'
   params: {
+    prefix: 'appconf-test02'
     location: location
-    name: 'test02-${uniqueName}'
     skuName: 'Standard'
     softDeleteRetentionInDays: 2
-    enablePurgeProtection: true
-    diagnosticWorkspaceId: dependencies.outputs.workspaceId
+    enablePurgeProtection: false
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'App Configuration Data Owner'
         principalIds: [ dependencies.outputs.identityPrincipalIds[0] ]
       }
       {
-        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '516239f1-63e1-4d78-a4de-a74fb236a071') // App Configuration Data Reader
+        roleDefinitionIdOrName: 'App Configuration Data Reader'
         principalIds: [ dependencies.outputs.identityPrincipalIds[1] ]
       }
     ]
@@ -64,8 +61,8 @@ module test02 '../main.bicep' = {
 module test03 '../main.bicep' = {
   name: 'test03-${uniqueName}'
   params: {
+    prefix: 'appconf-test03'
     location: location
-    name: 'test03-${uniqueName}'
     skuName: 'Standard'
     publicNetworkAccess: 'Disabled'
     replicas: [
@@ -90,15 +87,15 @@ module test03 '../main.bicep' = {
 module test04 '../main.bicep' = {
   name: 'test04-${uniqueName}'
   params: {
+    prefix: 'appconf-test04'
     location: location
-    name: 'test04-${uniqueName}'
     skuName: 'Standard'
     publicNetworkAccess: 'Disabled'
     privateEndpoints: [
       {
         name: 'endpoint1'
         subnetId: dependencies.outputs.subnetIds[0]
-        manualApprovalEnabled: true
+        manualApprovalEnabled: false
       }
       {
         name: 'endpoint2'
@@ -113,14 +110,64 @@ module test04 '../main.bicep' = {
 module test05 '../main.bicep' = {
   name: 'test05-${uniqueName}'
   params: {
+    prefix: 'appconf-test05'
     location: location
-    name: 'test05-${uniqueName}'
     skuName: 'Standard'
     identityType: 'UserAssigned'
     userAssignedIdentities: {
       '${dependencies.outputs.identityIds[0]}': {}
     }
-    keyVaultKeyIdentifier: dependencies.outputs.keyVaultKeyUri
-    identityClientId: dependencies.outputs.identityClientIds[0]
+    appConfigEncryption: {
+      keyIdentifier: dependencies.outputs.keyVaultKeyUri
+      identityClientId: dependencies.outputs.identityClientIds[0]
+    }
+  }
+}
+
+
+// Test 06 -  Configure key-values pair - diagnosticSettings
+module test06 '../main.bicep' = {
+  name: 'test06-${uniqueName}'
+  params: {
+    prefix: 'appconf-test06'
+    location: location
+    skuName: 'Standard'
+    appConfigurationStoreKeyValues: [{
+      name: 'json-example'
+      value: '{"ObjectSetting":{"Targeting":{"Default":true,"Level":"Information"}}}'
+      tags: {
+        example: 'use a json'
+      }
+      contentType: 'application/json'
+    }, {
+      name: 'key-1'
+      value: 'value-1'
+      tags: {
+        example: 'use a key-value pair'
+      }
+    }
+  ]
+  diagnosticSettingsProperties: {
+    logs: [{
+        categoryGroup: 'allLogs'
+        enabled: true
+    }]
+    metrics: [{
+      category: 'AllMetrics'
+      enabled: true
+      retentionPolicy: {
+        days: 2
+        enabled: true
+      }
+    }]
+    diagnosticReceivers: {
+      eventHub: {
+        EventHubName: dependencies.outputs.eventHubName
+        EventHubAuthorizationRuleId: dependencies.outputs.eventHubAuthorizationRuleId
+      }
+      storageAccountId: dependencies.outputs.storageAccountId
+      workspaceId: dependencies.outputs.workspaceId
+    }
+  }
   }
 }
