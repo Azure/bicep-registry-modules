@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Parse tag
         id: parse-tag
@@ -46,7 +46,7 @@ jobs:
             script({ core, tag })
 
       - name: Checkout tag
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           # Input contexts for workflow_dispatch and workflow_call are inconsistent.
           # For workflow_dispatch, use ${{ github.event.inputs.<variable_name> }}
@@ -70,4 +70,4 @@ jobs:
           bicep --version
 
       - name: Publish module
-        run: bicep publish "modules/${{ steps.parse-tag.outputs.module_path }}/main.json" --target "br:${{ secrets.PUBLISH_REGISTRY_SERVER }}/public/bicep/${{ steps.parse-tag.outputs.module_path }}:${{ steps.parse-tag.outputs.version }}" --documentationUri "${{ steps.parse-tag.outputs.documentation_uri }}"
+        run: bicep publish "modules/${{ steps.parse-tag.outputs.module_path }}/main.json" --target "br:${{ secrets.PUBLISH_REGISTRY_SERVER }}/public/bicep/${{ steps.parse-tag.outputs.module_path }}:${{ steps.parse-tag.outputs.version }}" --documentationUri "${{ steps.parse-tag.outputs.documentation_uri }}" --force

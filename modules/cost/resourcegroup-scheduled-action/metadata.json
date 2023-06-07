@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
+  "name": "Cost Management scheduled action for resource groups",
+  "summary": "Creates a scheduled action to notify recipients about the latest costs on a recurring schedule.",
+  "owner": "cost-management-contrib"
+}

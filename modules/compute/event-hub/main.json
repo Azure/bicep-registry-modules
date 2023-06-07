@@ -1,0 +1,1178 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.17.1.54307",
+      "templateHash": "10995657503432400336"
+    }
+  },
+  "parameters": {
+    "clusterName": {
+      "type": "string",
+      "defaultValue": "null",
+      "metadata": {
+        "description": "Optional. Name for the Event Hub cluster, Alphanumerics and hyphens characters, Start with letter, End with letter or number."
+      }
+    },
+    "clusterCapacity": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "Optional. The quantity of Event Hubs Cluster Capacity Units contained in this cluster."
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Location for all resources."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "eventHubNamespaces": {
+      "type": "object",
+      "defaultValue": {
+        "[format('evns-{0}', uniqueString(parameters('location')))]": {
+          "sku": "Standard",
+          "capacity": 1,
+          "maximumThroughputUnits": 0,
+          "zoneRedundant": false,
+          "isAutoInflateEnabled": false,
+          "disableLocalAuth": false,
+          "kafkaEnabled": true
+        }
+      },
+      "metadata": {
+        "description": "Optional. The name of the event hub namespace to be created.\nBelow paramters you can pass while creating the Azure Event Hub namespace.\nsku: (Optional) Possible values are \"Basic\" or \"Standard\" or \"Premium\". Detault to 'Standard'.\ncapacity: (Optional) int, The Event Hubs throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units.The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units. Default to 1.\nzoneRedundant: (Optional) bool, Enabling this property creates a Standard Event Hubs Namespace in regions supported availability zones. Default to false.\nisAutoInflateEnabled: (Optional) bool,  Value that indicates whether AutoInflate is enabled for eventhub namespace. Only available for \"Standard\" sku. Default to false.\nmaximumThroughputUnits: (Optional) int, Upper limit of throughput units when AutoInflate is enabled, value should be within 0 to 20 throughput units. ( '0' if AutoInflateEnabled = true)\ndisableLocalAuth: (Optional) bool, This property disables SAS authentication for the Event Hubs namespace. Default to false.\nkafkaEnabled: (Optional) bool, Value that indicates whether Kafka is enabled for eventhub namespace. Default to true.\n"
+      }
+    },
+    "eventHubs": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": " Optional. Name for the eventhub to be created.\nBelow paramters you can pass while the creating Azure Event Hub.\nmessageRetentionInDays: (Optional) int, Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Default to 1.\npartitionCount: (Optional) int, Number of partitions created for the Event Hub. Default to 2.\neventHubNamespaceName: (Optional) string, Name of the Azure Event Hub Namespace.\nstatus: (Optional) string, Enumerates the possible values for the status of the Event Hub. 'Active','Creating','Deleting','Disabled','ReceiveDisabled','Renaming','Restoring','SendDisabled','Unknown'. Default to 'Active'.\ncaptureDescriptionDestinationName: (Optional) string, Name for capture destination.\ncaptureDescriptionDestinationArchiveNameFormat: (Optional) string,  Blob naming convention for archive, e.g. {Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}. Here all the parameters (Namespace,EventHub .. etc) are mandatory irrespective of order.\ncaptureDescriptionDestinationBlobContainer: (Optional) string, Blob container Name.\ncaptureDescriptionDestinationStorageAccountResourceId: (Optional) string, Resource ID of the storage account to be used to create the blobs.\ncaptureDescriptionEnabled: (Optional) boolean, A value that indicates whether capture description is enabled.\ncaptureDescriptionEncoding: (Optional) string, Enumerates the possible values for the encoding format of capture description.\ncaptureDescriptionIntervalInSeconds: (Optional) int, The time window allows you to set the frequency with which the capture to Azure Blobs will happen.\ncaptureDescriptionSizeLimitInBytes: (Optional) int, The size window defines the amount of data built up in your Event Hub before an capture operation.\ncaptureDescriptionSkipEmptyArchives: (Optional) boolean,  A value that indicates whether to Skip Empty Archives.\nroleAssignments: (Optional) Array, Array of role assignment objects that contain the \\'roleDefinitionIdOrName\\' and \\'principalId\\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \\'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\\'.\n"
+      }
+    },
+    "namespaceAuthorizationRules": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Authorization Rules for the Event Hub Namespace."
+      }
+    },
+    "namespaceRoleAssignments": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Role assignments for the namespace."
+      }
+    },
+    "disasterRecoveryConfigs": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The disaster recovery config for the namespace."
+      }
+    },
+    "diagnosticSettings": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The Diagnostics Settings config for the namespace."
+      }
+    },
+    "eventHubAuthorizationRules": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Authorization Rules for the Event Hub ."
+      }
+    },
+    "consumerGroups": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. consumer groups for the Event Hub ."
+      }
+    },
+    "privateEndpoints": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Define Private Endpoints that should be created for Azure EventHub Namespace."
+      }
+    },
+    "privateEndpointsApprovalEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Toggle if Private Endpoints manual approval for Azure EventHub Namespace should be enabled."
+      }
+    }
+  },
+  "variables": {
+    "copy": [
+      {
+        "name": "varEventHubNamespaces",
+        "count": "[length(items(parameters('eventHubNamespaces')))]",
+        "input": {
+          "eventHubNamespaceName": "[items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].key]",
+          "sku": "[if(contains(items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value, 'sku'), items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value.sku, 'Standard')]",
+          "capacity": "[if(contains(items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value, 'capacity'), items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value.capacity, 1)]",
+          "zoneRedundant": "[if(contains(items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value, 'zoneRedundant'), items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value.zoneRedundant, false())]",
+          "isAutoInflateEnabled": "[if(contains(items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value, 'isAutoInflateEnabled'), items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value.isAutoInflateEnabled, false())]",
+          "maximumThroughputUnits": "[if(contains(items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value, 'maximumThroughputUnits'), items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value.maximumThroughputUnits, 0)]",
+          "disableLocalAuth": "[if(contains(items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value, 'disableLocalAuth'), items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value.disableLocalAuth, false())]",
+          "kafkaEnabled": "[if(contains(items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value, 'kafkaEnabled'), items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value.kafkaEnabled, true())]"
+        }
+      },
+      {
+        "name": "varNamespaceAuthorizationRules",
+        "count": "[length(items(parameters('namespaceAuthorizationRules')))]",
+        "input": {
+          "eventHubNamespaceAuthorizationRuleName": "[items(parameters('namespaceAuthorizationRules'))[copyIndex('varNamespaceAuthorizationRules')].key]",
+          "rights": "[if(contains(items(parameters('namespaceAuthorizationRules'))[copyIndex('varNamespaceAuthorizationRules')].value, 'rights'), items(parameters('namespaceAuthorizationRules'))[copyIndex('varNamespaceAuthorizationRules')].value.rights, createArray())]",
+          "eventHubNamespaceName": "[items(parameters('namespaceAuthorizationRules'))[copyIndex('varNamespaceAuthorizationRules')].value.eventHubNamespaceName]"
+        }
+      },
+      {
+        "name": "varDisasterRecoveryConfigs",
+        "count": "[length(items(parameters('disasterRecoveryConfigs')))]",
+        "input": {
+          "disasterRecoveryConfigname": "[items(parameters('disasterRecoveryConfigs'))[copyIndex('varDisasterRecoveryConfigs')].key]",
+          "partnerNamespaceId": "[if(contains(items(parameters('disasterRecoveryConfigs'))[copyIndex('varDisasterRecoveryConfigs')].value, 'partnerNamespaceId'), items(parameters('disasterRecoveryConfigs'))[copyIndex('varDisasterRecoveryConfigs')].value.partnerNamespaceId, '')]",
+          "eventHubNamespaceName": "[items(parameters('disasterRecoveryConfigs'))[copyIndex('varDisasterRecoveryConfigs')].value.eventHubNamespaceName]"
+        }
+      },
+      {
+        "name": "varEventHubs",
+        "count": "[length(items(parameters('eventHubs')))]",
+        "input": {
+          "eventHubName": "[items(parameters('eventHubs'))[copyIndex('varEventHubs')].key]",
+          "messageRetentionInDays": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'messageRetentionInDays'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.messageRetentionInDays, 1)]",
+          "partitionCount": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'partitionCount'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.partitionCount, 2)]",
+          "eventHubNamespaceName": "[items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.eventHubNamespaceName]",
+          "status": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'status'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.status, 'Active')]",
+          "captureDescriptionDestinationArchiveNameFormat": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'captureDescriptionDestinationArchiveNameFormat'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.captureDescriptionDestinationArchiveNameFormat, '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}')]",
+          "captureDescriptionDestinationBlobContainer": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'captureDescriptionDestinationBlobContainer'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.captureDescriptionDestinationBlobContainer, '')]",
+          "captureDescriptionDestinationName": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'captureDescriptionDestinationName'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.captureDescriptionDestinationName, 'EventHubArchive.AzureBlockBlob')]",
+          "captureDescriptionDestinationStorageAccountResourceId": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'captureDescriptionDestinationStorageAccountResourceId'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.captureDescriptionDestinationStorageAccountResourceId, '')]",
+          "captureDescriptionEnabled": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'captureDescriptionEnabled'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.captureDescriptionEnabled, false())]",
+          "captureDescriptionEncoding": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'captureDescriptionEncoding'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.captureDescriptionEncoding, 'Avro')]",
+          "captureDescriptionIntervalInSeconds": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'captureDescriptionIntervalInSeconds'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.captureDescriptionIntervalInSeconds, 300)]",
+          "captureDescriptionSizeLimitInBytes": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'captureDescriptionSizeLimitInBytes'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.captureDescriptionSizeLimitInBytes, 314572800)]",
+          "captureDescriptionSkipEmptyArchives": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'captureDescriptionSkipEmptyArchives'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.captureDescriptionSkipEmptyArchives, false())]",
+          "roleAssignments": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'roleAssignments'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.roleAssignments, createArray())]"
+        }
+      },
+      {
+        "name": "varEventHubAuthorizationRules",
+        "count": "[length(items(parameters('eventHubAuthorizationRules')))]",
+        "input": {
+          "eventHubAuthorizationRuleName": "[items(parameters('eventHubAuthorizationRules'))[copyIndex('varEventHubAuthorizationRules')].key]",
+          "rights": "[if(contains(items(parameters('eventHubAuthorizationRules'))[copyIndex('varEventHubAuthorizationRules')].value, 'rights'), items(parameters('eventHubAuthorizationRules'))[copyIndex('varEventHubAuthorizationRules')].value.rights, createArray())]",
+          "eventHubNamespaceName": "[items(parameters('eventHubAuthorizationRules'))[copyIndex('varEventHubAuthorizationRules')].value.eventHubNamespaceName]",
+          "eventHubName": "[items(parameters('eventHubAuthorizationRules'))[copyIndex('varEventHubAuthorizationRules')].value.eventHubName]"
+        }
+      },
+      {
+        "name": "varConsumerGroups",
+        "count": "[length(items(parameters('consumerGroups')))]",
+        "input": {
+          "consumerGroupName": "[items(parameters('consumerGroups'))[copyIndex('varConsumerGroups')].key]",
+          "eventHubNamespaceName": "[items(parameters('consumerGroups'))[copyIndex('varConsumerGroups')].value.eventHubNamespaceName]",
+          "eventHubName": "[items(parameters('consumerGroups'))[copyIndex('varConsumerGroups')].value.eventHubName]",
+          "userMetadata": "[if(contains(items(parameters('consumerGroups'))[copyIndex('varConsumerGroups')].value, 'userMetadata'), items(parameters('consumerGroups'))[copyIndex('varConsumerGroups')].value.userMetadata, '')]"
+        }
+      },
+      {
+        "name": "varDiagnosticSettings",
+        "count": "[length(items(parameters('diagnosticSettings')))]",
+        "input": {
+          "diagnosticSettingName": "[items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].key]",
+          "diagnosticEnableNamespaceName": "[items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value.diagnosticEnablenamespaceName]",
+          "diagnosticStorageAccountId": "[if(contains(items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value, 'diagnosticStorageAccountId'), items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value.diagnosticStorageAccountId, '')]",
+          "diagnosticWorkspaceId": "[if(contains(items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value, 'diagnosticWorkspaceId'), items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value.diagnosticWorkspaceId, '')]",
+          "diagnosticEventHubAuthorizationRuleId": "[if(contains(items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value, 'diagnosticEventHubAuthorizationRuleId'), items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value.diagnosticEventHubAuthorizationRuleId, '')]",
+          "diagnosticEventHubName": "[if(contains(items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value, 'diagnosticEventHubName'), items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value.diagnosticEventHubName, '')]",
+          "diagnosticsMetrics": "[if(contains(items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value, 'diagnosticsMetrics'), items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value.diagnosticsMetrics, createArray())]",
+          "diagnosticsLogs": "[if(contains(items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value, 'diagnosticsLogs'), items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value.diagnosticsLogs, createArray())]"
+        }
+      },
+      {
+        "name": "varNamespaceRoleAssignments",
+        "count": "[length(items(parameters('namespaceRoleAssignments')))]",
+        "input": {
+          "eventHubNamespaceRoleAssignmentsName": "[items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].key]",
+          "description": "[if(contains(items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value, 'description'), items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.description, '')]",
+          "principalIds": "[items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.principalIds]",
+          "principalType": "[if(contains(items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value, 'principalType'), items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.principalType, '')]",
+          "roleDefinitionIdOrName": "[items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.roleDefinitionIdOrName]",
+          "eventHubNamespaceName": "[items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.eventHubNamespaceName]"
+        }
+      },
+      {
+        "name": "varPrivateEndpoints",
+        "count": "[length(parameters('privateEndpoints'))]",
+        "input": {
+          "name": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].name]",
+          "eventHubNamespaceName": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].eventHubNamespaceName]",
+          "groupIds": [
+            "namespace"
+          ],
+          "subnetId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].subnetId]",
+          "customNetworkInterfaceName": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'customNetworkInterfaceName'), parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].customNetworkInterfaceName, '')]",
+          "privateDnsZones": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'privateDnsZoneId'), createArray(createObject('name', 'default', 'zoneId', parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].privateDnsZoneId)), createArray())]"
+        }
+      }
+    ]
+  },
+  "resources": [
+    {
+      "condition": "[not(equals(parameters('clusterName'), 'null'))]",
+      "type": "Microsoft.EventHub/clusters",
+      "apiVersion": "2021-11-01",
+      "name": "[parameters('clusterName')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "sku": {
+        "name": "Dedicated",
+        "capacity": "[parameters('clusterCapacity')]"
+      },
+      "properties": {}
+    },
+    {
+      "copy": {
+        "name": "eventHubNamespace",
+        "count": "[length(variables('varEventHubNamespaces'))]"
+      },
+      "type": "Microsoft.EventHub/namespaces",
+      "apiVersion": "2021-11-01",
+      "name": "[variables('varEventHubNamespaces')[copyIndex()].eventHubNamespaceName]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[variables('varEventHubNamespaces')[copyIndex()].sku]",
+        "tier": "[variables('varEventHubNamespaces')[copyIndex()].sku]",
+        "capacity": "[variables('varEventHubNamespaces')[copyIndex()].capacity]"
+      },
+      "properties": {
+        "disableLocalAuth": "[variables('varEventHubNamespaces')[copyIndex()].disableLocalAuth]",
+        "kafkaEnabled": "[variables('varEventHubNamespaces')[copyIndex()].kafkaEnabled]",
+        "isAutoInflateEnabled": "[variables('varEventHubNamespaces')[copyIndex()].isAutoInflateEnabled]",
+        "maximumThroughputUnits": "[if(variables('varEventHubNamespaces')[copyIndex()].isAutoInflateEnabled, variables('varEventHubNamespaces')[copyIndex()].maximumThroughputUnits, 0)]",
+        "zoneRedundant": "[variables('varEventHubNamespaces')[copyIndex()].zoneRedundant]",
+        "clusterArmId": "[if(not(equals(parameters('clusterName'), 'null')), resourceId('Microsoft.EventHub/clusters', parameters('clusterName')), null())]"
+      },
+      "tags": "[parameters('tags')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.EventHub/clusters', parameters('clusterName'))]"
+      ]
+    },
+    {
+      "copy": {
+        "name": "eventHubNamespace_authorizationRules",
+        "count": "[length(variables('varNamespaceAuthorizationRules'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-EvhbNamespace-AuthRule-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "namespaceName": {
+            "value": "[variables('varNamespaceAuthorizationRules')[copyIndex()].eventHubNamespaceName]"
+          },
+          "name": {
+            "value": "[variables('varNamespaceAuthorizationRules')[copyIndex()].eventHubNamespaceAuthorizationRuleName]"
+          },
+          "rights": {
+            "value": "[variables('varNamespaceAuthorizationRules')[copyIndex()].rights]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.17.1.54307",
+              "templateHash": "6334119818039425552"
+            }
+          },
+          "parameters": {
+            "namespaceName": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "rights": {
+              "type": "array",
+              "defaultValue": []
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.EventHub/namespaces/authorizationRules",
+              "apiVersion": "2021-11-01",
+              "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
+              "properties": {
+                "rights": "[parameters('rights')]"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "eventHubNamespace"
+      ]
+    },
+    {
+      "copy": {
+        "name": "eventHubNamespace_disasterRecoveryConfigs",
+        "count": "[length(variables('varDisasterRecoveryConfigs'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-EvhbNamespace-DisRecConfig-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "namespaceName": {
+            "value": "[variables('varDisasterRecoveryConfigs')[copyIndex()].eventHubNamespaceName]"
+          },
+          "name": {
+            "value": "[variables('varDisasterRecoveryConfigs')[copyIndex()].disasterRecoveryConfigname]"
+          },
+          "partnerNamespaceId": {
+            "value": "[variables('varDisasterRecoveryConfigs')[copyIndex()].partnerNamespaceId]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.17.1.54307",
+              "templateHash": "15417594676504453116"
+            }
+          },
+          "parameters": {
+            "namespaceName": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "partnerNamespaceId": {
+              "type": "string",
+              "defaultValue": ""
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.EventHub/namespaces/disasterRecoveryConfigs",
+              "apiVersion": "2021-11-01",
+              "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
+              "properties": {
+                "partnerNamespace": "[parameters('partnerNamespaceId')]"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "eventHubNamespace"
+      ]
+    },
+    {
+      "copy": {
+        "name": "eventHubNamespace_roleAssignments",
+        "count": "[length(variables('varNamespaceRoleAssignments'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Namespace-Rbac-{1}', deployment().name, copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "roleAssignmentsName": {
+            "value": "[variables('varNamespaceRoleAssignments')[copyIndex()].eventHubNamespaceRoleAssignmentsName]"
+          },
+          "description": {
+            "value": "[variables('varNamespaceRoleAssignments')[copyIndex()].description]"
+          },
+          "principalIds": {
+            "value": "[variables('varNamespaceRoleAssignments')[copyIndex()].principalIds]"
+          },
+          "principalType": {
+            "value": "[variables('varNamespaceRoleAssignments')[copyIndex()].principalType]"
+          },
+          "roleDefinitionIdOrName": {
+            "value": "[variables('varNamespaceRoleAssignments')[copyIndex()].roleDefinitionIdOrName]"
+          },
+          "eventHubNamespaceName": {
+            "value": "[variables('varNamespaceRoleAssignments')[copyIndex()].eventHubNamespaceName]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.17.1.54307",
+              "templateHash": "11615617359408971468"
+            }
+          },
+          "parameters": {
+            "eventHubNamespaceName": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "principalIds": {
+              "type": "array"
+            },
+            "roleDefinitionIdOrName": {
+              "type": "string"
+            },
+            "principalType": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "roleAssignmentsName": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "builtInRoleNames": {
+              "Azure Event Hubs Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f526a384-b230-433a-b45c-95f59c4a2dec')]",
+              "Azure Event Hubs Data Receiver": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a638d3c7-ab3a-418d-83e6-5f17a39d4fde')]",
+              "Azure Event Hubs Data Sender": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2b629674-e913-4c01-ae53-ef4638d8f975')]",
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+              "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
+              "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
+              "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
+              "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
+              "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
+              "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "Schema Registry Contributor (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5dffeca3-4936-4216-b2bc-10343a5abb25')]",
+              "Schema Registry Reader (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2c56ea50-c6b3-40a6-83c0-9d98858bc7d2')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            }
+          },
+          "resources": [
+            {
+              "copy": {
+                "name": "roleAssignment",
+                "count": "[length(parameters('principalIds'))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.EventHub/namespaces/{0}', parameters('eventHubNamespaceName'))]",
+              "name": "[guid(parameters('roleAssignmentsName'), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+              "properties": {
+                "description": "[parameters('description')]",
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
+                "principalId": "[parameters('principalIds')[copyIndex()]]",
+                "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "eventHubNamespace"
+      ]
+    },
+    {
+      "copy": {
+        "name": "eventHubNamespace_eventHubs",
+        "count": "[length(variables('varEventHubs'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-EvhbNamespace-EventHub-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "namespaceName": {
+            "value": "[variables('varEventHubs')[copyIndex()].eventHubNamespaceName]"
+          },
+          "name": {
+            "value": "[variables('varEventHubs')[copyIndex()].eventHubName]"
+          },
+          "messageRetentionInDays": {
+            "value": "[variables('varEventHubs')[copyIndex()].messageRetentionInDays]"
+          },
+          "partitionCount": {
+            "value": "[variables('varEventHubs')[copyIndex()].partitionCount]"
+          },
+          "status": {
+            "value": "[variables('varEventHubs')[copyIndex()].status]"
+          },
+          "captureDescriptionEnabled": {
+            "value": "[variables('varEventHubs')[copyIndex()].captureDescriptionEnabled]"
+          },
+          "captureDescriptionDestinationArchiveNameFormat": {
+            "value": "[variables('varEventHubs')[copyIndex()].captureDescriptionDestinationArchiveNameFormat]"
+          },
+          "captureDescriptionDestinationBlobContainer": {
+            "value": "[variables('varEventHubs')[copyIndex()].captureDescriptionDestinationBlobContainer]"
+          },
+          "captureDescriptionDestinationName": {
+            "value": "[variables('varEventHubs')[copyIndex()].captureDescriptionDestinationName]"
+          },
+          "captureDescriptionDestinationStorageAccountResourceId": {
+            "value": "[variables('varEventHubs')[copyIndex()].captureDescriptionDestinationStorageAccountResourceId]"
+          },
+          "captureDescriptionEncoding": {
+            "value": "[variables('varEventHubs')[copyIndex()].captureDescriptionEncoding]"
+          },
+          "captureDescriptionIntervalInSeconds": {
+            "value": "[variables('varEventHubs')[copyIndex()].captureDescriptionIntervalInSeconds]"
+          },
+          "captureDescriptionSizeLimitInBytes": {
+            "value": "[variables('varEventHubs')[copyIndex()].captureDescriptionSizeLimitInBytes]"
+          },
+          "captureDescriptionSkipEmptyArchives": {
+            "value": "[variables('varEventHubs')[copyIndex()].captureDescriptionSkipEmptyArchives]"
+          },
+          "roleAssignments": {
+            "value": "[variables('varEventHubs')[copyIndex()].roleAssignments]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.17.1.54307",
+              "templateHash": "14858084276366130362"
+            }
+          },
+          "parameters": {
+            "namespaceName": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "messageRetentionInDays": {
+              "type": "int",
+              "defaultValue": 1
+            },
+            "partitionCount": {
+              "type": "int",
+              "defaultValue": 2
+            },
+            "status": {
+              "type": "string",
+              "defaultValue": "Active"
+            },
+            "captureDescriptionEnabled": {
+              "type": "bool",
+              "defaultValue": false
+            },
+            "captureDescriptionDestinationName": {
+              "type": "string",
+              "defaultValue": "EventHubArchive.AzureBlockBlob"
+            },
+            "captureDescriptionDestinationArchiveNameFormat": {
+              "type": "string",
+              "defaultValue": "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}"
+            },
+            "captureDescriptionDestinationBlobContainer": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "captureDescriptionDestinationStorageAccountResourceId": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "captureDescriptionEncoding": {
+              "type": "string",
+              "defaultValue": "Avro"
+            },
+            "captureDescriptionIntervalInSeconds": {
+              "type": "int",
+              "defaultValue": 300
+            },
+            "captureDescriptionSizeLimitInBytes": {
+              "type": "int",
+              "defaultValue": 314572800
+            },
+            "captureDescriptionSkipEmptyArchives": {
+              "type": "bool",
+              "defaultValue": false
+            },
+            "roleAssignments": {
+              "type": "array",
+              "defaultValue": []
+            }
+          },
+          "variables": {
+            "eventHubPropertiesSimple": {
+              "messageRetentionInDays": "[parameters('messageRetentionInDays')]",
+              "partitionCount": "[parameters('partitionCount')]",
+              "status": "[parameters('status')]"
+            },
+            "eventHubPropertiesWithCapture": {
+              "messageRetentionInDays": "[parameters('messageRetentionInDays')]",
+              "partitionCount": "[parameters('partitionCount')]",
+              "status": "[parameters('status')]",
+              "captureDescription": {
+                "destination": {
+                  "name": "[parameters('captureDescriptionDestinationName')]",
+                  "properties": {
+                    "archiveNameFormat": "[parameters('captureDescriptionDestinationArchiveNameFormat')]",
+                    "blobContainer": "[parameters('captureDescriptionDestinationBlobContainer')]",
+                    "storageAccountResourceId": "[parameters('captureDescriptionDestinationStorageAccountResourceId')]"
+                  }
+                },
+                "enabled": "[parameters('captureDescriptionEnabled')]",
+                "encoding": "[parameters('captureDescriptionEncoding')]",
+                "intervalInSeconds": "[parameters('captureDescriptionIntervalInSeconds')]",
+                "sizeLimitInBytes": "[parameters('captureDescriptionSizeLimitInBytes')]",
+                "skipEmptyArchives": "[parameters('captureDescriptionSkipEmptyArchives')]"
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.EventHub/namespaces/eventhubs",
+              "apiVersion": "2021-11-01",
+              "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
+              "properties": "[if(parameters('captureDescriptionEnabled'), variables('eventHubPropertiesWithCapture'), variables('eventHubPropertiesSimple'))]"
+            },
+            {
+              "copy": {
+                "name": "eventHub_roleAssignments",
+                "count": "[length(parameters('roleAssignments'))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-Rbac-{1}', deployment().name, copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
+                  "principalIds": {
+                    "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
+                  },
+                  "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
+                  "roleDefinitionIdOrName": {
+                    "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
+                  },
+                  "resourceId": {
+                    "value": "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaceName'), parameters('name'))]"
+                  },
+                  "namespaceName": {
+                    "value": "[parameters('namespaceName')]"
+                  },
+                  "eventHubName": {
+                    "value": "[parameters('name')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.17.1.54307",
+                      "templateHash": "3430624729635912537"
+                    }
+                  },
+                  "parameters": {
+                    "description": {
+                      "type": "string",
+                      "defaultValue": ""
+                    },
+                    "principalIds": {
+                      "type": "array"
+                    },
+                    "roleDefinitionIdOrName": {
+                      "type": "string"
+                    },
+                    "resourceId": {
+                      "type": "string"
+                    },
+                    "principalType": {
+                      "type": "string",
+                      "defaultValue": ""
+                    },
+                    "namespaceName": {
+                      "type": "string"
+                    },
+                    "eventHubName": {
+                      "type": "string"
+                    }
+                  },
+                  "variables": {
+                    "builtInRoleNames": {
+                      "Azure Event Hubs Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f526a384-b230-433a-b45c-95f59c4a2dec')]",
+                      "Azure Event Hubs Data Receiver": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a638d3c7-ab3a-418d-83e6-5f17a39d4fde')]",
+                      "Azure Event Hubs Data Sender": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2b629674-e913-4c01-ae53-ef4638d8f975')]",
+                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                      "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+                      "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
+                      "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
+                      "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
+                      "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
+                      "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
+                      "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
+                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                      "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+                      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                      "Schema Registry Contributor (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5dffeca3-4936-4216-b2bc-10343a5abb25')]",
+                      "Schema Registry Reader (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2c56ea50-c6b3-40a6-83c0-9d98858bc7d2')]",
+                      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "copy": {
+                        "name": "roleAssignment",
+                        "count": "[length(parameters('principalIds'))]"
+                      },
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "scope": "[format('Microsoft.EventHub/namespaces/{0}/eventhubs/{1}', parameters('namespaceName'), parameters('eventHubName'))]",
+                      "name": "[guid(split(parameters('resourceId'), '/')[0], split(parameters('resourceId'), '/')[1], parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+                      "properties": {
+                        "description": "[parameters('description')]",
+                        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
+                        "principalId": "[parameters('principalIds')[copyIndex()]]",
+                        "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]"
+                      }
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaceName'), parameters('name'))]"
+              ]
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "eventHubNamespace"
+      ]
+    },
+    {
+      "copy": {
+        "name": "eventHub_authorizationRules",
+        "count": "[length(variables('varEventHubAuthorizationRules'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Evhub-AuthRule-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "namespaceName": {
+            "value": "[variables('varEventHubAuthorizationRules')[copyIndex()].eventHubNamespaceName]"
+          },
+          "eventHubName": {
+            "value": "[variables('varEventHubAuthorizationRules')[copyIndex()].eventHubName]"
+          },
+          "name": {
+            "value": "[variables('varEventHubAuthorizationRules')[copyIndex()].eventHubAuthorizationRuleName]"
+          },
+          "rights": {
+            "value": "[variables('varEventHubAuthorizationRules')[copyIndex()].rights]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.17.1.54307",
+              "templateHash": "8200836686756721657"
+            }
+          },
+          "parameters": {
+            "namespaceName": {
+              "type": "string"
+            },
+            "eventHubName": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "rights": {
+              "type": "array",
+              "defaultValue": []
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.EventHub/namespaces/eventhubs/authorizationRules",
+              "apiVersion": "2021-11-01",
+              "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('eventHubName'), parameters('name'))]",
+              "properties": {
+                "rights": "[parameters('rights')]"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "eventHubNamespace_eventHubs"
+      ]
+    },
+    {
+      "copy": {
+        "name": "eventHub_consumerGroup",
+        "count": "[length(variables('varConsumerGroups'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-ConsumerGroup-{1}', deployment().name, copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "namespaceName": {
+            "value": "[variables('varConsumerGroups')[copyIndex()].eventHubNamespaceName]"
+          },
+          "eventHubName": {
+            "value": "[variables('varConsumerGroups')[copyIndex()].eventHubName]"
+          },
+          "name": {
+            "value": "[variables('varConsumerGroups')[copyIndex()].consumerGroupName]"
+          },
+          "userMetadata": {
+            "value": "[variables('varConsumerGroups')[copyIndex()].userMetadata]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.17.1.54307",
+              "templateHash": "10174095528917220663"
+            }
+          },
+          "parameters": {
+            "namespaceName": {
+              "type": "string"
+            },
+            "eventHubName": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "userMetadata": {
+              "type": "string",
+              "defaultValue": ""
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.EventHub/namespaces/eventhubs/consumergroups",
+              "apiVersion": "2021-11-01",
+              "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('eventHubName'), parameters('name'))]",
+              "properties": {
+                "userMetadata": "[if(not(empty(parameters('userMetadata'))), parameters('userMetadata'), null())]"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "eventHubNamespace_eventHubs"
+      ]
+    },
+    {
+      "copy": {
+        "name": "eventHubNamespace_diagnosticSettings",
+        "count": "[length(variables('varDiagnosticSettings'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-diagnosticSettings-{1}', deployment().name, copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "namespaceName": {
+            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticEnableNamespaceName]"
+          },
+          "name": {
+            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticSettingName]"
+          },
+          "diagnosticStorageAccountId": {
+            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticStorageAccountId]"
+          },
+          "diagnosticWorkspaceId": {
+            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticWorkspaceId]"
+          },
+          "diagnosticEventHubAuthorizationRuleId": {
+            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticEventHubAuthorizationRuleId]"
+          },
+          "diagnosticEventHubName": {
+            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticEventHubName]"
+          },
+          "diagnosticsMetrics": {
+            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticsMetrics]"
+          },
+          "diagnosticsLogs": {
+            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticsLogs]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.17.1.54307",
+              "templateHash": "15471641910519975356"
+            }
+          },
+          "parameters": {
+            "namespaceName": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "diagnosticStorageAccountId": {
+              "type": "string"
+            },
+            "diagnosticWorkspaceId": {
+              "type": "string"
+            },
+            "diagnosticEventHubAuthorizationRuleId": {
+              "type": "string"
+            },
+            "diagnosticEventHubName": {
+              "type": "string"
+            },
+            "diagnosticsMetrics": {
+              "type": "array"
+            },
+            "diagnosticsLogs": {
+              "type": "array"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Insights/diagnosticSettings",
+              "apiVersion": "2021-05-01-preview",
+              "scope": "[format('Microsoft.EventHub/namespaces/{0}', parameters('namespaceName'))]",
+              "name": "[parameters('name')]",
+              "properties": {
+                "storageAccountId": "[if(not(equals(parameters('diagnosticStorageAccountId'), '')), parameters('diagnosticStorageAccountId'), null())]",
+                "workspaceId": "[if(not(equals(parameters('diagnosticWorkspaceId'), '')), parameters('diagnosticWorkspaceId'), null())]",
+                "eventHubAuthorizationRuleId": "[if(not(equals(parameters('diagnosticEventHubAuthorizationRuleId'), '')), parameters('diagnosticEventHubAuthorizationRuleId'), null())]",
+                "eventHubName": "[if(not(equals(parameters('diagnosticEventHubName'), '')), parameters('diagnosticEventHubName'), null())]",
+                "metrics": "[parameters('diagnosticsMetrics')]",
+                "logs": "[parameters('diagnosticsLogs')]"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "eventHubNamespace"
+      ]
+    },
+    {
+      "copy": {
+        "name": "eventHubNamespace_privateEndpoint",
+        "count": "[length(variables('varPrivateEndpoints'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-eventnamespace-private-endpoints-{1}', uniqueString(deployment().name), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[variables('varPrivateEndpoints')[copyIndex()].name]"
+          },
+          "namespaceName": {
+            "value": "[variables('varPrivateEndpoints')[copyIndex()].eventHubNamespaceName]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "groupIds": {
+            "value": "[variables('varPrivateEndpoints')[copyIndex()].groupIds]"
+          },
+          "subnetId": {
+            "value": "[variables('varPrivateEndpoints')[copyIndex()].subnetId]"
+          },
+          "privateDnsZones": "[if(contains(variables('varPrivateEndpoints')[copyIndex()], 'privateDnsZones'), createObject('value', variables('varPrivateEndpoints')[copyIndex()].privateDnsZones), createObject('value', createArray()))]",
+          "customNetworkInterfaceName": {
+            "value": "[variables('varPrivateEndpoints')[copyIndex()].customNetworkInterfaceName]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "manualApprovalEnabled": {
+            "value": "[parameters('privateEndpointsApprovalEnabled')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.17.1.54307",
+              "templateHash": "11107361545483996372"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "manualApprovalEnabled": {
+              "type": "bool"
+            },
+            "namespaceName": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "groupIds": {
+              "type": "array"
+            },
+            "subnetId": {
+              "type": "string"
+            },
+            "privateDnsZones": {
+              "type": "array"
+            },
+            "customNetworkInterfaceName": {
+              "type": "string"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2022-05-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "privateLinkServiceConnections": "[if(parameters('manualApprovalEnabled'), null(), createArray(createObject('name', parameters('name'), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.EventHub/namespaces', parameters('namespaceName')), 'groupIds', if(not(empty(parameters('groupIds'))), parameters('groupIds'), null())))))]",
+                "manualPrivateLinkServiceConnections": "[if(parameters('manualApprovalEnabled'), createArray(createObject('name', parameters('name'), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.EventHub/namespaces', parameters('namespaceName')), 'groupIds', if(not(empty(parameters('groupIds'))), parameters('groupIds'), null())))), null())]",
+                "subnet": {
+                  "id": "[parameters('subnetId')]"
+                },
+                "customNetworkInterfaceName": "[parameters('customNetworkInterfaceName')]"
+              }
+            },
+            {
+              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+              "apiVersion": "2022-05-01",
+              "name": "[format('{0}/{1}', parameters('name'), 'default')]",
+              "properties": {
+                "copy": [
+                  {
+                    "name": "privateDnsZoneConfigs",
+                    "count": "[length(parameters('privateDnsZones'))]",
+                    "input": {
+                      "name": "[if(contains(parameters('privateDnsZones')[copyIndex('privateDnsZoneConfigs')], 'name'), parameters('privateDnsZones')[copyIndex('privateDnsZoneConfigs')].name, 'default')]",
+                      "properties": {
+                        "privateDnsZoneId": "[parameters('privateDnsZones')[copyIndex('privateDnsZoneConfigs')].zoneId]"
+                      }
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]"
+              ]
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "eventHubNamespace"
+      ]
+    }
+  ],
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the Azure Event Hub was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "eventHubNamespaceDetails": {
+      "type": "array",
+      "metadata": {
+        "description": "Azure Event Hub namespace details."
+      },
+      "copy": {
+        "count": "[length(variables('varEventHubNamespaces'))]",
+        "input": {
+          "id": "[reference(variables('varEventHubNamespaces')[copyIndex()].eventHubNamespaceName, '2021-11-01', 'Full').resourceId]",
+          "serviceBusEndpoint": "[reference(variables('varEventHubNamespaces')[copyIndex()].eventHubNamespaceName, '2021-11-01', 'Full').properties.serviceBusEndpoint]",
+          "status": "[reference(variables('varEventHubNamespaces')[copyIndex()].eventHubNamespaceName, '2021-11-01', 'Full').properties.status]"
+        }
+      }
+    }
+  }
+}
