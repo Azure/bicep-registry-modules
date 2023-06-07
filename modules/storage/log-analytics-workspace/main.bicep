@@ -1,5 +1,5 @@
 @description('Prefix of Log Analytics Workspace Resource Name.This param is ignored when name is provided.')
-param prefix string = 'law'
+param prefix string = 'log'
 
 @minLength(4)
 @maxLength(63)
