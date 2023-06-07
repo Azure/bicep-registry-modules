@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "16435649151215790393"
+      "templateHash": "18271086898096125171"
     }
   },
   "definitions": {
@@ -26,6 +26,9 @@
             "description": "a value indicating whether the retention policy is enabled."
           }
         }
+      },
+      "metadata": {
+        "description": "The retention policy for this log or metric."
       }
     },
     "diagnosticSettingsLogsType": {
@@ -53,11 +56,11 @@
         },
         "retentionPolicy": {
           "$ref": "#/definitions/diagnosticSettingsRetentionPolicyType",
-          "nullable": true,
-          "metadata": {
-            "description": "The retention policy for this log."
-          }
+          "nullable": true
         }
+      },
+      "metadata": {
+        "description": "The list of log settings."
       }
     },
     "diagnosticSettingsMetricsType": {
@@ -73,15 +76,12 @@
         "enabled": {
           "type": "bool",
           "metadata": {
-            "description": "A value indicating whether this log is enabled."
+            "description": "A value indicating whether this metric is enabled."
           }
         },
         "retentionPolicy": {
           "$ref": "#/definitions/diagnosticSettingsRetentionPolicyType",
-          "nullable": true,
-          "metadata": {
-            "description": "The retention policy for this log."
-          }
+          "nullable": true
         },
         "timeGrain": {
           "type": "string",
@@ -90,6 +90,9 @@
             "description": "the timegrain of the metric in ISO8601 format."
           }
         }
+      },
+      "metadata": {
+        "description": "The list of metric settings."
       }
     },
     "diagnosticSettingsEventHubType": {
@@ -107,6 +110,9 @@
             "description": "The name of the event hub."
           }
         }
+      },
+      "metadata": {
+        "description": "The settings required to use EventHub."
       }
     },
     "diagnosticSettingsReceiversType": {
@@ -114,10 +120,7 @@
       "properties": {
         "eventHub": {
           "$ref": "#/definitions/diagnosticSettingsEventHubType",
-          "nullable": true,
-          "metadata": {
-            "description": "The settings required to use EventHub."
-          }
+          "nullable": true
         },
         "logAnalyticsDestinationType": {
           "type": "string",
@@ -147,6 +150,9 @@
             "description": "The full ARM resource ID of the Log Analytics workspace to which you would like to send Diagnostic Logs."
           }
         }
+      },
+      "metadata": {
+        "description": "Destiantion options."
       }
     },
     "diagnosticSettingsPropertiesType": {
@@ -157,20 +163,14 @@
           "items": {
             "$ref": "#/definitions/diagnosticSettingsLogsType"
           },
-          "nullable": true,
-          "metadata": {
-            "description": "The list of logs settings."
-          }
+          "nullable": true
         },
         "metrics": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/diagnosticSettingsMetricsType"
           },
-          "nullable": true,
-          "metadata": {
-            "description": "The list of metric settings."
-          }
+          "nullable": true
         },
         "serviceBusRuleId": {
           "type": "string",
@@ -181,10 +181,7 @@
         },
         "diagnosticReceivers": {
           "$ref": "#/definitions/diagnosticSettingsReceiversType",
-          "nullable": true,
-          "metadata": {
-            "description": "Destiantion options."
-          }
+          "nullable": true
         }
       }
     },
@@ -236,6 +233,39 @@
             "description": "The ARM resource id of the virtual network subnet."
           }
         }
+      }
+    },
+    "databaseType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "charset": {
+          "type": "string",
+          "nullable": true
+        },
+        "collation": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "description": "Optional. Database definition in the postrges instance."
+      }
+    },
+    "serverConfigurationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "metadata": {
+        "description": "Optional. Configuration definition in the postrges instance."
       }
     }
   },
@@ -311,6 +341,9 @@
     },
     "databases": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/databaseType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. List of databases to create on server."
@@ -318,6 +351,9 @@
     },
     "serverConfigurations": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/serverConfigurationType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. List of server configurations to create on server."
@@ -504,7 +540,7 @@
           ],
           "subnetId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].subnetId]",
           "privateDnsZoneConfigs": "[coalesce(tryGet(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'privateDnsZoneConfigs'), createArray())]",
-          "customNetworkInterfaceName": "[coalesce(tryGet(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'customNetworkInterfaceName'), null())]",
+          "customNetworkInterfaceName": "[tryGet(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'customNetworkInterfaceName')]",
           "manualApprovalEnabled": "[coalesce(tryGet(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'manualApprovalEnabled'), false())]"
         }
       }
@@ -624,15 +660,15 @@
       "scope": "[format('Microsoft.DBforMySQL/servers/{0}', parameters('serverName'))]",
       "name": "[format('{0}-diagnostic-settings', parameters('serverName'))]",
       "properties": {
-        "eventHubAuthorizationRuleId": "[coalesce(tryGet(tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'eventHub'), 'EventHubAuthorizationRuleId'), null())]",
-        "eventHubName": "[coalesce(tryGet(tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'eventHub'), 'EventHubName'), null())]",
-        "logAnalyticsDestinationType": "[coalesce(tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'logAnalyticsDestinationType'), null())]",
-        "logs": "[coalesce(tryGet(parameters('diagnosticSettingsProperties'), 'logs'), null())]",
-        "marketplacePartnerId": "[coalesce(tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'marketplacePartnerId'), null())]",
-        "metrics": "[coalesce(tryGet(parameters('diagnosticSettingsProperties'), 'metrics'), null())]",
-        "serviceBusRuleId": "[coalesce(tryGet(parameters('diagnosticSettingsProperties'), 'serviceBusRuleId'), null())]",
-        "storageAccountId": "[coalesce(tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'storageAccountId'), null())]",
-        "workspaceId": "[coalesce(tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'workspaceId'), null())]"
+        "eventHubAuthorizationRuleId": "[tryGet(tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'eventHub'), 'EventHubAuthorizationRuleId')]",
+        "eventHubName": "[tryGet(tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'eventHub'), 'EventHubName')]",
+        "logAnalyticsDestinationType": "[tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'logAnalyticsDestinationType')]",
+        "logs": "[tryGet(parameters('diagnosticSettingsProperties'), 'logs')]",
+        "marketplacePartnerId": "[tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'marketplacePartnerId')]",
+        "metrics": "[tryGet(parameters('diagnosticSettingsProperties'), 'metrics')]",
+        "serviceBusRuleId": "[tryGet(parameters('diagnosticSettingsProperties'), 'serviceBusRuleId')]",
+        "storageAccountId": "[tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'storageAccountId')]",
+        "workspaceId": "[tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'workspaceId')]"
       },
       "dependsOn": [
         "mysqlServer"
@@ -781,7 +817,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "5992886106863215978"
+              "templateHash": "18440659148863256788"
             }
           },
           "definitions": {
@@ -873,12 +909,12 @@
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
               "properties": {
-                "privateLinkServiceConnections": "[if(parameters('privateEndpoints')[copyIndex()].manualApprovalEnabled, null(), createArray(createObject('name', parameters('privateEndpoints')[copyIndex()].name, 'properties', createObject('privateLinkServiceId', coalesce(parameters('privateEndpoints')[copyIndex()].privateLinkServiceId, null()), 'groupIds', coalesce(parameters('privateEndpoints')[copyIndex()].groupIds, null())))))]",
-                "manualPrivateLinkServiceConnections": "[if(parameters('privateEndpoints')[copyIndex()].manualApprovalEnabled, createArray(createObject('name', parameters('privateEndpoints')[copyIndex()].name, 'properties', createObject('privateLinkServiceId', coalesce(tryGet(parameters('privateEndpoints')[copyIndex()], 'privateLinkServiceId'), null()), 'groupIds', coalesce(parameters('privateEndpoints')[copyIndex()].groupIds, null())))), null())]",
+                "privateLinkServiceConnections": "[if(parameters('privateEndpoints')[copyIndex()].manualApprovalEnabled, null(), createArray(createObject('name', parameters('privateEndpoints')[copyIndex()].name, 'properties', createObject('privateLinkServiceId', parameters('privateEndpoints')[copyIndex()].privateLinkServiceId, 'groupIds', parameters('privateEndpoints')[copyIndex()].groupIds))))]",
+                "manualPrivateLinkServiceConnections": "[if(parameters('privateEndpoints')[copyIndex()].manualApprovalEnabled, createArray(createObject('name', parameters('privateEndpoints')[copyIndex()].name, 'properties', createObject('privateLinkServiceId', tryGet(parameters('privateEndpoints')[copyIndex()], 'privateLinkServiceId'), 'groupIds', parameters('privateEndpoints')[copyIndex()].groupIds))), null())]",
                 "subnet": {
                   "id": "[parameters('privateEndpoints')[copyIndex()].subnetId]"
                 },
-                "customNetworkInterfaceName": "[coalesce(tryGet(parameters('privateEndpoints')[copyIndex()], 'customNetworkInterfaceName'), null())]"
+                "customNetworkInterfaceName": "[tryGet(parameters('privateEndpoints')[copyIndex()], 'customNetworkInterfaceName')]"
               }
             },
             "privateDnsZoneGroup": {

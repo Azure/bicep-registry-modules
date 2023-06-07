@@ -2,9 +2,8 @@ param location string
 param name string
 param tags object
 
-var maxNameLength = 20
-var uniqueStoragename = length(uniqueString(name)) > maxNameLength ? substring(uniqueString(name), 0, maxNameLength) : uniqueString(name)
-var storageAccountName = 'iep${uniqueStoragename}'
+var maxNameLength = 24
+var uniqueStoragename = length(uniqueString(name)) > maxNameLength ? substring(replace(guid(name, resourceGroup().name, subscription().id), '-', ''), 0, maxNameLength) : substring(replace(guid(name, resourceGroup().name, subscription().id), '-', ''), 0, maxNameLength)
 
 module vnet 'br/public:network/virtual-network:1.1.2' = {
   name: 'vnet-network-${uniqueString(resourceGroup().id)}'
@@ -45,7 +44,7 @@ module vnet 'br/public:network/virtual-network:1.1.2' = {
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {
-  name: storageAccountName
+  name: uniqueStoragename
   location: location
   sku: {
     name: 'Standard_LRS'
