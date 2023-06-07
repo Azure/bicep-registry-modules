@@ -2,20 +2,17 @@ param cosmosDBAccountName string
 param enableServerless bool
 param table object
 
-var name = table.key
-var config = table.value
-
 resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
   name: cosmosDBAccountName
 
   resource tables 'tables' = {
-    name: name
-    tags: config.?tags ?? {}
+    name: table.name
+    tags: table.?tags ?? {}
     properties: {
       resource: {
-        id: name
+        id: table.name
       }
-      options: enableServerless ? null : (config.?performance == null ? null : (config.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput }))
+      options: enableServerless ? null : (table.?performance == null ? null : (table.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: table.performance.throughput } } : { throughput: table.performance.throughput }))
     }
   }
 }

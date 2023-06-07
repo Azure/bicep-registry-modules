@@ -2,26 +2,28 @@ param cosmosDBAccountId string
 param location string
 param endpoint object
 
+var manualApprovalEnabled = endpoint.?isManualApproval ?? false
+
 resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-07-01' = {
   name: endpoint.name
   location: location
   tags: endpoint.?tags ?? {}
   properties: {
-    privateLinkServiceConnections: endpoint.manualApprovalEnabled ? null : [
+    privateLinkServiceConnections: manualApprovalEnabled ? null : [
       {
         name: endpoint.name
         properties: {
           privateLinkServiceId: cosmosDBAccountId
-          groupIds: endpoint.groupIds
+          groupIds: [ endpoint.groupId ]
         }
       }
     ]
-    manualPrivateLinkServiceConnections: endpoint.manualApprovalEnabled ? [
+    manualPrivateLinkServiceConnections: manualApprovalEnabled ? [
       {
         name: endpoint.name
         properties: {
           privateLinkServiceId: cosmosDBAccountId
-          groupIds: endpoint.groupIds
+          groupIds: [ endpoint.groupId ]
         }
       }
     ] : null
@@ -29,7 +31,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-07-01' = {
       id: endpoint.subnetId
     }
   }
-  resource privateDnsZoneGroup 'privateDnsZoneGroups' = if (endpoint.privateDnsZoneId != null) {
+  resource privateDnsZoneGroup 'privateDnsZoneGroups' = if (endpoint.?privateDnsZoneId != null) {
     name: 'default'
     properties: {
       privateDnsZoneConfigs: [ {

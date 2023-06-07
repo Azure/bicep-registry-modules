@@ -98,46 +98,23 @@ param enableAnalyticalStorage bool = false
 @allowed([ 'FullFidelity', 'WellDefined' ])
 param analyticalStorageSchemaType string = 'WellDefined'
 
-@description('''
-The object of Cassandra keyspaces configurations.
-The key of each element is the name of the Cassandra keyspace.
-The value of each element is an configuration object.
-''')
-param cassandraKeyspaces { *: cassandraKeyspaceType } = {}
+@description('The array of Cassandra keyspaces configurations.')
+param cassandraKeyspaces cassandraKeyspaceType[] = []
 
-@description('''
-The object of sql database configurations.
-The key of each element is the name of the sql database.
-The value of each element is an configuration object.
-''')
-param sqlDatabases { *: sqlDatabaseType } = {}
+@description('The object of sql database configurations.')
+param sqlDatabases sqlDatabaseType[] = []
 
-@description('''
-The list of MongoDB databases configurations.
-The key of each element is the name of the MongoDB database.
-The value of each element is an configuration object.
-''')
-param mongodbDatabases { *: mongodbDatabaseType } = {}
+@description('The list of MongoDB databases configurations.')
+param mongodbDatabases mongodbDatabaseType[] = []
 
-@description('''
-The object of Table databases configurations.
-The key of each element is the name of the Table database.
-The value of each element is an configuration object.
-''')
-param tables { *: tableType } = {}
+@description('The object of Table databases configurations.')
+param tables tableType[] = []
 
-@description('''
-The list of Gremlin databases configurations.
-The key of each element is the name of the Gremlin database.
-The value of each element is an configuration object.
-''')
-param gremlinDatabases { *: gremlinDatabaseType } = {}
+@description('The list of Gremlin databases configurations.')
+param gremlinDatabases gremlinDatabaseType[] = []
 
-@description('''
-The list of SQL role definitions. Only valis when param.backendApi is set to "Sql".
-The keys are the name which will be used to generate the actual role name which is a GUID.
-The values are the role definition.''')
-param sqlCustomRoleDefinitions { *: sqlCustomRoleDefinitionType } = {}
+@description('The list of SQL role definitions. Only valid when param.backendApi is set to "Sql".')
+param sqlCustomRoleDefinitions sqlCustomRoleDefinitionType[] = []
 
 @description('The list of role assignments for the Cosmos DB account.')
 param roleAssignments roleAssignmentType[] = []
@@ -166,7 +143,7 @@ param consistencyPolicy consistencyPolicyType = {
 }
 
 @description('Private Endpoints that should be created for Azure Cosmos DB account.')
-param privateEndpoints { *: privateEndpointType } = {}
+param privateEndpoints privateEndpointType[] = []
 
 @allowed([ 'Tls', 'Tls11', 'Tls12' ])
 @description('The minimum TLS version to support on this account.')
@@ -177,15 +154,6 @@ param enablePartitionMerge bool = false
 
 @description('Flag to indicate enabling/disabling of Partition Split feature on the account.')
 param enablePartitionKeyMonitor bool = true
-
-var privateEndpointsWithDefaults = [for endpoint in items(privateEndpoints): {
-  name: '${cosmosDBAccount.name}-${endpoint.key}'
-  groupIds: [ endpoint.value.groupId ]
-  subnetId: endpoint.value.subnetId
-  privateDnsZoneId: endpoint.value.?privateDnsZoneId
-  manualApprovalEnabled: endpoint.value.?isManualApproval ?? false
-  tags: endpoint.value.?tags
-}]
 
 var allLocations = [for (location, i) in union([ { name: location, isZoneRedundant: isZoneRedundant } ], additionalLocations): {
   locationName: location.name
@@ -244,8 +212,8 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
   tags: tags
 }
 
-module cosmosDBAccount_cassandraKeyspaces 'modules/cassandra.bicep' = [for keyspace in items(cassandraKeyspaces): if (backendApi == 'cassandra') {
-  name: uniqueString(cosmosDBAccount.id, keyspace.key)
+module cosmosDBAccount_cassandraKeyspaces 'modules/cassandra.bicep' = [for keyspace in cassandraKeyspaces: if (backendApi == 'cassandra') {
+  name: uniqueString(cosmosDBAccount.id, keyspace.name)
   params: {
     cosmosDBAccountName: name
     keyspace: keyspace
@@ -253,8 +221,8 @@ module cosmosDBAccount_cassandraKeyspaces 'modules/cassandra.bicep' = [for keysp
   }
 }]
 
-module cosmosDBAccount_sqlDatabases 'modules/sql.bicep' = [for sql in items(sqlDatabases): if (backendApi == 'sql') {
-  name: uniqueString(cosmosDBAccount.id, sql.key)
+module cosmosDBAccount_sqlDatabases 'modules/sql.bicep' = [for sql in sqlDatabases: if (backendApi == 'sql') {
+  name: uniqueString(cosmosDBAccount.id, sql.name)
   params: {
     cosmosDBAccountName: name
     database: sql
@@ -262,8 +230,8 @@ module cosmosDBAccount_sqlDatabases 'modules/sql.bicep' = [for sql in items(sqlD
   }
 }]
 
-module cosmosDBAccount_mongodbDatabases 'modules/mongodb.bicep' = [for database in items(mongodbDatabases): if (backendApi == 'mongodb') {
-  name: uniqueString(cosmosDBAccount.id, database.key)
+module cosmosDBAccount_mongodbDatabases 'modules/mongodb.bicep' = [for database in mongodbDatabases: if (backendApi == 'mongodb') {
+  name: uniqueString(cosmosDBAccount.id, database.name)
   params: {
     cosmosDBAccountName: name
     database: database
@@ -271,8 +239,8 @@ module cosmosDBAccount_mongodbDatabases 'modules/mongodb.bicep' = [for database 
   }
 }]
 
-module cosmosDBAccount_tables 'modules/table.bicep' = [for table in items(tables): if (backendApi == 'table') {
-  name: uniqueString(cosmosDBAccount.id, table.key)
+module cosmosDBAccount_tables 'modules/table.bicep' = [for table in tables: if (backendApi == 'table') {
+  name: uniqueString(cosmosDBAccount.id, table.name)
   params: {
     cosmosDBAccountName: name
     table: table
@@ -280,8 +248,8 @@ module cosmosDBAccount_tables 'modules/table.bicep' = [for table in items(tables
   }
 }]
 
-module cosmosDBAccount_gremlinDatabases 'modules/gremlin.bicep' = [for database in items(gremlinDatabases): if (backendApi == 'gremlin') {
-  name: uniqueString(cosmosDBAccount.id, database.key)
+module cosmosDBAccount_gremlinDatabases 'modules/gremlin.bicep' = [for database in gremlinDatabases: if (backendApi == 'gremlin') {
+  name: uniqueString(cosmosDBAccount.id, database.name)
   params: {
     cosmosDBAccountName: name
     database: database
@@ -289,8 +257,8 @@ module cosmosDBAccount_gremlinDatabases 'modules/gremlin.bicep' = [for database 
   }
 }]
 
-module cosmosDBAccount_sqlRoles 'modules/sql_roles.bicep' = [for role in items(sqlCustomRoleDefinitions): if (backendApi == 'sql') {
-  name: uniqueString(cosmosDBAccount.id, role.key)
+module cosmosDBAccount_sqlRoles 'modules/sql_roles.bicep' = [for role in sqlCustomRoleDefinitions: if (backendApi == 'sql') {
+  name: uniqueString(cosmosDBAccount.id, role.name)
   params: {
     cosmosDBAccountName: name
     role: role
@@ -309,7 +277,7 @@ resource cosmosDBAccount_roleAssignment 'Microsoft.Authorization/roleAssignments
   }
 }]
 
-module cosmosDBAccount_privateEndpoints 'modules/privateEndpoint.bicep' = [for endpoint in privateEndpointsWithDefaults: {
+module cosmosDBAccount_privateEndpoints 'modules/privateEndpoint.bicep' = [for endpoint in privateEndpoints: {
   name: uniqueString(cosmosDBAccount.id, endpoint.name)
   params: {
     cosmosDBAccountId: cosmosDBAccount.id
@@ -337,7 +305,7 @@ output name string = cosmosDBAccount.name
 output systemAssignedIdentityPrincipalId string = contains(identityType, 'SystemAssigned') ? cosmosDBAccount.identity.principalId : ''
 
 @description('Resource Ids of sql role definition resources created for this Cosmos DB account.')
-output sqlRoleDefinitionIds array = [for (role, i) in items(sqlCustomRoleDefinitions): cosmosDBAccount_sqlRoles[i].outputs.roleDefinitionId]
+output sqlRoleDefinitionIds array = [for (role, i) in sqlCustomRoleDefinitions: cosmosDBAccount_sqlRoles[i].outputs.roleDefinitionId]
 
 type corsType = {
   @description('The origin domains that are permitted to make a request against the service via CORS.')
@@ -385,6 +353,8 @@ type performanceConfigType = {
 
 @description('Cassandra table configurations.')
 type cassandraTableType = {
+  @description('The name of the Cassandra table.')
+  name: string
   @description('Performance configuration.')
   performance: performanceConfigType?
   @description('Default time to live (TTL) in seconds.')
@@ -397,13 +367,12 @@ type cassandraTableType = {
 
 @description('Cassandra keyspaces configurations.')
 type cassandraKeyspaceType = {
+  @description('The name of the Cassandra keyspace.')
+  name: string
   @description('Throughtput configuration.')
   performance: performanceConfigType?
-  @description('''
-  The object of Cassandra table configurations.
-  The key of each element is the name of the  table.
-  The value of each element is an configuration object.''')
-  tables: { *: cassandraTableType }?
+  @description('The object of Cassandra table configurations.')
+  tables: cassandraTableType[]?
   @description('Tags for the Cassandra keyspace.')
   tags: { *: string }?
 }
@@ -510,6 +479,8 @@ type graphUniqueKeyPolicyTypeForSqlContainerAndGremlinGraph = {
 
 @description('The type definition of SQL database container stored procedures.')
 type sqlContainerStoredProceduresType = {
+  @description('The name of the stored procedure.')
+  name: string
   @description('The body of the stored procedure.')
   body: string?
   @description('Performance configs.')
@@ -520,6 +491,8 @@ type sqlContainerStoredProceduresType = {
 
 @description('The type definition of SQL database container user defined functions.')
 type sqlContainerUserDefinedFunctionsType = {
+  @description('The name of the user defined function.')
+  name: string
   @description('The body of the user defined functions.')
   body: string?
   @description('Performance configs.')
@@ -530,6 +503,8 @@ type sqlContainerUserDefinedFunctionsType = {
 
 @description('The type definition of SQL database container triggers.')
 type sqlContainerTriggersType = {
+  @description('The name of the trigger.')
+  name: string
   @description('The body of the triggers.')
   body: string?
   @description('Performance configs.')
@@ -544,6 +519,8 @@ type sqlContainerTriggersType = {
 
 @description('The type definition of SQL database container.')
 type sqlContainerType = {
+  @description('The name of the container.')
+  name: string
   @description('Performance configs.')
   performance: performanceConfigType?
   @description('Default time to live (TTL) in seconds.')
@@ -557,21 +534,23 @@ type sqlContainerType = {
   @description('The unique key policy configuration for specifying uniqueness constraints on documents in the collection in the Azure Cosmos DB service.')
   uniqueKeyPolicy: graphUniqueKeyPolicyTypeForSqlContainerAndGremlinGraph?
   @description('Configuration of stored procedures in the container.')
-  storedProcedures: { *: sqlContainerStoredProceduresType }?
+  storedProcedures: sqlContainerStoredProceduresType[]?
   @description('Configuration of user defined functions in the container.')
-  userDefinedFunctions: { *: sqlContainerUserDefinedFunctionsType }?
+  userDefinedFunctions: sqlContainerUserDefinedFunctionsType[]?
   @description('Configuration of triggers in the container.')
-  triggers: { *: sqlContainerTriggersType }?
+  triggers: sqlContainerTriggersType[]?
   @description('Tags for the resource.')
   tags: { *: string }?
 }
 
 @description('The type definition of SQL database configuration.')
 type sqlDatabaseType = {
+  @description('The name of the SQL database.')
+  name: string
   @description('Performance configs.')
   performance: performanceConfigType?
   @description('sql Container configurations.')
-  containers: { *: sqlContainerType }?
+  containers: sqlContainerType[]?
   @description('Tags for the SQL database.')
   tags: { *: string }?
 }
@@ -619,6 +598,8 @@ type mongodbDatabaseIndexType = {
 }
 
 type mongodbDatabaseCollectionType = {
+  @description('Name of the collection.')
+  name: string
   @description('Performance configs.')
   performance: performanceConfigType?
   @description('	List of index keys.')
@@ -630,14 +611,18 @@ type mongodbDatabaseCollectionType = {
 }
 
 type mongodbDatabaseType = {
+  @description('Name of the database.')
+  name: string
   @description('Performance configs.')
   performance: performanceConfigType?
-  collections: { *: mongodbDatabaseCollectionType }?
+  collections: mongodbDatabaseCollectionType[]?
   @description('Tags for the resource.')
   tags: { *: string }?
 }
 
 type tableType = {
+  @description('Name of the table.')
+  name: string
   @description('Performance configs.')
   performance: performanceConfigType?
   @description('Tags for the resource.')
@@ -645,6 +630,8 @@ type tableType = {
 }
 
 type gremlinGraphType = {
+  @description('Name fo the graph.')
+  name: string
   @description('Performance configs.')
   performance: performanceConfigType?
   @description('The default time to live in seconds.')
@@ -662,12 +649,14 @@ type gremlinGraphType = {
 }
 
 type gremlinDatabaseType = {
+  @description('name of the database.')
+  name: string
   @description('Performance configs.')
   performance: performanceConfigType?
   @description('Tags for the resource.')
   tags: { *: string }?
   @description('The object of Gremlin database graphs.')
-  graphs: { *: gremlinGraphType }?
+  graphs: gremlinGraphType[]?
 }
 
 @description('Type definition for the SQL Role Definition Permission.')
@@ -689,15 +678,18 @@ type sqlRoleAssignmentType = {
 }
 
 type sqlCustomRoleDefinitionType = {
+  @description('The name of the SQL role definition.')
+  name: string
   permissions: sqlRoleDefinitionPermissionType[]?
   @description('The list of SQL role assignments.')
   assisgnments: sqlRoleAssignmentType[]?
 }
 
 type privateEndpointType = {
+  @description('The name of the private endpoint.')
+  name: string
   @description('The subnet that the private endpoint should be created in.')
   subnetId: string
-
   @description('The subresource name of the target Azure resource that private endpoint will connect to.')
   groupId: string
   @description('The ID of the private DNS zone in which private endpoint will register its private IP address.')

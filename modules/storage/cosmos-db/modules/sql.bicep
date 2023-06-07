@@ -1,30 +1,28 @@
 param cosmosDBAccountName string
 param enableServerless bool
 param database object
-var name = database.key
-var config = database.value
 
 resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
   name: cosmosDBAccountName
 }
 
 resource sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2022-11-15' = {
-  name: name
+  name: database.name
   parent: cosmosDBAccount
-  tags: config.?tags ?? {}
+  tags: database.?tags ?? {}
   properties: {
     resource: {
-      id: name
+      id: database.name
     }
-    options: enableServerless ? null : (config.?performance == null ? null : (config.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput }))
+    options: enableServerless ? null : (database.?performance == null ? null : (database.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: database.performance.throughput } } : { throughput: database.performance.throughput }))
   }
 }
 
-module sqlDatabaseContainers 'sql_containers.bicep' = [for container in items(config.?containers ?? {}): {
-  name: uniqueString(cosmosDBAccount.id, sqlDatabase.id, container.key)
+module sqlDatabaseContainers 'sql_containers.bicep' = [for container in database.?containers ?? []: {
+  name: uniqueString(cosmosDBAccount.id, sqlDatabase.id, container.name)
   params: {
     cosmosDBAccountName: cosmosDBAccountName
-    databaseName: name
+    databaseName: database.name
     container: container
     enableServerless: enableServerless
   }

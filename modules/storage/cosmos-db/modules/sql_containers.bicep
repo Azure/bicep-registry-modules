@@ -2,8 +2,6 @@ param cosmosDBAccountName string
 param databaseName string
 param enableServerless bool
 param container object
-var name = container.key
-var config = container.value
 
 resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
   name: cosmosDBAccountName
@@ -12,54 +10,54 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
     name: databaseName
 
     resource databaseContainers 'Containers' = {
-      name: name
-      tags: config.?tags ?? {}
+      name: container.name
+      tags: container.?tags ?? {}
       properties: {
         resource: {
-          id: name
+          id: container.name
           // analyticalStorageTtl is an invalid propery in current api https://github.com/Azure/azure-rest-api-specs/issues/19695
-          defaultTtl: config.?defaultTtl
-          conflictResolutionPolicy: config.?conflictResolutionPolicy
-          uniqueKeyPolicy: config.?uniqueKeyPolicy
-          indexingPolicy: config.?indexingPolicy
-          partitionKey: config.?partitionKey
+          defaultTtl: container.?defaultTtl
+          conflictResolutionPolicy: container.?conflictResolutionPolicy
+          uniqueKeyPolicy: container.?uniqueKeyPolicy
+          indexingPolicy: container.?indexingPolicy
+          partitionKey: container.?partitionKey
         }
 
-        options: enableServerless ? null : (config.?performance == null ? null : (config.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput }))
+        options: enableServerless ? null : (container.?performance == null ? null : (container.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: container.performance.throughput } } : { throughput: container.performance.throughput }))
       }
 
-      resource databaseContainersStoredProcedures 'storedProcedures' = [for procedure in items(config.?storedProcedures ?? {}): {
-        name: procedure.key
-        tags: procedure.value.?tags ?? {}
+      resource databaseContainersStoredProcedures 'storedProcedures' = [for procedure in container.?storedProcedures ?? []: {
+        name: procedure.name
+        tags: procedure.?tags ?? {}
         properties: {
           resource: {
-            id: procedure.key
-            body: procedure.value.body
+            id: procedure.name
+            body: procedure.body
           }
-          options: enableServerless ? null : (procedure.value.?performance == null ? null : (procedure.value.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: procedure.value.performance.throughput } } : { throughput: procedure.value.performance.throughput }))
+          options: enableServerless ? null : (procedure.?performance == null ? null : (procedure.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: procedure.performance.throughput } } : { throughput: procedure.performance.throughput }))
         }
       }]
 
-      resource databaseContainersUserDefinedFunction 'userDefinedFunctions' = [for function in items(config.?userDefinedFunctions ?? {}): {
-        name: function.key
-        tags: function.value.?tags ?? {}
+      resource databaseContainersUserDefinedFunction 'userDefinedFunctions' = [for function in container.?userDefinedFunctions ?? []: {
+        name: function.name
+        tags: function.?tags ?? {}
         properties: {
           resource: {
-            id: function.key
-            body: function.value.body
+            id: function.name
+            body: function.body
           }
         }
       }]
 
-      resource databaseContainersTriggers 'triggers' = [for trigger in items(config.?triggers ?? {}): {
-        name: trigger.key
-        tags: trigger.value.?tags ?? {}
+      resource databaseContainersTriggers 'triggers' = [for trigger in container.?triggers ?? []: {
+        name: trigger.name
+        tags: trigger.?tags ?? {}
         properties: {
           resource: {
-            id: trigger.key
-            body: trigger.value.body
-            triggerOperation: trigger.value.?triggerOperation
-            triggerType: trigger.value.?triggerType
+            id: trigger.name
+            body: trigger.body
+            triggerOperation: trigger.?triggerOperation
+            triggerType: trigger.?triggerType
           }
         }
       }]

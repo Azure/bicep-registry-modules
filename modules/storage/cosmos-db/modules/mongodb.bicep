@@ -2,33 +2,30 @@ param cosmosDBAccountName string
 param enableServerless bool = false
 param database object
 
-var name = database.key
-var config = database.value
-
 resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
   name: cosmosDBAccountName
 
   resource mongodbDatabase 'mongodbDatabases' = {
-    name: name
+    name: database.name
     properties: {
       resource: {
-        id: name
+        id: database.name
       }
-      options: enableServerless ? null : (config.?performance == null ? null : (config.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput }))
+      options: enableServerless ? null : (database.?performance == null ? null : (database.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: database.performance.throughput } } : { throughput: database.performance.throughput }))
     }
-    tags: config.?tags ?? {}
+    tags: database.?tags ?? {}
 
-    resource mongodbDatabaseCollections 'collections' = [for collection in items(config.?collections ?? {}): {
-      name: collection.key
+    resource mongodbDatabaseCollections 'collections' = [for collection in database.?collections ?? []: {
+      name: collection.name
       properties: {
         resource: {
-          id: collection.key
-          indexes: collection.value.?indexes
-          shardKey: collection.value.?shardKey
+          id: collection.name
+          indexes: collection.?indexes
+          shardKey: collection.?shardKey
         }
-        options: enableServerless ? null : (collection.value.?performance == null ? null : (collection.value.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: collection.value.performance.throughput } } : { throughput: collection.value.performance.throughput }))
+        options: enableServerless ? null : (collection.?performance == null ? null : (collection.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: collection.performance.throughput } } : { throughput: collection.performance.throughput }))
       }
-      tags: collection.value.?tags ?? {}
+      tags: collection.?tags ?? {}
     }]
   }
 }

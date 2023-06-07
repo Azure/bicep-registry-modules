@@ -61,14 +61,16 @@ module test02 '../main.bicep' = {
         principalId: dependencies.outputs.identityPrincipalIds[1]
       }
     ]
-    cassandraKeyspaces: {
-      keyspace1: {
+    cassandraKeyspaces: [
+      {
+        name: 'keyspace1'
         performance: {
           enableAutoScale: true
           throughput: 4000
         }
-        tables: {
-          table1: {
+        tables: [
+          {
+            name: 'table1'
             defaultTtl: 86400
             schema: {
               columns: [ {
@@ -80,7 +82,8 @@ module test02 '../main.bicep' = {
                 } ]
             }
           }
-          table2: {
+          {
+            name: 'table2'
             schema: {
               columns: [ {
                   name: 'test2'
@@ -91,9 +94,9 @@ module test02 '../main.bicep' = {
                 } ]
             }
           }
-        }
+        ]
       }
-    }
+    ]
   }
 }
 
@@ -120,10 +123,12 @@ module test03 '../main.bicep' = {
     ]
     totalThroughputLimit: 100000
     enableMultipleWriteLocations: true
-    sqlDatabases: {
-      testdb1: {
-        containers: {
-          container1: {
+    sqlDatabases: [
+      {
+        name: 'testdb1'
+        containers: [
+          {
+            name: 'container1'
             performance: {
               enableAutoScale: true
               throughput: 4000
@@ -140,7 +145,8 @@ module test03 '../main.bicep' = {
               excludedPaths: [ { path: '/"_etag"/?' } ]
             }
           }
-          container2: {
+          {
+            name: 'container2'
             performance: {
               enableAutoScale: false
               throughput: 4000
@@ -163,27 +169,30 @@ module test03 '../main.bicep' = {
               mode: 'LastWriterWins'
               conflictResolutionPath: '/_ts'
             }
-            triggers: {
-              trigger1: {
+            triggers: [
+              {
+                name: 'trigger1'
                 triggerType: 'Pre'
                 triggerOperation: 'All'
                 body: 'function() { var context = getContext(); var response = context.getResponse(); response.setBody("Pre-trigger body."); }'
               }
-            }
-            storedProcedures: {
-              storedProcedure1: {
+            ]
+            storedProcedures: [
+              {
+                name: 'storedProcedure1'
                 body: 'function() { var context = getContext(); var response = context.getResponse(); response.setBody("Stored procedure body."); }'
               }
-            }
-            userDefinedFunctions: {
-              userDefinedFunction1: {
+            ]
+            userDefinedFunctions: [
+              {
+                name: 'userDefinedFunction1'
                 body: 'function() { var context = getContext(); var response = context.getResponse(); response.setBody("User defined function body."); }'
               }
-            }
+            ]
           }
-        }
+        ]
       }
-    }
+    ]
   }
 }
 
@@ -206,14 +215,16 @@ module test04 '../main.bicep' = {
         maxAgeInSeconds: 60
       }
     ]
-    mongodbDatabases: {
-      testdb1: {
+    mongodbDatabases: [
+      {
+        name: 'testdb1'
         performance: {
           enableAutoScale: true
           throughput: 4000
         }
-        collections: {
-          collection1: {
+        collections: [
+          {
+            name: 'collection1'
             performance: {
               enableAutoScale: false
               throughput: 400
@@ -234,9 +245,9 @@ module test04 '../main.bicep' = {
               user_id: 'Hash'
             }
           }
-        }
+        ]
       }
-    }
+    ]
   }
 }
 
@@ -261,10 +272,14 @@ module test05 '../main.bicep' = {
     backendApi: 'table'
     enableServerless: true
     enableAnalyticalStorage: true
-    tables: {
-      table1: {}
-      table2: {}
-    }
+    tables: [
+      {
+        name: 'table1'
+      }
+      {
+        name: 'table2'
+      }
+    ]
     ipRules: [
       '1.2.3.4'
       '1.2.3.4/24'
@@ -285,14 +300,16 @@ module test06 '../main.bicep' = {
     name: 'test06-${uniqueName}'
     location: location
     backendApi: 'gremlin'
-    gremlinDatabases: {
-      testdb01: {
+    gremlinDatabases: [
+      {
+        name: 'testdb01'
         performance: {
           enableAutoScale: false
           throughput: 500
         }
-        graphs: {
-          graph1: {
+        graphs: [
+          {
+            name: 'graph1'
             performance: {
               enableAutoScale: true
               throughput: 4000
@@ -304,22 +321,24 @@ module test06 '../main.bicep' = {
               version: 1
             }
           }
-        }
+        ]
       }
-    }
+    ]
     enablePublicNetworkAccess: false
-    privateEndpoints: {
-      endpoint1: {
+    privateEndpoints: [
+      {
+        name: 'endpoint1'
         subnetId: dependencies.outputs.subnetIds[0]
         isManualApproval: true
         groupId: 'Sql'
       }
-      endpoint2: {
+      {
+        name: 'endpoint2'
         subnetId: dependencies.outputs.subnetIds[1]
         privateDnsZoneId: dependencies.outputs.privateDNSZoneId
         groupId: 'Gremlin'
       }
-    }
+    ]
   }
 }
 
@@ -330,10 +349,12 @@ module test07 '../main.bicep' = {
     name: 'test07-${uniqueName}'
     location: location
     backendApi: 'sql'
-    sqlDatabases: {
-      testdb1: {
-        containers: {
-          container1: {
+    sqlDatabases: [
+      {
+        name: 'testdb1'
+        containers: [
+          {
+            name: 'container1'
             performance: {
               enableAutoScale: true
               throughput: 4000
@@ -345,11 +366,12 @@ module test07 '../main.bicep' = {
               version: 1
             }
           }
-        }
+        ]
       }
-    }
-    sqlCustomRoleDefinitions: {
-      testReadWriteRole1: {
+    ]
+    sqlCustomRoleDefinitions: [
+      {
+        name: 'testReadWriteRole1'
         permissions: [
           {
             dataActions: [
@@ -369,7 +391,7 @@ module test07 '../main.bicep' = {
           }
         ]
       }
-    }
+    ]
   }
 }
 

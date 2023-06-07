@@ -2,34 +2,32 @@ param cosmosDBAccountName string
 param enableServerless bool
 
 param keyspace object
-var name = keyspace.key
-var config = keyspace.value
 
 resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
   name: cosmosDBAccountName
 
   resource cassandraKeyspaces 'cassandraKeyspaces' = {
-    name: name
+    name: keyspace.name
     properties: {
       resource: {
-        id: name
+        id: keyspace.name
       }
-      options: enableServerless ? null : (config.?performance == null ? null : (config.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: config.performance.throughput } } : { throughput: config.performance.throughput }))
+      options: enableServerless ? null : (keyspace.?performance == null ? null : (keyspace.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: keyspace.performance.throughput } } : { throughput: keyspace.performance.throughput }))
     }
-    tags: config.?tags ?? {}
+    tags: keyspace.?tags ?? {}
 
-    resource cassandraTables 'tables' = [for table in items(config.?tables ?? {}): {
-      name: table.key
+    resource cassandraTables 'tables' = [for table in keyspace.?tables ?? []: {
+      name: table.name
       properties: {
         resource: {
-          id: table.key
+          id: table.name
           // analyticalStorageTtl is an invalid propery in current api https://github.com/Azure/azure-rest-api-specs/issues/19695
-          defaultTtl: table.value.?defaultTtl
-          schema: table.value.?schema
+          defaultTtl: table.?defaultTtl
+          schema: table.?schema
         }
-        options: enableServerless ? null : (table.value.?performance == null ? null : (table.value.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: table.value.performance.throughput } } : { throughput: table.value.performance.throughput }))
+        options: enableServerless ? null : (table.?performance == null ? null : (table.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: table.performance.throughput } } : { throughput: table.performance.throughput }))
       }
-      tags: table.value.?tags ?? {}
+      tags: table.?tags ?? {}
     }]
   }
 }
