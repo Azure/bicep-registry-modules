@@ -1,6 +1,0 @@
-{
-  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
-  "name": "Azure Private DNS zones",
-  "summary": "Azure Private DNS is a hosting service for Private DNS domains that provides name resolution.",
-  "owner": "schandnani"
-}
