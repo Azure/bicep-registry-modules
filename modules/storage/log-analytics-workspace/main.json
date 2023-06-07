@@ -5,13 +5,13 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "5884364183646171566"
+      "templateHash": "108474657788938527"
     }
   },
   "parameters": {
     "prefix": {
       "type": "string",
-      "defaultValue": "law",
+      "defaultValue": "log",
       "metadata": {
         "description": "Prefix of Log Analytics Workspace Resource Name.This param is ignored when name is provided."
       }
