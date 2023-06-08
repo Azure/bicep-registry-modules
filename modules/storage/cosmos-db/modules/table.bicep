@@ -12,7 +12,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
       resource: {
         id: table.name
       }
-      options: enableServerless ? null : (table.?performance == null ? null : (table.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: table.performance.throughput } } : { throughput: table.performance.throughput }))
+      options: (enableServerless || table.?performance == null) ? null : (table.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: table.performance.throughput } } : { throughput: table.performance.throughput })
     }
   }
 }

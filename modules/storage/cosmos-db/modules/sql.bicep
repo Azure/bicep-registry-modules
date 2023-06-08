@@ -14,7 +14,7 @@ resource sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2022-11
     resource: {
       id: database.name
     }
-    options: enableServerless ? null : (database.?performance == null ? null : (database.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: database.performance.throughput } } : { throughput: database.performance.throughput }))
+    options: (enableServerless || database.?performance == null) ? null : (database.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: database.performance.throughput } } : { throughput: database.performance.throughput })
   }
 }
 

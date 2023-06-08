@@ -23,7 +23,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
           partitionKey: container.?partitionKey
         }
 
-        options: enableServerless ? null : (container.?performance == null ? null : (container.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: container.performance.throughput } } : { throughput: container.performance.throughput }))
+        options: (enableServerless || container.?performance == null) ? null : (container.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: container.performance.throughput } } : { throughput: container.performance.throughput })
       }
 
       resource databaseContainersStoredProcedures 'storedProcedures' = [for procedure in container.?storedProcedures ?? []: {
@@ -34,7 +34,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
             id: procedure.name
             body: procedure.body
           }
-          options: enableServerless ? null : (procedure.?performance == null ? null : (procedure.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: procedure.performance.throughput } } : { throughput: procedure.performance.throughput }))
+          options: (enableServerless || procedure.?performance == null) ? null : (procedure.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: procedure.performance.throughput } } : { throughput: procedure.performance.throughput })
         }
       }]
 

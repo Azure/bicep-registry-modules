@@ -432,7 +432,7 @@ type sqlContainerIndexingPolicySpatialIndexesType = {
 
 type graphIndexingPolicyTypeForSqlContainerAndGremlinGraph = {
   @description('The indexing mode.')
-  indexingMode: 'consistent' | 'lazy' | 'none'?
+  indexingMode: ('consistent' | 'lazy' | 'none')?
   @description('Indicates if the indexing policy is automatic.')
   automatic: bool?
   @description('The indexing paths')

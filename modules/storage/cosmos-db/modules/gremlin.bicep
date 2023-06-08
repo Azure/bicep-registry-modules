@@ -11,7 +11,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
       resource: {
         id: database.name
       }
-      options: enableServerless ? null : (database.?performance == null ? null : (database.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: database.performance.throughput } } : { throughput: database.performance.throughput }))
+      options: (enableServerless || database.?performance == null) ? null : (database.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: database.performance.throughput } } : { throughput: database.performance.throughput })
     }
     tags: database.?tags ?? {}
 
@@ -26,7 +26,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
           partitionKey: graph.?partitionKey
           uniqueKeyPolicy: graph.?uniqueKeyPolicy
         }
-        options: enableServerless ? null : (graph.?performance == null ? null : (graph.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: graph.performance.throughput } } : { throughput: graph.performance.throughput }))
+        options: (enableServerless || graph.?performance == null) ? null : (graph.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: graph.performance.throughput } } : { throughput: graph.performance.throughput })
       }
       tags: graph.?tags ?? {}
     }]

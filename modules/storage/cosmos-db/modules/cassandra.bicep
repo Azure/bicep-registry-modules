@@ -12,7 +12,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
       resource: {
         id: keyspace.name
       }
-      options: enableServerless ? null : (keyspace.?performance == null ? null : (keyspace.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: keyspace.performance.throughput } } : { throughput: keyspace.performance.throughput }))
+      options: (enableServerless || keyspace.?performance == null) ? null : (keyspace.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: keyspace.performance.throughput } } : { throughput: keyspace.performance.throughput })
     }
     tags: keyspace.?tags ?? {}
 
@@ -25,7 +25,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
           defaultTtl: table.?defaultTtl
           schema: table.?schema
         }
-        options: enableServerless ? null : (table.?performance == null ? null : (table.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: table.performance.throughput } } : { throughput: table.performance.throughput }))
+        options: (enableServerless || table.?performance == null) ? null : (table.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: table.performance.throughput } } : { throughput: table.performance.throughput })
       }
       tags: table.?tags ?? {}
     }]

@@ -11,7 +11,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
       resource: {
         id: database.name
       }
-      options: enableServerless ? null : (database.?performance == null ? null : (database.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: database.performance.throughput } } : { throughput: database.performance.throughput }))
+      options: (enableServerless || database.?performance == null) ? null : (database.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: database.performance.throughput } } : { throughput: database.performance.throughput })
     }
     tags: database.?tags ?? {}
 
@@ -23,7 +23,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' exis
           indexes: collection.?indexes
           shardKey: collection.?shardKey
         }
-        options: enableServerless ? null : (collection.?performance == null ? null : (collection.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: collection.performance.throughput } } : { throughput: collection.performance.throughput }))
+        options: (enableServerless || collection.?performance == null) ? null : (collection.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: collection.performance.throughput } } : { throughput: collection.performance.throughput })
       }
       tags: collection.?tags ?? {}
     }]

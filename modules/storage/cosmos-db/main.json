@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "11462167873033709674"
+      "templateHash": "16011509947686088636"
     }
   },
   "definitions": {
@@ -402,8 +402,7 @@
           "allowedValues": [
             "consistent",
             "lazy",
-            "none",
-            null
+            "none"
           ],
           "nullable": true,
           "metadata": {
@@ -1869,7 +1868,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "9525625004672853932"
+              "templateHash": "12917768951876140213"
             }
           },
           "parameters": {
@@ -1898,7 +1897,7 @@
                   "defaultTtl": "[tryGet(coalesce(tryGet(parameters('keyspace'), 'tables'), createArray())[copyIndex()], 'defaultTtl')]",
                   "schema": "[tryGet(coalesce(tryGet(parameters('keyspace'), 'tables'), createArray())[copyIndex()], 'schema')]"
                 },
-                "options": "[if(parameters('enableServerless'), null(), if(equals(tryGet(coalesce(tryGet(parameters('keyspace'), 'tables'), createArray())[copyIndex()], 'performance'), null()), null(), if(coalesce(tryGet(parameters('keyspace'), 'tables'), createArray())[copyIndex()].performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', coalesce(tryGet(parameters('keyspace'), 'tables'), createArray())[copyIndex()].performance.throughput)), createObject('throughput', coalesce(tryGet(parameters('keyspace'), 'tables'), createArray())[copyIndex()].performance.throughput))))]"
+                "options": "[if(or(parameters('enableServerless'), equals(tryGet(coalesce(tryGet(parameters('keyspace'), 'tables'), createArray())[copyIndex()], 'performance'), null())), null(), if(coalesce(tryGet(parameters('keyspace'), 'tables'), createArray())[copyIndex()].performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', coalesce(tryGet(parameters('keyspace'), 'tables'), createArray())[copyIndex()].performance.throughput)), createObject('throughput', coalesce(tryGet(parameters('keyspace'), 'tables'), createArray())[copyIndex()].performance.throughput)))]"
               },
               "tags": "[coalesce(tryGet(coalesce(tryGet(parameters('keyspace'), 'tables'), createArray())[copyIndex()], 'tags'), createObject())]",
               "dependsOn": [
@@ -1913,7 +1912,7 @@
                 "resource": {
                   "id": "[parameters('keyspace').name]"
                 },
-                "options": "[if(parameters('enableServerless'), null(), if(equals(tryGet(parameters('keyspace'), 'performance'), null()), null(), if(parameters('keyspace').performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', parameters('keyspace').performance.throughput)), createObject('throughput', parameters('keyspace').performance.throughput))))]"
+                "options": "[if(or(parameters('enableServerless'), equals(tryGet(parameters('keyspace'), 'performance'), null())), null(), if(parameters('keyspace').performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', parameters('keyspace').performance.throughput)), createObject('throughput', parameters('keyspace').performance.throughput)))]"
               },
               "tags": "[coalesce(tryGet(parameters('keyspace'), 'tags'), createObject())]"
             },
@@ -1964,7 +1963,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "3535847283713597830"
+              "templateHash": "8662690015245628751"
             }
           },
           "parameters": {
@@ -1994,7 +1993,7 @@
                 "resource": {
                   "id": "[parameters('database').name]"
                 },
-                "options": "[if(parameters('enableServerless'), null(), if(equals(tryGet(parameters('database'), 'performance'), null()), null(), if(parameters('database').performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', parameters('database').performance.throughput)), createObject('throughput', parameters('database').performance.throughput))))]"
+                "options": "[if(or(parameters('enableServerless'), equals(tryGet(parameters('database'), 'performance'), null())), null(), if(parameters('database').performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', parameters('database').performance.throughput)), createObject('throughput', parameters('database').performance.throughput)))]"
               }
             },
             "sqlDatabaseContainers": {
@@ -2033,7 +2032,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.17.1.54307",
-                      "templateHash": "4630529496925485493"
+                      "templateHash": "5831573316045096566"
                     }
                   },
                   "parameters": {
@@ -2065,7 +2064,7 @@
                           "id": "[coalesce(tryGet(parameters('container'), 'storedProcedures'), createArray())[copyIndex()].name]",
                           "body": "[coalesce(tryGet(parameters('container'), 'storedProcedures'), createArray())[copyIndex()].body]"
                         },
-                        "options": "[if(parameters('enableServerless'), null(), if(equals(tryGet(coalesce(tryGet(parameters('container'), 'storedProcedures'), createArray())[copyIndex()], 'performance'), null()), null(), if(coalesce(tryGet(parameters('container'), 'storedProcedures'), createArray())[copyIndex()].performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', coalesce(tryGet(parameters('container'), 'storedProcedures'), createArray())[copyIndex()].performance.throughput)), createObject('throughput', coalesce(tryGet(parameters('container'), 'storedProcedures'), createArray())[copyIndex()].performance.throughput))))]"
+                        "options": "[if(or(parameters('enableServerless'), equals(tryGet(coalesce(tryGet(parameters('container'), 'storedProcedures'), createArray())[copyIndex()], 'performance'), null())), null(), if(coalesce(tryGet(parameters('container'), 'storedProcedures'), createArray())[copyIndex()].performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', coalesce(tryGet(parameters('container'), 'storedProcedures'), createArray())[copyIndex()].performance.throughput)), createObject('throughput', coalesce(tryGet(parameters('container'), 'storedProcedures'), createArray())[copyIndex()].performance.throughput)))]"
                       },
                       "dependsOn": [
                         "cosmosDBAccount::sqlDatabase::databaseContainers"
@@ -2125,7 +2124,7 @@
                           "indexingPolicy": "[tryGet(parameters('container'), 'indexingPolicy')]",
                           "partitionKey": "[tryGet(parameters('container'), 'partitionKey')]"
                         },
-                        "options": "[if(parameters('enableServerless'), null(), if(equals(tryGet(parameters('container'), 'performance'), null()), null(), if(parameters('container').performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', parameters('container').performance.throughput)), createObject('throughput', parameters('container').performance.throughput))))]"
+                        "options": "[if(or(parameters('enableServerless'), equals(tryGet(parameters('container'), 'performance'), null())), null(), if(parameters('container').performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', parameters('container').performance.throughput)), createObject('throughput', parameters('container').performance.throughput)))]"
                       }
                     },
                     "cosmosDBAccount::sqlDatabase": {
@@ -2188,7 +2187,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "3426363954722862401"
+              "templateHash": "13516451471195420959"
             }
           },
           "parameters": {
@@ -2218,7 +2217,7 @@
                   "indexes": "[tryGet(coalesce(tryGet(parameters('database'), 'collections'), createArray())[copyIndex()], 'indexes')]",
                   "shardKey": "[tryGet(coalesce(tryGet(parameters('database'), 'collections'), createArray())[copyIndex()], 'shardKey')]"
                 },
-                "options": "[if(parameters('enableServerless'), null(), if(equals(tryGet(coalesce(tryGet(parameters('database'), 'collections'), createArray())[copyIndex()], 'performance'), null()), null(), if(coalesce(tryGet(parameters('database'), 'collections'), createArray())[copyIndex()].performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', coalesce(tryGet(parameters('database'), 'collections'), createArray())[copyIndex()].performance.throughput)), createObject('throughput', coalesce(tryGet(parameters('database'), 'collections'), createArray())[copyIndex()].performance.throughput))))]"
+                "options": "[if(or(parameters('enableServerless'), equals(tryGet(coalesce(tryGet(parameters('database'), 'collections'), createArray())[copyIndex()], 'performance'), null())), null(), if(coalesce(tryGet(parameters('database'), 'collections'), createArray())[copyIndex()].performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', coalesce(tryGet(parameters('database'), 'collections'), createArray())[copyIndex()].performance.throughput)), createObject('throughput', coalesce(tryGet(parameters('database'), 'collections'), createArray())[copyIndex()].performance.throughput)))]"
               },
               "tags": "[coalesce(tryGet(coalesce(tryGet(parameters('database'), 'collections'), createArray())[copyIndex()], 'tags'), createObject())]",
               "dependsOn": [
@@ -2233,7 +2232,7 @@
                 "resource": {
                   "id": "[parameters('database').name]"
                 },
-                "options": "[if(parameters('enableServerless'), null(), if(equals(tryGet(parameters('database'), 'performance'), null()), null(), if(parameters('database').performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', parameters('database').performance.throughput)), createObject('throughput', parameters('database').performance.throughput))))]"
+                "options": "[if(or(parameters('enableServerless'), equals(tryGet(parameters('database'), 'performance'), null())), null(), if(parameters('database').performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', parameters('database').performance.throughput)), createObject('throughput', parameters('database').performance.throughput)))]"
               },
               "tags": "[coalesce(tryGet(parameters('database'), 'tags'), createObject())]"
             },
@@ -2284,7 +2283,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "15211263401196586302"
+              "templateHash": "3886746116301620658"
             }
           },
           "parameters": {
@@ -2308,7 +2307,7 @@
                 "resource": {
                   "id": "[parameters('table').name]"
                 },
-                "options": "[if(parameters('enableServerless'), null(), if(equals(tryGet(parameters('table'), 'performance'), null()), null(), if(parameters('table').performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', parameters('table').performance.throughput)), createObject('throughput', parameters('table').performance.throughput))))]"
+                "options": "[if(or(parameters('enableServerless'), equals(tryGet(parameters('table'), 'performance'), null())), null(), if(parameters('table').performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', parameters('table').performance.throughput)), createObject('throughput', parameters('table').performance.throughput)))]"
               }
             },
             "cosmosDBAccount": {
@@ -2358,7 +2357,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "6530871773578102946"
+              "templateHash": "13394640875943241821"
             }
           },
           "parameters": {
@@ -2389,7 +2388,7 @@
                   "partitionKey": "[tryGet(coalesce(tryGet(parameters('database'), 'graphs'), createArray())[copyIndex()], 'partitionKey')]",
                   "uniqueKeyPolicy": "[tryGet(coalesce(tryGet(parameters('database'), 'graphs'), createArray())[copyIndex()], 'uniqueKeyPolicy')]"
                 },
-                "options": "[if(parameters('enableServerless'), null(), if(equals(tryGet(coalesce(tryGet(parameters('database'), 'graphs'), createArray())[copyIndex()], 'performance'), null()), null(), if(coalesce(tryGet(parameters('database'), 'graphs'), createArray())[copyIndex()].performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', coalesce(tryGet(parameters('database'), 'graphs'), createArray())[copyIndex()].performance.throughput)), createObject('throughput', coalesce(tryGet(parameters('database'), 'graphs'), createArray())[copyIndex()].performance.throughput))))]"
+                "options": "[if(or(parameters('enableServerless'), equals(tryGet(coalesce(tryGet(parameters('database'), 'graphs'), createArray())[copyIndex()], 'performance'), null())), null(), if(coalesce(tryGet(parameters('database'), 'graphs'), createArray())[copyIndex()].performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', coalesce(tryGet(parameters('database'), 'graphs'), createArray())[copyIndex()].performance.throughput)), createObject('throughput', coalesce(tryGet(parameters('database'), 'graphs'), createArray())[copyIndex()].performance.throughput)))]"
               },
               "tags": "[coalesce(tryGet(coalesce(tryGet(parameters('database'), 'graphs'), createArray())[copyIndex()], 'tags'), createObject())]",
               "dependsOn": [
@@ -2404,7 +2403,7 @@
                 "resource": {
                   "id": "[parameters('database').name]"
                 },
-                "options": "[if(parameters('enableServerless'), null(), if(equals(tryGet(parameters('database'), 'performance'), null()), null(), if(parameters('database').performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', parameters('database').performance.throughput)), createObject('throughput', parameters('database').performance.throughput))))]"
+                "options": "[if(or(parameters('enableServerless'), equals(tryGet(parameters('database'), 'performance'), null())), null(), if(parameters('database').performance.enableAutoScale, createObject('autoscaleSettings', createObject('maxThroughput', parameters('database').performance.throughput)), createObject('throughput', parameters('database').performance.throughput)))]"
               },
               "tags": "[coalesce(tryGet(parameters('database'), 'tags'), createObject())]"
             },
