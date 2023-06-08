@@ -43,16 +43,21 @@ module test_02_openAI '../main.bicep' = {
     kind: 'OpenAI'
     name: 'test-02-openai-${uniqueName}'
     location: location
-    deploymentProperties: {
-      model: {
-          format: 'OpenAI'
-          name: 'text-davinci-003'
-          version: 1
+    deployments: [
+      {
+        name: 'test-02-openai-deployment-${uniqueName}'
+        properties: {
+          model: {
+            format: 'OpenAI'
+            name: 'text-davinci-003'
+            version: 1
+          }
+          scaleSettings: {
+            scaleType: 'Standard'
+          }
+        }
       }
-      scaleSettings: {
-          scaleType: 'Standard'
-      }
-    }
+    ]
   }
 }
 

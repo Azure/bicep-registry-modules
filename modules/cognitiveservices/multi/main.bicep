@@ -78,8 +78,8 @@ param allowedFqdnList array = []
 @description('The user owned storage accounts for the Cognitive Service.')
 param userOwnedStorage array = []
 
-@description('The deployment properties for Cognitive Services that support them. See: https://docs.microsoft.com/en-us/azure/templates/microsoft.cognitiveservices/accounts/deployments for available properties.')
-param deploymentProperties object = {}
+@description('The deployments for Cognitive Services that support them. See: https://docs.microsoft.com/en-us/azure/templates/microsoft.cognitiveservices/accounts/deployments for available properties.')
+param deployments array = []
 
 var varPrivateEndpoints = [for endpoint in privateEndpoints: {
   name: '${cognitiveService.name}-${endpoint.name}'
@@ -126,11 +126,11 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
   }
 }
 
-resource cognitiveServiceDeployment 'Microsoft.CognitiveServices/accounts/deployments@2022-12-01' = if (deploymentProperties != {}) {
-  name: '${name}-${uniqueString(deployment().name, location)}-deployment'
+resource cognitiveServiceDeployment 'Microsoft.CognitiveServices/accounts/deployments@2022-12-01' = [for (deployment, index) in deployments: {
+  name: '${name}-${uniqueString(az.deployment().name, location)}-deployment-${index}'
   parent: cognitiveService
-  properties: deploymentProperties
-}
+  properties: deployment.properties
+}]
 
 @batchSize(1)
 module cognitiveServiceRbac 'modules/rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
