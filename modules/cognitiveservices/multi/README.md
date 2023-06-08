@@ -33,7 +33,7 @@ The Bicep module deploys an Azure Cognitive Service to a specified location, all
 | `restrictOutboundNetworkAccess` | `bool`   | No       | Set this to true for data loss prevention. Will block all outbound traffic except to allowedFqdnList. https://learn.microsoft.com/en-us/azure/cognitive-services/cognitive-services-data-loss-prevention                                                                                                                                                                                     |
 | `allowedFqdnList`               | `array`  | No       | List of allowed FQDNs(Fully Qualified Domain Name) for egress from the Cognitive Service.                                                                                                                                                                                                                                                                                                    |
 | `userOwnedStorage`              | `array`  | No       | The user owned storage accounts for the Cognitive Service.                                                                                                                                                                                                                                                                                                                                   |
-| `deploymentProperties`          | `object` | No       | The deployment properties for Cognitive Services that support them. See: https://docs.microsoft.com/en-us/azure/templates/microsoft.cognitiveservices/accounts/deployments for available properties.                                                                                                                                                                                         |
+| `deployments`                   | `array`  | No       | The deployments for Cognitive Services that support them. See: https://docs.microsoft.com/en-us/azure/templates/microsoft.cognitiveservices/accounts/deployments for available properties.                                                                                                                                                                                                   |
 
 ## Outputs
 
@@ -47,10 +47,99 @@ The Bicep module deploys an Azure Cognitive Service to a specified location, all
 
 ### Example 1
 
+Deploys a SpeechService Cognitive Service
+
 ```bicep
+module speechService 'br/public:cognitiveservices/multi:1.0.1' = {
+  name: 'speechService'
+  params: {
+    kind: 'SpeechServices'
+    skuName: 'S0'
+    name: 'speech-${uniqueString(resourceGroup().id, location)}'
+    location: location
+  }
+}
 ```
 
 ### Example 2
 
+Deploys an OpenAI Cognitive Service with a model deployment
+
 ```bicep
+module openAI 'br/public:cognitiveservices/multi:1.0.1' = {
+  name: 'openai'
+  params: {
+    skuName: 'S0'
+    kind: 'OpenAI'
+    name: 'openai-${uniqueString(resourceGroup().id, location)}'
+    location: location
+    deployments: [
+      {
+        name: 'text-davinci-003'
+        properties: {
+          model: {
+            format: 'OpenAI'
+            name: 'text-davinci-003'
+            version: 1
+          }
+          scaleSettings: {
+            scaleType: 'Standard'
+          }
+        }
+      }
+    ]
+  }
+}
+```
+
+### Example 3
+
+Deploys a Content Moderator Cognitive Service
+
+```bicep
+module contentModerator 'br/public:cognitiveservices/multi:1.0.1' = {
+  name: 'contentModerator'
+  params: {
+    skuName: 'S0'
+    kind: 'ContentModerator'
+    name: 'cm-${uniqueString(resourceGroup().id, location)}'
+    location: location
+  }
+}
+```
+
+### Example 4
+
+Deploys a Speech Service with role assignments and private endpoints
+
+```bicep
+module speechService 'br/public:cognitiveservices/multi:1.0.1' = {
+  name: 'test-04-speech'
+  params: {
+    name: 'test-04-speech-${uniqueName}'
+    kind: 'SpeechServices'
+    skuName: 'S0'
+    location: location
+    publicNetworkAccess: false
+    customSubDomainName: 'test02service'
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Cognitive Services Speech Contributor'
+        principalIds: [ dependencies.outputs.identityPrincipalIds[0] ]
+      }
+      {
+        roleDefinitionIdOrName: 'Cognitive Services Speech User'
+        principalIds: [ dependencies.outputs.identityPrincipalIds[1] ]
+      }
+   ]
+    privateEndpoints: [
+      {
+        name: 'endpoint1'
+        subnetId: dependencies.outputs.subnetIds[0]
+        manualApprovalEnabled: true
+        groupId: 'account'
+      }
+    ]
+  }
+}
 ```

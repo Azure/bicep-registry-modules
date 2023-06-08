@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "9832191254595048808"
+      "templateHash": "5979586062187278414"
     }
   },
   "parameters": {
@@ -182,11 +182,11 @@
         "description": "The user owned storage accounts for the Cognitive Service."
       }
     },
-    "deploymentProperties": {
-      "type": "object",
-      "defaultValue": {},
+    "deployments": {
+      "type": "array",
+      "defaultValue": [],
       "metadata": {
-        "description": "The deployment properties for Cognitive Services that support them. See: https://docs.microsoft.com/en-us/azure/templates/microsoft.cognitiveservices/accounts/deployments for available properties."
+        "description": "The deployments for Cognitive Services that support them. See: https://docs.microsoft.com/en-us/azure/templates/microsoft.cognitiveservices/accounts/deployments for available properties."
       }
     }
   },
@@ -240,11 +240,14 @@
       }
     },
     {
-      "condition": "[not(equals(parameters('deploymentProperties'), createObject()))]",
+      "copy": {
+        "name": "cognitiveServiceDeployment",
+        "count": "[length(parameters('deployments'))]"
+      },
       "type": "Microsoft.CognitiveServices/accounts/deployments",
       "apiVersion": "2022-12-01",
-      "name": "[format('{0}/{1}', toLower(parameters('name')), format('{0}-{1}-deployment', parameters('name'), uniqueString(deployment().name, parameters('location'))))]",
-      "properties": "[parameters('deploymentProperties')]",
+      "name": "[format('{0}/{1}', toLower(parameters('name')), format('{0}-{1}-deployment-{2}', parameters('name'), uniqueString(deployment().name, parameters('location')), copyIndex()))]",
+      "properties": "[parameters('deployments')[copyIndex()].properties]",
       "dependsOn": [
         "[resourceId('Microsoft.CognitiveServices/accounts', toLower(parameters('name')))]"
       ]
