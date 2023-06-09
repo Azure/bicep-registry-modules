@@ -121,6 +121,9 @@ param metricsToEnable array = [
   'AllMetrics'
 ]
 
+@description('Optional.The list of ACR tasks to create.')
+param tasks array = []
+
 var diagnosticsLogs = [for log in logsToEnable: {
   category: log
   enabled: true
@@ -262,6 +265,16 @@ module containerRegistry_privateEndpoint '.bicep/nested_privateEndpoint.bicep' =
     privateEndpoints: varPrivateEndpoints
     tags: tags
     manualApprovalEnabled: privateEndpointsApprovalEnabled
+  }
+}
+
+module task 'task/task.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-acr-task'
+  params: {
+    acrName: containerRegistry.name
+    location: location
+    tasks: tasks
+    loginServer: containerRegistry.properties.loginServer
   }
 }
 
