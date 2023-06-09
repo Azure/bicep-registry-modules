@@ -42,19 +42,20 @@ module test_02_openAI '../main.bicep' = {
     skuName: 'S0'
     kind: 'OpenAI'
     name: 'test-02-openai-${uniqueName}'
-    location: 'global'
+    location: 'eastus'
     deployments: [
       {
         name: 'test-02-openai-deployment-${uniqueName}'
         properties: {
           model: {
             format: 'OpenAI'
-            name: 'text-davinci-003'
+            name: 'text-davinci-002'
             version: 1
           }
           scaleSettings: {
             scaleType: 'Standard'
           }
+          raiPolicyName: 'Microsoft.Default'
         }
       }
     ]
