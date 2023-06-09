@@ -84,7 +84,7 @@ module test_04_speech '../main.bicep' = {
     skuName: 'S0'
     location: location
     publicNetworkAccess: false
-    customSubDomainName: 'test02service'
+    customSubDomainName: uniqueName
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Cognitive Services Speech Contributor'
