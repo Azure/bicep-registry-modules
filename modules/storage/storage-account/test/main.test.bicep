@@ -71,7 +71,7 @@ module test2 '../main.bicep' = {
   }
 }
 
-// One storage account will be created because the objectReplicationPolicy has been disabled and object replication will not take place.
+//One storage account will be created because the objectReplicationPolicy has been disabled and object replication will not take place.
 module test3 '../main.bicep' = {
   name: 'test3'
   params: {
