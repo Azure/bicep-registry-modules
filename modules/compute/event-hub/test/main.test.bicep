@@ -91,6 +91,31 @@ module test_02 '../main.bicep' = {
           capacity:  3
       }
     }
+    namespaceRoleAssignments: {
+      'test02${uniqueName}': {
+        description: 'Reader Role Assignment'
+        principalIds: [ prerequisites.outputs.identityPrincipalIds[1] ]
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+        eventHubNamespaceName: 'test02na${uniqueName}'
+      }
+    }
+    eventHubs: {
+      'test02${uniqueName}': {
+          messageRetentionInDays: 1
+          partitionCount: 1
+          eventHubNamespaceName: 'test02na${uniqueName}'
+          roleAssignments: [
+           {
+            roleDefinitionIdOrName: 'Reader'
+            description: 'Reader Role Assignment'
+            principalIds: [ prerequisites.outputs.identityPrincipalIds[0] ]
+            principalType: 'ServicePrincipal'
+           }
+          ]
+      }
+    }
+
   }
 }
 
@@ -187,3 +212,4 @@ module test_04 '../main.bicep' = {
     }
   }
 }
+
