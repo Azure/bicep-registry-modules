@@ -118,7 +118,6 @@ module test4 '../main.bicep' = {
       destAllowBlobPublicAccess: false
       destAllowCrossTenantReplication: false
       destPublicNetworkAccess: 'Disabled'
-
       privateEndpoints: [
       {
         name: 'endpoint1'
