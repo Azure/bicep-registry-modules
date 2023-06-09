@@ -42,7 +42,7 @@ module test_02_openAI '../main.bicep' = {
     skuName: 'S0'
     kind: 'OpenAI'
     name: 'test-02-openai-${uniqueName}'
-    location: location
+    location: 'global'
     deployments: [
       {
         name: 'test-02-openai-deployment-${uniqueName}'
