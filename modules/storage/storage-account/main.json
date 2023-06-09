@@ -6,8 +6,8 @@
     "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.16.2.56959",
-      "templateHash": "7215066853811288245"
+      "version": "0.17.1.54307",
+      "templateHash": "15382261426282851901"
     }
   },
   "definitions": {
@@ -822,8 +822,8 @@
             "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "1676844099600238624"
+              "version": "0.17.1.54307",
+              "templateHash": "12639661202771602565"
             }
           },
           "parameters": {
@@ -950,8 +950,8 @@
             "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "11979710143577987217"
+              "version": "0.17.1.54307",
+              "templateHash": "6569897640071376055"
             }
           },
           "parameters": {
