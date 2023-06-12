@@ -104,6 +104,7 @@ module test4 '../main.bicep' = {
       blobContainerProperties: {
         publicAccess: 'None'
       }
+
       minimumTlsVersion: minimumTlsVersion
       objectReplicationPolicy: true
 
