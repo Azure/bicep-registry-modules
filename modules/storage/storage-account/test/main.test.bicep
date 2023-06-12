@@ -83,6 +83,7 @@ module test3 '../main.bicep' = {
       blobContainerProperties: {
         publicAccess: 'None'
       }
+
       minimumTlsVersion: minimumTlsVersion
       objectReplicationPolicy: objectReplicationPolicy
   }
