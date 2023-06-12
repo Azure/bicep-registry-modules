@@ -8,7 +8,6 @@ param blobType string = 'blockBlob'
 param minimumTlsVersion string = 'TLS1_2'
 param objectReplicationPolicy bool = false
 var uniqueName = uniqueString(resourceGroup().id, deployment().name, location)
-param serviceShort string = 'storageAccount'
 
 module prereq 'prereq.test.bicep' = {
   name: 'test-prereqs'
