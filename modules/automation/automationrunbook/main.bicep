@@ -181,5 +181,11 @@ resource automationJobs 'Microsoft.Automation/automationAccounts/jobSchedules@20
   dependsOn: [schedules] //All of the possible schedules
 }]
 
-@description('The Automation Account Principal Id')
+@description('The Automation Account name')
+output automationAccountName string = automationAccount.name
+
+@description('The Automation Account resource Id')
+output automationAccountId string = automationAccount.id
+
+@description('The Automation Account identity Principal Id')
 output automationAccountPrincipalId string = automationAccount.identity.principalId
