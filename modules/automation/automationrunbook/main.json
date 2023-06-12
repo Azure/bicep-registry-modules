@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "13528181945649498307"
+      "templateHash": "13553932920729955665"
     }
   },
   "definitions": {
@@ -317,10 +317,24 @@
     }
   },
   "outputs": {
+    "automationAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "The Automation Account name"
+      },
+      "value": "[parameters('automationAccountName')]"
+    },
+    "automationAccountId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Automation Account resource Id"
+      },
+      "value": "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
+    },
     "automationAccountPrincipalId": {
       "type": "string",
       "metadata": {
-        "description": "The Automation Account Principal Id"
+        "description": "The Automation Account identity Principal Id"
       },
       "value": "[reference('automationAccount', '2022-08-08', 'full').identity.principalId]"
     }

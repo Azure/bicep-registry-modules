@@ -35,9 +35,11 @@ Several common schedules are created, which can then optionally be linked to a R
 
 ## Outputs
 
-| Name                         | Type   | Description                         |
-| :--------------------------- | :----: | :---------------------------------- |
-| automationAccountPrincipalId | string | The Automation Account Principal Id |
+| Name                         | Type   | Description                                  |
+| :--------------------------- | :----: | :------------------------------------------- |
+| automationAccountName        | string | The Automation Account name                  |
+| automationAccountId          | string | The Automation Account resource Id           |
+| automationAccountPrincipalId | string | The Automation Account identity Principal Id |
 
 ## Examples
 
