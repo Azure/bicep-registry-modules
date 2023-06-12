@@ -1,8 +1,11 @@
-@description('The location into which your Azure resources should be deployed.')
-param location string = resourceGroup().location
-
 @description('The kind of Cognitive Service to create. See: https://learn.microsoft.com/en-us/azure/cognitive-services/create-account-bicep for available kinds.')
 param kind string
+
+@description('Prefix of Resource Name. Not used if name is provided')
+param prefix string = 'cog'
+
+@description('The location into which your Azure resources should be deployed.')
+param location string = resourceGroup().location
 
 @minLength(2)
 @maxLength(64)
@@ -10,7 +13,7 @@ param kind string
 // Must contain at least 2 through 64 characters
 // Can't start or end with hyphen
 @description('The name of the Cognitive Service.')
-param name string = take('${kind}-${uniqueString(resourceGroup().id, location)}', 64)
+param name string = take('${prefix}-${kind}-${uniqueString(resourceGroup().id, location)}', 64)
 
 @description('The tags to apply to each resource.')
 param tags object = {}
