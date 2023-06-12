@@ -1,7 +1,7 @@
 @description('Required. The name of the Bing Search account.')
 param accountName string
 
-@description('Optional. Bing search kind.')
+@description('Optional.This parameter will define Bing search kind.')
 @allowed(
   [
     'Bing.Search.v7'

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.16.2.56959",
-      "templateHash": "5866067334905837385"
+      "templateHash": "12600815654397594460"
     }
   },
   "parameters": {
@@ -23,7 +23,7 @@
         "Bing.CustomSearch"
       ],
       "metadata": {
-        "description": "Optional. Bing search kind."
+        "description": "Optional.This parameter will define Bing search kind."
       }
     },
     "skuName": {
