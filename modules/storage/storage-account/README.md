@@ -52,7 +52,7 @@ The output of the module is the ID of the created or existing Storage Account, w
 | `objectReplicationPolicy`         | `bool`   | No       | When performing object replication, it must be true and all resources necessary for the destination storage account will be created. |
 | `privateEndpoints`                | `array`  | No       | Define Private Endpoints that should be created for Azure Storage Account.                                                           |
 | `privateEndpointsApprovalEnabled` | `bool`   | No       | Toggle if Private Endpoints manual approval for Azure Storage Account should be enabled.                                                                                                      |
-| `blobName`                | `string` | No       | Name of a blob service to be created.
+| `blobName`                | `string` | No       | Name of a blob service to be created.                     |
 | `blobProperties`          | `object` | No       | Properties object for a Blob service of a Storage Account.                                                                                                                 |
 | `blobContainerName`       | `string` | No       | Name of a blob container to be created                                                                                                                                  |
 | `blobContainerProperties` | `object` | No       | Properties object for a Blob container of a Storage Account.                                                                                                              |
