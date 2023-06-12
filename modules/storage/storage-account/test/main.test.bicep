@@ -70,7 +70,7 @@ module test2 '../main.bicep' = {
   }
 }
 
-// One storage account will be created because the objectReplicationPolicy has been disabled and object replication will not take place.
+//One storage account will be created because the objectReplicationPolicy has been disabled and object replication will not take place.
 module test3 '../main.bicep' = {
   name: 'test3'
   params: {
@@ -88,7 +88,7 @@ module test3 '../main.bicep' = {
   }
 }
 
-// Since the objectReplicationPolicy has been enabled, two storage accounts will be created, and object replication will take place using the source and destination storage accounts.
+//Since the objectReplicationPolicy has been enabled, two storage accounts will be created, and object replication will take place using the source and destination storage accounts.
 module test4 '../main.bicep' = {
   name: 'test4'
   params: {
