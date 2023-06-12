@@ -21,7 +21,7 @@ The output of the module is the ID of the created or existing Storage Account, w
 | Name                              | Type     | Required | Description                                                                                                                          |
 | :-------------------------------- | :------: | :------: | :----------------------------------------------------------------------------------------------------------------------------------- |
 | `location`                        | `string` | Yes      | Deployment Location                                                                                                                  |
-| `prefix`                          | `string` | No       | Prefix of Storage Account Resource Name. This param is ignored when name is provided.                                                |
+| `prefix`                          | `string` | No       | Prefix of Storage Account Resource Name. This param is ignored when name is provided.                                                 |
 | `name`                            | `string` | No       | Name of Storage Account. Must be unique within Azure.                                                                                |
 | `subnetID`                        | `string` | No       | ID of the subnet where the Storage Account will be deployed, if virtual network access is enabled.                                   |
 | `enableVNET`                      | `bool`   | No       | Toggle to enable or disable virtual network access for the Storage Account.                                                          |
