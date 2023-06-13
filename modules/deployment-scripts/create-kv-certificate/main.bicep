@@ -64,6 +64,9 @@ param isCrossTenant bool = false
 @description('The default policy might cause errors about CSR being used before, so set this to false if that happens')
 param reuseKey bool = true
 
+@description('Set to false to disable role assignments within this module. Default: true')
+param performRoleAssignment bool = true
+
 @minValue(1)
 @maxValue(1200)
 @description('Optional. Override default validityInMonths 12 value')
@@ -87,7 +90,7 @@ resource existingDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2
 
 var delegatedManagedIdentityResourceId = useExistingManagedIdentity ? existingDepScriptId.id : newDepScriptId.id
 
-resource rbacKv 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+resource rbacKv 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (performRoleAssignment) {
   name: guid(akv.id, rbacRolesNeededOnKV, managedIdentityName, string(useExistingManagedIdentity))
   scope: akv
   properties: {
