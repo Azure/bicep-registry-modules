@@ -2,7 +2,7 @@ targetScope = 'managementGroup'
 
 // METADATA - Used by PSDocs
 
-metadata name = '`main.bicep` Parameters'
+metadata name = 'Bicep Landing Zone (Subscription) Vending Module'
 
 metadata description = 'This module is designed to accelerate deployment of landing zones (aka Subscriptions) within an Azure AD Tenant.'
 

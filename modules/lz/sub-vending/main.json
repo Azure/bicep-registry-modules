@@ -4,11 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.17.1.54307",
-      "templateHash": "4103900340255745015"
+      "version": "0.18.4.5664",
+      "templateHash": "6011732883927798522"
     },
-    "name": "`main.bicep` Parameters",
-    "description": "These are the input parameters for the Bicep module: [`main.bicep`](./main.bicep)\n\nThis is the orchestration module that is used and called by a consumer of the module to deploy a Landing Zone Subscription and its associated resources, based on the parameter input values that are provided to it at deployment time.\n\n> For more information and examples please see the [wiki](https://github.com/Azure/bicep-lz-vending/wiki)"
+    "name": "Bicep Landing Zone (Subscription) Vending Module",
+    "description": "This module is designed to accelerate deployment of landing zones (aka Subscriptions) within an Azure AD Tenant.",
+    "details": "These are the input parameters for the Bicep module: [`main.bicep`](./main.bicep)\n\nThis is the orchestration module that is used and called by a consumer of the module to deploy a Landing Zone Subscription and its associated resources, based on the parameter input values that are provided to it at deployment time.\n\n> For more information and examples please see the [wiki](https://github.com/Azure/bicep-lz-vending/wiki)"
   },
   "parameters": {
     "subscriptionAliasEnabled": {
@@ -56,6 +57,24 @@
         "DevTest",
         "Production"
       ]
+    },
+    "subscriptionTenantId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The Azure Active Directory Tenant ID (GUID) to which the Subscription should be attached to.\n\n> **Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants).**\n\n- Default value: `''` *(empty string)*\n",
+        "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+      },
+      "maxLength": 36
+    },
+    "subscriptionOwnerId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The Azure Active Directory principals object ID (GUID) to whom should be the Subscription Owner.\n\n> **Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants).**\n\n- Default value: `''` *(empty string)*\n",
+        "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+      },
+      "maxLength": 36
     },
     "existingSubscriptionId": {
       "type": "string",
@@ -345,6 +364,12 @@
           },
           "subscriptionWorkload": {
             "value": "[parameters('subscriptionWorkload')]"
+          },
+          "subscriptionTenantId": {
+            "value": "[parameters('subscriptionTenantId')]"
+          },
+          "subscriptionOwnerId": {
+            "value": "[parameters('subscriptionOwnerId')]"
           }
         },
         "template": {
@@ -353,8 +378,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "4688153049617544270"
+              "version": "0.18.4.5664",
+              "templateHash": "9191086103392905110"
             }
           },
           "parameters": {
@@ -378,6 +403,22 @@
                 "description": "The billing scope for the new subscription alias. A valid billing scope starts with `/providers/Microsoft.Billing/billingAccounts/` and is case sensitive."
               }
             },
+            "subscriptionTenantId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "The Azure Active Directory Tenant ID (GUID) to which the Subscription should be attached to. Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants)."
+              },
+              "maxLength": 36
+            },
+            "subscriptionOwnerId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "The Azure Active Directory principals object ID (GUID) to whom should be the Subscription Owner. Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants)."
+              },
+              "maxLength": 36
+            },
             "subscriptionWorkload": {
               "type": "string",
               "defaultValue": "Production",
@@ -399,7 +440,8 @@
               "properties": {
                 "workload": "[parameters('subscriptionWorkload')]",
                 "displayName": "[parameters('subscriptionDisplayName')]",
-                "billingScope": "[parameters('subscriptionBillingScope')]"
+                "billingScope": "[parameters('subscriptionBillingScope')]",
+                "additionalProperties": "[if(and(not(empty(parameters('subscriptionTenantId'))), not(empty(parameters('subscriptionOwnerId')))), createObject('subscriptionTenantId', parameters('subscriptionTenantId'), 'subscriptionOwnerId', parameters('subscriptionOwnerId')), createObject())]"
               }
             }
           ],
@@ -411,6 +453,14 @@
             "subscriptionResourceId": {
               "type": "string",
               "value": "[format('/subscriptions/{0}', reference(tenantResourceId('Microsoft.Subscription/aliases', parameters('subscriptionAliasName')), '2021-10-01').subscriptionId)]"
+            },
+            "subscriptionAcceptOwnershipState": {
+              "type": "string",
+              "value": "[if(and(not(empty(parameters('subscriptionTenantId'))), not(empty(parameters('subscriptionOwnerId')))), reference(tenantResourceId('Microsoft.Subscription/aliases', parameters('subscriptionAliasName')), '2021-10-01').acceptOwnershipState, 'N/A')]"
+            },
+            "subscriptionAcceptOwnershipUrl": {
+              "type": "string",
+              "value": "[if(and(not(empty(parameters('subscriptionTenantId'))), not(empty(parameters('subscriptionOwnerId')))), reference(tenantResourceId('Microsoft.Subscription/aliases', parameters('subscriptionAliasName')), '2021-10-01').acceptOwnershipUrl, 'N/A')]"
             }
           }
         }
@@ -505,11 +555,12 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "17539081230834683834"
+              "version": "0.18.4.5664",
+              "templateHash": "12543468054034431071"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
-            "description": "These are the input parameters for the Bicep module: [`deploy.bicep`](./deploy.bicep)\n\nThis is the sub-orchestration module that is used and called by the [`main.bicep`](../../../main.bicep)  module to deploy the resources into the subscription that has been created (or an existing one provided), based on the parameter input values that are provided to it at deployment time from the `main.bicep` orchestration module.\n\n> ⚠️ It is not intended for this module to be called outside of being a sub-orchestration module for the `main.bicep` module ⚠️"
+            "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
+            "details": "These are the input parameters for the Bicep module: [`deploy.bicep`](./deploy.bicep)\n\nThis is the sub-orchestration module that is used and called by the [`main.bicep`](../../../main.bicep)  module to deploy the resources into the subscription that has been created (or an existing one provided), based on the parameter input values that are provided to it at deployment time from the `main.bicep` orchestration module.\n\n> ⚠️ It is not intended for this module to be called outside of being a sub-orchestration module for the `main.bicep` module ⚠️"
           },
           "parameters": {
             "subscriptionId": {
@@ -737,8 +788,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "5731474265388076774"
+                      "version": "0.18.4.5664",
+                      "templateHash": "13686712454025450791"
                     }
                   },
                   "parameters": {
@@ -801,8 +852,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "14320435993038113793"
+                      "version": "0.18.4.5664",
+                      "templateHash": "8332778839164422262"
                     }
                   },
                   "parameters": {
@@ -899,8 +950,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "7888759081595769946"
+                              "version": "0.18.4.5664",
+                              "templateHash": "15752571223585357448"
                             }
                           },
                           "parameters": {
@@ -984,8 +1035,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.17.1.54307",
-                                      "templateHash": "2292412345738640312"
+                                      "version": "0.18.4.5664",
+                                      "templateHash": "1194790306604975116"
                                     }
                                   },
                                   "parameters": {
@@ -1065,8 +1116,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "7769237761756765769"
+                              "version": "0.18.4.5664",
+                              "templateHash": "16745646850117358821"
                             }
                           },
                           "parameters": {
@@ -1141,8 +1192,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.17.1.54307",
-                                      "templateHash": "5747539513423282725"
+                                      "version": "0.18.4.5664",
+                                      "templateHash": "13046201805213672696"
                                     }
                                   },
                                   "parameters": {
@@ -1258,8 +1309,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "933263726713286683"
+                      "version": "0.18.4.5664",
+                      "templateHash": "8060682211765947588"
                     }
                   },
                   "parameters": {
@@ -1359,8 +1410,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "14034654336966213895"
+                              "version": "0.18.4.5664",
+                              "templateHash": "11718909657427895917"
                             }
                           },
                           "parameters": {
@@ -1490,8 +1541,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "12103987836566004963"
+                              "version": "0.18.4.5664",
+                              "templateHash": "6884329723415038645"
                             }
                           },
                           "parameters": {
@@ -1798,8 +1849,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "14320435993038113793"
+                      "version": "0.18.4.5664",
+                      "templateHash": "8332778839164422262"
                     }
                   },
                   "parameters": {
@@ -1896,8 +1947,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "7888759081595769946"
+                              "version": "0.18.4.5664",
+                              "templateHash": "15752571223585357448"
                             }
                           },
                           "parameters": {
@@ -1981,8 +2032,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.17.1.54307",
-                                      "templateHash": "2292412345738640312"
+                                      "version": "0.18.4.5664",
+                                      "templateHash": "1194790306604975116"
                                     }
                                   },
                                   "parameters": {
@@ -2062,8 +2113,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "7769237761756765769"
+                              "version": "0.18.4.5664",
+                              "templateHash": "16745646850117358821"
                             }
                           },
                           "parameters": {
@@ -2138,8 +2189,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.17.1.54307",
-                                      "templateHash": "5747539513423282725"
+                                      "version": "0.18.4.5664",
+                                      "templateHash": "13046201805213672696"
                                     }
                                   },
                                   "parameters": {
@@ -2270,8 +2321,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "2946050073205174425"
+                      "version": "0.18.4.5664",
+                      "templateHash": "17787882586700885364"
                     }
                   },
                   "parameters": {
@@ -2590,8 +2641,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "960438069714099671"
+                              "version": "0.18.4.5664",
+                              "templateHash": "13018167601638648419"
                             }
                           },
                           "parameters": {
@@ -2781,8 +2832,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.17.1.54307",
-                                      "templateHash": "3868007513193451273"
+                                      "version": "0.18.4.5664",
+                                      "templateHash": "10997626184589049458"
                                     }
                                   },
                                   "parameters": {
@@ -2965,8 +3016,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "6712082784077913415"
+                              "version": "0.18.4.5664",
+                              "templateHash": "11932954391601888959"
                             }
                           },
                           "parameters": {
@@ -3131,8 +3182,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "6712082784077913415"
+                              "version": "0.18.4.5664",
+                              "templateHash": "11932954391601888959"
                             }
                           },
                           "parameters": {
@@ -3290,8 +3341,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "11517779320265149919"
+                              "version": "0.18.4.5664",
+                              "templateHash": "13601024188595454496"
                             }
                           },
                           "parameters": {
@@ -3497,8 +3548,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "10090145398767624067"
+                      "version": "0.18.4.5664",
+                      "templateHash": "3327249724665559435"
                     }
                   },
                   "parameters": {
@@ -3637,8 +3688,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "6890108490653972363"
+                      "version": "0.18.4.5664",
+                      "templateHash": "62918604766961614"
                     }
                   },
                   "parameters": {
@@ -3797,8 +3848,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "7461575293252869489"
+                              "version": "0.18.4.5664",
+                              "templateHash": "4795143004046942480"
                             }
                           },
                           "parameters": {
@@ -4267,8 +4318,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "11025527459091675051"
+                              "version": "0.18.4.5664",
+                              "templateHash": "5233887736523526376"
                             }
                           },
                           "parameters": {
@@ -4737,8 +4788,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "5048313633795900078"
+                              "version": "0.18.4.5664",
+                              "templateHash": "1501170999490919021"
                             }
                           },
                           "parameters": {
@@ -5239,8 +5290,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "6890108490653972363"
+                      "version": "0.18.4.5664",
+                      "templateHash": "62918604766961614"
                     }
                   },
                   "parameters": {
@@ -5399,8 +5450,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "7461575293252869489"
+                              "version": "0.18.4.5664",
+                              "templateHash": "4795143004046942480"
                             }
                           },
                           "parameters": {
@@ -5869,8 +5920,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "11025527459091675051"
+                              "version": "0.18.4.5664",
+                              "templateHash": "5233887736523526376"
                             }
                           },
                           "parameters": {
@@ -6339,8 +6390,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "5048313633795900078"
+                              "version": "0.18.4.5664",
+                              "templateHash": "1501170999490919021"
                             }
                           },
                           "parameters": {
@@ -6844,8 +6895,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "6890108490653972363"
+                      "version": "0.18.4.5664",
+                      "templateHash": "62918604766961614"
                     }
                   },
                   "parameters": {
@@ -7004,8 +7055,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "7461575293252869489"
+                              "version": "0.18.4.5664",
+                              "templateHash": "4795143004046942480"
                             }
                           },
                           "parameters": {
@@ -7474,8 +7525,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "11025527459091675051"
+                              "version": "0.18.4.5664",
+                              "templateHash": "5233887736523526376"
                             }
                           },
                           "parameters": {
@@ -7944,8 +7995,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "5048313633795900078"
+                              "version": "0.18.4.5664",
+                              "templateHash": "1501170999490919021"
                             }
                           },
                           "parameters": {
@@ -8427,6 +8478,20 @@
         "description": "The Subscription Resource ID that has been created or provided."
       },
       "value": "[if(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2022-09-01').outputs.subscriptionResourceId.value, if(contains(variables('existingSubscriptionIDEmptyCheck'), 'No Subscription ID Provided'), variables('existingSubscriptionIDEmptyCheck'), format('/subscriptions/{0}', parameters('existingSubscriptionId'))))]"
+    },
+    "subscriptionAcceptOwnershipState": {
+      "type": "string",
+      "metadata": {
+        "description": "The Subscription Owner State. Only used when creating MCA Subscriptions across tenants"
+      },
+      "value": "[if(and(and(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), not(empty(parameters('subscriptionTenantId')))), not(empty(parameters('subscriptionOwnerId')))), reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2022-09-01').outputs.subscriptionAcceptOwnershipState.value, 'N/A')]"
+    },
+    "subscriptionAcceptOwnershipUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "The Subscription Ownership URL. Only used when creating MCA Subscriptions across tenants"
+      },
+      "value": "[if(and(and(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), not(empty(parameters('subscriptionTenantId')))), not(empty(parameters('subscriptionOwnerId')))), reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2022-09-01').outputs.subscriptionAcceptOwnershipUrl.value, 'N/A')]"
     }
   }
 }
