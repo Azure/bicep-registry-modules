@@ -41,7 +41,7 @@ param clusterName string
 param clusterCapacity int
 param eventHubNamespaces object
 
-module eventhubnamespace 'br/public:compute/event-hub:0.1.0' = {
+module eventhubnamespace 'br/public:compute/event-hub:0.0.1' = {
   name: '${uniqueString(deployment().name, 'eastus')}-event-hub-namespace'
   params: {
     location: 'eastus'
@@ -87,7 +87,7 @@ param consumerGroups object
 param disasterRecoveryConfigs object
 
 
-module eventhubnamespace 'br/public:compute/event-hub:0.1.0' = {
+module eventhubnamespace 'br/public:compute/event-hub:0.0.1' = {
   name: '${uniqueString(deployment().name, 'eastus')}-event-hub-namespace'
   params: {
     location: 'eastus'
@@ -152,7 +152,7 @@ module eventhubnamespace 'br/public:compute/event-hub:0.1.0' = {
 ### Example 3
 
 ```bicep
-module eventhubnamespace 'br/public:compute/event-hub:0.1.0' = {
+module eventhubnamespace 'br/public:compute/event-hub:0.0.1' = {
   name: '${uniqueString(deployment().name, 'eastus')}-event-hub-namespace'
   params: {
     location: 'eastus'
@@ -178,7 +178,7 @@ module eventhubnamespace 'br/public:compute/event-hub:0.1.0' = {
 ### Example 4
 
 ```bicep
-module eventhubnamespace 'br/public:compute/event-hub:0.1.0' = {
+module eventhubnamespace 'br/public:compute/event-hub:0.0.1' = {
   name: '${uniqueString(deployment().name, 'eastus')}-event-hub-namespace'
   params: {
     location: 'eastus'
@@ -197,7 +197,7 @@ module eventhubnamespace 'br/public:compute/event-hub:0.1.0' = {
 ### Example 5
 
 ```bicep
-module eventhubnamespace 'br/public:compute/event-hub:0.1.0' = {
+module eventhubnamespace 'br/public:compute/event-hub:0.0.1' = {
   name: '${uniqueString(deployment().name, 'eastus')}-event-hub-namespace'
   params: {
     location: 'eastus'
