@@ -64,13 +64,13 @@ param isCrossTenant bool = false
 @description('The default policy might cause errors about CSR being used before, so set this to false if that happens')
 param reuseKey bool = true
 
-@description('Set to false to disable role assignments within this module. Default: true')
-param performRoleAssignment bool = true
-
 @minValue(1)
 @maxValue(1200)
 @description('Optional. Override default validityInMonths 12 value')
 param validity int = 12
+
+@description('Set to false to disable role assignments within this module. Default: true')
+param performRoleAssignment bool = true
 
 resource akv 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: akvName
