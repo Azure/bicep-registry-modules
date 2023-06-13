@@ -70,10 +70,10 @@ param eventHubAuthorizationRules object = {}
 @description('Optional. consumer groups for the Event Hub .')
 param consumerGroups object = {}
 
-@description('Define Private Endpoints that should be created for Azure Container Registry.')
+@description('Define Private Endpoints that should be created for Azure EventHub Namespace.')
 param privateEndpoints array = []
 
-@description('Toggle if Private Endpoints manual approval for Azure Container Registry should be enabled.')
+@description('Toggle if Private Endpoints manual approval for Azure EventHub Namespace should be enabled.')
 param privateEndpointsApprovalEnabled bool = false
 
 var varEventHubNamespaces = [for eventHubnamespace in items(eventHubNamespaces): {
@@ -143,7 +143,7 @@ var varDiagnosticSettings = [for diagnosticSetting in items(diagnosticSettings):
 }]
 
 var varNamespaceRoleAssignments =  [for namespaceRoleAssignment in items(namespaceRoleAssignments): {
-  eventHubNamespaceAuthorizationRuleName: namespaceRoleAssignment.key
+  eventHubNamespaceRoleAssignmentsName: namespaceRoleAssignment.key
   description: contains(namespaceRoleAssignment.value, 'description') ? namespaceRoleAssignment.value.description : ''
   principalIds: namespaceRoleAssignment.value.principalIds
   principalType: contains(namespaceRoleAssignment.value, 'principalType') ? namespaceRoleAssignment.value.principalType: ''
@@ -227,6 +227,7 @@ module eventHubNamespace_disasterRecoveryConfigs 'modules/disasterRecoveryConfig
 module eventHubNamespace_roleAssignments 'modules/roleAssignments.bicep' = [for (varNamespaceRoleAssignment, index) in varNamespaceRoleAssignments: {
   name: '${deployment().name}-Namespace-Rbac-${index}'
   params: {
+    roleAssignmentsName: varNamespaceRoleAssignment.eventHubNamespaceRoleAssignmentsName
     description: varNamespaceRoleAssignment.description
     principalIds: varNamespaceRoleAssignment.principalIds
     principalType: varNamespaceRoleAssignment.principalType
@@ -332,3 +333,4 @@ output eventHubNamespaceDetails array = [for varEventHubNamespace in varEventHub
   serviceBusEndpoint: reference(varEventHubNamespace.eventHubNamespaceName,'2021-11-01','Full').properties.serviceBusEndpoint
   status: reference(varEventHubNamespace.eventHubNamespaceName,'2021-11-01','Full').properties.status
 }]
+
