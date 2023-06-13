@@ -57,7 +57,7 @@ param location string = resourceGroup().location
 param akvName string = 'yourAzureKeyVault'
 param certificateName string = 'myapp'
 
-module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.3.1' = {
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.4' = {
   name: 'akvCertSingle'
   params: {
     akvName: akvName
@@ -80,7 +80,7 @@ param akvName string =  'yourAzureKeyVault'
 param certificateName string = 'myapp'
 param certificateCommonName string = '${certificateName}.mydomain.local'
 
-module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.3.1' = {
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.4' = {
   name: 'akvCertSingle'
   params: {
     akvName: akvName
