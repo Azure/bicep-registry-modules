@@ -34,6 +34,7 @@ This module is based on the `az cli certificate` create command and more informa
 | `isCrossTenant`                            | `bool`         | No       | Override this parameter if using this in cross tenant scenarios                                               |
 | `reuseKey`                                 | `bool`         | No       | The default policy might cause errors about CSR being used before, so set this to false if that happens       |
 | `validity`                                 | `int`          | No       | Optional. Override default validityInMonths 12 value                                                          |
+| `performRoleAssignment`                    | `bool`         | No       | Optional. Override default performRoleAssignment true value to disable rbac role assignment                   |
 
 ## Outputs
 
