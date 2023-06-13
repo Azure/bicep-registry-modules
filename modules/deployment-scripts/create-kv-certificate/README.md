@@ -38,13 +38,13 @@ This module is based on the `az cli certificate` create command and more informa
 
 ## Outputs
 
-| Name                            | Type  | Description                                        |
-| :------------------------------ | :---: | :------------------------------------------------- |
-| certificateNames                | array | Certificate names                                  |
-| certificateSecretIds            | array | KeyVault secret ids to the created version         |
-| certificateSecretIdUnversioneds | array | KeyVault secret ids which uses the unversioned uri |
-| certificateThumbpints           | array | Certificate Thumbprints                            |
-| certificateThumbprintHexs       | array | Certificate Thumbprints (in hex)                   |
+| Name                              | Type    | Description                                        |
+| :-------------------------------- | :-----: | :------------------------------------------------- |
+| `certificateNames`                | `array` | Certificate names                                  |
+| `certificateSecretIds`            | `array` | KeyVault secret ids to the created version         |
+| `certificateSecretIdUnversioneds` | `array` | KeyVault secret ids which uses the unversioned uri |
+| `certificateThumbpints`           | `array` | Certificate Thumbprints                            |
+| `certificateThumbprintHexs`       | `array` | Certificate Thumbprints (in hex)                   |
 
 ## Examples
 
