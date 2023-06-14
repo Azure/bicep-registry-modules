@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "8647144713445880495"
+      "templateHash": "15769869279412362289"
     }
   },
   "parameters": {
@@ -67,7 +67,7 @@
     "sshKeyName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the SSH Key to be created.\r\nif name is my-virtual-machine-ssh then the private key will be named my-virtual-machine-sshprivate and the public key will be named my-virtual-machine-sshpublic.\r\n"
+        "description": "The name of the SSH Key to be created.\nif name is my-virtual-machine-ssh then the private key will be named my-virtual-machine-sshprivate and the public key will be named my-virtual-machine-sshpublic.\n"
       }
     },
     "initialScriptDelay": {
