@@ -87,8 +87,12 @@ resource createSshKeyPair 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   }
 }
 
+@description('The URI of the public key secret in the Key Vault')
 output publicKeyUri string = createSshKeyPair.properties.outputs.secretUris.public
+@description('The URI of the private key secret in the Key Vault')
 output privateKeyUri string = createSshKeyPair.properties.outputs.secretUris.private
 
+@description('The name of the public key secret in the Key Vault')
 output publicKeySecretName string = publicKeySecretName
+@description('The name of the private key secret in the Key Vault')
 output privateKeySecretName string = privateKeySecretName
