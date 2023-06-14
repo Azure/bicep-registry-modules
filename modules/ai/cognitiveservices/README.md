@@ -10,8 +10,9 @@ The Bicep module deploys an Azure Cognitive Service to a specified location, all
 
 | Name                            | Type     | Required | Description                                                                                                                                                                                                                                                                                                                                                                                  |
 | :------------------------------ | :------: | :------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `location`                      | `string` | No       | The location into which your Azure resources should be deployed.                                                                                                                                                                                                                                                                                                                             |
 | `kind`                          | `string` | Yes      | The kind of Cognitive Service to create. See: https://learn.microsoft.com/en-us/azure/cognitive-services/create-account-bicep for available kinds.                                                                                                                                                                                                                                           |
+| `prefix`                        | `string` | No       | Prefix of Resource Name. Not used if name is provided                                                                                                                                                                                                                                                                                                                                        |
+| `location`                      | `string` | No       | The location into which your Azure resources should be deployed.                                                                                                                                                                                                                                                                                                                             |
 | `name`                          | `string` | No       | The name of the Cognitive Service.                                                                                                                                                                                                                                                                                                                                                           |
 | `tags`                          | `object` | No       | The tags to apply to each resource.                                                                                                                                                                                                                                                                                                                                                          |
 | `customSubDomainName`           | `string` | No       | A custom subdomain to reach the Cognitive Service.                                                                                                                                                                                                                                                                                                                                           |
@@ -50,7 +51,7 @@ The Bicep module deploys an Azure Cognitive Service to a specified location, all
 Deploys a SpeechService Cognitive Service
 
 ```bicep
-module speechService 'br/public:cognitiveservices/multi:1.0.1' = {
+module speechService 'br/public:ai/cognitiveservices:1.0.1' = {
   name: 'speechService'
   params: {
     kind: 'SpeechServices'
@@ -66,7 +67,7 @@ module speechService 'br/public:cognitiveservices/multi:1.0.1' = {
 Deploys an OpenAI Cognitive Service with a model deployment
 
 ```bicep
-module openAI 'br/public:cognitiveservices/multi:1.0.1' = {
+module openAI 'br/public:ai/cognitiveservices:1.0.1' = {
   name: 'openai'
   params: {
     skuName: 'S0'
@@ -97,7 +98,7 @@ module openAI 'br/public:cognitiveservices/multi:1.0.1' = {
 Deploys a Content Moderator Cognitive Service
 
 ```bicep
-module contentModerator 'br/public:cognitiveservices/multi:1.0.1' = {
+module contentModerator 'br/public:ai/cognitiveservices:1.0.1' = {
   name: 'contentModerator'
   params: {
     skuName: 'S0'
@@ -113,7 +114,7 @@ module contentModerator 'br/public:cognitiveservices/multi:1.0.1' = {
 Deploys a Speech Service with role assignments and private endpoints
 
 ```bicep
-module speechService 'br/public:cognitiveservices/multi:1.0.1' = {
+module speechService 'br/public:ai/cognitiveservices:1.0.1' = {
   name: 'test-04-speech'
   params: {
     name: 'test-04-speech-${uniqueName}'
