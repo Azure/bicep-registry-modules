@@ -69,6 +69,9 @@ param reuseKey bool = true
 @description('Optional. Override default validityInMonths 12 value')
 param validity int = 12
 
+@description('Set to false to disable role assignments within this module. Default: true')
+param performRoleAssignment bool = true
+
 resource akv 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: akvName
 }
@@ -87,7 +90,7 @@ resource existingDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2
 
 var delegatedManagedIdentityResourceId = useExistingManagedIdentity ? existingDepScriptId.id : newDepScriptId.id
 
-resource rbacKv 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+resource rbacKv 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (performRoleAssignment) {
   name: guid(akv.id, rbacRolesNeededOnKV, managedIdentityName, string(useExistingManagedIdentity))
   scope: akv
   properties: {
