@@ -38,11 +38,11 @@ The Bicep module deploys an Azure Cognitive Service to a specified location, all
 
 ## Outputs
 
-| Name     | Type   | Description   |
-| :------- | :----: | :------------ |
-| name     | string | Resource Name |
-| id       | string | Resource Id   |
-| endpoint | string | Endpoint      |
+| Name       | Type     | Description   |
+| :--------- | :------: | :------------ |
+| `name`     | `string` | Resource Name |
+| `id`       | `string` | Resource Id   |
+| `endpoint` | `string` | Endpoint      |
 
 ## Examples
 
