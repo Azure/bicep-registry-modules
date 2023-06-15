@@ -46,7 +46,7 @@ module dnsZone 'br/public:network/private-dns-zone:1.0.1' = {
     ]
     aRecords: [
       {
-        name: 'arecord1' //(The name of the DNS record to be created.  The name is relative to the zone, not the FQDN.)
+        name: 'arecord1' //(The name of the DNS record to be created.  The name is relative to the zone, not the FQDN)
         TTL: 3600 //(The TTL (time-to-live) of the records in the record set. type is 'int')
         ipv4Addresses: [
           //(The list of A records in the ipv4Addresses.)
