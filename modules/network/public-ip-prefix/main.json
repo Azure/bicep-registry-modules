@@ -1,0 +1,114 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.16.2.56959",
+      "templateHash": "11826943076831411493"
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the public IP Prefix."
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Define the Azure Location that the Public IP Prefix should be created within."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Tags for Public IP Prefix."
+      }
+    },
+    "tier": {
+      "type": "string",
+      "defaultValue": "Regional",
+      "metadata": {
+        "description": "Optional. tier for the Public IP Prefix, Default set to Regional"
+      },
+      "allowedValues": [
+        "Global",
+        "Regional"
+      ]
+    },
+    "publicIPAddressVersion": {
+      "type": "string",
+      "defaultValue": "IPv4",
+      "allowedValues": [
+        "IPv4",
+        "IPv6"
+      ],
+      "metadata": {
+        "description": "Optional. IP address version."
+      }
+    },
+    "prefixLength": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. The Length of the Public IP Prefix."
+      },
+      "allowedValues": [
+        28,
+        29,
+        30,
+        31
+      ]
+    },
+    "availabilityZones": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. A list of availability zones denoting the IP allocated for the resource needs to come from. Default set to []"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/publicIPPrefixes",
+      "apiVersion": "2022-09-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "sku": {
+        "name": "Standard",
+        "tier": "[parameters('tier')]"
+      },
+      "properties": {
+        "publicIPAddressVersion": "[parameters('publicIPAddressVersion')]",
+        "prefixLength": "[parameters('prefixLength')]"
+      },
+      "zones": "[parameters('availabilityZones')]"
+    }
+  ],
+  "outputs": {
+    "id": {
+      "type": "string",
+      "metadata": {
+        "description": "Id of the Public IP Prefix."
+      },
+      "value": "[resourceId('Microsoft.Network/publicIPPrefixes', parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Public IP Prefix."
+      },
+      "value": "[parameters('name')]"
+    },
+    "ipPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "The allocated IP Prefix."
+      },
+      "value": "[reference(resourceId('Microsoft.Network/publicIPPrefixes', parameters('name')), '2022-09-01').ipPrefix]"
+    }
+  }
+}

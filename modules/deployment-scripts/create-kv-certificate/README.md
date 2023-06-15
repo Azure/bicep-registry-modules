@@ -34,16 +34,17 @@ This module is based on the `az cli certificate` create command and more informa
 | `isCrossTenant`                            | `bool`         | No       | Override this parameter if using this in cross tenant scenarios                                               |
 | `reuseKey`                                 | `bool`         | No       | The default policy might cause errors about CSR being used before, so set this to false if that happens       |
 | `validity`                                 | `int`          | No       | Optional. Override default validityInMonths 12 value                                                          |
+| `performRoleAssignment`                    | `bool`         | No       | Set to false to disable role assignments within this module. Default: true                                    |
 
 ## Outputs
 
-| Name                            | Type  | Description                                        |
-| :------------------------------ | :---: | :------------------------------------------------- |
-| certificateNames                | array | Certificate names                                  |
-| certificateSecretIds            | array | KeyVault secret ids to the created version         |
-| certificateSecretIdUnversioneds | array | KeyVault secret ids which uses the unversioned uri |
-| certificateThumbpints           | array | Certificate Thumbprints                            |
-| certificateThumbprintHexs       | array | Certificate Thumbprints (in hex)                   |
+| Name                              | Type    | Description                                        |
+| :-------------------------------- | :-----: | :------------------------------------------------- |
+| `certificateNames`                | `array` | Certificate names                                  |
+| `certificateSecretIds`            | `array` | KeyVault secret ids to the created version         |
+| `certificateSecretIdUnversioneds` | `array` | KeyVault secret ids which uses the unversioned uri |
+| `certificateThumbpints`           | `array` | Certificate Thumbprints                            |
+| `certificateThumbprintHexs`       | `array` | Certificate Thumbprints (in hex)                   |
 
 ## Examples
 
@@ -56,7 +57,7 @@ param location string = resourceGroup().location
 param akvName string = 'yourAzureKeyVault'
 param certificateName string = 'myapp'
 
-module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.3.1' = {
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.4' = {
   name: 'akvCertSingle'
   params: {
     akvName: akvName
@@ -79,7 +80,7 @@ param akvName string =  'yourAzureKeyVault'
 param certificateName string = 'myapp'
 param certificateCommonName string = '${certificateName}.mydomain.local'
 
-module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.3.1' = {
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.4' = {
   name: 'akvCertSingle'
   params: {
     akvName: akvName

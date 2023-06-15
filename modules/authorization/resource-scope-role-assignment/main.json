@@ -1,0 +1,169 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.18.4.5664",
+      "templateHash": "6440850597040482218"
+    }
+  },
+  "parameters": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The scope for the role assignment, fully qualified resourceId"
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The unique guid name for the role assignment"
+      }
+    },
+    "roleDefinitionId": {
+      "type": "string",
+      "metadata": {
+        "description": "The role definitionId from your tenant/subscription"
+      }
+    },
+    "principalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID"
+      }
+    },
+    "principalType": {
+      "type": "string",
+      "defaultValue": "",
+      "allowedValues": [
+        "Device",
+        "ForeignGroup",
+        "Group",
+        "ServicePrincipal",
+        "User",
+        ""
+      ],
+      "metadata": {
+        "description": "The principal type of the assigned principal ID"
+      }
+    },
+    "roleName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The name for the role, used for logging"
+      }
+    },
+    "description": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The Description of role assignment"
+      }
+    }
+  },
+  "variables": {
+    "$fxv#0": {
+      "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "scope": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "roleDefinitionId": {
+          "type": "string"
+        },
+        "principalId": {
+          "type": "string"
+        },
+        "principalType": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "resources": [
+        {
+          "type": "Microsoft.Authorization/roleAssignments",
+          "apiVersion": "2022-04-01",
+          "scope": "[[parameters('scope')]",
+          "name": "[[parameters('name')]",
+          "properties": {
+            "roleDefinitionId": "[[resourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId'))]",
+            "principalId": "[[parameters('principalId')]",
+            "principalType": "[[parameters('principalType')]",
+            "description": "[[parameters('description')]"
+          }
+        }
+      ],
+      "outputs": {
+        "roleAssignmentId": {
+          "type": "string",
+          "value": "[[extensionResourceId(parameters('scope'), 'Microsoft.Authorization/roleAssignments', parameters('name'))]"
+        }
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('RA-{0}-{1}', parameters('name'), last(split(parameters('resourceId'), '/'))), 64)]",
+      "properties": {
+        "mode": "Incremental",
+        "expressionEvaluationOptions": {
+          "scope": "Outer"
+        },
+        "template": "[variables('$fxv#0')]",
+        "parameters": {
+          "scope": {
+            "value": "[parameters('resourceId')]"
+          },
+          "name": {
+            "value": "[parameters('name')]"
+          },
+          "roleDefinitionId": {
+            "value": "[parameters('roleDefinitionId')]"
+          },
+          "principalId": {
+            "value": "[parameters('principalId')]"
+          },
+          "principalType": {
+            "value": "[parameters('principalType')]"
+          },
+          "description": {
+            "value": "[parameters('description')]"
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The unique name guid used for the roleAssignment"
+      },
+      "value": "[parameters('name')]"
+    },
+    "roleName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name for the role, used for logging"
+      },
+      "value": "[parameters('roleName')]"
+    },
+    "id": {
+      "type": "string",
+      "metadata": {
+        "description": "The roleAssignmentId created on the scope of the resourceId"
+      },
+      "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('RA-{0}-{1}', parameters('name'), last(split(parameters('resourceId'), '/'))), 64)), '2022-09-01').outputs.roleAssignmentId.value]"
+    }
+  }
+}
