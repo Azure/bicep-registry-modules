@@ -1,0 +1,171 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.16.2.56959",
+      "templateHash": "8195679853000186012"
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Specifies the name of the publicIPAddress."
+      },
+      "maxLength": 80,
+      "minLength": 1
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Specifies the Azure location where the publicIPAddress should be created."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Tags to assign to the Azure Resource(s)."
+      }
+    },
+    "skuName": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Basic",
+        "Standard"
+      ],
+      "metadata": {
+        "description": "Optional. Name of a public IP address SKU."
+      }
+    },
+    "skuTier": {
+      "type": "string",
+      "defaultValue": "Regional",
+      "allowedValues": [
+        "Regional"
+      ],
+      "metadata": {
+        "description": "Optional. Tier of a public IP address SKU."
+      }
+    },
+    "availabilityZones": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. A list of availability zones denoting the IP allocated for the resource needs to come from."
+      }
+    },
+    "publicIPAddressVersion": {
+      "type": "string",
+      "defaultValue": "IPv4",
+      "allowedValues": [
+        "IPv4",
+        "IPv6"
+      ],
+      "metadata": {
+        "description": "Optional. IP address version."
+      }
+    },
+    "publicIPAllocationMethod": {
+      "type": "string",
+      "defaultValue": "Static",
+      "allowedValues": [
+        "Dynamic",
+        "Static"
+      ],
+      "metadata": {
+        "description": "Optional. IP address allocation method."
+      }
+    },
+    "deleteOption": {
+      "type": "string",
+      "defaultValue": "Detach",
+      "allowedValues": [
+        "Delete",
+        "Detach"
+      ],
+      "metadata": {
+        "description": "Optional. Specify what happens to the public IP address when the VM using it is deleted."
+      }
+    },
+    "publicIPPrefixId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Reference to another subresource ID"
+      }
+    },
+    "domainNameLabel": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The domain name label. The concatenation of the domain name label and the regionalized DNS zone make up the fully qualified domain name associated with the public IP address. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system."
+      },
+      "maxLength": 63,
+      "minLength": 3
+    },
+    "idleTimeoutInMinutes": {
+      "type": "int",
+      "defaultValue": 4,
+      "metadata": {
+        "description": "Optional. The idle timeout of the public IP address."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2022-09-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('skuName')]",
+        "tier": "[parameters('skuTier')]"
+      },
+      "zones": "[if(equals(parameters('skuTier'), 'Regional'), parameters('availabilityZones'), null())]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "publicIPAddressVersion": "[parameters('publicIPAddressVersion')]",
+        "publicIPAllocationMethod": "[parameters('publicIPAllocationMethod')]",
+        "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
+        "deleteOption": "[parameters('deleteOption')]",
+        "publicIPPrefix": "[if(greater(length(parameters('publicIPPrefixId')), 0), createObject('id', parameters('publicIPPrefixId')), null())]",
+        "dnsSettings": {
+          "domainNameLabel": "[parameters('domainNameLabel')]"
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "id": {
+      "type": "string",
+      "metadata": {
+        "description": "Get id for publicIPAddress"
+      },
+      "value": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Get name for publicIPAddress"
+      },
+      "value": "[parameters('name')]"
+    },
+    "ipAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "Get ipAddress property from publicIPAddress resource"
+      },
+      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', parameters('name')), '2022-09-01').ipAddress]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "Get resourceGroup name for publicIPAddress"
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
