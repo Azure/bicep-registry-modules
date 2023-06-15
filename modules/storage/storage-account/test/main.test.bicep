@@ -98,7 +98,7 @@ module test4 '../main.bicep' = {
       blobProperties: {
         isVersioningEnabled: true
         changeFeed: {
-         enabled: true
+          enabled: true
         }
       }
       blobContainerProperties: {
