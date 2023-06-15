@@ -17,7 +17,6 @@ The output of the module is the ID of the created or existing Storage Account, w
 
 ## Parameters
 
-<<<<<<< HEAD
 | Name                              | Type     | Required | Description                                                                                                                          |
 | :-------------------------------- | :------: | :------: | :----------------------------------------------------------------------------------------------------------------------------------- |
 | `location`                        | `string` | Yes      | Deployment Location                                                                                                                  |

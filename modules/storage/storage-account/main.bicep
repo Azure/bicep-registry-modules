@@ -118,6 +118,7 @@ param privateEndpoints array = []
 
 @description('Toggle if Private Endpoints manual approval for Azure Storage Account should be enabled.')
 param privateEndpointsApprovalEnabled bool = false
+
 // @description('Toggle to enable or disable Blob service of the Storage Account.')
 // param enableBlobService bool = false
 
