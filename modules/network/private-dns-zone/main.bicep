@@ -10,7 +10,6 @@ param location string
 @description('Optional. Adding virtual network links to the PrivateDNSZone.')
 param virtualNetworkLinks array = []
 /*** example
-
     virtualNetworkLinks: [
       {
         name: 'virtualNetworkLink-${uniqueString(resourceGroup.id)}'
@@ -20,7 +19,6 @@ param virtualNetworkLinks array = []
         tags: tags
       }
     ]
-
 ***/
 
 @description('Optional. Specifies the "A" Records array')
