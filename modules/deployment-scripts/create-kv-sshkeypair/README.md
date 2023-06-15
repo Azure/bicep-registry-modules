@@ -6,8 +6,6 @@ Creates SSH Key Pair Stores them in KeyVault as Secrets
 
 Creates SSH key pair and stores them in provided AKV.
 
-{{ Add detailed description for the module. }}
-
 ## Parameters
 
 | Name                                       | Type     | Required | Description                                                                                                                                                                                                   |
