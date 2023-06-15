@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.17.1.54307",
-      "templateHash": "108474657788938527"
+      "version": "0.18.4.5664",
+      "templateHash": "17115567195402473947"
     }
   },
   "parameters": {
@@ -20,15 +20,16 @@
       "type": "string",
       "defaultValue": "[take(format('{0}{1}', parameters('prefix'), uniqueString(resourceGroup().id, subscription().id)), 63)]",
       "metadata": {
-        "description": "Required. Name of the Log Analytics Workspace."
+        "description": "Optional. Name of the Log Analytics Workspace."
       },
       "maxLength": 63,
       "minLength": 4
     },
     "location": {
       "type": "string",
+      "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Required. Define the Azure Location that the Log Analytics Workspace should be created within."
+        "description": "Optional. Define the Azure Location that the Log Analytics Workspace should be created within."
       }
     },
     "tags": {
