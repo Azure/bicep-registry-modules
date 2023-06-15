@@ -23,11 +23,11 @@ resource sqlRoleDefinitions 'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefini
 resource sqlRoleAssignments 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2023-04-15' = [for assignment in role.?assignments ?? []: {
   parent: cosmosDBAccount
 
-  name: uniqueString(cosmosDBAccount.id, sqlRoleDefinitions.id, assignment.principalId)
+  name: guid(cosmosDBAccount.id, sqlRoleDefinitions.id, assignment.principalId)
   properties: {
     roleDefinitionId: sqlRoleDefinitions.id
     principalId: assignment.principalId
-    scope: assignment.?scope ?? cosmosDBAccount
+    scope: '${cosmosDBAccount.id}${assignment.?scope ?? ''}'
   }
 }]
 

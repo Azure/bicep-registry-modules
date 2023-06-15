@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.17.1.54307",
-      "templateHash": "16011509947686088636"
+      "templateHash": "1494537179049048771"
     }
   },
   "definitions": {
@@ -1170,13 +1170,41 @@
         "description": "Type definition for the SQL Role Definition Permission."
       }
     },
-    "sqlRoleAssignmentType": {
+    "sqlCustomRoleAssignmentType": {
       "type": "object",
       "properties": {
         "principalId": {
           "type": "string",
           "metadata": {
             "description": "The principal ID of the assigment."
+          }
+        },
+        "scope": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "  The scope of the assignment. It can be the entire cosmosDB account, or a specific database or container.\n  If omitted, it means the entire cosmosDB account.\n  "
+          }
+        }
+      }
+    },
+    "sqlBuiltinRoleAsignmentType": {
+      "type": "object",
+      "properties": {
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "The principal ID of the assigment."
+          }
+        },
+        "builtinRoleId": {
+          "type": "string",
+          "allowedValues": [
+            "00000000-0000-0000-0000-000000000001",
+            "00000000-0000-0000-0000-000000000002"
+          ],
+          "metadata": {
+            "description": "  The ID of the builtin role.\n  See https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-setup-rbac#built-in-role-definitions for defail about the built-in roles.\n  "
           }
         },
         "scope": {
@@ -1207,7 +1235,7 @@
         "assisgnments": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/sqlRoleAssignmentType"
+            "$ref": "#/definitions/sqlCustomRoleAssignmentType"
           },
           "nullable": true,
           "metadata": {
@@ -1418,7 +1446,7 @@
         "description": "The array of geo locations that Cosmos DB account would be hosted in.\nEach element defines a region of georeplication.\nThe order of regions in this list is the order for region failover. The first element is the primary region which is a write region of the Cosmos DB account.\n"
       }
     },
-    "MongoDBServerVersion": {
+    "mongoDBServerVersion": {
       "type": "string",
       "defaultValue": "4.2",
       "allowedValues": [
@@ -1617,6 +1645,16 @@
         "description": "The list of SQL role definitions. Only valid when param.backendApi is set to \"Sql\"."
       }
     },
+    "sqlBuiltinRoleAssignments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/sqlBuiltinRoleAsignmentType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "The list of SQL built-in role assignments. Only valid when param.backendApi is set to \"Sql\"."
+      }
+    },
     "roleAssignments": {
       "type": "array",
       "items": {
@@ -1771,7 +1809,7 @@
           }
         ],
         "analyticalStorageConfiguration": "[if(parameters('enableAnalyticalStorage'), createObject('schemaType', parameters('analyticalStorageSchemaType')), null())]",
-        "apiProperties": "[if(equals(parameters('backendApi'), 'mongodb'), createObject('serverVersion', parameters('MongoDBServerVersion')), null())]",
+        "apiProperties": "[if(equals(parameters('backendApi'), 'mongodb'), createObject('serverVersion', parameters('mongoDBServerVersion')), null())]",
         "capabilities": "[variables('capabilities')]",
         "capacity": "[if(parameters('enableServerless'), null(), createObject('totalThroughputLimit', parameters('totalThroughputLimit')))]",
         "consistencyPolicy": "[parameters('consistencyPolicy')]",
@@ -1779,7 +1817,7 @@
         "createMode": "[parameters('createMode')]",
         "databaseAccountOfferType": "Standard",
         "disableKeyBasedMetadataWriteAccess": "[parameters('disableKeyBasedMetadataWriteAccess')]",
-        "disableLocalAuth": "[parameters('disableLocalAuth')]",
+        "disableLocalAuth": "[if(equals(parameters('backendApi'), 'sql'), parameters('disableLocalAuth'), null())]",
         "enableAnalyticalStorage": "[parameters('enableAnalyticalStorage')]",
         "enableAutomaticFailover": "[parameters('enableAutomaticFailover')]",
         "enableFreeTier": "[parameters('enableFreeTier')]",
@@ -1799,6 +1837,25 @@
         "userAssignedIdentities": "[if(contains(parameters('identityType'), 'UserAssigned'), toObject(parameters('userAssignedIdentities'), lambda('id', lambdaVariables('id')), lambda('id', createObject())), null())]"
       },
       "tags": "[parameters('tags')]"
+    },
+    "cosmosDBAccount_sqlBuiltinRoleAssignments": {
+      "copy": {
+        "name": "cosmosDBAccount_sqlBuiltinRoleAssignments",
+        "count": "[length(parameters('sqlBuiltinRoleAssignments'))]"
+      },
+      "condition": "[equals(parameters('backendApi'), 'sql')]",
+      "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
+      "apiVersion": "2023-04-15",
+      "name": "[format('{0}/{1}', toLower(parameters('name')), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name'))), parameters('sqlBuiltinRoleAssignments')[copyIndex()].builtinRoleId, parameters('sqlBuiltinRoleAssignments')[copyIndex()].principalId))]",
+      "properties": {
+        "roleDefinitionId": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', toLower(parameters('name')), parameters('sqlBuiltinRoleAssignments')[copyIndex()].builtinRoleId)]",
+        "principalId": "[parameters('sqlBuiltinRoleAssignments')[copyIndex()].principalId]",
+        "scope": "[format('{0}{1}', resourceId('Microsoft.DocumentDB/databaseAccounts', toLower(parameters('name'))), coalesce(tryGet(parameters('sqlBuiltinRoleAssignments')[copyIndex()], 'scope'), ''))]"
+      },
+      "dependsOn": [
+        "cosmosDBAccount",
+        "cosmosDBAccount_sqlDatabases"
+      ]
     },
     "cosmosDBAccount_roleAssignment": {
       "copy": {
@@ -2451,7 +2508,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.17.1.54307",
-              "templateHash": "8820866233350164591"
+              "templateHash": "15342704948267793349"
             }
           },
           "parameters": {
@@ -2497,11 +2554,11 @@
               },
               "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
               "apiVersion": "2023-04-15",
-              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), uniqueString(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDBAccountName'), guid(parameters('cosmosDBAccountName'), parameters('role').name)), coalesce(tryGet(parameters('role'), 'assignments'), createArray())[copyIndex()].principalId))]",
+              "name": "[format('{0}/{1}', parameters('cosmosDBAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDBAccountName'), guid(parameters('cosmosDBAccountName'), parameters('role').name)), coalesce(tryGet(parameters('role'), 'assignments'), createArray())[copyIndex()].principalId))]",
               "properties": {
                 "roleDefinitionId": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDBAccountName'), guid(parameters('cosmosDBAccountName'), parameters('role').name))]",
                 "principalId": "[coalesce(tryGet(parameters('role'), 'assignments'), createArray())[copyIndex()].principalId]",
-                "scope": "[coalesce(tryGet(coalesce(tryGet(parameters('role'), 'assignments'), createArray())[copyIndex()], 'scope'), reference('cosmosDBAccount', '2023-04-15', 'full'))]"
+                "scope": "[format('{0}{1}', resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBAccountName')), coalesce(tryGet(coalesce(tryGet(parameters('role'), 'assignments'), createArray())[copyIndex()], 'scope'), ''))]"
               },
               "dependsOn": [
                 "sqlRoleDefinitions"
@@ -2520,7 +2577,8 @@
         }
       },
       "dependsOn": [
-        "cosmosDBAccount"
+        "cosmosDBAccount",
+        "cosmosDBAccount_sqlDatabases"
       ]
     },
     "cosmosDBAccount_privateEndpoints": {

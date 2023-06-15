@@ -392,6 +392,14 @@ module test07 '../main.bicep' = {
         ]
       }
     ]
+    sqlBuiltinRoleAssignments: [
+      {
+        builtinRoleId: '00000000-0000-0000-0000-000000000001'
+        principalId: dependencies.outputs.identityPrincipalIds[0]
+        scope: '/dbs/testdb1'
+      }
+    ]
+
   }
 }
 

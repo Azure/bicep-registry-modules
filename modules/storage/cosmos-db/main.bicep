@@ -49,7 +49,7 @@ param additionalLocations locationType[] = []
 
 @description('MongoDB server version. Required for mongodb API type Cosmos DB account')
 @allowed([ '3.2', '3.6', '4.0', '4.2' ])
-param MongoDBServerVersion string = '4.2'
+param mongoDBServerVersion string = '4.2'
 
 @description('List of CORS rules. Each CORS rule allows or denies requests from a set of origins to a Cosmos DB account or a database')
 param cors corsType[] = []
@@ -116,6 +116,9 @@ param gremlinDatabases gremlinDatabaseType[] = []
 @description('The list of SQL role definitions. Only valid when param.backendApi is set to "Sql".')
 param sqlCustomRoleDefinitions sqlCustomRoleDefinitionType[] = []
 
+@description('The list of SQL built-in role assignments. Only valid when param.backendApi is set to "Sql".')
+param sqlBuiltinRoleAssignments sqlBuiltinRoleAsignmentType[] = []
+
 @description('The list of role assignments for the Cosmos DB account.')
 param roleAssignments roleAssignmentType[] = []
 
@@ -181,7 +184,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
   kind: (backendApi == 'mongodb') ? 'MongoDB' : 'GlobalDocumentDB'
   properties: {
     analyticalStorageConfiguration: enableAnalyticalStorage ? { schemaType: analyticalStorageSchemaType } : null
-    apiProperties: (backendApi == 'mongodb') ? { serverVersion: MongoDBServerVersion } : null
+    apiProperties: (backendApi == 'mongodb') ? { serverVersion: mongoDBServerVersion } : null
     capabilities: capabilities
     capacity: enableServerless ? null : { totalThroughputLimit: totalThroughputLimit }
     consistencyPolicy: consistencyPolicy
@@ -189,7 +192,7 @@ resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
     createMode: createMode
     databaseAccountOfferType: 'Standard'
     disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
-    disableLocalAuth: disableLocalAuth
+    disableLocalAuth: backendApi == 'sql' ? disableLocalAuth : any(null)
     enableAnalyticalStorage: enableAnalyticalStorage
     enableAutomaticFailover: enableAutomaticFailover
     enableFreeTier: enableFreeTier
@@ -257,11 +260,24 @@ module cosmosDBAccount_gremlinDatabases 'modules/gremlin.bicep' = [for database 
   }
 }]
 
-module cosmosDBAccount_sqlRoles 'modules/sql_roles.bicep' = [for role in sqlCustomRoleDefinitions: if (backendApi == 'sql') {
+module cosmosDBAccount_sqlRoles 'modules/sql_custom_roles.bicep' = [for role in sqlCustomRoleDefinitions: if (backendApi == 'sql') {
+  dependsOn: [ cosmosDBAccount_sqlDatabases ]
   name: uniqueString(cosmosDBAccount.id, role.name)
   params: {
     cosmosDBAccountName: name
     role: role
+  }
+}]
+
+resource cosmosDBAccount_sqlBuiltinRoleAssignments 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2023-04-15' = [for assignment in sqlBuiltinRoleAssignments: if (backendApi == 'sql') {
+  parent: cosmosDBAccount
+  dependsOn: [ cosmosDBAccount_sqlDatabases ]
+
+  name: guid(cosmosDBAccount.id, assignment.builtinRoleId, assignment.principalId)
+  properties: {
+    roleDefinitionId: resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', cosmosDBAccount.name, assignment.builtinRoleId)
+    principalId: assignment.principalId
+    scope: '${cosmosDBAccount.id}${assignment.?scope ?? ''}'
   }
 }]
 
@@ -667,9 +683,24 @@ type sqlRoleDefinitionPermissionType = {
   dataActions: string[]?
 }
 
-type sqlRoleAssignmentType = {
+type sqlCustomRoleAssignmentType = {
   @description('The principal ID of the assigment.')
   principalId: string
+  @description('''
+  The scope of the assignment. It can be the entire cosmosDB account, or a specific database or container.
+  If omitted, it means the entire cosmosDB account.
+  ''')
+  scope: string?
+}
+
+type sqlBuiltinRoleAsignmentType = {
+  @description('The principal ID of the assigment.')
+  principalId: string
+  @description('''
+  The ID of the builtin role.
+  See https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-setup-rbac#built-in-role-definitions for defail about the built-in roles.
+  ''')
+  builtinRoleId: '00000000-0000-0000-0000-000000000001' | '00000000-0000-0000-0000-000000000002'
   @description('''
   The scope of the assignment. It can be the entire cosmosDB account, or a specific database or container.
   If omitted, it means the entire cosmosDB account.
@@ -682,7 +713,7 @@ type sqlCustomRoleDefinitionType = {
   name: string
   permissions: sqlRoleDefinitionPermissionType[]?
   @description('The list of SQL role assignments.')
-  assisgnments: sqlRoleAssignmentType[]?
+  assisgnments: sqlCustomRoleAssignmentType[]?
 }
 
 type privateEndpointType = {
