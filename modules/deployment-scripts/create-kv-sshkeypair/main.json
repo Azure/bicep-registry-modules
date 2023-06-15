@@ -1,0 +1,195 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.18.4.5664",
+      "templateHash": "15769869279412362289"
+    }
+  },
+  "parameters": {
+    "akvName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure Key Vault"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "The location of the Key Vault and where to deploy the module resources to"
+      }
+    },
+    "forceUpdateTag": {
+      "type": "string",
+      "defaultValue": "[utcNow()]",
+      "metadata": {
+        "description": "How the deployment script should be forced to execute"
+      }
+    },
+    "rbacRoleNeeded": {
+      "type": "string",
+      "defaultValue": "b86a8fe4-44ce-4948-aee5-eccb2c155cd7",
+      "metadata": {
+        "description": "Azure RoleId that are required for the DeploymentScript resource to import images"
+      }
+    },
+    "useExistingManagedIdentity": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Does the Managed Identity already exists, or should be created"
+      }
+    },
+    "managedIdentityName": {
+      "type": "string",
+      "defaultValue": "[format('id-keyvault-ssh-{0}', parameters('location'))]",
+      "metadata": {
+        "description": "Name of the Managed Identity resource"
+      }
+    },
+    "existingManagedIdentitySubId": {
+      "type": "string",
+      "defaultValue": "[subscription().subscriptionId]",
+      "metadata": {
+        "description": "For an existing Managed Identity, the Subscription Id it is located in"
+      }
+    },
+    "existingManagedIdentityResourceGroupName": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().name]",
+      "metadata": {
+        "description": "For an existing Managed Identity, the Resource Group it is located in"
+      }
+    },
+    "sshKeyName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the SSH Key to be created.\nif name is my-virtual-machine-ssh then the private key will be named my-virtual-machine-sshprivate and the public key will be named my-virtual-machine-sshpublic.\n"
+      }
+    },
+    "initialScriptDelay": {
+      "type": "string",
+      "defaultValue": "30s",
+      "metadata": {
+        "description": "A delay before the script import operation starts. Primarily to allow Azure AAD Role Assignments to propagate"
+      }
+    },
+    "cleanupPreference": {
+      "type": "string",
+      "defaultValue": "OnSuccess",
+      "metadata": {
+        "description": "When the script resource is cleaned up"
+      },
+      "allowedValues": [
+        "OnSuccess",
+        "OnExpiration",
+        "Always"
+      ]
+    }
+  },
+  "variables": {
+    "$fxv#0": "#!/bin/bash\nset -e\n\necho \"Waiting on Identity RBAC replication ($initialDelay)\"\nsleep $initialDelay\n\n# Generate the SSH key pair\necho \"Generating SSH key pair...\"\n#ssh-keygen -t rsa -b 4096 -C \"azure@example.com\" -f id_rsa -N \"\"\nssh-keygen -m PEM -t rsa -b 4096 -f id_rsa -q\n\n# Import the private key and public key as strings\nprivateKey=$(cat id_rsa)\npublicKey=$(cat id_rsa.pub)\n\n# Re-Login to Azure CLI using the managed identity\necho \"Logging in to Azure CLI using managed identity...\"\naz login --identity\n\necho \"Storing secret ${sshKeyName}private in Key Vault $keyVaultName...\"\nprivSecret=$(az keyvault secret set --vault-name \"$keyVaultName\" --name \"${sshKeyNamePrivate}\" --value \"$privateKey\")\n\necho \"Storing secret ${sshKeyName}public in Key Vault $keyVaultName...\"\npubSecret=$(az keyvault secret set --vault-name \"$keyVaultName\" --name \"${sshKeyNamePublic}\" --value \"$publicKey\")\n\nprivateSecretId=$(echo $privSecret | jq -r \".id\" | cut -d'/' -f-5) # remove the version from the url;\npublicSecretId=$(echo $pubSecret | jq -r \".id\" | cut -d'/' -f-5) # remove the version from the url;\n\njsonOutputString=$(jq -cn  --arg public $publicSecretId --arg private $privateSecretId '{secretUris: $ARGS.named}')\necho $jsonOutputString\necho $jsonOutputString > $AZ_SCRIPTS_OUTPUT_PATH\n\n# Cleanup\nrm -f id_rsa id_rsa.pub",
+    "privateKeySecretName": "[format('{0}private', parameters('sshKeyName'))]",
+    "publicKeySecretName": "[format('{0}public', parameters('sshKeyName'))]"
+  },
+  "resources": [
+    {
+      "condition": "[not(parameters('useExistingManagedIdentity'))]",
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "name": "[parameters('managedIdentityName')]",
+      "location": "[parameters('location')]"
+    },
+    {
+      "condition": "[not(empty(parameters('rbacRoleNeeded')))]",
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('akvName'))]",
+      "name": "[guid(resourceId('Microsoft.KeyVault/vaults', parameters('akvName')), parameters('rbacRoleNeeded'), if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]",
+      "properties": {
+        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('rbacRoleNeeded'))]",
+        "principalId": "[if(parameters('useExistingManagedIdentity'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2023-01-31').principalId, reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2023-01-31').principalId)]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
+      "name": "[if(parameters('useExistingManagedIdentity'), format('create-ssh-key-pair-{0}', uniqueString(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))), format('create-ssh-key-pair-{0}', uniqueString(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))))]",
+      "location": "[parameters('location')]",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[format('{0}', if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))))]": {}
+        }
+      },
+      "kind": "AzureCLI",
+      "properties": {
+        "forceUpdateTag": "[parameters('forceUpdateTag')]",
+        "azCliVersion": "2.45.0",
+        "timeout": "PT15M",
+        "retentionInterval": "PT1H",
+        "environmentVariables": [
+          {
+            "name": "keyVaultName",
+            "value": "[parameters('akvName')]"
+          },
+          {
+            "name": "sshKeyNamePrivate",
+            "value": "[variables('privateKeySecretName')]"
+          },
+          {
+            "name": "sshKeyNamePublic",
+            "value": "[variables('publicKeySecretName')]"
+          },
+          {
+            "name": "initialDelay",
+            "value": "[parameters('initialScriptDelay')]"
+          }
+        ],
+        "scriptContent": "[variables('$fxv#0')]",
+        "cleanupPreference": "[parameters('cleanupPreference')]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]",
+        "[extensionResourceId(resourceId('Microsoft.KeyVault/vaults', parameters('akvName')), 'Microsoft.Authorization/roleAssignments', guid(resourceId('Microsoft.KeyVault/vaults', parameters('akvName')), parameters('rbacRoleNeeded'), if(parameters('useExistingManagedIdentity'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "publicKeyUri": {
+      "type": "string",
+      "metadata": {
+        "description": "The URI of the public key secret in the Key Vault"
+      },
+      "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', if(parameters('useExistingManagedIdentity'), format('create-ssh-key-pair-{0}', uniqueString(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))), format('create-ssh-key-pair-{0}', uniqueString(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))))), '2020-10-01').outputs.secretUris.public]"
+    },
+    "privateKeyUri": {
+      "type": "string",
+      "metadata": {
+        "description": "The URI of the private key secret in the Key Vault"
+      },
+      "value": "[reference(resourceId('Microsoft.Resources/deploymentScripts', if(parameters('useExistingManagedIdentity'), format('create-ssh-key-pair-{0}', uniqueString(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('existingManagedIdentitySubId'), parameters('existingManagedIdentityResourceGroupName')), 'Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))), format('create-ssh-key-pair-{0}', uniqueString(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')))))), '2020-10-01').outputs.secretUris.private]"
+    },
+    "publicKeySecretName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the public key secret in the Key Vault"
+      },
+      "value": "[variables('publicKeySecretName')]"
+    },
+    "privateKeySecretName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the private key secret in the Key Vault"
+      },
+      "value": "[variables('privateKeySecretName')]"
+    }
+  }
+}
