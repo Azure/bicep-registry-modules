@@ -323,6 +323,7 @@ module storageaccount_privateEndpoint 'modules/privateEndpoint.bicep' = {
     manualApprovalEnabled: privateEndpointsApprovalEnabled
   }
 }
+
 module storageRbac 'modules/rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
   name: 'sa-rbac-${index}-${uniqueString(deployment().name, location)}'
   dependsOn: [
