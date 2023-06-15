@@ -19,17 +19,17 @@ Azure Private DNS provides a reliable, secure DNS service to manage and resolve 
 
 ## Outputs
 
-| Name | Type   | Description             |
-| :--- | :----: | :---------------------- |
-| id   | string | Get privateDnsZone ID   |
-| name | string | Get privateDnsZone name |
+| Name   | Type     | Description             |
+| :----- | :------: | :---------------------- |
+| `id`   | `string` | Get privateDnsZone ID   |
+| `name` | `string` | Get privateDnsZone name |
 
 ## Examples
 
 ### Example 1
 
 ```
-module dnsZone 'br/public:network/private-dns-zone:1.0.1' = {
+module dnsZone 'br/public:network/private-dns-zone:0.1.0' = {
   name:  'test0-${uniqueString(name)}'
   params: {
     name: 'testweb.nuannet'
