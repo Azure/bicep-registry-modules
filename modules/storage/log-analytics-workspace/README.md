@@ -36,7 +36,7 @@ This module deploys Log Analytics workspace and optionally available integration
 param name string = 'my-logAnalyticsWorkspace-01'
 param location = 'eastus'
 
-module logAnalyticsWorkspace 'br/public:storage/log-analytics-workspace:0.0.1' = {
+module logAnalyticsWorkspace 'br/public:storage/log-analytics-workspace:1.0.2' = {
   name: 'my-logAnalyticsWorkspace-01'
   params: {
     name: name
