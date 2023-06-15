@@ -46,8 +46,7 @@ aRecords:  [
 
 @description('Optional. Specifies the "CNAME" Records array')
 param cnameRecords array = []
-/*
-Example:
+/*Example:
 cnameRecords : [
   {
     name: 'cname1'
