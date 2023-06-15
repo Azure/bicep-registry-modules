@@ -55,12 +55,12 @@ It allows for the creation of a new Cosmos DB account or use of an existing one 
 
 ## Outputs
 
-| Name                              | Type   | Description                                                                       |
-| :-------------------------------- | :----: | :-------------------------------------------------------------------------------- |
-| id                                | string | Cosmos DB Account Resource ID                                                     |
-| name                              | string | Cosmos DB Account Resource Name                                                   |
-| systemAssignedIdentityPrincipalId | string | Object Id of system assigned managed identity for Cosmos DB account (if enabled). |
-| sqlRoleDefinitionIds              | array  | Resource Ids of sql role definition resources created for this Cosmos DB account. |
+| Name                                | Type     | Description                                                                       |
+| :---------------------------------- | :------: | :-------------------------------------------------------------------------------- |
+| `id`                                | `string` | Cosmos DB Account Resource ID                                                     |
+| `name`                              | `string` | Cosmos DB Account Resource Name                                                   |
+| `systemAssignedIdentityPrincipalId` | `string` | Object Id of system assigned managed identity for Cosmos DB account (if enabled). |
+| `sqlRoleDefinitionIds`              | `array`  | Resource Ids of sql role definition resources created for this Cosmos DB account. |
 
 ## Examples
 
@@ -69,7 +69,7 @@ It allows for the creation of a new Cosmos DB account or use of an existing one 
 An example of how to deploy Azure Cosmosdb Account with _Apache Cassanda backend_ using the minimum required parameters.
 
 ```bicep
-module cosmosDbAccount 'br/public:storage/cosmos-db:0.1.0' = {
+module cosmosDbAccount 'br/public:storage/cosmos-db:0.0.1' = {
  name: 'cosmosdb-${uniqueString(deployment().name, resourceGroup().location)}-deployment'
   params: {
     backendApi = 'cassandra'
@@ -84,7 +84,7 @@ output cosmosDbAccountResourceId string = cosmosDbAccount.outputs.id
 An example of how to deploy a _multi-region_ enabled cassandra backend Cosmosdb account along with access _role assignments_ and _zone redundancy_ for one of secondary locations.
 
 ```bicep
-module cosmosCassandraDb 'br/public:storage/cosmos-db:0.1.0' = {
+module cosmosCassandraDb 'br/public:storage/cosmos-db:0.0.1' = {
   name: 'cosmosdb-${uniqueString(deployment().name, resourceGroup().location)}-deployment'
   params: {
     location: 'eastus'
@@ -162,7 +162,7 @@ output cosmosCassandraDbResourceId string = cosmosCassandraDb.outputs.id
 An example of how to deploy a SQL Databses with Containers with _CORS Policies_, _totalThroughputLimit_ and different _defaultConsistencyLevel_ options.
 
 ```bicep
-module cosmosSqlDb 'br/public:storage/cosmos-db:0.1.0' = {
+module cosmosSqlDb 'br/public:storage/cosmos-db:0.0.1' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     name: 'cosmosdb-${uniqueString(deployment().name, location)}'
@@ -260,7 +260,7 @@ output cosmosSqlDbResourceId string = cosmosSqlDb.outputs.id
 An example of how to deploy a MongoDB Databases with collections with _CORS Policies_, extra non-default _capabilities_ options and with _systemAssigned managed identity_ enabled.
 
 ```bicep
-module cosmosMongoDb 'br/public:storage/cosmos-db:0.1.0' = {
+module cosmosMongoDb 'br/public:storage/cosmos-db:0.0.1' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'eastus'
@@ -321,7 +321,7 @@ output systemAssignedIdentityPrincipalId string = cosmosMongoDb.outputs.systemAs
 An example of how to deploy a Cosmmos DB Tables with networking IP and VNet firewall bypass rules.
 
 ```bicep
-module cosmosTable 'br/public:storage/cosmos-db:0.1.0' = {
+module cosmosTable 'br/public:storage/cosmos-db:0.0.1' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'westus'
@@ -367,7 +367,7 @@ output cosmosTableDbResourceId string = cosmosTable.outputs.id
 An example of how to deploy a Gremlin DB with graphs along with _private endpoints_.
 
 ```bicep
-module cosmosGremlinDb 'br/public:storage/cosmos-db:0.1.0' = {
+module cosmosGremlinDb 'br/public:storage/cosmos-db:0.0.1' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'westus'
@@ -419,7 +419,7 @@ output cosmosGremlinDbResourceId string = cosmosGremlinDb.outputs.id
 An example of how to deploy a Cosmos DB account with sqlRoleDefinitions and sqlRoleAssignments.
 
 ```bicep
-module cosmosDb 'br/public:storage/cosmos-db:0.1.0' = {
+module cosmosDb 'br/public:storage/cosmos-db:0.0.1' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'westus'
