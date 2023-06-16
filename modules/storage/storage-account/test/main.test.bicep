@@ -107,8 +107,8 @@ module test4 '../main.bicep' = {
       minimumTlsVersion: minimumTlsVersion
       objectReplicationPolicy: true
 
-      //Only provide values related to destination storage accounts if objectReplicationPolicies is true. By default, the primary storage account's values will be applied to destination parameters.
-      //By adding a param here, we can override. Added few paramaters below as an example.
+      // Only provide values related to destination storage accounts if objectReplicationPolicies is true. By default, the primary storage account's values will be applied to destination parameters.
+      // By adding a param here, we can override. Added few paramaters below as an example.
       destLocation: location
       destDaysAfterLastModification: 60
       destChangeFeedEnabled: true
