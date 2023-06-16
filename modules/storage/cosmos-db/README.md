@@ -9,57 +9,58 @@ It allows for the creation of a new Cosmos DB account or use of an existing one 
 
 ## Parameters
 
-| Name                                 | Type     | Required | Description                                                                                                                                                                                                                                                                                                                                                                                  |
-| :----------------------------------- | :------: | :------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `location`                           | `string` | No       | Deployment region name. Default is the location of the resource group.                                                                                                                                                                                                                                                                                                                       |
-| `backendApi`                         | `string` | No       | The bakend API type of Cosmos DB database account. The API selection cannot be changed after account creation. Possible values: "cassandra", "gremlin", "mongodb", "sql", "table".                                                                                                                                                                                                           |
-| `prefix`                             | `string` | No       | Prefix of Cosmos DB Resource Name. Not used if name is provided.                                                                                                                                                                                                                                                                                                                             |
-| `name`                               | `string` | No       | The name of the Cosmos DB account. Character limit: 3-44, valid characters: lowercase letters, numbers, and hyphens. It must me unique across Azure.                                                                                                                                                                                                                                         |
-| `enableAutomaticFailover`            | `bool`   | No       | Enables automatic failover of the write region in the rare event that the region is unavailable due to an outage. Automatic failover will result in a new write region for the account and is chosen based on the failover priorities configured for the account.                                                                                                                            |
-| `enableMultipleWriteLocations`       | `bool`   | No       | Multi-region writes capability allows you to take advantage of the provisioned throughput for your databases and containers across the globe.                                                                                                                                                                                                                                                |
-| `enableServerless`                   | `bool`   | No       | Enable Serverless for consumption-based usage.                                                                                                                                                                                                                                                                                                                                               |
-| `isZoneRedundant`                    | `bool`   | No       | Flag to indicate whether or not this region is an AvailabilityZone region                                                                                                                                                                                                                                                                                                                    |
-| `enableFreeTier`                     | `bool`   | No       | Flag to indicate whether Free Tier is enabled, up to one account per subscription is allowed.                                                                                                                                                                                                                                                                                                |
-| `totalThroughputLimit`               | `int`    | No       | The total throughput limit of the Cosmos DB account in measurement of requests units (RUs) per second, -1 indicates no limits on provisioning of throughput.                                                                                                                                                                                                                                 |
-| `secondaryLocations`                 | `array`  | No       | The array of secondary locations.                                                                                                                                                                                                                                                                                                                                                            |
-| `defaultConsistencyLevel`            | `string` | No       | The default consistency level. Possible values: "Eventual", "ConsistentPrefix", "Session", "BoundedStaleness", "Strong".                                                                                                                                                                                                                                                                     |
-| `maxStalenessPrefix`                 | `int`    | No       | Max stale requests required for "BoundedStaleness" Consistency Level. Valid ranges, Single Region: 10 to 2147483647. Multi Region: 100000 to 2147483647.                                                                                                                                                                                                                                     |
-| `maxIntervalInSeconds`               | `int`    | No       | Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400.                                                                                                                                                                                                                                                                  |
-| `serverVersion`                      | `string` | No       | MongoDB server version. Required for mongodb API type Cosmos DB account                                                                                                                                                                                                                                                                                                                      |
-| `cors`                               | `array`  | No       | List of CORS rules.                                                                                                                                                                                                                                                                                                                                                                          |
-| `disableKeyBasedMetadataWriteAccess` | `bool`   | No       | Disable write operations on metadata resources (databases, containers, throughput) via account keys.                                                                                                                                                                                                                                                                                         |
-| `publicNetworkAccess`                | `string` | No       | Whether requests from public network allowed.                                                                                                                                                                                                                                                                                                                                                |
-| `isVirtualNetworkFilterEnabled`      | `bool`   | No       | Flag to indicate whether to enable/disable Virtual Network ACL rules.                                                                                                                                                                                                                                                                                                                        |
-| `networkAclBypass`                   | `string` | No       | Indicates what services are allowed to bypass firewall checks.                                                                                                                                                                                                                                                                                                                               |
-| `ipRules`                            | `array`  | No       | List of IpRules to be allowed. A single IPv4 address or a single IPv4 address range in CIDR format.                                                                                                                                                                                                                                                                                          |
-| `virtualNetworkRules`                | `array`  | No       | The list of virtual network ACL rules, "isVirtualNetworkFilterEnabled" must be set to "true". format: {id: string, ignoreMissingVNetServiceEndpoint: bool}                                                                                                                                                                                                                                   |
-| `networkAclBypassResourceIds`        | `array`  | No       | An array that contains the Resource Ids for Network Acl Bypass.                                                                                                                                                                                                                                                                                                                              |
-| `capabilities`                       | `array`  | No       | Non-default extra capabilities.                                                                                                                                                                                                                                                                                                                                                              |
-| `disableLocalAuth`                   | `bool`   | No       | Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.                                                                                                                                                                                                                                                                                      |
-| `enableAnalyticalStorage`            | `bool`   | No       | Flag to indicate whether to enable storage analytics.                                                                                                                                                                                                                                                                                                                                        |
-| `analyticalStorageSchemaType`        | `string` | No       | The type of schema for analytical storage.                                                                                                                                                                                                                                                                                                                                                   |
-| `cassandraKeyspaces`                 | `array`  | No       | The list of Cassandra keyspaces configurations with tables.                                                                                                                                                                                                                                                                                                                                  |
-| `sqlDatabases`                       | `array`  | No       | The list of SQL databases configurations with containers, its triggers, storedProcedures and userDefinedFunctions.                                                                                                                                                                                                                                                                           |
-| `sqlRoleDefinitions`                 | `array`  | No       | The list of SQL role definitions.                                                                                                                                                                                                                                                                                                                                                            |
-| `sqlRoleAssignments`                 | `array`  | No       | The list of SQL role assignments.                                                                                                                                                                                                                                                                                                                                                            |
-| `mongodbDatabases`                   | `array`  | No       | The list of MongoDB databases configurations with collections, its indexes, Shard Keys.                                                                                                                                                                                                                                                                                                      |
-| `gremlinDatabases`                   | `array`  | No       | The list of Gremlin databases configurations with graphs.                                                                                                                                                                                                                                                                                                                                    |
-| `tables`                             | `array`  | No       | The list of Table databases configurations.                                                                                                                                                                                                                                                                                                                                                  |
-| `roleAssignments`                    | `array`  | No       | Array of role assignment objects that contain the "roleDefinitionIdOrName" and "principalId" to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, provide either the display name of the role definition, or its fully qualified ID in the following format: "/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11" |
-| `identityType`                       | `string` | No       | The type of identity used for the Cosmos DB account. The type "SystemAssigned, UserAssigned" includes both an implicitly created identity and a set of user-assigned identities. The type "None" will remove any identities from the Cosmos DB account.                                                                                                                                      |
-| `userAssignedIdentities`             | `object` | No       | The list of user-assigned managed identities. The user identity dictionary key references will be ARM resource ids in the form: "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}"                                                                                                               |
-| `privateEndpoints`                   | `array`  | No       | Private Endpoints that should be created for Azure Cosmos DB account.                                                                                                                                                                                                                                                                                                                        |
-| `tags`                               | `object` | No       | List of key-value pairs that describe the resource.                                                                                                                                                                                                                                                                                                                                          |
-| `lock`                               | `string` | No       | Specify the type of lock on Cosmos DB account resource.                                                                                                                                                                                                                                                                                                                                      |
+| Name                                 | Type     | Required | Description                                                                                                                                                                                                                                                                                    |
+| :----------------------------------- | :------: | :------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `backendApi`                         | `string` | No       | The bakend API type of Cosmos DB database account. The API selection cannot be changed after account creation. Possible values: "cassandra", "gremlin", "mongodb", "sql", "table".                                                                                                             |
+| `prefix`                             | `string` | No       | Prefix of Cosmos DB Resource Name. Not used if name is provided.                                                                                                                                                                                                                               |
+| `name`                               | `string` | No       | The name of the Cosmos DB account. Character limit: 3-44, valid characters: lowercase letters, numbers, and hyphens. It must me unique across Azure.                                                                                                                                           |
+| `location`                           | `string` | No       | The primary location of the Cosmos DB account. Default is the location of the resource group.<br />This would be the write region if param.additionalLocations contains more regions for georeplication.                                                                                       |
+| `isZoneRedundant`                    | `bool`   | No       | Indicate whether or not to enable zone redundancy for region specified by param.location. It must be an AvailabilityZone region.<br />To enable this feature for other regions, please enable parameter isZoneRedundant in param.additionalLocations.                                          |
+| `enableAutomaticFailover`            | `bool`   | No       | Enables automatic failover of the write region in the rare event that the region is unavailable due to an outage. Automatic failover will result in a new write region for the account and is chosen based on the failover priorities configured for the account.                              |
+| `enableMultipleWriteLocations`       | `bool`   | No       | Enables the account to write in multiple locations. Once enabled, all regions included in the param.locations will be read/write regions.<br />Multi-region writes capability allows you to take advantage of the provisioned throughput for your databases and containers across the globe.   |
+| `enableServerless`                   | `bool`   | No       | Enable Serverless for consumption-based usage.                                                                                                                                                                                                                                                 |
+| `enableFreeTier`                     | `bool`   | No       | Flag to indicate whether Free Tier is enabled, up to one account per subscription is allowed.                                                                                                                                                                                                  |
+| `totalThroughputLimit`               | `int`    | No       | The total throughput limit of the Cosmos DB account in measurement of requests units (RUs) per second, -1 indicates no limits on provisioning of throughput.                                                                                                                                   |
+| `additionalLocations`                | `array`  | No       | The array of geo locations that Cosmos DB account would be hosted in.<br />Each element defines a region of georeplication.<br />The order of regions in this list is the order for region failover. The first element is the primary region which is a write region of the Cosmos DB account. |
+| `mongoDBServerVersion`               | `string` | No       | MongoDB server version. Required for mongodb API type Cosmos DB account                                                                                                                                                                                                                        |
+| `cors`                               | `array`  | No       | List of CORS rules. Each CORS rule allows or denies requests from a set of origins to a Cosmos DB account or a database                                                                                                                                                                        |
+| `createMode`                         | `string` | No       | The mode of the Cosmos Account creation. Set to Restore to restore from an existing account.                                                                                                                                                                                                   |
+| `disableKeyBasedMetadataWriteAccess` | `bool`   | No       | Disable write operations on metadata resources (databases, containers, throughput) via account keys.                                                                                                                                                                                           |
+| `enablePublicNetworkAccess`          | `bool`   | No       | Whether requests from public network allowed.                                                                                                                                                                                                                                                  |
+| `networkAclBypass`                   | `string` | No       | Indicates what services are allowed to bypass firewall checks.                                                                                                                                                                                                                                 |
+| `ipRules`                            | `array`  | No       | List of IpRules to be allowed.<br />Each element in this array is either a single IPv4 address or a single IPv4 address range in CIDR format.                                                                                                                                                  |
+| `virtualNetworkRules`                | `array`  | No       | The list of virtual network ACL rules. Subnets in this list will be allowed to connect.                                                                                                                                                                                                        |
+| `networkAclBypassResourceIds`        | `array`  | No       | An array that contains the Resource Ids for Network Acl Bypass.                                                                                                                                                                                                                                |
+| `extraCapabilities`                  | `array`  | No       | Extra capabilities besides the ones required by param.backendApi and param.enableServerless.                                                                                                                                                                                                   |
+| `disableLocalAuth`                   | `bool`   | No       | Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.                                                                                                                                                                                        |
+| `enableAnalyticalStorage`            | `bool`   | No       | Flag to indicate whether to enable storage analytics.                                                                                                                                                                                                                                          |
+| `analyticalStorageSchemaType`        | `string` | No       | The type of schema for analytical storage.                                                                                                                                                                                                                                                     |
+| `cassandraKeyspaces`                 | `array`  | No       | The array of Cassandra keyspaces configurations.                                                                                                                                                                                                                                               |
+| `sqlDatabases`                       | `array`  | No       | The object of sql database configurations.                                                                                                                                                                                                                                                     |
+| `mongodbDatabases`                   | `array`  | No       | The list of MongoDB databases configurations.                                                                                                                                                                                                                                                  |
+| `tables`                             | `array`  | No       | The object of Table databases configurations.                                                                                                                                                                                                                                                  |
+| `gremlinDatabases`                   | `array`  | No       | The list of Gremlin databases configurations.                                                                                                                                                                                                                                                  |
+| `sqlCustomRoleDefinitions`           | `array`  | No       | The list of SQL role definitions. Only valid when param.backendApi is set to "Sql".                                                                                                                                                                                                            |
+| `sqlBuiltinRoleAssignments`          | `array`  | No       | The list of SQL built-in role assignments. Only valid when param.backendApi is set to "Sql".                                                                                                                                                                                                   |
+| `roleAssignments`                    | `array`  | No       | The list of role assignments for the Cosmos DB account.                                                                                                                                                                                                                                        |
+| `identityType`                       | `string` | No       | The type of identity used for the Cosmos DB account. The type "SystemAssigned, UserAssigned" includes both an implicitly created identity and a set of user-assigned identities. The type "None" will remove any identities from the Cosmos DB account.                                        |
+| `userAssignedIdentities`             | `array`  | No       | The list of user-assigned managed identities. The user identity dictionary key references will be ARM resource ids in the form: "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}"                 |
+| `tags`                               | `object` | No       | A object of key-value pairs that describe the resource.                                                                                                                                                                                                                                        |
+| `lock`                               | `string` | No       | Specify the type of lock on Cosmos DB account resource.                                                                                                                                                                                                                                        |
+| `consistencyPolicy`                  | `object` | No       | The consistency policy for the Cosmos DB account.                                                                                                                                                                                                                                              |
+| `privateEndpoints`                   | `array`  | No       | Private Endpoints that should be created for Azure Cosmos DB account.                                                                                                                                                                                                                          |
+| `minimalTlsVersion`                  | `string` | No       | The minimum TLS version to support on this account.                                                                                                                                                                                                                                            |
+| `enablePartitionMerge`               | `bool`   | No       | Flag to indicate enabling/disabling of Partition Merge feature on the account.                                                                                                                                                                                                                 |
+| `enablePartitionKeyMonitor`          | `bool`   | No       | Flag to indicate enabling/disabling of Partition Split feature on the account.                                                                                                                                                                                                                 |
 
 ## Outputs
 
-| Name                              | Type   | Description                                                                       |
-| :-------------------------------- | :----: | :-------------------------------------------------------------------------------- |
-| id                                | string | Cosmos DB Account Resource ID                                                     |
-| name                              | string | Cosmos DB Account Resource Name                                                   |
-| systemAssignedIdentityPrincipalId | string | Object Id of system assigned managed identity for Cosmos DB account (if enabled). |
-| sqlRoleDefinitionIds              | array  | Resource Ids of sql role definition resources created for this Cosmos DB account. |
+| Name                                | Type     | Description                                                                       |
+| :---------------------------------- | :------: | :-------------------------------------------------------------------------------- |
+| `id`                                | `string` | Cosmos DB Account Resource ID                                                     |
+| `name`                              | `string` | Cosmos DB Account Resource Name                                                   |
+| `systemAssignedIdentityPrincipalId` | `string` | Object Id of system assigned managed identity for Cosmos DB account (if enabled). |
+| `sqlRoleDefinitionIds`              | `array`  | Resource Ids of sql role definition resources created for this Cosmos DB account. |
 
 ## Examples
 
@@ -68,11 +69,10 @@ It allows for the creation of a new Cosmos DB account or use of an existing one 
 An example of how to deploy Azure Cosmosdb Account with _Apache Cassanda backend_ using the minimum required parameters.
 
 ```bicep
-module cosmosDbAccount 'br/public:storage/cosmos-db:2.0.0' = {
- name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
+module cosmosDbAccount 'br/public:storage/cosmos-db:0.0.1' = {
+ name: 'cosmosdb-${uniqueString(deployment().name, resourceGroup().location)}-deployment'
   params: {
-    name: 'cosmosdb-${uniqueString(deployment().name, location)}'
-    location: 'eastus'
+    backendApi = 'cassandra'
   }
 }
 
@@ -84,87 +84,72 @@ output cosmosDbAccountResourceId string = cosmosDbAccount.outputs.id
 An example of how to deploy a _multi-region_ enabled cassandra backend Cosmosdb account along with access _role assignments_ and _zone redundancy_ for one of secondary locations.
 
 ```bicep
-module cosmosCassandraDb 'br/public:storage/cosmos-db:2.0.0' = {
-  name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
+module cosmosCassandraDb 'br/public:storage/cosmos-db:0.0.1' = {
+  name: 'cosmosdb-${uniqueString(deployment().name, resourceGroup().location)}-deployment'
   params: {
     location: 'eastus'
-    name: 'cosmosdb-${uniqueString(deployment().name, location)}'
-    secondaryLocations: [
-        {
-          locationName: 'westus'
-        }
-        {
-          locationName: 'centralus'
-          isZoneRedundant: true
-        }
+    name: 'cosmosdb-${uniqueString(deployment().name, resourceGroup().location)}'
+    backendApi: 'cassandra'
+    location: location
+    isZoneRedundant: false
+    additionalLocations: [
+      {
+        name: 'Norway West'
+      }
+      {
+        name: 'Canada East'
+        isZoneRedundant: true
+      }
     ]
     roleAssignments: [
       {
-        roleDefinitionIdOrName: 'CosmosBackupOperator'
-        principalIds: [ '5f82d7a7-1d09-401a-b473-c723972e8676' ]
+        roleDefinitionId: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor
+        principalId: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'
       }
       {
-        roleDefinitionIdOrName: '5bd9cd88-fe45-4216-938b-f97437e15450' // DocumentDB Account Contributor
-        principalIds: [ 'cdac5946-f757-43a9-8657-31f59048deb5' ]
+        roleDefinitionId: 'acdd72a7-3385-48ef-bd42-f606fba81ae7' // Reader
+        principalId: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'
       }
     ]
-    cassandraKeyspaces: [
-      {
-        name: 'keyspace1'
-        autoscaleMaxThroughput: 1000
-        tables: [
-          {
-            name: 'table1'
-            // Optional: autoscaleMaxThroughput: int or manualProvisionedThroughput: int
+    cassandraKeyspaces: {
+      keyspace1: {
+        performance: {
+          enableAutoScale: true
+          throughput: 4000
+        }
+        tables: {
+          table1: {
             defaultTtl: 86400
-            schemaColumns: [
-              {
-                name: 'id'
-                type: 'text'
-              }
-              {
-                name: 'data'
-                type: 'blob'
-              }
-            ]
-            schemaPartitionKeys: [
-              {
-                name: 'id'
-              }
-            ]
-            schemaClusteringKeys: [
-              {
-                name: 'data'
-                orderBy: 'Desc'
-              }
-            ]
+            schema: {
+              columns: [ {
+                  name: 'test1'
+                  type: 'int'
+                } ]
+              partitionKeys: [ {
+                  name: 'test1'
+                } ]
+            }
           }
-          {
-            name: 'table2'
-            manualProvisionedThroughput: 400
-            schemaColumns: [
-              {
-                name: 'id'
-                type: 'text'
-              }
-            ]
-            schemaPartitionKeys: [
-              {
-                name: 'id'
-              }
-            ]
+          table2: {
+            schema: {
+              columns: [ {
+                  name: 'test2'
+                  type: 'int'
+                } ]
+              partitionKeys: [ {
+                  name: 'test2'
+                } ]
+            }
           }
-        ]
+        }
       }
-    ]
+    }
   }
-}
 
 output cosmosCassandraDbResourceId string = cosmosCassandraDb.outputs.id
 ```
 
 > **Importanat note on setting up throughput parameters**<br><br>
-> Make sure to provide only one of **_manualProvisionedThroughput_** and **_autoscaleMaxThroughput_** at any scope level.
 > 
 > Throughtput can be povisioned for both Keyspaces and tables within it or just for Tables. Provisioned throughput at the keyspace level will be shared across all tables within the keyspace.
 > 
@@ -177,36 +162,54 @@ output cosmosCassandraDbResourceId string = cosmosCassandraDb.outputs.id
 An example of how to deploy a SQL Databses with Containers with _CORS Policies_, _totalThroughputLimit_ and different _defaultConsistencyLevel_ options.
 
 ```bicep
-module cosmosSqlDb 'br/public:storage/cosmos-db:2.0.0' = {
+module cosmosSqlDb 'br/public:storage/cosmos-db:0.0.1' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
+    name: 'cosmosdb-${uniqueString(deployment().name, location)}'
     location: 'westus'
     backendApi: 'sql'
-    name: 'cosmosdb-${uniqueString(deployment().name, location)}'
-    defaultConsistencyLevel: 'BoundedStaleness'
-    maxIntervalInSeconds: 3600
-    maxStalenessPrefix: 86400
-    totalThroughputLimit: 10000
-    sqlDatabases: [
+    consistencyPolicy: {
+      defaultConsistencyLevel: 'BoundedStaleness'
+      maxIntervalInSeconds: 10000
+      maxStalenessPrefix: 100000
+    }
+    additionalLocations: [
       {
-        name: 'testdb1'
-        // Optional: autoscaleMaxThroughput: int or manualProvisionedThroughput: int
-        containers: [
-          {
-            name: 'container1'
-            autoscaleMaxThroughput: 4000
+        name: 'Canada Central'
+        isZoneRedundant: false
+      }
+      {
+        name: 'Brazil South'
+        isZoneRedundant: true
+      }
+    ]
+    totalThroughputLimit: 100000
+    enableMultipleWriteLocations: true
+    sqlDatabases: {
+      testdb1: {
+        containers: {
+          container1: {
+            performance: {
+              enableAutoScale: true
+              throughput: 4000
+            }
             defaultTtl: 3600
             partitionKey: {
-              paths: [
-                '/id'
-              ]
+              paths: [ '/definition/id' ]
               kind: 'Hash'
-              version: 1
+            }
+            indexingPolicy: {
+              indexingMode: 'consistent'
+              automatic: true
+              includedPaths: [ { path: '/*' } ]
+              excludedPaths: [ { path: '/"_etag"/?' } ]
             }
           }
-          {
-            name: 'container2'
-            manualProvisionedThroughput: 400
+          container2: {
+            performance: {
+              enableAutoScale: false
+              throughput: 4000
+            }
             defaultTtl: 86400
             partitionKey: {
               paths: [
@@ -216,50 +219,36 @@ module cosmosSqlDb 'br/public:storage/cosmos-db:2.0.0' = {
               version: 1
             }
             indexingPolicy: {
-              indexingMode: 'Consistent'
+              indexingMode: 'consistent'
               automatic: true
-              includedPaths: [
-                {
-                  path: '/*'
-                }
-              ]
-              excludedPaths: [
-                {
-                  path: '/"_etag"/?'
-                }
-              ]
-            }
-            uniqueKeyPolicy: {
-              uniqueKeys: []
+              includedPaths: [ { path: '/*' } ]
+              excludedPaths: [ { path: '/"_etag"/?' } ]
             }
             conflictResolutionPolicy: {
               mode: 'LastWriterWins'
               conflictResolutionPath: '/_ts'
             }
-            triggers: [
-              {
-                name: 'trigger1'
-                type: 'Pre'
-                operation: 'All'
+            triggers: {
+              trigger1: {
+                triggerType: 'Pre'
+                triggerOperation: 'All'
                 body: 'function() { var context = getContext(); var response = context.getResponse(); response.setBody("Pre-trigger body."); }'
               }
-            ]
-            storedProcedures: [
-              {
-                name: 'storedProcedure1'
+            }
+            storedProcedures: {
+              storedProcedure1: {
                 body: 'function() { var context = getContext(); var response = context.getResponse(); response.setBody("Stored procedure body."); }'
               }
-            ]
-            userDefinedFunctions: [
-              {
-                name: 'userDefinedFunction1'
+            }
+            userDefinedFunctions: {
+              userDefinedFunction1: {
                 body: 'function() { var context = getContext(); var response = context.getResponse(); response.setBody("User defined function body."); }'
               }
-            ]
+            }
           }
-        ]
+        }
       }
-    ]
+    }
   }
 }
 
@@ -271,13 +260,13 @@ output cosmosSqlDbResourceId string = cosmosSqlDb.outputs.id
 An example of how to deploy a MongoDB Databases with collections with _CORS Policies_, extra non-default _capabilities_ options and with _systemAssigned managed identity_ enabled.
 
 ```bicep
-module cosmosMongoDb 'br/public:storage/cosmos-db:2.0.0' = {
+module cosmosMongoDb 'br/public:storage/cosmos-db:0.0.1' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'eastus'
     backendApi: 'mongodb'
     name: 'cosmosdb-${uniqueString(deployment().name, location)}'
-    capabilities: [
+    extraCapabilities: [
       'EnableMongoRetryableWrites'
       'EnableAggregationPipeline'
     ]
@@ -289,37 +278,37 @@ module cosmosMongoDb 'br/public:storage/cosmos-db:2.0.0' = {
         maxAgeInSeconds: 60
       }
     ]
-    mongodbDatabases: [
-      {
-        name: 'testdb1'
-        autoscaleMaxThroughput: 4000
-        collections: [
-          {
-            name: 'collection1'
-            manualProvisionedThroughput: 400
+    mongodbDatabases: {
+      testdb1: {
+        performance: {
+          enableAutoScale: true
+          throughput: 4000
+        }
+        collections: {
+          collection1: {
+            performance: {
+              enableAutoScale: false
+              throughput: 400
+            }
             indexes: [
               {
-                key: {
-                  keys: [
-                    '_id'
-                  ]
+                key: { keys: [ '_id' ] }
+                options: {
+                  unique: true
                 }
               }
               {
-                key: {
-                  keys: [
-                    '$**'
-                  ]
-                }
+                key: { keys: [ '$**' ] }
+                options: {}
               }
             ]
-            shardkey: {
+            shardKey: {
               user_id: 'Hash'
             }
           }
-        ]
+        }
       }
-    ]
+    }
   }
 }
 
@@ -332,30 +321,35 @@ output systemAssignedIdentityPrincipalId string = cosmosMongoDb.outputs.systemAs
 An example of how to deploy a Cosmmos DB Tables with networking IP and VNet firewall bypass rules.
 
 ```bicep
-module cosmosTable 'br/public:storage/cosmos-db:2.0.0' = {
+module cosmosTable 'br/public:storage/cosmos-db:0.0.1' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'westus'
     backendApi: 'table'
     name: 'cosmosdb-${uniqueString(deployment().name, location)}'
+    additionalLocations: [
+      {
+        name: 'canadacentral'
+        isZoneRedundant: true
+      }
+      {
+        name: 'centralus'
+      }
+      {
+        name: 'eastus'
+      }
+    ]
+    backendApi: 'table'
     enableServerless: true
-    defaultConsistencyLevel: 'BoundedStaleness'
-    maxIntervalInSeconds: 10000
-    maxStalenessPrefix: 100000
-    tables: [
-      {
-        name: 'table1'
-      }
-      {
-        name: 'table2'
-      }
-    ]
-    publicNetworkAccess: 'Enabled'
+    enableAnalyticalStorage: true
+    tables: {
+      table1: {}
+      table2: {}
+    }
     ipRules: [
-      '20.112.52.29'
-      '20.53.0.0/31'
+      '1.2.3.4'
+      '1.2.3.4/24'
     ]
-    isVirtualNetworkFilterEnabled: true
     virtualNetworkRules: [
       {
         id: dependencies.outputs.subnetIds[0]
@@ -373,49 +367,47 @@ output cosmosTableDbResourceId string = cosmosTable.outputs.id
 An example of how to deploy a Gremlin DB with graphs along with _private endpoints_.
 
 ```bicep
-module cosmosGremlinDb 'br/public:storage/cosmos-db:2.0.0' = {
+module cosmosGremlinDb 'br/public:storage/cosmos-db:0.0.1' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'westus'
     backendApi: 'gremlin'
     name: 'cosmosdb-${uniqueString(deployment().name, location)}'
-    gremlinDatabases: [
-      {
-        name: 'testdb01'
-        manualProvisionedThroughput: 500
-        graphs: [
-          {
-            name: 'graph1'
-            autoscaleMaxThroughput: 1000
+    gremlinDatabases: {
+      testdb01: {
+        performance: {
+          enableAutoScale: false
+          throughput: 500
+        }
+        graphs: {
+          graph1: {
+            performance: {
+              enableAutoScale: true
+              throughput: 4000
+            }
             defaultTtl: 3600
             partitionKey: {
-              paths: [
-                '/address'
-              ]
+              paths: [ '/address' ]
               kind: 'Hash'
               version: 1
             }
-            indexingPolicy: {}
-            uniqueKeyPolicy: {}
           }
-        ]
+        }
       }
-    ]
-    publicNetworkAccess: 'Disabled'
-    privateEndpoints: [
-      {
-        name: 'endpoint1'
-        subnetId: "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}"
-        manualApprovalEnabled: true
+    }
+    enablePublicNetworkAccess: false
+    privateEndpoints: {
+      endpoint1: {
+        subnetId: dependencies.outputs.subnetIds[0]
+        isManualApproval: true
         groupId: 'Sql'
       }
-      {
-        name: 'endpoint2'
-        subnetId: "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}"
-        privateDnsZoneId: "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/privateDnsZones/{privateDnsZoneName}"
+      endpoint2: {
+        subnetId: dependencies.outputs.subnetIds[1]
+        privateDnsZoneId: dependencies.outputs.privateDNSZoneId
         groupId: 'Gremlin'
       }
-    ]
+    }
   }
 }
 
@@ -427,41 +419,32 @@ output cosmosGremlinDbResourceId string = cosmosGremlinDb.outputs.id
 An example of how to deploy a Cosmos DB account with sqlRoleDefinitions and sqlRoleAssignments.
 
 ```bicep
-module cosmosDb 'br/public:storage/cosmos-db:2.0.0' = {
+module cosmosDb 'br/public:storage/cosmos-db:0.0.1' = {
   name: 'cosmosdb-${uniqueString(deployment().name, location)}-deployment'
   params: {
     location: 'westus'
     backendApi: 'sql'
     name: 'cosmosdb-${uniqueString(deployment().name, location)}'
-    sqlDatabases: [
-      {
-        name: 'testdb1'
-        containers: [
-          {
-            name: 'container1'
-            autoscaleMaxThroughput: 4000
+    sqlDatabases: {
+      testdb1: {
+        containers: {
+          container1: {
+            performance: {
+              enableAutoScale: true
+              throughput: 4000
+            }
             defaultTtl: 3600
             partitionKey: {
-              paths: [
-                '/id'
-              ]
+              paths: [ '/id' ]
               kind: 'Hash'
               version: 1
             }
           }
-        ]
+        }
       }
-    ]
-    sqlRoleDefinitions: [
-      {
-        // A user-friendly name for the Role Definition. Must be unique for the database account.
-        roleName: 'testReadWriteRole'
-        // A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Collection.
-        // Must have at least one element.
-        assignableScopes: [
-          '/' // This role definition can be assigned at the database account level
-        ]
-        // The set of operations allowed through this Role Definition.
+    }
+    sqlCustomRoleDefinitions: {
+      testReadWriteRole1: {
         permissions: [
           {
             dataActions: [
@@ -471,20 +454,17 @@ module cosmosDb 'br/public:storage/cosmos-db:2.0.0' = {
             ]
           }
         ]
+        assisgnments: [
+          {
+            principalId: dependencies.outputs.identityPrincipalIds[0]
+          }
+          {
+            principalId: dependencies.outputs.identityPrincipalIds[1]
+            scope: '/dbs/testdb1'
+          }
+        ]
       }
-    ]
-    sqlRoleAssignments: [
-      {
-        principalId: dependencies.outputs.identityPrincipalIds[0]
-        roleDefinitionId: '00000000-0000-0000-0000-000000000001'
-        scope: '/'
-      }
-      {
-        principalId: dependencies.outputs.identityPrincipalIds[1]
-        roleDefinitionId: '00000000-0000-0000-0000-000000000002'
-        scope: '/dbs/testdb1'
-      }
-    ]
+    }
   }
 }
 

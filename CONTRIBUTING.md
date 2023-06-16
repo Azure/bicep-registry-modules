@@ -7,7 +7,7 @@ The following instructions are created to help with the development of Bicep pub
 ## Prerequisite
 
 - Create a fork of the [Azure/bicep-registry-modules](https://github.com/Azure/bicep-registry-modules) repository and clone the fork to your local machine.
-- Install [.NET 6.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0/runtime)
+- Install [.NET 7.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/7.0/runtime)
 - Install the [Bicep registry module](https://www.nuget.org/packages/Azure.Bicep.RegistryModuleTool/) tool by running:
   - `dotnet tool install --global Azure.Bicep.RegistryModuleTool`
 
@@ -103,7 +103,7 @@ Each template should include the following 3 parameters: `location`, `prefix` an
 
 ##### Parameters
 
-- The `location` parameter is set to `resourceGroup().name` in only the `main.bicep`, and should be required when present in nested templates.
+- The `location` parameter is set to `resourceGroup().location` in only the `main.bicep`, and should be required when present in nested templates.
 - The `prefix` should use the recommended abbreviations collected [here](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations).
 - The `name` should include a min and max length constraint. It should also generate a unique name for the user, that will remain the same when redeployed with the same parameters, such as with `uniqueString(resourceGroup().id, location)`. If multiple resources are including in a module, the default values of other names should be based on this value.
 
