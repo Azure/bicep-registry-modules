@@ -59,18 +59,25 @@ The `metadata.json` file contains metadata of the module including `name`, `desc
   // The name of the module (10 - 60 characters).
   "name": "Sample module",
   // The description of the module (10 - 1000 characters).
-  "description": "Sample module description",
+  "summary": "Sample module description. This should be a short description of the functionality of the module. A more detailed description can be included in the README.md file.",
   // The owner of the module. Must be a GitHub username or a team under the Azure organization
   "owner": "sampleusername"
 }
 
 ```
 
+NOTE: The metadata.json is in the process of being deprecated, in favor of metadata in the `main.bicep` file (see below). For the moment, the `metadata.json` file is still REQUIRED. It is RECOMMENDED but not currently required that you also add the information in `summary.json` to `bicep.main` as follows: Copy `"name"`, `"summary"` and `"owner"` from `metadata.json` into `metadata` statements in `main.bicep` with the names `'name'`, `'description'` and `'owner'`. (Note the change from `summary` to `description`.)
+
 #### `main.bicep`
 
 The `main.bicep` file is the public interface of the module. When authoring `main.bicep`, make sure to provide a description for each parameter and output. You are free to create other Bicep files inside the module folder and reference them as local modules in `main.bicep` if needed. You may also reference other registry modules to help build your module. If you do so, make sure to add them as external references with specific version numbers. You should not reference other registry modules through local file path, since they may get updated overtime. The `main.bicep` most follow various static code analysis checks, such as including descriptions on every parameter and output. This will be used to automatically generate the `README.md`.
 
 ```bicep
+metadata name = 'Sample module'
+metadata description = '''Sample module description. This should be a short description of the functionality of the module.
+A more detailed description can be included in the README.md file.'''
+metadata owner = 'sampleusername'
+
 @description('Deployment Location')
 param location string = resourceGroup().location
 
@@ -97,7 +104,7 @@ output name string = name
 output id string = resource.id
 ```
 
-We try to maintain the consistancies demostrated above.
+We try to maintain the consistencies demostrated above.
 
 Each template should include the following 3 parameters: `location`, `prefix` and `name`; and following 2 outputs: `name` and `id`.
 
@@ -154,7 +161,7 @@ module testMain '../main.bicep' = {
 }
 ```
 
-The `README.md` file is the documentation of the module. A large proportion of the file contents, such as the parameter and output tables, are generated based on the contents of other files. However, you must update the `Examples` section manually to provide examples of how the module can be used.
+The `README.md` file is the documentation of the module. A large proportion of the file contents, such as the parameter and output tables, are generated based on the contents of other files. However, you must update the `Description` and `Examples` sections manually, to provide a detailed description for the module and examples of how the module can be used.
 
 The `version.json` file defines the MAJOR and MINOR version number of the module. Update the value of the `“version"` property to specify a version, e.g., `"1.0"`.
 
