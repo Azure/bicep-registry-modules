@@ -4,7 +4,7 @@ Bicep module for simplified deployment Azure App Configuration resources and opt
 
 ## Description
 
-This Bicep Module simplifies the deployment of a Azure App Configuration resource by providing a reusable set of parameters and resources. It allows for the creation of a new resource with all supported parameters and offers configuration options such as geo-replication,  key based data encryption. It also supports adding private endpoints and role assignments.
+This Bicep Module simplifies the deployment of an Azure App Configuration resource by providing a reusable set of parameters and resources. It allows for the creation of a new resource with all supported parameters and offers configuration options such as geo-replication and key-based data encryption. It also supports adding private endpoints and role assignments.
 
 ## Parameters
 
