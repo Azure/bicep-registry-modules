@@ -30,7 +30,7 @@ jobs:
         with:
           script: |
             const script = require("./scripts/github-actions/generate-module-index-data.js")
-            await script({ require, core })
+            await script({ require, github, context, core })
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
