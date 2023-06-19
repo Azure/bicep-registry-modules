@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 // Needed to fetch all history and tags
 
       - name: Install packages
         run: npm ci
@@ -70,6 +72,12 @@ jobs:
           script: |
             const script = require("./scripts/github-actions/generate-module-index-md.js")
             await script({ require, github, context, core })
+
+      - name: Upload Markdown artifact
+        uses: actions/upload-artifact@v3
+        with:
+          path: ./docs/jekyll/index.md
+          name: index.md
 
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
