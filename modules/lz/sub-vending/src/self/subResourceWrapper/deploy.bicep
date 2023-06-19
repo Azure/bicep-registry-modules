@@ -4,7 +4,9 @@ targetScope = 'managementGroup'
 
 metadata name = '`/subResourcesWrapper/deploy.bicep` Parameters'
 
-metadata description = '''These are the input parameters for the Bicep module: [`deploy.bicep`](./deploy.bicep)
+metadata description = 'This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment'
+
+metadata details = '''These are the input parameters for the Bicep module: [`deploy.bicep`](./deploy.bicep)
 
 This is the sub-orchestration module that is used and called by the [`main.bicep`](../../../main.bicep)  module to deploy the resources into the subscription that has been created (or an existing one provided), based on the parameter input values that are provided to it at deployment time from the `main.bicep` orchestration module.
 
