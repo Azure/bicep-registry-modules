@@ -7,9 +7,10 @@ async function getSubdirNames(fs, dir) {
   return files.filter((x) => x.isDirectory()).map((x) => x.name);
 }
 
-async function getModuleDescription(github, path, modulePath, tag, context) {
+async function getModuleDescription(github, core, path, modulePath, tag, context) {
   // Retrieve the main.json file as it existed for the given tag
   const ref = `tags/${modulePath}/${tag}`;
+  core.info(`  Retrieving main.json at ref ${ref}`)
   const mainJsonPath = path
     .join("modules", modulePath, "main.json")
     .replace(/\\/g, "/");
@@ -33,6 +34,8 @@ async function getModuleDescription(github, path, modulePath, tag, context) {
 /**
  * @typedef Params
  * @property {typeof require} require
+ * @property {ReturnType<typeof import("@actions/github").getOctokit>} github
+ * @property {typeof import("@actions/github").context} context
  * @property {typeof import("@actions/core")} core
  *
  * @param {Params} params
@@ -55,7 +58,8 @@ async function generateModuleIndexData({ require, github, context, core }) {
       const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${modulePath}/tags/list`;
 
       try {
-        core.info(`Processing ${modulePath}...`);
+        core.info(`Processing ${modulePath}:...`);
+        core.info(`  Retrieving  ${versionListUrl}`);
 
         const versionListResponse = await axios.get(versionListUrl);
         const tags = versionListResponse.data.tags.sort();
@@ -64,6 +68,7 @@ async function generateModuleIndexData({ require, github, context, core }) {
         for (const tag of tags) {
           var description = await getModuleDescription(
             github,
+            core,
             path,
             modulePath,
             tag,
