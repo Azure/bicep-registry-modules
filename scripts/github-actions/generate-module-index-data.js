@@ -7,10 +7,17 @@ async function getSubdirNames(fs, dir) {
   return files.filter((x) => x.isDirectory()).map((x) => x.name);
 }
 
-async function getModuleDescription(github, core, path, modulePath, tag, context) {
+async function getModuleDescription(
+  github,
+  core,
+  path,
+  modulePath,
+  tag,
+  context
+) {
   // Retrieve the main.json file as it existed for the given tag
   const ref = `tags/${modulePath}/${tag}`;
-  core.info(`  Retrieving main.json at ref ${ref}`)
+  core.info(`  Retrieving main.json at ref ${ref}`);
   const mainJsonPath = path
     .join("modules", modulePath, "main.json")
     .replace(/\\/g, "/");
