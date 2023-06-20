@@ -124,3 +124,11 @@ jobs:
               exit 1
             fi
           done
+TODO:
+  publish-module-index:
+    needs: main
+    uses: ./.github/workflows/publish-module-index.yml
+    secrets:
+      PUBLISH_CLIENT_ID: ${{ secrets.PUBLISH_CLIENT_ID }}
+      PUBLISH_TENANT_ID: ${{ secrets.PUBLISH_TENANT_ID }}
+      PUBLISH_SUBSCRIPTION_ID: ${{ secrets.PUBLISH_SUBSCRIPTION_ID }}
