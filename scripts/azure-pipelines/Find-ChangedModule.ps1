@@ -43,10 +43,10 @@ $changedModuleDirectories = @(
     $_.Split($separator) |
     Select-Object -First 3 |
     Join-String -Separator $separator
-  }                                                                   # Get module root directories.
-) |
-Select-Object -Unique |                                               # Remove duplicates.
-Where-Object { Test-Path $_ }                                         # Ignore removed directories.
+  } |                                                                   # Get module root directories.
+  Select-Object -Unique |                                               # Remove duplicates.
+  Where-Object { Test-Path $_ }                                         # Ignore removed directories.
+)
 
 # If no test file or more than one test file was found, set an empty string to skip the subsequent steps.
 $changedModuleDirectory = if ($changedModuleDirectories.Length -eq 1) { $changedModuleDirectories[0] } else { "" }
