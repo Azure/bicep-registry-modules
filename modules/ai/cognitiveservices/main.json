@@ -5,12 +5,30 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "8198666071091001454"
+      "templateHash": "3282803605215641298"
     }
   },
   "parameters": {
     "kind": {
       "type": "string",
+      "defaultValue": "CognitiveServices",
+      "allowedValues": [
+        "CognitiveServices",
+        "ComputerVision",
+        "CustomVision.Prediction",
+        "CustomVision.Training",
+        "Face",
+        "FormRecognizer",
+        "SpeechServices",
+        "LUIS",
+        "QnAMaker",
+        "TextAnalytics",
+        "TextTranslation",
+        "AnomalyDetector",
+        "ContentModerator",
+        "Personalizer",
+        "OpenAI"
+      ],
       "metadata": {
         "description": "The kind of Cognitive Service to create. See: https://learn.microsoft.com/en-us/azure/cognitive-services/create-account-bicep for available kinds."
       }
@@ -69,8 +87,16 @@
     "skuName": {
       "type": "string",
       "defaultValue": "F0",
+      "allowedValues": [
+        "F0",
+        "S0",
+        "S1",
+        "S2",
+        "S3",
+        "S4"
+      ],
       "metadata": {
-        "description": "The name of the SKU."
+        "description": "The name of the SKU. Be aware that not all SKUs may be available for your Subscription. See: https://learn.microsoft.com/en-us/rest/api/cognitiveservices/accountmanagement/resource-skus"
       }
     },
     "roleAssignments": {
@@ -218,7 +244,7 @@
   "resources": [
     {
       "type": "Microsoft.CognitiveServices/accounts",
-      "apiVersion": "2022-12-01",
+      "apiVersion": "2023-05-01",
       "name": "[toLower(parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -252,7 +278,7 @@
         "count": "[length(parameters('deployments'))]"
       },
       "type": "Microsoft.CognitiveServices/accounts/deployments",
-      "apiVersion": "2022-12-01",
+      "apiVersion": "2023-05-01",
       "name": "[format('{0}/{1}', toLower(parameters('name')), format('{0}-{1}-deployment-{2}', parameters('name'), uniqueString(deployment().name, parameters('location')), copyIndex()))]",
       "properties": "[parameters('deployments')[copyIndex()].properties]",
       "dependsOn": [
@@ -518,7 +544,7 @@
       "metadata": {
         "description": "Endpoint"
       },
-      "value": "[reference(resourceId('Microsoft.CognitiveServices/accounts', toLower(parameters('name'))), '2022-12-01').endpoint]"
+      "value": "[reference(resourceId('Microsoft.CognitiveServices/accounts', toLower(parameters('name'))), '2023-05-01').endpoint]"
     }
   }
 }
