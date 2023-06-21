@@ -52,9 +52,6 @@ module test_02_openAI '../main.bicep' = {
             name: 'text-davinci-002'
             version: 1
           }
-          scaleSettings: {
-            scaleType: 'Standard'
-          }
           raiPolicyName: 'Microsoft.Default'
         }
       }
@@ -94,7 +91,7 @@ module test_04_speech '../main.bicep' = {
         roleDefinitionIdOrName: 'Cognitive Services Speech User'
         principalIds: [ dependencies.outputs.identityPrincipalIds[1] ]
       }
-   ]
+    ]
     privateEndpoints: [
       {
         name: 'endpoint1'
