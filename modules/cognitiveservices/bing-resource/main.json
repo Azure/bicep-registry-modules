@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.17.1.54307",
-      "templateHash": "3122045129133480964"
+      "version": "0.18.4.5664",
+      "templateHash": "10935254632437609814"
     }
   },
   "parameters": {
@@ -23,7 +23,7 @@
         "Bing.CustomSearch"
       ],
       "metadata": {
-        "description": "Optional.This parameter will define Bing search kind."
+        "description": "Optional. This parameter will define Bing search kind."
       }
     },
     "skuName": {

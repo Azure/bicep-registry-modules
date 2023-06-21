@@ -12,17 +12,17 @@ This Bicep Module helps to create Bing Search Kind resource. You may need to reg
 | Name                | Type     | Required | Description                                                                                                 |
 | :------------------ | :------: | :------: | :---------------------------------------------------------------------------------------------------------- |
 | `accountName`       | `string` | Yes      | Required. The name of the Bing Search account.                                                              |
-| `kind`              | `string` | No       | Optional.This parameter will define Bing search kind.                                                       |
+| `kind`              | `string` | No       | Optional. This parameter will define Bing search kind.                                                      |
 | `skuName`           | `string` | No       | Optional. The name of the SKU, F* (free) and S* (standard). Supported SKUs will differ based on search kind |
 | `statisticsEnabled` | `bool`   | No       | Optional. Enable or disable Bing statistics.                                                                |
 | `tags`              | `object` | No       | Optional. Tags of the resource.                                                                             |
 
 ## Outputs
 
-| Name     | Type   | Description     |
-| :------- | :----: | :-------------- |
-| id       | string | Bing account ID |
-| endpoint | string | Bing Endpoint   |
+| Name       | Type     | Description     |
+| :--------- | :------: | :-------------- |
+| `id`       | `string` | Bing account ID |
+| `endpoint` | `string` | Bing Endpoint   |
 
 ## Examples
 
