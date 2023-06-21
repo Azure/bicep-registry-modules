@@ -1,5 +1,6 @@
 @description('The kind of Cognitive Service to create. See: https://learn.microsoft.com/en-us/azure/cognitive-services/create-account-bicep for available kinds.')
-param kind string
+@allowed([ 'CognitiveServices', 'ComputerVision', 'CustomVision.Prediction', 'CustomVision.Training', 'Face', 'FormRecognizer', 'SpeechServices', 'LUIS', 'QnAMaker', 'TextAnalytics', 'TextTranslation', 'AnomalyDetector', 'ContentModerator', 'Personalizer', 'OpenAI' ])
+param kind string = 'CognitiveServices'
 
 @description('Prefix of Resource Name. Not used if name is provided')
 param prefix string = 'cog'
@@ -27,7 +28,8 @@ param publicNetworkAccess bool = true
 @description('A list of private endpoints to connect to the Cognitive Service.')
 param privateEndpoints array = []
 
-@description('The name of the SKU.')
+@description('The name of the SKU. Be aware that not all SKUs may be available for your Subscription. See: https://learn.microsoft.com/en-us/rest/api/cognitiveservices/accountmanagement/resource-skus')
+@allowed([ 'F0', 'S0', 'S1', 'S2', 'S3', 'S4' ])
 param skuName string = 'F0'
 
 @description('Array of role assignment objects that contain the "roleDefinitionIdOrName" and "principalId" to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, provide either the display name of the role definition, or its fully qualified ID in the following format: "/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11"')
@@ -100,7 +102,7 @@ var varPrivateEndpoints = [for endpoint in privateEndpoints: {
   manualApprovalEnabled: contains(endpoint, 'manualApprovalEnabled') ? endpoint.manualApprovalEnabled : false
 }]
 
-resource cognitiveService 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
+resource cognitiveService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   name: toLower(name)
   location: location
   tags: tags
@@ -129,7 +131,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
   }
 }
 
-resource cognitiveServiceDeployment 'Microsoft.CognitiveServices/accounts/deployments@2022-12-01' = [for (deployment, index) in deployments: {
+resource cognitiveServiceDeployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = [for (deployment, index) in deployments: {
   name: '${name}-${uniqueString(az.deployment().name, location)}-deployment-${index}'
   parent: cognitiveService
   properties: deployment.properties
