@@ -5,7 +5,7 @@ This module deploys Azure Bing Resource
 ## Description
 
 Azure Bing resource refers to the integration of Bing's search capabilities into the Azure platform. Azure provides the Azure Cognitive Search service, which allows you to incorporate powerful search functionality, including web search, image search, news search, video search, and more, using Bing's search algorithms.
-This Bicep Module helps to create Bing Search Kind resource
+This Bicep Module helps to create Bing Search Kind resource. You may need to register Microsoft/Bing resource provider for your subscription before using this module.
 
 ## Parameters
 
