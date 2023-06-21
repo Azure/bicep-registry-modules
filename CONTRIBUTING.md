@@ -55,7 +55,7 @@ The `metadata.json` file contains metadata of the module including `name`, `desc
 
 ```JSONC
 {
-  "$schema": "https://aka.ms/bicep-registry-module-metadata-schema#",
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
   // The name of the module (10 - 60 characters).
   "name": "Sample module",
   // The description of the module (10 - 1000 characters).
