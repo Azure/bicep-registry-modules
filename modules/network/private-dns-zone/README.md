@@ -19,10 +19,10 @@ Azure Private DNS provides a reliable, secure DNS service to manage and resolve 
 
 ## Outputs
 
-| Name | Type   | Description             |
-| :--- | :----: | :---------------------- |
-| id   | string | Get privateDnsZone ID   |
-| name | string | Get privateDnsZone name |
+| Name   | Type     | Description             |
+| :----- | :------: | :---------------------- |
+| `id`   | `string` | Get privateDnsZone ID   |
+| `name` | `string` | Get privateDnsZone name |
 
 ## Examples
 
