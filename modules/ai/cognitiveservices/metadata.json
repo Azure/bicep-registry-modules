@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
+  "name": "CognitiveServices",
+  "summary": "This module deploys CognitiveServices (Microsoft.CognitiveServices/accounts) and optionally available integrations.",
+  "owner": "omegavveapon"
+}
