@@ -62,8 +62,7 @@ cnameRecords : [
     name: 'cname3'
     TTL: 3600
     cname: 'test3.com'
-  }
-]
+  }]
 */
 
 var virtualNetworkLinksArray = [for virtualNetworkLink in virtualNetworkLinks: {
