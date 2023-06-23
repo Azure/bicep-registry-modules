@@ -45,12 +45,12 @@ This module deploys Container Registry (Microsoft.ContainerRegistry/registries) 
 
 ## Outputs
 
-| Name              | Type   | Description                                                        |
-| :---------------- | :----: | :----------------------------------------------------------------- |
-| resourceGroupName | string | The resource group the Azure Container Registry was deployed into. |
-| resourceId        | string | The resource ID of the Azure Container Registry.                   |
-| name              | string | The name of the Azure Container Registry.                          |
-| loginServer       | string | The login server URL of the Azure Container Registry.              |
+| Name                | Type     | Description                                                        |
+| :------------------ | :------: | :----------------------------------------------------------------- |
+| `resourceGroupName` | `string` | The resource group the Azure Container Registry was deployed into. |
+| `resourceId`        | `string` | The resource ID of the Azure Container Registry.                   |
+| `name`              | `string` | The name of the Azure Container Registry.                          |
+| `loginServer`       | `string` | The login server URL of the Azure Container Registry.              |
 
 ## Examples
 
