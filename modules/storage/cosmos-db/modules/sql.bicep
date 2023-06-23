@@ -1,41 +1,29 @@
 param cosmosDBAccountName string
-param enableServerless bool = false
-param databaseName string
-param databaseContainers array
-param autoscaleMaxThroughput int
-param manualProvisionedThroughput int
+param enableServerless bool
+param database object
 
-resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2022-11-15' existing = {
+resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
   name: cosmosDBAccountName
 }
 
 resource sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2022-11-15' = {
-  name: databaseName
+  name: database.name
   parent: cosmosDBAccount
+  tags: database.?tags ?? {}
   properties: {
     resource: {
-      id: databaseName
+      id: database.name
     }
-    options: enableServerless ? {} : (autoscaleMaxThroughput != 0 ? {
-      autoscaleSettings: {
-        maxThroughput: autoscaleMaxThroughput
-      }
-    } : (manualProvisionedThroughput != 0 ? {
-      throughput: manualProvisionedThroughput
-    } : {}))
+    options: (enableServerless || database.?performance == null) ? null : (database.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: database.performance.throughput } } : { throughput: database.performance.throughput })
   }
 }
 
-@batchSize(1)
-module sqlDatabaseContainers 'sql_containers.bicep' = [for databaseContainer in databaseContainers: {
-  name: databaseContainer.name
-  dependsOn: [
-    sqlDatabase
-  ]
+module sqlDatabaseContainers 'sql_containers.bicep' = [for container in database.?containers ?? []: {
+  name: uniqueString(cosmosDBAccount.id, sqlDatabase.id, container.name)
   params: {
     cosmosDBAccountName: cosmosDBAccountName
-    databaseName: databaseName
-    databaseContainer: databaseContainer
+    databaseName: database.name
+    container: container
     enableServerless: enableServerless
   }
 }]
