@@ -31,7 +31,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-05-01' = {
 }
 
 resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: 'privatelink.azconfig.io'
+  name: 'privatelink.cognitiveservices.azure.com'
   location: 'global'
   properties: {}
 }
@@ -49,67 +49,12 @@ resource virtualNetworkLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLi
 }
 
 resource managedIdentity_01 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: '${name}-${prefix}-mi01'
+  name: '${name}-${prefix}-01'
   location: location
 }
 
 resource managedIdentity_02 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: '${name}-${prefix}-mi02'
-  location: location
-}
-
-resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' = {
-  name: '${name}-${prefix}-kv'
-  location: location
-  properties: {
-    sku: {
-      family: 'A'
-      name: 'standard'
-    }
-    tenantId: subscription().tenantId
-    softDeleteRetentionInDays: 7
-    enablePurgeProtection: true
-    accessPolicies: [
-      {
-        objectId: managedIdentity_01.properties.principalId
-        permissions: {
-          keys: [
-            'get'
-            'wrapKey'
-            'unwrapKey'
-          ]
-          secrets: [
-            'get'
-          ]
-        }
-        tenantId: subscription().tenantId
-      }
-    ]
-  }
-}
-
-resource keyVaultKey 'Microsoft.KeyVault/vaults/keys@2023-02-01' = {
-  parent: keyVault
-  name: 'testkey'
-  properties: {
-    kty: 'RSA'
-    keySize: 2048
-    keyOps: [
-      'encrypt'
-      'decrypt'
-      'sign'
-      'verify'
-      'wrapKey'
-      'unwrapKey'
-    ]
-    attributes: {
-      enabled: true
-    }
-  }
-}
-
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
-  name: '${name}-${prefix}-law'
+  name: '${name}-${prefix}-02'
   location: location
 }
 
@@ -124,18 +69,3 @@ output identityPrincipalIds array = [
   managedIdentity_01.properties.principalId
   managedIdentity_02.properties.principalId
 ]
-
-output identityClientIds array = [
-  managedIdentity_01.properties.clientId
-  managedIdentity_02.properties.clientId
-]
-
-output identityIds array = [
-  managedIdentity_01.id
-  managedIdentity_02.id
-]
-
-output keyVaultId string = keyVault.id
-output keyVaultKeyUri string = keyVaultKey.properties.keyUriWithVersion
-
-output workspaceId string = logAnalyticsWorkspace.id

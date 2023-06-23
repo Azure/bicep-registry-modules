@@ -60,5 +60,7 @@ module eventHub_roleAssignments './roleAssignments.bicep' = [for (roleAssignment
     principalType: contains(roleAssignment, 'principalType') ? roleAssignment.principalType : ''
     roleDefinitionIdOrName: roleAssignment.roleDefinitionIdOrName
     resourceId: eventHub.id
+    namespaceName: namespaceName
+    eventHubName: name
   }
 }]
