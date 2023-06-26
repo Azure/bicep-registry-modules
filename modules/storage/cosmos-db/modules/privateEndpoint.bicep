@@ -1,58 +1,45 @@
+param cosmosDBAccountId string
 param location string
-param tags object
-param privateEndpoints array
+param endpoint object
 
-var varPrivateEndpoints = [for (p, i) in privateEndpoints: {
-  name: p.name
-  privateLinkServiceId: p.privateLinkServiceId
-  groupIds: p.groupIds
-  subnetId: p.subnetId
-  privateDnsZones: p.?privateDnsZones ?? []
-  customNetworkInterfaceName: p.?customNetworkInterfaceName ?? null
-  manualApprovalEnabled: p.?manualApprovalEnabled ?? false
-}]
+var manualApprovalEnabled = endpoint.?isManualApproval ?? false
 
-@batchSize(1)
-resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-05-01' = [for endpoint in varPrivateEndpoints: {
-  name: '${endpoint.name}-${uniqueString(endpoint.name, endpoint.subnetId, endpoint.privateLinkServiceId)}'
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-07-01' = {
+  name: endpoint.name
   location: location
-  tags: tags
+  tags: endpoint.?tags ?? {}
   properties: {
-    privateLinkServiceConnections: endpoint.manualApprovalEnabled ? null : [
+    privateLinkServiceConnections: manualApprovalEnabled ? null : [
       {
         name: endpoint.name
         properties: {
-          privateLinkServiceId: endpoint.privateLinkServiceId
-          groupIds: !empty(endpoint.groupIds) ? endpoint.groupIds : null
+          privateLinkServiceId: cosmosDBAccountId
+          groupIds: [ endpoint.groupId ]
         }
       }
     ]
-    manualPrivateLinkServiceConnections: endpoint.manualApprovalEnabled ? [
+    manualPrivateLinkServiceConnections: manualApprovalEnabled ? [
       {
         name: endpoint.name
         properties: {
-          privateLinkServiceId: endpoint.privateLinkServiceId
-          groupIds: !empty(endpoint.groupIds) ? endpoint.groupIds : null
+          privateLinkServiceId: cosmosDBAccountId
+          groupIds: [ endpoint.groupId ]
         }
       }
     ] : null
     subnet: {
       id: endpoint.subnetId
     }
-    customNetworkInterfaceName: endpoint.customNetworkInterfaceName
   }
-}]
-
-@batchSize(1)
-resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-05-01' = [for (endpoint, i) in varPrivateEndpoints: {
-  name: 'default'
-  parent: privateEndpoint[i]
-  properties: {
-    privateDnsZoneConfigs: [for privateDnsZone in endpoint.privateDnsZones: {
-      name: privateDnsZone.?name ?? 'default'
-      properties: {
-        privateDnsZoneId: privateDnsZone.zoneId
-      }
-    }]
+  resource privateDnsZoneGroup 'privateDnsZoneGroups' = if (endpoint.?privateDnsZoneId != null) {
+    name: 'default'
+    properties: {
+      privateDnsZoneConfigs: [ {
+          name: 'default'
+          properties: {
+            privateDnsZoneId: endpoint.privateDnsZoneId
+          }
+        } ]
+    }
   }
-}]
+}

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "scope": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "roleDefinitionId": {
+      "type": "string"
+    },
+    "principalId": {
+      "type": "string"
+    },
+    "principalType": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[parameters('scope')]",
+      "name": "[parameters('name')]",
+      "properties": {
+        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionId'))]",
+        "principalId": "[parameters('principalId')]",
+        "principalType": "[parameters('principalType')]",
+        "description": "[parameters('description')]"
+      }
+    }
+  ],
+  "outputs": {
+    "roleAssignmentId": {
+      "type": "string",
+      "value": "[extensionResourceId(parameters('scope'), 'Microsoft.Authorization/roleAssignments', parameters('name'))]"
+    }
+  }
+}

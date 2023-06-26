@@ -1,50 +1,33 @@
 param cosmosDBAccountName string
-param enableServerless bool = false
-param keyspaceName string
-param tables array
-param autoscaleMaxThroughput int
-param manualProvisionedThroughput int
+param enableServerless bool
 
-resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2022-11-15' existing = {
+param keyspace object
+
+resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
   name: cosmosDBAccountName
 
-  resource cassandraKeyspaces 'cassandraKeyspaces@2022-11-15' = {
-    name: keyspaceName
+  resource cassandraKeyspaces 'cassandraKeyspaces' = {
+    name: keyspace.name
     properties: {
       resource: {
-        id: keyspaceName
+        id: keyspace.name
       }
-      options: !enableServerless ? (autoscaleMaxThroughput != 0 ? {
-        autoscaleSettings: {
-          maxThroughput: autoscaleMaxThroughput
-        }
-      } : manualProvisionedThroughput != 0 ? {
-        throughput: manualProvisionedThroughput
-      } : {}) : {}
+      options: (enableServerless || keyspace.?performance == null) ? null : (keyspace.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: keyspace.performance.throughput } } : { throughput: keyspace.performance.throughput })
     }
+    tags: keyspace.?tags ?? {}
 
-    resource cassandraTables 'tables' = [for table in tables: {
+    resource cassandraTables 'tables' = [for table in keyspace.?tables ?? []: {
       name: table.name
       properties: {
         resource: {
           id: table.name
-          // https://github.com/Azure/azure-rest-api-specs/issues/19695
-          // analyticalStorageTtl: contains(table, 'analyticalStorageTtl') ? table.analyticalStorageTtl : null
-          defaultTtl: table.?defaultTtl ?? null
-          schema: {
-            columns: table.?schemaColumns ?? []
-            partitionKeys: table.?schemaPartitionKeys ?? []
-            clusterKeys: table.?schemaClusteringKeys ?? []
-          }
+          // analyticalStorageTtl is an invalid propery in current api https://github.com/Azure/azure-rest-api-specs/issues/19695
+          defaultTtl: table.?defaultTtl
+          schema: table.?schema
         }
-        options: !enableServerless ? (contains(table, 'autoscaleMaxThroughput') ? {
-          autoscaleSettings: {
-            maxThroughput: table.autoscaleMaxThroughput
-          }
-        } : contains(table, 'manualProvisionedThroughput') ? {
-          throughput: table.manualProvisionedThroughput
-        } : {}) : {}
+        options: (enableServerless || table.?performance == null) ? null : (table.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: table.performance.throughput } } : { throughput: table.performance.throughput })
       }
+      tags: table.?tags ?? {}
     }]
   }
 }

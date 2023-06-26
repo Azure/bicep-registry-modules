@@ -1,49 +1,34 @@
-param autoscaleMaxThroughput int
 param cosmosDBAccountName string
 param enableServerless bool
-param databaseGraphs array
-param databaseName string
-param manualProvisionedThroughput int
+param database object
 
-resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2022-11-15' existing = {
+resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
   name: cosmosDBAccountName
 
-  resource gremlinDatabase 'gremlinDatabases@2022-11-15' = {
-    name: databaseName
+  resource gremlinDatabase 'gremlinDatabases' = {
+    name: database.name
     properties: {
       resource: {
-        id: databaseName
+        id: database.name
       }
-      options: enableServerless ? {} : (autoscaleMaxThroughput != 0 ? {
-        autoscaleSettings: {
-          maxThroughput: autoscaleMaxThroughput
-        }
-      } : (manualProvisionedThroughput != 0 ? {
-        throughput: manualProvisionedThroughput
-      } : {}))
+      options: (enableServerless || database.?performance == null) ? null : (database.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: database.performance.throughput } } : { throughput: database.performance.throughput })
     }
+    tags: database.?tags ?? {}
 
-    resource gremlinDatabaseGraphs 'graphs' = [for graph in databaseGraphs: {
+    resource gremlinDatabaseGraphs 'graphs' = [for graph in database.?graphs ?? []: {
       name: graph.name
       properties: {
         resource: {
           id: graph.name
-          // https://github.com/Azure/azure-rest-api-specs/issues/19695
-          // analyticalStorageTtl: contains(graph, 'analyticalStorageTtl') ? graph.analyticalStorageTtl : -1
-          conflictResolutionPolicy: graph.?conflictResolutionPolicy ?? {}
-          defaultTtl: graph.?defaultTtl ?? -1
-          indexingPolicy: graph.?indexingPolicy ?? {}
-          partitionKey: graph.?partitionKey ?? {}
-          uniqueKeyPolicy: graph.?uniqueKeyPolicy ?? {}
+          // analyticalStorageTtl is an invalid propery in current api https://github.com/Azure/azure-rest-api-specs/issues/19695
+          defaultTtl: graph.?defaultTtl
+          indexingPolicy: graph.?indexingPolicy
+          partitionKey: graph.?partitionKey
+          uniqueKeyPolicy: graph.?uniqueKeyPolicy
         }
-        options: enableServerless ? {} : (contains(graph, 'autoscaleMaxThroughput') ? {
-          autoscaleSettings: {
-            maxThroughput: graph.autoscaleMaxThroughput
-          }
-        } : (contains(graph, 'manualProvisionedThroughput') ? {
-          throughput: graph.manualProvisionedThroughput
-        } : {}))
+        options: (enableServerless || graph.?performance == null) ? null : (graph.performance.enableAutoScale ? { autoscaleSettings: { maxThroughput: graph.performance.throughput } } : { throughput: graph.performance.throughput })
       }
+      tags: graph.?tags ?? {}
     }]
   }
 }

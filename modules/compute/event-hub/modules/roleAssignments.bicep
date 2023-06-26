@@ -3,6 +3,7 @@ param description string = ''
 param principalIds array
 param roleDefinitionIdOrName string
 param principalType string = ''
+param roleAssignmentsName string
 
 
 var builtInRoleNames = {
@@ -31,7 +32,7 @@ resource eventHubNamespace 'Microsoft.EventHub/namespaces@2021-11-01' existing =
 }
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for principalId in principalIds: {
-  name: guid(eventHubNamespaceName, principalId, roleDefinitionIdOrName)
+  name: guid(roleAssignmentsName, principalId, roleDefinitionIdOrName)
   properties: {
     description: description
     roleDefinitionId: contains(builtInRoleNames, roleDefinitionIdOrName) ? builtInRoleNames[roleDefinitionIdOrName] : roleDefinitionIdOrName
