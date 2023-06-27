@@ -46,6 +46,10 @@ module test_02_openAI '../main.bicep' = {
     deployments: [
       {
         name: 'test-02-openai-deployment-${uniqueName}'
+        sku: {
+          name: 'Standard'
+          capacity: 120
+        }
         properties: {
           model: {
             format: 'OpenAI'

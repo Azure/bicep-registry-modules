@@ -134,6 +134,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
 resource cognitiveServiceDeployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = [for (deployment, index) in deployments: {
   name: '${name}-${uniqueString(az.deployment().name, location)}-deployment-${index}'
   parent: cognitiveService
+  sku: deployment.sku
   properties: deployment.properties
 }]
 
