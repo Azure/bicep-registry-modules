@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "3282803605215641298"
+      "templateHash": "11869447302641025740"
     }
   },
   "parameters": {
@@ -280,6 +280,7 @@
       "type": "Microsoft.CognitiveServices/accounts/deployments",
       "apiVersion": "2023-05-01",
       "name": "[format('{0}/{1}', toLower(parameters('name')), format('{0}-{1}-deployment-{2}', parameters('name'), uniqueString(deployment().name, parameters('location')), copyIndex()))]",
+      "sku": "[parameters('deployments')[copyIndex()].sku]",
       "properties": "[parameters('deployments')[copyIndex()].properties]",
       "dependsOn": [
         "[resourceId('Microsoft.CognitiveServices/accounts', toLower(parameters('name')))]"
