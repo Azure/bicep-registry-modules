@@ -1,5 +1,5 @@
 targetScope = 'resourceGroup'
-param location string = 'eastus'
+param location string = 'eastus2'
 var uniqueName = uniqueString(resourceGroup().id, deployment().name, location)
 param serviceShort string = 'eventhub'
 
@@ -7,7 +7,7 @@ param serviceShort string = 'eventhub'
 // Prerequisites //
 // ============= //
 
-module prerequisites 'prereq.test.bicep' = {
+module dependencies 'prereq.test.bicep' = {
   name: 'test-prereq'
   params: {
     name: serviceShort
@@ -16,111 +16,108 @@ module prerequisites 'prereq.test.bicep' = {
   }
 }
 
-/*
-//Disabled this test case becuase it was showing error Status Message: Free provisioned clusters currently not available for internal tenants. Currently working on provisioning more clusters
-// Test 01 - Standard SKU with cluster and Parameters, AuthRule(namespace,eventHub), EventHub, ConsumerGroups
+// Test 01 - Standard SKU with cluster and Parameters, AuthorizationRules(namespace,eventHub), EventHuba, ConsumerGroups
 module test_01 '../main.bicep' = {
-  name: '${uniqueName}-test-01'
+  name: 'test01-${uniqueName}'
   params: {
-    clusterName: '${uniqueName}-test01'
-    tags: {
-      tag1: 'tag1value'
-      tag2: 'tag2value'
-    }
     location: location
-    eventHubNamespaces: [
+    namespaces: [
       {
-        name: 'test01${uniqueName}'
-        sku: 'Standard'
-        capacity:  4
+        name: 'test01-${uniqueName}-ns1'
+        capacity: 2
         isAutoInflateEnabled: true
         maximumThroughputUnits: 6
+        zoneRedundant: true
       }
       {
-        name: 'test01a${uniqueName}'
-        sku: 'Standard'
-        capacity:  2
+        name: 'test01-${uniqueName}-ns2'
+        sku: 'Basic'
       }
     ]
     namespaceAuthorizationRules: [
       {
-        name: 'test01${uniqueName}'
-        rights: ['Listen','Manage','Send']
-        eventHubNamespaceName: 'test01${uniqueName}'
+        name: 'test01-${uniqueName}-ns-authrule01'
+        rights: [ 'Listen', 'Manage', 'Send' ]
+        namespaceName: 'test01-${uniqueName}-ns1'
       }
       {
-        name: 'test01a${uniqueName}'
-        rights: ['Listen','Manage','Send']
-        eventHubNamespaceName: 'test01${uniqueName}'
+        name: 'test01-${uniqueName}-ns-authrule02'
+        rights: [ 'Listen' ]
+        namespaceName: 'test01-${uniqueName}-ns1'
       }
     ]
     eventHubs: [
       {
-        name: 'test01${uniqueName}'
+        name: 'test01-${uniqueName}-evh1'
         messageRetentionInDays: 4
         partitionCount: 4
-        eventHubNamespaceName: 'test01${uniqueName}'
+        namespaceName: 'test01-${uniqueName}-ns1'
       }
       {
-        name:'test01a${uniqueName}'
+        name: 'test01-${uniqueName}-evh2'
         messageRetentionInDays: 7
         partitionCount: 2
-        eventHubNamespaceName: 'test01${uniqueName}'
+        namespaceName: 'test01-${uniqueName}-ns1'
       }
     ]
     eventHubAuthorizationRules: [
       {
-        name: 'test01${uniqueName}'
-        rights: ['Listen','Manage','Send']
-        eventHubNamespaceName: 'test01${uniqueName}'
-        eventHubName: 'test01${uniqueName}'
+        name: 'test01-${uniqueName}-evh-rule01'
+        rights: [ 'Listen', 'Manage', 'Send' ]
+        namespaceName: 'test01-${uniqueName}-ns1'
+        eventHubName: 'test01-${uniqueName}-evh1'
       }
     ]
-    consumerGroups: [
+    eventHubConsumerGroups: [
       {
-        name: 'test01${uniqueName}'
-        eventHubNamespaceName: 'test01${uniqueName}'
-        eventHubName: 'test01${uniqueName}'
+        name: 'test01-${uniqueName}-cg01'
+        namespaceName: 'test01-${uniqueName}-ns1'
+        eventHubName: 'test01-${uniqueName}-evh1'
       }
     ]
+    tags: {
+      tag1: 'tag1value'
+      tag2: 'tag2value'
+    }
   }
 }
-*/
 
-// Test 02 - Basic SKU Minimal Parameters
+// Test 02 - Premium SKU -  Role Assignments at namespace and eventHub scope
 module test_02 '../main.bicep' = {
-  name: '${uniqueName}-test-02'
+  name: 'test02-${uniqueName}'
   params: {
     location: location
-    eventHubNamespaces: [
+    namespaces: [
       {
-        name: 'test02na${uniqueName}'
-        sku: 'Basic'
-        capacity: 3
+        name: 'test02-${uniqueName}-ns'
+        sku: 'Premium'
+        capacity: 2
+        zoneRedundant: true
       }
     ]
     namespaceRoleAssignments: [
       {
-        name: 'test02${uniqueName}'
+        name: 'test02-${uniqueName}-rol01'
         description: 'Reader Role Assignment'
-        principalIds: [ prerequisites.outputs.identityPrincipalIds[1] ]
+        principalIds: [ dependencies.outputs.identityPrincipalIds[1] ]
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-        eventHubNamespaceName: 'test02na${uniqueName}'
+        roleDefinitionIdOrName: 'f526a384-b230-433a-b45c-95f59c4a2dec' // Azure Event Hubs Data Owner
+        namespaceName: 'test02-${uniqueName}-ns'
       }
     ]
     eventHubs: [
       {
-        name: 'test02${uniqueName}'
+        name: 'test02-${uniqueName}-evh'
         messageRetentionInDays: 1
         partitionCount: 1
-        eventHubNamespaceName: 'test02na${uniqueName}'
+        namespaceName: 'test02-${uniqueName}-ns'
         roleAssignments: [
           {
-            roleDefinitionIdOrName: 'Reader'
-            description: 'Reader Role Assignment'
-            principalIds: [ prerequisites.outputs.identityPrincipalIds[0] ]
+            roleDefinitionIdOrName: 'Contributor'
+            description: 'Contributor Role Assignment'
+            principalIds: [ dependencies.outputs.identityPrincipalIds[0] ]
             principalType: 'ServicePrincipal'
+
           }
         ]
       }
@@ -128,49 +125,62 @@ module test_02 '../main.bicep' = {
   }
 }
 
-// Test 03 - Premium SKU Minimal Parameters
+// Test 03 - Standard SKU - PrivateEndpoints, DiagnosticSettings with EventHub
 module test_03 '../main.bicep' = {
-  name: '${uniqueName}-test-03'
+  name: 'test03-${uniqueName}'
   params: {
     location: location
-    eventHubNamespaces: [
+    namespaces: [
       {
-        name: 'test03na${uniqueName}'
-        sku: 'Premium'
+        name: 'test03-${uniqueName}-ns'
+        sku: 'Standard'
         capacity: 4
-        zoneRedundant: true
+        publicNetworkAccess: 'Disabled'
       }
     ]
-    privateEndpoints: [
+    namespacePrivateEndpoints: [
       {
         name: 'endpoint1'
-        subnetId: prerequisites.outputs.subnetIds[0]
-        eventHubNamespaceName: 'test03na${uniqueName}'
+        subnetId: dependencies.outputs.subnetIds[0]
+        namespaceName: 'test03-${uniqueName}-ns'
+        manualApprovalEnabled: true
       }
       {
         name: 'endpoint2'
-        subnetId: prerequisites.outputs.subnetIds[1]
-        privateDnsZoneId: prerequisites.outputs.privateDNSZoneId
-        eventHubNamespaceName: 'test03na${uniqueName}'
+        subnetId: dependencies.outputs.subnetIds[1]
+        privateDnsZoneId: dependencies.outputs.privateDNSZoneId
+        namespaceName: 'test03-${uniqueName}-ns'
       }
     ]
-    diagnosticSettings: [
+    namespaceDiagnosticSettings: [
       {
-        name: 'test03digno${uniqueName}'
-        diagnosticEnablenamespaceName: 'test03na${uniqueName}'
-        diagnosticEventHubAuthorizationRuleId: prerequisites.outputs.authorizationRuleId
-        diagnosticEventHubName: prerequisites.outputs.eventHubName
-        diagnosticsMetrics: [ { category: 'AllMetrics', enabled: true, retentionPolicy: { days: 365, enabled: true } } ]
-        diagnosticsLogs: [
+        name: 'test03-${uniqueName}-ds'
+        namespaceName: 'test03-${uniqueName}-ns'
+        eventHubAuthorizationRuleId: dependencies.outputs.authorizationRuleId
+        eventHubName: dependencies.outputs.eventHubName
+        metricsSettings: [
+          {
+            category: 'AllMetrics'
+            timeGrain: 'PT1M'
+            enabled: true
+            retentionPolicy: {
+              days: 7
+              enabled: true
+            }
+          }
+        ]
+        logsSettings: [
           {
             category: 'OperationalLogs'
             enabled: true
-            retentionPolicy: { days: 36, enabled: true }
+            retentionPolicy: {
+              days: 36
+              enabled: true
+            }
           }
           {
             category: 'ArchiveLogs'
             enabled: true
-            retentionPolicy: { days: 3, enabled: true }
           }
         ]
       }
@@ -178,14 +188,14 @@ module test_03 '../main.bicep' = {
   }
 }
 
-// Test 04 - Standard SKU Minimal Parameters
+// Test 04 - Standard SKU - Event Hub Capture to StorageAccount, DiagnosticSettings with StorageAccount and LogAnalyticsWorkspace
 module test_04 '../main.bicep' = {
-  name: '${uniqueName}-test-04'
+  name: 'test04-${uniqueName}'
   params: {
     location: location
-    eventHubNamespaces: [
+    namespaces: [
       {
-        name: 'test04na${uniqueName}'
+        name: 'test04-${uniqueName}-ns'
         sku: 'Standard'
         capacity: 1
         zoneRedundant: false
@@ -193,27 +203,27 @@ module test_04 '../main.bicep' = {
     ]
     eventHubs: [
       {
-        name: 'test04${uniqueName}'
+        name: 'test04-${uniqueName}-evh'
         messageRetentionInDays: 1
         partitionCount: 2
-        eventHubNamespaceName: 'test04na${uniqueName}'
-        captureDescriptionDestinationBlobContainer: prerequisites.outputs.containerName
-        captureDescriptionDestinationStorageAccountResourceId: prerequisites.outputs.storageAccountId
+        namespaceName: 'test04-${uniqueName}-ns'
         captureDescriptionEnabled: true
+        captureDescriptionDestinationBlobContainer: dependencies.outputs.containerName
+        captureDescriptionDestinationStorageAccountResourceId: dependencies.outputs.storageAccountId
       }
     ]
-    diagnosticSettings: [
+    namespaceDiagnosticSettings: [
       {
-        name: 'test04digno${uniqueName}'
-        diagnosticEnablenamespaceName: 'test04na${uniqueName}'
-        diagnosticStorageAccountId: prerequisites.outputs.storageAccountId
-        diagnosticWorkspaceId: prerequisites.outputs.workspaceId
-        diagnosticsMetrics: [ { category: 'AllMetrics', enabled: true, retentionPolicy: { days: 365, enabled: true } } ]
-        diagnosticsLogs: [
+        name: 'test04-${uniqueName}-ds'
+        namespaceName: 'test04-${uniqueName}-ns'
+        storageAccountId: dependencies.outputs.storageAccountId
+        workspaceId: dependencies.outputs.workspaceId
+        metricsSettings: [ { category: 'AllMetrics', enabled: true, retentionPolicy: { days: 365, enabled: true } } ]
+        logsSettings: [
           {
             category: 'ArchiveLogs'
             enabled: true
-            retentionPolicy: { days: 365, enabled: true }
+            retentionPolicy: { days: 7, enabled: true }
           }
           {
             category: 'RuntimeAuditLogs'

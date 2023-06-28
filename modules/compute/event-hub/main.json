@@ -1,11 +1,617 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "1.10-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
+    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "18376933869698035046"
+      "templateHash": "490470096260742691"
+    }
+  },
+  "definitions": {
+    "namespacesType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Name of the Event Hub Namespace."
+          }
+        },
+        "sku": {
+          "type": "string",
+          "allowedValues": [
+            "Basic",
+            "Premium",
+            "Standard"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "SKU of the Event Hub Namespace. Possible values are \"Basic\" or \"Standard\" or \"Premium"
+          }
+        },
+        "capacity": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Event Hubs throughput units for Basic or Standard tiers where value should be 0 to 20 units. For Premium tier, value should be 0 to 10 premium units."
+          }
+        },
+        "zoneRedundant": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Enabling this property creates a Standard Event Hubs Namespace in regions supported availability zones."
+          }
+        },
+        "isAutoInflateEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Whether to enable AutoInflate or not."
+          }
+        },
+        "maximumThroughputUnits": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Upper limit of throughput units when AutoInflate is enabled."
+          }
+        },
+        "kafkaEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Whether to enable Kafka or not."
+          }
+        },
+        "disableLocalAuth": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Whethere tp disable SAS authentication or not."
+          }
+        }
+      }
+    },
+    "authorizationRulesType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Name of the namespace authorization rule."
+          }
+        },
+        "rights": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "The rights associated with the rule."
+          }
+        },
+        "namespaceName": {
+          "type": "string",
+          "metadata": {
+            "description": "The eventhub namespace name."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The eventhub name. Optional if the authorization rule is for namespace and not for an eventhub."
+          }
+        }
+      }
+    },
+    "namespaceRoleAssignmentsType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Name of the namespace role assignment."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The description of the role assignment."
+          }
+        },
+        "principalIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "The principal ids associated with the role assignment."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "The principal type associated with the role assignment."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "The role definition id or name associated with the role assignment."
+          }
+        },
+        "namespaceName": {
+          "type": "string",
+          "metadata": {
+            "description": "The eventhub namespace name."
+          }
+        }
+      }
+    },
+    "eventHubRoleAssignmentsType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Name of the namespace role assignment."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The description of the role assignment."
+          }
+        },
+        "principalIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "The principal ids associated with the role assignment."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "The principal type associated with the role assignment."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "The role definition id or name associated with the role assignment."
+          }
+        }
+      }
+    },
+    "namespaceDisasterRecoveryConfigsType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Name of the namespace disaster recovery config."
+          }
+        },
+        "partnerNamespaceId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resource id of the secondary partner namespace, which is part of GEO DR pairing."
+          }
+        },
+        "namespaceName": {
+          "type": "string",
+          "metadata": {
+            "description": "The eventhub namespace name."
+          }
+        }
+      }
+    },
+    "eventHubsType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Name of the Event Hub."
+          }
+        },
+        "namespaceName": {
+          "type": "string",
+          "metadata": {
+            "description": "The eventhub namespace name."
+          }
+        },
+        "partitionCount": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Number of partitions created for the Event Hub, allowed values are from 1 to 32 partitions."
+          }
+        },
+        "messageRetentionInDays": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Number of days to retain the events for this Event Hub, value should be 1 to 7 days."
+          }
+        },
+        "captureDescriptionEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "A value that indicates whether capture description is enabled."
+          }
+        },
+        "captureDescriptionEncoding": {
+          "type": "string",
+          "allowedValues": [
+            "Avro",
+            "Parquet"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "TEnumerates the possible values for the encoding format of capture description."
+          }
+        },
+        "captureDescriptionIntervalInSeconds": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "The time window allows you to set the frequency with which the capture to Azure Blobs will happen, value should between 60 to 900 seconds."
+          }
+        },
+        "captureDescriptionSizeLimitInBytes": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "The size window defines the amount of data built up in your Event Hub before an capture operation, value should be between 10485760 to 524288000 bytes."
+          }
+        },
+        "captureDescriptionSkipEmptyArchives": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "A value that indicates whether to Skip Empty Archives"
+          }
+        },
+        "captureDescriptionDestinationName": {
+          "type": "string",
+          "allowedValues": [
+            "EventHubArchive.AzureBlockBlob",
+            "EventHubArchive.AzureDataLake"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "The eventhub capture destination name."
+          }
+        },
+        "captureDescriptionDestinationArchiveNameFormat": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Blob naming convention for archive, e.g. {Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}."
+          }
+        },
+        "captureDescriptionDestinationBlobContainer": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The eventhub capture description destination blob container name."
+          }
+        },
+        "captureDescriptionDestinationStorageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "TSubscription Id of Azure Data Lake Store"
+          }
+        },
+        "captureDescriptionDestinationdataLakeAccountName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The Azure Data Lake Store name for the captured events"
+          }
+        },
+        "captureDescriptionDestinationdataLakeFolderPath": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The destination folder path for the captured events"
+          }
+        },
+        "captureDescriptionDestinationdataLakeSubscriptionId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Subscription Id of Azure Data Lake Store"
+          }
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/eventHubRoleAssignmentsType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "The role assignements scoped to event hub."
+          }
+        },
+        "status": {
+          "type": "string",
+          "allowedValues": [
+            "Active",
+            "Disabled",
+            "SendDisabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "The possible values for the status of the Event Hub.."
+          }
+        }
+      }
+    },
+    "eventHubConsumerGroupsType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Name of the Event Hub Consumer Group."
+          }
+        },
+        "namespaceName": {
+          "type": "string",
+          "metadata": {
+            "description": "The eventhub namespace name."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "metadata": {
+            "description": "The eventhub name."
+          }
+        },
+        "userMetadata": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The user metadata."
+          }
+        }
+      }
+    },
+    "namespaceDiagnosticSettingsType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Name of the namespace diagnostic setting."
+          }
+        },
+        "namespaceName": {
+          "type": "string",
+          "metadata": {
+            "description": "The eventhub namespace name."
+          }
+        },
+        "workspaceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The log analytics workspace id."
+          }
+        },
+        "storageAccountId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The storage account id."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The eventhub name."
+          }
+        },
+        "eventHubAuthorizationRuleId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The eventhub authorization rule id."
+          }
+        },
+        "metricsSettings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/metricSettingsType"
+          },
+          "metadata": {
+            "description": "The list of metic settings."
+          }
+        },
+        "logsSettings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/logSettingsType"
+          },
+          "metadata": {
+            "description": "The list of logs settings."
+          }
+        }
+      }
+    },
+    "metricSettingsType": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "bool",
+          "metadata": {
+            "description": "A value indicating whether this category is enabled."
+          }
+        },
+        "category": {
+          "type": "string",
+          "allowedValues": [
+            "AllMetrics"
+          ],
+          "metadata": {
+            "description": "The category of the metrics."
+          }
+        },
+        "timeGrain": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The time grain of the metric in ISO8601 format."
+          }
+        },
+        "retentionPolicy": {
+          "$ref": "#/definitions/retentionPolicyType",
+          "nullable": true,
+          "metadata": {
+            "description": "The retention policy of the metric."
+          }
+        }
+      }
+    },
+    "retentionPolicyType": {
+      "type": "object",
+      "properties": {
+        "days": {
+          "type": "int",
+          "metadata": {
+            "description": "The retention period of the metric."
+          }
+        },
+        "enabled": {
+          "type": "bool",
+          "metadata": {
+            "description": "The retention policy enabled flag."
+          }
+        }
+      }
+    },
+    "logSettingsType": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "bool",
+          "metadata": {
+            "description": "A value indicating whether this log is enabled."
+          }
+        },
+        "category": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The category of the logs."
+          }
+        },
+        "categoryGroup": {
+          "type": "string",
+          "allowedValues": [
+            "allLogs",
+            "audit"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "The category group of the logs."
+          }
+        },
+        "retentionPolicy": {
+          "$ref": "#/definitions/retentionPolicyType",
+          "nullable": true,
+          "metadata": {
+            "description": "The retention policy of the logs."
+          }
+        }
+      }
+    },
+    "privateEndpointType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "The name of the private endpoint."
+          }
+        },
+        "namespaceName": {
+          "type": "string",
+          "metadata": {
+            "description": "The eventhub namespace name."
+          }
+        },
+        "subnetId": {
+          "type": "string",
+          "metadata": {
+            "description": "The subnet that the private endpoint should be created in."
+          }
+        },
+        "groupIds": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "The subresource name of the target Azure resource that private endpoint will connect to."
+          }
+        },
+        "privateDnsZoneId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The ID of the private DNS zone in which private endpoint will register its private IP address."
+          }
+        },
+        "manualApprovalEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "When set to true, users will need to manually approve the private endpoint connection request."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Tags for the resource."
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -25,6 +631,7 @@
     },
     "location": {
       "type": "string",
+      "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "description": "Required. Location for all resources."
       }
@@ -36,33 +643,32 @@
         "description": "Optional. Tags of the resource."
       }
     },
-    "eventHubNamespaces": {
+    "namespaces": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/namespacesType"
+      },
       "defaultValue": [
         {
-          "name": "[format('evns-{0}', uniqueString(resourceGroup().id))]",
+          "name": "evhns001",
           "sku": "Standard",
           "capacity": 1,
-          "maximumThroughputUnits": 0,
-          "zoneRedundant": false,
-          "isAutoInflateEnabled": false,
           "disableLocalAuth": false,
-          "kafkaEnabled": true
+          "kafkaEnabled": true,
+          "isAutoInflateEnabled": false,
+          "maximumThroughputUnits": 0,
+          "zoneRedundant": false
         }
       ],
       "metadata": {
-        "description": "Optional. The name of the event hub namespace to be created.\nBelow paramters you can pass while creating the Azure Event Hub namespace.\nsku: (Optional) Possible values are \"Basic\" or \"Standard\" or \"Premium\". Detault to 'Standard'.\ncapacity: (Optional) int, The Event Hubs throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units.The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units. Default to 1.\nzoneRedundant: (Optional) bool, Enabling this property creates a Standard Event Hubs Namespace in regions supported availability zones. Default to false.\nisAutoInflateEnabled: (Optional) bool,  Value that indicates whether AutoInflate is enabled for eventhub namespace. Only available for \"Standard\" sku. Default to false.\nmaximumThroughputUnits: (Optional) int, Upper limit of throughput units when AutoInflate is enabled, value should be within 0 to 20 throughput units. ( '0' if AutoInflateEnabled = true)\ndisableLocalAuth: (Optional) bool, This property disables SAS authentication for the Event Hubs namespace. Default to false.\nkafkaEnabled: (Optional) bool, Value that indicates whether Kafka is enabled for eventhub namespace. Default to true.\n"
-      }
-    },
-    "eventHubs": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": " Optional. Name for the eventhub to be created.\nBelow paramters you can pass while the creating Azure Event Hub.\nmessageRetentionInDays: (Optional) int, Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Default to 1.\npartitionCount: (Optional) int, Number of partitions created for the Event Hub. Default to 2.\neventHubNamespaceName: (Optional) string, Name of the Azure Event Hub Namespace.\nstatus: (Optional) string, Enumerates the possible values for the status of the Event Hub. 'Active','Creating','Deleting','Disabled','ReceiveDisabled','Renaming','Restoring','SendDisabled','Unknown'. Default to 'Active'.\ncaptureDescriptionDestinationName: (Optional) string, Name for capture destination.\ncaptureDescriptionDestinationArchiveNameFormat: (Optional) string,  Blob naming convention for archive, e.g. {Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}. Here all the parameters (Namespace,EventHub .. etc) are mandatory irrespective of order.\ncaptureDescriptionDestinationBlobContainer: (Optional) string, Blob container Name.\ncaptureDescriptionDestinationStorageAccountResourceId: (Optional) string, Resource ID of the storage account to be used to create the blobs.\ncaptureDescriptionEnabled: (Optional) boolean, A value that indicates whether capture description is enabled.\ncaptureDescriptionEncoding: (Optional) string, Enumerates the possible values for the encoding format of capture description.\ncaptureDescriptionIntervalInSeconds: (Optional) int, The time window allows you to set the frequency with which the capture to Azure Blobs will happen.\ncaptureDescriptionSizeLimitInBytes: (Optional) int, The size window defines the amount of data built up in your Event Hub before an capture operation.\ncaptureDescriptionSkipEmptyArchives: (Optional) boolean,  A value that indicates whether to Skip Empty Archives.\nroleAssignments: (Optional) Array, Array of role assignment objects that contain the \\'roleDefinitionIdOrName\\' and \\'principalId\\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \\'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\\'.\n"
+        "description": "Required. The list of the event hub namespaces with its configurations to be created."
       }
     },
     "namespaceAuthorizationRules": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/authorizationRulesType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. Authorization Rules for the Event Hub Namespace."
@@ -70,244 +676,169 @@
     },
     "namespaceRoleAssignments": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/namespaceRoleAssignmentsType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. Role assignments for the namespace."
       }
     },
-    "disasterRecoveryConfigs": {
+    "namespaceDisasterRecoveryConfigs": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/namespaceDisasterRecoveryConfigsType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. The disaster recovery config for the namespace."
       }
     },
-    "diagnosticSettings": {
+    "namespaceDiagnosticSettings": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/namespaceDiagnosticSettingsType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. The Diagnostics Settings config for the namespace."
       }
     },
+    "eventHubs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/eventHubsType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Name for the eventhub with its all configurations to be created."
+      }
+    },
     "eventHubAuthorizationRules": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/authorizationRulesType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. Authorization Rules for the Event Hub ."
       }
     },
-    "consumerGroups": {
+    "eventHubConsumerGroups": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/eventHubConsumerGroupsType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. consumer groups for the Event Hub ."
       }
     },
-    "privateEndpoints": {
+    "namespacePrivateEndpoints": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/privateEndpointType"
+      },
       "defaultValue": [],
       "metadata": {
-        "description": "Define Private Endpoints that should be created for Azure EventHub Namespace."
+        "description": "Private Endpoints that should be created for Azure EventHub Namespaces."
       }
     },
-    "privateEndpointsApprovalEnabled": {
-      "type": "bool",
-      "defaultValue": false,
+    "minimumTlsVersion": {
+      "type": "string",
+      "defaultValue": "1.2",
       "metadata": {
-        "description": "Toggle if Private Endpoints manual approval for Azure EventHub Namespace should be enabled."
+        "description": "MinimumTlsVersion for the Event Hub Namespace."
+      }
+    },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled",
+        "SecuredByPerimeter"
+      ],
+      "metadata": {
+        "description": "Whether enable publicNetworkAccess for the Event Hub Namespace."
       }
     }
   },
-  "variables": {
-    "copy": [
-      {
-        "name": "varEventHubNamespaces",
-        "count": "[length(parameters('eventHubNamespaces'))]",
-        "input": {
-          "eventHubNamespaceName": "[parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')].name]",
-          "sku": "[if(contains(parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')], 'sku'), parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')].sku, 'Standard')]",
-          "capacity": "[if(contains(parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')], 'capacity'), parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')].capacity, 1)]",
-          "zoneRedundant": "[if(contains(parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')], 'zoneRedundant'), parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')].zoneRedundant, false())]",
-          "isAutoInflateEnabled": "[if(contains(parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')], 'isAutoInflateEnabled'), parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')].isAutoInflateEnabled, false())]",
-          "maximumThroughputUnits": "[if(contains(parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')], 'maximumThroughputUnits'), parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')].maximumThroughputUnits, 0)]",
-          "disableLocalAuth": "[if(contains(parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')], 'disableLocalAuth'), parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')].disableLocalAuth, false())]",
-          "kafkaEnabled": "[if(contains(parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')], 'kafkaEnabled'), parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')].kafkaEnabled, true())]"
-        }
-      },
-      {
-        "name": "varNamespaceAuthorizationRules",
-        "count": "[length(parameters('namespaceAuthorizationRules'))]",
-        "input": {
-          "eventHubNamespaceAuthorizationRuleName": "[parameters('namespaceAuthorizationRules')[copyIndex('varNamespaceAuthorizationRules')].name]",
-          "rights": "[if(contains(parameters('namespaceAuthorizationRules')[copyIndex('varNamespaceAuthorizationRules')], 'rights'), parameters('namespaceAuthorizationRules')[copyIndex('varNamespaceAuthorizationRules')].rights, createArray())]",
-          "eventHubNamespaceName": "[parameters('namespaceAuthorizationRules')[copyIndex('varNamespaceAuthorizationRules')].eventHubNamespaceName]"
-        }
-      },
-      {
-        "name": "varDisasterRecoveryConfigs",
-        "count": "[length(parameters('disasterRecoveryConfigs'))]",
-        "input": {
-          "disasterRecoveryConfigname": "[parameters('disasterRecoveryConfigs')[copyIndex('varDisasterRecoveryConfigs')].name]",
-          "partnerNamespaceId": "[if(contains(parameters('disasterRecoveryConfigs')[copyIndex('varDisasterRecoveryConfigs')], 'partnerNamespaceId'), parameters('disasterRecoveryConfigs')[copyIndex('varDisasterRecoveryConfigs')].partnerNamespaceId, '')]",
-          "eventHubNamespaceName": "[parameters('disasterRecoveryConfigs')[copyIndex('varDisasterRecoveryConfigs')].eventHubNamespaceName]"
-        }
-      },
-      {
-        "name": "varEventHubs",
-        "count": "[length(parameters('eventHubs'))]",
-        "input": {
-          "eventHubName": "[parameters('eventHubs')[copyIndex('varEventHubs')].name]",
-          "messageRetentionInDays": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'messageRetentionInDays'), parameters('eventHubs')[copyIndex('varEventHubs')].messageRetentionInDays, 1)]",
-          "partitionCount": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'partitionCount'), parameters('eventHubs')[copyIndex('varEventHubs')].partitionCount, 2)]",
-          "eventHubNamespaceName": "[parameters('eventHubs')[copyIndex('varEventHubs')].eventHubNamespaceName]",
-          "status": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'status'), parameters('eventHubs')[copyIndex('varEventHubs')].status, 'Active')]",
-          "captureDescriptionDestinationArchiveNameFormat": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'captureDescriptionDestinationArchiveNameFormat'), parameters('eventHubs')[copyIndex('varEventHubs')].captureDescriptionDestinationArchiveNameFormat, '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}')]",
-          "captureDescriptionDestinationBlobContainer": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'captureDescriptionDestinationBlobContainer'), parameters('eventHubs')[copyIndex('varEventHubs')].captureDescriptionDestinationBlobContainer, '')]",
-          "captureDescriptionDestinationName": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'captureDescriptionDestinationName'), parameters('eventHubs')[copyIndex('varEventHubs')].captureDescriptionDestinationName, 'EventHubArchive.AzureBlockBlob')]",
-          "captureDescriptionDestinationStorageAccountResourceId": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'captureDescriptionDestinationStorageAccountResourceId'), parameters('eventHubs')[copyIndex('varEventHubs')].captureDescriptionDestinationStorageAccountResourceId, '')]",
-          "captureDescriptionEnabled": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'captureDescriptionEnabled'), parameters('eventHubs')[copyIndex('varEventHubs')].captureDescriptionEnabled, false())]",
-          "captureDescriptionEncoding": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'captureDescriptionEncoding'), parameters('eventHubs')[copyIndex('varEventHubs')].captureDescriptionEncoding, 'Avro')]",
-          "captureDescriptionIntervalInSeconds": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'captureDescriptionIntervalInSeconds'), parameters('eventHubs')[copyIndex('varEventHubs')].captureDescriptionIntervalInSeconds, 300)]",
-          "captureDescriptionSizeLimitInBytes": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'captureDescriptionSizeLimitInBytes'), parameters('eventHubs')[copyIndex('varEventHubs')].captureDescriptionSizeLimitInBytes, 314572800)]",
-          "captureDescriptionSkipEmptyArchives": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'captureDescriptionSkipEmptyArchives'), parameters('eventHubs')[copyIndex('varEventHubs')].captureDescriptionSkipEmptyArchives, false())]",
-          "roleAssignments": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'roleAssignments'), parameters('eventHubs')[copyIndex('varEventHubs')].roleAssignments, createArray())]"
-        }
-      },
-      {
-        "name": "varEventHubAuthorizationRules",
-        "count": "[length(parameters('eventHubAuthorizationRules'))]",
-        "input": {
-          "eventHubAuthorizationRuleName": "[parameters('eventHubAuthorizationRules')[copyIndex('varEventHubAuthorizationRules')].name]",
-          "rights": "[if(contains(parameters('eventHubAuthorizationRules')[copyIndex('varEventHubAuthorizationRules')], 'rights'), parameters('eventHubAuthorizationRules')[copyIndex('varEventHubAuthorizationRules')].rights, createArray())]",
-          "eventHubNamespaceName": "[parameters('eventHubAuthorizationRules')[copyIndex('varEventHubAuthorizationRules')].eventHubNamespaceName]",
-          "eventHubName": "[parameters('eventHubAuthorizationRules')[copyIndex('varEventHubAuthorizationRules')].eventHubName]"
-        }
-      },
-      {
-        "name": "varConsumerGroups",
-        "count": "[length(parameters('consumerGroups'))]",
-        "input": {
-          "consumerGroupName": "[parameters('consumerGroups')[copyIndex('varConsumerGroups')].name]",
-          "eventHubNamespaceName": "[parameters('consumerGroups')[copyIndex('varConsumerGroups')].eventHubNamespaceName]",
-          "eventHubName": "[parameters('consumerGroups')[copyIndex('varConsumerGroups')].eventHubName]",
-          "userMetadata": "[if(contains(parameters('consumerGroups')[copyIndex('varConsumerGroups')], 'userMetadata'), parameters('consumerGroups')[copyIndex('varConsumerGroups')].userMetadata, '')]"
-        }
-      },
-      {
-        "name": "varDiagnosticSettings",
-        "count": "[length(parameters('diagnosticSettings'))]",
-        "input": {
-          "diagnosticSettingName": "[parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')].name]",
-          "diagnosticEnableNamespaceName": "[parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')].diagnosticEnablenamespaceName]",
-          "diagnosticStorageAccountId": "[if(contains(parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')], 'diagnosticStorageAccountId'), parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')].diagnosticStorageAccountId, '')]",
-          "diagnosticWorkspaceId": "[if(contains(parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')], 'diagnosticWorkspaceId'), parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')].diagnosticWorkspaceId, '')]",
-          "diagnosticEventHubAuthorizationRuleId": "[if(contains(parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')], 'diagnosticEventHubAuthorizationRuleId'), parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')].diagnosticEventHubAuthorizationRuleId, '')]",
-          "diagnosticEventHubName": "[if(contains(parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')], 'diagnosticEventHubName'), parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')].diagnosticEventHubName, '')]",
-          "diagnosticsMetrics": "[if(contains(parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')], 'diagnosticsMetrics'), parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')].diagnosticsMetrics, createArray())]",
-          "diagnosticsLogs": "[if(contains(parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')], 'diagnosticsLogs'), parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')].diagnosticsLogs, createArray())]"
-        }
-      },
-      {
-        "name": "varNamespaceRoleAssignments",
-        "count": "[length(parameters('namespaceRoleAssignments'))]",
-        "input": {
-          "eventHubNamespaceRoleAssignmentsName": "[parameters('namespaceRoleAssignments')[copyIndex('varNamespaceRoleAssignments')].name]",
-          "description": "[if(contains(parameters('namespaceRoleAssignments')[copyIndex('varNamespaceRoleAssignments')], 'description'), parameters('namespaceRoleAssignments')[copyIndex('varNamespaceRoleAssignments')].description, '')]",
-          "principalIds": "[parameters('namespaceRoleAssignments')[copyIndex('varNamespaceRoleAssignments')].principalIds]",
-          "principalType": "[if(contains(parameters('namespaceRoleAssignments')[copyIndex('varNamespaceRoleAssignments')], 'principalType'), parameters('namespaceRoleAssignments')[copyIndex('varNamespaceRoleAssignments')].principalType, '')]",
-          "roleDefinitionIdOrName": "[parameters('namespaceRoleAssignments')[copyIndex('varNamespaceRoleAssignments')].roleDefinitionIdOrName]",
-          "eventHubNamespaceName": "[parameters('namespaceRoleAssignments')[copyIndex('varNamespaceRoleAssignments')].eventHubNamespaceName]"
-        }
-      },
-      {
-        "name": "varPrivateEndpoints",
-        "count": "[length(parameters('privateEndpoints'))]",
-        "input": {
-          "name": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].name]",
-          "eventHubNamespaceName": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].eventHubNamespaceName]",
-          "groupIds": [
-            "namespace"
-          ],
-          "subnetId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].subnetId]",
-          "customNetworkInterfaceName": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'customNetworkInterfaceName'), parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].customNetworkInterfaceName, '')]",
-          "privateDnsZones": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'privateDnsZoneId'), createArray(createObject('name', 'default', 'zoneId', parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].privateDnsZoneId)), createArray())]"
-        }
-      }
-    ]
-  },
-  "resources": [
-    {
+  "resources": {
+    "cluster": {
       "condition": "[not(equals(parameters('clusterName'), 'null'))]",
       "type": "Microsoft.EventHub/clusters",
-      "apiVersion": "2021-11-01",
+      "apiVersion": "2022-10-01-preview",
       "name": "[parameters('clusterName')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "sku": {
         "name": "Dedicated",
         "capacity": "[parameters('clusterCapacity')]"
-      },
-      "properties": {}
+      }
     },
-    {
+    "evhns": {
       "copy": {
-        "name": "eventHubNamespace",
-        "count": "[length(variables('varEventHubNamespaces'))]"
+        "name": "evhns",
+        "count": "[length(parameters('namespaces'))]"
       },
       "type": "Microsoft.EventHub/namespaces",
-      "apiVersion": "2021-11-01",
-      "name": "[variables('varEventHubNamespaces')[copyIndex()].eventHubNamespaceName]",
+      "apiVersion": "2022-10-01-preview",
+      "name": "[parameters('namespaces')[copyIndex()].name]",
       "location": "[parameters('location')]",
       "sku": {
-        "name": "[variables('varEventHubNamespaces')[copyIndex()].sku]",
-        "tier": "[variables('varEventHubNamespaces')[copyIndex()].sku]",
-        "capacity": "[variables('varEventHubNamespaces')[copyIndex()].capacity]"
+        "name": "[coalesce(tryGet(parameters('namespaces')[copyIndex()], 'sku'), 'Standard')]",
+        "capacity": "[coalesce(tryGet(parameters('namespaces')[copyIndex()], 'capacity'), 1)]"
       },
       "properties": {
-        "disableLocalAuth": "[variables('varEventHubNamespaces')[copyIndex()].disableLocalAuth]",
-        "kafkaEnabled": "[variables('varEventHubNamespaces')[copyIndex()].kafkaEnabled]",
-        "isAutoInflateEnabled": "[variables('varEventHubNamespaces')[copyIndex()].isAutoInflateEnabled]",
-        "maximumThroughputUnits": "[if(variables('varEventHubNamespaces')[copyIndex()].isAutoInflateEnabled, variables('varEventHubNamespaces')[copyIndex()].maximumThroughputUnits, 0)]",
-        "zoneRedundant": "[variables('varEventHubNamespaces')[copyIndex()].zoneRedundant]",
-        "clusterArmId": "[if(not(equals(parameters('clusterName'), 'null')), resourceId('Microsoft.EventHub/clusters', parameters('clusterName')), null())]"
+        "disableLocalAuth": "[coalesce(tryGet(parameters('namespaces')[copyIndex()], 'disableLocalAuth'), false())]",
+        "kafkaEnabled": "[coalesce(tryGet(parameters('namespaces')[copyIndex()], 'kafkaEnabled'), true())]",
+        "isAutoInflateEnabled": "[coalesce(tryGet(parameters('namespaces')[copyIndex()], 'isAutoInflateEnabled'), false())]",
+        "maximumThroughputUnits": "[coalesce(tryGet(parameters('namespaces')[copyIndex()], 'maximumThroughputUnits'), 0)]",
+        "zoneRedundant": "[coalesce(tryGet(parameters('namespaces')[copyIndex()], 'zoneRedundant'), false())]",
+        "clusterArmId": "[if(not(equals(parameters('clusterName'), 'null')), resourceId('Microsoft.EventHub/clusters', parameters('clusterName')), null())]",
+        "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
+        "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
       },
       "tags": "[parameters('tags')]",
       "dependsOn": [
-        "[resourceId('Microsoft.EventHub/clusters', parameters('clusterName'))]"
+        "cluster"
       ]
     },
-    {
+    "evhns_authorizationRules": {
       "copy": {
-        "name": "eventHubNamespace_authorizationRules",
-        "count": "[length(variables('varNamespaceAuthorizationRules'))]"
+        "name": "evhns_authorizationRules",
+        "count": "[length(parameters('namespaceAuthorizationRules'))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-EvhbNamespace-AuthRule-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-evhns-authrule-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
         },
         "mode": "Incremental",
         "parameters": {
-          "namespaceName": {
-            "value": "[variables('varNamespaceAuthorizationRules')[copyIndex()].eventHubNamespaceName]"
-          },
           "name": {
-            "value": "[variables('varNamespaceAuthorizationRules')[copyIndex()].eventHubNamespaceAuthorizationRuleName]"
+            "value": "[parameters('namespaceAuthorizationRules')[copyIndex()].name]"
           },
           "rights": {
-            "value": "[variables('varNamespaceAuthorizationRules')[copyIndex()].rights]"
+            "value": "[parameters('namespaceAuthorizationRules')[copyIndex()].rights]"
+          },
+          "namespaceName": {
+            "value": "[parameters('namespaceAuthorizationRules')[copyIndex()].namespaceName]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "3835985543528391470"
+              "templateHash": "5482560324502627186"
             }
           },
           "parameters": {
@@ -318,138 +849,82 @@
               "type": "string"
             },
             "rights": {
-              "type": "array",
-              "defaultValue": []
+              "type": "array"
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "namespace": {
+              "existing": true,
+              "type": "Microsoft.EventHub/namespaces",
+              "apiVersion": "2022-10-01-preview",
+              "name": "[parameters('namespaceName')]"
+            },
+            "namespaceAuthorizationRule": {
               "type": "Microsoft.EventHub/namespaces/authorizationRules",
-              "apiVersion": "2021-11-01",
+              "apiVersion": "2022-10-01-preview",
               "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
               "properties": {
                 "rights": "[parameters('rights')]"
               }
             }
-          ]
-        }
-      },
-      "dependsOn": [
-        "eventHubNamespace"
-      ]
-    },
-    {
-      "copy": {
-        "name": "eventHubNamespace_disasterRecoveryConfigs",
-        "count": "[length(variables('varDisasterRecoveryConfigs'))]"
-      },
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-EvhbNamespace-DisRecConfig-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "namespaceName": {
-            "value": "[variables('varDisasterRecoveryConfigs')[copyIndex()].eventHubNamespaceName]"
-          },
-          "name": {
-            "value": "[variables('varDisasterRecoveryConfigs')[copyIndex()].disasterRecoveryConfigname]"
-          },
-          "partnerNamespaceId": {
-            "value": "[variables('varDisasterRecoveryConfigs')[copyIndex()].partnerNamespaceId]"
           }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "9065679149507605210"
-            }
-          },
-          "parameters": {
-            "namespaceName": {
-              "type": "string"
-            },
-            "name": {
-              "type": "string"
-            },
-            "partnerNamespaceId": {
-              "type": "string",
-              "defaultValue": ""
-            }
-          },
-          "resources": [
-            {
-              "type": "Microsoft.EventHub/namespaces/disasterRecoveryConfigs",
-              "apiVersion": "2021-11-01",
-              "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
-              "properties": {
-                "partnerNamespace": "[parameters('partnerNamespaceId')]"
-              }
-            }
-          ]
         }
       },
       "dependsOn": [
-        "eventHubNamespace"
+        "evhns"
       ]
     },
-    {
+    "evhns_roleAssignments": {
       "copy": {
-        "name": "eventHubNamespace_roleAssignments",
-        "count": "[length(variables('varNamespaceRoleAssignments'))]"
+        "name": "evhns_roleAssignments",
+        "count": "[length(parameters('namespaceRoleAssignments'))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-Namespace-Rbac-{1}', deployment().name, copyIndex())]",
+      "name": "[format('{0}-evhns-role-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
         },
         "mode": "Incremental",
         "parameters": {
-          "roleAssignmentsName": {
-            "value": "[variables('varNamespaceRoleAssignments')[copyIndex()].eventHubNamespaceRoleAssignmentsName]"
+          "roleName": {
+            "value": "[coalesce(tryGet(parameters('namespaceRoleAssignments')[copyIndex()], 'name'), '')]"
           },
           "description": {
-            "value": "[variables('varNamespaceRoleAssignments')[copyIndex()].description]"
+            "value": "[coalesce(tryGet(parameters('namespaceRoleAssignments')[copyIndex()], 'description'), '')]"
           },
           "principalIds": {
-            "value": "[variables('varNamespaceRoleAssignments')[copyIndex()].principalIds]"
+            "value": "[parameters('namespaceRoleAssignments')[copyIndex()].principalIds]"
           },
           "principalType": {
-            "value": "[variables('varNamespaceRoleAssignments')[copyIndex()].principalType]"
+            "value": "[coalesce(tryGet(parameters('namespaceRoleAssignments')[copyIndex()], 'principalType'), '')]"
           },
           "roleDefinitionIdOrName": {
-            "value": "[variables('varNamespaceRoleAssignments')[copyIndex()].roleDefinitionIdOrName]"
+            "value": "[parameters('namespaceRoleAssignments')[copyIndex()].roleDefinitionIdOrName]"
           },
-          "eventHubNamespaceName": {
-            "value": "[variables('varNamespaceRoleAssignments')[copyIndex()].eventHubNamespaceName]"
+          "namespaceName": {
+            "value": "[parameters('namespaceRoleAssignments')[copyIndex()].namespaceName]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "4515293595337355667"
+              "templateHash": "2395614214282762797"
             }
           },
           "parameters": {
-            "eventHubNamespaceName": {
+            "roleName": {
               "type": "string"
             },
             "description": {
-              "type": "string",
-              "defaultValue": ""
+              "type": "string"
             },
             "principalIds": {
               "type": "array"
@@ -458,10 +933,9 @@
               "type": "string"
             },
             "principalType": {
-              "type": "string",
-              "defaultValue": ""
+              "type": "string"
             },
-            "roleAssignmentsName": {
+            "namespaceName": {
               "type": "string"
             }
           },
@@ -487,38 +961,115 @@
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "namespace": {
+              "existing": true,
+              "type": "Microsoft.EventHub/namespaces",
+              "apiVersion": "2022-10-01-preview",
+              "name": "[parameters('namespaceName')]"
+            },
+            "roleAssignment": {
               "copy": {
                 "name": "roleAssignment",
                 "count": "[length(parameters('principalIds'))]"
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.EventHub/namespaces/{0}', parameters('eventHubNamespaceName'))]",
-              "name": "[guid(parameters('roleAssignmentsName'), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+              "scope": "[format('Microsoft.EventHub/namespaces/{0}', parameters('namespaceName'))]",
+              "name": "[guid(parameters('roleName'), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
               "properties": {
                 "description": "[parameters('description')]",
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionIdOrName')))]",
                 "principalId": "[parameters('principalIds')[copyIndex()]]",
                 "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]"
               }
             }
-          ]
+          }
         }
       },
       "dependsOn": [
-        "eventHubNamespace"
+        "evhns"
       ]
     },
-    {
+    "evhns_disasterRecoveryConfigs": {
       "copy": {
-        "name": "eventHubNamespace_eventHubs",
-        "count": "[length(variables('varEventHubs'))]"
+        "name": "evhns_disasterRecoveryConfigs",
+        "count": "[length(parameters('namespaceDisasterRecoveryConfigs'))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-EvhbNamespace-EventHub-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-evhns-drconfig-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('namespaceDisasterRecoveryConfigs')[copyIndex()].name]"
+          },
+          "partnerNamespaceId": {
+            "value": "[parameters('namespaceDisasterRecoveryConfigs')[copyIndex()].partnerNamespaceId]"
+          },
+          "namespaceName": {
+            "value": "[parameters('namespaceDisasterRecoveryConfigs')[copyIndex()].namespaceName]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
+            "_generator": {
+              "name": "bicep",
+              "version": "0.18.4.5664",
+              "templateHash": "14167417776515696319"
+            }
+          },
+          "parameters": {
+            "namespaceName": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "partnerNamespaceId": {
+              "type": "string",
+              "defaultValue": ""
+            }
+          },
+          "resources": {
+            "namespace": {
+              "existing": true,
+              "type": "Microsoft.EventHub/namespaces",
+              "apiVersion": "2022-10-01-preview",
+              "name": "[parameters('namespaceName')]"
+            },
+            "disasterRecoveryConfig": {
+              "type": "Microsoft.EventHub/namespaces/disasterRecoveryConfigs",
+              "apiVersion": "2022-10-01-preview",
+              "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
+              "properties": {
+                "partnerNamespace": "[parameters('partnerNamespaceId')]",
+                "alternateName": "alternateName"
+              }
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "evhns"
+      ]
+    },
+    "evh": {
+      "copy": {
+        "name": "evh",
+        "count": "[length(parameters('eventHubs'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-evh-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -526,59 +1077,70 @@
         "mode": "Incremental",
         "parameters": {
           "namespaceName": {
-            "value": "[variables('varEventHubs')[copyIndex()].eventHubNamespaceName]"
+            "value": "[parameters('eventHubs')[copyIndex()].namespaceName]"
           },
           "name": {
-            "value": "[variables('varEventHubs')[copyIndex()].eventHubName]"
+            "value": "[parameters('eventHubs')[copyIndex()].name]"
           },
           "messageRetentionInDays": {
-            "value": "[variables('varEventHubs')[copyIndex()].messageRetentionInDays]"
+            "value": "[coalesce(tryGet(parameters('eventHubs')[copyIndex()], 'messageRetentionInDays'), 1)]"
           },
           "partitionCount": {
-            "value": "[variables('varEventHubs')[copyIndex()].partitionCount]"
+            "value": "[coalesce(tryGet(parameters('eventHubs')[copyIndex()], 'partitionCount'), 2)]"
           },
           "status": {
-            "value": "[variables('varEventHubs')[copyIndex()].status]"
+            "value": "[coalesce(tryGet(parameters('eventHubs')[copyIndex()], 'status'), 'Active')]"
           },
           "captureDescriptionEnabled": {
-            "value": "[variables('varEventHubs')[copyIndex()].captureDescriptionEnabled]"
-          },
-          "captureDescriptionDestinationArchiveNameFormat": {
-            "value": "[variables('varEventHubs')[copyIndex()].captureDescriptionDestinationArchiveNameFormat]"
-          },
-          "captureDescriptionDestinationBlobContainer": {
-            "value": "[variables('varEventHubs')[copyIndex()].captureDescriptionDestinationBlobContainer]"
-          },
-          "captureDescriptionDestinationName": {
-            "value": "[variables('varEventHubs')[copyIndex()].captureDescriptionDestinationName]"
-          },
-          "captureDescriptionDestinationStorageAccountResourceId": {
-            "value": "[variables('varEventHubs')[copyIndex()].captureDescriptionDestinationStorageAccountResourceId]"
+            "value": "[coalesce(tryGet(parameters('eventHubs')[copyIndex()], 'captureDescriptionEnabled'), false())]"
           },
           "captureDescriptionEncoding": {
-            "value": "[variables('varEventHubs')[copyIndex()].captureDescriptionEncoding]"
+            "value": "[coalesce(tryGet(parameters('eventHubs')[copyIndex()], 'captureDescriptionEncoding'), 'Avro')]"
           },
           "captureDescriptionIntervalInSeconds": {
-            "value": "[variables('varEventHubs')[copyIndex()].captureDescriptionIntervalInSeconds]"
+            "value": "[coalesce(tryGet(parameters('eventHubs')[copyIndex()], 'captureDescriptionIntervalInSeconds'), 300)]"
           },
           "captureDescriptionSizeLimitInBytes": {
-            "value": "[variables('varEventHubs')[copyIndex()].captureDescriptionSizeLimitInBytes]"
+            "value": "[coalesce(tryGet(parameters('eventHubs')[copyIndex()], 'captureDescriptionSizeLimitInBytes'), 314572800)]"
           },
           "captureDescriptionSkipEmptyArchives": {
-            "value": "[variables('varEventHubs')[copyIndex()].captureDescriptionSkipEmptyArchives]"
+            "value": "[coalesce(tryGet(parameters('eventHubs')[copyIndex()], 'captureDescriptionSkipEmptyArchives'), false())]"
+          },
+          "captureDescriptionDestinationName": {
+            "value": "[coalesce(tryGet(parameters('eventHubs')[copyIndex()], 'captureDescriptionDestinationName'), 'EventHubArchive.AzureBlockBlob')]"
+          },
+          "captureDescriptionDestinationArchiveNameFormat": {
+            "value": "[coalesce(tryGet(parameters('eventHubs')[copyIndex()], 'captureDescriptionDestinationArchiveNameFormat'), '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}')]"
+          },
+          "captureDescriptionDestinationBlobContainer": {
+            "value": "[coalesce(tryGet(parameters('eventHubs')[copyIndex()], 'captureDescriptionDestinationBlobContainer'), '')]"
+          },
+          "captureDescriptionDestinationStorageAccountResourceId": {
+            "value": "[coalesce(tryGet(parameters('eventHubs')[copyIndex()], 'captureDescriptionDestinationStorageAccountResourceId'), '')]"
+          },
+          "captureDescriptionDestinationdataLakeAccountName": {
+            "value": "[coalesce(tryGet(parameters('eventHubs')[copyIndex()], 'captureDescriptionDestinationdataLakeAccountName'), '')]"
+          },
+          "captureDescriptionDestinationdataLakeFolderPath": {
+            "value": "[coalesce(tryGet(parameters('eventHubs')[copyIndex()], 'captureDescriptionDestinationdataLakeFolderPath'), '')]"
+          },
+          "captureDescriptionDestinationdataLakeSubscriptionId": {
+            "value": "[coalesce(tryGet(parameters('eventHubs')[copyIndex()], 'captureDescriptionDestinationdataLakeSubscriptionId'), '')]"
           },
           "roleAssignments": {
-            "value": "[variables('varEventHubs')[copyIndex()].roleAssignments]"
+            "value": "[coalesce(tryGet(parameters('eventHubs')[copyIndex()], 'roleAssignments'), createArray())]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "17112093668110946608"
+              "templateHash": "7783251147046384372"
             }
           },
           "parameters": {
@@ -589,56 +1151,52 @@
               "type": "string"
             },
             "messageRetentionInDays": {
-              "type": "int",
-              "defaultValue": 1
+              "type": "int"
             },
             "partitionCount": {
-              "type": "int",
-              "defaultValue": 2
-            },
-            "status": {
-              "type": "string",
-              "defaultValue": "Active"
+              "type": "int"
             },
             "captureDescriptionEnabled": {
-              "type": "bool",
-              "defaultValue": false
+              "type": "bool"
             },
             "captureDescriptionDestinationName": {
-              "type": "string",
-              "defaultValue": "EventHubArchive.AzureBlockBlob"
+              "type": "string"
             },
             "captureDescriptionDestinationArchiveNameFormat": {
-              "type": "string",
-              "defaultValue": "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}"
+              "type": "string"
             },
             "captureDescriptionDestinationBlobContainer": {
-              "type": "string",
-              "defaultValue": ""
+              "type": "string"
             },
             "captureDescriptionDestinationStorageAccountResourceId": {
-              "type": "string",
-              "defaultValue": ""
+              "type": "string"
+            },
+            "captureDescriptionDestinationdataLakeAccountName": {
+              "type": "string"
+            },
+            "captureDescriptionDestinationdataLakeFolderPath": {
+              "type": "string"
+            },
+            "captureDescriptionDestinationdataLakeSubscriptionId": {
+              "type": "string"
             },
             "captureDescriptionEncoding": {
-              "type": "string",
-              "defaultValue": "Avro"
+              "type": "string"
             },
             "captureDescriptionIntervalInSeconds": {
-              "type": "int",
-              "defaultValue": 300
+              "type": "int"
             },
             "captureDescriptionSizeLimitInBytes": {
-              "type": "int",
-              "defaultValue": 314572800
+              "type": "int"
             },
             "captureDescriptionSkipEmptyArchives": {
-              "type": "bool",
-              "defaultValue": false
+              "type": "bool"
             },
             "roleAssignments": {
-              "type": "array",
-              "defaultValue": []
+              "type": "array"
+            },
+            "status": {
+              "type": "string"
             }
           },
           "variables": {
@@ -650,55 +1208,68 @@
             "eventHubPropertiesWithCapture": {
               "messageRetentionInDays": "[parameters('messageRetentionInDays')]",
               "partitionCount": "[parameters('partitionCount')]",
-              "status": "[parameters('status')]",
               "captureDescription": {
                 "destination": {
                   "name": "[parameters('captureDescriptionDestinationName')]",
                   "properties": {
                     "archiveNameFormat": "[parameters('captureDescriptionDestinationArchiveNameFormat')]",
                     "blobContainer": "[parameters('captureDescriptionDestinationBlobContainer')]",
-                    "storageAccountResourceId": "[parameters('captureDescriptionDestinationStorageAccountResourceId')]"
+                    "storageAccountResourceId": "[parameters('captureDescriptionDestinationStorageAccountResourceId')]",
+                    "dataLakeAccountName": "[parameters('captureDescriptionDestinationdataLakeAccountName')]",
+                    "dataLakeFolderPath": "[parameters('captureDescriptionDestinationdataLakeFolderPath')]",
+                    "dataLakeSubscriptionId": "[parameters('captureDescriptionDestinationdataLakeSubscriptionId')]"
                   }
                 },
                 "enabled": "[parameters('captureDescriptionEnabled')]",
                 "encoding": "[parameters('captureDescriptionEncoding')]",
                 "intervalInSeconds": "[parameters('captureDescriptionIntervalInSeconds')]",
                 "sizeLimitInBytes": "[parameters('captureDescriptionSizeLimitInBytes')]",
-                "skipEmptyArchives": "[parameters('captureDescriptionSkipEmptyArchives')]"
+                "skipEmptyArchives": "[parameters('captureDescriptionSkipEmptyArchives')]",
+                "status": "[parameters('status')]"
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "namespace": {
+              "existing": true,
+              "type": "Microsoft.EventHub/namespaces",
+              "apiVersion": "2022-10-01-preview",
+              "name": "[parameters('namespaceName')]"
+            },
+            "eventHub": {
               "type": "Microsoft.EventHub/namespaces/eventhubs",
-              "apiVersion": "2021-11-01",
+              "apiVersion": "2022-10-01-preview",
               "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
               "properties": "[if(parameters('captureDescriptionEnabled'), variables('eventHubPropertiesWithCapture'), variables('eventHubPropertiesSimple'))]"
             },
-            {
+            "eventHub_roleAssignments": {
               "copy": {
                 "name": "eventHub_roleAssignments",
                 "count": "[length(parameters('roleAssignments'))]"
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-Rbac-{1}', deployment().name, copyIndex())]",
+              "name": "[format('{0}-evh-role-{1}', deployment().name, copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
+                  "description": {
+                    "value": "[coalesce(tryGet(parameters('roleAssignments')[copyIndex()], 'description'), '')]"
+                  },
                   "principalIds": {
                     "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
                   },
-                  "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
+                  "principalType": {
+                    "value": "[coalesce(tryGet(parameters('roleAssignments')[copyIndex()], 'principalType'), '')]"
+                  },
                   "roleDefinitionIdOrName": {
                     "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
                   },
-                  "resourceId": {
-                    "value": "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaceName'), parameters('name'))]"
+                  "roleName": {
+                    "value": "[coalesce(tryGet(parameters('roleAssignments')[copyIndex()], 'name'), '')]"
                   },
                   "namespaceName": {
                     "value": "[parameters('namespaceName')]"
@@ -709,18 +1280,22 @@
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "1.10-experimental",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
+                    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
                     "_generator": {
                       "name": "bicep",
                       "version": "0.18.4.5664",
-                      "templateHash": "3540806734174880152"
+                      "templateHash": "8593592947040687129"
                     }
                   },
                   "parameters": {
+                    "roleName": {
+                      "type": "string"
+                    },
                     "description": {
-                      "type": "string",
-                      "defaultValue": ""
+                      "type": "string"
                     },
                     "principalIds": {
                       "type": "array"
@@ -728,12 +1303,8 @@
                     "roleDefinitionIdOrName": {
                       "type": "string"
                     },
-                    "resourceId": {
-                      "type": "string"
-                    },
                     "principalType": {
-                      "type": "string",
-                      "defaultValue": ""
+                      "type": "string"
                     },
                     "namespaceName": {
                       "type": "string"
@@ -764,8 +1335,20 @@
                       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
                     }
                   },
-                  "resources": [
-                    {
+                  "resources": {
+                    "namespace": {
+                      "existing": true,
+                      "type": "Microsoft.EventHub/namespaces",
+                      "apiVersion": "2022-10-01-preview",
+                      "name": "[parameters('namespaceName')]"
+                    },
+                    "eventHub": {
+                      "existing": true,
+                      "type": "Microsoft.EventHub/namespaces/eventhubs",
+                      "apiVersion": "2022-10-01-preview",
+                      "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('eventHubName'))]"
+                    },
+                    "roleAssignment": {
                       "copy": {
                         "name": "roleAssignment",
                         "count": "[length(parameters('principalIds'))]"
@@ -773,36 +1356,33 @@
                       "type": "Microsoft.Authorization/roleAssignments",
                       "apiVersion": "2022-04-01",
                       "scope": "[format('Microsoft.EventHub/namespaces/{0}/eventhubs/{1}', parameters('namespaceName'), parameters('eventHubName'))]",
-                      "name": "[guid(split(parameters('resourceId'), '/')[0], split(parameters('resourceId'), '/')[1], parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+                      "name": "[guid(parameters('roleName'), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
                       "properties": {
                         "description": "[parameters('description')]",
-                        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
+                        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')]), parameters('roleDefinitionIdOrName'))]",
                         "principalId": "[parameters('principalIds')[copyIndex()]]",
                         "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]"
                       }
                     }
-                  ]
+                  }
                 }
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('namespaceName'), parameters('name'))]"
-              ]
+              }
             }
-          ]
+          }
         }
       },
       "dependsOn": [
-        "eventHubNamespace"
+        "evhns"
       ]
     },
-    {
+    "evh_authorizationRules": {
       "copy": {
-        "name": "eventHub_authorizationRules",
-        "count": "[length(variables('varEventHubAuthorizationRules'))]"
+        "name": "evh_authorizationRules",
+        "count": "[length(parameters('eventHubAuthorizationRules'))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-Evhub-AuthRule-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-evh-authrule-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -810,26 +1390,28 @@
         "mode": "Incremental",
         "parameters": {
           "namespaceName": {
-            "value": "[variables('varEventHubAuthorizationRules')[copyIndex()].eventHubNamespaceName]"
+            "value": "[parameters('eventHubAuthorizationRules')[copyIndex()].namespaceName]"
           },
           "eventHubName": {
-            "value": "[variables('varEventHubAuthorizationRules')[copyIndex()].eventHubName]"
+            "value": "[parameters('eventHubAuthorizationRules')[copyIndex()].eventHubName]"
           },
           "name": {
-            "value": "[variables('varEventHubAuthorizationRules')[copyIndex()].eventHubAuthorizationRuleName]"
+            "value": "[parameters('eventHubAuthorizationRules')[copyIndex()].name]"
           },
           "rights": {
-            "value": "[variables('varEventHubAuthorizationRules')[copyIndex()].rights]"
+            "value": "[parameters('eventHubAuthorizationRules')[copyIndex()].rights]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "16309355701310650654"
+              "templateHash": "17416861128988448455"
             }
           },
           "parameters": {
@@ -843,34 +1425,45 @@
               "type": "string"
             },
             "rights": {
-              "type": "array",
-              "defaultValue": []
+              "type": "array"
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "namespace": {
+              "existing": true,
+              "type": "Microsoft.EventHub/namespaces",
+              "apiVersion": "2022-10-01-preview",
+              "name": "[parameters('namespaceName')]"
+            },
+            "eventhub": {
+              "existing": true,
+              "type": "Microsoft.EventHub/namespaces/eventhubs",
+              "apiVersion": "2022-10-01-preview",
+              "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('eventHubName'))]"
+            },
+            "eventHubAuthorizationRule": {
               "type": "Microsoft.EventHub/namespaces/eventhubs/authorizationRules",
-              "apiVersion": "2021-11-01",
+              "apiVersion": "2022-10-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('eventHubName'), parameters('name'))]",
               "properties": {
                 "rights": "[parameters('rights')]"
               }
             }
-          ]
+          }
         }
       },
       "dependsOn": [
-        "eventHubNamespace_eventHubs"
+        "evh"
       ]
     },
-    {
+    "evh_consumerGroups": {
       "copy": {
-        "name": "eventHub_consumerGroup",
-        "count": "[length(variables('varConsumerGroups'))]"
+        "name": "evh_consumerGroups",
+        "count": "[length(parameters('eventHubConsumerGroups'))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-ConsumerGroup-{1}', deployment().name, copyIndex())]",
+      "name": "[format('{0}-evh-cg-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -878,26 +1471,28 @@
         "mode": "Incremental",
         "parameters": {
           "namespaceName": {
-            "value": "[variables('varConsumerGroups')[copyIndex()].eventHubNamespaceName]"
+            "value": "[parameters('eventHubConsumerGroups')[copyIndex()].namespaceName]"
           },
           "eventHubName": {
-            "value": "[variables('varConsumerGroups')[copyIndex()].eventHubName]"
+            "value": "[parameters('eventHubConsumerGroups')[copyIndex()].eventHubName]"
           },
           "name": {
-            "value": "[variables('varConsumerGroups')[copyIndex()].consumerGroupName]"
+            "value": "[parameters('eventHubConsumerGroups')[copyIndex()].name]"
           },
           "userMetadata": {
-            "value": "[variables('varConsumerGroups')[copyIndex()].userMetadata]"
+            "value": "[coalesce(tryGet(parameters('eventHubConsumerGroups')[copyIndex()], 'userMetadata'), '')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "461863167076246616"
+              "templateHash": "13388201397295747489"
             }
           },
           "parameters": {
@@ -911,34 +1506,45 @@
               "type": "string"
             },
             "userMetadata": {
-              "type": "string",
-              "defaultValue": ""
+              "type": "string"
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "namespace::eventhub": {
+              "existing": true,
+              "type": "Microsoft.EventHub/namespaces/eventhubs",
+              "apiVersion": "2022-10-01-preview",
+              "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('eventHubName'))]"
+            },
+            "namespace": {
+              "existing": true,
+              "type": "Microsoft.EventHub/namespaces",
+              "apiVersion": "2022-10-01-preview",
+              "name": "[parameters('namespaceName')]"
+            },
+            "consumerGroup": {
               "type": "Microsoft.EventHub/namespaces/eventhubs/consumergroups",
-              "apiVersion": "2021-11-01",
+              "apiVersion": "2022-10-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('eventHubName'), parameters('name'))]",
               "properties": {
                 "userMetadata": "[if(not(empty(parameters('userMetadata'))), parameters('userMetadata'), null())]"
               }
             }
-          ]
+          }
         }
       },
       "dependsOn": [
-        "eventHubNamespace_eventHubs"
+        "evh"
       ]
     },
-    {
+    "evhns_diagnosticSettings": {
       "copy": {
-        "name": "eventHubNamespace_diagnosticSettings",
-        "count": "[length(variables('varDiagnosticSettings'))]"
+        "name": "evhns_diagnosticSettings",
+        "count": "[length(parameters('namespaceDiagnosticSettings'))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-diagnosticSettings-{1}', deployment().name, copyIndex())]",
+      "name": "[format('{0}-evhns-diagnosticSettings-{1}', deployment().name, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -946,38 +1552,40 @@
         "mode": "Incremental",
         "parameters": {
           "namespaceName": {
-            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticEnableNamespaceName]"
+            "value": "[parameters('namespaceDiagnosticSettings')[copyIndex()].namespaceName]"
           },
           "name": {
-            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticSettingName]"
+            "value": "[parameters('namespaceDiagnosticSettings')[copyIndex()].name]"
           },
-          "diagnosticStorageAccountId": {
-            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticStorageAccountId]"
+          "storageAccountId": {
+            "value": "[coalesce(tryGet(parameters('namespaceDiagnosticSettings')[copyIndex()], 'storageAccountId'), '')]"
           },
-          "diagnosticWorkspaceId": {
-            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticWorkspaceId]"
+          "workspaceId": {
+            "value": "[coalesce(tryGet(parameters('namespaceDiagnosticSettings')[copyIndex()], 'workspaceId'), '')]"
           },
-          "diagnosticEventHubAuthorizationRuleId": {
-            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticEventHubAuthorizationRuleId]"
+          "eventHubAuthorizationRuleId": {
+            "value": "[coalesce(tryGet(parameters('namespaceDiagnosticSettings')[copyIndex()], 'eventHubAuthorizationRuleId'), '')]"
           },
-          "diagnosticEventHubName": {
-            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticEventHubName]"
+          "eventHubName": {
+            "value": "[coalesce(tryGet(parameters('namespaceDiagnosticSettings')[copyIndex()], 'eventHubName'), '')]"
           },
-          "diagnosticsMetrics": {
-            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticsMetrics]"
+          "metricsSettings": {
+            "value": "[coalesce(tryGet(parameters('namespaceDiagnosticSettings')[copyIndex()], 'metricsSettings'), createArray())]"
           },
-          "diagnosticsLogs": {
-            "value": "[variables('varDiagnosticSettings')[copyIndex()].diagnosticsLogs]"
+          "logsSettings": {
+            "value": "[coalesce(tryGet(parameters('namespaceDiagnosticSettings')[copyIndex()], 'logsSettings'), createArray())]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "13214001240203785224"
+              "templateHash": "17726329287407515994"
             }
           },
           "parameters": {
@@ -987,55 +1595,61 @@
             "name": {
               "type": "string"
             },
-            "diagnosticStorageAccountId": {
+            "storageAccountId": {
               "type": "string"
             },
-            "diagnosticWorkspaceId": {
+            "workspaceId": {
               "type": "string"
             },
-            "diagnosticEventHubAuthorizationRuleId": {
+            "eventHubAuthorizationRuleId": {
               "type": "string"
             },
-            "diagnosticEventHubName": {
+            "eventHubName": {
               "type": "string"
             },
-            "diagnosticsMetrics": {
+            "metricsSettings": {
               "type": "array"
             },
-            "diagnosticsLogs": {
+            "logsSettings": {
               "type": "array"
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "namespace": {
+              "existing": true,
+              "type": "Microsoft.EventHub/namespaces",
+              "apiVersion": "2022-10-01-preview",
+              "name": "[parameters('namespaceName')]"
+            },
+            "namespace_diagnosticSettings": {
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
               "scope": "[format('Microsoft.EventHub/namespaces/{0}', parameters('namespaceName'))]",
               "name": "[parameters('name')]",
               "properties": {
-                "storageAccountId": "[if(not(equals(parameters('diagnosticStorageAccountId'), '')), parameters('diagnosticStorageAccountId'), null())]",
-                "workspaceId": "[if(not(equals(parameters('diagnosticWorkspaceId'), '')), parameters('diagnosticWorkspaceId'), null())]",
-                "eventHubAuthorizationRuleId": "[if(not(equals(parameters('diagnosticEventHubAuthorizationRuleId'), '')), parameters('diagnosticEventHubAuthorizationRuleId'), null())]",
-                "eventHubName": "[if(not(equals(parameters('diagnosticEventHubName'), '')), parameters('diagnosticEventHubName'), null())]",
-                "metrics": "[parameters('diagnosticsMetrics')]",
-                "logs": "[parameters('diagnosticsLogs')]"
+                "storageAccountId": "[if(not(empty(parameters('storageAccountId'))), parameters('storageAccountId'), null())]",
+                "workspaceId": "[if(not(empty(parameters('workspaceId'))), parameters('workspaceId'), null())]",
+                "eventHubAuthorizationRuleId": "[if(not(empty(parameters('eventHubAuthorizationRuleId'))), parameters('eventHubAuthorizationRuleId'), null())]",
+                "eventHubName": "[if(not(empty(parameters('eventHubName'))), parameters('eventHubName'), null())]",
+                "metrics": "[parameters('metricsSettings')]",
+                "logs": "[parameters('logsSettings')]"
               }
             }
-          ]
+          }
         }
       },
       "dependsOn": [
-        "eventHubNamespace"
+        "evhns"
       ]
     },
-    {
+    "evhns_privateEndpoints": {
       "copy": {
-        "name": "eventHubNamespace_privateEndpoint",
-        "count": "[length(variables('varPrivateEndpoints'))]"
+        "name": "evhns_privateEndpoints",
+        "count": "[length(parameters('namespacePrivateEndpoints'))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-eventnamespace-private-endpoints-{1}', uniqueString(deployment().name), copyIndex())]",
+      "name": "[format('{0}-evhns-pep-{1}', uniqueString(deployment().name), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1043,39 +1657,40 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('varPrivateEndpoints')[copyIndex()].name]"
+            "value": "[parameters('namespacePrivateEndpoints')[copyIndex()].name]"
           },
           "namespaceName": {
-            "value": "[variables('varPrivateEndpoints')[copyIndex()].eventHubNamespaceName]"
+            "value": "[parameters('namespacePrivateEndpoints')[copyIndex()].namespaceName]"
           },
           "location": {
             "value": "[parameters('location')]"
           },
           "groupIds": {
-            "value": "[variables('varPrivateEndpoints')[copyIndex()].groupIds]"
+            "value": "[coalesce(tryGet(parameters('namespacePrivateEndpoints')[copyIndex()], 'groupIds'), createArray('namespace'))]"
           },
           "subnetId": {
-            "value": "[variables('varPrivateEndpoints')[copyIndex()].subnetId]"
+            "value": "[parameters('namespacePrivateEndpoints')[copyIndex()].subnetId]"
           },
-          "privateDnsZones": "[if(contains(variables('varPrivateEndpoints')[copyIndex()], 'privateDnsZones'), createObject('value', variables('varPrivateEndpoints')[copyIndex()].privateDnsZones), createObject('value', createArray()))]",
-          "customNetworkInterfaceName": {
-            "value": "[variables('varPrivateEndpoints')[copyIndex()].customNetworkInterfaceName]"
+          "privateDnsZoneId": {
+            "value": "[coalesce(tryGet(parameters('namespacePrivateEndpoints')[copyIndex()], 'privateDnsZoneId'), '')]"
           },
           "tags": {
             "value": "[parameters('tags')]"
           },
           "manualApprovalEnabled": {
-            "value": "[parameters('privateEndpointsApprovalEnabled')]"
+            "value": "[coalesce(tryGet(parameters('namespacePrivateEndpoints')[copyIndex()], 'manualApprovalEnabled'), false())]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "1734132752840372544"
+              "templateHash": "4242977983153359623"
             }
           },
           "parameters": {
@@ -1100,15 +1715,36 @@
             "subnetId": {
               "type": "string"
             },
-            "privateDnsZones": {
-              "type": "array"
-            },
-            "customNetworkInterfaceName": {
+            "privateDnsZoneId": {
               "type": "string"
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "privateEndpoint::privateDnsZoneGroup": {
+              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+              "apiVersion": "2022-05-01",
+              "name": "[format('{0}/{1}', parameters('name'), 'default')]",
+              "properties": {
+                "privateDnsZoneConfigs": [
+                  {
+                    "name": "default",
+                    "properties": {
+                      "privateDnsZoneId": "[parameters('privateDnsZoneId')]"
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "privateEndpoint"
+              ]
+            },
+            "namespace": {
+              "existing": true,
+              "type": "Microsoft.EventHub/namespaces",
+              "apiVersion": "2022-10-01-preview",
+              "name": "[parameters('namespaceName')]"
+            },
+            "privateEndpoint": {
               "type": "Microsoft.Network/privateEndpoints",
               "apiVersion": "2022-05-01",
               "name": "[parameters('name')]",
@@ -1119,60 +1755,36 @@
                 "manualPrivateLinkServiceConnections": "[if(parameters('manualApprovalEnabled'), createArray(createObject('name', parameters('name'), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.EventHub/namespaces', parameters('namespaceName')), 'groupIds', if(not(empty(parameters('groupIds'))), parameters('groupIds'), null())))), null())]",
                 "subnet": {
                   "id": "[parameters('subnetId')]"
-                },
-                "customNetworkInterfaceName": "[parameters('customNetworkInterfaceName')]"
+                }
               }
-            },
-            {
-              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-              "apiVersion": "2022-05-01",
-              "name": "[format('{0}/{1}', parameters('name'), 'default')]",
-              "properties": {
-                "copy": [
-                  {
-                    "name": "privateDnsZoneConfigs",
-                    "count": "[length(parameters('privateDnsZones'))]",
-                    "input": {
-                      "name": "[if(contains(parameters('privateDnsZones')[copyIndex('privateDnsZoneConfigs')], 'name'), parameters('privateDnsZones')[copyIndex('privateDnsZoneConfigs')].name, 'default')]",
-                      "properties": {
-                        "privateDnsZoneId": "[parameters('privateDnsZones')[copyIndex('privateDnsZoneConfigs')].zoneId]"
-                      }
-                    }
-                  }
-                ]
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]"
-              ]
             }
-          ]
+          }
         }
       },
       "dependsOn": [
-        "eventHubNamespace"
+        "evhns"
       ]
     }
-  ],
+  },
   "outputs": {
-    "resourceGroupName": {
-      "type": "string",
-      "metadata": {
-        "description": "The resource group the Azure Event Hub was deployed into."
-      },
-      "value": "[resourceGroup().name]"
-    },
-    "eventHubNamespaceDetails": {
+    "eventHubNamespaceNames": {
       "type": "array",
       "metadata": {
-        "description": "Azure Event Hub namespace details."
+        "description": "Azure Event Hub namespace names."
       },
       "copy": {
-        "count": "[length(variables('varEventHubNamespaces'))]",
-        "input": {
-          "id": "[reference(variables('varEventHubNamespaces')[copyIndex()].eventHubNamespaceName, '2021-11-01', 'Full').resourceId]",
-          "serviceBusEndpoint": "[reference(variables('varEventHubNamespaces')[copyIndex()].eventHubNamespaceName, '2021-11-01', 'Full').properties.serviceBusEndpoint]",
-          "status": "[reference(variables('varEventHubNamespaces')[copyIndex()].eventHubNamespaceName, '2021-11-01', 'Full').properties.status]"
-        }
+        "count": "[length(parameters('namespaces'))]",
+        "input": "[parameters('namespaces')[copyIndex()].name]"
+      }
+    },
+    "eventHubNamespaceResourceIds": {
+      "type": "array",
+      "metadata": {
+        "description": "Azure Event Hub namespace resource Ids."
+      },
+      "copy": {
+        "count": "[length(parameters('namespaces'))]",
+        "input": "[resourceId('Microsoft.EventHub/namespaces', parameters('namespaces')[copyIndex()].name)]"
       }
     }
   }
