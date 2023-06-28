@@ -1,6 +1,6 @@
 # Azure Event-Hub
 
-This module deploys Microsoft.data event clusters, event namespaces, event hubs.
+This module deploys Microsoft.data event clusters, event namespaces, event hubs and associated configurations.
 
 ## Description
 
