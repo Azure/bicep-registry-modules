@@ -28,54 +28,61 @@ module test_01 '../main.bicep' = {
       tag2: 'tag2value'
     }
     location: location
-    eventHubNamespaces: {
-      'test01${uniqueName}': {
-
-          sku: 'Standard'
-          capacity:  4
-          isAutoInflateEnabled: true
-          maximumThroughputUnits: 6
+    eventHubNamespaces: [
+      {
+        name: 'test01${uniqueName}'
+        sku: 'Standard'
+        capacity:  4
+        isAutoInflateEnabled: true
+        maximumThroughputUnits: 6
       }
-      'test01a${uniqueName}': {
+      {
+        name: 'test01a${uniqueName}'
         sku: 'Standard'
         capacity:  2
       }
-    }
-    namespaceAuthorizationRules: {
-      'test01${uniqueName}': {
-          rights: ['Listen','Manage','Send']
-          eventHubNamespaceName: 'test01${uniqueName}'
-      }
-      'test01a${uniqueName}': {
+    ]
+    namespaceAuthorizationRules: [
+      {
+        name: 'test01${uniqueName}'
         rights: ['Listen','Manage','Send']
         eventHubNamespaceName: 'test01${uniqueName}'
       }
-    }
-    eventHubs: {
-      'test01${uniqueName}': {
-          messageRetentionInDays: 4
-          partitionCount: 4
-          eventHubNamespaceName: 'test01${uniqueName}'
+      {
+        name: 'test01a${uniqueName}'
+        rights: ['Listen','Manage','Send']
+        eventHubNamespaceName: 'test01${uniqueName}'
       }
-      'test01a${uniqueName}': {
-          messageRetentionInDays: 7
-          partitionCount: 2
-          eventHubNamespaceName: 'test01${uniqueName}'
+    ]
+    eventHubs: [
+      {
+        name: 'test01${uniqueName}'
+        messageRetentionInDays: 4
+        partitionCount: 4
+        eventHubNamespaceName: 'test01${uniqueName}'
       }
-    }
-    eventHubAuthorizationRules: {
-      'test01${uniqueName}': {
-          rights: ['Listen','Manage','Send']
-          eventHubNamespaceName: 'test01${uniqueName}'
-          eventHubName: 'test01${uniqueName}'
+      {
+        name:'test01a${uniqueName}'
+        messageRetentionInDays: 7
+        partitionCount: 2
+        eventHubNamespaceName: 'test01${uniqueName}'
       }
-    }
-    consumerGroups: {
-      'test01${uniqueName}': {
-          eventHubNamespaceName: 'test01${uniqueName}'
-          eventHubName: 'test01${uniqueName}'
+    ]
+    eventHubAuthorizationRules: [
+      {
+        name: 'test01${uniqueName}'
+        rights: ['Listen','Manage','Send']
+        eventHubNamespaceName: 'test01${uniqueName}'
+        eventHubName: 'test01${uniqueName}'
       }
-    }
+    ]
+    consumerGroups: [
+      {
+        name: 'test01${uniqueName}'
+        eventHubNamespaceName: 'test01${uniqueName}'
+        eventHubName: 'test01${uniqueName}'
+      }
+    ]
   }
 }
 */
@@ -85,37 +92,39 @@ module test_02 '../main.bicep' = {
   name: '${uniqueName}-test-02'
   params: {
     location: location
-    eventHubNamespaces: {
-      'test02na${uniqueName}': {
-          sku: 'Basic'
-          capacity:  3
+    eventHubNamespaces: [
+      {
+        name: 'test02na${uniqueName}'
+        sku: 'Basic'
+        capacity: 3
       }
-    }
-    namespaceRoleAssignments: {
-      'test02${uniqueName}': {
+    ]
+    namespaceRoleAssignments: [
+      {
+        name: 'test02${uniqueName}'
         description: 'Reader Role Assignment'
         principalIds: [ prerequisites.outputs.identityPrincipalIds[1] ]
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Reader'
         eventHubNamespaceName: 'test02na${uniqueName}'
       }
-    }
-    eventHubs: {
-      'test02${uniqueName}': {
-          messageRetentionInDays: 1
-          partitionCount: 1
-          eventHubNamespaceName: 'test02na${uniqueName}'
-          roleAssignments: [
-           {
+    ]
+    eventHubs: [
+      {
+        name: 'test02${uniqueName}'
+        messageRetentionInDays: 1
+        partitionCount: 1
+        eventHubNamespaceName: 'test02na${uniqueName}'
+        roleAssignments: [
+          {
             roleDefinitionIdOrName: 'Reader'
             description: 'Reader Role Assignment'
             principalIds: [ prerequisites.outputs.identityPrincipalIds[0] ]
             principalType: 'ServicePrincipal'
-           }
-          ]
+          }
+        ]
       }
-    }
-
+    ]
   }
 }
 
@@ -124,13 +133,14 @@ module test_03 '../main.bicep' = {
   name: '${uniqueName}-test-03'
   params: {
     location: location
-    eventHubNamespaces: {
-      'test03na${uniqueName}': {
-          sku: 'Premium'
-          capacity:  4
-          zoneRedundant: true
+    eventHubNamespaces: [
+      {
+        name: 'test03na${uniqueName}'
+        sku: 'Premium'
+        capacity: 4
+        zoneRedundant: true
       }
-    }
+    ]
     privateEndpoints: [
       {
         name: 'endpoint1'
@@ -144,72 +154,74 @@ module test_03 '../main.bicep' = {
         eventHubNamespaceName: 'test03na${uniqueName}'
       }
     ]
-    diagnosticSettings: {
-      'test03digno${uniqueName}': {
+    diagnosticSettings: [
+      {
+        name: 'test03digno${uniqueName}'
         diagnosticEnablenamespaceName: 'test03na${uniqueName}'
         diagnosticEventHubAuthorizationRuleId: prerequisites.outputs.authorizationRuleId
         diagnosticEventHubName: prerequisites.outputs.eventHubName
-        diagnosticsMetrics: [{category: 'AllMetrics', enabled:true, retentionPolicy: {days:365,enabled:true}}]
+        diagnosticsMetrics: [ { category: 'AllMetrics', enabled: true, retentionPolicy: { days: 365, enabled: true } } ]
         diagnosticsLogs: [
           {
-            category:'OperationalLogs'
+            category: 'OperationalLogs'
             enabled: true
-            retentionPolicy: {days:36,enabled:true}
+            retentionPolicy: { days: 36, enabled: true }
           }
           {
-            category:'ArchiveLogs'
+            category: 'ArchiveLogs'
             enabled: true
-            retentionPolicy: {days:3,enabled:true}
+            retentionPolicy: { days: 3, enabled: true }
           }
         ]
       }
-    }
+    ]
   }
 }
-
 
 // Test 04 - Standard SKU Minimal Parameters
 module test_04 '../main.bicep' = {
   name: '${uniqueName}-test-04'
   params: {
     location: location
-    eventHubNamespaces: {
-      'test04na${uniqueName}': {
-          sku: 'Standard'
-          capacity:  1
-          zoneRedundant: false
+    eventHubNamespaces: [
+      {
+        name: 'test04na${uniqueName}'
+        sku: 'Standard'
+        capacity: 1
+        zoneRedundant: false
       }
-    }
-    eventHubs: {
-      'test04${uniqueName}': {
-          messageRetentionInDays: 1
-          partitionCount: 2
-          eventHubNamespaceName: 'test04na${uniqueName}'
-          captureDescriptionDestinationBlobContainer: prerequisites.outputs.containerName
-          captureDescriptionDestinationStorageAccountResourceId: prerequisites.outputs.storageAccountId
-          captureDescriptionEnabled: true
+    ]
+    eventHubs: [
+      {
+        name: 'test04${uniqueName}'
+        messageRetentionInDays: 1
+        partitionCount: 2
+        eventHubNamespaceName: 'test04na${uniqueName}'
+        captureDescriptionDestinationBlobContainer: prerequisites.outputs.containerName
+        captureDescriptionDestinationStorageAccountResourceId: prerequisites.outputs.storageAccountId
+        captureDescriptionEnabled: true
       }
-    }
-    diagnosticSettings: {
-      'test04digno${uniqueName}': {
+    ]
+    diagnosticSettings: [
+      {
+        name: 'test04digno${uniqueName}'
         diagnosticEnablenamespaceName: 'test04na${uniqueName}'
         diagnosticStorageAccountId: prerequisites.outputs.storageAccountId
         diagnosticWorkspaceId: prerequisites.outputs.workspaceId
-        diagnosticsMetrics: [{category: 'AllMetrics', enabled:true, retentionPolicy: {days:365,enabled:true}}]
+        diagnosticsMetrics: [ { category: 'AllMetrics', enabled: true, retentionPolicy: { days: 365, enabled: true } } ]
         diagnosticsLogs: [
           {
-            category:'ArchiveLogs'
+            category: 'ArchiveLogs'
             enabled: true
-            retentionPolicy: {days:365,enabled:true}
+            retentionPolicy: { days: 365, enabled: true }
           }
           {
-            category:'RuntimeAuditLogs'
+            category: 'RuntimeAuditLogs'
             enabled: true
-            retentionPolicy: {days:3,enabled:true}
+            retentionPolicy: { days: 3, enabled: true }
           }
         ]
       }
-    }
+    ]
   }
 }
-

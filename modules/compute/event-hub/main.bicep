@@ -21,17 +21,18 @@ maximumThroughputUnits: (Optional) int, Upper limit of throughput units when Aut
 disableLocalAuth: (Optional) bool, This property disables SAS authentication for the Event Hubs namespace. Default to false.
 kafkaEnabled: (Optional) bool, Value that indicates whether Kafka is enabled for eventhub namespace. Default to true.
 ''')
-param eventHubNamespaces object = {
-  'evns-${uniqueString(location)}': {
+param eventHubNamespaces array = [
+  {
+    name: 'evns-${uniqueString(resourceGroup().id)}'
     sku: 'Standard'
-    capacity:  1
+    capacity: 1
     maximumThroughputUnits: 0
     zoneRedundant: false
     isAutoInflateEnabled: false
     disableLocalAuth: false
     kafkaEnabled: true
   }
-}
+]
 
 @description(''' Optional. Name for the eventhub to be created.
 Below paramters you can pass while the creating Azure Event Hub.
@@ -50,25 +51,25 @@ captureDescriptionSizeLimitInBytes: (Optional) int, The size window defines the 
 captureDescriptionSkipEmptyArchives: (Optional) boolean,  A value that indicates whether to Skip Empty Archives.
 roleAssignments: (Optional) Array, Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.
 ''')
-param eventHubs object = {}
+param eventHubs array = []
 
 @description('Optional. Authorization Rules for the Event Hub Namespace.')
-param namespaceAuthorizationRules object = {}
+param namespaceAuthorizationRules array = []
 
 @description('Optional. Role assignments for the namespace.')
-param namespaceRoleAssignments object = {}
+param namespaceRoleAssignments array = []
 
 @description('Optional. The disaster recovery config for the namespace.')
-param disasterRecoveryConfigs object = {}
+param disasterRecoveryConfigs array = []
 
 @description('Optional. The Diagnostics Settings config for the namespace.')
-param diagnosticSettings object = {}
+param diagnosticSettings array = []
 
 @description('Optional. Authorization Rules for the Event Hub .')
-param eventHubAuthorizationRules object = {}
+param eventHubAuthorizationRules array = []
 
 @description('Optional. consumer groups for the Event Hub .')
-param consumerGroups object = {}
+param consumerGroups array = []
 
 @description('Define Private Endpoints that should be created for Azure EventHub Namespace.')
 param privateEndpoints array = []
@@ -76,79 +77,79 @@ param privateEndpoints array = []
 @description('Toggle if Private Endpoints manual approval for Azure EventHub Namespace should be enabled.')
 param privateEndpointsApprovalEnabled bool = false
 
-var varEventHubNamespaces = [for eventHubnamespace in items(eventHubNamespaces): {
-  eventHubNamespaceName: eventHubnamespace.key
-  sku: contains(eventHubnamespace.value, 'sku')? eventHubnamespace.value.sku : 'Standard'
-  capacity: contains(eventHubnamespace.value, 'capacity') ? eventHubnamespace.value.capacity: 1
-  zoneRedundant: contains(eventHubnamespace.value, 'zoneRedundant') ? eventHubnamespace.value.zoneRedundant : false
-  isAutoInflateEnabled: contains(eventHubnamespace.value, 'isAutoInflateEnabled') ? eventHubnamespace.value.isAutoInflateEnabled: false
-  maximumThroughputUnits: contains(eventHubnamespace.value, 'maximumThroughputUnits') ? eventHubnamespace.value.maximumThroughputUnits: 0
-  disableLocalAuth: contains(eventHubnamespace.value, 'disableLocalAuth') ? eventHubnamespace.value.disableLocalAuth: false
-  kafkaEnabled: contains(eventHubnamespace.value, 'kafkaEnabled') ? eventHubnamespace.value.kafkaEnabled: true
+var varEventHubNamespaces = [for eventHubnamespace in eventHubNamespaces: {
+  eventHubNamespaceName: eventHubnamespace.name
+  sku: contains(eventHubnamespace, 'sku') ? eventHubnamespace.sku : 'Standard'
+  capacity: contains(eventHubnamespace, 'capacity') ? eventHubnamespace.capacity : 1
+  zoneRedundant: contains(eventHubnamespace, 'zoneRedundant') ? eventHubnamespace.zoneRedundant : false
+  isAutoInflateEnabled: contains(eventHubnamespace, 'isAutoInflateEnabled') ? eventHubnamespace.isAutoInflateEnabled : false
+  maximumThroughputUnits: contains(eventHubnamespace, 'maximumThroughputUnits') ? eventHubnamespace.maximumThroughputUnits : 0
+  disableLocalAuth: contains(eventHubnamespace, 'disableLocalAuth') ? eventHubnamespace.disableLocalAuth : false
+  kafkaEnabled: contains(eventHubnamespace, 'kafkaEnabled') ? eventHubnamespace.kafkaEnabled : true
 }]
 
-var varNamespaceAuthorizationRules =  [for namespaceAuthorizationRule in items(namespaceAuthorizationRules): {
-  eventHubNamespaceAuthorizationRuleName: namespaceAuthorizationRule.key
-  rights: contains(namespaceAuthorizationRule.value, 'rights') ? namespaceAuthorizationRule.value.rights : []
-  eventHubNamespaceName: namespaceAuthorizationRule.value.eventHubNamespaceName
+var varNamespaceAuthorizationRules = [for namespaceAuthorizationRule in namespaceAuthorizationRules: {
+  eventHubNamespaceAuthorizationRuleName: namespaceAuthorizationRule.name
+  rights: contains(namespaceAuthorizationRule, 'rights') ? namespaceAuthorizationRule.rights : []
+  eventHubNamespaceName: namespaceAuthorizationRule.eventHubNamespaceName
 }]
 
-var varDisasterRecoveryConfigs =  [for disasterRecoveryConfig in items(disasterRecoveryConfigs): {
-  disasterRecoveryConfigname: disasterRecoveryConfig.key
-  partnerNamespaceId: contains(disasterRecoveryConfig.value, 'partnerNamespaceId') ? disasterRecoveryConfig.value.partnerNamespaceId : ''
-  eventHubNamespaceName: disasterRecoveryConfig.value.eventHubNamespaceName
+var varDisasterRecoveryConfigs = [for disasterRecoveryConfig in disasterRecoveryConfigs: {
+  disasterRecoveryConfigname: disasterRecoveryConfig.name
+  partnerNamespaceId: contains(disasterRecoveryConfig, 'partnerNamespaceId') ? disasterRecoveryConfig.partnerNamespaceId : ''
+  eventHubNamespaceName: disasterRecoveryConfig.eventHubNamespaceName
 }]
 
-var varEventHubs =  [for eventHub in items(eventHubs): {
-  eventHubName: eventHub.key
-  messageRetentionInDays: contains(eventHub.value, 'messageRetentionInDays') ? eventHub.value.messageRetentionInDays : 1
-  partitionCount: contains(eventHub.value, 'partitionCount') ? eventHub.value.partitionCount : 2
-  eventHubNamespaceName: eventHub.value.eventHubNamespaceName
-  status: contains(eventHub.value, 'status') ? eventHub.value.status : 'Active'
-  captureDescriptionDestinationArchiveNameFormat: contains(eventHub.value, 'captureDescriptionDestinationArchiveNameFormat') ? eventHub.value.captureDescriptionDestinationArchiveNameFormat : '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
-  captureDescriptionDestinationBlobContainer: contains(eventHub.value, 'captureDescriptionDestinationBlobContainer') ? eventHub.value.captureDescriptionDestinationBlobContainer : ''
-  captureDescriptionDestinationName: contains(eventHub.value, 'captureDescriptionDestinationName') ? eventHub.value.captureDescriptionDestinationName : 'EventHubArchive.AzureBlockBlob'
-  captureDescriptionDestinationStorageAccountResourceId: contains(eventHub.value, 'captureDescriptionDestinationStorageAccountResourceId') ? eventHub.value.captureDescriptionDestinationStorageAccountResourceId : ''
-  captureDescriptionEnabled: contains(eventHub.value, 'captureDescriptionEnabled') ? eventHub.value.captureDescriptionEnabled : false
-  captureDescriptionEncoding: contains(eventHub.value, 'captureDescriptionEncoding') ? eventHub.value.captureDescriptionEncoding : 'Avro'
-  captureDescriptionIntervalInSeconds: contains(eventHub.value, 'captureDescriptionIntervalInSeconds') ? eventHub.value.captureDescriptionIntervalInSeconds : 300
-  captureDescriptionSizeLimitInBytes: contains(eventHub.value, 'captureDescriptionSizeLimitInBytes') ? eventHub.value.captureDescriptionSizeLimitInBytes : 314572800
-  captureDescriptionSkipEmptyArchives: contains(eventHub.value, 'captureDescriptionSkipEmptyArchives') ? eventHub.value.captureDescriptionSkipEmptyArchives : false
-  roleAssignments: contains(eventHub.value, 'roleAssignments') ? eventHub.value.roleAssignments : []
+var varEventHubs = [for eventHub in eventHubs: {
+  eventHubName: eventHub.name
+  messageRetentionInDays: contains(eventHub, 'messageRetentionInDays') ? eventHub.messageRetentionInDays : 1
+  partitionCount: contains(eventHub, 'partitionCount') ? eventHub.partitionCount : 2
+  eventHubNamespaceName: eventHub.eventHubNamespaceName
+  status: contains(eventHub, 'status') ? eventHub.status : 'Active'
+  captureDescriptionDestinationArchiveNameFormat: contains(eventHub, 'captureDescriptionDestinationArchiveNameFormat') ? eventHub.captureDescriptionDestinationArchiveNameFormat : '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
+  captureDescriptionDestinationBlobContainer: contains(eventHub, 'captureDescriptionDestinationBlobContainer') ? eventHub.captureDescriptionDestinationBlobContainer : ''
+  captureDescriptionDestinationName: contains(eventHub, 'captureDescriptionDestinationName') ? eventHub.captureDescriptionDestinationName : 'EventHubArchive.AzureBlockBlob'
+  captureDescriptionDestinationStorageAccountResourceId: contains(eventHub, 'captureDescriptionDestinationStorageAccountResourceId') ? eventHub.captureDescriptionDestinationStorageAccountResourceId : ''
+  captureDescriptionEnabled: contains(eventHub, 'captureDescriptionEnabled') ? eventHub.captureDescriptionEnabled : false
+  captureDescriptionEncoding: contains(eventHub, 'captureDescriptionEncoding') ? eventHub.captureDescriptionEncoding : 'Avro'
+  captureDescriptionIntervalInSeconds: contains(eventHub, 'captureDescriptionIntervalInSeconds') ? eventHub.captureDescriptionIntervalInSeconds : 300
+  captureDescriptionSizeLimitInBytes: contains(eventHub, 'captureDescriptionSizeLimitInBytes') ? eventHub.captureDescriptionSizeLimitInBytes : 314572800
+  captureDescriptionSkipEmptyArchives: contains(eventHub, 'captureDescriptionSkipEmptyArchives') ? eventHub.captureDescriptionSkipEmptyArchives : false
+  roleAssignments: contains(eventHub, 'roleAssignments') ? eventHub.roleAssignments : []
 }]
 
-var varEventHubAuthorizationRules =  [for eventHubAuthorizationRule in items(eventHubAuthorizationRules): {
-  eventHubAuthorizationRuleName: eventHubAuthorizationRule.key
-  rights: contains(eventHubAuthorizationRule.value, 'rights') ? eventHubAuthorizationRule.value.rights : []
-  eventHubNamespaceName: eventHubAuthorizationRule.value.eventHubNamespaceName
-  eventHubName: eventHubAuthorizationRule.value.eventHubName
+var varEventHubAuthorizationRules = [for eventHubAuthorizationRule in eventHubAuthorizationRules: {
+  eventHubAuthorizationRuleName: eventHubAuthorizationRule.name
+  rights: contains(eventHubAuthorizationRule, 'rights') ? eventHubAuthorizationRule.rights : []
+  eventHubNamespaceName: eventHubAuthorizationRule.eventHubNamespaceName
+  eventHubName: eventHubAuthorizationRule.eventHubName
 }]
 
-var varConsumerGroups =  [for consumerGroup in items(consumerGroups): {
-  consumerGroupName: consumerGroup.key
-  eventHubNamespaceName: consumerGroup.value.eventHubNamespaceName
-  eventHubName: consumerGroup.value.eventHubName
-  userMetadata: contains(consumerGroup.value, 'userMetadata') ? consumerGroup.value.userMetadata : ''
+var varConsumerGroups = [for consumerGroup in consumerGroups: {
+  consumerGroupName: consumerGroup.name
+  eventHubNamespaceName: consumerGroup.eventHubNamespaceName
+  eventHubName: consumerGroup.eventHubName
+  userMetadata: contains(consumerGroup, 'userMetadata') ? consumerGroup.userMetadata : ''
 }]
 
-var varDiagnosticSettings = [for diagnosticSetting in items(diagnosticSettings): {
-  diagnosticSettingName: diagnosticSetting.key
-  diagnosticEnableNamespaceName: diagnosticSetting.value.diagnosticEnablenamespaceName
-  diagnosticStorageAccountId: contains(diagnosticSetting.value, 'diagnosticStorageAccountId') ? diagnosticSetting.value.diagnosticStorageAccountId : ''
-  diagnosticWorkspaceId: contains(diagnosticSetting.value, 'diagnosticWorkspaceId') ? diagnosticSetting.value.diagnosticWorkspaceId : ''
-  diagnosticEventHubAuthorizationRuleId: contains(diagnosticSetting.value, 'diagnosticEventHubAuthorizationRuleId') ? diagnosticSetting.value.diagnosticEventHubAuthorizationRuleId : ''
-  diagnosticEventHubName: contains(diagnosticSetting.value, 'diagnosticEventHubName') ? diagnosticSetting.value.diagnosticEventHubName : ''
-  diagnosticsMetrics: contains(diagnosticSetting.value, 'diagnosticsMetrics') ? diagnosticSetting.value.diagnosticsMetrics : []
-  diagnosticsLogs: contains(diagnosticSetting.value, 'diagnosticsLogs') ? diagnosticSetting.value.diagnosticsLogs : []
+var varDiagnosticSettings = [for diagnosticSetting in diagnosticSettings: {
+  diagnosticSettingName: diagnosticSetting.name
+  diagnosticEnableNamespaceName: diagnosticSetting.diagnosticEnablenamespaceName
+  diagnosticStorageAccountId: contains(diagnosticSetting, 'diagnosticStorageAccountId') ? diagnosticSetting.diagnosticStorageAccountId : ''
+  diagnosticWorkspaceId: contains(diagnosticSetting, 'diagnosticWorkspaceId') ? diagnosticSetting.diagnosticWorkspaceId : ''
+  diagnosticEventHubAuthorizationRuleId: contains(diagnosticSetting, 'diagnosticEventHubAuthorizationRuleId') ? diagnosticSetting.diagnosticEventHubAuthorizationRuleId : ''
+  diagnosticEventHubName: contains(diagnosticSetting, 'diagnosticEventHubName') ? diagnosticSetting.diagnosticEventHubName : ''
+  diagnosticsMetrics: contains(diagnosticSetting, 'diagnosticsMetrics') ? diagnosticSetting.diagnosticsMetrics : []
+  diagnosticsLogs: contains(diagnosticSetting, 'diagnosticsLogs') ? diagnosticSetting.diagnosticsLogs : []
 }]
 
-var varNamespaceRoleAssignments =  [for namespaceRoleAssignment in items(namespaceRoleAssignments): {
-  eventHubNamespaceRoleAssignmentsName: namespaceRoleAssignment.key
-  description: contains(namespaceRoleAssignment.value, 'description') ? namespaceRoleAssignment.value.description : ''
-  principalIds: namespaceRoleAssignment.value.principalIds
-  principalType: contains(namespaceRoleAssignment.value, 'principalType') ? namespaceRoleAssignment.value.principalType: ''
-  roleDefinitionIdOrName: namespaceRoleAssignment.value.roleDefinitionIdOrName
-  eventHubNamespaceName: namespaceRoleAssignment.value.eventHubNamespaceName
+var varNamespaceRoleAssignments = [for namespaceRoleAssignment in namespaceRoleAssignments: {
+  eventHubNamespaceRoleAssignmentsName: namespaceRoleAssignment.name
+  description: contains(namespaceRoleAssignment, 'description') ? namespaceRoleAssignment.description : ''
+  principalIds: namespaceRoleAssignment.principalIds
+  principalType: contains(namespaceRoleAssignment, 'principalType') ? namespaceRoleAssignment.principalType : ''
+  roleDefinitionIdOrName: namespaceRoleAssignment.roleDefinitionIdOrName
+  eventHubNamespaceName: namespaceRoleAssignment.eventHubNamespaceName
 }]
 
 var varPrivateEndpoints = [for privateEndpoint in privateEndpoints: {
@@ -167,7 +168,7 @@ var varPrivateEndpoints = [for privateEndpoint in privateEndpoints: {
   ] : []
 }]
 
-resource cluster 'Microsoft.EventHub/clusters@2021-11-01' = if (clusterName != 'null' )  {
+resource cluster 'Microsoft.EventHub/clusters@2021-11-01' = if (clusterName != 'null') {
   name: clusterName
   location: location
   tags: tags
@@ -195,12 +196,12 @@ resource eventHubNamespace 'Microsoft.EventHub/namespaces@2021-11-01' = [for var
     isAutoInflateEnabled: varEventHubNamespace.isAutoInflateEnabled
     maximumThroughputUnits: ((varEventHubNamespace.isAutoInflateEnabled) ? varEventHubNamespace.maximumThroughputUnits : 0)
     zoneRedundant: varEventHubNamespace.zoneRedundant
-    clusterArmId: (clusterName != 'null') ? cluster.id: null
+    clusterArmId: (clusterName != 'null') ? cluster.id : null
   }
   tags: tags
 }]
 
-module eventHubNamespace_authorizationRules 'modules/authorizationRules.bicep' = [for (varNamespaceAuthorizationRule, index) in varNamespaceAuthorizationRules:{
+module eventHubNamespace_authorizationRules 'modules/authorizationRules.bicep' = [for (varNamespaceAuthorizationRule, index) in varNamespaceAuthorizationRules: {
   name: '${uniqueString(deployment().name, location)}-EvhbNamespace-AuthRule-${index}'
   params: {
     namespaceName: varNamespaceAuthorizationRule.eventHubNamespaceName
@@ -252,7 +253,7 @@ module eventHubNamespace_eventHubs 'modules/eventHubs/deploy.bicep' = [for (varE
     captureDescriptionDestinationBlobContainer: varEventHub.captureDescriptionDestinationBlobContainer
     captureDescriptionDestinationName: varEventHub.captureDescriptionDestinationName
     captureDescriptionDestinationStorageAccountResourceId: varEventHub.captureDescriptionDestinationStorageAccountResourceId
-    captureDescriptionEncoding:  varEventHub.captureDescriptionEncoding
+    captureDescriptionEncoding: varEventHub.captureDescriptionEncoding
     captureDescriptionIntervalInSeconds: varEventHub.captureDescriptionIntervalInSeconds
     captureDescriptionSizeLimitInBytes: varEventHub.captureDescriptionSizeLimitInBytes
     captureDescriptionSkipEmptyArchives: varEventHub.captureDescriptionSkipEmptyArchives
@@ -297,7 +298,7 @@ module eventHubNamespace_diagnosticSettings 'modules/diagnosticSettings.bicep' =
     diagnosticStorageAccountId: varDiagnosticSetting.diagnosticStorageAccountId
     diagnosticWorkspaceId: varDiagnosticSetting.diagnosticWorkspaceId
     diagnosticEventHubAuthorizationRuleId: varDiagnosticSetting.diagnosticEventHubAuthorizationRuleId
-    diagnosticEventHubName:varDiagnosticSetting.diagnosticEventHubName
+    diagnosticEventHubName: varDiagnosticSetting.diagnosticEventHubName
     diagnosticsMetrics: varDiagnosticSetting.diagnosticsMetrics
     diagnosticsLogs: varDiagnosticSetting.diagnosticsLogs
   }
@@ -306,7 +307,7 @@ module eventHubNamespace_diagnosticSettings 'modules/diagnosticSettings.bicep' =
   ]
 }]
 
-module eventHubNamespace_privateEndpoint 'modules/privateEndpoint.bicep'= [for (varPrivateEndpoint, index) in varPrivateEndpoints: {
+module eventHubNamespace_privateEndpoint 'modules/privateEndpoint.bicep' = [for (varPrivateEndpoint, index) in varPrivateEndpoints: {
   name: '${uniqueString(deployment().name)}-eventnamespace-private-endpoints-${index}'
   params: {
     name: varPrivateEndpoint.name
@@ -329,8 +330,7 @@ output resourceGroupName string = resourceGroup().name
 
 @description('Azure Event Hub namespace details.')
 output eventHubNamespaceDetails array = [for varEventHubNamespace in varEventHubNamespaces: {
-  id: reference(varEventHubNamespace.eventHubNamespaceName,'2021-11-01','Full').resourceId
-  serviceBusEndpoint: reference(varEventHubNamespace.eventHubNamespaceName,'2021-11-01','Full').properties.serviceBusEndpoint
-  status: reference(varEventHubNamespace.eventHubNamespaceName,'2021-11-01','Full').properties.status
+  id: reference(varEventHubNamespace.eventHubNamespaceName, '2021-11-01', 'Full').resourceId
+  serviceBusEndpoint: reference(varEventHubNamespace.eventHubNamespaceName, '2021-11-01', 'Full').properties.serviceBusEndpoint
+  status: reference(varEventHubNamespace.eventHubNamespaceName, '2021-11-01', 'Full').properties.status
 }]
-

@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.17.1.54307",
-      "templateHash": "10995657503432400336"
+      "version": "0.18.4.5664",
+      "templateHash": "18376933869698035046"
     }
   },
   "parameters": {
@@ -37,9 +37,10 @@
       }
     },
     "eventHubNamespaces": {
-      "type": "object",
-      "defaultValue": {
-        "[format('evns-{0}', uniqueString(parameters('location')))]": {
+      "type": "array",
+      "defaultValue": [
+        {
+          "name": "[format('evns-{0}', uniqueString(resourceGroup().id))]",
           "sku": "Standard",
           "capacity": 1,
           "maximumThroughputUnits": 0,
@@ -48,56 +49,56 @@
           "disableLocalAuth": false,
           "kafkaEnabled": true
         }
-      },
+      ],
       "metadata": {
         "description": "Optional. The name of the event hub namespace to be created.\nBelow paramters you can pass while creating the Azure Event Hub namespace.\nsku: (Optional) Possible values are \"Basic\" or \"Standard\" or \"Premium\". Detault to 'Standard'.\ncapacity: (Optional) int, The Event Hubs throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units.The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units. Default to 1.\nzoneRedundant: (Optional) bool, Enabling this property creates a Standard Event Hubs Namespace in regions supported availability zones. Default to false.\nisAutoInflateEnabled: (Optional) bool,  Value that indicates whether AutoInflate is enabled for eventhub namespace. Only available for \"Standard\" sku. Default to false.\nmaximumThroughputUnits: (Optional) int, Upper limit of throughput units when AutoInflate is enabled, value should be within 0 to 20 throughput units. ( '0' if AutoInflateEnabled = true)\ndisableLocalAuth: (Optional) bool, This property disables SAS authentication for the Event Hubs namespace. Default to false.\nkafkaEnabled: (Optional) bool, Value that indicates whether Kafka is enabled for eventhub namespace. Default to true.\n"
       }
     },
     "eventHubs": {
-      "type": "object",
-      "defaultValue": {},
+      "type": "array",
+      "defaultValue": [],
       "metadata": {
         "description": " Optional. Name for the eventhub to be created.\nBelow paramters you can pass while the creating Azure Event Hub.\nmessageRetentionInDays: (Optional) int, Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Default to 1.\npartitionCount: (Optional) int, Number of partitions created for the Event Hub. Default to 2.\neventHubNamespaceName: (Optional) string, Name of the Azure Event Hub Namespace.\nstatus: (Optional) string, Enumerates the possible values for the status of the Event Hub. 'Active','Creating','Deleting','Disabled','ReceiveDisabled','Renaming','Restoring','SendDisabled','Unknown'. Default to 'Active'.\ncaptureDescriptionDestinationName: (Optional) string, Name for capture destination.\ncaptureDescriptionDestinationArchiveNameFormat: (Optional) string,  Blob naming convention for archive, e.g. {Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}. Here all the parameters (Namespace,EventHub .. etc) are mandatory irrespective of order.\ncaptureDescriptionDestinationBlobContainer: (Optional) string, Blob container Name.\ncaptureDescriptionDestinationStorageAccountResourceId: (Optional) string, Resource ID of the storage account to be used to create the blobs.\ncaptureDescriptionEnabled: (Optional) boolean, A value that indicates whether capture description is enabled.\ncaptureDescriptionEncoding: (Optional) string, Enumerates the possible values for the encoding format of capture description.\ncaptureDescriptionIntervalInSeconds: (Optional) int, The time window allows you to set the frequency with which the capture to Azure Blobs will happen.\ncaptureDescriptionSizeLimitInBytes: (Optional) int, The size window defines the amount of data built up in your Event Hub before an capture operation.\ncaptureDescriptionSkipEmptyArchives: (Optional) boolean,  A value that indicates whether to Skip Empty Archives.\nroleAssignments: (Optional) Array, Array of role assignment objects that contain the \\'roleDefinitionIdOrName\\' and \\'principalId\\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \\'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\\'.\n"
       }
     },
     "namespaceAuthorizationRules": {
-      "type": "object",
-      "defaultValue": {},
+      "type": "array",
+      "defaultValue": [],
       "metadata": {
         "description": "Optional. Authorization Rules for the Event Hub Namespace."
       }
     },
     "namespaceRoleAssignments": {
-      "type": "object",
-      "defaultValue": {},
+      "type": "array",
+      "defaultValue": [],
       "metadata": {
         "description": "Optional. Role assignments for the namespace."
       }
     },
     "disasterRecoveryConfigs": {
-      "type": "object",
-      "defaultValue": {},
+      "type": "array",
+      "defaultValue": [],
       "metadata": {
         "description": "Optional. The disaster recovery config for the namespace."
       }
     },
     "diagnosticSettings": {
-      "type": "object",
-      "defaultValue": {},
+      "type": "array",
+      "defaultValue": [],
       "metadata": {
         "description": "Optional. The Diagnostics Settings config for the namespace."
       }
     },
     "eventHubAuthorizationRules": {
-      "type": "object",
-      "defaultValue": {},
+      "type": "array",
+      "defaultValue": [],
       "metadata": {
         "description": "Optional. Authorization Rules for the Event Hub ."
       }
     },
     "consumerGroups": {
-      "type": "object",
-      "defaultValue": {},
+      "type": "array",
+      "defaultValue": [],
       "metadata": {
         "description": "Optional. consumer groups for the Event Hub ."
       }
@@ -121,101 +122,101 @@
     "copy": [
       {
         "name": "varEventHubNamespaces",
-        "count": "[length(items(parameters('eventHubNamespaces')))]",
+        "count": "[length(parameters('eventHubNamespaces'))]",
         "input": {
-          "eventHubNamespaceName": "[items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].key]",
-          "sku": "[if(contains(items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value, 'sku'), items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value.sku, 'Standard')]",
-          "capacity": "[if(contains(items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value, 'capacity'), items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value.capacity, 1)]",
-          "zoneRedundant": "[if(contains(items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value, 'zoneRedundant'), items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value.zoneRedundant, false())]",
-          "isAutoInflateEnabled": "[if(contains(items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value, 'isAutoInflateEnabled'), items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value.isAutoInflateEnabled, false())]",
-          "maximumThroughputUnits": "[if(contains(items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value, 'maximumThroughputUnits'), items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value.maximumThroughputUnits, 0)]",
-          "disableLocalAuth": "[if(contains(items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value, 'disableLocalAuth'), items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value.disableLocalAuth, false())]",
-          "kafkaEnabled": "[if(contains(items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value, 'kafkaEnabled'), items(parameters('eventHubNamespaces'))[copyIndex('varEventHubNamespaces')].value.kafkaEnabled, true())]"
+          "eventHubNamespaceName": "[parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')].name]",
+          "sku": "[if(contains(parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')], 'sku'), parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')].sku, 'Standard')]",
+          "capacity": "[if(contains(parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')], 'capacity'), parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')].capacity, 1)]",
+          "zoneRedundant": "[if(contains(parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')], 'zoneRedundant'), parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')].zoneRedundant, false())]",
+          "isAutoInflateEnabled": "[if(contains(parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')], 'isAutoInflateEnabled'), parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')].isAutoInflateEnabled, false())]",
+          "maximumThroughputUnits": "[if(contains(parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')], 'maximumThroughputUnits'), parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')].maximumThroughputUnits, 0)]",
+          "disableLocalAuth": "[if(contains(parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')], 'disableLocalAuth'), parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')].disableLocalAuth, false())]",
+          "kafkaEnabled": "[if(contains(parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')], 'kafkaEnabled'), parameters('eventHubNamespaces')[copyIndex('varEventHubNamespaces')].kafkaEnabled, true())]"
         }
       },
       {
         "name": "varNamespaceAuthorizationRules",
-        "count": "[length(items(parameters('namespaceAuthorizationRules')))]",
+        "count": "[length(parameters('namespaceAuthorizationRules'))]",
         "input": {
-          "eventHubNamespaceAuthorizationRuleName": "[items(parameters('namespaceAuthorizationRules'))[copyIndex('varNamespaceAuthorizationRules')].key]",
-          "rights": "[if(contains(items(parameters('namespaceAuthorizationRules'))[copyIndex('varNamespaceAuthorizationRules')].value, 'rights'), items(parameters('namespaceAuthorizationRules'))[copyIndex('varNamespaceAuthorizationRules')].value.rights, createArray())]",
-          "eventHubNamespaceName": "[items(parameters('namespaceAuthorizationRules'))[copyIndex('varNamespaceAuthorizationRules')].value.eventHubNamespaceName]"
+          "eventHubNamespaceAuthorizationRuleName": "[parameters('namespaceAuthorizationRules')[copyIndex('varNamespaceAuthorizationRules')].name]",
+          "rights": "[if(contains(parameters('namespaceAuthorizationRules')[copyIndex('varNamespaceAuthorizationRules')], 'rights'), parameters('namespaceAuthorizationRules')[copyIndex('varNamespaceAuthorizationRules')].rights, createArray())]",
+          "eventHubNamespaceName": "[parameters('namespaceAuthorizationRules')[copyIndex('varNamespaceAuthorizationRules')].eventHubNamespaceName]"
         }
       },
       {
         "name": "varDisasterRecoveryConfigs",
-        "count": "[length(items(parameters('disasterRecoveryConfigs')))]",
+        "count": "[length(parameters('disasterRecoveryConfigs'))]",
         "input": {
-          "disasterRecoveryConfigname": "[items(parameters('disasterRecoveryConfigs'))[copyIndex('varDisasterRecoveryConfigs')].key]",
-          "partnerNamespaceId": "[if(contains(items(parameters('disasterRecoveryConfigs'))[copyIndex('varDisasterRecoveryConfigs')].value, 'partnerNamespaceId'), items(parameters('disasterRecoveryConfigs'))[copyIndex('varDisasterRecoveryConfigs')].value.partnerNamespaceId, '')]",
-          "eventHubNamespaceName": "[items(parameters('disasterRecoveryConfigs'))[copyIndex('varDisasterRecoveryConfigs')].value.eventHubNamespaceName]"
+          "disasterRecoveryConfigname": "[parameters('disasterRecoveryConfigs')[copyIndex('varDisasterRecoveryConfigs')].name]",
+          "partnerNamespaceId": "[if(contains(parameters('disasterRecoveryConfigs')[copyIndex('varDisasterRecoveryConfigs')], 'partnerNamespaceId'), parameters('disasterRecoveryConfigs')[copyIndex('varDisasterRecoveryConfigs')].partnerNamespaceId, '')]",
+          "eventHubNamespaceName": "[parameters('disasterRecoveryConfigs')[copyIndex('varDisasterRecoveryConfigs')].eventHubNamespaceName]"
         }
       },
       {
         "name": "varEventHubs",
-        "count": "[length(items(parameters('eventHubs')))]",
+        "count": "[length(parameters('eventHubs'))]",
         "input": {
-          "eventHubName": "[items(parameters('eventHubs'))[copyIndex('varEventHubs')].key]",
-          "messageRetentionInDays": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'messageRetentionInDays'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.messageRetentionInDays, 1)]",
-          "partitionCount": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'partitionCount'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.partitionCount, 2)]",
-          "eventHubNamespaceName": "[items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.eventHubNamespaceName]",
-          "status": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'status'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.status, 'Active')]",
-          "captureDescriptionDestinationArchiveNameFormat": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'captureDescriptionDestinationArchiveNameFormat'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.captureDescriptionDestinationArchiveNameFormat, '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}')]",
-          "captureDescriptionDestinationBlobContainer": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'captureDescriptionDestinationBlobContainer'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.captureDescriptionDestinationBlobContainer, '')]",
-          "captureDescriptionDestinationName": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'captureDescriptionDestinationName'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.captureDescriptionDestinationName, 'EventHubArchive.AzureBlockBlob')]",
-          "captureDescriptionDestinationStorageAccountResourceId": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'captureDescriptionDestinationStorageAccountResourceId'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.captureDescriptionDestinationStorageAccountResourceId, '')]",
-          "captureDescriptionEnabled": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'captureDescriptionEnabled'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.captureDescriptionEnabled, false())]",
-          "captureDescriptionEncoding": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'captureDescriptionEncoding'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.captureDescriptionEncoding, 'Avro')]",
-          "captureDescriptionIntervalInSeconds": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'captureDescriptionIntervalInSeconds'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.captureDescriptionIntervalInSeconds, 300)]",
-          "captureDescriptionSizeLimitInBytes": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'captureDescriptionSizeLimitInBytes'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.captureDescriptionSizeLimitInBytes, 314572800)]",
-          "captureDescriptionSkipEmptyArchives": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'captureDescriptionSkipEmptyArchives'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.captureDescriptionSkipEmptyArchives, false())]",
-          "roleAssignments": "[if(contains(items(parameters('eventHubs'))[copyIndex('varEventHubs')].value, 'roleAssignments'), items(parameters('eventHubs'))[copyIndex('varEventHubs')].value.roleAssignments, createArray())]"
+          "eventHubName": "[parameters('eventHubs')[copyIndex('varEventHubs')].name]",
+          "messageRetentionInDays": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'messageRetentionInDays'), parameters('eventHubs')[copyIndex('varEventHubs')].messageRetentionInDays, 1)]",
+          "partitionCount": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'partitionCount'), parameters('eventHubs')[copyIndex('varEventHubs')].partitionCount, 2)]",
+          "eventHubNamespaceName": "[parameters('eventHubs')[copyIndex('varEventHubs')].eventHubNamespaceName]",
+          "status": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'status'), parameters('eventHubs')[copyIndex('varEventHubs')].status, 'Active')]",
+          "captureDescriptionDestinationArchiveNameFormat": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'captureDescriptionDestinationArchiveNameFormat'), parameters('eventHubs')[copyIndex('varEventHubs')].captureDescriptionDestinationArchiveNameFormat, '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}')]",
+          "captureDescriptionDestinationBlobContainer": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'captureDescriptionDestinationBlobContainer'), parameters('eventHubs')[copyIndex('varEventHubs')].captureDescriptionDestinationBlobContainer, '')]",
+          "captureDescriptionDestinationName": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'captureDescriptionDestinationName'), parameters('eventHubs')[copyIndex('varEventHubs')].captureDescriptionDestinationName, 'EventHubArchive.AzureBlockBlob')]",
+          "captureDescriptionDestinationStorageAccountResourceId": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'captureDescriptionDestinationStorageAccountResourceId'), parameters('eventHubs')[copyIndex('varEventHubs')].captureDescriptionDestinationStorageAccountResourceId, '')]",
+          "captureDescriptionEnabled": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'captureDescriptionEnabled'), parameters('eventHubs')[copyIndex('varEventHubs')].captureDescriptionEnabled, false())]",
+          "captureDescriptionEncoding": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'captureDescriptionEncoding'), parameters('eventHubs')[copyIndex('varEventHubs')].captureDescriptionEncoding, 'Avro')]",
+          "captureDescriptionIntervalInSeconds": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'captureDescriptionIntervalInSeconds'), parameters('eventHubs')[copyIndex('varEventHubs')].captureDescriptionIntervalInSeconds, 300)]",
+          "captureDescriptionSizeLimitInBytes": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'captureDescriptionSizeLimitInBytes'), parameters('eventHubs')[copyIndex('varEventHubs')].captureDescriptionSizeLimitInBytes, 314572800)]",
+          "captureDescriptionSkipEmptyArchives": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'captureDescriptionSkipEmptyArchives'), parameters('eventHubs')[copyIndex('varEventHubs')].captureDescriptionSkipEmptyArchives, false())]",
+          "roleAssignments": "[if(contains(parameters('eventHubs')[copyIndex('varEventHubs')], 'roleAssignments'), parameters('eventHubs')[copyIndex('varEventHubs')].roleAssignments, createArray())]"
         }
       },
       {
         "name": "varEventHubAuthorizationRules",
-        "count": "[length(items(parameters('eventHubAuthorizationRules')))]",
+        "count": "[length(parameters('eventHubAuthorizationRules'))]",
         "input": {
-          "eventHubAuthorizationRuleName": "[items(parameters('eventHubAuthorizationRules'))[copyIndex('varEventHubAuthorizationRules')].key]",
-          "rights": "[if(contains(items(parameters('eventHubAuthorizationRules'))[copyIndex('varEventHubAuthorizationRules')].value, 'rights'), items(parameters('eventHubAuthorizationRules'))[copyIndex('varEventHubAuthorizationRules')].value.rights, createArray())]",
-          "eventHubNamespaceName": "[items(parameters('eventHubAuthorizationRules'))[copyIndex('varEventHubAuthorizationRules')].value.eventHubNamespaceName]",
-          "eventHubName": "[items(parameters('eventHubAuthorizationRules'))[copyIndex('varEventHubAuthorizationRules')].value.eventHubName]"
+          "eventHubAuthorizationRuleName": "[parameters('eventHubAuthorizationRules')[copyIndex('varEventHubAuthorizationRules')].name]",
+          "rights": "[if(contains(parameters('eventHubAuthorizationRules')[copyIndex('varEventHubAuthorizationRules')], 'rights'), parameters('eventHubAuthorizationRules')[copyIndex('varEventHubAuthorizationRules')].rights, createArray())]",
+          "eventHubNamespaceName": "[parameters('eventHubAuthorizationRules')[copyIndex('varEventHubAuthorizationRules')].eventHubNamespaceName]",
+          "eventHubName": "[parameters('eventHubAuthorizationRules')[copyIndex('varEventHubAuthorizationRules')].eventHubName]"
         }
       },
       {
         "name": "varConsumerGroups",
-        "count": "[length(items(parameters('consumerGroups')))]",
+        "count": "[length(parameters('consumerGroups'))]",
         "input": {
-          "consumerGroupName": "[items(parameters('consumerGroups'))[copyIndex('varConsumerGroups')].key]",
-          "eventHubNamespaceName": "[items(parameters('consumerGroups'))[copyIndex('varConsumerGroups')].value.eventHubNamespaceName]",
-          "eventHubName": "[items(parameters('consumerGroups'))[copyIndex('varConsumerGroups')].value.eventHubName]",
-          "userMetadata": "[if(contains(items(parameters('consumerGroups'))[copyIndex('varConsumerGroups')].value, 'userMetadata'), items(parameters('consumerGroups'))[copyIndex('varConsumerGroups')].value.userMetadata, '')]"
+          "consumerGroupName": "[parameters('consumerGroups')[copyIndex('varConsumerGroups')].name]",
+          "eventHubNamespaceName": "[parameters('consumerGroups')[copyIndex('varConsumerGroups')].eventHubNamespaceName]",
+          "eventHubName": "[parameters('consumerGroups')[copyIndex('varConsumerGroups')].eventHubName]",
+          "userMetadata": "[if(contains(parameters('consumerGroups')[copyIndex('varConsumerGroups')], 'userMetadata'), parameters('consumerGroups')[copyIndex('varConsumerGroups')].userMetadata, '')]"
         }
       },
       {
         "name": "varDiagnosticSettings",
-        "count": "[length(items(parameters('diagnosticSettings')))]",
+        "count": "[length(parameters('diagnosticSettings'))]",
         "input": {
-          "diagnosticSettingName": "[items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].key]",
-          "diagnosticEnableNamespaceName": "[items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value.diagnosticEnablenamespaceName]",
-          "diagnosticStorageAccountId": "[if(contains(items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value, 'diagnosticStorageAccountId'), items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value.diagnosticStorageAccountId, '')]",
-          "diagnosticWorkspaceId": "[if(contains(items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value, 'diagnosticWorkspaceId'), items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value.diagnosticWorkspaceId, '')]",
-          "diagnosticEventHubAuthorizationRuleId": "[if(contains(items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value, 'diagnosticEventHubAuthorizationRuleId'), items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value.diagnosticEventHubAuthorizationRuleId, '')]",
-          "diagnosticEventHubName": "[if(contains(items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value, 'diagnosticEventHubName'), items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value.diagnosticEventHubName, '')]",
-          "diagnosticsMetrics": "[if(contains(items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value, 'diagnosticsMetrics'), items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value.diagnosticsMetrics, createArray())]",
-          "diagnosticsLogs": "[if(contains(items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value, 'diagnosticsLogs'), items(parameters('diagnosticSettings'))[copyIndex('varDiagnosticSettings')].value.diagnosticsLogs, createArray())]"
+          "diagnosticSettingName": "[parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')].name]",
+          "diagnosticEnableNamespaceName": "[parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')].diagnosticEnablenamespaceName]",
+          "diagnosticStorageAccountId": "[if(contains(parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')], 'diagnosticStorageAccountId'), parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')].diagnosticStorageAccountId, '')]",
+          "diagnosticWorkspaceId": "[if(contains(parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')], 'diagnosticWorkspaceId'), parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')].diagnosticWorkspaceId, '')]",
+          "diagnosticEventHubAuthorizationRuleId": "[if(contains(parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')], 'diagnosticEventHubAuthorizationRuleId'), parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')].diagnosticEventHubAuthorizationRuleId, '')]",
+          "diagnosticEventHubName": "[if(contains(parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')], 'diagnosticEventHubName'), parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')].diagnosticEventHubName, '')]",
+          "diagnosticsMetrics": "[if(contains(parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')], 'diagnosticsMetrics'), parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')].diagnosticsMetrics, createArray())]",
+          "diagnosticsLogs": "[if(contains(parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')], 'diagnosticsLogs'), parameters('diagnosticSettings')[copyIndex('varDiagnosticSettings')].diagnosticsLogs, createArray())]"
         }
       },
       {
         "name": "varNamespaceRoleAssignments",
-        "count": "[length(items(parameters('namespaceRoleAssignments')))]",
+        "count": "[length(parameters('namespaceRoleAssignments'))]",
         "input": {
-          "eventHubNamespaceRoleAssignmentsName": "[items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].key]",
-          "description": "[if(contains(items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value, 'description'), items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.description, '')]",
-          "principalIds": "[items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.principalIds]",
-          "principalType": "[if(contains(items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value, 'principalType'), items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.principalType, '')]",
-          "roleDefinitionIdOrName": "[items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.roleDefinitionIdOrName]",
-          "eventHubNamespaceName": "[items(parameters('namespaceRoleAssignments'))[copyIndex('varNamespaceRoleAssignments')].value.eventHubNamespaceName]"
+          "eventHubNamespaceRoleAssignmentsName": "[parameters('namespaceRoleAssignments')[copyIndex('varNamespaceRoleAssignments')].name]",
+          "description": "[if(contains(parameters('namespaceRoleAssignments')[copyIndex('varNamespaceRoleAssignments')], 'description'), parameters('namespaceRoleAssignments')[copyIndex('varNamespaceRoleAssignments')].description, '')]",
+          "principalIds": "[parameters('namespaceRoleAssignments')[copyIndex('varNamespaceRoleAssignments')].principalIds]",
+          "principalType": "[if(contains(parameters('namespaceRoleAssignments')[copyIndex('varNamespaceRoleAssignments')], 'principalType'), parameters('namespaceRoleAssignments')[copyIndex('varNamespaceRoleAssignments')].principalType, '')]",
+          "roleDefinitionIdOrName": "[parameters('namespaceRoleAssignments')[copyIndex('varNamespaceRoleAssignments')].roleDefinitionIdOrName]",
+          "eventHubNamespaceName": "[parameters('namespaceRoleAssignments')[copyIndex('varNamespaceRoleAssignments')].eventHubNamespaceName]"
         }
       },
       {
@@ -305,8 +306,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "6334119818039425552"
+              "version": "0.18.4.5664",
+              "templateHash": "3835985543528391470"
             }
           },
           "parameters": {
@@ -367,8 +368,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "15417594676504453116"
+              "version": "0.18.4.5664",
+              "templateHash": "9065679149507605210"
             }
           },
           "parameters": {
@@ -438,8 +439,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "11615617359408971468"
+              "version": "0.18.4.5664",
+              "templateHash": "4515293595337355667"
             }
           },
           "parameters": {
@@ -576,8 +577,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "14858084276366130362"
+              "version": "0.18.4.5664",
+              "templateHash": "17112093668110946608"
             }
           },
           "parameters": {
@@ -712,8 +713,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "3430624729635912537"
+                      "version": "0.18.4.5664",
+                      "templateHash": "3540806734174880152"
                     }
                   },
                   "parameters": {
@@ -827,8 +828,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "8200836686756721657"
+              "version": "0.18.4.5664",
+              "templateHash": "16309355701310650654"
             }
           },
           "parameters": {
@@ -895,8 +896,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "10174095528917220663"
+              "version": "0.18.4.5664",
+              "templateHash": "461863167076246616"
             }
           },
           "parameters": {
@@ -975,8 +976,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "15471641910519975356"
+              "version": "0.18.4.5664",
+              "templateHash": "13214001240203785224"
             }
           },
           "parameters": {
@@ -1073,8 +1074,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "11107361545483996372"
+              "version": "0.18.4.5664",
+              "templateHash": "1734132752840372544"
             }
           },
           "parameters": {
