@@ -150,7 +150,7 @@ module cognitiveServiceRbac 'modules/rbac.bicep' = [for (roleAssignment, index) 
   }
 }]
 
-module cognitiveServicePrivateEndpoint 'modules/privateEndpoint.bicep' = {
+module cognitiveServicePrivateEndpoint 'modules/privateEndpoint.bicep' = if (privateEndpoints != []) {
   name: '${name}-${uniqueString(deployment().name, location)}-private-endpoints'
   params: {
     location: location

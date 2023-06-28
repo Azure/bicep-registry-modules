@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "11869447302641025740"
+      "templateHash": "3638274855218429105"
     }
   },
   "parameters": {
@@ -410,6 +410,7 @@
       }
     },
     {
+      "condition": "[not(equals(parameters('privateEndpoints'), createArray()))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}-private-endpoints', parameters('name'), uniqueString(deployment().name, parameters('location')))]",
