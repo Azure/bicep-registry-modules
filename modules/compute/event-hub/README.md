@@ -27,10 +27,10 @@ This module deploys Microsoft.data event clusters, event namespaces, event hubs 
 
 ## Outputs
 
-| Name                     | Type   | Description                                               |
-| :----------------------- | :----: | :-------------------------------------------------------- |
-| resourceGroupName        | string | The resource group the Azure Event Hub was deployed into. |
-| eventHubNamespaceDetails | array  | Azure Event Hub namespace details.                        |
+| Name                       | Type     | Description                                               |
+| :------------------------- | :------: | :-------------------------------------------------------- |
+| `resourceGroupName`        | `string` | The resource group the Azure Event Hub was deployed into. |
+| `eventHubNamespaceDetails` | `array`  | Azure Event Hub namespace details.                        |
 
 ## Examples
 
