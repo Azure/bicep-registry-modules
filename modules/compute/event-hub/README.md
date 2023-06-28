@@ -23,8 +23,6 @@ This module deploys Microsoft.data event clusters, event namespaces, event hubs 
 | `eventHubAuthorizationRules`       | `array`  | No       | Optional. Authorization Rules for the Event Hub .                                                                             |
 | `eventHubConsumerGroups`           | `array`  | No       | Optional. consumer groups for the Event Hub .                                                                                 |
 | `namespacePrivateEndpoints`        | `array`  | No       | Private Endpoints that should be created for Azure EventHub Namespaces.                                                       |
-| `minimumTlsVersion`                | `string` | No       | MinimumTlsVersion for the Event Hub Namespace.                                                                                |
-| `publicNetworkAccess`              | `string` | No       | Whether enable publicNetworkAccess for the Event Hub Namespace.                                                               |
 
 ## Outputs
 

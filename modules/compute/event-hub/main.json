@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "490470096260742691"
+      "templateHash": "14656963798842433031"
     }
   },
   "definitions": {
@@ -72,6 +72,30 @@
           "nullable": true,
           "metadata": {
             "description": "Whethere tp disable SAS authentication or not."
+          }
+        },
+        "publicNetworkAccess": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled",
+            "SecuredByPerimeter"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Whether to enable public network access or not."
+          }
+        },
+        "minimumTlsVersion": {
+          "type": "string",
+          "allowedValues": [
+            "1.0",
+            "1.1",
+            "1.2"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Set the minimum TLS version for the Event Hub Namespace."
           }
         }
       }
@@ -657,7 +681,9 @@
           "kafkaEnabled": true,
           "isAutoInflateEnabled": false,
           "maximumThroughputUnits": 0,
-          "zoneRedundant": false
+          "zoneRedundant": false,
+          "minimumTlsVersion": "1.2",
+          "publicNetworkAccess": "Enabled"
         }
       ],
       "metadata": {
@@ -743,25 +769,6 @@
       "metadata": {
         "description": "Private Endpoints that should be created for Azure EventHub Namespaces."
       }
-    },
-    "minimumTlsVersion": {
-      "type": "string",
-      "defaultValue": "1.2",
-      "metadata": {
-        "description": "MinimumTlsVersion for the Event Hub Namespace."
-      }
-    },
-    "publicNetworkAccess": {
-      "type": "string",
-      "defaultValue": "Enabled",
-      "allowedValues": [
-        "Enabled",
-        "Disabled",
-        "SecuredByPerimeter"
-      ],
-      "metadata": {
-        "description": "Whether enable publicNetworkAccess for the Event Hub Namespace."
-      }
     }
   },
   "resources": {
@@ -797,8 +804,8 @@
         "maximumThroughputUnits": "[coalesce(tryGet(parameters('namespaces')[copyIndex()], 'maximumThroughputUnits'), 0)]",
         "zoneRedundant": "[coalesce(tryGet(parameters('namespaces')[copyIndex()], 'zoneRedundant'), false())]",
         "clusterArmId": "[if(not(equals(parameters('clusterName'), 'null')), resourceId('Microsoft.EventHub/clusters', parameters('clusterName')), null())]",
-        "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
-        "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
+        "minimumTlsVersion": "[coalesce(tryGet(parameters('namespaces')[copyIndex()], 'minimumTlsVersion'), '1.2')]",
+        "publicNetworkAccess": "[coalesce(tryGet(parameters('namespaces')[copyIndex()], 'publicNetworkAccess'), 'Enabled')]"
       },
       "tags": "[parameters('tags')]",
       "dependsOn": [
@@ -1140,7 +1147,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "7783251147046384372"
+              "templateHash": "10764198417497412068"
             }
           },
           "parameters": {
@@ -1287,7 +1294,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.18.4.5664",
-                      "templateHash": "8593592947040687129"
+                      "templateHash": "2483104214169957305"
                     }
                   },
                   "parameters": {
@@ -1359,7 +1366,7 @@
                       "name": "[guid(parameters('roleName'), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
                       "properties": {
                         "description": "[parameters('description')]",
-                        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')]), parameters('roleDefinitionIdOrName'))]",
+                        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionIdOrName')))]",
                         "principalId": "[parameters('principalIds')[copyIndex()]]",
                         "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]"
                       }
@@ -1690,7 +1697,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "4242977983153359623"
+              "templateHash": "12584299034552543040"
             }
           },
           "parameters": {
@@ -1721,6 +1728,7 @@
           },
           "resources": {
             "privateEndpoint::privateDnsZoneGroup": {
+              "condition": "[not(empty(parameters('privateDnsZoneId')))]",
               "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
               "apiVersion": "2022-05-01",
               "name": "[format('{0}/{1}', parameters('name'), 'default')]",
