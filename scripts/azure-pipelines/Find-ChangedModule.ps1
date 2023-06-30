@@ -1,7 +1,7 @@
 <#
 .SYNOPSIS
   Finds changed module.
-  
+
 .DESCRIPTION
   The script finds the changed module in the pull request that triggers the pipeline.
 
@@ -38,14 +38,14 @@ $changedModuleDirectories = @(
   $pullRequestFiles |
   Where-Object { $_.filename.StartsWith("modules") } |                # Get changed module files.
   ForEach-Object { Split-Path $_.filename } |                         # Get directories of changed module files.
-  ForEach-Object { 
+  Where-Object { $_.Split($separator).Length -ge 3 } |                # Ignore changes outside a module folder, e.g., modules/bicepconfig.json.
+  ForEach-Object {
     $_.Split($separator) |
-    Where-Object { $_.Length -ge 3 } |
     Select-Object -First 3 |
     Join-String -Separator $separator
-  } |                                                                 # Get module root directories.
-  Select-Object -Unique |                                             # Remove duplicates.
-  Where-Object { Test-Path $_ }                                       # Ignore removed directories.
+  } |                                                                   # Get module root directories.
+  Select-Object -Unique |                                               # Remove duplicates.
+  Where-Object { Test-Path $_ }                                         # Ignore removed directories.
 )
 
 # If no test file or more than one test file was found, set an empty string to skip the subsequent steps.
