@@ -66,7 +66,7 @@ async function runAsync(cmd, echo = true) {
 async function queryRunAsync(cmd) {
   const answer =
     runAll === true ||
-    (await queryUserAsync(`Run "${yellow}${cmd}${reset}"? (y/n/a) `));
+    (await queryUserAsync(`Run "${yellow}${cmd}${reset}"? (y/n/a/q) `));
 
   console.log(`answer: ${answer}`);
 
@@ -75,7 +75,7 @@ async function queryRunAsync(cmd) {
   } else if (answer === "a") {
     runAll = true;
     return await runAsync(cmd, false);
-  }
+  } else if (answer === "q") throw new Error("User aborted");
 }
 
 async function getChangedModulesAsync() {
@@ -92,12 +92,19 @@ async function getChangedModulesAsync() {
 async function CreatePRAsync(modulePath) {
   console.log(`${yellow}Creating PR for ${modulePath}...${reset}`);
 
-  const branchName = `${branchPrefix}/${modulePath}`;
+  const branchName = `${branchPrefix}/auto/${modulePath}`;
   await runAsync(`git checkout -b ${branchName}`);
   await runAsync(`git add modules/${modulePath}`);
   await runAsync(`git diff --name-only --cached`);
 
-  await queryRunAsync(`echo asdfg`);
+  const commitMessage = `${title} (${modulePath}) (auto)`;
+  await runAsync(`git commit -m "${commitMessage}"`);
+
+  const prTitle = `${title} (${modulePath})`;
+  const prBody = `This PR was created by a script. Please review the changes and merge if they look good.`;
+  const prCmd = `gh pr create --title "${prTitle}" --body "${prBody}" --base main --head ${branchName} --label "auto-generated"`;
+  await runAsync(`git diff -1`);
+  await queryRunAsync(prCmd);
 
   await runAsync(`git checkout main`);
   await runAsync(`git branch -d ${branchName}`);
