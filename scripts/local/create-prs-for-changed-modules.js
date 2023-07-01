@@ -100,8 +100,8 @@ async function CreatePRAsync(modulePath) {
   const commitMessage = `${title} (${modulePath}) (auto)`;
   const prTitle = `${title} (${modulePath})`;
   const prBody = `This PR was created by a script. Please review the changes and merge if they look good.`;
-  const prCmd = `gh pr create --title "${prTitle}" --body "${prBody}" --base main --head ${branchName} --label "auto-generated"`;
-  await runAsync(`git commit -m "${commitMessage}" && ${prCmd}`);
+  const prCmd = `gh pr create --title "${prTitle}" --body "${prBody}" --base main --head ${branchName} --label "Auto-generated"`;
+  await queryRunAsync(`git commit -m "${commitMessage}" && ${prCmd}`);
 
   await runAsync(`git checkout main`);
   await runAsync(`git branch -d ${branchName}`);
