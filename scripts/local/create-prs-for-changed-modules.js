@@ -52,6 +52,7 @@ function queryUserAsync(question) {
 }
 
 async function runAsync(cmd, echo = true) {
+  console.warn(1);
   if (echo) {
     console.log(cmd);
   }
@@ -60,6 +61,7 @@ async function runAsync(cmd, echo = true) {
   if (echo) {
     console.warn(`> ${response.stdout}`);
   }
+  console.warn(2);
   return response.stdout;
 }
 
@@ -90,6 +92,7 @@ async function getChangedModulesAsync() {
 }
 
 async function CreatePRAsync(modulePath) {
+  console.warn(3);
   console.log(`Creating PR for ${modulePath}...`);
 
   const branchName = `${branchPrefix}/${modulePath}`;
@@ -112,11 +115,12 @@ async function CreatePRs() {
 
   try {
     await runAsync(`git checkout main`);
-
+    console.warn(4);
     for (const modulePath of changedModules) {
       await CreatePRAsync(modulePath);
       break;
     }
+    console.warn(5);
   } finally {
     await runAsync(`git checkout ${currentBranch}`, false);
     console.log(`${green}Restored branch to ${currentBranch}${reset}`);
