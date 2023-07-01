@@ -36,6 +36,7 @@ if (!branchPrefix || !title) {
 }
 
 let runAll = false;
+
 function queryUserAsync(question) {
   const readline = require("readline").createInterface({
     input: process.stdin,
@@ -64,7 +65,10 @@ async function runAsync(cmd, echo = true) {
 
 async function queryRunAsync(cmd) {
   const answer =
-    runAll || (await queryUserAsync(`Run "${yellow}${cmd}${reset}"? (y/n/a) `));
+    runAll === true ||
+    (await queryUserAsync(`Run "${yellow}${cmd}${reset}"? (y/n/a) `));
+
+  console.log(`answer: ${answer}`);
 
   if (answer === "y") {
     return await runAsync(cmd);
