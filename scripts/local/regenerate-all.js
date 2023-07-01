@@ -2,9 +2,9 @@ const { exec } = require("child_process");
 const { promisify } = require("util");
 const execPromise = promisify(exec);
 
-function parseTag(tag) {
-  console.log(`tag: ${tag}`);
+const { updateReadmeExamplesAsync } = require("./update-readme-examples.js");
 
+function parseTag(tag) {
   const parseTagScript = require("../github-actions/parse-tag.js");
 
   let modulePath, version;
@@ -27,7 +27,7 @@ function parseTag(tag) {
   return { modulePath, version };
 }
 
-async function getLatestModules() {
+async function getLatestModulesAsync() {
   const tags = (await execPromise(`git tag -l`)).stdout
     .split("\n")
     .filter((tag) => tag !== "");
@@ -47,41 +47,7 @@ async function getLatestModules() {
   return Array.from(latestModules);
 }
 
-function getNextVersion(version) {
-  const semver = require("semver");
-  return semver.inc(version, "patch");
-}
-
-async function updateReadmeVersion(modulePath, version) {
-  const fs = require("fs");
-  const path = require("path");
-
-  const readmePath = path.join("./modules", modulePath, "README.md");
-  const readmeContent = fs.readFileSync(readmePath, "utf8");
-  console.log(`readmePath: ${readmePath}`);
-  console.log(`readmeContent: ${readmeContent}`);
-
-  const currentModulePath = `br/public:${modulePath}:${version}`;
-  console.log(`currentModulePath: ${currentModulePath}`);
-  const nextModulePath = `br/public:${modulePath}:${getNextVersion(version)}`;
-  console.log(`nextModulePath: ${nextModulePath}`);
-
-  const updatedReadmeContent = readmeContent.replace(
-    new RegExp(currentModulePath, "g"),
-    nextModulePath
-  );
-  console.log(`updatedReadmeContent: ${updatedReadmeContent}`);
-
-  fs.writeFileSync(readmePath, updatedReadmeContent, "utf8");
-
-  const github = require("@actions/github").getOctokit(process.env.GITHUB_PAT);
-
-  const context = {
-    repo: { owner: process.env.GITHUB_OWNER, repo: "bicep-registry-modules" },
-  };
-}
-
-async function updateReadmeVersions() {
+async function regenerateAllAsync() {
   const process = require("process");
   if (!process.env.GITHUB_PAT) {
     console.error("Need to set GITHUB_PAT");
@@ -94,11 +60,10 @@ async function updateReadmeVersions() {
     return;
   }
 
-  const modules = await getLatestModules();
-  console.log(modules);
+  const modules = await getLatestModulesAsync();
 
   for (const [modulePath, version] of modules) {
-    await updateReadmeVersion(modulePath, version);
+    await updateReadmeExamplesAsync(modulePath, version);
     break;
   }
 
@@ -110,7 +75,7 @@ async function updateReadmeVersions() {
   // };
 }
 
-updateReadmeVersions();
+regenerateAllAsync();
 
 // const scriptGenerateModuleIndexData = require(path.join(
 //   process.cwd(),
