@@ -31,7 +31,7 @@ This module deploys Microsoft.Compute Availability Sets and optionally available
 Example invocation with the minimum required parameters.
 
 ```bicep
-module minavs 'br/public:compute/availability-set:1.0' = {
+module minavs 'br/public:compute/availability-set:1.0.2' = {
   name: '${uniqueString(deployment().name, 'WestEurope')}-minavs'
   params: {
     name: 'carml-az-avs-min-01'
@@ -44,7 +44,7 @@ module minavs 'br/public:compute/availability-set:1.0' = {
 Example invocation with several properties including tags & role assignments.
 
 ```bicep
-module genavs 'br/public:compute/availability-set:1.0' = {
+module genavs 'br/public:compute/availability-set:1.0.2' = {
   name: '${uniqueString(deployment().name, 'WestEurope')}-genavs'
   params: {
     name: 'carml-az-avs-gen-01'
