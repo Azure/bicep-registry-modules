@@ -17,6 +17,12 @@ const { argv } = require("process");
 
 const { branchPrefix } = argv.slice(2);
 
+const red = "\u001b[31m";
+const green = "\u001b[32m";
+const blue = "\u001b[34m";
+const yellow = "\u001b[33m";
+const reset = "\u001b[0m";
+
 function queryUserAsync(question) {
   const readline = require("readline").createInterface({
     input: process.stdin,
@@ -31,10 +37,15 @@ function queryUserAsync(question) {
   });
 }
 
-async function run(cmd) {
-  console.log(cmd);
+async function run(cmd, echo = true) {
+  if (echo) {
+    console.log(cmd);
+  }
+
   const response = await execPromise(cmd);
-  console.warn(`> ${response.stdout}`);
+  if (echo) {
+    console.warn(`> ${response.stdout}`);
+  }
   return response.stdout;
 }
 
@@ -64,11 +75,19 @@ async function CreatePR(modulePath) {
 async function CreatePRs() {
   const changedModules = await getChangedModulesAsync();
 
-  await run(`git checkout main`);
+  const currentBranch = await run(`git symbolic-ref --short HEAD`, false);
+  console.log(`${green}Current branch: ${currentBranch}${reset}`);
 
-  for (const modulePath of changedModules) {
-    await CreatePR(modulePath);
-    break;
+  try {
+    await run(`git checkout main`);
+
+    for (const modulePath of changedModules) {
+      await CreatePR(modulePath);
+      break;
+    }
+  } finally {
+    await run(`git checkout ${currentBranch}`);
+    console.log(`${green}Current branch: ${currentBranch}${reset}`);
   }
 }
 
