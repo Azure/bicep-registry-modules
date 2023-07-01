@@ -1,3 +1,15 @@
+/*
+
+  This script is used to regenerate all the modules in the repo.
+
+  Usage:
+    cd repos/bicep-registry-modules
+    export GITHUB_PAT=...
+    export GITHUB_OWNER=...   (e.g. "azure" for "azure/bicep-registry-modules")
+    node scripts/local/regenerate-all.js
+
+*/
+
 const { exec } = require("child_process");
 const { promisify } = require("util");
 const execPromise = promisify(exec);
