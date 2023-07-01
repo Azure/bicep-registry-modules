@@ -52,7 +52,6 @@ function queryUserAsync(question) {
 }
 
 async function runAsync(cmd, echo = true) {
-  console.warn(1);
   if (echo) {
     console.log(cmd);
   }
@@ -61,7 +60,6 @@ async function runAsync(cmd, echo = true) {
   if (echo) {
     console.warn(`> ${response.stdout}`);
   }
-  console.warn(2);
   return response.stdout;
 }
 
@@ -92,15 +90,14 @@ async function getChangedModulesAsync() {
 }
 
 async function CreatePRAsync(modulePath) {
-  console.warn(3);
-  console.log(`Creating PR for ${modulePath}...`);
+  console.log(`${yellow}Creating PR for ${modulePath}...${reset}`);
 
   const branchName = `${branchPrefix}/${modulePath}`;
   await runAsync(`git checkout -b ${branchName}`);
   await runAsync(`git add modules/${modulePath}`);
-  await runAsync(`git status`);
+  await runAsync(`git diff --name-only --cached`);
 
-  await queryRunAsync(`git status`);
+  await queryRunAsync(`echo asdfg`);
 
   await runAsync(`git checkout main`);
   await runAsync(`git branch -d ${branchName}`);
@@ -113,14 +110,12 @@ async function CreatePRs() {
   const currentBranch = await runAsync(`git symbolic-ref --short HEAD`, false);
   console.log(`${green}Current branch: ${currentBranch}${reset}`);
 
+  await runAsync(`git checkout main`);
+
   try {
-    await runAsync(`git checkout main`);
-    console.warn(4);
     for (const modulePath of changedModules) {
       await CreatePRAsync(modulePath);
-      break;
     }
-    console.warn(5);
   } finally {
     await runAsync(`git checkout ${currentBranch}`, false);
     console.log(`${green}Restored branch to ${currentBranch}${reset}`);
