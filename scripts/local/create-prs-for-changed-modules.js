@@ -95,7 +95,7 @@ async function CreatePRAsync(modulePath) {
   const branchName = `${branchPrefix}/auto/${modulePath}`;
   await runAsync(`git checkout -b ${branchName}`);
   await runAsync(`git add modules/${modulePath}`);
-  await runAsync(`git diff --name-only --cached`);
+  await runAsync(`git diff --cached`);
 
   const commitMessage = `${title} (${modulePath}) (auto)`;
   const prTitle = `${title} (${modulePath})`;
