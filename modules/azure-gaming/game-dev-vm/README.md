@@ -71,7 +71,7 @@ See our [documentation](https://docs.microsoft.com/en-us/gaming/azure/game-dev-v
 ### Using the Azure Game Developer VM module
 
 ```bicep
-module gameDevVM 'br/public:azure-gaming/game-dev-vm:2.0.1' = {
+module gameDevVM 'br/public:azure-gaming/game-dev-vm:2.0.3' = {
   name: 'gameDevVM'
   params: {
     vmName: 'gameDevVM'
