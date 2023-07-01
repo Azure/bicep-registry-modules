@@ -118,8 +118,8 @@ async function CreatePRs() {
       break;
     }
   } finally {
-    await runAsync(`git checkout ${currentBranch}`);
-    console.log(`${green}Current branch: ${currentBranch}${reset}`);
+    await runAsync(`git checkout ${currentBranch}`, false);
+    console.log(`${green}Restored branch to ${currentBranch}${reset}`);
   }
 }
 
