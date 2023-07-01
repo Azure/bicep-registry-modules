@@ -7,6 +7,10 @@ function getNextVersion(version) {
 async function updateReadmeExamplesAsync(modulePath, version) {
   const fs = require("fs");
   const path = require("path");
+  const red = "\u001b[31m";
+  const green = "\u001b[32m";
+  const blue = "\u001b[34m";
+  const reset = "\u001b[0m";
 
   console.log(`Updating README.md examples for ${modulePath}...`);
 
@@ -25,8 +29,8 @@ async function updateReadmeExamplesAsync(modulePath, version) {
     (m) => m !== currentModulePath && m !== nextModulePath
   );
   if (unexpectedVersions.length > 0) {
-    throw new Error(
-      `UNEXPECTED VERSIONS FOUND in ${readmePath}: ${unexpectedVersions}`
+    console.error(
+      `${red}UNEXPECTED VERSIONS FOUND in ${readmePath}: ${unexpectedVersions}${reset}`
     );
   }
 
@@ -36,12 +40,14 @@ async function updateReadmeExamplesAsync(modulePath, version) {
   );
   if (updatedReadmeContent !== readmeContent) {
     console.log(
-      `... Updated references in README.md: ${currentModulePath} => ${nextModulePath}.`
+      `... ${green}Updated references in README.md: ${currentModulePath} => ${nextModulePath}.${reset}`
     );
     fs.writeFileSync(readmePath, updatedReadmeContent, "utf8");
     return true;
   } else {
-    console.log(`... Module references in README.md are up-to-date.`);
+    console.log(
+      `... ${blue}Module references in README.md are up-to-date.${reset}`
+    );
     return false;
   }
 }

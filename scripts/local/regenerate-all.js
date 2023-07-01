@@ -64,7 +64,6 @@ async function regenerateAllAsync() {
 
   for (const [modulePath, version] of modules) {
     await updateReadmeExamplesAsync(modulePath, version);
-    break;
   }
 
   //await updateReadmeVersion(modulePath, version);
