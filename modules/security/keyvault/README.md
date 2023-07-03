@@ -83,7 +83,7 @@ This example deploys a Virtual Network with the specified parameters and a subne
 ```bicep
 param location string
 
-module vnet 'br/public:network/virtual-network:1.0.1' = {
+module vnet 'br/public:security/keyvault:1.0.1' = {
   name: 'vnet'
   params: {
     location: location
