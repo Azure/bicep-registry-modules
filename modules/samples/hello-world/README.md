@@ -23,7 +23,7 @@ A "Hello World" sample Bicep registry module
 ### Using the hello world module
 
 ```bicep
-module helloWorld 'br/public:samples/hello-world:1.0.1' = {
+module helloWorld 'br/public:samples/hello-world:1.0.3' = {
   name: 'helloWorld'
   params: {
     name: 'Bicep developers'
