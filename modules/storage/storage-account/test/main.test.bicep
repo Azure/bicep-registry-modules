@@ -146,7 +146,7 @@ module test4 '../main.bicep' = {
     objectReplicationPolicy: {
       enabled: true
       policyId: 'default'
-      sourceSaName: 'test2rbac'
+      sourceSaName: '2${uniqueStoragename}'
       destinationSaName: '3${uniqueStoragename}'
       sourceSaId: test2.outputs.id
       destinationSaId: test3.outputs.id
