@@ -51,7 +51,7 @@ The Bicep module deploys an Azure Cognitive Service to a specified location, all
 Deploys a SpeechService Cognitive Service
 
 ```bicep
-module speechService 'br/public:ai/cognitiveservices:0.0.1' = {
+module speechService 'br/public:ai/cognitiveservices:1.0.2' = {
   name: 'speechService'
   params: {
     kind: 'SpeechServices'
@@ -67,7 +67,7 @@ module speechService 'br/public:ai/cognitiveservices:0.0.1' = {
 Deploys an OpenAI Cognitive Service with a model deployment
 
 ```bicep
-module openAI 'br/public:ai/cognitiveservices:0.0.1' = {
+module openAI 'br/public:ai/cognitiveservices:1.0.2' = {
   name: 'openai'
   params: {
     skuName: 'S0'
@@ -100,7 +100,7 @@ module openAI 'br/public:ai/cognitiveservices:0.0.1' = {
 Deploys a Content Moderator Cognitive Service
 
 ```bicep
-module contentModerator 'br/public:ai/cognitiveservices:0.0.1' = {
+module contentModerator 'br/public:ai/cognitiveservices:1.0.2' = {
   name: 'contentModerator'
   params: {
     skuName: 'S0'
@@ -116,7 +116,7 @@ module contentModerator 'br/public:ai/cognitiveservices:0.0.1' = {
 Deploys a Speech Service with role assignments and private endpoints
 
 ```bicep
-module speechService 'br/public:ai/cognitiveservices:0.0.1' = {
+module speechService 'br/public:ai/cognitiveservices:1.0.2' = {
   name: 'test-04-speech'
   params: {
     name: 'test-04-speech-${uniqueName}'
