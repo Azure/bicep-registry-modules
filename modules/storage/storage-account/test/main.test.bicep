@@ -147,7 +147,7 @@ module test4 '../main.bicep' = {
       enabled: true
       policyId: 'default'
       sourceSaName: 'test2rbac'
-      destinationSaName: 'destreplicationsa'
+      destinationSaName: '3${uniqueStoragename}'
       sourceSaId: test2.outputs.id
       destinationSaId: test3.outputs.id
       sourcePolicy: false
@@ -209,7 +209,7 @@ module test5 '../main.bicep' = {
       enabled: true
       policyId: test4.outputs.orpId
       sourceSaName: 'test2rbac'
-      destinationSaName: 'destreplicationsa'
+      destinationSaName: '3${uniqueStoragename}'
       sourceSaId: test2.outputs.id
       destinationSaId: test3.outputs.id
       sourcePolicy: true
