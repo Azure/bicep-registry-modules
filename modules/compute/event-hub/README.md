@@ -35,42 +35,72 @@ This module deploys Microsoft.data event clusters, event namespaces, event hubs 
 
 ### Example 1
 
-```
-param clusterName string
-param clusterCapacity int
-param eventHubNamespaces object
-
-module eventhubnamespace 'br/public:compute/event-hub:0.0.1' = {
-  name: '${uniqueString(deployment().name, 'eastus')}-event-hub-namespace'
+```bicep
+module evh 'br/public:compute/event-hub:2.0.1' = {
+  name: 'evh-${uniqueString(deployment().name, 'eastus2')}'
   params: {
-    location: 'eastus'
-    clusterName: clusterName
-    clusterCapacity: clusterCapacity
-    eventHubNamespaces: {
-        production1: {
-            sku: 'Standard'
-            capacity:  4
-            maximumThroughputUnits: 2
-            zoneRedundant: true
-            isAutoInflateEnabled: true
-        }
-        production2: {
-            sku: 'Standard'
-            capacity:  4
-            maximumThroughputUnits: 2
-            zoneRedundant: true
-        }
-    }
-    namespaceRoleAssignments: {
-      production1: {
-        description: 'Reader Role Assignment'
-        principalIds: [ '30ec80f4-43d7-1280-99ba-2571db1cc45b' ]
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-        eventHubNamespaceName: 'production1'
+    location: 'eastus2'
+    clusterName: 'evhcluster1'
+    clusterCapacity: 2
+    namespaces: [
+      {
+        name: 'testns1'
+        capacity: 2
+        isAutoInflateEnabled: true
+        maximumThroughputUnits: 6
+        zoneRedundant: true
+        publicNetworkAccess: false
       }
+      {
+        name: 'testns2'
+        sku: 'Basic'
+      }
+    ]
+    namespaceAuthorizationRules: [
+      {
+        name: 'authrule01'
+        rights: [ 'Listen', 'Manage', 'Send' ]
+        namespaceName: 'testns1'
+      }
+      {
+        name: 'authrule02'
+        rights: [ 'Listen' ]
+        namespaceName: 'testns1'
+      }
+    ]
+    eventHubs: [
+      {
+        name: 'evh1'
+        messageRetentionInDays: 4
+        partitionCount: 4
+        namespaceName: 'testns1'
+      }
+      {
+        name: 'evh2'
+        messageRetentionInDays: 7
+        partitionCount: 2
+        namespaceName: 'testns1'
+      }
+    ]
+    eventHubAuthorizationRules: [
+      {
+        name: 'evh-rule01'
+        rights: [ 'Listen', 'Manage', 'Send' ]
+        namespaceName: 'testns1'
+        eventHubName: 'evh1'
+      }
+    ]
+    eventHubConsumerGroups: [
+      {
+        name: 'cg01'
+        namespaceName: 'testns1'
+        eventHubName: 'evh1'
+      }
+    ]
+    tags: {
+      tag1: 'tag1value'
+      tag2: 'tag2value'
     }
-
   }
 }
 ```
@@ -78,72 +108,45 @@ module eventhubnamespace 'br/public:compute/event-hub:0.0.1' = {
 ### Example 2
 
 ```bicep
-param eventHubNamespaces object
-param eventHubs object
-param namespaceAuthorizationRules object
-param eventHubAuthorizationRules object
-param consumerGroups object
-param disasterRecoveryConfigs object
-
-
-module eventhubnamespace 'br/public:compute/event-hub:0.0.1' = {
-  name: '${uniqueString(deployment().name, 'eastus')}-event-hub-namespace'
+module evhns 'br/public:compute/event-hub:2.0.1' = {
+  name: 'evhns-${uniqueString(deployment().name, 'eastus')}'
   params: {
     location: 'eastus'
-    eventHubNamespaces: {
-        production1: {
-            sku: 'Standard'
-            capacity:  4
-            maximumThroughputUnits: 2
-            zoneRedundant: true
-            isAutoInflateEnabled: true
-        }
-    }
-    eventHubs: {
-        audit: {
-            messageRetentionInDays: 7
-            partitionCount: 2
-            eventHubNamespaceName: production1
-        }
-        billing: {
-            messageRetentionInDays: 7
-            partitionCount: 2
-            eventHubNamespaceName: production1
-            roleAssignments: [
-            {
-              roleDefinitionIdOrName: 'Reader'
-              description: 'Reader Role Assignment'
-              principalIds: [ '10ec80f4-43d7-1280-99aa-2571db1cc45b' ]
-              principalType: 'ServicePrincipal'
-            }
-          ]
-        }
-    }
-    namespaceAuthorizationRules: {
-        rule1: {
-            rights: ['Listen','Manage','Send']
-            eventHubNamespaceName: production1
-        }
-    }
-    eventHubAuthorizationRules: {
-        rule1: {
-            rights: ['Listen','Manage','Send']
-            eventHubNamespaceName: production
-            eventHubName: audit
-        }
-    }
-    consumerGroups: {
-        consumergroup1: {
-            eventHubNamespaceName: production1
-            eventHubName: audit
-        }
-    }
-    disasterRecoveryConfigs: {
-        disasternamespace: {
-            eventHubNamespaceName: production1
-            partnerNamespaceId: 'partnerNamespaceId'
-        }
-    }
+    namespaces: [
+      {
+        name: 'testns'
+        sku: 'Premium'
+        capacity: 2
+        zoneRedundant: true
+      }
+    ]
+    namespaceRoleAssignments: [
+      {
+        name: 'rol01'
+        description: 'Reader Role Assignment'
+        principalIds: [ '30ec80f4-43d7-1280-99ba-2571db1cc45b' ]
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'f526a384-b230-433a-b45c-95f59c4a2dec' // Azure Event Hubs Data Owner
+        namespaceName: 'testns'
+      }
+    ]
+    eventHubs: [
+      {
+        name: 'evh'
+        messageRetentionInDays: 1
+        partitionCount: 1
+        namespaceName: 'testns'
+        roleAssignments: [
+          {
+            name: 'role01'
+            roleDefinitionIdOrName: 'Contributor'
+            description: 'Contributor Role Assignment'
+            principalIds: [ '10ec80f4-43d7-1280-99aa-2571db1cc45b' ]
+            principalType: 'ServicePrincipal'
+          }
+        ]
+      }
+    ]
   }
 }
 ```
@@ -151,23 +154,63 @@ module eventhubnamespace 'br/public:compute/event-hub:0.0.1' = {
 ### Example 3
 
 ```bicep
-module eventhubnamespace 'br/public:compute/event-hub:0.0.1' = {
-  name: '${uniqueString(deployment().name, 'eastus')}-event-hub-namespace'
+module evhns 'br/public:compute/event-hub:2.0.1' = {
+  name: 'evhns-${uniqueString(deployment().name, 'eastus')}'
   params: {
     location: 'eastus'
-    eventHubNamespaces: {
-        productionBasic: {
-            sku: 'Basic'
-            capacity:  4
-
-        }
-    }
-    privateEndpoints: [
+    namespaces: [
+      {
+        name: 'testns3'
+        sku: 'Standard'
+        capacity: 4
+        publicNetworkAccess: 'Disabled'
+      }
+    ]
+    namespacePrivateEndpoints: [
       {
         name: 'endpoint1'
-        subnetId: subnetId
-        privateDnsZoneId: privateDnsZoneId
-        eventHubNamespaceName: productionBasic
+        subnetId: dependencies.outputs.subnetIds[0]
+        namespaceName: 'testns3'
+        manualApprovalEnabled: true
+      }
+      {
+        name: 'endpoint2'
+        subnetId: dependencies.outputs.subnetIds[1]
+        privateDnsZoneId: dependencies.outputs.privateDNSZoneId
+        namespaceName: 'testns3'
+      }
+    ]
+    namespaceDiagnosticSettings: [
+      {
+        name: 'testds'
+        namespaceName: 'testns3'
+        eventHubAuthorizationRuleId: < external evenetHub authorizationRuleId >
+        eventHubName: < external eventHub name
+        metricsSettings: [
+          {
+            category: 'AllMetrics'
+            timeGrain: 'PT1M'
+            enabled: true
+            retentionPolicy: {
+              days: 7
+              enabled: true
+            }
+          }
+        ]
+        logsSettings: [
+          {
+            category: 'OperationalLogs'
+            enabled: true
+            retentionPolicy: {
+              days: 36
+              enabled: true
+            }
+          }
+          {
+            category: 'ArchiveLogs'
+            enabled: true
+          }
+        ]
       }
     ]
   }
@@ -177,30 +220,50 @@ module eventhubnamespace 'br/public:compute/event-hub:0.0.1' = {
 ### Example 4
 
 ```bicep
-module eventhubnamespace 'br/public:compute/event-hub:0.0.1' = {
-  name: '${uniqueString(deployment().name, 'eastus')}-event-hub-namespace'
+module eventhubnamespace 'br/public:compute/event-hub:2.0.1' = {
+  name: 'evhns-${uniqueString(deployment().name, 'eastus')}'
   params: {
     location: 'eastus'
-    eventHubNamespaces: {
-        productionPremium: {
-            sku: 'Premium'
-            capacity:  4
-            zoneRedundant: true
-        }
-    }
+    namespaces: [
+      {
+        name: 'testns4'
+        sku: 'Standard'
+        capacity: 1
+        zoneRedundant: false
+      }
+    ]
+    eventHubs: [
+      {
+        name: 'testevh'
+        messageRetentionInDays: 1
+        partitionCount: 2
+        namespaceName: 'testns4'
+        captureDescriptionEnabled: true
+        captureDescriptionDestinationBlobContainer: << external storageAccount blob container name >>
+        captureDescriptionDestinationStorageAccountResourceId: << external storageAccount Id >>
+      }
+    ]
+    namespaceDiagnosticSettings: [
+      {
+        name: 'ds'
+        namespaceName: 'testns4'
+        storageAccountId: << external storageAccount Id >>
+        workspaceId: << external long analytics workspace Id >>
+        metricsSettings: [ { category: 'AllMetrics', enabled: true, retentionPolicy: { days: 365, enabled: true } } ]
+        logsSettings: [
+          {
+            category: 'ArchiveLogs'
+            enabled: true
+            retentionPolicy: { days: 7, enabled: true }
+          }
+          {
+            category: 'RuntimeAuditLogs'
+            enabled: true
+            retentionPolicy: { days: 3, enabled: true }
+          }
+        ]
+      }
+    ]
   }
 }
-
-```
-
-### Example 5
-
-```bicep
-module eventhubnamespace 'br/public:compute/event-hub:0.0.1' = {
-  name: '${uniqueString(deployment().name, 'eastus')}-event-hub-namespace'
-  params: {
-    location: 'eastus'
-  }
-}
-
 ```
