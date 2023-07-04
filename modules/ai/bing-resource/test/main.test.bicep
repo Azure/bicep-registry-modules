@@ -22,7 +22,7 @@ module test_01_Bing '../main.bicep' = {
 }
 
 
-// Test-02 - Bing Custom Search resource
+// Test-02 - Bing Custom Search resource test
 
 module test_02_Bing '../main.bicep' = {
   name: 'test_02_Bing_resource'
