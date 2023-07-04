@@ -19,9 +19,6 @@ param isZoneRedundant bool = false
 @description('Storage Account Type. Use Zonal Redundant Storage when able.')
 param storageAccountType string = isZoneRedundant ? 'Standard_ZRS' : 'Standard_LRS'
 
-@description('It will be moved to the cool tier after the given amount of days.')
-param daysAfterLastModification int = 30
-
 @description('Specifies the type of blob to manage the lifecycle policy.')
 param blobType string = 'blockBlob'
 
@@ -49,69 +46,32 @@ param publicNetworkAccess string = 'Disabled'
 ])
 param minimumTlsVersion string = 'TLS1_2'
 
-@description('Prefix of destination Storage Account Resource Name. This param is ignored when name is provided.')
-param destPrefix string = 'dt'
+@description('Lifecycle Management Policy Rules, should contain: \'moveToCool\' bool to enable blob to be moved to cool tier after \'moveToCoolAfterLastModificationDays\', \'deleteBlob\' bool to enable blob to be deleted after \'deleteBlobAfterLastModificationDays\' and delete the snapshot after \'deleteSnapshotAfterLastModificationDays\' ')
+param lifecycleManagementPolicy lifecycleManagementPolicyObj = {
+  moveToCool: false
+  moveToCoolAfterLastModificationDays: 30
+  deleteBlob: false
+  deleteBlobAfterLastModificationDays: 30
+  deleteSnapshotAfterLastModificationDays: 30
+}
 
-@description('Name of destination Storage Account. Must be unique within Azure.')
-param destStorageAccountName string = '${destPrefix}${uniqueString(resourceGroup().id, subscription().id)}'
-
-@description('Destination Storage Account Location.')
-param destLocation string = location
-
-@description('Allows https traffic only to storage service if sets to true.')
-param destSupportHttpsTrafficOnly bool = true
-
-@description('Allow or disallow public access to all blobs or containers in the destination storage account.')
-param destAllowBlobPublicAccess bool = false
-
-@description('Replication of objects between AAD tenants is allowed or not. For this property, the default interpretation is true.')
-param destAllowCrossTenantReplication bool = false
-
-@description('Allow or disallow public network access to Storage Account. Value is optional but if passed in, must be Enabled or Disabled.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param destPublicNetworkAccess string = 'Disabled'
-
-@description('Set the minimum TLS version to be permitted on requests to storage. The default interpretation is TLS 1.0 for this property.')
-@allowed([
-  'TLS1_0'
-  'TLS1_1'
-  'TLS1_2'
-])
-param destMinimumTlsVersion string = minimumTlsVersion
-
-@description('It will be deleted after the given amount of days.')
-param destDaysAfterLastModification int = 30
-
-@description('Specifies the type of blob to manage the lifecycle policy.')
-param destBlobType string = blobType
-
-@description('Indicates whether change feed event logging is enabled for the Blob service.')
-param destChangeFeedEnabled bool = true
-
-@description('Versioning is enabled if set to true. To the destination storage account, set true.')
-param destVersioningEnabled bool = true
-
-@description('The SKU name to provide for account creation. Default is Standard_LRS.')
-@allowed([
-  'Standard_LRS'
-  'Standard_GRS'
-  'Standard_ZRS'
-  'Standard_RAGRS'
-  'Standard_RAGZRS'
-])
-param destSkuName string = 'Standard_LRS'
-
-@description('Rule Id is auto-generated for each new rule on destination account. It is required for put policy on source account.')
-param ruleId  string = ''
-
-@description('This is the name to provide for objectReplicationPolicies.')
-param policyId string = 'default'
-
-@description('When performing object replication, it must be true and all resources necessary for the destination storage account will be created.')
-param objectReplicationPolicy bool = false
+@description('When performing object replication, it should be enabled and contain: \'sourceSaName\', \'destinationSaName\', \'sourceSaId\', \'destinationSaId\', \'policyId\' & \'objReplicationRules\' which is array of objReplicationRules object that contains sourceContainer, destinationContainer and ruleId')
+param objectReplicationPolicy objectReplicationPolicyObj = {
+  enabled: false
+  sourcePolicy: false
+  policyId: 'default'
+  sourceSaId: 'sourceSaId'
+  destinationSaId: 'destinationSaId'
+  sourceSaName: 'sourceSaName'
+  destinationSaName: 'destinationSaName'
+  objReplicationRules: [
+    {
+      destinationContainer: 'destContainer'
+      sourceContainer: 'sourceContainer'
+      ruleId: null
+    }
+  ]
+}
 
 @description('Define Private Endpoints that should be created for Azure Storage Account.')
 param privateEndpoints array = []
@@ -128,14 +88,14 @@ param blobName string = 'default'
 @description('Properties object for a Blob service of a Storage Account.')
 param blobProperties blobServiceProperties = {}
 
-@description('Name of a blob container to be created')
-param blobContainerName string = 'default'
+@description('Array of "name" & "properties" object for a Blob containers to be created for blobServices of Storage Account.')
+param blobContainers blobContainersArray = []
 
-@description('Properties object for a Blob container of a Storage Account.')
-param blobContainerProperties blobServiceContainerProperties = {}
+@description('Array of role assignment objects with Storage Account scope that contain the \'roleDefinitionIdOrName\', \'principalId\' and \'principalType\' to define RBAC role assignments on that resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'')
+param storageRoleAssignments storageRoleAssignmentsArray = []
 
-@description('Array of role assignment objects that contain the \'roleDefinitionIdOrName\', \'principalId\' and \'resourceType\' as \'storageAccount\' or \'blobContainer\' to define RBAC role assignments on that resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'')
-param roleAssignments roleAssignmentsArray = []
+@description('Array of role assignment objects with blobServices/containers scope that contain the \'containerName\', \'roleDefinitionIdOrName\', \'principalId\' and \'principalType\' to define RBAC role assignments on that resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'')
+param containerRoleAssignments containerRoleAssignmentsArray = []
 
 var networkAcls = enableVNET ? {
   defaultAction: 'Deny'
@@ -188,131 +148,79 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
     publicNetworkAccess: publicNetworkAccess
     minimumTlsVersion: minimumTlsVersion
   }
+}
 
-  resource managementpolicy 'managementPolicies@2021-04-01' = {
-    name: 'default'
-    properties: {
-      policy: {
-        rules: [
+resource managementpolicy 'Microsoft.Storage/storageAccounts/managementPolicies@2021-04-01' = {
+  name: 'default'
+  parent: storageAccount
+  properties: {
+    policy: {
+      rules: [
         {
-          enabled: true
+          enabled: lifecycleManagementPolicy.moveToCool
           name: 'move-to-cool'
           type: 'Lifecycle'
           definition: {
-          actions: {
-            baseBlob: {
-              tierToCool: {
-                daysAfterModificationGreaterThan: daysAfterLastModification
-                }
-            }
-          }
-          filters: {
-            blobTypes: [
-              blobType
-              ]
-            }
-          }
-        }]
-      }
-    }
-  }
-  resource blobService 'blobServices' = if (blobName != '') {
-    name: blobName
-    properties: blobProperties
-    resource container 'containers' = if (blobContainerName != '') {
-      name: blobContainerName
-      properties: blobContainerProperties
-    }
-  }
-}
-
-resource destinationStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = if(objectReplicationPolicy) {
-    name: destStorageAccountName
-    location: destLocation
-    sku: {
-        name: destSkuName
-    }
-    kind: 'StorageV2'
-    properties: {
-      encryption: {
-        keySource: 'Microsoft.Storage'
-        services: {
-          blob: {
-            enabled: true
-          }
-          file: {
-           enabled: true
-          }
-        }
-      }
-      networkAcls: networkAcls
-      supportsHttpsTrafficOnly: destSupportHttpsTrafficOnly
-      allowBlobPublicAccess: destAllowBlobPublicAccess
-      allowCrossTenantReplication: destAllowCrossTenantReplication
-      publicNetworkAccess: destPublicNetworkAccess
-      minimumTlsVersion: destMinimumTlsVersion
-    }
-
-    resource destinationBlobService 'blobServices@2022-09-01' = {
-      name: 'default'
-      properties: {
-        changeFeed: {
-          enabled: destChangeFeedEnabled
-        }
-        isVersioningEnabled: destVersioningEnabled
-      }
-
-      resource destinationContainer 'containers@2022-09-01' = {
-        name: 'destinationcontainer'
-        properties: {
-          publicAccess: 'None'
-        }
-      }
-    }
-
-    resource destinationmanagementpolicy 'managementPolicies@2021-04-01' = {
-      name: 'default'
-      properties: {
-        policy: {
-          rules: [
-          {
-            enabled: true
-            name: 'delete'
-            type: 'Lifecycle'
-            definition: {
             actions: {
               baseBlob: {
-                delete: {
-                  daysAfterModificationGreaterThan: destDaysAfterLastModification
+                tierToCool: {
+                  daysAfterModificationGreaterThan: lifecycleManagementPolicy.moveToCoolAfterLastModificationDays
                 }
               }
             }
             filters: {
               blobTypes: [
-                destBlobType
+                blobType
               ]
             }
-            }
-          }]
+          }
         }
-      }
+        {
+          enabled: lifecycleManagementPolicy.deleteBlob
+          name: 'delete'
+          type: 'Lifecycle'
+          definition: {
+            actions: {
+              baseBlob: {
+                delete: {
+                  daysAfterModificationGreaterThan: lifecycleManagementPolicy.deleteBlobAfterLastModificationDays
+                }
+              }
+              snapshot: {
+                delete: {
+                  daysAfterCreationGreaterThan: lifecycleManagementPolicy.deleteSnapshotAfterLastModificationDays
+                }
+              }
+            }
+            filters: {
+              blobTypes: [
+                'blockBlob'
+              ]
+            }
+          }
+        }
+      ]
     }
+  }
 }
 
-resource destinationOrPolicy 'Microsoft.Storage/storageAccounts/objectReplicationPolicies@2022-09-01' = if (objectReplicationPolicy) {
-    name: policyId
-    parent: destinationStorageAccount
-    properties: {
-        sourceAccount: storageAccount.id
-        destinationAccount: destinationStorageAccount.id
-        rules: [
-            {
-                destinationContainer: 'destinationcontainer'
-                sourceContainer: blobContainerName
-                ruleId: ((ruleId == '' ) ? null : ruleId)
-            }
-        ]
-    }
+resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2021-04-01' = if (blobName != '') {
+  name: blobName
+  parent: storageAccount
+  properties: blobProperties
+}
+
+resource blobContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-04-01' = [for blobContainer in blobContainers: {
+  name: blobContainer.name
+  parent: blobService
+  properties: contains(blobContainer, 'properties') ? blobContainer.properties : {}
+}]
+
+module orPolicy 'modules/or-policy.bicep' = if (objectReplicationPolicy.enabled) {
+  name: '${uniqueString(deployment().name, location)}-storageaccount-or-policy'
+  params: {
+    objectReplicationPolicy: objectReplicationPolicy
+  }
 }
 
 module storageaccount_privateEndpoint 'modules/privateEndpoint.bicep' = {
@@ -324,23 +232,35 @@ module storageaccount_privateEndpoint 'modules/privateEndpoint.bicep' = {
   }
 }
 
-module storageRbac 'modules/rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
+module storageRbac 'modules/rbac-storage.bicep' = [for (roleAssignment, index) in storageRoleAssignments: {
   name: 'sa-rbac-${index}-${uniqueString(deployment().name, location)}'
   dependsOn: [
     storageAccount
   ]
   params: {
-    description: contains(roleAssignment, 'description') ? roleAssignment.description : 'role assignment'
-    principalIds: roleAssignment.principalIds
-    roleDefinitionIdOrName: roleAssignment.roleDefinitionIdOrName
-    principalType: contains(roleAssignment, 'principalType') ? roleAssignment.principalType : 'ServicePrincipal'
-    resourceType: contains(roleAssignment, 'resourceType') ? roleAssignment.resourceType : 'storageAccount'
+    description: roleAssignment.description!
+    principalIds: roleAssignment.principalIds!
+    roleDefinitionIdOrName: roleAssignment.roleDefinitionIdOrName!
+    principalType: roleAssignment.principalType!
     name: name
-    blobName: blobName
-    containerName: blobContainerName
   }
 }]
 
+module containerRbac 'modules/rbac-container.bicep' = [for (roleAssignment, index) in containerRoleAssignments: {
+  name: 'sa-container-rbac-${index}-${uniqueString(deployment().name, location)}'
+  dependsOn: [
+    blobContainer
+  ]
+  params: {
+    description: roleAssignment.description!
+    principalIds: roleAssignment.principalIds!
+    roleDefinitionIdOrName: roleAssignment.roleDefinitionIdOrName!
+    principalType: roleAssignment.principalType!
+    name: name
+    blobName: blobName
+    containerName: roleAssignment.containerName!
+  }
+}]
 
 @description('The name of the Storage Account resource')
 output name string = name
@@ -348,6 +268,11 @@ output name string = name
 @description('The ID of the Storage Account. Use this ID to reference the Storage Account in other Azure resource deployments.')
 output id string = storageAccount.id
 
+@description('Object Replication Policy ID for destination OR Policy, to be used as input for creating source OR Policy')
+output orpId string = objectReplicationPolicy.enabled == true ? orPolicy.outputs.orpId : ''
+
+@description('Object Replication Rules for the destination OR Policy, to be used as an input for source OR Policy')
+output orpIdRules array = objectReplicationPolicy.enabled == true ? orPolicy.outputs.orpIdRules : []
 
 @description('The properties of a storage account’s Blob service.')
 type blobServiceProperties = {
@@ -437,10 +362,48 @@ type blobServiceContainerProperties = {
   publicAccess: ('Blob' | 'Container' | 'None')?
 }
 
-type roleAssignmentsArray = {
+type containerRoleAssignmentsArray = {
   description: string?
   roleDefinitionIdOrName: string?
   principalIds: string[]?
   principalType: string?
-  resourceType: string?
+  containerName: string?
 }[]
+
+type storageRoleAssignmentsArray = {
+  description: string?
+  roleDefinitionIdOrName: string?
+  principalIds: string[]?
+  principalType: string?
+  containerName: string?
+}[]
+
+type objReplicationRuelsArray = {
+  destinationContainer: string
+  sourceContainer: string
+  ruleId: string?
+}[]
+
+type blobContainersArray = {
+  name: string
+  properties: blobServiceContainerProperties?
+}[]
+
+type objectReplicationPolicyObj = {
+  enabled: bool
+  policyId: string
+  sourceSaId: string
+  destinationSaId: string
+  sourceSaName: string
+  destinationSaName: string
+  objReplicationRules: objReplicationRuelsArray
+  sourcePolicy: bool
+}
+
+type lifecycleManagementPolicyObj = {
+  moveToCool: bool
+  moveToCoolAfterLastModificationDays: int
+  deleteBlob: bool
+  deleteBlobAfterLastModificationDays: int
+  deleteSnapshotAfterLastModificationDays: int
+}

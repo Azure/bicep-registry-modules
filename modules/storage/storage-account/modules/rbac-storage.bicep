@@ -3,9 +3,6 @@ param principalIds array
 param principalType string = ''
 param roleDefinitionIdOrName string
 param name string
-param blobName string
-param containerName string
-param resourceType string = 'storageAccount'
 
 var builtInRoleNames = {
   // Generic useful roles 
@@ -48,21 +45,18 @@ var builtInRoleNames = {
 
 resource storage 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
   name: name
-  resource blob 'blobServices' existing = if (blobName != '') {
-    name: blobName
-    resource container 'containers' existing = if (containerName != '') {
-      name: containerName
-    }
-  }
 }
 
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for principalId in principalIds: {
-  name: guid(resourceType == 'blobContainer' ? storage::blob::container.name : storage.name, principalId, roleDefinitionIdOrName)
+resource storageRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for principalId in principalIds:{
+  name: guid(storage.name, principalId, roleDefinitionIdOrName)
+  dependsOn: [
+    storage
+  ]
   properties: {
     description: description
     roleDefinitionId: contains(builtInRoleNames, roleDefinitionIdOrName) ? subscriptionResourceId('Microsoft.Authorization/roleDefinitions', builtInRoleNames[roleDefinitionIdOrName]) : roleDefinitionIdOrName
     principalId: principalId
     principalType: !empty(principalType) ? principalType : null
   }
-  scope: resourceType == 'blobContainer' ? storage::blob::container : storage
+  scope: storage
 }]
