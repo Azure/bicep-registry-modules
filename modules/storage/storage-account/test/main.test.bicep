@@ -8,8 +8,8 @@ param blobType string = 'blockBlob'
 param minimumTlsVersion string = 'TLS1_2'
 var uniqueName = uniqueString(resourceGroup().id, deployment().name, location)
 
-var maxNameLength = 24
-var uniqueStoragename = length(uniqueString(uniqueName)) > maxNameLength ? substring(replace(guid(uniqueName, resourceGroup().name, subscription().id), '-', ''), 0, maxNameLength) : replace(guid(uniqueName, resourceGroup().name, subscription().id), '-', '')
+var maxNameLength = 23
+var uniqueStoragename = substring(replace(guid(uniqueName, resourceGroup().name, subscription().id), '-', ''), 0, maxNameLength)
 
 module prereq 'prereq.test.bicep' = {
   name: 'test-prereqs'
