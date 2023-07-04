@@ -11,7 +11,9 @@ This Bicep Module helps to create Bing Search Kind resource. You may need to reg
 
 | Name                | Type     | Required | Description                                                                                                 |
 | :------------------ | :------: | :------: | :---------------------------------------------------------------------------------------------------------- |
-| `accountName`       | `string` | Yes      | Required. The name of the Bing Search account.                                                              |
+| `prefix`            | `string` | No       | Prefix of Resource Name. Not used if name is provided                                                       |
+| `location`          | `string` | No       | The location into which your Azure resources should be deployed.                                            |
+| `name`              | `string` | No       | The name of the Bing Service.                                                                               |
 | `kind`              | `string` | No       | Optional. This parameter will define Bing search kind.                                                      |
 | `skuName`           | `string` | No       | Optional. The name of the SKU, F* (free) and S* (standard). Supported SKUs will differ based on search kind |
 | `statisticsEnabled` | `bool`   | No       | Optional. Enable or disable Bing statistics.                                                                |
@@ -31,11 +33,12 @@ This Bicep Module helps to create Bing Search Kind resource. You may need to reg
 Deploy a Bing Search v7 resource with the free SKU
 
 ```
-module bing-search-resource '../main.bicep' = {
+module bing-search-resource 'br/public:ai/bing-resource:1.0.1' = {
   name: 'bing-search-resource'
   params: {
      kind: 'Bing.Search.v7'
-     accountName: 'bing-search-resource-name-01'
+     location: 'global'
+     name: 'bing-search-resource-name-01'
      skuName: 'F1'
   }
 }
@@ -43,15 +46,16 @@ module bing-search-resource '../main.bicep' = {
 
 ### Example 2
 
-Deploy a Bing Custom Search resource with the free SKU
+Deploy a Bing Custom Search resource with the standard SKU
 
 ```
-module bing-search-resource '../main.bicep' = {
+module bing-search-resource 'br/public:ai/bing-resource:1.0.1' = {
   name: 'bing-search-resource'
   params: {
      kind: 'Bing.CustomSearch'
-     accountName: 'bing-search-resource-name-02'
-     skuName: 'F0'
+     location: 'global'
+     name: 'bing-search-resource-name-02'
+     skuName: 'S1'
   }
 }
 ```

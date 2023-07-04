@@ -5,15 +5,32 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "10935254632437609814"
+      "templateHash": "5128592152439671358"
     }
   },
   "parameters": {
-    "accountName": {
+    "prefix": {
       "type": "string",
+      "defaultValue": "bng",
       "metadata": {
-        "description": "Required. The name of the Bing Search account."
+        "description": "Prefix of Resource Name. Not used if name is provided"
       }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "The location into which your Azure resources should be deployed."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "[take(format('{0}-{1}-{2}', parameters('prefix'), parameters('kind'), uniqueString(resourceGroup().id, parameters('location'))), 64)]",
+      "metadata": {
+        "description": "The name of the Bing Service."
+      },
+      "maxLength": 64,
+      "minLength": 2
     },
     "kind": {
       "type": "string",
@@ -65,8 +82,8 @@
     {
       "type": "Microsoft.Bing/accounts",
       "apiVersion": "2020-06-10",
-      "name": "[parameters('accountName')]",
-      "location": "global",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "kind": "[parameters('kind')]",
       "properties": {
@@ -83,14 +100,14 @@
       "metadata": {
         "description": "Bing account ID"
       },
-      "value": "[resourceId('Microsoft.Bing/accounts', parameters('accountName'))]"
+      "value": "[resourceId('Microsoft.Bing/accounts', parameters('name'))]"
     },
     "endpoint": {
       "type": "string",
       "metadata": {
         "description": "Bing Endpoint"
       },
-      "value": "[reference(resourceId('Microsoft.Bing/accounts', parameters('accountName')), '2020-06-10').endpoint]"
+      "value": "[reference(resourceId('Microsoft.Bing/accounts', parameters('name')), '2020-06-10').endpoint]"
     }
   }
 }
