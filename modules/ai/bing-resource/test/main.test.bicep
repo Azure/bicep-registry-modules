@@ -4,7 +4,7 @@ module file is a deployment test. Make sure at least one test is added.
 */
 
 targetScope = 'resourceGroup'
-
+param accountName string = 'Bing_SearchTest'
 // ===== //
 // Tests //
 // ===== //
@@ -16,7 +16,7 @@ module test_01_Bing '../main.bicep' = {
   name: 'test_01_Bing_resource'
   params: {
      kind: 'Bing.Search.v7'
-     accountName: 'Bing_SearchTest01'
+     accountName: accountName
      skuName: 'F1'
   }
 }
@@ -28,7 +28,7 @@ module test_02_Bing '../main.bicep' = {
   name: 'test_02_Bing_resource'
   params: {
      kind: 'Bing.CustomSearch'
-     accountName: 'Bing_SearchTest02'
+     accountName: accountName
      skuName: 'F0'
   }
 }
