@@ -16,7 +16,7 @@ module test_01_Bing '../main.bicep' = {
     location: 'global'
     kind: 'Bing.Search.v7'
     name: 'Bing_SearchTest01'
-    skuName: 'F1'
+    skuName: 'S1'
   }
 }
 

@@ -39,7 +39,7 @@ module bing-search-resource 'br/public:ai/bing-resource:0.0.1' = {
      kind: 'Bing.Search.v7'
      location: 'global'
      name: 'bing-search-resource-name-01'
-     skuName: 'F1'
+     skuName: 'S1'
   }
 }
 ```
