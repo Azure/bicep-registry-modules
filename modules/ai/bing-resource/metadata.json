@@ -1,0 +1,6 @@
+{
+  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
+  "name": "Bing Resource",
+  "summary": "This module deploys Azure Bing Resource",
+  "owner": "tanujbhatia1708"
+}
