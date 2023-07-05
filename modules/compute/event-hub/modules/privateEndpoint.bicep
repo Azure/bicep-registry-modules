@@ -5,10 +5,9 @@ param namespaceName string
 param name string
 param groupIds array
 param subnetId string
-param privateDnsZones array
-param customNetworkInterfaceName string
+param privateDnsZoneId string
 
-resource namespace 'Microsoft.EventHub/namespaces@2021-11-01' existing = {
+resource namespace 'Microsoft.EventHub/namespaces@2022-10-01-preview' existing = {
   name: namespaceName
 }
 
@@ -38,19 +37,17 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2022-05-01' = {
     subnet: {
       id: subnetId
     }
-    customNetworkInterfaceName: customNetworkInterfaceName
   }
-}
+  resource privateDnsZoneGroup 'privateDnsZoneGroups@2022-05-01' = if (!empty(privateDnsZoneId)) {
+    name: 'default'
+    properties: {
+      privateDnsZoneConfigs: [ {
+          name: 'default'
+          properties: {
+            privateDnsZoneId: privateDnsZoneId
+          }
+        } ]
+    }
+  }
 
-resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2022-05-01' = {
-  name: 'default'
-  parent: privateEndpoint
-  properties: {
-    privateDnsZoneConfigs: [for privateDnsZone in privateDnsZones: {
-      name: contains(privateDnsZone, 'name') ? privateDnsZone.name : 'default'
-      properties: {
-        privateDnsZoneId: privateDnsZone.zoneId
-      }
-    }]
-  }
 }
