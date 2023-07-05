@@ -55,23 +55,8 @@ param lifecycleManagementPolicy lifecycleManagementPolicyObj = {
   deleteSnapshotAfterLastModificationDays: 30
 }
 
-@description('When performing object replication, it should be enabled and contain: \'sourceSaName\', \'destinationSaName\', \'sourceSaId\', \'destinationSaId\', \'policyId\' & \'objReplicationRules\' which is array of objReplicationRules object that contains sourceContainer, destinationContainer and ruleId')
-param objectReplicationPolicy objectReplicationPolicyObj = {
-  enabled: false
-  sourcePolicy: false
-  policyId: 'default'
-  sourceSaId: 'sourceSaId'
-  destinationSaId: 'destinationSaId'
-  sourceSaName: 'sourceSaName'
-  destinationSaName: 'destinationSaName'
-  objReplicationRules: [
-    {
-      destinationContainer: 'destContainer'
-      sourceContainer: 'sourceContainer'
-      ruleId: null
-    }
-  ]
-}
+@description('When performing object replication, it should contain: \'sourceSaName\', \'destinationSaName\', \'sourceSaId\', \'destinationSaId\', \'policyId\' & \'objReplicationRules\' which is array of objReplicationRules object that contains sourceContainer, destinationContainer and ruleId')
+param objectReplicationPolicies objectReplicationPolicyObj = []
 
 @description('Define Private Endpoints that should be created for Azure Storage Account.')
 param privateEndpoints array = []
@@ -216,12 +201,12 @@ resource blobContainer 'Microsoft.Storage/storageAccounts/blobServices/container
   properties: contains(blobContainer, 'properties') ? blobContainer.properties : {}
 }]
 
-module orPolicy 'modules/or-policy.bicep' = if (objectReplicationPolicy.enabled) {
-  name: '${uniqueString(deployment().name, location)}-storageaccount-or-policy'
+module orPolicy 'modules/or-policy.bicep' = [for (objectReplicationPolicy, index) in objectReplicationPolicies: {
+  name: '${uniqueString(deployment().name, location)}-${index}-storageaccount-or-policy'
   params: {
     objectReplicationPolicy: objectReplicationPolicy
   }
-}
+}]
 
 module storageaccount_privateEndpoint 'modules/privateEndpoint.bicep' = {
   name: '${uniqueString(deployment().name, location)}-storageaccount-private-endpoints'
@@ -238,10 +223,10 @@ module storageRbac 'modules/rbac-storage.bicep' = [for (roleAssignment, index) i
     storageAccount
   ]
   params: {
-    description: roleAssignment.description!
+    description: contains(roleAssignment, 'description') ? roleAssignment.description! : 'role assignment'
     principalIds: roleAssignment.principalIds!
     roleDefinitionIdOrName: roleAssignment.roleDefinitionIdOrName!
-    principalType: roleAssignment.principalType!
+    principalType: contains(roleAssignment, 'principalType') ? roleAssignment.principalType! : 'ServicePrincipal'
     name: name
   }
 }]
@@ -252,13 +237,13 @@ module containerRbac 'modules/rbac-container.bicep' = [for (roleAssignment, inde
     blobContainer
   ]
   params: {
-    description: roleAssignment.description!
+    description: contains(roleAssignment, 'description') ? roleAssignment.description! : 'role assignment'
     principalIds: roleAssignment.principalIds!
     roleDefinitionIdOrName: roleAssignment.roleDefinitionIdOrName!
-    principalType: roleAssignment.principalType!
+    principalType: contains(roleAssignment, 'principalType') ? roleAssignment.principalType! : 'ServicePrincipal'
     name: name
     blobName: blobName
-    containerName: roleAssignment.containerName!
+    containerName: contains(roleAssignment, 'containerName') ? roleAssignment.containerName! : ''
   }
 }]
 
@@ -268,11 +253,11 @@ output name string = name
 @description('The ID of the Storage Account. Use this ID to reference the Storage Account in other Azure resource deployments.')
 output id string = storageAccount.id
 
-@description('Object Replication Policy ID for destination OR Policy, to be used as input for creating source OR Policy')
-output orpId string = objectReplicationPolicy.enabled == true ? orPolicy.outputs.orpId : ''
-
-@description('Object Replication Rules for the destination OR Policy, to be used as an input for source OR Policy')
-output orpIdRules array = objectReplicationPolicy.enabled == true ? orPolicy.outputs.orpIdRules : []
+@description('Array of Object Replication Policy IDs and Object Replication PolicyID Rules for OR Policy')
+output orpIDnRules array = [for i in range(0, length(objectReplicationPolicies)): {
+  orpId: orPolicy[i].outputs.orpId
+  orpIdRules: orPolicy[i].outputs.orpIdRules
+}]
 
 @description('The properties of a storage account’s Blob service.')
 type blobServiceProperties = {
@@ -390,7 +375,6 @@ type blobContainersArray = {
 }[]
 
 type objectReplicationPolicyObj = {
-  enabled: bool
   policyId: string
   sourceSaId: string
   destinationSaId: string
@@ -398,7 +382,7 @@ type objectReplicationPolicyObj = {
   destinationSaName: string
   objReplicationRules: objReplicationRuelsArray
   sourcePolicy: bool
-}
+}[]
 
 type lifecycleManagementPolicyObj = {
   moveToCool: bool

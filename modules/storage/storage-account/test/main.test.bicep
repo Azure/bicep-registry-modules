@@ -26,13 +26,14 @@ module test1 '../main.bicep' = {
   params: {
     name: '1${uniqueStoragename}'
     location: location
-    blobProperties: {}
-    blobContainers: [ {
-        name: 'container1'
-        properties: {
-          publicAccess: 'None'
-        }
-      } ]
+    blobProperties: {
+    }
+    blobContainers:[{
+      name: 'container1'
+      properties: { 
+        publicAccess: 'None'
+      }
+    }]
     privateEndpoints: [
       {
         name: 'endpoint1'
@@ -60,18 +61,19 @@ module test2 '../main.bicep' = {
     location: location
     blobProperties: {
       isVersioningEnabled: true
-      changeFeed: {
-        enabled: true
-      }
+       changeFeed: {
+         enabled: true
+       }
     }
-    blobContainers: [
+    blobContainers:[
       {
         name: 'sourcecontainer'
-        properties: {}
+        properties: { 
+        }
       }
       {
         name: 'testcontainer2'
-        properties: {
+        properties: { 
           publicAccess: 'None'
         }
       }
@@ -81,7 +83,7 @@ module test2 '../main.bicep' = {
         principalIds: [ prereq.outputs.identityPrincipalIds[0], prereq.outputs.identityPrincipalIds[1] ]
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Storage Blob Data Reader'
-        description: 'roleAssignment for calllog SA'
+        description: 'roleAssignment for calllog SA'        
       }
     ]
     containerRoleAssignments: [
@@ -96,7 +98,7 @@ module test2 '../main.bicep' = {
   }
 }
 
-//Test 3, Create Destination SA with versioning enabled and setting lifecycleManagementPolicy
+//Test 3, Create Destination1 SA with versioning enabled and setting lifecycleManagementPolicy 
 module test3 '../main.bicep' = {
   name: 'test3'
   dependsOn: [
@@ -108,10 +110,10 @@ module test3 '../main.bicep' = {
     blobProperties: {
       isVersioningEnabled: true
     }
-    blobContainers: [ {
-        name: 'destinationcontainer'
-      } ]
-    lifecycleManagementPolicy: {
+    blobContainers:[{
+      name: 'destinationcontainer'
+    }]
+    lifecycleManagementPolicy:{
       moveToCool: true
       moveToCoolAfterLastModificationDays: 30
       deleteBlob: false
@@ -121,7 +123,7 @@ module test3 '../main.bicep' = {
   }
 }
 
-//Test 4, Update Destination SA with objectReplicationPolicy for destreplicationsa (setting objectReplicationPolicy.sourcePolicy-> false and objectReplicationPolicy.policyId->'default', objectReplicationPolicy.objReplicationRules[0].ruleId-> null)
+//Test 3, Create Destination2 SA with versioning enabled and setting lifecycleManagementPolicy 
 module test4 '../main.bicep' = {
   name: 'test4'
   dependsOn: [
@@ -133,18 +135,43 @@ module test4 '../main.bicep' = {
     blobProperties: {
       isVersioningEnabled: true
     }
-    blobContainers: [ {
-        name: 'destinationcontainer'
-      } ]
-    lifecycleManagementPolicy: {
+    blobContainers:[{
+      name: 'destinationcontainer'
+    }]
+    lifecycleManagementPolicy:{
       moveToCool: true
       moveToCoolAfterLastModificationDays: 30
       deleteBlob: false
       deleteBlobAfterLastModificationDays: 30
       deleteSnapshotAfterLastModificationDays: 30
     }
-    objectReplicationPolicy: {
-      enabled: true
+  }
+}
+
+//Test 5, Update Destination1 SA with destination objectReplicationPolicy (setting objectReplicationPolicy.sourcePolicy-> false and objectReplicationPolicy.policyId->'default', objectReplicationPolicy.objReplicationRules[0].ruleId-> null)
+module test5 '../main.bicep' = {
+  name: 'test5'
+  dependsOn: [
+    prereq
+    test3
+  ]
+  params: {
+    name: '3${uniqueStoragename}'
+    location: location
+    blobProperties: {
+      isVersioningEnabled: true
+    }
+    blobContainers:[{
+      name: 'destinationcontainer'
+    }]
+    lifecycleManagementPolicy:{
+      moveToCool: true
+      moveToCoolAfterLastModificationDays: 30
+      deleteBlob: false
+      deleteBlobAfterLastModificationDays: 30
+      deleteSnapshotAfterLastModificationDays: 30
+    }
+    objectReplicationPolicies: [{
       policyId: 'default'
       sourceSaName: '2${uniqueStoragename}'
       destinationSaName: '3${uniqueStoragename}'
@@ -157,33 +184,75 @@ module test4 '../main.bicep' = {
           destinationContainer: 'destinationcontainer'
         }
       ]
-    }
+     }]   
   }
 }
 
-//Test 5, Update Source SA with objectReplicationPolicy for destreplicationsa (setting 'objectReplicationPolicy.sourcePolicy-> true', 'objectReplicationPolicy.policyId-> OR policyId created for the destreplicationsa' and objectReplicationPolicy.objReplicationRules[0].ruleId-> the OR ruleID for the destreplicationsa). PEPs created for test2rbac SA.
-module test5 '../main.bicep' = {
-  name: 'test5'
+//Test 6, Update Destination2 SA with destination objectReplicationPolicy (setting objectReplicationPolicy.sourcePolicy-> false and objectReplicationPolicy.policyId->'default', objectReplicationPolicy.objReplicationRules[0].ruleId-> null)
+module test6 '../main.bicep' = {
+  name: 'test6'
   dependsOn: [
     prereq
+    test4
   ]
   params: {
-    name: '5${uniqueStoragename}'
+    name: '4${uniqueStoragename}'
     location: location
     blobProperties: {
       isVersioningEnabled: true
-      changeFeed: {
-        enabled: true
-      }
     }
-    blobContainers: [
+    blobContainers:[{
+      name: 'destinationcontainer'
+    }]
+    lifecycleManagementPolicy:{
+      moveToCool: true
+      moveToCoolAfterLastModificationDays: 30
+      deleteBlob: false
+      deleteBlobAfterLastModificationDays: 30
+      deleteSnapshotAfterLastModificationDays: 30
+    }
+    objectReplicationPolicies: [{
+      policyId: 'default'
+      sourceSaName: '2${uniqueStoragename}'
+      destinationSaName: '4${uniqueStoragename}'
+      sourceSaId: test2.outputs.id
+      destinationSaId: test4.outputs.id
+      sourcePolicy: false
+      objReplicationRules: [
+        {
+          sourceContainer: 'sourcecontainer'
+          destinationContainer: 'destinationcontainer'
+        }
+      ]
+     }]   
+  }
+}
+
+//Test 7, Update Source SA with source objectReplicationPolicy (setting 'sourcePolicy-> true', 'policyId-> OR policyId & ruleIds created for the Destination1 and Destination2 SA'. PEPs created for test2rbac SA.
+module test7 '../main.bicep' = {
+  name: 'test7'
+  dependsOn: [
+    prereq
+    test4
+  ]
+  params: {
+    name: '2${uniqueStoragename}'
+    location: location
+    blobProperties: {
+      isVersioningEnabled: true
+       changeFeed: {
+         enabled: true
+       }
+    }
+    blobContainers:[
       {
         name: 'sourcecontainer'
-        properties: {}
+        properties: { 
+        }
       }
       {
         name: 'testcontainer2'
-        properties: {
+        properties: { 
           publicAccess: 'None'
         }
       }
@@ -193,7 +262,7 @@ module test5 '../main.bicep' = {
         principalIds: [ prereq.outputs.identityPrincipalIds[0], prereq.outputs.identityPrincipalIds[1] ]
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Storage Blob Data Reader'
-        description: 'roleAssignment for calllog SA'
+        description: 'roleAssignment for calllog SA'        
       }
     ]
     containerRoleAssignments: [
@@ -205,9 +274,9 @@ module test5 '../main.bicep' = {
         description: 'roleAssignment for audiolog Container'
       }
     ]
-    objectReplicationPolicy: {
-      enabled: true
-      policyId: test4.outputs.orpId
+    objectReplicationPolicies: [
+      {
+      policyId: test5.outputs.orpIDnRules[0].orpId
       sourceSaName: '2${uniqueStoragename}'
       destinationSaName: '3${uniqueStoragename}'
       sourceSaId: test2.outputs.id
@@ -217,9 +286,25 @@ module test5 '../main.bicep' = {
         {
           sourceContainer: 'sourcecontainer'
           destinationContainer: 'destinationcontainer'
-          ruleId: test4.outputs.orpIdRules[0].ruleId
+          ruleId: test5.outputs.orpIDnRules[0].orpIdRules[0].ruleId
         }
       ]
-    }
+     }
+     {
+      policyId: test6.outputs.orpIDnRules[0].orpId
+      sourceSaName: '2${uniqueStoragename}'
+      destinationSaName: '4${uniqueStoragename}'
+      sourceSaId: test2.outputs.id
+      destinationSaId: test4.outputs.id
+      sourcePolicy: true
+      objReplicationRules: [
+        {
+          sourceContainer: 'sourcecontainer'
+          destinationContainer: 'destinationcontainer'
+          ruleId: test6.outputs.orpIDnRules[0].orpIdRules[0].ruleId
+        }
+      ]
+     }
+    ]
   }
 }

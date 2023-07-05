@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "6556369373593324170"
+      "templateHash": "11345046786366532187"
     }
   },
   "definitions": {
@@ -360,31 +360,31 @@
       }
     },
     "objectReplicationPolicyObj": {
-      "type": "object",
-      "properties": {
-        "enabled": {
-          "type": "bool"
-        },
-        "policyId": {
-          "type": "string"
-        },
-        "sourceSaId": {
-          "type": "string"
-        },
-        "destinationSaId": {
-          "type": "string"
-        },
-        "sourceSaName": {
-          "type": "string"
-        },
-        "destinationSaName": {
-          "type": "string"
-        },
-        "objReplicationRules": {
-          "$ref": "#/definitions/objReplicationRuelsArray"
-        },
-        "sourcePolicy": {
-          "type": "bool"
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "policyId": {
+            "type": "string"
+          },
+          "sourceSaId": {
+            "type": "string"
+          },
+          "destinationSaId": {
+            "type": "string"
+          },
+          "sourceSaName": {
+            "type": "string"
+          },
+          "destinationSaName": {
+            "type": "string"
+          },
+          "objReplicationRules": {
+            "$ref": "#/definitions/objReplicationRuelsArray"
+          },
+          "sourcePolicy": {
+            "type": "bool"
+          }
         }
       }
     },
@@ -522,26 +522,11 @@
         "description": "Lifecycle Management Policy Rules, should contain: 'moveToCool' bool to enable blob to be moved to cool tier after 'moveToCoolAfterLastModificationDays', 'deleteBlob' bool to enable blob to be deleted after 'deleteBlobAfterLastModificationDays' and delete the snapshot after 'deleteSnapshotAfterLastModificationDays' "
       }
     },
-    "objectReplicationPolicy": {
+    "objectReplicationPolicies": {
       "$ref": "#/definitions/objectReplicationPolicyObj",
-      "defaultValue": {
-        "enabled": false,
-        "sourcePolicy": false,
-        "policyId": "default",
-        "sourceSaId": "sourceSaId",
-        "destinationSaId": "destinationSaId",
-        "sourceSaName": "sourceSaName",
-        "destinationSaName": "destinationSaName",
-        "objReplicationRules": [
-          {
-            "destinationContainer": "destContainer",
-            "sourceContainer": "sourceContainer",
-            "ruleId": null
-          }
-        ]
-      },
+      "defaultValue": [],
       "metadata": {
-        "description": "When performing object replication, it should be enabled and contain: 'sourceSaName', 'destinationSaName', 'sourceSaId', 'destinationSaId', 'policyId' & 'objReplicationRules' which is array of objReplicationRules object that contains sourceContainer, destinationContainer and ruleId"
+        "description": "When performing object replication, it should contain: 'sourceSaName', 'destinationSaName', 'sourceSaId', 'destinationSaId', 'policyId' & 'objReplicationRules' which is array of objReplicationRules object that contains sourceContainer, destinationContainer and ruleId"
       }
     },
     "privateEndpoints": {
@@ -723,10 +708,13 @@
       ]
     },
     "orPolicy": {
-      "condition": "[parameters('objectReplicationPolicy').enabled]",
+      "copy": {
+        "name": "orPolicy",
+        "count": "[length(parameters('objectReplicationPolicies'))]"
+      },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-storageaccount-or-policy', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-{1}-storageaccount-or-policy', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -734,7 +722,7 @@
         "mode": "Incremental",
         "parameters": {
           "objectReplicationPolicy": {
-            "value": "[parameters('objectReplicationPolicy')]"
+            "value": "[parameters('objectReplicationPolicies')[copyIndex()]]"
           }
         },
         "template": {
@@ -746,7 +734,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.18.4.5664",
-              "templateHash": "8123671623009357788"
+              "templateHash": "5478702475946932181"
             }
           },
           "definitions": {
@@ -771,9 +759,6 @@
             "objectReplicationPolicyObj": {
               "type": "object",
               "properties": {
-                "enabled": {
-                  "type": "bool"
-                },
                 "policyId": {
                   "type": "string"
                 },
@@ -809,7 +794,6 @@
             "objectReplicationPolicy": {
               "$ref": "#/definitions/objectReplicationPolicyObj",
               "defaultValue": {
-                "enabled": false,
                 "sourcePolicy": false,
                 "policyId": "default",
                 "sourceSaId": "sourceSaId",
@@ -825,7 +809,7 @@
                 ]
               },
               "metadata": {
-                "description": "When performing object replication, it should be enabled and contains: source SA name, destination SA names & their resource Ids, array of rules containing source and destination containers & rule ID"
+                "description": "When performing object replication, it should contains: source SA name, destination SA names & their resource Ids, array of rules containing source and destination containers & rule ID"
               }
             }
           },
@@ -1007,18 +991,14 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "description": {
-            "value": "[parameters('storageRoleAssignments')[copyIndex()].description]"
-          },
+          "description": "[if(contains(parameters('storageRoleAssignments')[copyIndex()], 'description'), createObject('value', parameters('storageRoleAssignments')[copyIndex()].description), createObject('value', 'role assignment'))]",
           "principalIds": {
             "value": "[parameters('storageRoleAssignments')[copyIndex()].principalIds]"
           },
           "roleDefinitionIdOrName": {
             "value": "[parameters('storageRoleAssignments')[copyIndex()].roleDefinitionIdOrName]"
           },
-          "principalType": {
-            "value": "[parameters('storageRoleAssignments')[copyIndex()].principalType]"
-          },
+          "principalType": "[if(contains(parameters('storageRoleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('storageRoleAssignments')[copyIndex()].principalType), createObject('value', 'ServicePrincipal'))]",
           "name": {
             "value": "[parameters('name')]"
           }
@@ -1135,27 +1115,21 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "description": {
-            "value": "[parameters('containerRoleAssignments')[copyIndex()].description]"
-          },
+          "description": "[if(contains(parameters('containerRoleAssignments')[copyIndex()], 'description'), createObject('value', parameters('containerRoleAssignments')[copyIndex()].description), createObject('value', 'role assignment'))]",
           "principalIds": {
             "value": "[parameters('containerRoleAssignments')[copyIndex()].principalIds]"
           },
           "roleDefinitionIdOrName": {
             "value": "[parameters('containerRoleAssignments')[copyIndex()].roleDefinitionIdOrName]"
           },
-          "principalType": {
-            "value": "[parameters('containerRoleAssignments')[copyIndex()].principalType]"
-          },
+          "principalType": "[if(contains(parameters('containerRoleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('containerRoleAssignments')[copyIndex()].principalType), createObject('value', 'ServicePrincipal'))]",
           "name": {
             "value": "[parameters('name')]"
           },
           "blobName": {
             "value": "[parameters('blobName')]"
           },
-          "containerName": {
-            "value": "[parameters('containerRoleAssignments')[copyIndex()].containerName]"
-          }
+          "containerName": "[if(contains(parameters('containerRoleAssignments')[copyIndex()], 'containerName'), createObject('value', parameters('containerRoleAssignments')[copyIndex()].containerName), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1293,19 +1267,18 @@
       },
       "value": "[resourceId('Microsoft.Storage/storageAccounts', parameters('name'))]"
     },
-    "orpId": {
-      "type": "string",
-      "metadata": {
-        "description": "Object Replication Policy ID for destination OR Policy, to be used as input for creating source OR Policy"
-      },
-      "value": "[if(equals(parameters('objectReplicationPolicy').enabled, true()), reference('orPolicy').outputs.orpId.value, '')]"
-    },
-    "orpIdRules": {
+    "orpIDnRules": {
       "type": "array",
       "metadata": {
-        "description": "Object Replication Rules for the destination OR Policy, to be used as an input for source OR Policy"
+        "description": "Array of Object Replication Policy IDs and Object Replication PolicyID Rules for OR Policy"
       },
-      "value": "[if(equals(parameters('objectReplicationPolicy').enabled, true()), reference('orPolicy').outputs.orpIdRules.value, createArray())]"
+      "copy": {
+        "count": "[length(range(0, length(parameters('objectReplicationPolicies'))))]",
+        "input": {
+          "orpId": "[reference(format('orPolicy[{0}]', range(0, length(parameters('objectReplicationPolicies')))[copyIndex()])).outputs.orpId.value]",
+          "orpIdRules": "[reference(format('orPolicy[{0}]', range(0, length(parameters('objectReplicationPolicies')))[copyIndex()])).outputs.orpIdRules.value]"
+        }
+      }
     }
   }
 }

@@ -1,9 +1,8 @@
 @description('When performing object replication, it must be true and for source OR Policy and false for sestination OR policy.')
 param sourcePolicy bool = objectReplicationPolicy.sourcePolicy ? true: false
 
-@description('When performing object replication, it should be enabled and contains: source SA name, destination SA names & their resource Ids, array of rules containing source and destination containers & rule ID')
+@description('When performing object replication, it should contains: source SA name, destination SA names & their resource Ids, array of rules containing source and destination containers & rule ID')
 param objectReplicationPolicy objectReplicationPolicyObj = {
-  enabled: false
   sourcePolicy: false
   policyId: 'default'
   sourceSaId: 'sourceSaId'
@@ -62,7 +61,6 @@ type objReplicationRuelsArray = {
 }[]
 
 type objectReplicationPolicyObj = {
-  enabled: bool
   policyId: string
   sourceSaId: string
   destinationSaId: string
@@ -71,9 +69,6 @@ type objectReplicationPolicyObj = {
   objReplicationRules: objReplicationRuelsArray
   sourcePolicy: bool
 }
-
-//output opRuleId string = objectReplicationPolicy.sourcePolicy ? sourceOrPolicy.properties.rules[0].ruleId: destinationOrPolicy.properties.rules[0].ruleId 
-//output opPolicyId string = objectReplicationPolicy.sourcePolicy ? sourceOrPolicy.properties.policyId: destinationOrPolicy.properties.policyId
 
 output orpIdRules array = objectReplicationPolicy.sourcePolicy ? sourceOrPolicy.properties.rules: destinationOrPolicy.properties.rules 
 output orpId string = objectReplicationPolicy.sourcePolicy ? sourceOrPolicy.properties.policyId: destinationOrPolicy.properties.policyId
