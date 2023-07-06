@@ -1,0 +1,113 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.18.4.5664",
+      "templateHash": "5128592152439671358"
+    }
+  },
+  "parameters": {
+    "prefix": {
+      "type": "string",
+      "defaultValue": "bng",
+      "metadata": {
+        "description": "Prefix of Resource Name. Not used if name is provided"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "The location into which your Azure resources should be deployed."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "[take(format('{0}-{1}-{2}', parameters('prefix'), parameters('kind'), uniqueString(resourceGroup().id, parameters('location'))), 64)]",
+      "metadata": {
+        "description": "The name of the Bing Service."
+      },
+      "maxLength": 64,
+      "minLength": 2
+    },
+    "kind": {
+      "type": "string",
+      "defaultValue": "Bing.Search.v7",
+      "allowedValues": [
+        "Bing.Search.v7",
+        "Bing.CustomSearch"
+      ],
+      "metadata": {
+        "description": "Optional. This parameter will define Bing search kind."
+      }
+    },
+    "skuName": {
+      "type": "string",
+      "defaultValue": "F1",
+      "allowedValues": [
+        "F0",
+        "F1",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "S6",
+        "S7",
+        "S8",
+        "S9"
+      ],
+      "metadata": {
+        "description": "Optional. The name of the SKU, F* (free) and S* (standard). Supported SKUs will differ based on search kind"
+      }
+    },
+    "statisticsEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable or disable Bing statistics."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Bing/accounts",
+      "apiVersion": "2020-06-10",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "kind": "[parameters('kind')]",
+      "properties": {
+        "statisticsEnabled": "[parameters('statisticsEnabled')]"
+      },
+      "sku": {
+        "name": "[parameters('skuName')]"
+      }
+    }
+  ],
+  "outputs": {
+    "id": {
+      "type": "string",
+      "metadata": {
+        "description": "Bing account ID"
+      },
+      "value": "[resourceId('Microsoft.Bing/accounts', parameters('name'))]"
+    },
+    "endpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "Bing Endpoint"
+      },
+      "value": "[reference(resourceId('Microsoft.Bing/accounts', parameters('name')), '2020-06-10').endpoint]"
+    }
+  }
+}

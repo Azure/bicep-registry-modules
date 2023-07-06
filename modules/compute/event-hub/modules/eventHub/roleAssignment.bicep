@@ -1,8 +1,8 @@
-param description string = ''
+param roleName string
+param description string
 param principalIds array
 param roleDefinitionIdOrName string
-param resourceId string
-param principalType string = ''
+param principalType string
 param namespaceName string
 param eventHubName string
 
@@ -27,20 +27,20 @@ var builtInRoleNames = {
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
-resource namespace 'Microsoft.EventHub/namespaces@2021-11-01' existing = {
+resource namespace 'Microsoft.EventHub/namespaces@2022-10-01-preview' existing = {
   name: namespaceName
 }
 
-resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2021-11-01' existing= {
+resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2022-10-01-preview' existing = {
   name: eventHubName
   parent: namespace
 }
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for principalId in principalIds: {
-  name: guid(split(resourceId, '/')[0], split(resourceId, '/')[1], principalId, roleDefinitionIdOrName)
+  name: guid(roleName, principalId, roleDefinitionIdOrName)
   properties: {
     description: description
-    roleDefinitionId: contains(builtInRoleNames, roleDefinitionIdOrName) ? builtInRoleNames[roleDefinitionIdOrName] : roleDefinitionIdOrName
+    roleDefinitionId: contains(builtInRoleNames, roleDefinitionIdOrName) ? builtInRoleNames[roleDefinitionIdOrName] : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionIdOrName)
     principalId: principalId
     principalType: !empty(principalType) ? any(principalType) : null
   }
