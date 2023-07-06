@@ -48,19 +48,46 @@ module test_02 '../main.bicep' = {
     skuName: 'Standard'
     redisVersion: '6.0'
     capacity: 1
-    diagnosticEventHubAuthorizationRuleId: prerequisites.outputs.authorizationRuleId
-    diagnosticEventHubName: prerequisites.outputs.eventHubName
-    redisFirewallRules: {
-      Rule1: {
-        startIP: '10.2.1.20'
-        endIP: '10.2.1.25'
-
-      }
-      Rule2: {
-        startIP: '10.2.1.30'
-        endIP: '10.2.1.35'
+    diagnosticSettingsProperties: {
+      logs: [
+        {
+          category: 'ConnectedClientList'
+          enabled: true
+          retentionPolicy: {
+            enabled: true
+            days: 30
+          }
+        }
+      ]
+      metrics: [
+        {
+          category: 'AllMetrics'
+          enabled: true
+          retentionPolicy: {
+            enabled: true
+            days: 30
+          }
+        }
+      ]
+      diagnosticReceivers: {
+        eventHub: {
+          eventHubAuthorizationRuleId: prerequisites.outputs.eventHubAuthorizationRuleId
+          eventHubName: prerequisites.outputs.eventHubName
+        }
       }
     }
+    firewallRules: [
+      {
+        name: 'Rule1'
+        startIpAddress: '10.2.1.20'
+        endIpAddress: '10.2.1.25'
+      }
+      {
+        name: 'Rule2'
+        startIpAddress: '10.2.1.30'
+        endIpAddress: '10.2.1.35'
+      }
+    ]
   }
 }
 
@@ -75,8 +102,32 @@ module test_03 '../main.bicep' = {
     capacity: 1
     shardCount: 1
     replicasPerMaster: 1
-    diagnosticStorageAccountId: prerequisites.outputs.storageAccountId
-    diagnosticWorkspaceId: prerequisites.outputs.workspaceId
+    diagnosticSettingsProperties: {
+      logs: [
+        {
+          category: 'ConnectedClientList'
+          enabled: true
+          retentionPolicy: {
+            enabled: true
+            days: 30
+          }
+        }
+      ]
+      metrics: [
+        {
+          category: 'AllMetrics'
+          enabled: true
+          retentionPolicy: {
+            enabled: true
+            days: 30
+          }
+        }
+      ]
+      diagnosticReceivers: {
+        storageAccountId: prerequisites.outputs.storageAccountId
+        workspaceId: prerequisites.outputs.workspaceId
+      }
+    }
     privateEndpoints: [
       {
         name: 'endpoint1'

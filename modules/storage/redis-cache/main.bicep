@@ -77,7 +77,7 @@ param privateEndpointsApprovalEnabled bool = false
 The predefined schedule for patching redis server. The Patch Window lasts for 5 hours from the start_hour_utc.
 If schedule is not specified, the update can happen at any time. See https://docs.microsoft.com/en-us/azure/azure-cache-for-redis/cache-administration#schedule-updates-faq
 ''')
-param redisPatchSchedule redisPatchScheduleType[]
+param redisPatchSchedule redisPatchScheduleType[] = []
 
 @description('Provide mysql diagnostic settings properties.')
 param diagnosticSettingsProperties diagnosticSettingsPropertiesType = {}
