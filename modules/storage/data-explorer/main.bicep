@@ -6,16 +6,6 @@ type kustoSku = 'Dev(No SLA)_Standard_D11_v2' | 'Dev(No SLA)_Standard_E2a_v4' | 
 @maxValue(36500)
 type period = int
 
-type newOrExisting = 'new' | 'existing' | 'none'
-
-type eventHubSkuName = 'Basic' | 'Standard'
-
-type EventHubSkuConfig = {
-  capacity: int
-  name: eventHubSkuName
-  tier: eventHubSkuName
-}
-
 @description('Deployment Location')
 param location string
 
@@ -24,14 +14,11 @@ param location string
 @description('Name of the Kusto Cluster. Must be unique within Azure.')
 param name string = 'kusto${uniqueString(resourceGroup().id, subscription().id)}'
 
-@description('Name of the Kusto Database. Must be unique within Kusto Cluster.')
-param databaseName string = 'kustodb${uniqueString(resourceGroup().id, subscription().id)}'
-
 @description('The SKU of the Kusto Cluster.')
 param sku kustoSku = 'Dev(No SLA)_Standard_D11_v2'
 
 @description('The tier of the Kusto Cluster.')
-param tier kustoTier = 'Standard'
+param tier kustoTier = 'Basic'
 
 @minValue(2)
 @maxValue(1000)
@@ -63,9 +50,6 @@ param scripts array = []
 @description('Continue if there are errors running a script.')
 param continueOnErrors bool = false
 
-@description('Enable or disable the use of a Managed Identity with Data Explorer.')
-param enableManagedIdentity bool = false
-
 @description('Enable or disable streaming ingest.')
 param enableStreamingIngest bool = false
 
@@ -90,72 +74,57 @@ param enableAutoStop bool = true
 @description('Enable or disable zone redundant.')
 param enableZoneRedundant bool = false
 
-@allowed([ 'ReadWrite', 'ReadOnlyFollowing' ])
-@description('The kind of the Kusto Database.')
-param databaseKind string = 'ReadWrite'
+@description('Toggle if Private Endpoints manual approval for Kusto Cluster should be enabled.')
+param privateEndpointsApprovalEnabled bool = false
 
-@description('Enable or disable soft delete.')
-param unlimitedSoftDelete bool = false
+@description('Define Private Endpoints that should be created for Kusto Cluster.')
+param privateEndpoints array = []
 
-@description('The soft delete period of the Kusto Database.')
-param softDeletePeriod period = 30
+@description('optional. database list of kustoCluster to be created.')
+param databases array
 
-@description('Enable or disable unlimited hot cache.')
-param unlimitedHotCache bool = false
+@description('optional. data connection for specied database and resource cosmosdb')
+param dataCosmosDbConnections array = []
 
-@description('The hot cache period of the Kusto Database.')
-param hotCachePeriod period = 30
+@description('optional. data connection for specied database and resource eventhub.')
+param dataEventHubConnections array = []
 
-@description('Enable or disable the Event Hub connector.')
-param enableEventHubConnector bool = newOrExistingEventHub != 'none'
+@description('Optional. The identity type attach to kustoCluster.')
+@allowed([
+  'None'
+  'SystemAssigned'
+  'UserAssigned'
+])
+param identityType string = 'None'
 
-@description('Name of Event Hub\'s namespace')
-param eventHubNamespaceName string = 'eventHub${uniqueString(resourceGroup().id)}'
+@description('''
+Optional. Gets or sets a list of key value pairs that describe the set of User Assigned identities that will be used with this kustoCluster.
+The key is the ARM resource identifier of the identity. Only 1 User Assigned identity is permitted here
+''')
+param userAssignedIdentities object = {}
 
-@description('Name of Event Hub')
-param eventHubName string = 'kustoHub'
+@description('Enable or disable public network access.')
+param publicNetworkAccess string = 'Enabled'
 
-@description('Enable or disable the Cosmos DB connector.')
-param enableCosmosDBConnector bool = false
+@description('The list of managed private endpoints.')
+param managedPrivateEndpoints array = []
 
-@description('Name of Cosmos DB account')
-param cosmosDDAccountName string = 'cosmosdb${uniqueString(resourceGroup().id)}'
+var varPrivateEndpoints = [for privateEndpoint in privateEndpoints: {
+  name: '${privateEndpoint.name}-${kustoCluster.name}'
+  privateLinkServiceId: kustoCluster.id
+  groupIds: [
+    'cluster'
+  ]
+  subnetId: privateEndpoint.subnetId
+  privateDnsZones: contains(privateEndpoint, 'privateDnsZoneId') ? [
+    {
+      name: 'default'
+      zoneId: privateEndpoint.privateDnsZoneId
+    }
+  ] : []
+}]
 
-@description('Name of Cosmos DB database')
-param cosmosDBDatabaseName string = 'mydb'
-
-@description('Name of Cosmos DB container')
-param cosmosDBContainerName string = 'mycontainer'
-
-@description('Create a new Event Hub namespace or use an existing one. If none, the Event Hub connector will be disabled.')
-param newOrExistingEventHub newOrExisting = 'none'
-
-@description('EventHub Sku Configuration Properties.')
-param eventHubSku {
-  capacity: int
-  name: eventHubSkuName
-  tier: eventHubSkuName
-} = {
-  capacity: 1
-  name: 'Standard'
-  tier: 'Standard'
-}
-
-@description('EventHub Properties.')
-param eventHubProperties {
-  messageRetentionInDays: int
-  partitionCount: int
-} = {
-  messageRetentionInDays: 2
-  partitionCount: 2
-}
-
-@description('Create a new Cosmos DB account or use an existing one. If none, the Cosmos DB connector will be disabled.')
-param newOrExistingCosmosDB newOrExisting = 'none'
-
-//  Role list:  https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles
-var eventHubDataReceiver = 'a638d3c7-ab3a-418d-83e6-5f17a39d4fde'
-var cosmosDataReader = '00000000-0000-0000-0000-000000000001'
+var databasesNames = map(databases, db => db.name)
 
 resource kustoCluster 'Microsoft.Kusto/clusters@2022-12-29' = {
   name: name
@@ -163,18 +132,22 @@ resource kustoCluster 'Microsoft.Kusto/clusters@2022-12-29' = {
   sku: {
     name: sku
     tier: tier
-    capacity: numberOfNodes
+    capacity: sku == 'Dev(No SLA)_Standard_D11_v2' || sku == 'Dev(No SLA)_Standard_D11_v2' ? 1 : numberOfNodes
   }
   tags: tags
-  identity: enableManagedIdentity ? {
-    type: 'systemAssigned'
-  } : null
+  identity: (identityType == 'UserAssigned') ? {
+    type: identityType
+    userAssignedIdentities: userAssignedIdentities
+  } : {
+    type: identityType
+  }
   zones: enableZoneRedundant ? [
     '1'
     '2'
     '3'
   ] : null
   properties: {
+    publicNetworkAccess: publicNetworkAccess
     optimizedAutoscale: enableAutoScale ? {
       isEnabled: enableAutoScale
       minimum: autoScaleMin
@@ -192,164 +165,87 @@ resource kustoCluster 'Microsoft.Kusto/clusters@2022-12-29' = {
     ] : trustedExternalTenants
     enableAutoStop: enableAutoStop
   }
-  resource database 'databases' = {
-    parent: kustoCluster
-    name: databaseName
-    location: location
-    kind: databaseKind
-    properties: {
-      softDeletePeriod: unlimitedSoftDelete ? null : 'P${softDeletePeriod}D'
-      hotCachePeriod: unlimitedHotCache ? null : 'P${hotCachePeriod}D'
-    }
-
-    resource kustoScript 'scripts' = [for script in scripts: {
-      name: 'db-script-${uniqueString(script)}'
-      properties: {
-        scriptContent: script
-        continueOnErrors: continueOnErrors
-      }
-    }]
-
-    resource eventConnection 'dataConnections' = if (enableEventHubConnector) {
-      name: 'eventConnection'
-      location: location
-      dependsOn: [
-        kustoScript
-        clusterEventHubAuthorization
-      ]
-      kind: 'EventHub'
-      properties: {
-        compression: 'None'
-        consumerGroup: eventHubNamespace::eventHub::kustoConsumerGroup.name
-        dataFormat: 'MULTIJSON'
-        eventHubResourceId: eventHubNamespace::eventHub.id
-        eventSystemProperties: [
-          'x-opt-enqueued-time'
-        ]
-        managedIdentityResourceId: kustoCluster.id
-        mappingRuleName: 'DirectJson'
-        tableName: 'RawEvents'
-      }
-    }
-
-    resource nosqlConnection 'dataConnections' = {
-      name: 'nosqlConnection'
-      location: location
-      dependsOn: [
-        kustoScript
-        cosmosDbAccount::clusterCosmosDbAuthorization
-      ]
-      kind: 'CosmosDb'
-      properties: {
-        tableName: 'TestTable'
-        mappingRuleName: 'DocumentMapping'
-        managedIdentityResourceId: kustoCluster.id
-        cosmosDbAccountResourceId: cosmosDbAccount.id
-        cosmosDbDatabase: cosmosDBDatabaseName
-        cosmosDbContainer: cosmosDBContainerName
-      }
-    }
-  }
 }
 
-resource newEventHubNamespace 'Microsoft.EventHub/namespaces@2021-11-01' = if (enableEventHubConnector && newOrExistingEventHub == 'new') {
-  name: eventHubNamespaceName
+resource database 'Microsoft.Kusto/clusters/databases@2022-12-29' = [for database in databases: {
+  kind: database.kind
+  name: database.name
   location: location
-  sku: eventHubSku
-  properties: {}
-
-  resource newEventHub 'eventhubs' = {
-    name: eventHubName
-    properties: eventHubProperties
-
-    resource newKustoConsumerGroup 'consumergroups' = {
-      name: 'kustoConsumerGroup'
-      properties: {}
-    }
+  parent: kustoCluster
+  properties: {
+    softDeletePeriod: database.unlimitedSoftDelete ? null : 'P${database.softDeletePeriod}D'
+    hotCachePeriod: database.unlimitedHotCache ? null : 'P${database.hotCachePeriod}D'
   }
-}
+}]
 
-resource eventHubNamespace 'Microsoft.EventHub/namespaces@2021-11-01' existing = if (enableEventHubConnector) {
-  name: eventHubNamespaceName
-
-  resource eventHub 'eventhubs' existing = {
-    name: eventHubName
-
-    resource kustoConsumerGroup 'consumergroups' = {
-      name: 'kustoConsumerGroup'
-    }
+@batchSize(1)
+resource script 'Microsoft.Kusto/clusters/databases/scripts@2022-12-29' = [for script in scripts: {
+  name: 'db-script-${script.name}-${uniqueString(script.name)}'
+  parent: database[indexOf(databasesNames, script.databaseName)]
+  properties: {
+    scriptContent: contains(script, 'scriptContent') ? script.scriptContent : loadTextContent('script.kql')
+    continueOnErrors: continueOnErrors
   }
-}
+}]
 
-resource clusterEventHubAuthorization 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (enableEventHubConnector) {
-  name: guid(resourceGroup().id, eventHubName, eventHubDataReceiver, name)
-  scope: eventHubNamespace::eventHub
+resource dataCosmosDbConnection 'Microsoft.Kusto/clusters/databases/dataConnections@2022-12-29' = [for dataConnection in dataCosmosDbConnections: {
   dependsOn: [
-    newEventHubNamespace
+    database
+    script
   ]
-  properties: {
-    description: 'Give "Azure Event Hubs Data Receiver" to the cluster'
-    principalId: kustoCluster.identity.principalId
-    principalType: 'ServicePrincipal'
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', eventHubDataReceiver)
-  }
-}
-
-resource newCosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' = if (enableCosmosDBConnector && newOrExistingCosmosDB == 'new') {
-  name: cosmosDDAccountName
   location: location
-  kind: 'GlobalDocumentDB'
+  name: 'cosmosdb-${dataConnection.name}-${uniqueString(dataConnection.name)}'
+  parent: database[indexOf(databasesNames, dataConnection.databaseName)]
+  kind: 'CosmosDb'
   properties: {
-    locations: [
-      {
-        locationName: location
-        failoverPriority: 0
-      }
-    ]
-    databaseAccountOfferType: 'Standard'
+    cosmosDbAccountResourceId: dataConnection.cosmosDbAccountResourceId
+    cosmosDbContainer: dataConnection.cosmosDbContainer
+    cosmosDbDatabase: dataConnection.cosmosDbDatabase
+    managedIdentityResourceId: dataConnection.managedIdentityResourceId
+    tableName: empty(dataConnection.tableName) ? null : dataConnection.tableName
   }
+}]
 
-  resource cosmosDbDatabase 'sqlDatabases' = {
-    name: cosmosDBDatabaseName
-    properties: {
-      resource: {
-        id: cosmosDBDatabaseName
-      }
-    }
+resource dataEventHubConnection 'Microsoft.Kusto/clusters/databases/dataConnections@2022-12-29' = [for dataConnection in dataEventHubConnections: {
+  dependsOn: [
+    database
+    script
+  ]
+  location: location
+  name: 'eventhub-${dataConnection.name}-${uniqueString(dataConnection.name)}'
+  parent: database[indexOf(databasesNames, dataConnection.databaseName)]
+  kind: 'EventHub'
+  properties: {
+    consumerGroup: dataConnection.consumerGroup
+    eventHubResourceId: dataConnection.eventHubResourceId
+    tableName: empty(dataConnection.tableName) ? null : dataConnection.tableName
+    compression: dataConnection.compression
+  }
+}]
 
-    resource cosmosDbContainer 'containers' = {
-      name: cosmosDBContainerName
-      properties: {
-        options: {
-          throughput: 400
-        }
-        resource: {
-          id: cosmosDBContainerName
-          partitionKey: {
-            kind: 'Hash'
-            paths: [
-              '/part'
-            ]
-          }
-        }
-      }
-    }
+module kustoCluster_privateEndpoint '.bicep/nested_privateEndpoint.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-kusto-private-endpoints'
+  params: {
+    location: location
+    privateEndpoints: varPrivateEndpoints
+    tags: tags
+    manualApprovalEnabled: privateEndpointsApprovalEnabled
   }
 }
 
-resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2022-08-15' existing = if (enableCosmosDBConnector) {
-  name: cosmosDDAccountName
-
-  resource clusterCosmosDbAuthorization 'sqlRoleAssignments' = if (enableCosmosDBConnector) {
-    name: guid(kustoCluster.id, cosmosDDAccountName)
-
-    properties: {
-      principalId: kustoCluster.identity.principalId
-      roleDefinitionId: resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', cosmosDDAccountName, cosmosDataReader)
-      scope: resourceId('Microsoft.DocumentDB/databaseAccounts', cosmosDDAccountName)
-    }
+@batchSize(1)
+resource managedPrivateEndpoint 'Microsoft.Kusto/clusters/managedPrivateEndpoints@2022-12-29' = [for ep in managedPrivateEndpoints: {
+  name: '${ep.name}-${kustoCluster.name}-managedPrivateEndpoints'
+  parent: kustoCluster
+  properties: {
+    groupId: ep.groupId
+    privateLinkResourceId: ep.privateLinkResourceId
+    //requestMessage: empty(ep.requestMessage) ? 'Please approve' : ep.requestMessage
   }
-}
+}]
 
 @description('The ID of the created or existing Kusto Cluster. Use this ID to reference the Kusto Cluster in other Azure resource deployments.')
 output id string = kustoCluster.id
+
+@description('Name of the kusto cluster created.')
+output clusterName string = kustoCluster.name

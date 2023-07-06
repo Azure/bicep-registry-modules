@@ -11,77 +11,121 @@ param location string = resourceGroup().location
 
 // Prerequisites
 module prereq 'prereq.test.bicep' = {
-  name: 'test-prereqs'
-  params: {
-    // location: location
-  }
-}
-
-//Test 0.
-module test0 '../main.bicep' = {
-  name: 'test0'
+  name: 'test-prereqs${uniqueString(resourceGroup().id, subscription().id)}'
   params: {
     location: location
+    uniqueName: 'prereqs${uniqueString(resourceGroup().id, subscription().id)}'
   }
 }
 
-//Test 1.
+//Test 0: Create a Kusto cluster with a database, script, eventhub connection, cosmosdb connections.
+module test0 '../main.bicep' = {
+  dependsOn: [
+    prereq
+  ]
+  name: 'test0${uniqueString(resourceGroup().id, subscription().id)}'
+  params: {
+    name: 'ktest0${uniqueString(resourceGroup().id, subscription().id)}'
+    location: location
+    databases: [
+      {
+        name: 'kustodb${uniqueString(resourceGroup().id, subscription().id)}'
+        kind: 'ReadWrite'
+        unlimitedSoftDelete: false
+        softDeletePeriod: 30
+        unlimitedHotCache: false
+        hotCachePeriod: 30
+        location: location
+      }
+    ]
+    // It's publicIP
+    scripts: [ {
+        name: 'script1'
+        databaseName: 'kustodb${uniqueString(resourceGroup().id, subscription().id)}'
+        content: '.create-merge table RawEvents(document:dynamic)'
+      } ]
+    dataEventHubConnections: [
+      {
+        name: 'myconnection'
+        databaseName: 'kustodb${uniqueString(resourceGroup().id, subscription().id)}'
+        consumerGroup: prereq.outputs.consumerGroupName
+        eventHubResourceId: prereq.outputs.eventHubResourceId
+        compression: 'None'
+        location: location
+        tableName: 'RawEvents'
+      }
+    ]
+    dataCosmosDbConnections: [
+      {
+        name: 'myconnection2'
+        databaseName: 'kustodb${uniqueString(resourceGroup().id, subscription().id)}'
+        cosmosDbContainer: 'container1'
+        cosmosDbDatabase: 'testdb1'
+        cosmosDbAccountResourceId: prereq.outputs.cosmosDBId
+        location: location
+        managedIdentityResourceId: prereq.outputs.identityId
+        tableName: 'RawEvents'
+      }
+    ]
+    identityType: 'UserAssigned'
+    userAssignedIdentities: {
+      '${prereq.outputs.identityId}': {}
+    }
+  }
+}
+
+//Test 1: Create a Kusto cluster with a database, private endpoint
 module test1 '../main.bicep' = {
-  name: 'test1'
+  dependsOn: [
+    prereq
+  ]
+  name: 'test1${uniqueString(resourceGroup().id, subscription().id)}'
   params: {
-    location: 'eastus'
-    newOrExistingEventHub: 'new'
-  }
-}
-
-//Test 2.
-// module test2 '../main.bicep' = {
-//   name: 'test2'
-//   params: {
-//     location: 'eastus'
-//     newOrExistingEventHub: 'existing'
-//     eventHubNamespaceName: prereq.outputs.eventHubNamespaceName
-//     eventHubName: prereq.outputs.eventHubName
-//   }
-// }
-
-//Test 3.
-module test3 '../main.bicep' = {
-  name: 'test3'
-  params: {
-    location: 'eastus'
-    newOrExistingCosmosDB: 'new'
-  }
-}
-
-//Test 4.
-// module test4 '../main.bicep' = {
-//   name: 'test4'
-//   params: {
-//     location: 'eastus'
-//     newOrExistingCosmosDB: 'existing'
-//     cosmosDBAccountName: prereq.outputs.cosmosDBAccountName
-//   }
-// }
-
-// Test 5.
-module test5 '../main.bicep' = {
-  name: 'test5'
-  params: {
-    location: 'eastus'
-    newOrExistingEventHub: 'new'
-    newOrExistingCosmosDB: 'new'
-    enableAutoScale: true
-    autoScaleMin: 2
-    autoScaleMax: 4
-    enableDiskEncryption: true
-    enableZoneRedundant: true
-    unlimitedSoftDelete: true
-    unlimitedHotCache: true
-    enableAutoStop: false
-    enablePurge: true
-    enableManagedIdentity: true
-    enableDoubleEncryption: true
-    enableStreamingIngest: true
+    name: 'ktest1${uniqueString(resourceGroup().id, subscription().id)}'
+    location: location
+    databases: [
+      {
+        name: 'kustodb${uniqueString(resourceGroup().id, subscription().id)}'
+        kind: 'ReadWrite'
+        unlimitedSoftDelete: false
+        softDeletePeriod: 30
+        unlimitedHotCache: false
+        hotCachePeriod: 30
+        location: location
+      }
+    ]
+    privateEndpoints: [
+      {
+        name: 'endpoint1'
+        subnetId: prereq.outputs.subnetIds[0]
+        privateDnsZoneId: prereq.outputs.privateDNSZoneId
+      }
+      {
+        name: 'endpoint2'
+        subnetId: prereq.outputs.subnetIds[1]
+        privateDnsZoneId: prereq.outputs.privateDNSZoneId
+      }
+    ]
+    identityType: 'UserAssigned'
+    userAssignedIdentities: {
+      '${prereq.outputs.identityId}': {}
+    }
+    publicNetworkAccess: 'Disabled'
+    managedPrivateEndpoints: [
+      {
+        name: 'ngt-ep-eventhub'
+        groupId: 'namespace'
+        privateLinkResourceId: prereq.outputs.eventHubNamespaceId
+        privateLinkResourceRegion: location
+        requestMessage: 'Please approve the request'
+      }
+      {
+        name: 'mgt-ep-cosmosdb'
+        groupId: 'sql'
+        requestMessage: 'Please approve the request'
+        privateLinkResourceId: prereq.outputs.cosmosDBId
+        privateLinkResourceRegion: location
+      }
+    ]
   }
 }
