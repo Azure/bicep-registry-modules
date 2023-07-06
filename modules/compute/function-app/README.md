@@ -57,14 +57,14 @@ This is a low-level Bicep module for managing Azure Functions, it supports an ar
 
 ## Outputs
 
-| Name            | Type   | Description                                                               |
-| :-------------- | :----: | :------------------------------------------------------------------------ |
-| siteId          | string | Get resource id for app or functionapp.                                   |
-| siteName        | string | Get resource name for app or functionapp.                                 |
-| serverfarmsId   | string | Get resource ID of the app service plan.                                  |
-| serverfarmsName | string | Get name of the app service plan.                                         |
-| functions       | array  | Array of functions having name , language,isDisabled and id of functions. |
-| sitePrincipalId | string | Principal Id of the identity assigned to the function app.                |
+| Name              | Type     | Description                                                               |
+| :---------------- | :------: | :------------------------------------------------------------------------ |
+| `siteId`          | `string` | Get resource id for app or functionapp.                                   |
+| `siteName`        | `string` | Get resource name for app or functionapp.                                 |
+| `serverfarmsId`   | `string` | Get resource ID of the app service plan.                                  |
+| `serverfarmsName` | `string` | Get name of the app service plan.                                         |
+| `functions`       | `array`  | Array of functions having name , language,isDisabled and id of functions. |
+| `sitePrincipalId` | `string` | Principal Id of the identity assigned to the function app.                |
 
 ## Examples
 
