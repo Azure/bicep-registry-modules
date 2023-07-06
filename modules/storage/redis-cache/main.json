@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "10525179631700099020"
+      "templateHash": "12206816973166304283"
     }
   },
   "definitions": {
@@ -496,6 +496,7 @@
       "items": {
         "$ref": "#/definitions/redisPatchScheduleType"
       },
+      "defaultValue": [],
       "metadata": {
         "description": "The predefined schedule for patching redis server. The Patch Window lasts for 5 hours from the start_hour_utc.\nIf schedule is not specified, the update can happen at any time. See https://docs.microsoft.com/en-us/azure/azure-cache-for-redis/cache-administration#schedule-updates-faq\n"
       }

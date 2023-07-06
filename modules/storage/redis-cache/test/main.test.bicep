@@ -42,6 +42,9 @@ module test_01 '../main.bicep' = {
 // Test 02 - Standard SKU - Parameters,  Diagnostic Settings
 module test_02 '../main.bicep' = {
   name: '${uniqueName}-test-02'
+  dependsOn: [
+    prerequisites
+  ]
   params: {
         name: '${uniqueName}-test-02'
         location: location
@@ -94,6 +97,9 @@ module test_02 '../main.bicep' = {
 // Test 03 - Premium Test - Diagnostic Settings
 module test_03 '../main.bicep' = {
   name: '${uniqueName}-test-03'
+  dependsOn: [
+    prerequisites
+  ]
   params: {
     name: '${uniqueName}-test-03'
     location: location
