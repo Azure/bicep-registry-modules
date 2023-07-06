@@ -37,14 +37,14 @@ This module deploys Azure Cache for Redis(Microsoft.Cache/redis) and optionally 
 
 ## Outputs
 
-| Name              | Type   | Description                                                    |
-| :---------------- | :----: | :------------------------------------------------------------- |
-| name              | string | The resource name.                                             |
-| resourceId        | string | The resource ID.                                               |
-| resourceGroupName | string | The name of the resource group the Redis cache was created in. |
-| hostName          | string | Redis hostname.                                                |
-| sslPort           | int    | Redis SSL port.                                                |
-| location          | string | The location the resource was deployed into.                   |
+| Name                | Type     | Description                                                    |
+| :------------------ | :------: | :------------------------------------------------------------- |
+| `name`              | `string` | The resource name.                                             |
+| `resourceId`        | `string` | The resource ID.                                               |
+| `resourceGroupName` | `string` | The name of the resource group the Redis cache was created in. |
+| `hostName`          | `string` | Redis hostname.                                                |
+| `sslPort`           | `int`    | Redis SSL port.                                                |
+| `location`          | `string` | The location the resource was deployed into.                   |
 
 ## Examples
 
