@@ -46,7 +46,7 @@ You should be able to see these files created in the module folder:
 | `README.md` | The README file generated based on the contents of `main.bicep`. You need to update this file to add examples. |
 | `version.json` | The module version file. It is used together with `main.json` to calculate the patch version number of the module. Every time `main.json` is changed, the patch version number gets bumped. The full version (`<ModuleMajorVersion>.<ModuleMinorVersion>.<ModulePatchVersion>`) will then be assigned to the module before it gets published to the Bicep public module registry. The process is handled by the module publishing CI automatically. You should not edit this file. |
 
-NOTE: The `metadata.json` file is now obsolete. Running `brm generate` will automatically remove this file and place its contents into the main.bicep file as `metadata` statements.
+NOTE: The `metadata.json` file is now obsolete. Running `brm generate` will automatically remove this file and place its contents into the main.bicep file as `metadata` statements (see below).
 
 ### Authoring module files
 
