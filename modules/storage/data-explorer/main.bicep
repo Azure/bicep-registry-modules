@@ -247,5 +247,5 @@ resource managedPrivateEndpoint 'Microsoft.Kusto/clusters/managedPrivateEndpoint
 @description('The ID of the created or existing Kusto Cluster. Use this ID to reference the Kusto Cluster in other Azure resource deployments.')
 output id string = kustoCluster.id
 
-@description('Name of the kusto cluster created.')
+@description('Name of the kusto cluster created')
 output clusterName string = kustoCluster.name
