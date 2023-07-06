@@ -47,7 +47,7 @@ This Bicep module allows users to create or use existing Kusto Clusters with opt
 | Name          | Type     | Description                                                                                                                      |
 | :------------ | :------: | :------------------------------------------------------------------------------------------------------------------------------- |
 | `id`          | `string` | The ID of the created or existing Kusto Cluster. Use this ID to reference the Kusto Cluster in other Azure resource deployments. |
-| `clusterName` | `string` | Name of the kusto cluster created.                                                                                               |
+| `clusterName` | `string` | Name of the kusto cluster created                                                                                                |
 
 ## Examples
 

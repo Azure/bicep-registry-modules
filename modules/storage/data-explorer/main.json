@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "6230874536052359768"
+      "templateHash": "13062535941509403074"
     }
   },
   "definitions": {
@@ -569,7 +569,7 @@
     "clusterName": {
       "type": "string",
       "metadata": {
-        "description": "Name of the kusto cluster created."
+        "description": "Name of the kusto cluster created"
       },
       "value": "[parameters('name')]"
     }
