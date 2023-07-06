@@ -6,11 +6,18 @@
     "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.16.1.55165",
-      "templateHash": "16761308860409506399"
+      "version": "0.18.4.5664",
+      "templateHash": "6230874536052359768"
     }
   },
   "definitions": {
+    "kustoTier": {
+      "type": "string",
+      "allowedValues": [
+        "Basic",
+        "Standard"
+      ]
+    },
     "kustoSku": {
       "type": "string",
       "allowedValues": [
@@ -65,46 +72,10 @@
         "Standard_EC16as_v5+3TB_PS"
       ]
     },
-    "kustoTier": {
-      "type": "string",
-      "allowedValues": [
-        "Basic",
-        "Standard"
-      ]
-    },
     "period": {
       "type": "int",
       "maxValue": 36500,
       "minValue": 0
-    },
-    "newOrExisting": {
-      "type": "string",
-      "allowedValues": [
-        "existing",
-        "new",
-        "none"
-      ]
-    },
-    "eventHubSkuName": {
-      "type": "string",
-      "allowedValues": [
-        "Basic",
-        "Standard"
-      ]
-    },
-    "EventHubSkuConfig": {
-      "type": "object",
-      "properties": {
-        "capacity": {
-          "type": "int"
-        },
-        "name": {
-          "$ref": "#/definitions/eventHubSkuName"
-        },
-        "tier": {
-          "$ref": "#/definitions/eventHubSkuName"
-        }
-      }
     }
   },
   "parameters": {
@@ -123,13 +94,6 @@
       "maxLength": 22,
       "minLength": 4
     },
-    "databaseName": {
-      "type": "string",
-      "defaultValue": "[format('kustodb{0}', uniqueString(resourceGroup().id, subscription().id))]",
-      "metadata": {
-        "description": "Name of the Kusto Database. Must be unique within Kusto Cluster."
-      }
-    },
     "sku": {
       "$ref": "#/definitions/kustoSku",
       "defaultValue": "Dev(No SLA)_Standard_D11_v2",
@@ -139,7 +103,7 @@
     },
     "tier": {
       "$ref": "#/definitions/kustoTier",
-      "defaultValue": "Standard",
+      "defaultValue": "Basic",
       "metadata": {
         "description": "The tier of the Kusto Cluster."
       }
@@ -206,13 +170,6 @@
         "description": "Continue if there are errors running a script."
       }
     },
-    "enableManagedIdentity": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Enable or disable the use of a Managed Identity with Data Explorer."
-      }
-    },
     "enableStreamingIngest": {
       "type": "bool",
       "defaultValue": false,
@@ -269,314 +226,94 @@
         "description": "Enable or disable zone redundant."
       }
     },
-    "databaseKind": {
-      "type": "string",
-      "defaultValue": "ReadWrite",
+    "privateEndpointsApprovalEnabled": {
+      "type": "bool",
+      "defaultValue": false,
       "metadata": {
-        "description": "The kind of the Kusto Database."
-      },
+        "description": "Toggle if Private Endpoints manual approval for Kusto Cluster should be enabled."
+      }
+    },
+    "privateEndpoints": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Define Private Endpoints that should be created for Kusto Cluster."
+      }
+    },
+    "databases": {
+      "type": "array",
+      "metadata": {
+        "description": "optional. database list of kustoCluster to be created."
+      }
+    },
+    "dataCosmosDbConnections": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "optional. data connection for specied database and resource cosmosdb"
+      }
+    },
+    "dataEventHubConnections": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "optional. data connection for specied database and resource eventhub."
+      }
+    },
+    "identityType": {
+      "type": "string",
+      "defaultValue": "None",
       "allowedValues": [
-        "ReadWrite",
-        "ReadOnlyFollowing"
-      ]
-    },
-    "unlimitedSoftDelete": {
-      "type": "bool",
-      "defaultValue": false,
+        "None",
+        "SystemAssigned",
+        "UserAssigned"
+      ],
       "metadata": {
-        "description": "Enable or disable soft delete."
+        "description": "Optional. The identity type attach to kustoCluster."
       }
     },
-    "softDeletePeriod": {
-      "$ref": "#/definitions/period",
-      "defaultValue": 30,
-      "metadata": {
-        "description": "The soft delete period of the Kusto Database."
-      }
-    },
-    "unlimitedHotCache": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Enable or disable unlimited hot cache."
-      }
-    },
-    "hotCachePeriod": {
-      "$ref": "#/definitions/period",
-      "defaultValue": 30,
-      "metadata": {
-        "description": "The hot cache period of the Kusto Database."
-      }
-    },
-    "enableEventHubConnector": {
-      "type": "bool",
-      "defaultValue": "[not(equals(parameters('newOrExistingEventHub'), 'none'))]",
-      "metadata": {
-        "description": "Enable or disable the Event Hub connector."
-      }
-    },
-    "eventHubNamespaceName": {
-      "type": "string",
-      "defaultValue": "[format('eventHub{0}', uniqueString(resourceGroup().id))]",
-      "metadata": {
-        "description": "Name of Event Hub's namespace"
-      }
-    },
-    "eventHubName": {
-      "type": "string",
-      "defaultValue": "kustoHub",
-      "metadata": {
-        "description": "Name of Event Hub"
-      }
-    },
-    "enableCosmosDBConnector": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Enable or disable the Cosmos DB connector."
-      }
-    },
-    "cosmosDDAccountName": {
-      "type": "string",
-      "defaultValue": "[format('cosmosdb{0}', uniqueString(resourceGroup().id))]",
-      "metadata": {
-        "description": "Name of Cosmos DB account"
-      }
-    },
-    "cosmosDBDatabaseName": {
-      "type": "string",
-      "defaultValue": "mydb",
-      "metadata": {
-        "description": "Name of Cosmos DB database"
-      }
-    },
-    "cosmosDBContainerName": {
-      "type": "string",
-      "defaultValue": "mycontainer",
-      "metadata": {
-        "description": "Name of Cosmos DB container"
-      }
-    },
-    "newOrExistingEventHub": {
-      "$ref": "#/definitions/newOrExisting",
-      "defaultValue": "none",
-      "metadata": {
-        "description": "Create a new Event Hub namespace or use an existing one. If none, the Event Hub connector will be disabled."
-      }
-    },
-    "eventHubSku": {
+    "userAssignedIdentities": {
       "type": "object",
-      "properties": {
-        "capacity": {
-          "type": "int"
-        },
-        "name": {
-          "$ref": "#/definitions/eventHubSkuName"
-        },
-        "tier": {
-          "$ref": "#/definitions/eventHubSkuName"
-        }
-      },
-      "defaultValue": {
-        "capacity": 1,
-        "name": "Standard",
-        "tier": "Standard"
-      },
+      "defaultValue": {},
       "metadata": {
-        "description": "EventHub Sku Configuration Properties."
+        "description": "Optional. Gets or sets a list of key value pairs that describe the set of User Assigned identities that will be used with this kustoCluster.\nThe key is the ARM resource identifier of the identity. Only 1 User Assigned identity is permitted here\n"
       }
     },
-    "eventHubProperties": {
-      "type": "object",
-      "properties": {
-        "messageRetentionInDays": {
-          "type": "int"
-        },
-        "partitionCount": {
-          "type": "int"
-        }
-      },
-      "defaultValue": {
-        "messageRetentionInDays": 2,
-        "partitionCount": 2
-      },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "Enabled",
       "metadata": {
-        "description": "EventHub Properties."
+        "description": "Enable or disable public network access."
       }
     },
-    "newOrExistingCosmosDB": {
-      "$ref": "#/definitions/newOrExisting",
-      "defaultValue": "none",
+    "managedPrivateEndpoints": {
+      "type": "array",
+      "defaultValue": [],
       "metadata": {
-        "description": "Create a new Cosmos DB account or use an existing one. If none, the Cosmos DB connector will be disabled."
+        "description": "The list of managed private endpoints."
       }
     }
   },
   "variables": {
-    "eventHubDataReceiver": "a638d3c7-ab3a-418d-83e6-5f17a39d4fde",
-    "cosmosDataReader": "00000000-0000-0000-0000-000000000001"
+    "copy": [
+      {
+        "name": "varPrivateEndpoints",
+        "count": "[length(parameters('privateEndpoints'))]",
+        "input": {
+          "name": "[format('{0}-{1}', parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].name, parameters('name'))]",
+          "privateLinkServiceId": "[resourceId('Microsoft.Kusto/clusters', parameters('name'))]",
+          "groupIds": [
+            "cluster"
+          ],
+          "subnetId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].subnetId]",
+          "privateDnsZones": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'privateDnsZoneId'), createArray(createObject('name', 'default', 'zoneId', parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].privateDnsZoneId)), createArray())]"
+        }
+      }
+    ],
+    "$fxv#0": ".create-merge table RawEvents(document:dynamic)",
+    "databasesNames": "[map(parameters('databases'), lambda('db', lambdaVariables('db').name))]"
   },
   "resources": {
-    "kustoCluster::database::kustoScript": {
-      "copy": {
-        "name": "kustoScript",
-        "count": "[length(parameters('scripts'))]"
-      },
-      "type": "Microsoft.Kusto/clusters/databases/scripts",
-      "apiVersion": "2022-12-29",
-      "name": "[format('{0}/{1}/{2}', parameters('name'), parameters('databaseName'), format('db-script-{0}', uniqueString(parameters('scripts')[copyIndex()])))]",
-      "properties": {
-        "scriptContent": "[parameters('scripts')[copyIndex()]]",
-        "continueOnErrors": "[parameters('continueOnErrors')]"
-      },
-      "dependsOn": [
-        "kustoCluster::database"
-      ]
-    },
-    "kustoCluster::database::eventConnection": {
-      "condition": "[parameters('enableEventHubConnector')]",
-      "type": "Microsoft.Kusto/clusters/databases/dataConnections",
-      "apiVersion": "2022-12-29",
-      "name": "[format('{0}/{1}/{2}', parameters('name'), parameters('databaseName'), 'eventConnection')]",
-      "location": "[parameters('location')]",
-      "kind": "EventHub",
-      "properties": {
-        "compression": "None",
-        "consumerGroup": "kustoConsumerGroup",
-        "dataFormat": "MULTIJSON",
-        "eventHubResourceId": "[resourceId('Microsoft.EventHub/namespaces/eventhubs', parameters('eventHubNamespaceName'), parameters('eventHubName'))]",
-        "eventSystemProperties": [
-          "x-opt-enqueued-time"
-        ],
-        "managedIdentityResourceId": "[resourceId('Microsoft.Kusto/clusters', parameters('name'))]",
-        "mappingRuleName": "DirectJson",
-        "tableName": "RawEvents"
-      },
-      "dependsOn": [
-        "clusterEventHubAuthorization",
-        "kustoCluster::database",
-        "eventHubNamespace::eventHub::kustoConsumerGroup",
-        "kustoCluster::database::kustoScript"
-      ]
-    },
-    "kustoCluster::database::nosqlConnection": {
-      "type": "Microsoft.Kusto/clusters/databases/dataConnections",
-      "apiVersion": "2022-12-29",
-      "name": "[format('{0}/{1}/{2}', parameters('name'), parameters('databaseName'), 'nosqlConnection')]",
-      "location": "[parameters('location')]",
-      "kind": "CosmosDb",
-      "properties": {
-        "tableName": "TestTable",
-        "mappingRuleName": "DocumentMapping",
-        "managedIdentityResourceId": "[resourceId('Microsoft.Kusto/clusters', parameters('name'))]",
-        "cosmosDbAccountResourceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDDAccountName'))]",
-        "cosmosDbDatabase": "[parameters('cosmosDBDatabaseName')]",
-        "cosmosDbContainer": "[parameters('cosmosDBContainerName')]"
-      },
-      "dependsOn": [
-        "cosmosDbAccount::clusterCosmosDbAuthorization",
-        "kustoCluster::database",
-        "kustoCluster::database::kustoScript"
-      ]
-    },
-    "kustoCluster::database": {
-      "type": "Microsoft.Kusto/clusters/databases",
-      "apiVersion": "2022-12-29",
-      "name": "[format('{0}/{1}', parameters('name'), parameters('databaseName'))]",
-      "location": "[parameters('location')]",
-      "kind": "[parameters('databaseKind')]",
-      "properties": {
-        "softDeletePeriod": "[if(parameters('unlimitedSoftDelete'), null(), format('P{0}D', parameters('softDeletePeriod')))]",
-        "hotCachePeriod": "[if(parameters('unlimitedHotCache'), null(), format('P{0}D', parameters('hotCachePeriod')))]"
-      },
-      "dependsOn": [
-        "kustoCluster"
-      ]
-    },
-    "newEventHubNamespace::newEventHub::newKustoConsumerGroup": {
-      "condition": "[and(parameters('enableEventHubConnector'), equals(parameters('newOrExistingEventHub'), 'new'))]",
-      "type": "Microsoft.EventHub/namespaces/eventhubs/consumergroups",
-      "apiVersion": "2021-11-01",
-      "name": "[format('{0}/{1}/{2}', parameters('eventHubNamespaceName'), parameters('eventHubName'), 'kustoConsumerGroup')]",
-      "properties": {},
-      "dependsOn": [
-        "newEventHubNamespace::newEventHub"
-      ]
-    },
-    "newEventHubNamespace::newEventHub": {
-      "condition": "[and(parameters('enableEventHubConnector'), equals(parameters('newOrExistingEventHub'), 'new'))]",
-      "type": "Microsoft.EventHub/namespaces/eventhubs",
-      "apiVersion": "2021-11-01",
-      "name": "[format('{0}/{1}', parameters('eventHubNamespaceName'), parameters('eventHubName'))]",
-      "properties": "[parameters('eventHubProperties')]",
-      "dependsOn": [
-        "newEventHubNamespace"
-      ]
-    },
-    "eventHubNamespace::eventHub::kustoConsumerGroup": {
-      "condition": "[parameters('enableEventHubConnector')]",
-      "type": "Microsoft.EventHub/namespaces/eventhubs/consumergroups",
-      "apiVersion": "2021-11-01",
-      "name": "[format('{0}/{1}/{2}', parameters('eventHubNamespaceName'), parameters('eventHubName'), 'kustoConsumerGroup')]"
-    },
-    "eventHubNamespace::eventHub": {
-      "condition": "[parameters('enableEventHubConnector')]",
-      "existing": true,
-      "type": "Microsoft.EventHub/namespaces/eventhubs",
-      "apiVersion": "2021-11-01",
-      "name": "[format('{0}/{1}', parameters('eventHubNamespaceName'), parameters('eventHubName'))]"
-    },
-    "newCosmosDbAccount::cosmosDbDatabase::cosmosDbContainer": {
-      "condition": "[and(parameters('enableCosmosDBConnector'), equals(parameters('newOrExistingCosmosDB'), 'new'))]",
-      "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
-      "apiVersion": "2022-08-15",
-      "name": "[format('{0}/{1}/{2}', parameters('cosmosDDAccountName'), parameters('cosmosDBDatabaseName'), parameters('cosmosDBContainerName'))]",
-      "properties": {
-        "options": {
-          "throughput": 400
-        },
-        "resource": {
-          "id": "[parameters('cosmosDBContainerName')]",
-          "partitionKey": {
-            "kind": "Hash",
-            "paths": [
-              "/part"
-            ]
-          }
-        }
-      },
-      "dependsOn": [
-        "newCosmosDbAccount::cosmosDbDatabase"
-      ]
-    },
-    "newCosmosDbAccount::cosmosDbDatabase": {
-      "condition": "[and(parameters('enableCosmosDBConnector'), equals(parameters('newOrExistingCosmosDB'), 'new'))]",
-      "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
-      "apiVersion": "2022-08-15",
-      "name": "[format('{0}/{1}', parameters('cosmosDDAccountName'), parameters('cosmosDBDatabaseName'))]",
-      "properties": {
-        "resource": {
-          "id": "[parameters('cosmosDBDatabaseName')]"
-        }
-      },
-      "dependsOn": [
-        "newCosmosDbAccount"
-      ]
-    },
-    "cosmosDbAccount::clusterCosmosDbAuthorization": {
-      "condition": "[and(parameters('enableCosmosDBConnector'), parameters('enableCosmosDBConnector'))]",
-      "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
-      "apiVersion": "2022-08-15",
-      "name": "[format('{0}/{1}', parameters('cosmosDDAccountName'), guid(resourceId('Microsoft.Kusto/clusters', parameters('name')), parameters('cosmosDDAccountName')))]",
-      "properties": {
-        "principalId": "[reference('kustoCluster', '2022-12-29', 'full').identity.principalId]",
-        "roleDefinitionId": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('cosmosDDAccountName'), variables('cosmosDataReader'))]",
-        "scope": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDDAccountName'))]"
-      },
-      "dependsOn": [
-        "kustoCluster"
-      ]
-    },
     "kustoCluster": {
       "type": "Microsoft.Kusto/clusters",
       "apiVersion": "2022-12-29",
@@ -585,12 +322,13 @@
       "sku": {
         "name": "[parameters('sku')]",
         "tier": "[parameters('tier')]",
-        "capacity": "[parameters('numberOfNodes')]"
+        "capacity": "[if(or(equals(parameters('sku'), 'Dev(No SLA)_Standard_D11_v2'), equals(parameters('sku'), 'Dev(No SLA)_Standard_D11_v2')), 1, parameters('numberOfNodes'))]"
       },
       "tags": "[parameters('tags')]",
-      "identity": "[if(parameters('enableManagedIdentity'), createObject('type', 'systemAssigned'), null())]",
+      "identity": "[if(equals(parameters('identityType'), 'UserAssigned'), createObject('type', parameters('identityType'), 'userAssignedIdentities', parameters('userAssignedIdentities')), createObject('type', parameters('identityType')))]",
       "zones": "[if(parameters('enableZoneRedundant'), createArray('1', '2', '3'), null())]",
       "properties": {
+        "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "optimizedAutoscale": "[if(parameters('enableAutoScale'), createObject('isEnabled', parameters('enableAutoScale'), 'minimum', parameters('autoScaleMin'), 'maximum', parameters('autoScaleMax'), 'version', parameters('version')), null())]",
         "enableStreamingIngest": "[parameters('enableStreamingIngest')]",
         "enablePurge": "[parameters('enablePurge')]",
@@ -600,62 +338,224 @@
         "enableAutoStop": "[parameters('enableAutoStop')]"
       }
     },
-    "newEventHubNamespace": {
-      "condition": "[and(parameters('enableEventHubConnector'), equals(parameters('newOrExistingEventHub'), 'new'))]",
-      "type": "Microsoft.EventHub/namespaces",
-      "apiVersion": "2021-11-01",
-      "name": "[parameters('eventHubNamespaceName')]",
+    "database": {
+      "copy": {
+        "name": "database",
+        "count": "[length(parameters('databases'))]"
+      },
+      "type": "Microsoft.Kusto/clusters/databases",
+      "apiVersion": "2022-12-29",
+      "name": "[format('{0}/{1}', parameters('name'), parameters('databases')[copyIndex()].name)]",
+      "kind": "[parameters('databases')[copyIndex()].kind]",
       "location": "[parameters('location')]",
-      "sku": "[parameters('eventHubSku')]",
-      "properties": {}
-    },
-    "eventHubNamespace": {
-      "condition": "[parameters('enableEventHubConnector')]",
-      "existing": true,
-      "type": "Microsoft.EventHub/namespaces",
-      "apiVersion": "2021-11-01",
-      "name": "[parameters('eventHubNamespaceName')]"
-    },
-    "clusterEventHubAuthorization": {
-      "condition": "[parameters('enableEventHubConnector')]",
-      "type": "Microsoft.Authorization/roleAssignments",
-      "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.EventHub/namespaces/{0}/eventhubs/{1}', parameters('eventHubNamespaceName'), parameters('eventHubName'))]",
-      "name": "[guid(resourceGroup().id, parameters('eventHubName'), variables('eventHubDataReceiver'), parameters('name'))]",
       "properties": {
-        "description": "Give \"Azure Event Hubs Data Receiver\" to the cluster",
-        "principalId": "[reference('kustoCluster', '2022-12-29', 'full').identity.principalId]",
-        "principalType": "ServicePrincipal",
-        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('eventHubDataReceiver'))]"
+        "softDeletePeriod": "[if(parameters('databases')[copyIndex()].unlimitedSoftDelete, null(), format('P{0}D', parameters('databases')[copyIndex()].softDeletePeriod))]",
+        "hotCachePeriod": "[if(parameters('databases')[copyIndex()].unlimitedHotCache, null(), format('P{0}D', parameters('databases')[copyIndex()].hotCachePeriod))]"
       },
       "dependsOn": [
-        "kustoCluster",
-        "newEventHubNamespace"
+        "kustoCluster"
       ]
     },
-    "newCosmosDbAccount": {
-      "condition": "[and(parameters('enableCosmosDBConnector'), equals(parameters('newOrExistingCosmosDB'), 'new'))]",
-      "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2022-08-15",
-      "name": "[parameters('cosmosDDAccountName')]",
-      "location": "[parameters('location')]",
-      "kind": "GlobalDocumentDB",
+    "script": {
+      "copy": {
+        "name": "script",
+        "count": "[length(parameters('scripts'))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "type": "Microsoft.Kusto/clusters/databases/scripts",
+      "apiVersion": "2022-12-29",
+      "name": "[format('{0}/{1}/{2}', parameters('name'), parameters('databases')[indexOf(variables('databasesNames'), parameters('scripts')[copyIndex()].databaseName)].name, format('db-script-{0}-{1}', parameters('scripts')[copyIndex()].name, uniqueString(parameters('scripts')[copyIndex()].name)))]",
       "properties": {
-        "locations": [
-          {
-            "locationName": "[parameters('location')]",
-            "failoverPriority": 0
-          }
-        ],
-        "databaseAccountOfferType": "Standard"
-      }
+        "scriptContent": "[if(contains(parameters('scripts')[copyIndex()], 'scriptContent'), parameters('scripts')[copyIndex()].scriptContent, variables('$fxv#0'))]",
+        "continueOnErrors": "[parameters('continueOnErrors')]"
+      },
+      "dependsOn": [
+        "[format('database[{0}]', indexOf(variables('databasesNames'), parameters('scripts')[copyIndex()].databaseName))]"
+      ]
     },
-    "cosmosDbAccount": {
-      "condition": "[parameters('enableCosmosDBConnector')]",
-      "existing": true,
-      "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2022-08-15",
-      "name": "[parameters('cosmosDDAccountName')]"
+    "dataCosmosDbConnection": {
+      "copy": {
+        "name": "dataCosmosDbConnection",
+        "count": "[length(parameters('dataCosmosDbConnections'))]"
+      },
+      "type": "Microsoft.Kusto/clusters/databases/dataConnections",
+      "apiVersion": "2022-12-29",
+      "name": "[format('{0}/{1}/{2}', parameters('name'), parameters('databases')[indexOf(variables('databasesNames'), parameters('dataCosmosDbConnections')[copyIndex()].databaseName)].name, format('cosmosdb-{0}-{1}', parameters('dataCosmosDbConnections')[copyIndex()].name, uniqueString(parameters('dataCosmosDbConnections')[copyIndex()].name)))]",
+      "location": "[parameters('location')]",
+      "kind": "CosmosDb",
+      "properties": {
+        "cosmosDbAccountResourceId": "[parameters('dataCosmosDbConnections')[copyIndex()].cosmosDbAccountResourceId]",
+        "cosmosDbContainer": "[parameters('dataCosmosDbConnections')[copyIndex()].cosmosDbContainer]",
+        "cosmosDbDatabase": "[parameters('dataCosmosDbConnections')[copyIndex()].cosmosDbDatabase]",
+        "managedIdentityResourceId": "[parameters('dataCosmosDbConnections')[copyIndex()].managedIdentityResourceId]",
+        "tableName": "[if(empty(parameters('dataCosmosDbConnections')[copyIndex()].tableName), null(), parameters('dataCosmosDbConnections')[copyIndex()].tableName)]"
+      },
+      "dependsOn": [
+        "database",
+        "script"
+      ]
+    },
+    "dataEventHubConnection": {
+      "copy": {
+        "name": "dataEventHubConnection",
+        "count": "[length(parameters('dataEventHubConnections'))]"
+      },
+      "type": "Microsoft.Kusto/clusters/databases/dataConnections",
+      "apiVersion": "2022-12-29",
+      "name": "[format('{0}/{1}/{2}', parameters('name'), parameters('databases')[indexOf(variables('databasesNames'), parameters('dataEventHubConnections')[copyIndex()].databaseName)].name, format('eventhub-{0}-{1}', parameters('dataEventHubConnections')[copyIndex()].name, uniqueString(parameters('dataEventHubConnections')[copyIndex()].name)))]",
+      "location": "[parameters('location')]",
+      "kind": "EventHub",
+      "properties": {
+        "consumerGroup": "[parameters('dataEventHubConnections')[copyIndex()].consumerGroup]",
+        "eventHubResourceId": "[parameters('dataEventHubConnections')[copyIndex()].eventHubResourceId]",
+        "tableName": "[if(empty(parameters('dataEventHubConnections')[copyIndex()].tableName), null(), parameters('dataEventHubConnections')[copyIndex()].tableName)]",
+        "compression": "[parameters('dataEventHubConnections')[copyIndex()].compression]"
+      },
+      "dependsOn": [
+        "database",
+        "script"
+      ]
+    },
+    "managedPrivateEndpoint": {
+      "copy": {
+        "name": "managedPrivateEndpoint",
+        "count": "[length(parameters('managedPrivateEndpoints'))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "type": "Microsoft.Kusto/clusters/managedPrivateEndpoints",
+      "apiVersion": "2022-12-29",
+      "name": "[format('{0}/{1}', parameters('name'), format('{0}-{1}-managedPrivateEndpoints', parameters('managedPrivateEndpoints')[copyIndex()].name, parameters('name')))]",
+      "properties": {
+        "groupId": "[parameters('managedPrivateEndpoints')[copyIndex()].groupId]",
+        "privateLinkResourceId": "[parameters('managedPrivateEndpoints')[copyIndex()].privateLinkResourceId]"
+      },
+      "dependsOn": [
+        "kustoCluster"
+      ]
+    },
+    "kustoCluster_privateEndpoint": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-kusto-private-endpoints', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "privateEndpoints": {
+            "value": "[variables('varPrivateEndpoints')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "manualApprovalEnabled": {
+            "value": "[parameters('privateEndpointsApprovalEnabled')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
+            "_generator": {
+              "name": "bicep",
+              "version": "0.18.4.5664",
+              "templateHash": "17055812702908829865"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "manualApprovalEnabled": {
+              "type": "bool"
+            },
+            "privateEndpoints": {
+              "type": "array"
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "varPrivateEndpoints",
+                "count": "[length(parameters('privateEndpoints'))]",
+                "input": {
+                  "name": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].name]",
+                  "privateLinkServiceId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].privateLinkServiceId]",
+                  "groupIds": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].groupIds]",
+                  "subnetId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].subnetId]",
+                  "privateDnsZones": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'privateDnsZones'), parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].privateDnsZones, createArray())]",
+                  "customNetworkInterfaceName": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'customNetworkInterfaceName'), parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].customNetworkInterfaceName, null())]"
+                }
+              }
+            ]
+          },
+          "resources": {
+            "privateEndpoint": {
+              "copy": {
+                "name": "privateEndpoint",
+                "count": "[length(variables('varPrivateEndpoints'))]",
+                "mode": "serial",
+                "batchSize": 1
+              },
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2022-05-01",
+              "name": "[format('{0}-{1}', variables('varPrivateEndpoints')[copyIndex()].name, uniqueString(variables('varPrivateEndpoints')[copyIndex()].name, variables('varPrivateEndpoints')[copyIndex()].subnetId, variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "privateLinkServiceConnections": "[if(parameters('manualApprovalEnabled'), null(), createArray(createObject('name', variables('varPrivateEndpoints')[copyIndex()].name, 'properties', createObject('privateLinkServiceId', variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId, 'groupIds', if(not(empty(variables('varPrivateEndpoints')[copyIndex()].groupIds)), variables('varPrivateEndpoints')[copyIndex()].groupIds, null())))))]",
+                "manualPrivateLinkServiceConnections": "[if(parameters('manualApprovalEnabled'), createArray(createObject('name', variables('varPrivateEndpoints')[copyIndex()].name, 'properties', createObject('privateLinkServiceId', variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId, 'groupIds', if(not(empty(variables('varPrivateEndpoints')[copyIndex()].groupIds)), variables('varPrivateEndpoints')[copyIndex()].groupIds, null())))), null())]",
+                "subnet": {
+                  "id": "[variables('varPrivateEndpoints')[copyIndex()].subnetId]"
+                },
+                "customNetworkInterfaceName": "[variables('varPrivateEndpoints')[copyIndex()].customNetworkInterfaceName]"
+              }
+            },
+            "privateDnsZoneGroup": {
+              "copy": {
+                "name": "privateDnsZoneGroup",
+                "count": "[length(variables('varPrivateEndpoints'))]",
+                "mode": "serial",
+                "batchSize": 1
+              },
+              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+              "apiVersion": "2022-05-01",
+              "name": "[format('{0}/{1}', format('{0}-{1}', variables('varPrivateEndpoints')[copyIndex()].name, uniqueString(variables('varPrivateEndpoints')[copyIndex()].name, variables('varPrivateEndpoints')[copyIndex()].subnetId, variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId)), 'default')]",
+              "properties": {
+                "copy": [
+                  {
+                    "name": "privateDnsZoneConfigs",
+                    "count": "[length(variables('varPrivateEndpoints')[copyIndex()].privateDnsZones)]",
+                    "input": {
+                      "name": "[if(contains(variables('varPrivateEndpoints')[copyIndex()].privateDnsZones[copyIndex('privateDnsZoneConfigs')], 'name'), variables('varPrivateEndpoints')[copyIndex()].privateDnsZones[copyIndex('privateDnsZoneConfigs')].name, 'default')]",
+                      "properties": {
+                        "privateDnsZoneId": "[variables('varPrivateEndpoints')[copyIndex()].privateDnsZones[copyIndex('privateDnsZoneConfigs')].zoneId]"
+                      }
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[format('privateEndpoint[{0}]', copyIndex())]"
+              ]
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "kustoCluster"
+      ]
     }
   },
   "outputs": {
@@ -665,6 +565,13 @@
         "description": "The ID of the created or existing Kusto Cluster. Use this ID to reference the Kusto Cluster in other Azure resource deployments."
       },
       "value": "[resourceId('Microsoft.Kusto/clusters', parameters('name'))]"
+    },
+    "clusterName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the kusto cluster created."
+      },
+      "value": "[parameters('name')]"
     }
   }
 }

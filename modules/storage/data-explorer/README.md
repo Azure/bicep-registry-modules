@@ -10,52 +10,44 @@ This Bicep module allows users to create or use existing Kusto Clusters with opt
 
 ## Parameters
 
-| Name                      |   Type   | Required | Description                                                                                                           |
-| :------------------------ | :------: | :------: | :-------------------------------------------------------------------------------------------------------------------- |
-| `location`                | `string` |   Yes    | Deployment Location                                                                                                   |
-| `name`                    | `string` |    No    | Name of the Kusto Cluster. Must be unique within Azure.                                                               |
-| `databaseName`            | `string` |    No    | Name of the Kusto Database. Must be unique within Kusto Cluster.                                                      |
-| `sku`                     | `string` |    No    | The SKU of the Kusto Cluster.                                                                                         |
-| `tier`                    | `string` |    No    | The tier of the Kusto Cluster.                                                                                        |
-| `numberOfNodes`           |  `int`   |    No    | The number of nodes in the Kusto Cluster.                                                                             |
-| `version`                 |  `int`   |    No    | The version of the Kusto Cluster.                                                                                     |
-| `enableAutoScale`         |  `bool`  |    No    | Enable or disable auto scale.                                                                                         |
-| `autoScaleMin`            |  `int`   |    No    | The minimum number of nodes in the Kusto Cluster.                                                                     |
-| `autoScaleMax`            |  `int`   |    No    | The maximum number of nodes in the Kusto Cluster.                                                                     |
-| `tags`                    | `object` |    No    | The tags of the Kusto Cluster.                                                                                        |
-| `scripts`                 | `array`  |    No    | The script content of the Kusto Database. Use [loadTextContent('script.kql')] to load the script content from a file. |
-| `continueOnErrors`        |  `bool`  |    No    | Continue if there are errors running a script.                                                                        |
-| `enableManagedIdentity`   |  `bool`  |    No    | Enable or disable the use of a Managed Identity with Data Explorer.                                                   |
-| `enableStreamingIngest`   |  `bool`  |    No    | Enable or disable streaming ingest.                                                                                   |
-| `enablePurge`             |  `bool`  |    No    | Enable or disable purge.                                                                                              |
-| `enableDiskEncryption`    |  `bool`  |    No    | Enable or disable disk encryption.                                                                                    |
-| `enableDoubleEncryption`  |  `bool`  |    No    | Enable or disable double encryption.                                                                                  |
-| `trustAllTenants`         |  `bool`  |    No    | Enable or disable public access from all Tenants.                                                                     |
-| `trustedExternalTenants`  | `array`  |    No    | The list of trusted external tenants.                                                                                 |
-| `enableAutoStop`          |  `bool`  |    No    | Enable or disable auto stop.                                                                                          |
-| `enableZoneRedundant`     |  `bool`  |    No    | Enable or disable zone redundant.                                                                                     |
-| `databaseKind`            | `string` |    No    | The kind of the Kusto Database.                                                                                       |
-| `unlimitedSoftDelete`     |  `bool`  |    No    | Enable or disable soft delete.                                                                                        |
-| `softDeletePeriod`        |  `int`   |    No    | The soft delete period of the Kusto Database.                                                                         |
-| `unlimitedHotCache`       |  `bool`  |    No    | Enable or disable unlimited hot cache.                                                                                |
-| `hotCachePeriod`          |  `int`   |    No    | The hot cache period of the Kusto Database.                                                                           |
-| `enableEventHubConnector` |  `bool`  |    No    | Enable or disable the Event Hub connector.                                                                            |
-| `eventHubNamespaceName`   | `string` |    No    | Name of Event Hub's namespace                                                                                         |
-| `eventHubName`            | `string` |    No    | Name of Event Hub                                                                                                     |
-| `enableCosmosDBConnector` |  `bool`  |    No    | Enable or disable the Cosmos DB connector.                                                                            |
-| `cosmosDDAccountName`     | `string` |    No    | Name of Cosmos DB account                                                                                             |
-| `cosmosDBDatabaseName`    | `string` |    No    | Name of Cosmos DB database                                                                                            |
-| `cosmosDBContainerName`   | `string` |    No    | Name of Cosmos DB container                                                                                           |
-| `newOrExistingEventHub`   | `string` |    No    | Create a new Event Hub namespace or use an existing one. If none, the Event Hub connector will be disabled.           |
-| `eventHubSku`             | `object` |    No    | EventHub Sku Configuration Properties.                                                                                |
-| `eventHubProperties`      | `object` |    No    | EventHub Properties.                                                                                                  |
-| `newOrExistingCosmosDB`   | `string` |    No    | Create a new Cosmos DB account or use an existing one. If none, the Cosmos DB connector will be disabled.             |
+| Name                              | Type     | Required | Description                                                                                                                                                                                                                                               |
+| :-------------------------------- | :------: | :------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `location`                        | `string` | Yes      | Deployment Location                                                                                                                                                                                                                                       |
+| `name`                            | `string` | No       | Name of the Kusto Cluster. Must be unique within Azure.                                                                                                                                                                                                   |
+| `sku`                             | `string` | No       | The SKU of the Kusto Cluster.                                                                                                                                                                                                                             |
+| `tier`                            | `string` | No       | The tier of the Kusto Cluster.                                                                                                                                                                                                                            |
+| `numberOfNodes`                   | `int`    | No       | The number of nodes in the Kusto Cluster.                                                                                                                                                                                                                 |
+| `version`                         | `int`    | No       | The version of the Kusto Cluster.                                                                                                                                                                                                                         |
+| `enableAutoScale`                 | `bool`   | No       | Enable or disable auto scale.                                                                                                                                                                                                                             |
+| `autoScaleMin`                    | `int`    | No       | The minimum number of nodes in the Kusto Cluster.                                                                                                                                                                                                         |
+| `autoScaleMax`                    | `int`    | No       | The maximum number of nodes in the Kusto Cluster.                                                                                                                                                                                                         |
+| `tags`                            | `object` | No       | The tags of the Kusto Cluster.                                                                                                                                                                                                                            |
+| `scripts`                         | `array`  | No       | The script content of the Kusto Database. Use [loadTextContent('script.kql')] to load the script content from a file.                                                                                                                                     |
+| `continueOnErrors`                | `bool`   | No       | Continue if there are errors running a script.                                                                                                                                                                                                            |
+| `enableStreamingIngest`           | `bool`   | No       | Enable or disable streaming ingest.                                                                                                                                                                                                                       |
+| `enablePurge`                     | `bool`   | No       | Enable or disable purge.                                                                                                                                                                                                                                  |
+| `enableDiskEncryption`            | `bool`   | No       | Enable or disable disk encryption.                                                                                                                                                                                                                        |
+| `enableDoubleEncryption`          | `bool`   | No       | Enable or disable double encryption.                                                                                                                                                                                                                      |
+| `trustAllTenants`                 | `bool`   | No       | Enable or disable public access from all Tenants.                                                                                                                                                                                                         |
+| `trustedExternalTenants`          | `array`  | No       | The list of trusted external tenants.                                                                                                                                                                                                                     |
+| `enableAutoStop`                  | `bool`   | No       | Enable or disable auto stop.                                                                                                                                                                                                                              |
+| `enableZoneRedundant`             | `bool`   | No       | Enable or disable zone redundant.                                                                                                                                                                                                                         |
+| `privateEndpointsApprovalEnabled` | `bool`   | No       | Toggle if Private Endpoints manual approval for Kusto Cluster should be enabled.                                                                                                                                                                          |
+| `privateEndpoints`                | `array`  | No       | Define Private Endpoints that should be created for Kusto Cluster.                                                                                                                                                                                        |
+| `databases`                       | `array`  | Yes      | optional. database list of kustoCluster to be created.                                                                                                                                                                                                    |
+| `dataCosmosDbConnections`         | `array`  | No       | optional. data connection for specied database and resource cosmosdb                                                                                                                                                                                      |
+| `dataEventHubConnections`         | `array`  | No       | optional. data connection for specied database and resource eventhub.                                                                                                                                                                                     |
+| `identityType`                    | `string` | No       | Optional. The identity type attach to kustoCluster.                                                                                                                                                                                                       |
+| `userAssignedIdentities`          | `object` | No       | Optional. Gets or sets a list of key value pairs that describe the set of User Assigned identities that will be used with this kustoCluster.<br />The key is the ARM resource identifier of the identity. Only 1 User Assigned identity is permitted here |
+| `publicNetworkAccess`             | `string` | No       | Enable or disable public network access.                                                                                                                                                                                                                  |
+| `managedPrivateEndpoints`         | `array`  | No       | The list of managed private endpoints.                                                                                                                                                                                                                    |
 
 ## Outputs
 
-| Name |  Type  | Description                                                                                                                      |
-| :--- | :----: | :------------------------------------------------------------------------------------------------------------------------------- |
-| id   | string | The ID of the created or existing Kusto Cluster. Use this ID to reference the Kusto Cluster in other Azure resource deployments. |
+| Name          | Type     | Description                                                                                                                      |
+| :------------ | :------: | :------------------------------------------------------------------------------------------------------------------------------- |
+| `id`          | `string` | The ID of the created or existing Kusto Cluster. Use this ID to reference the Kusto Cluster in other Azure resource deployments. |
+| `clusterName` | `string` | Name of the kusto cluster created.                                                                                               |
 
 ## Examples
 
@@ -127,7 +119,7 @@ output clusterName string = kustoCluster.name
 
 Create a Kusto cluster with a database, private endpoint and managedEndpoints
 
-``` bicep
+```bicep
 //Test 1: Create a Kusto cluster with a database, private endpoint
 module kustoCluster 'br/public:data-analytics/kusto-clusters:0.0.1' = {
   name: 'test1${uniqueString(resourceGroup().id, subscription().id)}'
