@@ -44,7 +44,7 @@ This is a low-level Bicep module for managing Azure Functions, it supports an ar
 | `storageAccountName`              | `string` | Yes      | Required. Name of the storage account used by function app.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | `isManualIntegration`             | `bool`   | No       | Optional. to limit to manual integration; to enable continuous integration (which configures webhooks into online repos like GitHub).                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | `isMercurial`                     | `bool`   | No       | Optional. true for a Mercurial repository; false for a Git repository.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| `storgeAccountResourceGroup`      | `string` | Yes      | Required. Resource Group of storage account used by function app.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `storageAccountResourceGroup`     | `string` | Yes      | Required. Resource Group of storage account used by function app.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | `enablePackageDeploy`             | `bool`   | No       | Optional. True to deploy functions from zip package. "functionPackageUri" must be specified if enabled. The package option and sourcecontrol option should not be enabled at the same time.                                                                                                                                                                                                                                                                                                                                                              |
 | `functionPackageUri`              | `string` | No       | Optional. URI to the function source code zip package, must be accessible by the deployer. E.g. A zip file on Azure storage in the same resource group.                                                                                                                                                                                                                                                                                                                                                                                                  |
 | `enableDockerContainer`           | `bool`   | No       | Optional. Enable docker image deployment.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
@@ -75,7 +75,7 @@ This is a low-level Bicep module for managing Azure Functions, it supports an ar
 In example, function app is using pre-built docker image,
 deploy your code to Azure Functions as a custom Docker container using a image provided.
 ''')
-module funcApp 'br/public:bicep/compute/function-app:1.1.2' = {
+module funcApp 'br/public:bicep/compute/function-app:2.0.1' = {
   name: 'func1${uniqueString(name)}'
   dependsOn: [
     dependencies
@@ -92,7 +92,7 @@ module funcApp 'br/public:bicep/compute/function-app:1.1.2' = {
     }
     tags: tags
     storageAccountName: dependencies.outputs.saAccountName
-    storgeAccountResourceGroup: resourceGroup().name
+    storageAccountResourceGroup: resourceGroup().name
     enableSourceControl: false
     enableDockerContainer: true
     dockerImage: 'mcr.microsoft.com/azure-functions/dotnet:4-appservice-quickstart'
@@ -106,7 +106,7 @@ module funcApp 'br/public:bicep/compute/function-app:1.1.2' = {
 In example, function app uses source control option for
 Continuous deployment for Azure Functions ie. repoUrl param value.
 ''')
-module funcApp 'br/public:bicep/compute/function-app:1.1.2' = {
+module funcApp 'br/public:bicep/compute/function-app:2.0.1' = {
   name: 'func2-${uniqueString(name)}'
   scope: resourceGroup()
   dependsOn: [
@@ -131,7 +131,7 @@ module funcApp 'br/public:bicep/compute/function-app:1.1.2' = {
     functionsExtensionVersion: '~4'
     functionsWorkerRuntime: 'powershell'
     storageAccountName: dependencies.outputs.saAccountName
-    storgeAccountResourceGroup: resourceGroup().name
+    storageAccountResourceGroup: resourceGroup().name
     enableSourceControl: true
     repoUrl: 'https://github.com/Azure/KeyVault-Secrets-Rotation-Redis-PowerShell.git'
     enableDockerContainer: false

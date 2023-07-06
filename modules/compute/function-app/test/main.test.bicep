@@ -34,7 +34,7 @@ module test1 '../main.bicep' = {
     }
     tags: tags
     storageAccountName: dependencies.outputs.saAccountName
-    storgeAccountResourceGroup: resourceGroup().name
+    storageAccountResourceGroup: resourceGroup().name
     enableSourceControl: false
     enableDockerContainer: true
     dockerImage: 'mcr.microsoft.com/azure-functions/dotnet:4-appservice-quickstart'
@@ -68,7 +68,7 @@ module test2 '../main.bicep' = {
     functionsExtensionVersion: '~4'
     functionsWorkerRuntime: 'powershell'
     storageAccountName: dependencies.outputs.saAccountName
-    storgeAccountResourceGroup: resourceGroup().name
+    storageAccountResourceGroup: resourceGroup().name
     enableSourceControl: true
     repoUrl: 'https://github.com/Azure/KeyVault-Secrets-Rotation-Redis-PowerShell.git'
     enableDockerContainer: false

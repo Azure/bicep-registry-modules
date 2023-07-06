@@ -119,7 +119,7 @@ param isManualIntegration bool = true
 param isMercurial bool = false
 
 @description('Required. Resource Group of storage account used by function app.')
-param storgeAccountResourceGroup string
+param storageAccountResourceGroup string
 
 @description('Optional. True to deploy functions from zip package. "functionPackageUri" must be specified if enabled. The package option and sourcecontrol option should not be enabled at the same time.')
 param enablePackageDeploy bool = false
@@ -165,7 +165,7 @@ param connectionStringProperties object = {}
 @description('Defines storageAccounts for Azure Function App.')
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' existing = {
   name: storageAccountName
-  scope: resourceGroup(storgeAccountResourceGroup)
+  scope: resourceGroup(storageAccountResourceGroup)
 }
 
 @description('Defines Application service plan.')
