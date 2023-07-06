@@ -1,6 +1,6 @@
 # Azure Event-Hub
 
-This module deploys Microsoft.data event clusters, event namespace, event hub
+This module deploys Microsoft.data event clusters, event namespaces, event hubs and associated configurations.
 
 ## Description
 
@@ -8,70 +8,99 @@ This module deploys Microsoft.data event clusters, event namespace, event hub
 
 ## Parameters
 
-| Name                              | Type     | Required | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| :-------------------------------- | :------: | :------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `clusterName`                     | `string` | No       | Optional. Name for the Event Hub cluster, Alphanumerics and hyphens characters, Start with letter, End with letter or number.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| `clusterCapacity`                 | `int`    | No       | Optional. The quantity of Event Hubs Cluster Capacity Units contained in this cluster.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| `location`                        | `string` | Yes      | Required. Location for all resources.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| `tags`                            | `object` | No       | Optional. Tags of the resource.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| `eventHubNamespaces`              | `object` | No       | Optional. The name of the event hub namespace to be created.<br />Below paramters you can pass while creating the Azure Event Hub namespace.<br />sku: (Optional) Possible values are "Basic" or "Standard" or "Premium". Detault to 'Standard'.<br />capacity: (Optional) int, The Event Hubs throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units.The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units. Default to 1.<br />zoneRedundant: (Optional) bool, Enabling this property creates a Standard Event Hubs Namespace in regions supported availability zones. Default to false.<br />isAutoInflateEnabled: (Optional) bool,  Value that indicates whether AutoInflate is enabled for eventhub namespace. Only available for "Standard" sku. Default to false.<br />maximumThroughputUnits: (Optional) int, Upper limit of throughput units when AutoInflate is enabled, value should be within 0 to 20 throughput units. ( '0' if AutoInflateEnabled = true)<br />disableLocalAuth: (Optional) bool, This property disables SAS authentication for the Event Hubs namespace. Default to false.<br />kafkaEnabled: (Optional) bool, Value that indicates whether Kafka is enabled for eventhub namespace. Default to true.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| `eventHubs`                       | `object` | No       | Optional. Name for the eventhub to be created.<br />Below paramters you can pass while the creating Azure Event Hub.<br />messageRetentionInDays: (Optional) int, Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Default to 1.<br />partitionCount: (Optional) int, Number of partitions created for the Event Hub. Default to 2.<br />eventHubNamespaceName: (Optional) string, Name of the Azure Event Hub Namespace.<br />status: (Optional) string, Enumerates the possible values for the status of the Event Hub. 'Active','Creating','Deleting','Disabled','ReceiveDisabled','Renaming','Restoring','SendDisabled','Unknown'. Default to 'Active'.<br />captureDescriptionDestinationName: (Optional) string, Name for capture destination.<br />captureDescriptionDestinationArchiveNameFormat: (Optional) string,  Blob naming convention for archive, e.g. {Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}. Here all the parameters (Namespace,EventHub .. etc) are mandatory irrespective of order.<br />captureDescriptionDestinationBlobContainer: (Optional) string, Blob container Name.<br />captureDescriptionDestinationStorageAccountResourceId: (Optional) string, Resource ID of the storage account to be used to create the blobs.<br />captureDescriptionEnabled: (Optional) boolean, A value that indicates whether capture description is enabled.<br />captureDescriptionEncoding: (Optional) string, Enumerates the possible values for the encoding format of capture description.<br />captureDescriptionIntervalInSeconds: (Optional) int, The time window allows you to set the frequency with which the capture to Azure Blobs will happen.<br />captureDescriptionSizeLimitInBytes: (Optional) int, The size window defines the amount of data built up in your Event Hub before an capture operation.<br />captureDescriptionSkipEmptyArchives: (Optional) boolean,  A value that indicates whether to Skip Empty Archives.<br />roleAssignments: (Optional) Array, Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'. |
-| `namespaceAuthorizationRules`     | `object` | No       | Optional. Authorization Rules for the Event Hub Namespace.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `namespaceRoleAssignments`        | `object` | No       | Optional. Role assignments for the namespace.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| `disasterRecoveryConfigs`         | `object` | No       | Optional. The disaster recovery config for the namespace.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| `diagnosticSettings`              | `object` | No       | Optional. The Diagnostics Settings config for the namespace.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `eventHubAuthorizationRules`      | `object` | No       | Optional. Authorization Rules for the Event Hub .                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| `consumerGroups`                  | `object` | No       | Optional. consumer groups for the Event Hub .                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| `privateEndpoints`                | `array`  | No       | Define Private Endpoints that should be created for Azure EventHub Namespace.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| `privateEndpointsApprovalEnabled` | `bool`   | No       | Toggle if Private Endpoints manual approval for Azure EventHub Namespace should be enabled.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Name                               | Type     | Required | Description                                                                                                                   |
+| :--------------------------------- | :------: | :------: | :---------------------------------------------------------------------------------------------------------------------------- |
+| `clusterName`                      | `string` | No       | Optional. Name for the Event Hub cluster, Alphanumerics and hyphens characters, Start with letter, End with letter or number. |
+| `clusterCapacity`                  | `int`    | No       | Optional. The quantity of Event Hubs Cluster Capacity Units contained in this cluster.                                        |
+| `location`                         | `string` | No       | Required. Location for all resources.                                                                                         |
+| `tags`                             | `object` | No       | Optional. Tags of the resource.                                                                                               |
+| `namespaces`                       | `array`  | No       | Required. The list of the event hub namespaces with its configurations to be created.                                         |
+| `namespaceAuthorizationRules`      | `array`  | No       | Optional. Authorization Rules for the Event Hub Namespace.                                                                    |
+| `namespaceRoleAssignments`         | `array`  | No       | Optional. Role assignments for the namespace.                                                                                 |
+| `namespaceDisasterRecoveryConfigs` | `array`  | No       | Optional. The disaster recovery config for the namespace.                                                                     |
+| `namespaceDiagnosticSettings`      | `array`  | No       | Optional. The Diagnostics Settings config for the namespace.                                                                  |
+| `eventHubs`                        | `array`  | No       | Optional. Name for the eventhub with its all configurations to be created.                                                    |
+| `eventHubAuthorizationRules`       | `array`  | No       | Optional. Authorization Rules for the Event Hub .                                                                             |
+| `eventHubConsumerGroups`           | `array`  | No       | Optional. consumer groups for the Event Hub .                                                                                 |
+| `namespacePrivateEndpoints`        | `array`  | No       | Private Endpoints that should be created for Azure EventHub Namespaces.                                                       |
 
 ## Outputs
 
-| Name                     | Type   | Description                                               |
-| :----------------------- | :----: | :-------------------------------------------------------- |
-| resourceGroupName        | string | The resource group the Azure Event Hub was deployed into. |
-| eventHubNamespaceDetails | array  | Azure Event Hub namespace details.                        |
+| Name                           | Type    | Description                             |
+| :----------------------------- | :-----: | :-------------------------------------- |
+| `eventHubNamespaceNames`       | `array` | Azure Event Hub namespace names.        |
+| `eventHubNamespaceResourceIds` | `array` | Azure Event Hub namespace resource Ids. |
 
 ## Examples
 
 ### Example 1
 
-```
-param clusterName string
-param clusterCapacity int
-param eventHubNamespaces object
-
-module eventhubnamespace 'br/public:compute/event-hub:0.0.1' = {
-  name: '${uniqueString(deployment().name, 'eastus')}-event-hub-namespace'
+```bicep
+module evh 'br/public:compute/event-hub:2.0.1' = {
+  name: 'evh-${uniqueString(deployment().name, 'eastus2')}'
   params: {
-    location: 'eastus'
-    clusterName: clusterName
-    clusterCapacity: clusterCapacity
-    eventHubNamespaces: {
-        production1: {
-            sku: 'Standard'
-            capacity:  4
-            maximumThroughputUnits: 2
-            zoneRedundant: true
-            isAutoInflateEnabled: true
-        }
-        production2: {
-            sku: 'Standard'
-            capacity:  4
-            maximumThroughputUnits: 2
-            zoneRedundant: true
-        }
-    }
-    namespaceRoleAssignments: {
-      production1: {
-        description: 'Reader Role Assignment'
-        principalIds: [ '30ec80f4-43d7-1280-99ba-2571db1cc45b' ]
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-        eventHubNamespaceName: 'production1'
+    location: 'eastus2'
+    clusterName: 'evhcluster1'
+    clusterCapacity: 2
+    namespaces: [
+      {
+        name: 'testns1'
+        capacity: 2
+        isAutoInflateEnabled: true
+        maximumThroughputUnits: 6
+        zoneRedundant: true
+        publicNetworkAccess: false
       }
+      {
+        name: 'testns2'
+        sku: 'Basic'
+      }
+    ]
+    namespaceAuthorizationRules: [
+      {
+        name: 'authrule01'
+        rights: [ 'Listen', 'Manage', 'Send' ]
+        namespaceName: 'testns1'
+      }
+      {
+        name: 'authrule02'
+        rights: [ 'Listen' ]
+        namespaceName: 'testns1'
+      }
+    ]
+    eventHubs: [
+      {
+        name: 'evh1'
+        messageRetentionInDays: 4
+        partitionCount: 4
+        namespaceName: 'testns1'
+      }
+      {
+        name: 'evh2'
+        messageRetentionInDays: 7
+        partitionCount: 2
+        namespaceName: 'testns1'
+      }
+    ]
+    eventHubAuthorizationRules: [
+      {
+        name: 'evh-rule01'
+        rights: [ 'Listen', 'Manage', 'Send' ]
+        namespaceName: 'testns1'
+        eventHubName: 'evh1'
+      }
+    ]
+    eventHubConsumerGroups: [
+      {
+        name: 'cg01'
+        namespaceName: 'testns1'
+        eventHubName: 'evh1'
+      }
+    ]
+    tags: {
+      tag1: 'tag1value'
+      tag2: 'tag2value'
     }
-
   }
 }
 ```
@@ -79,72 +108,45 @@ module eventhubnamespace 'br/public:compute/event-hub:0.0.1' = {
 ### Example 2
 
 ```bicep
-param eventHubNamespaces object
-param eventHubs object
-param namespaceAuthorizationRules object
-param eventHubAuthorizationRules object
-param consumerGroups object
-param disasterRecoveryConfigs object
-
-
-module eventhubnamespace 'br/public:compute/event-hub:0.0.1' = {
-  name: '${uniqueString(deployment().name, 'eastus')}-event-hub-namespace'
+module evhns 'br/public:compute/event-hub:2.0.1' = {
+  name: 'evhns-${uniqueString(deployment().name, 'eastus')}'
   params: {
     location: 'eastus'
-    eventHubNamespaces: {
-        production1: {
-            sku: 'Standard'
-            capacity:  4
-            maximumThroughputUnits: 2
-            zoneRedundant: true
-            isAutoInflateEnabled: true
-        }
-    }
-    eventHubs: {
-        audit: {
-            messageRetentionInDays: 7
-            partitionCount: 2
-            eventHubNamespaceName: production1
-        }
-        billing: {
-            messageRetentionInDays: 7
-            partitionCount: 2
-            eventHubNamespaceName: production1
-            roleAssignments: [
-            {
-              roleDefinitionIdOrName: 'Reader'
-              description: 'Reader Role Assignment'
-              principalIds: [ '10ec80f4-43d7-1280-99aa-2571db1cc45b' ]
-              principalType: 'ServicePrincipal'
-            }
-          ]
-        }
-    }
-    namespaceAuthorizationRules: {
-        rule1: {
-            rights: ['Listen','Manage','Send']
-            eventHubNamespaceName: production1
-        }
-    }
-    eventHubAuthorizationRules: {
-        rule1: {
-            rights: ['Listen','Manage','Send']
-            eventHubNamespaceName: production
-            eventHubName: audit
-        }
-    }
-    consumerGroups: {
-        consumergroup1: {
-            eventHubNamespaceName: production1
-            eventHubName: audit
-        }
-    }
-    disasterRecoveryConfigs: {
-        disasternamespace: {
-            eventHubNamespaceName: production1
-            partnerNamespaceId: 'partnerNamespaceId'
-        }
-    }
+    namespaces: [
+      {
+        name: 'testns'
+        sku: 'Premium'
+        capacity: 2
+        zoneRedundant: true
+      }
+    ]
+    namespaceRoleAssignments: [
+      {
+        name: 'rol01'
+        description: 'Reader Role Assignment'
+        principalIds: [ '30ec80f4-43d7-1280-99ba-2571db1cc45b' ]
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'f526a384-b230-433a-b45c-95f59c4a2dec' // Azure Event Hubs Data Owner
+        namespaceName: 'testns'
+      }
+    ]
+    eventHubs: [
+      {
+        name: 'evh'
+        messageRetentionInDays: 1
+        partitionCount: 1
+        namespaceName: 'testns'
+        roleAssignments: [
+          {
+            name: 'role01'
+            roleDefinitionIdOrName: 'Contributor'
+            description: 'Contributor Role Assignment'
+            principalIds: [ '10ec80f4-43d7-1280-99aa-2571db1cc45b' ]
+            principalType: 'ServicePrincipal'
+          }
+        ]
+      }
+    ]
   }
 }
 ```
@@ -152,23 +154,63 @@ module eventhubnamespace 'br/public:compute/event-hub:0.0.1' = {
 ### Example 3
 
 ```bicep
-module eventhubnamespace 'br/public:compute/event-hub:0.0.1' = {
-  name: '${uniqueString(deployment().name, 'eastus')}-event-hub-namespace'
+module evhns 'br/public:compute/event-hub:2.0.1' = {
+  name: 'evhns-${uniqueString(deployment().name, 'eastus')}'
   params: {
     location: 'eastus'
-    eventHubNamespaces: {
-        productionBasic: {
-            sku: 'Basic'
-            capacity:  4
-
-        }
-    }
-    privateEndpoints: [
+    namespaces: [
+      {
+        name: 'testns3'
+        sku: 'Standard'
+        capacity: 4
+        publicNetworkAccess: 'Disabled'
+      }
+    ]
+    namespacePrivateEndpoints: [
       {
         name: 'endpoint1'
-        subnetId: subnetId
-        privateDnsZoneId: privateDnsZoneId
-        eventHubNamespaceName: productionBasic
+        subnetId: dependencies.outputs.subnetIds[0]
+        namespaceName: 'testns3'
+        manualApprovalEnabled: true
+      }
+      {
+        name: 'endpoint2'
+        subnetId: dependencies.outputs.subnetIds[1]
+        privateDnsZoneId: dependencies.outputs.privateDNSZoneId
+        namespaceName: 'testns3'
+      }
+    ]
+    namespaceDiagnosticSettings: [
+      {
+        name: 'testds'
+        namespaceName: 'testns3'
+        eventHubAuthorizationRuleId: < external evenetHub authorizationRuleId >
+        eventHubName: < external eventHub name
+        metricsSettings: [
+          {
+            category: 'AllMetrics'
+            timeGrain: 'PT1M'
+            enabled: true
+            retentionPolicy: {
+              days: 7
+              enabled: true
+            }
+          }
+        ]
+        logsSettings: [
+          {
+            category: 'OperationalLogs'
+            enabled: true
+            retentionPolicy: {
+              days: 36
+              enabled: true
+            }
+          }
+          {
+            category: 'ArchiveLogs'
+            enabled: true
+          }
+        ]
       }
     ]
   }
@@ -178,30 +220,50 @@ module eventhubnamespace 'br/public:compute/event-hub:0.0.1' = {
 ### Example 4
 
 ```bicep
-module eventhubnamespace 'br/public:compute/event-hub:0.0.1' = {
-  name: '${uniqueString(deployment().name, 'eastus')}-event-hub-namespace'
+module eventhubnamespace 'br/public:compute/event-hub:2.0.1' = {
+  name: 'evhns-${uniqueString(deployment().name, 'eastus')}'
   params: {
     location: 'eastus'
-    eventHubNamespaces: {
-        productionPremium: {
-            sku: 'Premium'
-            capacity:  4
-            zoneRedundant: true
-        }
-    }
+    namespaces: [
+      {
+        name: 'testns4'
+        sku: 'Standard'
+        capacity: 1
+        zoneRedundant: false
+      }
+    ]
+    eventHubs: [
+      {
+        name: 'testevh'
+        messageRetentionInDays: 1
+        partitionCount: 2
+        namespaceName: 'testns4'
+        captureDescriptionEnabled: true
+        captureDescriptionDestinationBlobContainer: << external storageAccount blob container name >>
+        captureDescriptionDestinationStorageAccountResourceId: << external storageAccount Id >>
+      }
+    ]
+    namespaceDiagnosticSettings: [
+      {
+        name: 'ds'
+        namespaceName: 'testns4'
+        storageAccountId: << external storageAccount Id >>
+        workspaceId: << external long analytics workspace Id >>
+        metricsSettings: [ { category: 'AllMetrics', enabled: true, retentionPolicy: { days: 365, enabled: true } } ]
+        logsSettings: [
+          {
+            category: 'ArchiveLogs'
+            enabled: true
+            retentionPolicy: { days: 7, enabled: true }
+          }
+          {
+            category: 'RuntimeAuditLogs'
+            enabled: true
+            retentionPolicy: { days: 3, enabled: true }
+          }
+        ]
+      }
+    ]
   }
 }
-
-```
-
-### Example 5
-
-```bicep
-module eventhubnamespace 'br/public:compute/event-hub:0.0.1' = {
-  name: '${uniqueString(deployment().name, 'eastus')}-event-hub-namespace'
-  params: {
-    location: 'eastus'
-  }
-}
-
 ```
