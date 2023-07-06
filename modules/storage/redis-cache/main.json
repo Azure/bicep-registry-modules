@@ -6,8 +6,8 @@
     "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.17.1.54307",
-      "templateHash": "9202447131677927978"
+      "version": "0.18.4.5664",
+      "templateHash": "10525179631700099020"
     }
   },
   "definitions": {
@@ -628,8 +628,8 @@
             "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "5224893649933148841"
+              "version": "0.18.4.5664",
+              "templateHash": "159234069882505178"
             }
           },
           "parameters": {
@@ -731,8 +731,8 @@
             "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "12577808496287656463"
+              "version": "0.18.4.5664",
+              "templateHash": "17055812702908829865"
             }
           },
           "parameters": {
@@ -848,8 +848,8 @@
             "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "4406238547664247340"
+              "version": "0.18.4.5664",
+              "templateHash": "7809240443940966025"
             }
           },
           "definitions": {
