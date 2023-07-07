@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "13062535941509403074"
+      "templateHash": "7288101411202684952"
     }
   },
   "definitions": {
@@ -76,6 +76,49 @@
       "type": "int",
       "maxValue": 36500,
       "minValue": 0
+    },
+    "principalAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true
+        },
+        "databaseName": {
+          "type": "string",
+          "nullable": true
+        },
+        "principalId": {
+          "type": "string",
+          "nullable": true
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "App",
+            "Group",
+            "User",
+            null
+          ],
+          "nullable": true
+        },
+        "role": {
+          "type": "string",
+          "allowedValues": [
+            "Admin",
+            "Ingestor",
+            "Monitor",
+            "User",
+            "Viewer",
+            null
+          ],
+          "nullable": true
+        },
+        "tenantId": {
+          "type": "string",
+          "nullable": true
+        }
+      }
     }
   },
   "parameters": {
@@ -292,6 +335,16 @@
       "metadata": {
         "description": "The list of managed private endpoints."
       }
+    },
+    "principalAssignments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/principalAssignmentType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "list of principalAssignments for database"
+      }
     }
   },
   "variables": {
@@ -432,13 +485,36 @@
         "privateLinkResourceId": "[parameters('managedPrivateEndpoints')[copyIndex()].privateLinkResourceId]"
       },
       "dependsOn": [
-        "kustoCluster"
+        "kustoCluster",
+        "kustoClusterPrivateEndpoint"
       ]
     },
-    "kustoCluster_privateEndpoint": {
+    "principalAssignment": {
+      "copy": {
+        "name": "principalAssignment",
+        "count": "[length(parameters('principalAssignments'))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "type": "Microsoft.Kusto/clusters/databases/principalAssignments",
+      "apiVersion": "2022-12-29",
+      "name": "[format('{0}/{1}/{2}', parameters('name'), parameters('databases')[indexOf(variables('databasesNames'), parameters('principalAssignments')[copyIndex()].databaseName)].name, guid(parameters('location'), parameters('principalAssignments')[copyIndex()].databaseName, parameters('principalAssignments')[copyIndex()].principalType, parameters('principalAssignments')[copyIndex()].principalId, parameters('principalAssignments')[copyIndex()].role))]",
+      "properties": {
+        "principalId": "[parameters('principalAssignments')[copyIndex()].principalId]",
+        "principalType": "[parameters('principalAssignments')[copyIndex()].principalType]",
+        "role": "[parameters('principalAssignments')[copyIndex()].role]",
+        "tenantId": "[parameters('principalAssignments')[copyIndex()].tenantId]"
+      },
+      "dependsOn": [
+        "database",
+        "kustoClusterPrivateEndpoint",
+        "managedPrivateEndpoint"
+      ]
+    },
+    "kustoClusterPrivateEndpoint": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-kusto-private-endpoints', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('ep-{0}-kusto-private-endpoints', uniqueString(deployment().name, parameters('name'), resourceId('Microsoft.Kusto/clusters', parameters('name'))))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"

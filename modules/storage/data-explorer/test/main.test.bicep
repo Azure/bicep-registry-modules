@@ -116,7 +116,6 @@ module test1 '../main.bicep' = {
         name: 'ngt-ep-eventhub'
         groupId: 'namespace'
         privateLinkResourceId: prereq.outputs.eventHubNamespaceId
-        privateLinkResourceRegion: location
         requestMessage: 'Please approve the request'
       }
       {
@@ -124,7 +123,15 @@ module test1 '../main.bicep' = {
         groupId: 'sql'
         requestMessage: 'Please approve the request'
         privateLinkResourceId: prereq.outputs.cosmosDBId
-        privateLinkResourceRegion: location
+      }
+    ]
+    principalAssignments: [
+      {
+        principalId: prereq.outputs.principalId
+        role: 'Admin'
+        principalType: 'App'
+        databaseName: 'kustodb${uniqueString(resourceGroup().id, subscription().id)}'
+        tenantId: subscription().tenantId
       }
     ]
   }

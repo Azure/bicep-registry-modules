@@ -122,4 +122,6 @@ output databaseName string = 'test01-${uniqueName}'
 output cosmosDBId string = comosdb.outputs.id
 output cosmosDBAccountName string = comosdb.outputs.name
 output consumerGroupName string = '$Default'
+
 output identityId string = identity.id
+output principalId string = identity.properties.principalId

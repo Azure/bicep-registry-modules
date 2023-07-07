@@ -109,6 +109,9 @@ param publicNetworkAccess string = 'Enabled'
 @description('The list of managed private endpoints.')
 param managedPrivateEndpoints array = []
 
+@description('list of principalAssignments for database')
+param principalAssignments principalAssignmentType[] = []
+
 var varPrivateEndpoints = [for privateEndpoint in privateEndpoints: {
   name: '${privateEndpoint.name}-${kustoCluster.name}'
   privateLinkServiceId: kustoCluster.id
@@ -223,8 +226,8 @@ resource dataEventHubConnection 'Microsoft.Kusto/clusters/databases/dataConnecti
   }
 }]
 
-module kustoCluster_privateEndpoint '.bicep/nested_privateEndpoint.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-kusto-private-endpoints'
+module kustoClusterPrivateEndpoint '.bicep/nested_privateEndpoint.bicep' = {
+  name: 'ep-${uniqueString(deployment().name, kustoCluster.name, kustoCluster.id)}-kusto-private-endpoints'
   params: {
     location: location
     privateEndpoints: varPrivateEndpoints
@@ -236,16 +239,46 @@ module kustoCluster_privateEndpoint '.bicep/nested_privateEndpoint.bicep' = {
 @batchSize(1)
 resource managedPrivateEndpoint 'Microsoft.Kusto/clusters/managedPrivateEndpoints@2022-12-29' = [for ep in managedPrivateEndpoints: {
   name: '${ep.name}-${kustoCluster.name}-managedPrivateEndpoints'
+  dependsOn: [
+    kustoClusterPrivateEndpoint
+  ]
   parent: kustoCluster
   properties: {
     groupId: ep.groupId
     privateLinkResourceId: ep.privateLinkResourceId
-    //requestMessage: empty(ep.requestMessage) ? 'Please approve' : ep.requestMessage
   }
 }]
+
+@batchSize(1)
+resource principalAssignment 'Microsoft.Kusto/clusters/databases/principalAssignments@2022-12-29' = [for principal in principalAssignments: {
+  dependsOn: [
+    database
+    kustoClusterPrivateEndpoint
+    managedPrivateEndpoint
+  ]
+  name: guid(location, principal.databaseName!, principal.principalType!, principal.principalId!, principal.role!)
+  parent: database[indexOf(databasesNames, principal.databaseName)]
+  properties: {
+    principalId: principal.principalId!
+    principalType: principal.principalType!
+    role: principal.role!
+    tenantId: principal.tenantId
+  }
+}]
+
+//types:
+type principalAssignmentType = {
+  name: string?
+  databaseName: string?
+  principalId: string?
+  principalType: 'App' | 'Group' | 'User'?
+  role: 'Admin' | 'Ingestor' | 'Monitor' | 'User' | 'Viewer'?
+  tenantId: string?
+}
 
 @description('The ID of the created or existing Kusto Cluster. Use this ID to reference the Kusto Cluster in other Azure resource deployments.')
 output id string = kustoCluster.id
 
 @description('Name of the kusto cluster created')
+
 output clusterName string = kustoCluster.name
