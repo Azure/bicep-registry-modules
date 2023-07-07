@@ -134,5 +134,11 @@ module test1 '../main.bicep' = {
         tenantId: subscription().tenantId
       }
     ]
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Log Analytics Reader'
+        principalIds: [ prereq.outputs.principalId ]
+      }
+    ]
   }
 }

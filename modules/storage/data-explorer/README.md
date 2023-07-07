@@ -42,6 +42,7 @@ This Bicep module allows users to create or use existing Kusto Clusters with opt
 | `publicNetworkAccess`             | `string` | No       | Enable or disable public network access.                                                                                                                                                                                                                  |
 | `managedPrivateEndpoints`         | `array`  | No       | The list of managed private endpoints.                                                                                                                                                                                                                    |
 | `principalAssignments`            | `array`  | No       | list of principalAssignments for database                                                                                                                                                                                                                 |
+| `roleAssignments`                 | `array`  | No       | List of role assignments for kustoCluster.                                                                                                                                                                                                                |
 
 ## Outputs
 
@@ -123,6 +124,9 @@ Create a Kusto cluster with a database, private endpoint and managedEndpoints
 ```bicep
 //Test 1: Create a Kusto cluster with a database, private endpoint
 module kustoCluster 'br/public:data-analytics/kusto-clusters:0.0.1' = {
+  dependsOn: [
+    prereq
+  ]
   name: 'test1${uniqueString(resourceGroup().id, subscription().id)}'
   params: {
     name: 'ktest1${uniqueString(resourceGroup().id, subscription().id)}'
@@ -160,7 +164,6 @@ module kustoCluster 'br/public:data-analytics/kusto-clusters:0.0.1' = {
         name: 'ngt-ep-eventhub'
         groupId: 'namespace'
         privateLinkResourceId: prereq.outputs.eventHubNamespaceId
-        privateLinkResourceRegion: location
         requestMessage: 'Please approve the request'
       }
       {
@@ -168,10 +171,25 @@ module kustoCluster 'br/public:data-analytics/kusto-clusters:0.0.1' = {
         groupId: 'sql'
         requestMessage: 'Please approve the request'
         privateLinkResourceId: prereq.outputs.cosmosDBId
-        privateLinkResourceRegion: location
+      }
+    ]
+    principalAssignments: [
+      {
+        principalId: prereq.outputs.principalId
+        role: 'Admin'
+        principalType: 'App'
+        databaseName: 'kustodb${uniqueString(resourceGroup().id, subscription().id)}'
+        tenantId: subscription().tenantId
+      }
+    ]
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Log Analytics Reader'
+        principalIds: [ prereq.outputs.principalId ]
       }
     ]
   }
+}
 
 @description('The ID of the created or existing Kusto Cluster. Use this ID to reference the Kusto Cluster in other Azure resource deployments.')
 output id string = kustoCluster.id

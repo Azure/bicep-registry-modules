@@ -112,6 +112,9 @@ param managedPrivateEndpoints array = []
 @description('list of principalAssignments for database')
 param principalAssignments principalAssignmentType[] = []
 
+@description('List of role assignments for kustoCluster.')
+param roleAssignments array = []
+
 var varPrivateEndpoints = [for privateEndpoint in privateEndpoints: {
   name: '${privateEndpoint.name}-${kustoCluster.name}'
   privateLinkServiceId: kustoCluster.id
@@ -263,6 +266,20 @@ resource principalAssignment 'Microsoft.Kusto/clusters/databases/principalAssign
     principalType: principal.principalType!
     role: principal.role!
     tenantId: principal.tenantId
+  }
+}]
+
+module containerRegistry_rbac '.bicep/nested_rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
+  dependsOn: [
+    principalAssignment
+  ]
+  name: '${uniqueString(deployment().name, kustoCluster.name, location)}-kusto-rbac-${index}'
+  params: {
+    description: contains(roleAssignment, 'description') ? roleAssignment.description : ''
+    principalIds: roleAssignment.principalIds
+    roleDefinitionIdOrName: roleAssignment.roleDefinitionIdOrName
+    principalType: contains(roleAssignment, 'principalType') ? roleAssignment.principalType : ''
+    resourceId: kustoCluster.id
   }
 }]
 
