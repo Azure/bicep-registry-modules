@@ -15,7 +15,7 @@ resource deployDelay 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   kind: 'AzurePowerShell'
   properties: {
     retentionInterval: 'PT1H'
-    azPowerShellVersion: '10.0'
+    azPowerShellVersion: '9.7'
     cleanupPreference: 'Always'
     environmentVariables: [
       {
