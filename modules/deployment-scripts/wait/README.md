@@ -27,7 +27,7 @@ When deploying Azure services together, it is sometimes necessary to introduce d
 param location string = resourceGroup().location
 param waitSeconds int =  60
 
-module delayDeployment 'br/public:deployment-scripts/wait:1.0.1' = {
+module delayDeployment 'br/public:deployment-scripts/wait:1.0.2' = {
   name: 'delayDeployment'
   params: {
     waitSeconds: waitSeconds
