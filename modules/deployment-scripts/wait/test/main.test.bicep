@@ -4,11 +4,20 @@ module file is a deployment test. Make sure at least one test is added.
 */
 
 param location string = resourceGroup().location
-param waitSeconds int =  60
+param waitSeconds int = 60
 
 module delayDeployment '../main.bicep' = {
   name: 'delayDeployment'
   params: {
+    waitSeconds: waitSeconds
+    location: location
+  }
+}
+
+module delayDeployment2 '../main.bicep' = {
+  name: 'delayDeployment2'
+  params: {
+    scriptName: 'adifferentname'
     waitSeconds: waitSeconds
     location: location
   }

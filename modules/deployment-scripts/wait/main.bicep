@@ -1,3 +1,6 @@
+@description('The delay script resource name')
+param scriptName string = '${deployment().name}-Delay'
+
 @minValue(1)
 @maxValue(180)
 @description('The number of seconds to wait for')
@@ -7,13 +10,13 @@ param waitSeconds int
 param location string = resourceGroup().location
 
 resource deployDelay 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-  name: 'DeployDelay'
+  name: scriptName
   location: location
   kind: 'AzurePowerShell'
   properties: {
     retentionInterval: 'PT1H'
-    azPowerShellVersion: '6.4'
-    cleanupPreference: 'OnSuccess'
+    azPowerShellVersion: '10.0'
+    cleanupPreference: 'Always'
     environmentVariables: [
       {
         name: 'waitSeconds'

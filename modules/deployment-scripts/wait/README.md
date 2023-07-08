@@ -10,6 +10,7 @@ When deploying Azure services together, it is sometimes necessary to introduce d
 
 | Name          | Type     | Required | Description                             |
 | :------------ | :------: | :------: | :-------------------------------------- |
+| `scriptName`  | `string` | No       | The delay script resource name          |
 | `waitSeconds` | `int`    | Yes      | The number of seconds to wait for       |
 | `location`    | `string` | No       | The location to deploy the resources to |
 

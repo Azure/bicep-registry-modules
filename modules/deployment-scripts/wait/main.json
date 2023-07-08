@@ -4,11 +4,18 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.8.9.13224",
-      "templateHash": "2218759242619531802"
+      "version": "0.18.4.5664",
+      "templateHash": "7650389314620537963"
     }
   },
   "parameters": {
+    "scriptName": {
+      "type": "string",
+      "defaultValue": "[format('{0}-Delay', deployment().name)]",
+      "metadata": {
+        "description": "The delay script resource name"
+      }
+    },
     "waitSeconds": {
       "type": "int",
       "metadata": {
@@ -29,13 +36,13 @@
     {
       "type": "Microsoft.Resources/deploymentScripts",
       "apiVersion": "2020-10-01",
-      "name": "DeployDelay",
+      "name": "[parameters('scriptName')]",
       "location": "[parameters('location')]",
       "kind": "AzurePowerShell",
       "properties": {
         "retentionInterval": "PT1H",
-        "azPowerShellVersion": "6.4",
-        "cleanupPreference": "OnSuccess",
+        "azPowerShellVersion": "10.0",
+        "cleanupPreference": "Always",
         "environmentVariables": [
           {
             "name": "waitSeconds",
