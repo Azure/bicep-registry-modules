@@ -11,6 +11,11 @@ on:
 jobs:
   label-check:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        labels:
+          - "Awaiting Module Path Assignment"
+          - "Awaiting MCR Manifest Onboarding"
     permissions:
       issues: write
       pull-requests: write
@@ -19,14 +24,6 @@ jobs:
         with:
           mode: exactly
           count: 0
-          labels: "Awaiting Module Path Assignment"
+          labels: ${{ matrix.labels }}
           add_comment: true
-          message: "This PR is being prevented from merging because it is pending on module path assignment."
-
-      - uses: mheap/github-action-required-labels@v5
-        with:
-          mode: exactly
-          count: 0
-          labels: "Awaiting MCR Manifest Onboarding"
-          add_comment: true
-          message: "This PR is being prevented from merging because it is pending on MCR manifest update."
+          message: "This PR is being prevented from merging because it is pending on label: ${{ matrix.labels }}."
