@@ -1,0 +1,32 @@
+name: Check Labels
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - labeled
+      - unlabeled
+      - synchronize
+
+jobs:
+  label-check:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: mheap/github-action-required-labels@v5
+        with:
+          mode: exactly
+          count: 0
+          labels: "Awaiting Module Path Assignment"
+          add_comment: true
+          message: "This PR is being prevented from merging because it is pending on module path assignment."
+
+      - uses: mheap/github-action-required-labels@v5
+        with:
+          mode: exactly
+          count: 0
+          labels: "Awaiting MCR Manifest Onboarding"
+          add_comment: true
+          message: "This PR is being prevented from merging because it is pending on MCR manifest update."
