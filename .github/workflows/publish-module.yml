@@ -77,7 +77,7 @@ jobs:
           Version="${{ steps.parse-tag.outputs.version }}"
           ModulePath="${{ steps.parse-tag.outputs.module_path }}"
 
-          time_limit_seconds=30
+          time_limit_seconds=600
           end_time=$((SECONDS+time_limit_seconds))
           retry_seconds=5
 
