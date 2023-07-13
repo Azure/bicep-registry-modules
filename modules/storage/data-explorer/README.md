@@ -43,6 +43,7 @@ This Bicep module allows users to create or use existing Kusto Clusters with opt
 | `managedPrivateEndpoints`         | `array`  | No       | The list of managed private endpoints.                                                                                                                                                                                                                    |
 | `principalAssignments`            | `array`  | No       | list of principalAssignments for database                                                                                                                                                                                                                 |
 | `roleAssignments`                 | `array`  | No       | List of role assignments for kustoCluster.                                                                                                                                                                                                                |
+| `allowedIpRangeList`              | `array`  | No       | allowedIpRangeList for kustoCluster.                                                                                                                                                                                                                      |
 
 ## Outputs
 
@@ -50,6 +51,7 @@ This Bicep module allows users to create or use existing Kusto Clusters with opt
 | :------------ | :------: | :------------------------------------------------------------------------------------------------------------------------------- |
 | `id`          | `string` | The ID of the created or existing Kusto Cluster. Use this ID to reference the Kusto Cluster in other Azure resource deployments. |
 | `clusterName` | `string` | Name of the kusto cluster created                                                                                                |
+| `clusterUri`  | `string` | Uri of the kusto cluster created                                                                                                 |
 
 ## Examples
 

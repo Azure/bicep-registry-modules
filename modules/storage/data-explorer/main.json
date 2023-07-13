@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "3960011855963621385"
+      "templateHash": "11905085497834308438"
     }
   },
   "definitions": {
@@ -352,6 +352,13 @@
       "metadata": {
         "description": "List of role assignments for kustoCluster."
       }
+    },
+    "allowedIpRangeList": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "allowedIpRangeList for kustoCluster."
+      }
     }
   },
   "variables": {
@@ -389,6 +396,7 @@
       "zones": "[if(parameters('enableZoneRedundant'), createArray('1', '2', '3'), null())]",
       "properties": {
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
+        "allowedIpRangeList": "[parameters('allowedIpRangeList')]",
         "optimizedAutoscale": "[if(parameters('enableAutoScale'), createObject('isEnabled', parameters('enableAutoScale'), 'minimum', parameters('autoScaleMin'), 'maximum', parameters('autoScaleMax'), 'version', parameters('version')), null())]",
         "enableStreamingIngest": "[parameters('enableStreamingIngest')]",
         "enablePurge": "[parameters('enablePurge')]",
@@ -449,7 +457,7 @@
         "cosmosDbContainer": "[parameters('dataCosmosDbConnections')[copyIndex()].cosmosDbContainer]",
         "cosmosDbDatabase": "[parameters('dataCosmosDbConnections')[copyIndex()].cosmosDbDatabase]",
         "managedIdentityResourceId": "[parameters('dataCosmosDbConnections')[copyIndex()].managedIdentityResourceId]",
-        "tableName": "[if(empty(parameters('dataCosmosDbConnections')[copyIndex()].tableName), null(), parameters('dataCosmosDbConnections')[copyIndex()].tableName)]"
+        "tableName": "[if(not(contains(parameters('dataCosmosDbConnections')[copyIndex()], 'tableName')), null(), parameters('dataCosmosDbConnections')[copyIndex()].tableName)]"
       },
       "dependsOn": [
         "database",
@@ -467,9 +475,12 @@
       "location": "[parameters('location')]",
       "kind": "EventHub",
       "properties": {
+        "dataFormat": "[if(not(contains(parameters('dataEventHubConnections')[copyIndex()], 'dataFormat')), null(), parameters('dataEventHubConnections')[copyIndex()].dataFormat)]",
+        "eventSystemProperties": "[if(not(contains(parameters('dataEventHubConnections')[copyIndex()], 'eventSystemProperties')), null(), parameters('dataEventHubConnections')[copyIndex()].eventSystemProperties)]",
+        "managedIdentityResourceId": "[if(not(contains(parameters('dataEventHubConnections')[copyIndex()], 'eventSystemProperties')), null(), parameters('dataEventHubConnections')[copyIndex()].eventSystemProperties)]",
         "consumerGroup": "[parameters('dataEventHubConnections')[copyIndex()].consumerGroup]",
         "eventHubResourceId": "[parameters('dataEventHubConnections')[copyIndex()].eventHubResourceId]",
-        "tableName": "[if(empty(parameters('dataEventHubConnections')[copyIndex()].tableName), null(), parameters('dataEventHubConnections')[copyIndex()].tableName)]",
+        "tableName": "[if(not(contains(parameters('dataEventHubConnections')[copyIndex()], 'tableName')), null(), parameters('dataEventHubConnections')[copyIndex()].tableName)]",
         "compression": "[parameters('dataEventHubConnections')[copyIndex()].compression]"
       },
       "dependsOn": [
@@ -640,9 +651,9 @@
         "kustoCluster"
       ]
     },
-    "containerRegistry_rbac": {
+    "kustoCluster_rbac": {
       "copy": {
-        "name": "containerRegistry_rbac",
+        "name": "kustoCluster_rbac",
         "count": "[length(parameters('roleAssignments'))]"
       },
       "type": "Microsoft.Resources/deployments",
@@ -810,6 +821,13 @@
         "description": "Name of the kusto cluster created"
       },
       "value": "[parameters('name')]"
+    },
+    "clusterUri": {
+      "type": "string",
+      "metadata": {
+        "description": "Uri of the kusto cluster created"
+      },
+      "value": "[reference('kustoCluster').uri]"
     }
   }
 }
