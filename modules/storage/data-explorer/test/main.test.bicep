@@ -111,6 +111,9 @@ module test1 '../main.bicep' = {
       '${prereq.outputs.identityId}': {}
     }
     publicNetworkAccess: 'Disabled'
+    allowedIpRangeList: [
+      '10.233.81.104'
+    ]
     managedPrivateEndpoints: [
       {
         name: 'ngt-ep-eventhub'

@@ -115,6 +115,9 @@ param principalAssignments principalAssignmentType[] = []
 @description('List of role assignments for kustoCluster.')
 param roleAssignments array = []
 
+@description('allowedIpRangeList for kustoCluster.')
+param allowedIpRangeList array = []
+
 var varPrivateEndpoints = [for privateEndpoint in privateEndpoints: {
   name: '${privateEndpoint.name}-${kustoCluster.name}'
   privateLinkServiceId: kustoCluster.id
@@ -154,6 +157,7 @@ resource kustoCluster 'Microsoft.Kusto/clusters@2022-12-29' = {
   ] : null
   properties: {
     publicNetworkAccess: publicNetworkAccess
+    allowedIpRangeList: allowedIpRangeList
     optimizedAutoscale: enableAutoScale ? {
       isEnabled: enableAutoScale
       minimum: autoScaleMin
@@ -208,7 +212,7 @@ resource dataCosmosDbConnection 'Microsoft.Kusto/clusters/databases/dataConnecti
     cosmosDbContainer: dataConnection.cosmosDbContainer
     cosmosDbDatabase: dataConnection.cosmosDbDatabase
     managedIdentityResourceId: dataConnection.managedIdentityResourceId
-    tableName: empty(dataConnection.tableName) ? null : dataConnection.tableName
+    tableName: !contains(dataConnection, 'tableName') ? null : dataConnection.tableName
   }
 }]
 
@@ -222,9 +226,12 @@ resource dataEventHubConnection 'Microsoft.Kusto/clusters/databases/dataConnecti
   parent: database[indexOf(databasesNames, dataConnection.databaseName)]
   kind: 'EventHub'
   properties: {
+    dataFormat: !contains(dataConnection, 'dataFormat') ? null : dataConnection.dataFormat
+    eventSystemProperties: !contains(dataConnection, 'eventSystemProperties') ? null : dataConnection.eventSystemProperties
+    managedIdentityResourceId: !contains(dataConnection, 'eventSystemProperties') ? null : dataConnection.eventSystemProperties
     consumerGroup: dataConnection.consumerGroup
     eventHubResourceId: dataConnection.eventHubResourceId
-    tableName: empty(dataConnection.tableName) ? null : dataConnection.tableName
+    tableName: !contains(dataConnection, 'tableName') ? null : dataConnection.tableName
     compression: dataConnection.compression
   }
 }]
@@ -269,7 +276,7 @@ resource principalAssignment 'Microsoft.Kusto/clusters/databases/principalAssign
   }
 }]
 
-module containerRegistry_rbac '.bicep/nested_rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
+module kustoCluster_rbac '.bicep/nested_rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
   dependsOn: [
     principalAssignment
   ]
@@ -297,5 +304,7 @@ type principalAssignmentType = {
 output id string = kustoCluster.id
 
 @description('Name of the kusto cluster created')
-
 output clusterName string = kustoCluster.name
+
+@description('Uri of the kusto cluster created')
+output clusterUri string = kustoCluster.properties.uri
