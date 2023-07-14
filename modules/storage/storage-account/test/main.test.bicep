@@ -55,6 +55,13 @@ module test2 '../main.bicep' = {
   params: {
     name: names.test2.storage
     location: location
+    encryption: {
+      enable: true
+      configurations: {
+        keySource: 'Microsoft.Storage'
+        requireInfrastructureEncryption: true
+      }
+    }
     blobServiceProperties: {
       isVersioningEnabled: true
       changeFeed: {
@@ -135,7 +142,10 @@ module test2 '../main.bicep' = {
   }
 }
 
-//Create Destination1 SA with versioning enabled and setting lifecycleManagementPolicy
+@description('''
+Test 3
+create destination SA1 for object replication
+''')
 module test3Destination1 '../main.bicep' = {
   name: 'test3Destination1'
   dependsOn: [
@@ -169,7 +179,10 @@ module test3Destination1 '../main.bicep' = {
   }
 }
 
-//Create Destination SA with versioning enabled and setting lifecycleManagementPolicy
+@description('''
+Test 3
+create destination SA2 for object replication
+''')
 module test3Destination2 '../main.bicep' = {
   name: 'test3Destination2'
   dependsOn: [
@@ -205,9 +218,8 @@ module test3Destination2 '../main.bicep' = {
 
 @description('''
 Test 3
-create SA with objectReplicationSourcePolicy
+create source SA for object replication
 ''')
-//
 module test3Source '../main.bicep' = {
   name: 'test3Source'
   dependsOn: [
