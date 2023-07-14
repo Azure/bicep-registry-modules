@@ -4,10 +4,31 @@ module file is a deployment test. Make sure at least one test is added.
 */
 
 param location string = resourceGroup().location
-param blobType string = 'blockBlob'
-param minimumTlsVersion string = 'TLS1_2'
-param objectReplicationPolicy bool = false
 var uniqueName = uniqueString(resourceGroup().id, deployment().name, location)
+
+var maxNameLength = 23
+var uniqueStoragename = substring(replace(guid(uniqueName, resourceGroup().name, subscription().id), '-', ''), 0, maxNameLength)
+var names = {
+  test1: {
+    storage: '1${uniqueStoragename}'
+  }
+  test2: {
+    storage: '2${uniqueStoragename}'
+    containers: [ 'test2container1', 'test2container2' ]
+  }
+  test3d1: {
+    storage: take('3dest1${uniqueStoragename}', 24)
+    containers: [ 'destinationcontainer1' ]
+  }
+  test3d2: {
+    storage: take('3dest2${uniqueStoragename}', 24)
+    containers: [ 'destinationcontainer2' ]
+  }
+  test3s: {
+    storage: take('3sour${uniqueStoragename}', 24)
+    containers: [ 'sourcecontainer1', 'sourcecontainer2' ]
+  }
+}
 
 module prereq 'prereq.test.bicep' = {
   name: 'test-prereqs'
@@ -18,114 +39,227 @@ module prereq 'prereq.test.bicep' = {
   }
 }
 
-//Test 0.
-module test0 '../main.bicep' = {
-  name: 'test0'
-  params: {
-    location: location
-  }
-}
-
-//Test 1.
 module test1 '../main.bicep' = {
   name: 'test1'
   params: {
-    name: 'test1blobcontainers'
+    name: names.test1.storage
     location: location
-    blobProperties: {
-      isVersioningEnabled: true
-    }
-    blobContainerProperties: {
-      publicAccess: 'None'
-    }
   }
 }
 
-//Test 2.
 module test2 '../main.bicep' = {
   name: 'test2'
   dependsOn: [
     prereq
   ]
   params: {
-    name: 'test2rbac'
+    name: names.test2.storage
     location: location
-    blobProperties: {
+    blobServiceProperties: {
       isVersioningEnabled: true
+      changeFeed: {
+        enabled: true
+      }
+      lastAccessTimeTrackingPolicy: {
+        enable: true
+      }
     }
-    blobContainerProperties: {
-      publicAccess: 'None'
-    }
-    roleAssignments: [
+    blobContainers: [
       {
-        roleDefinitionIdOrName: 'Reader and Data Access'
-        principalIds: [ prereq.outputs.identityPrincipalIds[0], prereq.outputs.identityPrincipalIds[1] ]
+        name: names.test2.containers[0]
       }
       {
-        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-        principalIds: [ prereq.outputs.identityPrincipalIds[0] ]
-        resourceType: 'blobContainer'
+        name: names.test2.containers[1]
+        properties: {
+          publicAccess: 'None'
+        }
+      }
+    ]
+    storageRoleAssignments: [
+      {
+        principalId: prereq.outputs.identityPrincipalIds[0]
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Storage Blob Data Reader'
+        description: 'roleAssignment for calllog SA'
+      }
+      {
+        principalId: prereq.outputs.identityPrincipalIds[1]
+        roleDefinitionIdOrName: 'Storage Blob Data Reader'
+      }
+    ]
+    containerRoleAssignments: [
+      {
+        principalId: prereq.outputs.identityPrincipalIds[0]
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Storage Blob Data Owner'
+        containerName: 'test2container1'
+        description: 'roleAssignment for audiolog Container'
+      }
+    ]
+    managementPolicyRules: [
+      {
+        name: 'rule1'
+        definition: {
+          actions: {
+            baseBlob: {
+              enableAutoTierToHotFromCool: true
+              tierToCool: { daysAfterLastAccessTimeGreaterThan: 30 }
+            }
+            snapshot: {
+              delete: { daysAfterCreationGreaterThan: 30 }
+            }
+          }
+          filters: {
+            blobTypes: [ 'blockBlob' ]
+            prefixMatch: [ 'test' ]
+          }
+        }
+      }
+    ]
+    privateEndpoints: [
+      {
+        name: 'Test2pep-blob'
+        subnetId: prereq.outputs.subnetIds[0]
+        groupId: 'blob'
+        privateDnsZoneId: prereq.outputs.privateDNSZoneId
+        isManualApproval: false
+      }
+      {
+        name: 'Test2pep-file'
+        subnetId: prereq.outputs.subnetIds[0]
+        groupId: 'file'
+        privateDnsZoneId: prereq.outputs.privateDNSZoneId
+        isManualApproval: false
       }
     ]
   }
 }
 
-// One storage account will be created because the objectReplicationPolicy has been disabled and object replication will not take place.
-module test3 '../main.bicep' = {
-  name: 'test3'
+//Create Destination1 SA with versioning enabled and setting lifecycleManagementPolicy
+module test3Destination1 '../main.bicep' = {
+  name: 'test3Destination1'
+  dependsOn: [
+    prereq
+  ]
   params: {
-      location: location
-      blobType: blobType
-      daysAfterLastModification: 60
-      blobProperties: {
-        isVersioningEnabled: false
+    name: names.test3d1.storage
+    location: location
+    blobServiceProperties: {
+      isVersioningEnabled: true
+      changeFeed: {
+        enabled: true
       }
-      blobContainerProperties: {
-        publicAccess: 'None'
+    }
+    blobContainers: [
+      {
+        name: names.test3d1.containers[0]
       }
-      minimumTlsVersion: minimumTlsVersion
-      objectReplicationPolicy: objectReplicationPolicy
+    ]
+    objectReplicationDestinationPolicy: [
+      {
+        sourceStorageAccountId: '/subscription/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Storage/storageAccounts/${names.test3s.storage}'
+        rules: [
+          {
+            destinationContainer: names.test3d1.containers[0]
+            sourceContainer: names.test3s.containers[0]
+          }
+        ]
+      }
+    ]
   }
 }
 
-// Since the objectReplicationPolicy has been enabled, two storage accounts will be created, and object replication will take place using the source and destination storage accounts.
-module test4 '../main.bicep' = {
-  name: 'test4'
+//Create Destination SA with versioning enabled and setting lifecycleManagementPolicy
+module test3Destination2 '../main.bicep' = {
+  name: 'test3Destination2'
+  dependsOn: [
+    prereq
+  ]
   params: {
-      location: location
-      blobType: blobType
-      daysAfterLastModification: 60
-      blobProperties: {
-        isVersioningEnabled: true
-        changeFeed: {
-          enabled: true
-        }
+    name: names.test3d2.storage
+    location: location
+    blobServiceProperties: {
+      isVersioningEnabled: true
+      changeFeed: {
+        enabled: true
       }
-      blobContainerProperties: {
-        publicAccess: 'None'
+    }
+    blobContainers: [
+      {
+        name: names.test3d2.containers[0]
       }
-      minimumTlsVersion: minimumTlsVersion
-      objectReplicationPolicy: true
+    ]
+    objectReplicationDestinationPolicy: [
+      {
+        sourceStorageAccountId: '/subscription/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Storage/storageAccounts/${names.test3s.storage}'
+        rules: [
+          {
+            destinationContainer: names.test3d2.containers[0]
+            sourceContainer: names.test3s.containers[1]
+          }
+        ]
+      }
+    ]
+  }
+}
 
-      // Only provide values related to destination storage accounts if objectReplicationPolicies is true. By default, the primary storage account's values will be applied to destination parameters.
-      // By adding a param here, we can override. Added few paramaters below as an example.
-      destLocation: location
-      destDaysAfterLastModification: 60
-      destChangeFeedEnabled: true
-      destVersioningEnabled: true
-      destSupportHttpsTrafficOnly: true
-      destAllowBlobPublicAccess: false
-      destAllowCrossTenantReplication: false
-      destPublicNetworkAccess: 'Disabled'
-      privateEndpoints: [
+@description('''
+Test 3
+create SA with objectReplicationSourcePolicy
+''')
+//
+module test3Source '../main.bicep' = {
+  name: 'test3Source'
+  dependsOn: [
+    prereq
+  ]
+  params: {
+    name: names.test3s.storage
+    location: location
+    blobServiceProperties: {
+      isVersioningEnabled: true
+      changeFeed: {
+        enabled: true
+      }
+    }
+    blobContainers: [
       {
-        name: 'endpoint1'
-        subnetId: prereq.outputs.subnetIds[0]
+        name: names.test3s.containers[0]
       }
       {
-        name: 'endpoint2'
-        subnetId: prereq.outputs.subnetIds[1]
-        privateDnsZoneId: prereq.outputs.privateDNSZoneId
+        name: names.test3s.containers[1]
+      }
+    ]
+    objectReplicationSourcePolicy: [
+      {
+        destinationStorageAccountId: test3Destination1.outputs.id
+        policyId: test3Destination1.outputs.objectReplicationDestinationPolicyIdsAndRuleIds[0].policyId
+        rules: [
+          {
+            ruleId: test3Destination1.outputs.objectReplicationDestinationPolicyIdsAndRuleIds[0].ruleIds[0]
+            destinationContainer: names.test3d1.containers[0]
+            sourceContainer: names.test3s.containers[0]
+            filters: {
+              prefixMatch: [ 'test' ]
+              minCreationTime: '2020-02-19T16:05:00Z'
+            }
+          }
+        ]
+      }
+      {
+        destinationStorageAccountId: test3Destination2.outputs.id
+        policyId: test3Destination2.outputs.objectReplicationDestinationPolicyIdsAndRuleIds[0].policyId
+        rules: [
+          {
+            ruleId: test3Destination2.outputs.objectReplicationDestinationPolicyIdsAndRuleIds[0].ruleIds[0]
+            destinationContainer: names.test3d2.containers[0]
+            sourceContainer: names.test3s.containers[1]
+            filters: {
+              prefixMatch: [ 'test' ]
+              minCreationTime: '2020-02-19T16:05:00Z'
+            }
+          }
+        ]
       }
     ]
   }
