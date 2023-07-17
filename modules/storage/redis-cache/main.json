@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.16.2.56959",
-      "templateHash": "3234470744313096245"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "8460991489854624681"
+    },
+    "name": "Azure Cache for Redis",
+    "description": "This module deploys Azure Cache for Redis(Microsoft.Cache/redis) and optionally available integrations.",
+    "owner": "sumit-salunke"
   },
   "parameters": {
     "prefix": {
@@ -195,6 +198,27 @@
         "description": "Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category."
       }
     },
+    "zoneRedundancyEnabled": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Should Zone Redundancy be enabled for this Redis Cache? The target Region must support availability zones, therefore even if this is set true, it will only activate zone redudancy in a supported region. Set this false to disable zone redundancy completely, regardless if a region supports availability zones."
+      }
+    },
+    "numberOfZones": {
+      "type": "int",
+      "defaultValue": 3,
+      "metadata": {
+        "description": "The number of logical zones to enable for the Redis Cache. The default is 3. The number must be a positive integer from 1 to 3. Use 1 for single-zoned resources. For multi-zoned resources, the value must be less than or equal to the number of supported zones."
+      }
+    },
+    "zoneOffset": {
+      "type": "int",
+      "defaultValue": 0,
+      "metadata": {
+        "description": "The offset from the starting logical availability zone. An error will be returned if zoneOffset plus numberOfZones exceeds the number of supported zones in the target Region."
+      }
+    },
     "logsToEnable": {
       "type": "array",
       "defaultValue": [
@@ -230,7 +254,7 @@
       "type": "object",
       "defaultValue": {},
       "metadata": {
-        "description": "Optional.  Firewall rule for the redis cache"
+        "description": "Optional. Firewall rule for the redis cache"
       }
     },
     "privateEndpoints": {
@@ -298,7 +322,9 @@
         }
       }
     ],
-    "isPremium": "[equals(parameters('skuName'), 'Premium')]"
+    "isPremium": "[equals(parameters('skuName'), 'Premium')]",
+    "isZoneRedundant": "[and(variables('isPremium'), parameters('zoneRedundancyEnabled'))]",
+    "varZones": "[if(variables('isZoneRedundant'), pickZones('Microsoft.Cache', 'redis', parameters('location'), parameters('numberOfZones'), parameters('zoneOffset')), createArray())]"
   },
   "resources": [
     {
@@ -325,7 +351,7 @@
         "subnetId": "[if(not(empty(parameters('subnetId'))), parameters('subnetId'), null())]",
         "tenantSettings": "[parameters('tenantSettings')]"
       },
-      "zones": "[if(variables('isPremium'), pickZones('Microsoft.Cache', 'redis', parameters('location'), 1), null())]"
+      "zones": "[if(greater(length(variables('varZones')), 0), variables('varZones'), null())]"
     },
     {
       "condition": "[or(or(or(not(empty(parameters('diagnosticStorageAccountId'))), not(empty(parameters('diagnosticWorkspaceId')))), not(empty(parameters('diagnosticEventHubAuthorizationRuleId')))), not(empty(parameters('diagnosticEventHubName'))))]",
@@ -394,8 +420,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "17023662779958688893"
+              "version": "0.19.5.34762",
+              "templateHash": "1108258098071014518"
             }
           },
           "parameters": {
@@ -488,8 +514,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "8728918711703682047"
+              "version": "0.19.5.34762",
+              "templateHash": "9376650268912092515"
             }
           },
           "parameters": {
