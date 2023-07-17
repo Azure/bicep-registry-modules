@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Parse tag
         id: parse-tag
@@ -46,7 +46,7 @@ jobs:
             script({ core, tag })
 
       - name: Checkout tag
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           # Input contexts for workflow_dispatch and workflow_call are inconsistent.
           # For workflow_dispatch, use ${{ github.event.inputs.<variable_name> }}
@@ -70,4 +70,57 @@ jobs:
           bicep --version
 
       - name: Publish module
-        run: bicep publish "modules/${{ steps.parse-tag.outputs.module_path }}/main.json" --target "br:${{ secrets.PUBLISH_REGISTRY_SERVER }}/public/bicep/${{ steps.parse-tag.outputs.module_path }}:${{ steps.parse-tag.outputs.version }}" --documentationUri "${{ steps.parse-tag.outputs.documentation_uri }}"
+        run: bicep publish "modules/${{ steps.parse-tag.outputs.module_path }}/main.json" --target "br:${{ secrets.PUBLISH_REGISTRY_SERVER }}/public/bicep/${{ steps.parse-tag.outputs.module_path }}:${{ steps.parse-tag.outputs.version }}" --documentationUri "${{ steps.parse-tag.outputs.documentation_uri }}" --force
+
+      - name: Validate publish
+        run: |
+          Version="${{ steps.parse-tag.outputs.version }}"
+          ModulePath="${{ steps.parse-tag.outputs.module_path }}"
+
+          time_limit_seconds=600
+          end_time=$((SECONDS+time_limit_seconds))
+          retry_seconds=5
+
+          while true; do
+            CATALOG=https://mcr.microsoft.com/v2/_catalog
+            echo curl -sLo catalog $CATALOG
+            curl -sLo catalog $CATALOG
+            cat catalog | fgrep "bicep/" > bicepcatalog
+            echo "Bicep modules found in MCR catalog:"
+            cat bicepcatalog
+
+            if fgrep -q "\"bicep/$ModulePath\"" catalog; then
+              echo "Passed: Found module $ModulePath in the MCR catalog"
+              break
+            else
+              echo "Error: Module $ModulePath is not in the MCR catalog. Retrying in $retry_seconds seconds"
+              sleep $retry_seconds
+            fi
+
+            if [ $SECONDS -ge $end_time ]; then
+              echo "Time limit reached. Failed to validate publish within the specified time."
+              exit 1
+            fi
+          done
+
+          while true; do
+            TAGS=https://mcr.microsoft.com/v2/bicep/ai/cognitiveservices/tags/list
+            echo curl -sLo tags $TAGS
+            curl -sLo tags $TAGS
+            echo "Tags:"
+            cat tags
+
+            echo
+            if fgrep -q "$Version" tags; then
+              echo "Passed: Found new tag $Version for published module"
+              break
+            else
+              echo "Error: Coud not find new tag $Version for published module. Retrying in $retry_seconds seconds"
+              sleep $retry_seconds
+            fi
+
+            if [ $SECONDS -ge $end_time ]; then
+              echo "Time limit reached. Failed to validate publish within the specified time."
+              exit 1
+            fi
+          done

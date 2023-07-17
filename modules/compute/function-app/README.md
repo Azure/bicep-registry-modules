@@ -26,13 +26,14 @@ This is a low-level Bicep module for managing Azure Functions, it supports an ar
 | `clientAffinityEnabled`           | `bool`   | No       | Optional. If client affinity is enabled.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | `kind`                            | `string` | No       | Required. Type of site to deploy.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | `functionsExtensionVersion`       | `string` | No       | Optional. Version of the function extension.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| `functionsWorkerRuntime`          | `string` | No       | Optional. Runtime of the function worker.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `functionAppEditMode`             | `string` | No       | Dictates whether editing in the Azure portal is enabled.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `functionsWorkerRuntime`          | `string` | No       | Optional. Runtime of the function worker. WARNING: NOT ALL OSes SUPPORT ALL RUNTIMES!                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | `functionsDefaultNodeversion`     | `string` | No       | Optional. NodeJS version.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | `publicNetworkAccessForIngestion` | `string` | No       | Optional. The network access type for accessing Application Insights ingestion. - Enabled or Disabled.                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | `publicNetworkAccessForQuery`     | `string` | No       | Optional. The network access type for accessing Application Insights query. - Enabled or Disabled.                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | `appInsightsType`                 | `string` | No       | Optional. Application type.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | `appInsightsKind`                 | `string` | No       | Optional. The kind of application that this component refers to, used to customize UI.                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| `enableInsights`                  | `bool`   | No       | Optional. Enabled or Disable Insights for Azure functions                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `enableInsights`                  | `bool`   | No       | Optional. Enabled or Disable Insights for Azure functions.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | `workspaceResourceId`             | `string` | No       | Optional. Resource ID of the log analytics workspace which the data will be ingested to, if enableaInsights is false.                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | `functions`                       | `array`  | No       | Optional. List of Azure function (Actual object where our code resides).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | `enableVnetIntegration`           | `bool`   | No       | Optional. Enable Vnet Integration or not.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
@@ -46,8 +47,13 @@ This is a low-level Bicep module for managing Azure Functions, it supports an ar
 | `storgeAccountResourceGroup`      | `string` | Yes      | Required. Resource Group of storage account used by function app.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | `enablePackageDeploy`             | `bool`   | No       | Optional. True to deploy functions from zip package. "functionPackageUri" must be specified if enabled. The package option and sourcecontrol option should not be enabled at the same time.                                                                                                                                                                                                                                                                                                                                                              |
 | `functionPackageUri`              | `string` | No       | Optional. URI to the function source code zip package, must be accessible by the deployer. E.g. A zip file on Azure storage in the same resource group.                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `enableDockerContainer`           | `bool`   | No       | Optional. Enable docker image deployment                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `enableDockerContainer`           | `bool`   | No       | Optional. Enable docker image deployment.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `dockerImage`                     | `string` | No       | Optional. This will be required when enableDockerContainer passed as true.                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | `extraAppSettings`                | `object` | No       | Optional. Extra app settings that should be provisioned while creating the function app. Note! Settings below should not be included unless absolutely necessary, because settings in this param will override the ones added by the module:<br />AzureWebJobsStorage<br />AzureWebJobsDashboard<br />WEBSITE_CONTENTSHARE<br />WEBSITE_CONTENTAZUREFILECONNECTIONSTRING<br />FUNCTIONS_EXTENSION_VERSION<br />FUNCTIONS_WORKER_RUNTIME<br />WEBSITE_NODE_DEFAULT_VERSION<br />APPINSIGHTS_INSTRUMENTATIONKEY<br />APPLICATIONINSIGHTS_CONNECTION_STRING |
+| `ftpsState`                       | `string` | No       | The state of FTP / FTPS service.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `minTlsVersion`                   | `string` | No       | Configures the minimum version of TLS required for SSL requests.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `linuxFxVersion`                  | `string` | No       | Linux App Framework and version. e.g. PYTHON|3.9                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `connectionStringProperties`      | `object` | No       | The connection strings properties                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 
 ## Outputs
 
@@ -65,24 +71,18 @@ This is a low-level Bicep module for managing Azure Functions, it supports an ar
 ### Example 1
 
 ```bicep
-targetScope = 'subscription'
-
-param name string = deployment().name
-
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: name
-  location: deployment().location
-}
-
-
-module test '../main.bicep' = {
-  name: 'test-azure-func-${guid(name)}'
+@description('''
+In example, function app is using pre-built docker image,
+deploy your code to Azure Functions as a custom Docker container using a image provided.
+''')
+module funcApp 'br/public:bicep/compute/function-app:1.1.2' = {
+  name: 'func1${uniqueString(name)}'
   dependsOn: [
     dependencies
   ]
   params: {
-    name: 'test1-${name}'
-    location: deployment().location
+    name: take(replace('fun1-${name}', '.', ''), 55)
+    location: location
     sku: {
       name: 'Y1'
       tier: 'Dynamic'
@@ -91,79 +91,29 @@ module test '../main.bicep' = {
       capacity: 0
     }
     tags: tags
-    identityType: 'UserAssigned'
-    userAssignedIdentityId: dependencies.outputs.userAssignedIdentitiesId
-    workspaceResourceId: dependencies.outputs.workspacesId
-    storgeAccountName: dependencies.outputs.saAccountName
-    storgeAccountResourceGroup: dependencies.outputs.saResourceGroupName
-    enableInsights: true
-    functions: [
-      {
-        name: 'function1'
-        config: {
-          bindings: [
-            {
-              name: 'myTimer'
-              type: 'timerTrigger'
-              direction: 'in'
-              schedule: '0 */1 * * * *'
-            }
-            {
-              name: 'outputBlob1'
-              direction: 'out'
-              type: 'blob'
-              path: 'outcontainer/{rand-guid}'
-              connection: 'AzureWebJobsStorage'
-            }
-          ]
-        }
-        enabled: true
-        files: {
-          'index.js': 'module.exports = async function (context, myTimer) {\r\n    var timeStamp = new Date().toISOString();\r\n    \r\n    if (myTimer.IsPastDue)\r\n    {\r\n        context.log(\'JavaScript is running late!\');\r\n    }\r\n    context.bindings.outputBlob1 = \'hello func1\';\r\n    context.log(\'written hello to blob func2\',timeStamp);\r\n    context.log(\'JavaScript timer trigger function ran!\', timeStamp);   \r\n};'
-        }
-        language: 'node'
-      }
-      //note: 2nd function within same function app
-      {
-        name: 'function2'
-        config: {
-          bindings: [
-            {
-              name: 'myTimer'
-              type: 'timerTrigger'
-              direction: 'in'
-              schedule: '0 */1 * * * *'
-            }
-            {
-              name: 'outputBlob2'
-              direction: 'out'
-              type: 'blob'
-              path: 'outcontainer/{rand-guid}'
-              connection: 'AzureWebJobsStorage'
-            }
-          ]
-        }
-        enabled: true
-        files: {
-          'index.js': 'module.exports = async function (context, myTimer) {\r\n    var timeStamp = new Date().toISOString();\r\n    \r\n    if (myTimer.IsPastDue)\r\n    {\r\n        context.log(\'JavaScript is running late!\');\r\n    }\r\n    context.bindings.outputBlob2 = \'hello func2\';\r\n    context.log(\'written hello to blob func2\',timeStamp);\r\n    context.log(\'JavaScript timer trigger function ran!\', timeStamp);   \r\n};'
-        }
-        language: 'node'
-      }
-    ]
+    storageAccountName: dependencies.outputs.saAccountName
+    storgeAccountResourceGroup: resourceGroup().name
+    enableSourceControl: false
+    enableDockerContainer: true
+    dockerImage: 'mcr.microsoft.com/azure-functions/dotnet:4-appservice-quickstart'
+    serverOS: 'Linux'
   }
+  scope: resourceGroup()
 }
 
-
 ### Example 2
-
-module test3 '../main.bicep' = {
-  name: 'test-azure-func3-${guid(name)}'
-  scope: resourceGroup
+@description('''
+In example, function app uses source control option for
+Continuous deployment for Azure Functions ie. repoUrl param value.
+''')
+module funcApp 'br/public:bicep/compute/function-app:1.1.2' = {
+  name: 'func2-${uniqueString(name)}'
+  scope: resourceGroup()
   dependsOn: [
     dependencies
   ]
   params: {
-    name: 'test3-${name}'
+    name: take(replace('fun2-${name}', '.', ''), 55)
     location: location
     sku: {
       name: 'EP1'
@@ -177,37 +127,15 @@ module test3 '../main.bicep' = {
     enableVnetIntegration: true
     enableInsights: true
     workspaceResourceId: dependencies.outputs.workspacesId
-    subnetId: dependencies.outputs.subnets[0].id
-    functionsExtensionVersion: '~3'
+    subnetId: dependencies.outputs.subnetResourceIds
+    functionsExtensionVersion: '~4'
     functionsWorkerRuntime: 'powershell'
+    storageAccountName: dependencies.outputs.saAccountName
+    storgeAccountResourceGroup: resourceGroup().name
     enableSourceControl: true
     repoUrl: 'https://github.com/Azure/KeyVault-Secrets-Rotation-Redis-PowerShell.git'
-    branch: 'main'
-    storgeAccountName: dependencies.outputs.saAccountName
-    storgeAccountResourceGroup: dependencies.outputs.saResourceGroupName
+    enableDockerContainer: false
   }
 }
 
-
-/*output section*/
-@description('Get resource id for app or functionapp.')
-output siteId string = sites.id
-
-@description('Get resource name for app or functionapp.')
-output siteName string = sites.name
-
-@description('Get resource ID of the app service plan.')
-output serverfarmsId string = serverfarms.id
-
-@description('Get name of the app service plan.')
-output serverfarmsName string = serverfarms.name
-
-@description('Array of functions having name , language,isDisabled and id of functions.')
-output subnets array = [for function in functions: {
-  name: function.name
-  language: function.language
-  isDisabled: function.isDisabled
-  id: '${sites.id}/functions/${function.name}'
-  files: function.files
-}]
 ```

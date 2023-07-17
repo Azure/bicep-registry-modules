@@ -26,12 +26,12 @@ jobs:
     needs: [check-secret]
     if: needs.check-secret.outputs.my-key == 'true'
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v3
         with:
           token: ${{ secrets.WORKFLOW_PAT }} # A WORKFLOW_PAT must be used to re-trigger workflows after commit. This PAT must have the workflow scope. This is not generally recommended.
 
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: "16"
 

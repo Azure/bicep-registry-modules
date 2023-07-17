@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.16.2.56959",
-      "templateHash": "11595516812112225013"
+      "version": "0.18.4.5664",
+      "templateHash": "1743315769530624114"
     }
   },
   "parameters": {
@@ -159,6 +159,13 @@
       },
       "maxValue": 1200,
       "minValue": 1
+    },
+    "performRoleAssignment": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Set to false to disable role assignments within this module. Default: true"
+      }
     }
   },
   "variables": {
@@ -177,6 +184,7 @@
       }
     },
     {
+      "condition": "[parameters('performRoleAssignment')]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('akvName'))]",

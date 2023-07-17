@@ -2,6 +2,18 @@
 
 A sample Bicep registry module demonstrating array iterations.
 
+## Description
+
+This is very detailed description for a sample Bicep registry module demonstrating array iterations.
+
+Dä isch es sehr detaillierts Bschriebig für es Bispil-Modul vom Bicep-Registry, wo s'Iteriere vo Arrays zeigt.
+
+Hic est descriptio valde detaliata pro modulo exemplaris Bicep registry, ostendens iterationes array.
+
+Ἡ παροῦσα εἰσάγεια παραθέτει πολύ λεπτομερῆ περιγραφὴ για ἕνα δεῖγμα ὀντοτόμου Bicep καταγραφικοῦ ἐνοτόμου, ὑποδεικνύουσα τὰς διαδοχὰς πίνακος.
+
+זֹאת הִיא תְּיאוּגָרַפְיַת מְפֵרֶטֶת מְאוֹד לְמוֹדוּל דַּגְלִית שֶׁל רֵשִׁימַת Bicep הַמְמַחֶה אֶת הַשֵׁקֶט.
+
 ## Parameters
 
 | Name    | Type    | Required | Description                |

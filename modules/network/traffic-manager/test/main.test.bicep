@@ -6,8 +6,6 @@ targetScope = 'resourceGroup'
 
 //params for testcases
 param prefix string = 'traf'
-@maxLength(60)
-param name string = take('${prefix}-${uniqueString(resourceGroup().id, subscription().id)}', 60)
 param location string = resourceGroup().location
 
 //Prerequisites
@@ -16,7 +14,6 @@ module prereq 'prereq.test.bicep' = {
   params: {
     location: location
     prefix: prefix
-    name: name
   }
 }
 
@@ -24,11 +21,10 @@ module prereq 'prereq.test.bicep' = {
 module test0 '../main.bicep' = {
   name: 'test0'
   params: {
-    name: 't0${name}'
+    prefix: 't0${prefix}'
     tags: {
       env: 'test'
     }
-    trafficManagerDnsName: 'tmp0-${uniqueString(resourceGroup().id, subscription().id, name)}'
   }
 }
 
@@ -37,8 +33,8 @@ module test0 '../main.bicep' = {
 module test1 '../main.bicep' = {
   name: 'test1'
   params: {
-    name: 't1${name}'
-    trafficManagerDnsName: 'tmp1-${uniqueString(resourceGroup().id, subscription().id, name)}'
+    prefix: 't1${prefix}'
+    trafficManagerDnsName: 'tmp1-${uniqueString(resourceGroup().id, subscription().id, prefix)}'
     endpoints: [ {
         name: 'my-endpoint-1'
         target: 'www.bing.com'

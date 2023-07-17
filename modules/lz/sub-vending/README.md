@@ -36,6 +36,8 @@ We would like feedback on what's missing in the module. Please raise an [issue](
 | `subscriptionAliasName`                              | `string` | No       | The name of the Subscription Alias, that will be created by this module.<br /><br />The string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). The maximum length is 63 characters.<br /><br />> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**<br /><br />- Default value: `''` *(empty string)*                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | `subscriptionBillingScope`                           | `string` | No       | The Billing Scope for the new Subscription alias, that will be created by this module.<br /><br />A valid Billing Scope starts with `/providers/Microsoft.Billing/billingAccounts/` and is case sensitive.<br /><br />> See below [example in parameter file](#example-json-parameter-file) for an example<br /><br />> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**<br /><br />- Default value: `''` *(empty string)*                                                                                                                                                                                                                                                                                                                                |
 | `subscriptionWorkload`                               | `string` | No       | The workload type can be either `Production` or `DevTest` and is case sensitive.<br /><br />> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**<br /><br />- Default value: `Production`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `subscriptionTenantId`                               | `string` | No       | The Azure Active Directory Tenant ID (GUID) to which the Subscription should be attached to.<br /><br />> **Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants).**<br /><br />- Default value: `''` *(empty string)*                                                                                                                                                                                                                                                                                                                                                           |
+| `subscriptionOwnerId`                                | `string` | No       | The Azure Active Directory principals object ID (GUID) to whom should be the Subscription Owner.<br /><br />> **Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants).**<br /><br />- Default value: `''` *(empty string)*                                                                                                                                                                                                                                                                                                                                                       |
 | `existingSubscriptionId`                             | `string` | No       | An existing subscription ID. Use this when you do not want the module to create a new subscription. But do want to manage the management group membership. A subscription ID should be provided in the example format `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`.<br /><br />- Default value: `''` *(empty string)*                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | `subscriptionManagementGroupAssociationEnabled`      | `bool`   | No       | Whether to move the Subscription to the specified Management Group supplied in the parameter `subscriptionManagementGroupId`.<br /><br />- Default value: `true`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | `subscriptionManagementGroupId`                      | `string` | No       | The destination Management Group ID for the new Subscription that will be created by this module (or the existing one provided in the parameter `existingSubscriptionId`).<br /><br />**IMPORTANT:** Do not supply the display name of the Management Group. The Management Group ID forms part of the Azure Resource ID. e.g., `/providers/Microsoft.Management/managementGroups/{managementGroupId}`.<br /><br />> See below [example in parameter file](#example-json-parameter-file) for an example<br /><br />- Default value: `''` *(empty string)*                                                                                                                                                                                                                                                       |
@@ -63,10 +65,12 @@ We would like feedback on what's missing in the module. Please raise an [issue](
 
 ## Outputs
 
-| Name                   | Type   | Description                                                     |
-| :--------------------- | :----: | :-------------------------------------------------------------- |
-| subscriptionId         | string | The Subscription ID that has been created or provided.          |
-| subscriptionResourceId | string | The Subscription Resource ID that has been created or provided. |
+| Name                               | Type     | Description                                                                              |
+| :--------------------------------- | :------: | :--------------------------------------------------------------------------------------- |
+| `subscriptionId`                   | `string` | The Subscription ID that has been created or provided.                                   |
+| `subscriptionResourceId`           | `string` | The Subscription Resource ID that has been created or provided.                          |
+| `subscriptionAcceptOwnershipState` | `string` | The Subscription Owner State. Only used when creating MCA Subscriptions across tenants   |
+| `subscriptionAcceptOwnershipUrl`   | `string` | The Subscription Ownership URL. Only used when creating MCA Subscriptions across tenants |
 
 ## Examples
 
@@ -77,7 +81,7 @@ We would like feedback on what's missing in the module. Please raise an [issue](
 ```bicep
 targetScope = 'managementGroup'
 
-module sub001 'br/public:lz/sub-vending:1.2.2' = {
+module sub001 'br/public:lz/sub-vending:1.4.1' = {
   name: 'sub001'
   params: {
     subscriptionAliasEnabled: true
@@ -102,7 +106,7 @@ targetScope = 'managementGroup'
 @description('Specifies the location for resources.')
 param location string = 'uksouth'
 
-module sub002 'br/public:lz/sub-vending:1.2.2' = {
+module sub002 'br/public:lz/sub-vending:1.4.1' = {
   name: 'sub002'
   params: {
     subscriptionAliasEnabled: true
@@ -135,7 +139,7 @@ targetScope = 'managementGroup'
 @description('Specifies the location for resources.')
 param location string = 'uksouth'
 
-module sub003 'br/public:lz/sub-vending:1.2.2' = {
+module sub003 'br/public:lz/sub-vending:1.4.1' = {
   name: 'sub003'
   params: {
     subscriptionAliasEnabled: true
@@ -170,7 +174,7 @@ targetScope = 'managementGroup'
 @description('Specifies the location for resources.')
 param location string = 'uksouth'
 
-module sub003 'br/public:lz/sub-vending:1.2.2' = {
+module sub003 'br/public:lz/sub-vending:1.4.1' = {
   name: 'sub004'
   params: {
     subscriptionAliasEnabled: true

@@ -2,9 +2,11 @@ targetScope = 'managementGroup'
 
 // METADATA - Used by PSDocs
 
-metadata name = '`main.bicep` Parameters'
+metadata name = 'Bicep Landing Zone (Subscription) Vending Module'
 
-metadata description = '''These are the input parameters for the Bicep module: [`main.bicep`](./main.bicep)
+metadata description = 'This module is designed to accelerate deployment of landing zones (aka Subscriptions) within an Azure AD Tenant.'
+
+metadata details = '''These are the input parameters for the Bicep module: [`main.bicep`](./main.bicep)
 
 This is the orchestration module that is used and called by a consumer of the module to deploy a Landing Zone Subscription and its associated resources, based on the parameter input values that are provided to it at deployment time.
 
@@ -81,6 +83,30 @@ param subscriptionBillingScope string = ''
 - Default value: `Production`
 ''')
 param subscriptionWorkload string = 'Production'
+
+@metadata({
+  example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+})
+@maxLength(36)
+@sys.description('''The Azure Active Directory Tenant ID (GUID) to which the Subscription should be attached to.
+
+> **Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants).**
+
+- Default value: `''` *(empty string)*
+''')
+param subscriptionTenantId string = ''
+
+@metadata({
+  example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+})
+@maxLength(36)
+@sys.description('''The Azure Active Directory principals object ID (GUID) to whom should be the Subscription Owner.
+
+> **Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants).**
+
+- Default value: `''` *(empty string)*
+''')
+param subscriptionOwnerId string = ''
 
 @metadata({
   example: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
@@ -422,13 +448,15 @@ resource moduleTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (!dis
 }
 
 module createSubscription 'src/self/Microsoft.Subscription/aliases/deploy.bicep' = if (subscriptionAliasEnabled && empty(existingSubscriptionId)) {
-  scope: tenant()
+  scope: managementGroup()
   name: deploymentNames.createSubscription
   params: {
     subscriptionBillingScope: subscriptionBillingScope
     subscriptionAliasName: subscriptionAliasName
     subscriptionDisplayName: subscriptionDisplayName
     subscriptionWorkload: subscriptionWorkload
+    subscriptionTenantId: subscriptionTenantId
+    subscriptionOwnerId: subscriptionOwnerId
   }
 }
 
@@ -469,3 +497,9 @@ output subscriptionId string = (subscriptionAliasEnabled && empty(existingSubscr
 
 @sys.description('The Subscription Resource ID that has been created or provided.')
 output subscriptionResourceId string = (subscriptionAliasEnabled && empty(existingSubscriptionId)) ? createSubscription.outputs.subscriptionResourceId : contains(existingSubscriptionIDEmptyCheck, 'No Subscription ID Provided') ? existingSubscriptionIDEmptyCheck : '/subscriptions/${existingSubscriptionId}'
+
+@sys.description('The Subscription Owner State. Only used when creating MCA Subscriptions across tenants')
+output subscriptionAcceptOwnershipState string = (subscriptionAliasEnabled && empty(existingSubscriptionId) && !empty(subscriptionTenantId) && !empty(subscriptionOwnerId)) ? createSubscription.outputs.subscriptionAcceptOwnershipState : 'N/A'
+
+@sys.description('The Subscription Ownership URL. Only used when creating MCA Subscriptions across tenants')
+output subscriptionAcceptOwnershipUrl string = (subscriptionAliasEnabled && empty(existingSubscriptionId) && !empty(subscriptionTenantId) && !empty(subscriptionOwnerId)) ? createSubscription.outputs.subscriptionAcceptOwnershipUrl : 'N/A'

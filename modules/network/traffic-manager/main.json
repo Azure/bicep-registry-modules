@@ -4,13 +4,21 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.16.2.56959",
-      "templateHash": "6651179765317651627"
+      "version": "0.17.1.54307",
+      "templateHash": "18080649983969132278"
     }
   },
   "parameters": {
+    "prefix": {
+      "type": "string",
+      "defaultValue": "traf",
+      "metadata": {
+        "description": "Prefix of traffic manager profile resource name. This param is ignored when name is provided."
+      }
+    },
     "name": {
       "type": "string",
+      "defaultValue": "[take(format('{0}{1}', parameters('prefix'), uniqueString(resourceGroup().id, subscription().id)), 63)]",
       "maxLength": 63,
       "minLength": 1,
       "metadata": {
@@ -19,6 +27,7 @@
     },
     "trafficManagerDnsName": {
       "type": "string",
+      "defaultValue": "[format('tmp-{0}', uniqueString(resourceGroup().id, subscription().id, parameters('name')))]",
       "metadata": {
         "description": "Relative DNS name for the traffic manager profile, must be globally unique."
       }

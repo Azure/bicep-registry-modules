@@ -1,11 +1,40 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "1.10-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
+    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.16.2.56959",
-      "templateHash": "7644818069097581785"
+      "version": "0.17.1.54307",
+      "templateHash": "4792359155737200648"
+    }
+  },
+  "definitions": {
+    "functionType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "language": {
+              "type": "string"
+            },
+            "config": {
+              "type": "object"
+            },
+            "isDisabled": {
+              "type": "bool"
+            },
+            "files": {
+              "type": "object"
+            }
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -145,6 +174,17 @@
         "description": "Optional. Version of the function extension."
       }
     },
+    "functionAppEditMode": {
+      "type": "string",
+      "defaultValue": "readonly",
+      "allowedValues": [
+        "readonly",
+        "readwrite"
+      ],
+      "metadata": {
+        "description": "Dictates whether editing in the Azure portal is enabled."
+      }
+    },
     "functionsWorkerRuntime": {
       "type": "string",
       "defaultValue": "",
@@ -157,7 +197,7 @@
         ""
       ],
       "metadata": {
-        "description": "Optional. Runtime of the function worker."
+        "description": "Optional. Runtime of the function worker. WARNING: NOT ALL OSes SUPPORT ALL RUNTIMES!"
       }
     },
     "functionsDefaultNodeversion": {
@@ -211,7 +251,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Enabled or Disable Insights for Azure functions"
+        "description": "Optional. Enabled or Disable Insights for Azure functions."
       }
     },
     "workspaceResourceId": {
@@ -223,6 +263,9 @@
     },
     "functions": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/functionType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. List of Azure function (Actual object where our code resides)."
@@ -258,7 +301,7 @@
     },
     "branch": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "main",
       "metadata": {
         "description": "Optional. Name of branch to use for deployment."
       }
@@ -307,7 +350,14 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Enable docker image deployment"
+        "description": "Optional. Enable docker image deployment."
+      }
+    },
+    "dockerImage": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. This will be required when enableDockerContainer passed as true."
       }
     },
     "extraAppSettings": {
@@ -316,16 +366,68 @@
       "metadata": {
         "description": "Optional. Extra app settings that should be provisioned while creating the function app. Note! Settings below should not be included unless absolutely necessary, because settings in this param will override the ones added by the module:\nAzureWebJobsStorage\nAzureWebJobsDashboard\nWEBSITE_CONTENTSHARE\nWEBSITE_CONTENTAZUREFILECONNECTIONSTRING\nFUNCTIONS_EXTENSION_VERSION\nFUNCTIONS_WORKER_RUNTIME\nWEBSITE_NODE_DEFAULT_VERSION\nAPPINSIGHTS_INSTRUMENTATIONKEY\nAPPLICATIONINSIGHTS_CONNECTION_STRING"
       }
+    },
+    "ftpsState": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Disabled",
+        "AllAllowed",
+        "FtpsOnly"
+      ],
+      "metadata": {
+        "description": "The state of FTP / FTPS service."
+      }
+    },
+    "minTlsVersion": {
+      "type": "string",
+      "defaultValue": "1.2",
+      "allowedValues": [
+        "1.0",
+        "1.1",
+        "1.2"
+      ],
+      "metadata": {
+        "description": "Configures the minimum version of TLS required for SSL requests."
+      }
+    },
+    "linuxFxVersion": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Linux App Framework and version. e.g. PYTHON|3.9"
+      }
+    },
+    "connectionStringProperties": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "The connection strings properties"
+      }
     }
   },
-  "resources": [
-    {
+  "variables": {
+    "servicePlanKind": "[if(equals(parameters('serverOS'), 'Linux'), toLower(parameters('serverOS')), '')]"
+  },
+  "resources": {
+    "storageAccount": {
+      "existing": true,
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2021-06-01",
+      "resourceGroup": "[parameters('storgeAccountResourceGroup')]",
+      "name": "[parameters('storageAccountName')]",
+      "metadata": {
+        "description": "Defines storageAccounts for Azure Function App."
+      }
+    },
+    "serverfarms": {
       "type": "Microsoft.Web/serverfarms",
       "apiVersion": "2021-02-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "sku": "[parameters('sku')]",
+      "kind": "[variables('servicePlanKind')]",
       "properties": {
         "perSiteScaling": "[parameters('perSiteScaling')]",
         "maximumElasticWorkerCount": "[parameters('maximumElasticWorkerCount')]",
@@ -337,7 +439,7 @@
         "description": "Defines Application service plan."
       }
     },
-    {
+    "appInsights": {
       "condition": "[parameters('enableInsights')]",
       "type": "Microsoft.Insights/components",
       "apiVersion": "2020-02-02",
@@ -352,10 +454,10 @@
       },
       "tags": "[parameters('tags')]",
       "metadata": {
-        "description": "If enabled, this will help mornior the application using the log analytics workspace"
+        "description": "If enabled, this will help monitor the application using the log analytics workspace."
       }
     },
-    {
+    "sites": {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2022-03-01",
       "name": "[parameters('name')]",
@@ -368,7 +470,9 @@
       },
       "properties": {
         "siteConfig": {
-          "linuxFxVersion": "[if(parameters('enableDockerContainer'), 'DOCKER|mcr.microsoft.com/azure-functions/dotnet:4-appservice-quickstart', null())]"
+          "linuxFxVersion": "[if(parameters('enableDockerContainer'), format('DOCKER|{0}', parameters('dockerImage')), coalesce(parameters('linuxFxVersion'), null()))]",
+          "ftpsState": "[parameters('ftpsState')]",
+          "minTlsVersion": "[parameters('minTlsVersion')]"
         },
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('name'))]",
         "httpsOnly": "[parameters('httpsOnly')]",
@@ -376,27 +480,38 @@
         "clientAffinityEnabled": "[parameters('clientAffinityEnabled')]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', parameters('name'))]"
+        "serverfarms"
       ],
       "metadata": {
         "description": "The app or function app resource.\nNote: This is not actual Azure Function App this will be container for storing multiple functions."
       }
     },
-    {
+    "config": {
       "type": "Microsoft.Web/sites/config",
       "apiVersion": "2021-02-01",
       "name": "[format('{0}/{1}', parameters('name'), 'appsettings')]",
-      "properties": "[union(createObject('AzureWebJobsStorage', if(not(empty(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('storgeAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')))), format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', parameters('storageAccountName'), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('storgeAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2021-06-01').keys[0].value), null()), 'AzureWebJobsDashboard', if(not(empty(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('storgeAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')))), format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', parameters('storageAccountName'), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('storgeAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2021-06-01').keys[0].value), null()), 'WEBSITE_CONTENTSHARE', parameters('name'), 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING', if(not(empty(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('storgeAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')))), format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', parameters('storageAccountName'), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('storgeAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2021-06-01').keys[0].value), null()), 'FUNCTIONS_EXTENSION_VERSION', parameters('functionsExtensionVersion'), 'FUNCTIONS_WORKER_RUNTIME', if(and(equals(reference(resourceId('Microsoft.Web/sites', parameters('name')), '2022-03-01', 'full').kind, 'functionapp'), not(empty(parameters('functionsWorkerRuntime')))), parameters('functionsWorkerRuntime'), null()), 'WEBSITE_NODE_DEFAULT_VERSION', if(and(and(equals(reference(resourceId('Microsoft.Web/sites', parameters('name')), '2022-03-01', 'full').kind, 'functionapp'), equals(parameters('functionsWorkerRuntime'), 'node')), not(empty(parameters('functionsDefaultNodeversion')))), parameters('functionsDefaultNodeversion'), null()), 'APPINSIGHTS_INSTRUMENTATIONKEY', if(and(not(empty(resourceId('Microsoft.Insights/components', format('ai-{0}', parameters('name'))))), parameters('enableInsights')), reference(resourceId('Microsoft.Insights/components', format('ai-{0}', parameters('name'))), '2020-02-02').InstrumentationKey, null()), 'APPLICATIONINSIGHTS_CONNECTION_STRING', if(and(not(empty(resourceId('Microsoft.Insights/components', format('ai-{0}', parameters('name'))))), parameters('enableInsights')), reference(resourceId('Microsoft.Insights/components', format('ai-{0}', parameters('name'))), '2020-02-02').ConnectionString, null())), parameters('extraAppSettings'))]",
+      "properties": "[union(createObject('AzureWebJobsStorage', if(not(empty(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('storgeAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')))), format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', parameters('storageAccountName'), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('storgeAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2021-06-01').keys[0].value), null()), 'AzureWebJobsDashboard', if(not(empty(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('storgeAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')))), format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', parameters('storageAccountName'), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('storgeAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2021-06-01').keys[0].value), null()), 'WEBSITE_CONTENTSHARE', parameters('name'), 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING', if(not(empty(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('storgeAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')))), format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};', parameters('storageAccountName'), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('storgeAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2021-06-01').keys[0].value), null()), 'FUNCTIONS_EXTENSION_VERSION', parameters('functionsExtensionVersion'), 'FUNCTION_APP_EDIT_MODE', parameters('functionAppEditMode'), 'FUNCTIONS_WORKER_RUNTIME', if(and(equals(reference('sites', '2022-03-01', 'full').kind, 'functionapp'), not(empty(parameters('functionsWorkerRuntime')))), parameters('functionsWorkerRuntime'), null()), 'WEBSITE_NODE_DEFAULT_VERSION', if(and(and(equals(reference('sites', '2022-03-01', 'full').kind, 'functionapp'), equals(parameters('functionsWorkerRuntime'), 'node')), not(empty(parameters('functionsDefaultNodeversion')))), parameters('functionsDefaultNodeversion'), null()), 'APPINSIGHTS_INSTRUMENTATIONKEY', if(and(not(empty(resourceId('Microsoft.Insights/components', format('ai-{0}', parameters('name'))))), parameters('enableInsights')), reference('appInsights').InstrumentationKey, null()), 'APPLICATIONINSIGHTS_CONNECTION_STRING', if(and(not(empty(resourceId('Microsoft.Insights/components', format('ai-{0}', parameters('name'))))), parameters('enableInsights')), reference('appInsights').ConnectionString, null())), parameters('extraAppSettings'))]",
       "dependsOn": [
-        "[resourceId('Microsoft.Insights/components', format('ai-{0}', parameters('name')))]",
-        "[resourceId('Microsoft.Web/sites/networkConfig', parameters('name'), 'virtualNetwork')]",
-        "[resourceId('Microsoft.Web/sites', parameters('name'))]"
+        "appInsights",
+        "networkConfig",
+        "sites"
       ],
       "metadata": {
         "description": "Appsettings/config for the sites (app or functionapp)."
       }
     },
-    {
+    "connectionString": {
+      "condition": "[not(empty(parameters('connectionStringProperties')))]",
+      "type": "Microsoft.Web/sites/config",
+      "apiVersion": "2022-03-01",
+      "name": "[format('{0}/{1}', parameters('name'), 'connectionstrings')]",
+      "kind": "string",
+      "properties": "[parameters('connectionStringProperties')]",
+      "dependsOn": [
+        "sites"
+      ]
+    },
+    "networkConfig": {
       "condition": "[equals(parameters('enableVnetIntegration'), true())]",
       "type": "Microsoft.Web/sites/networkConfig",
       "apiVersion": "2022-03-01",
@@ -405,10 +520,10 @@
         "subnetResourceId": "[parameters('subnetId')]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', parameters('name'))]"
+        "sites"
       ]
     },
-    {
+    "azureFunction": {
       "copy": {
         "name": "azureFunction",
         "count": "[length(parameters('functions'))]",
@@ -419,21 +534,21 @@
       "apiVersion": "2021-02-01",
       "name": "[format('{0}/{1}', parameters('name'), parameters('functions')[copyIndex()].name)]",
       "properties": {
-        "language": "[parameters('functions')[copyIndex()].language]",
-        "config": "[parameters('functions')[copyIndex()].config]",
-        "isDisabled": "[parameters('functions')[copyIndex()].enabled]",
-        "files": "[parameters('functions')[copyIndex()].files]"
+        "language": "[parameters('functions')[copyIndex()].properties.language]",
+        "config": "[parameters('functions')[copyIndex()].properties.config]",
+        "isDisabled": "[parameters('functions')[copyIndex()].properties.isDisabled]",
+        "files": "[parameters('functions')[copyIndex()].properties.files]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites/config', parameters('name'), 'appsettings')]",
-        "[resourceId('Microsoft.Web/serverfarms', parameters('name'))]",
-        "[resourceId('Microsoft.Web/sites', parameters('name'))]"
+        "config",
+        "serverfarms",
+        "sites"
       ],
       "metadata": {
-        "description": "The resources actual is function where code exits"
+        "description": "The resources actual is function where code exits."
       }
     },
-    {
+    "sourcecontrol": {
       "condition": "[parameters('enableSourceControl')]",
       "type": "Microsoft.Web/sites/sourcecontrols",
       "apiVersion": "2022-03-01",
@@ -445,10 +560,10 @@
         "isMercurial": "[parameters('isMercurial')]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', parameters('name'))]"
+        "sites"
       ]
     },
-    {
+    "extensions": {
       "condition": "[parameters('enablePackageDeploy')]",
       "type": "Microsoft.Web/sites/extensions",
       "apiVersion": "2022-03-01",
@@ -457,13 +572,13 @@
         "packageUri": "[parameters('functionPackageUri')]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', parameters('name'))]"
+        "sites"
       ],
       "metadata": {
         "description": "Deploy function app from zip file."
       }
     }
-  ],
+  },
   "outputs": {
     "siteId": {
       "type": "string",
@@ -502,10 +617,10 @@
         "count": "[length(parameters('functions'))]",
         "input": {
           "name": "[parameters('functions')[copyIndex()].name]",
-          "language": "[parameters('functions')[copyIndex()].language]",
-          "isDisabled": "[parameters('functions')[copyIndex()].enabled]",
+          "language": "[parameters('functions')[copyIndex()].properties.language]",
+          "isDisabled": "[parameters('functions')[copyIndex()].properties.isDisabled]",
           "id": "[format('{0}/functions/{1}', resourceId('Microsoft.Web/sites', parameters('name')), parameters('functions')[copyIndex()].name)]",
-          "files": "[parameters('functions')[copyIndex()].files]"
+          "files": "[parameters('functions')[copyIndex()].properties.files]"
         }
       }
     },
@@ -514,7 +629,7 @@
       "metadata": {
         "description": "Principal Id of the identity assigned to the function app."
       },
-      "value": "[if(equals(reference(resourceId('Microsoft.Web/sites', parameters('name')), '2022-03-01', 'full').identity.type, 'SystemAssigned'), reference(resourceId('Microsoft.Web/sites', parameters('name')), '2022-03-01', 'full').identity.principalId, '')]"
+      "value": "[if(equals(reference('sites', '2022-03-01', 'full').identity.type, 'SystemAssigned'), reference('sites', '2022-03-01', 'full').identity.principalId, '')]"
     }
   }
 }

@@ -1,11 +1,299 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "1.10-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
+    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.16.2.56959",
-      "templateHash": "11345736734548816497"
+      "version": "0.18.4.5664",
+      "templateHash": "12195416173280558865"
+    }
+  },
+  "definitions": {
+    "blobServiceProperties": {
+      "type": "object",
+      "properties": {
+        "changeFeed": {
+          "$ref": "#/definitions/changeFeed",
+          "nullable": true
+        },
+        "containerDeleteRetentionPolicy": {
+          "$ref": "#/definitions/containerDeleteRetentionPolicy",
+          "nullable": true
+        },
+        "cors": {
+          "$ref": "#/definitions/cors",
+          "nullable": true
+        },
+        "deleteRetentionPolicy": {
+          "$ref": "#/definitions/deleteRetentionPolicy",
+          "nullable": true
+        },
+        "isVersioningEnabled": {
+          "$ref": "#/definitions/isVersioningEnabled",
+          "nullable": true
+        },
+        "lastAccessTimeTrackingPolicy": {
+          "$ref": "#/definitions/lastAccessTimeTrackingPolicy",
+          "nullable": true
+        },
+        "restorePolicy": {
+          "$ref": "#/definitions/restorePolicy",
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "description": "The properties of a storage account’s Blob service."
+      }
+    },
+    "changeFeed": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "bool"
+        },
+        "retentionInDays": {
+          "type": "int",
+          "nullable": true,
+          "maxValue": 146000,
+          "minValue": 1
+        }
+      },
+      "metadata": {
+        "description": "The blob service properties for change feed events."
+      }
+    },
+    "containerDeleteRetentionPolicy": {
+      "type": "object",
+      "properties": {
+        "allowPermanentDelete": {
+          "type": "bool"
+        },
+        "days": {
+          "type": "int",
+          "nullable": true,
+          "maxValue": 365,
+          "minValue": 1
+        },
+        "enabled": {
+          "type": "bool"
+        }
+      },
+      "metadata": {
+        "description": "The blob service properties for container soft delete."
+      }
+    },
+    "cors": {
+      "type": "object",
+      "properties": {
+        "corsRules": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "object",
+              "properties": {
+                "allowedHeaders": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "allowedValues": [
+                        "string"
+                      ]
+                    }
+                  ],
+                  "items": false
+                },
+                "allowedMethods": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "allowedValues": [
+                        "string"
+                      ]
+                    }
+                  ],
+                  "items": false
+                },
+                "allowedOrigins": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "allowedValues": [
+                        "string"
+                      ]
+                    }
+                  ],
+                  "items": false
+                },
+                "exposedHeaders": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "allowedValues": [
+                        "string"
+                      ]
+                    }
+                  ],
+                  "items": false
+                },
+                "maxAgeInSeconds": {
+                  "type": "int"
+                }
+              }
+            }
+          ],
+          "items": false
+        }
+      },
+      "metadata": {
+        "description": "Specifies CORS rules for the Blob service. You can include up to five CorsRule elements in the request. If no CorsRule elements are included in the request body, all CORS rules will be deleted, and CORS will be disabled for the Blob service."
+      }
+    },
+    "deleteRetentionPolicy": {
+      "type": "object",
+      "properties": {
+        "allowPermanentDelete": {
+          "type": "bool"
+        },
+        "days": {
+          "type": "int",
+          "nullable": true,
+          "maxValue": 365,
+          "minValue": 1
+        },
+        "enabled": {
+          "type": "bool"
+        }
+      },
+      "metadata": {
+        "description": "The blob service properties for blob soft delete."
+      }
+    },
+    "isVersioningEnabled": {
+      "type": "bool",
+      "metadata": {
+        "description": "Toggle to enable or disable versioning for Blob service of the Storage Account. Used only if enableBlobService is set to true."
+      }
+    },
+    "lastAccessTimeTrackingPolicy": {
+      "type": "object",
+      "properties": {
+        "blobType": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "string",
+              "allowedValues": [
+                "string"
+              ]
+            }
+          ],
+          "items": false
+        },
+        "enable": {
+          "type": "bool"
+        },
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "AccessTimeTracking"
+          ]
+        },
+        "trackingGranularityInDays": {
+          "type": "int",
+          "allowedValues": [
+            1
+          ],
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "description": "The blob service property to configure last access time based tracking policy."
+      }
+    },
+    "restorePolicy": {
+      "type": "object",
+      "properties": {
+        "days": {
+          "type": "int",
+          "nullable": true,
+          "maxValue": 365,
+          "minValue": 1
+        },
+        "enabled": {
+          "type": "bool"
+        }
+      },
+      "metadata": {
+        "description": "The blob service property to configure last access time based tracking policy."
+      }
+    },
+    "blobServiceContainerProperties": {
+      "type": "object",
+      "properties": {
+        "defaultEncryptionScope": {
+          "type": "string",
+          "nullable": true
+        },
+        "denyEncryptionScopeOverride": {
+          "type": "string",
+          "nullable": true
+        },
+        "immutableStorageWithVersioning": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "bool"
+            }
+          },
+          "nullable": true
+        },
+        "publicAccess": {
+          "type": "string",
+          "allowedValues": [
+            "Blob",
+            "Container",
+            "None"
+          ],
+          "nullable": true
+        }
+      }
+    },
+    "roleAssignmentsArray": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "roleDefinitionIdOrName": {
+            "type": "string",
+            "nullable": true
+          },
+          "principalIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "principalType": {
+            "type": "string",
+            "nullable": true
+          },
+          "resourceType": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -56,13 +344,377 @@
       "metadata": {
         "description": "Storage Account Type. Use Zonal Redundant Storage when able."
       }
+    },
+    "daysAfterLastModification": {
+      "type": "int",
+      "defaultValue": 30,
+      "metadata": {
+        "description": "It will be moved to the cool tier after the given amount of days."
+      }
+    },
+    "blobType": {
+      "type": "string",
+      "defaultValue": "blockBlob",
+      "metadata": {
+        "description": "Specifies the type of blob to manage the lifecycle policy."
+      }
+    },
+    "supportHttpsTrafficOnly": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Allows https traffic only to storage service if sets to true."
+      }
+    },
+    "allowBlobPublicAccess": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Allow or disallow public access to all blobs or containers in the storage account."
+      }
+    },
+    "allowCrossTenantReplication": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Replication of objects between AAD tenants is allowed or not. For this property, the default interpretation is true."
+      }
+    },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Allow or disallow public network access to Storage Account. Value is optional but if passed in, must be Enabled or Disabled."
+      }
+    },
+    "minimumTlsVersion": {
+      "type": "string",
+      "defaultValue": "TLS1_2",
+      "allowedValues": [
+        "TLS1_0",
+        "TLS1_1",
+        "TLS1_2"
+      ],
+      "metadata": {
+        "description": "Set the minimum TLS version to be permitted on requests to storage. The default interpretation is TLS 1.0 for this property."
+      }
+    },
+    "destPrefix": {
+      "type": "string",
+      "defaultValue": "dt",
+      "metadata": {
+        "description": "Prefix of destination Storage Account Resource Name. This param is ignored when name is provided."
+      }
+    },
+    "destStorageAccountName": {
+      "type": "string",
+      "defaultValue": "[format('{0}{1}', parameters('destPrefix'), uniqueString(resourceGroup().id, subscription().id))]",
+      "metadata": {
+        "description": "Name of destination Storage Account. Must be unique within Azure."
+      }
+    },
+    "destLocation": {
+      "type": "string",
+      "defaultValue": "[parameters('location')]",
+      "metadata": {
+        "description": "Destination Storage Account Location."
+      }
+    },
+    "destSupportHttpsTrafficOnly": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Allows https traffic only to storage service if sets to true."
+      }
+    },
+    "destAllowBlobPublicAccess": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Allow or disallow public access to all blobs or containers in the destination storage account."
+      }
+    },
+    "destAllowCrossTenantReplication": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Replication of objects between AAD tenants is allowed or not. For this property, the default interpretation is true."
+      }
+    },
+    "destPublicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Allow or disallow public network access to Storage Account. Value is optional but if passed in, must be Enabled or Disabled."
+      }
+    },
+    "destMinimumTlsVersion": {
+      "type": "string",
+      "defaultValue": "[parameters('minimumTlsVersion')]",
+      "allowedValues": [
+        "TLS1_0",
+        "TLS1_1",
+        "TLS1_2"
+      ],
+      "metadata": {
+        "description": "Set the minimum TLS version to be permitted on requests to storage. The default interpretation is TLS 1.0 for this property."
+      }
+    },
+    "destDaysAfterLastModification": {
+      "type": "int",
+      "defaultValue": 30,
+      "metadata": {
+        "description": "It will be deleted after the given amount of days."
+      }
+    },
+    "destBlobType": {
+      "type": "string",
+      "defaultValue": "[parameters('blobType')]",
+      "metadata": {
+        "description": "Specifies the type of blob to manage the lifecycle policy."
+      }
+    },
+    "destChangeFeedEnabled": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Indicates whether change feed event logging is enabled for the Blob service."
+      }
+    },
+    "destVersioningEnabled": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Versioning is enabled if set to true. To the destination storage account, set true."
+      }
+    },
+    "destSkuName": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_GRS",
+        "Standard_ZRS",
+        "Standard_RAGRS",
+        "Standard_RAGZRS"
+      ],
+      "metadata": {
+        "description": "The SKU name to provide for account creation. Default is Standard_LRS."
+      }
+    },
+    "ruleId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Rule Id is auto-generated for each new rule on destination account. It is required for put policy on source account."
+      }
+    },
+    "policyId": {
+      "type": "string",
+      "defaultValue": "default",
+      "metadata": {
+        "description": "This is the name to provide for objectReplicationPolicies."
+      }
+    },
+    "objectReplicationPolicy": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "When performing object replication, it must be true and all resources necessary for the destination storage account will be created."
+      }
+    },
+    "privateEndpoints": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Define Private Endpoints that should be created for Azure Storage Account."
+      }
+    },
+    "privateEndpointsApprovalEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Toggle if Private Endpoints manual approval for Azure Storage Account should be enabled."
+      }
+    },
+    "blobName": {
+      "type": "string",
+      "defaultValue": "default",
+      "metadata": {
+        "description": "Name of a blob service to be created."
+      }
+    },
+    "blobProperties": {
+      "$ref": "#/definitions/blobServiceProperties",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Properties object for a Blob service of a Storage Account."
+      }
+    },
+    "blobContainerName": {
+      "type": "string",
+      "defaultValue": "default",
+      "metadata": {
+        "description": "Name of a blob container to be created"
+      }
+    },
+    "blobContainerProperties": {
+      "$ref": "#/definitions/blobServiceContainerProperties",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Properties object for a Blob container of a Storage Account."
+      }
+    },
+    "roleAssignments": {
+      "$ref": "#/definitions/roleAssignmentsArray",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Array of role assignment objects that contain the 'roleDefinitionIdOrName', 'principalId' and 'resourceType' as 'storageAccount' or 'blobContainer' to define RBAC role assignments on that resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'"
+      }
     }
   },
   "variables": {
+    "copy": [
+      {
+        "name": "varPrivateEndpoints",
+        "count": "[length(parameters('privateEndpoints'))]",
+        "input": {
+          "name": "[format('{0}-{1}', parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].name, parameters('name'))]",
+          "privateLinkServiceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('name'))]",
+          "groupIds": [
+            "blob"
+          ],
+          "subnetId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].subnetId]",
+          "privateDnsZones": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'privateDnsZoneId'), createArray(createObject('name', 'default', 'zoneId', parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].privateDnsZoneId)), createArray())]"
+        }
+      }
+    ],
     "networkAcls": "[if(parameters('enableVNET'), createObject('defaultAction', 'Deny', 'virtualNetworkRules', createArray(createObject('action', 'Allow', 'id', parameters('subnetID')))), createObject())]"
   },
-  "resources": [
-    {
+  "resources": {
+    "storageAccount::blobService::container": {
+      "condition": "[and(not(equals(parameters('blobName'), '')), not(equals(parameters('blobContainerName'), '')))]",
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}/{1}/{2}', parameters('name'), parameters('blobName'), parameters('blobContainerName'))]",
+      "properties": "[parameters('blobContainerProperties')]",
+      "dependsOn": [
+        "storageAccount::blobService"
+      ]
+    },
+    "storageAccount::managementpolicy": {
+      "type": "Microsoft.Storage/storageAccounts/managementPolicies",
+      "apiVersion": "2021-04-01",
+      "name": "[format('{0}/{1}', parameters('name'), 'default')]",
+      "properties": {
+        "policy": {
+          "rules": [
+            {
+              "enabled": true,
+              "name": "move-to-cool",
+              "type": "Lifecycle",
+              "definition": {
+                "actions": {
+                  "baseBlob": {
+                    "tierToCool": {
+                      "daysAfterModificationGreaterThan": "[parameters('daysAfterLastModification')]"
+                    }
+                  }
+                },
+                "filters": {
+                  "blobTypes": [
+                    "[parameters('blobType')]"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "storageAccount"
+      ]
+    },
+    "storageAccount::blobService": {
+      "condition": "[not(equals(parameters('blobName'), ''))]",
+      "type": "Microsoft.Storage/storageAccounts/blobServices",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}/{1}', parameters('name'), parameters('blobName'))]",
+      "properties": "[parameters('blobProperties')]",
+      "dependsOn": [
+        "storageAccount"
+      ]
+    },
+    "destinationStorageAccount::destinationBlobService::destinationContainer": {
+      "condition": "[parameters('objectReplicationPolicy')]",
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}/{1}/{2}', parameters('destStorageAccountName'), 'default', 'destinationcontainer')]",
+      "properties": {
+        "publicAccess": "None"
+      },
+      "dependsOn": [
+        "destinationStorageAccount::destinationBlobService"
+      ]
+    },
+    "destinationStorageAccount::destinationBlobService": {
+      "condition": "[parameters('objectReplicationPolicy')]",
+      "type": "Microsoft.Storage/storageAccounts/blobServices",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}/{1}', parameters('destStorageAccountName'), 'default')]",
+      "properties": {
+        "changeFeed": {
+          "enabled": "[parameters('destChangeFeedEnabled')]"
+        },
+        "isVersioningEnabled": "[parameters('destVersioningEnabled')]"
+      },
+      "dependsOn": [
+        "destinationStorageAccount"
+      ]
+    },
+    "destinationStorageAccount::destinationmanagementpolicy": {
+      "condition": "[parameters('objectReplicationPolicy')]",
+      "type": "Microsoft.Storage/storageAccounts/managementPolicies",
+      "apiVersion": "2021-04-01",
+      "name": "[format('{0}/{1}', parameters('destStorageAccountName'), 'default')]",
+      "properties": {
+        "policy": {
+          "rules": [
+            {
+              "enabled": true,
+              "name": "delete",
+              "type": "Lifecycle",
+              "definition": {
+                "actions": {
+                  "baseBlob": {
+                    "delete": {
+                      "daysAfterModificationGreaterThan": "[parameters('destDaysAfterLastModification')]"
+                    }
+                  }
+                },
+                "filters": {
+                  "blobTypes": [
+                    "[parameters('destBlobType')]"
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "destinationStorageAccount"
+      ]
+    },
+    "storageAccount": {
       "type": "Microsoft.Storage/storageAccounts",
       "apiVersion": "2022-09-01",
       "name": "[parameters('name')]",
@@ -83,13 +735,335 @@
             }
           }
         },
-        "supportsHttpsTrafficOnly": true,
-        "allowBlobPublicAccess": false,
         "networkAcls": "[variables('networkAcls')]",
-        "minimumTlsVersion": "TLS1_2"
+        "supportsHttpsTrafficOnly": "[parameters('supportHttpsTrafficOnly')]",
+        "allowBlobPublicAccess": "[parameters('allowBlobPublicAccess')]",
+        "allowCrossTenantReplication": "[parameters('allowCrossTenantReplication')]",
+        "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
+        "minimumTlsVersion": "[parameters('minimumTlsVersion')]"
       }
+    },
+    "destinationStorageAccount": {
+      "condition": "[parameters('objectReplicationPolicy')]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2022-09-01",
+      "name": "[parameters('destStorageAccountName')]",
+      "location": "[parameters('destLocation')]",
+      "sku": {
+        "name": "[parameters('destSkuName')]"
+      },
+      "kind": "StorageV2",
+      "properties": {
+        "encryption": {
+          "keySource": "Microsoft.Storage",
+          "services": {
+            "blob": {
+              "enabled": true
+            },
+            "file": {
+              "enabled": true
+            }
+          }
+        },
+        "networkAcls": "[variables('networkAcls')]",
+        "supportsHttpsTrafficOnly": "[parameters('destSupportHttpsTrafficOnly')]",
+        "allowBlobPublicAccess": "[parameters('destAllowBlobPublicAccess')]",
+        "allowCrossTenantReplication": "[parameters('destAllowCrossTenantReplication')]",
+        "publicNetworkAccess": "[parameters('destPublicNetworkAccess')]",
+        "minimumTlsVersion": "[parameters('destMinimumTlsVersion')]"
+      }
+    },
+    "destinationOrPolicy": {
+      "condition": "[parameters('objectReplicationPolicy')]",
+      "type": "Microsoft.Storage/storageAccounts/objectReplicationPolicies",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}/{1}', parameters('destStorageAccountName'), parameters('policyId'))]",
+      "properties": {
+        "sourceAccount": "[resourceId('Microsoft.Storage/storageAccounts', parameters('name'))]",
+        "destinationAccount": "[resourceId('Microsoft.Storage/storageAccounts', parameters('destStorageAccountName'))]",
+        "rules": [
+          {
+            "destinationContainer": "destinationcontainer",
+            "sourceContainer": "[parameters('blobContainerName')]",
+            "ruleId": "[if(equals(parameters('ruleId'), ''), null(), parameters('ruleId'))]"
+          }
+        ]
+      },
+      "dependsOn": [
+        "destinationStorageAccount",
+        "storageAccount"
+      ]
+    },
+    "storageaccount_privateEndpoint": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-storageaccount-private-endpoints', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "privateEndpoints": {
+            "value": "[variables('varPrivateEndpoints')]"
+          },
+          "manualApprovalEnabled": {
+            "value": "[parameters('privateEndpointsApprovalEnabled')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
+            "_generator": {
+              "name": "bicep",
+              "version": "0.18.4.5664",
+              "templateHash": "17195690849026502177"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "manualApprovalEnabled": {
+              "type": "bool"
+            },
+            "privateEndpoints": {
+              "type": "array"
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "varPrivateEndpoints",
+                "count": "[length(parameters('privateEndpoints'))]",
+                "input": {
+                  "name": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].name]",
+                  "privateLinkServiceId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].privateLinkServiceId]",
+                  "groupIds": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].groupIds]",
+                  "subnetId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].subnetId]",
+                  "privateDnsZones": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'privateDnsZones'), parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].privateDnsZones, createArray())]",
+                  "customNetworkInterfaceName": "[if(contains(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'customNetworkInterfaceName'), parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].customNetworkInterfaceName, null())]"
+                }
+              }
+            ]
+          },
+          "resources": {
+            "privateEndpoint": {
+              "copy": {
+                "name": "privateEndpoint",
+                "count": "[length(variables('varPrivateEndpoints'))]",
+                "mode": "serial",
+                "batchSize": 1
+              },
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2022-05-01",
+              "name": "[format('{0}-{1}', variables('varPrivateEndpoints')[copyIndex()].name, uniqueString(variables('varPrivateEndpoints')[copyIndex()].name, variables('varPrivateEndpoints')[copyIndex()].subnetId, variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId))]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "subnet": {
+                  "id": "[variables('varPrivateEndpoints')[copyIndex()].subnetId]"
+                },
+                "privateLinkServiceConnections": "[if(parameters('manualApprovalEnabled'), null(), createArray(createObject('name', variables('varPrivateEndpoints')[copyIndex()].name, 'properties', createObject('privateLinkServiceId', variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId, 'groupIds', if(not(empty(variables('varPrivateEndpoints')[copyIndex()].groupIds)), variables('varPrivateEndpoints')[copyIndex()].groupIds, null())))))]",
+                "manualPrivateLinkServiceConnections": "[if(parameters('manualApprovalEnabled'), createArray(createObject('name', variables('varPrivateEndpoints')[copyIndex()].name, 'properties', createObject('privateLinkServiceId', variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId, 'groupIds', if(not(empty(variables('varPrivateEndpoints')[copyIndex()].groupIds)), variables('varPrivateEndpoints')[copyIndex()].groupIds, null())))), null())]",
+                "customNetworkInterfaceName": "[variables('varPrivateEndpoints')[copyIndex()].customNetworkInterfaceName]"
+              }
+            },
+            "privateDnsZoneGroup": {
+              "copy": {
+                "name": "privateDnsZoneGroup",
+                "count": "[length(variables('varPrivateEndpoints'))]",
+                "mode": "serial",
+                "batchSize": 1
+              },
+              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+              "apiVersion": "2022-05-01",
+              "name": "[format('{0}/{1}', format('{0}-{1}', variables('varPrivateEndpoints')[copyIndex()].name, uniqueString(variables('varPrivateEndpoints')[copyIndex()].name, variables('varPrivateEndpoints')[copyIndex()].subnetId, variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId)), 'default')]",
+              "properties": {
+                "copy": [
+                  {
+                    "name": "privateDnsZoneConfigs",
+                    "count": "[length(variables('varPrivateEndpoints')[copyIndex()].privateDnsZones)]",
+                    "input": {
+                      "name": "[if(contains(variables('varPrivateEndpoints')[copyIndex()].privateDnsZones[copyIndex('privateDnsZoneConfigs')], 'name'), variables('varPrivateEndpoints')[copyIndex()].privateDnsZones[copyIndex('privateDnsZoneConfigs')].name, 'default')]",
+                      "properties": {
+                        "privateDnsZoneId": "[variables('varPrivateEndpoints')[copyIndex()].privateDnsZones[copyIndex('privateDnsZoneConfigs')].zoneId]"
+                      }
+                    }
+                  }
+                ]
+              },
+              "dependsOn": [
+                "[format('privateEndpoint[{0}]', copyIndex())]"
+              ]
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "storageAccount"
+      ]
+    },
+    "storageRbac": {
+      "copy": {
+        "name": "storageRbac",
+        "count": "[length(parameters('roleAssignments'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('sa-rbac-{0}-{1}', copyIndex(), uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', 'role assignment'))]",
+          "principalIds": {
+            "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
+          },
+          "roleDefinitionIdOrName": {
+            "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
+          },
+          "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', 'ServicePrincipal'))]",
+          "resourceType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'resourceType'), createObject('value', parameters('roleAssignments')[copyIndex()].resourceType), createObject('value', 'storageAccount'))]",
+          "name": {
+            "value": "[parameters('name')]"
+          },
+          "blobName": {
+            "value": "[parameters('blobName')]"
+          },
+          "containerName": {
+            "value": "[parameters('blobContainerName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
+            "_generator": {
+              "name": "bicep",
+              "version": "0.18.4.5664",
+              "templateHash": "4374010201633290607"
+            }
+          },
+          "parameters": {
+            "description": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "principalIds": {
+              "type": "array"
+            },
+            "principalType": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "roleDefinitionIdOrName": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "blobName": {
+              "type": "string"
+            },
+            "containerName": {
+              "type": "string"
+            },
+            "resourceType": {
+              "type": "string",
+              "defaultValue": "storageAccount"
+            }
+          },
+          "variables": {
+            "builtInRoleNames": {
+              "Owner": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
+              "Contributor": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+              "Reader": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
+              "Avere Contributor": "4f8fab4f-1852-4a58-a46a-8eaf358af14a",
+              "Avere Operator": "c025889f-8102-4ebf-b32c-fc0c6f0c6bd9",
+              "Backup Contributor": "5e467623-bb1f-42f4-a55d-6e525e11384b",
+              "Backup Operator": "00c29273-979b-4161-815c-10b084fb9324",
+              "Backup Reader": "a795c7a0-d4a2-40c1-ae25-d81f01202912",
+              "Classic Storage Account Contributor": "86e8f5dc-a6e9-4c67-9d15-de283e8eac25",
+              "Classic Storage Account Key Operator Service Role": "985d6b00-f706-48f5-a6fe-d0ca12fb668d",
+              "Data Box Contributor": "add466c9-e687-43fc-8d98-dfcf8d720be5",
+              "Data Box Reader": "028f4ed7-e2a9-465e-a8f4-9c0ffdfdc027",
+              "Data Lake Analytics Developer": "47b7735b-770e-4598-a7da-8b91488b4c88",
+              "Elastic SAN Owner": "80dcbedb-47ef-405d-95bd-188a1b4ac406",
+              "Elastic SAN Reader": "af6a70f8-3c9f-4105-acf1-d719e9fca4ca",
+              "Elastic SAN Volume Group Owner": "a8281131-f312-4f34-8d98-ae12be9f0d23",
+              "Reader and Data Access": "c12c1c16-33a1-487b-954d-41c89c60f349",
+              "Storage Account Backup Contributor": "e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1",
+              "Storage Account Contributor": "17d1049b-9a84-46fb-8f53-869881c3d3ab",
+              "Storage Account Key Operator Service Role": "81a9662b-bebf-436f-a333-f67b29880f12",
+              "Storage Blob Data Contributor": "ba92f5b4-2d11-453d-a403-e96b0029c9fe",
+              "Storage Blob Data Owner": "b7e6dc6d-f1e8-4753-8033-0f276bb0955b",
+              "Storage Blob Data Reader": "2a2b9908-6ea1-4ae2-8e65-a410df84e7d1",
+              "Storage Blob Delegator": "db58b8e5-c6ad-4a2a-8342-4190687cbf4a",
+              "Storage File Data SMB Share Contributor": "0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb",
+              "Storage File Data SMB Share Elevated Contributor": "a7264617-510b-434b-a828-9731dc254ea7",
+              "Storage File Data SMB Share Reader": "aba4ae5f-2193-4029-9191-0cb91df5e314",
+              "Storage Queue Data Contributor": "974c5e8b-45b9-4653-ba55-5f855dd0fb88",
+              "Storage Queue Data Message Processor": "8a0f0c08-91a1-4084-bc3d-661d67233fed",
+              "Storage Queue Data Message Sender": "c6a89b2d-59bc-44d0-9896-0f6e12d7b80a",
+              "Storage Queue Data Reader": "19e7f393-937e-4f77-808e-94535e297925",
+              "Storage Table Data Contributor": "0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3",
+              "Storage Table Data Reader": "76199698-9eea-4c19-bc75-cec21354c6b6"
+            }
+          },
+          "resources": {
+            "storage::blob::container": {
+              "condition": "[and(not(equals(parameters('blobName'), '')), not(equals(parameters('containerName'), '')))]",
+              "existing": true,
+              "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}/{1}/{2}', parameters('name'), parameters('blobName'), parameters('containerName'))]"
+            },
+            "storage::blob": {
+              "condition": "[not(equals(parameters('blobName'), ''))]",
+              "existing": true,
+              "type": "Microsoft.Storage/storageAccounts/blobServices",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}/{1}', parameters('name'), parameters('blobName'))]"
+            },
+            "storage": {
+              "existing": true,
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2022-09-01",
+              "name": "[parameters('name')]"
+            },
+            "roleAssignment": {
+              "copy": {
+                "name": "roleAssignment",
+                "count": "[length(parameters('principalIds'))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid(if(equals(parameters('resourceType'), 'blobContainer'), parameters('containerName'), parameters('name')), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+              "properties": {
+                "description": "[parameters('description')]",
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')]), parameters('roleDefinitionIdOrName'))]",
+                "principalId": "[parameters('principalIds')[copyIndex()]]",
+                "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]"
+              }
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "storageAccount"
+      ]
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",

@@ -1,0 +1,29 @@
+name: Check Labels
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - labeled
+      - unlabeled
+      - synchronize
+
+jobs:
+  label-check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        labels:
+          - "Awaiting Module Path Assignment"
+          - "Awaiting MCR Manifest Onboarding"
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: mheap/github-action-required-labels@v5
+        with:
+          mode: exactly
+          count: 0
+          labels: ${{ matrix.labels }}
+          add_comment: true
+          message: "This PR is being prevented from merging because it is pending on label: ${{ matrix.labels }}."

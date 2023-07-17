@@ -18,7 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 // Needed to fetch all history and tags
 
       - name: Install packages
         run: npm ci
@@ -28,7 +30,7 @@ jobs:
         with:
           script: |
             const script = require("./scripts/github-actions/generate-module-index-data.js")
-            await script({ require, core })
+            await script({ require, github, context, core })
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
@@ -54,7 +56,7 @@ jobs:
     needs: upload-index-data
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install packages
         run: npm ci
@@ -71,6 +73,12 @@ jobs:
             const script = require("./scripts/github-actions/generate-module-index-md.js")
             await script({ require, github, context, core })
 
+      - name: Upload Markdown artifact
+        uses: actions/upload-artifact@v3
+        with:
+          path: ./docs/jekyll/index.md
+          name: index.md
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -81,7 +89,7 @@ jobs:
 
       - name: Setup Pages
         id: pages
-        uses: actions/configure-pages@v2
+        uses: actions/configure-pages@v3
 
       - name: Build with Jekyll
         working-directory: ./docs/jekyll
@@ -90,7 +98,7 @@ jobs:
           JEKYLL_ENV: production
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v2
         with:
           path: ./docs/jekyll/_site
 

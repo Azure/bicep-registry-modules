@@ -4,11 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.14.85.62628",
-      "templateHash": "10131284793309166240"
+      "version": "0.18.4.5664",
+      "templateHash": "6011732883927798522"
     },
-    "name": "`main.bicep` Parameters",
-    "description": "These are the input parameters for the Bicep module: [`main.bicep`](./main.bicep)\n\nThis is the orchestration module that is used and called by a consumer of the module to deploy a Landing Zone Subscription and its associated resources, based on the parameter input values that are provided to it at deployment time.\n\n> For more information and examples please see the [wiki](https://github.com/Azure/bicep-lz-vending/wiki)"
+    "name": "Bicep Landing Zone (Subscription) Vending Module",
+    "description": "This module is designed to accelerate deployment of landing zones (aka Subscriptions) within an Azure AD Tenant.",
+    "details": "These are the input parameters for the Bicep module: [`main.bicep`](./main.bicep)\n\nThis is the orchestration module that is used and called by a consumer of the module to deploy a Landing Zone Subscription and its associated resources, based on the parameter input values that are provided to it at deployment time.\n\n> For more information and examples please see the [wiki](https://github.com/Azure/bicep-lz-vending/wiki)"
   },
   "parameters": {
     "subscriptionAliasEnabled": {
@@ -56,6 +57,24 @@
         "DevTest",
         "Production"
       ]
+    },
+    "subscriptionTenantId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The Azure Active Directory Tenant ID (GUID) to which the Subscription should be attached to.\n\n> **Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants).**\n\n- Default value: `''` *(empty string)*\n",
+        "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+      },
+      "maxLength": 36
+    },
+    "subscriptionOwnerId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "The Azure Active Directory principals object ID (GUID) to whom should be the Subscription Owner.\n\n> **Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants).**\n\n- Default value: `''` *(empty string)*\n",
+        "example": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+      },
+      "maxLength": 36
     },
     "existingSubscriptionId": {
       "type": "string",
@@ -325,9 +344,8 @@
     {
       "condition": "[and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId')))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[variables('deploymentNames').createSubscription]",
-      "scope": "/",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -346,16 +364,22 @@
           },
           "subscriptionWorkload": {
             "value": "[parameters('subscriptionWorkload')]"
+          },
+          "subscriptionTenantId": {
+            "value": "[parameters('subscriptionTenantId')]"
+          },
+          "subscriptionOwnerId": {
+            "value": "[parameters('subscriptionOwnerId')]"
           }
         },
         "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#",
+          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.14.85.62628",
-              "templateHash": "4715407712972992065"
+              "version": "0.18.4.5664",
+              "templateHash": "9191086103392905110"
             }
           },
           "parameters": {
@@ -379,6 +403,22 @@
                 "description": "The billing scope for the new subscription alias. A valid billing scope starts with `/providers/Microsoft.Billing/billingAccounts/` and is case sensitive."
               }
             },
+            "subscriptionTenantId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "The Azure Active Directory Tenant ID (GUID) to which the Subscription should be attached to. Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants)."
+              },
+              "maxLength": 36
+            },
+            "subscriptionOwnerId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "The Azure Active Directory principals object ID (GUID) to whom should be the Subscription Owner. Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants)."
+              },
+              "maxLength": 36
+            },
             "subscriptionWorkload": {
               "type": "string",
               "defaultValue": "Production",
@@ -395,11 +435,13 @@
             {
               "type": "Microsoft.Subscription/aliases",
               "apiVersion": "2021-10-01",
+              "scope": "/",
               "name": "[parameters('subscriptionAliasName')]",
               "properties": {
                 "workload": "[parameters('subscriptionWorkload')]",
                 "displayName": "[parameters('subscriptionDisplayName')]",
-                "billingScope": "[parameters('subscriptionBillingScope')]"
+                "billingScope": "[parameters('subscriptionBillingScope')]",
+                "additionalProperties": "[if(and(not(empty(parameters('subscriptionTenantId'))), not(empty(parameters('subscriptionOwnerId')))), createObject('subscriptionTenantId', parameters('subscriptionTenantId'), 'subscriptionOwnerId', parameters('subscriptionOwnerId')), createObject())]"
               }
             }
           ],
@@ -411,6 +453,14 @@
             "subscriptionResourceId": {
               "type": "string",
               "value": "[format('/subscriptions/{0}', reference(tenantResourceId('Microsoft.Subscription/aliases', parameters('subscriptionAliasName')), '2021-10-01').subscriptionId)]"
+            },
+            "subscriptionAcceptOwnershipState": {
+              "type": "string",
+              "value": "[if(and(not(empty(parameters('subscriptionTenantId'))), not(empty(parameters('subscriptionOwnerId')))), reference(tenantResourceId('Microsoft.Subscription/aliases', parameters('subscriptionAliasName')), '2021-10-01').acceptOwnershipState, 'N/A')]"
+            },
+            "subscriptionAcceptOwnershipUrl": {
+              "type": "string",
+              "value": "[if(and(not(empty(parameters('subscriptionTenantId'))), not(empty(parameters('subscriptionOwnerId')))), reference(tenantResourceId('Microsoft.Subscription/aliases', parameters('subscriptionAliasName')), '2021-10-01').acceptOwnershipUrl, 'N/A')]"
             }
           }
         }
@@ -419,7 +469,7 @@
     {
       "condition": "[or(parameters('subscriptionAliasEnabled'), not(empty(parameters('existingSubscriptionId'))))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[variables('deploymentNames').createSubscriptionResources]",
       "location": "[deployment().location]",
       "properties": {
@@ -428,7 +478,7 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "subscriptionId": "[if(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), createObject('value', reference(tenantResourceId('Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2020-10-01').outputs.subscriptionId.value), createObject('value', parameters('existingSubscriptionId')))]",
+          "subscriptionId": "[if(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), createObject('value', reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2022-09-01').outputs.subscriptionId.value), createObject('value', parameters('existingSubscriptionId')))]",
           "subscriptionManagementGroupAssociationEnabled": {
             "value": "[parameters('subscriptionManagementGroupAssociationEnabled')]"
           },
@@ -505,11 +555,12 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.14.85.62628",
-              "templateHash": "10656807363692447382"
+              "version": "0.18.4.5664",
+              "templateHash": "12543468054034431071"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
-            "description": "These are the input parameters for the Bicep module: [`deploy.bicep`](./deploy.bicep)\n\nThis is the sub-orchestration module that is used and called by the [`main.bicep`](../../../main.bicep)  module to deploy the resources into the subscription that has been created (or an existing one provided), based on the parameter input values that are provided to it at deployment time from the `main.bicep` orchestration module.\n\n> ⚠️ It is not intended for this module to be called outside of being a sub-orchestration module for the `main.bicep` module ⚠️"
+            "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
+            "details": "These are the input parameters for the Bicep module: [`deploy.bicep`](./deploy.bicep)\n\nThis is the sub-orchestration module that is used and called by the [`main.bicep`](../../../main.bicep)  module to deploy the resources into the subscription that has been created (or an existing one provided), based on the parameter input values that are provided to it at deployment time from the `main.bicep` orchestration module.\n\n> ⚠️ It is not intended for this module to be called outside of being a sub-orchestration module for the `main.bicep` module ⚠️"
           },
           "parameters": {
             "subscriptionId": {
@@ -714,7 +765,7 @@
             {
               "condition": "[and(parameters('subscriptionManagementGroupAssociationEnabled'), not(empty(parameters('subscriptionManagementGroupId'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2022-09-01",
               "name": "[variables('deploymentNames').moveSubscriptionToManagementGroup]",
               "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('subscriptionManagementGroupId'))]",
               "location": "[deployment().location]",
@@ -737,8 +788,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.14.85.62628",
-                      "templateHash": "5088914991578285384"
+                      "version": "0.18.4.5664",
+                      "templateHash": "13686712454025450791"
                     }
                   },
                   "parameters": {
@@ -769,7 +820,7 @@
             {
               "condition": "[not(empty(parameters('subscriptionTags')))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2022-09-01",
               "name": "[variables('deploymentNames').tagSubscription]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "location": "[deployment().location]",
@@ -801,8 +852,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.14.85.62628",
-                      "templateHash": "3623074532816692736"
+                      "version": "0.18.4.5664",
+                      "templateHash": "8332778839164422262"
                     }
                   },
                   "parameters": {
@@ -871,7 +922,7 @@
                     {
                       "condition": "[and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName')))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('{0}-Tags-Sub', deployment().name)]",
                       "location": "[deployment().location]",
                       "properties": {
@@ -899,8 +950,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.14.85.62628",
-                              "templateHash": "2028056425703520666"
+                              "version": "0.18.4.5664",
+                              "templateHash": "15752571223585357448"
                             }
                           },
                           "parameters": {
@@ -961,7 +1012,7 @@
                               "apiVersion": "2019-10-01",
                               "name": "[parameters('name')]",
                               "properties": {
-                                "tags": "[if(parameters('onlyUpdate'), union(reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2020-10-01').outputs.existingTags.value, parameters('tags')), parameters('tags'))]"
+                                "tags": "[if(parameters('onlyUpdate'), union(reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2022-09-01').outputs.existingTags.value, parameters('tags')), parameters('tags'))]"
                               },
                               "dependsOn": [
                                 "[subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name))]"
@@ -970,7 +1021,7 @@
                             {
                               "condition": "[parameters('onlyUpdate')]",
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2020-10-01",
+                              "apiVersion": "2022-09-01",
                               "name": "[format('{0}-ReadTags', deployment().name)]",
                               "location": "[deployment().location]",
                               "properties": {
@@ -984,8 +1035,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.14.85.62628",
-                                      "templateHash": "17370106847785970840"
+                                      "version": "0.18.4.5664",
+                                      "templateHash": "1194790306604975116"
                                     }
                                   },
                                   "parameters": {
@@ -1001,10 +1052,10 @@
                                   "outputs": {
                                     "existingTags": {
                                       "type": "object",
-                                      "value": "[if(contains(reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01').tags, createObject())]",
                                       "metadata": {
                                         "description": "Tags currently applied to the subscription level"
-                                      }
+                                      },
+                                      "value": "[if(contains(reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01').tags, createObject())]"
                                     }
                                   }
                                 }
@@ -1014,24 +1065,24 @@
                           "outputs": {
                             "name": {
                               "type": "string",
-                              "value": "[parameters('name')]",
                               "metadata": {
                                 "description": "The name of the tags resource."
-                              }
+                              },
+                              "value": "[parameters('name')]"
                             },
                             "tags": {
                               "type": "object",
-                              "value": "[if(parameters('onlyUpdate'), union(reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2020-10-01').outputs.existingTags.value, parameters('tags')), parameters('tags'))]",
                               "metadata": {
                                 "description": "The applied tags."
-                              }
+                              },
+                              "value": "[if(parameters('onlyUpdate'), union(reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2022-09-01').outputs.existingTags.value, parameters('tags')), parameters('tags'))]"
                             },
                             "resourceId": {
                               "type": "string",
-                              "value": "[subscriptionResourceId('Microsoft.Resources/tags', parameters('name'))]",
                               "metadata": {
                                 "description": "The resource ID of the applied tags."
-                              }
+                              },
+                              "value": "[subscriptionResourceId('Microsoft.Resources/tags', parameters('name'))]"
                             }
                           }
                         }
@@ -1040,7 +1091,7 @@
                     {
                       "condition": "[and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId'))))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('{0}-Tags-RG', deployment().name)]",
                       "resourceGroup": "[parameters('resourceGroupName')]",
                       "properties": {
@@ -1065,8 +1116,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.14.85.62628",
-                              "templateHash": "12599170751360171486"
+                              "version": "0.18.4.5664",
+                              "templateHash": "16745646850117358821"
                             }
                           },
                           "parameters": {
@@ -1119,7 +1170,7 @@
                               "apiVersion": "2019-10-01",
                               "name": "[parameters('name')]",
                               "properties": {
-                                "tags": "[if(parameters('onlyUpdate'), union(reference(resourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2020-10-01').outputs.existingTags.value, parameters('tags')), parameters('tags'))]"
+                                "tags": "[if(parameters('onlyUpdate'), union(reference(resourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2022-09-01').outputs.existingTags.value, parameters('tags')), parameters('tags'))]"
                               },
                               "dependsOn": [
                                 "[resourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name))]"
@@ -1128,7 +1179,7 @@
                             {
                               "condition": "[parameters('onlyUpdate')]",
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2020-10-01",
+                              "apiVersion": "2022-09-01",
                               "name": "[format('{0}-ReadTags', deployment().name)]",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -1141,8 +1192,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.14.85.62628",
-                                      "templateHash": "13690509042648506910"
+                                      "version": "0.18.4.5664",
+                                      "templateHash": "13046201805213672696"
                                     }
                                   },
                                   "parameters": {
@@ -1158,10 +1209,10 @@
                                   "outputs": {
                                     "existingTags": {
                                       "type": "object",
-                                      "value": "[if(contains(reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01').tags, createObject())]",
                                       "metadata": {
                                         "description": "Tags currently applied to the subscription level"
-                                      }
+                                      },
+                                      "value": "[if(contains(reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01').tags, createObject())]"
                                     }
                                   }
                                 }
@@ -1171,31 +1222,31 @@
                           "outputs": {
                             "name": {
                               "type": "string",
-                              "value": "[parameters('name')]",
                               "metadata": {
                                 "description": "The name of the tags resource."
-                              }
+                              },
+                              "value": "[parameters('name')]"
                             },
                             "resourceId": {
                               "type": "string",
-                              "value": "[resourceId('Microsoft.Resources/tags', parameters('name'))]",
                               "metadata": {
                                 "description": "The resource ID of the applied tags."
-                              }
+                              },
+                              "value": "[resourceId('Microsoft.Resources/tags', parameters('name'))]"
                             },
                             "resourceGroupName": {
                               "type": "string",
-                              "value": "[resourceGroup().name]",
                               "metadata": {
                                 "description": "The name of the resource group the tags were applied to."
-                              }
+                              },
+                              "value": "[resourceGroup().name]"
                             },
                             "tags": {
                               "type": "object",
-                              "value": "[if(parameters('onlyUpdate'), union(reference(resourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2020-10-01').outputs.existingTags.value, parameters('tags')), parameters('tags'))]",
                               "metadata": {
                                 "description": "The applied tags."
-                              }
+                              },
+                              "value": "[if(parameters('onlyUpdate'), union(reference(resourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2022-09-01').outputs.existingTags.value, parameters('tags')), parameters('tags'))]"
                             }
                           }
                         }
@@ -1205,24 +1256,24 @@
                   "outputs": {
                     "name": {
                       "type": "string",
-                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2020-10-01').outputs.name.value, reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2020-10-01').outputs.name.value)]",
                       "metadata": {
                         "description": "The name of the tags resource."
-                      }
+                      },
+                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2022-09-01').outputs.name.value, reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2022-09-01').outputs.name.value)]"
                     },
                     "tags": {
                       "type": "object",
-                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2020-10-01').outputs.tags.value, reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2020-10-01').outputs.tags.value)]",
                       "metadata": {
                         "description": "The applied tags."
-                      }
+                      },
+                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2022-09-01').outputs.tags.value, reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2022-09-01').outputs.tags.value)]"
                     },
                     "resourceId": {
                       "type": "string",
-                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2020-10-01').outputs.resourceId.value, reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2020-10-01').outputs.resourceId.value)]",
                       "metadata": {
                         "description": "The resource ID of the applied tags."
-                      }
+                      },
+                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2022-09-01').outputs.resourceId.value, reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2022-09-01').outputs.resourceId.value)]"
                     }
                   }
                 }
@@ -1231,7 +1282,7 @@
             {
               "condition": "[and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2022-09-01",
               "name": "[variables('deploymentNames').createResourceGroupForLzNetworking]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "location": "[deployment().location]",
@@ -1258,8 +1309,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.14.85.62628",
-                      "templateHash": "2374483234558231702"
+                      "version": "0.18.4.5664",
+                      "templateHash": "8060682211765947588"
                     }
                   },
                   "parameters": {
@@ -1337,7 +1388,7 @@
                     {
                       "condition": "[not(empty(parameters('lock')))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('{0}-{1}-Lock', uniqueString(deployment().name, parameters('location')), parameters('lock'))]",
                       "resourceGroup": "[parameters('name')]",
                       "properties": {
@@ -1359,8 +1410,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.14.85.62628",
-                              "templateHash": "3530028734833013699"
+                              "version": "0.18.4.5664",
+                              "templateHash": "11718909657427895917"
                             }
                           },
                           "parameters": {
@@ -1424,31 +1475,31 @@
                           "outputs": {
                             "name": {
                               "type": "string",
-                              "value": "[parameters('name')]",
                               "metadata": {
                                 "description": "The name of the lock."
-                              }
+                              },
+                              "value": "[parameters('name')]"
                             },
                             "resourceId": {
                               "type": "string",
-                              "value": "[resourceId('Microsoft.Authorization/locks', parameters('name'))]",
                               "metadata": {
                                 "description": "The resource ID of the lock."
-                              }
+                              },
+                              "value": "[resourceId('Microsoft.Authorization/locks', parameters('name'))]"
                             },
                             "resourceGroupName": {
                               "type": "string",
-                              "value": "[resourceGroup().name]",
                               "metadata": {
                                 "description": "The name of the resource group name the lock was applied to."
-                              }
+                              },
+                              "value": "[resourceGroup().name]"
                             },
                             "scope": {
                               "type": "string",
-                              "value": "[resourceGroup().id]",
                               "metadata": {
                                 "description": "The scope this lock applies to."
-                              }
+                              },
+                              "value": "[resourceGroup().id]"
                             }
                           }
                         }
@@ -1463,7 +1514,7 @@
                         "count": "[length(parameters('roleAssignments'))]"
                       },
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('{0}-RG-Rbac-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
                       "resourceGroup": "[parameters('name')]",
                       "properties": {
@@ -1490,8 +1541,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.14.85.62628",
-                              "templateHash": "16933187014705014572"
+                              "version": "0.18.4.5664",
+                              "templateHash": "6884329723415038645"
                             }
                           },
                           "parameters": {
@@ -1740,24 +1791,24 @@
                   "outputs": {
                     "name": {
                       "type": "string",
-                      "value": "[parameters('name')]",
                       "metadata": {
                         "description": "The name of the resource group."
-                      }
+                      },
+                      "value": "[parameters('name')]"
                     },
                     "resourceId": {
                       "type": "string",
-                      "value": "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('name'))]",
                       "metadata": {
                         "description": "The resource ID of the resource group."
-                      }
+                      },
+                      "value": "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('name'))]"
                     },
                     "location": {
                       "type": "string",
-                      "value": "[reference(subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('name')), '2019-05-01', 'full').location]",
                       "metadata": {
                         "description": "The location the resource was deployed into."
-                      }
+                      },
+                      "value": "[reference(subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('name')), '2019-05-01', 'full').location]"
                     }
                   }
                 }
@@ -1766,7 +1817,7 @@
             {
               "condition": "[and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), not(empty(parameters('virtualNetworkResourceGroupTags'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2022-09-01",
               "name": "[variables('deploymentNames').tagResoruceGroupForLzNetworking]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "location": "[deployment().location]",
@@ -1798,8 +1849,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.14.85.62628",
-                      "templateHash": "3623074532816692736"
+                      "version": "0.18.4.5664",
+                      "templateHash": "8332778839164422262"
                     }
                   },
                   "parameters": {
@@ -1868,7 +1919,7 @@
                     {
                       "condition": "[and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName')))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('{0}-Tags-Sub', deployment().name)]",
                       "location": "[deployment().location]",
                       "properties": {
@@ -1896,8 +1947,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.14.85.62628",
-                              "templateHash": "2028056425703520666"
+                              "version": "0.18.4.5664",
+                              "templateHash": "15752571223585357448"
                             }
                           },
                           "parameters": {
@@ -1958,7 +2009,7 @@
                               "apiVersion": "2019-10-01",
                               "name": "[parameters('name')]",
                               "properties": {
-                                "tags": "[if(parameters('onlyUpdate'), union(reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2020-10-01').outputs.existingTags.value, parameters('tags')), parameters('tags'))]"
+                                "tags": "[if(parameters('onlyUpdate'), union(reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2022-09-01').outputs.existingTags.value, parameters('tags')), parameters('tags'))]"
                               },
                               "dependsOn": [
                                 "[subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name))]"
@@ -1967,7 +2018,7 @@
                             {
                               "condition": "[parameters('onlyUpdate')]",
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2020-10-01",
+                              "apiVersion": "2022-09-01",
                               "name": "[format('{0}-ReadTags', deployment().name)]",
                               "location": "[deployment().location]",
                               "properties": {
@@ -1981,8 +2032,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.14.85.62628",
-                                      "templateHash": "17370106847785970840"
+                                      "version": "0.18.4.5664",
+                                      "templateHash": "1194790306604975116"
                                     }
                                   },
                                   "parameters": {
@@ -1998,10 +2049,10 @@
                                   "outputs": {
                                     "existingTags": {
                                       "type": "object",
-                                      "value": "[if(contains(reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01').tags, createObject())]",
                                       "metadata": {
                                         "description": "Tags currently applied to the subscription level"
-                                      }
+                                      },
+                                      "value": "[if(contains(reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), reference(subscriptionResourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01').tags, createObject())]"
                                     }
                                   }
                                 }
@@ -2011,24 +2062,24 @@
                           "outputs": {
                             "name": {
                               "type": "string",
-                              "value": "[parameters('name')]",
                               "metadata": {
                                 "description": "The name of the tags resource."
-                              }
+                              },
+                              "value": "[parameters('name')]"
                             },
                             "tags": {
                               "type": "object",
-                              "value": "[if(parameters('onlyUpdate'), union(reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2020-10-01').outputs.existingTags.value, parameters('tags')), parameters('tags'))]",
                               "metadata": {
                                 "description": "The applied tags."
-                              }
+                              },
+                              "value": "[if(parameters('onlyUpdate'), union(reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2022-09-01').outputs.existingTags.value, parameters('tags')), parameters('tags'))]"
                             },
                             "resourceId": {
                               "type": "string",
-                              "value": "[subscriptionResourceId('Microsoft.Resources/tags', parameters('name'))]",
                               "metadata": {
                                 "description": "The resource ID of the applied tags."
-                              }
+                              },
+                              "value": "[subscriptionResourceId('Microsoft.Resources/tags', parameters('name'))]"
                             }
                           }
                         }
@@ -2037,7 +2088,7 @@
                     {
                       "condition": "[and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId'))))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('{0}-Tags-RG', deployment().name)]",
                       "resourceGroup": "[parameters('resourceGroupName')]",
                       "properties": {
@@ -2062,8 +2113,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.14.85.62628",
-                              "templateHash": "12599170751360171486"
+                              "version": "0.18.4.5664",
+                              "templateHash": "16745646850117358821"
                             }
                           },
                           "parameters": {
@@ -2116,7 +2167,7 @@
                               "apiVersion": "2019-10-01",
                               "name": "[parameters('name')]",
                               "properties": {
-                                "tags": "[if(parameters('onlyUpdate'), union(reference(resourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2020-10-01').outputs.existingTags.value, parameters('tags')), parameters('tags'))]"
+                                "tags": "[if(parameters('onlyUpdate'), union(reference(resourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2022-09-01').outputs.existingTags.value, parameters('tags')), parameters('tags'))]"
                               },
                               "dependsOn": [
                                 "[resourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name))]"
@@ -2125,7 +2176,7 @@
                             {
                               "condition": "[parameters('onlyUpdate')]",
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2020-10-01",
+                              "apiVersion": "2022-09-01",
                               "name": "[format('{0}-ReadTags', deployment().name)]",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -2138,8 +2189,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.14.85.62628",
-                                      "templateHash": "13690509042648506910"
+                                      "version": "0.18.4.5664",
+                                      "templateHash": "13046201805213672696"
                                     }
                                   },
                                   "parameters": {
@@ -2155,10 +2206,10 @@
                                   "outputs": {
                                     "existingTags": {
                                       "type": "object",
-                                      "value": "[if(contains(reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01').tags, createObject())]",
                                       "metadata": {
                                         "description": "Tags currently applied to the subscription level"
-                                      }
+                                      },
+                                      "value": "[if(contains(reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01'), 'tags'), reference(resourceId('Microsoft.Resources/tags', parameters('name')), '2019-10-01').tags, createObject())]"
                                     }
                                   }
                                 }
@@ -2168,31 +2219,31 @@
                           "outputs": {
                             "name": {
                               "type": "string",
-                              "value": "[parameters('name')]",
                               "metadata": {
                                 "description": "The name of the tags resource."
-                              }
+                              },
+                              "value": "[parameters('name')]"
                             },
                             "resourceId": {
                               "type": "string",
-                              "value": "[resourceId('Microsoft.Resources/tags', parameters('name'))]",
                               "metadata": {
                                 "description": "The resource ID of the applied tags."
-                              }
+                              },
+                              "value": "[resourceId('Microsoft.Resources/tags', parameters('name'))]"
                             },
                             "resourceGroupName": {
                               "type": "string",
-                              "value": "[resourceGroup().name]",
                               "metadata": {
                                 "description": "The name of the resource group the tags were applied to."
-                              }
+                              },
+                              "value": "[resourceGroup().name]"
                             },
                             "tags": {
                               "type": "object",
-                              "value": "[if(parameters('onlyUpdate'), union(reference(resourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2020-10-01').outputs.existingTags.value, parameters('tags')), parameters('tags'))]",
                               "metadata": {
                                 "description": "The applied tags."
-                              }
+                              },
+                              "value": "[if(parameters('onlyUpdate'), union(reference(resourceId('Microsoft.Resources/deployments', format('{0}-ReadTags', deployment().name)), '2022-09-01').outputs.existingTags.value, parameters('tags')), parameters('tags'))]"
                             }
                           }
                         }
@@ -2202,24 +2253,24 @@
                   "outputs": {
                     "name": {
                       "type": "string",
-                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2020-10-01').outputs.name.value, reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2020-10-01').outputs.name.value)]",
                       "metadata": {
                         "description": "The name of the tags resource."
-                      }
+                      },
+                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2022-09-01').outputs.name.value, reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2022-09-01').outputs.name.value)]"
                     },
                     "tags": {
                       "type": "object",
-                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2020-10-01').outputs.tags.value, reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2020-10-01').outputs.tags.value)]",
                       "metadata": {
                         "description": "The applied tags."
-                      }
+                      },
+                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2022-09-01').outputs.tags.value, reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2022-09-01').outputs.tags.value)]"
                     },
                     "resourceId": {
                       "type": "string",
-                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2020-10-01').outputs.resourceId.value, reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2020-10-01').outputs.resourceId.value)]",
                       "metadata": {
                         "description": "The resource ID of the applied tags."
-                      }
+                      },
+                      "value": "[if(and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId')))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Tags-RG', deployment().name)), '2022-09-01').outputs.resourceId.value, reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-Tags-Sub', deployment().name)), '2022-09-01').outputs.resourceId.value)]"
                     }
                   }
                 }
@@ -2231,7 +2282,7 @@
             {
               "condition": "[and(and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2022-09-01",
               "name": "[variables('deploymentNames').createLzVnet]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('virtualNetworkResourceGroupName')]",
@@ -2270,8 +2321,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.14.85.62628",
-                      "templateHash": "822381695379309027"
+                      "version": "0.18.4.5664",
+                      "templateHash": "17787882586700885364"
                     }
                   },
                   "parameters": {
@@ -2551,7 +2602,7 @@
                         "count": "[length(parameters('subnets'))]"
                       },
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('{0}-subnet-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -2590,8 +2641,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.14.85.62628",
-                              "templateHash": "11741719654169834557"
+                              "version": "0.18.4.5664",
+                              "templateHash": "13018167601638648419"
                             }
                           },
                           "parameters": {
@@ -2755,7 +2806,7 @@
                                 "count": "[length(parameters('roleAssignments'))]"
                               },
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2020-10-01",
+                              "apiVersion": "2022-09-01",
                               "name": "[format('{0}-Subnet-Rbac-{1}', uniqueString(deployment().name, resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('name'))), copyIndex())]",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -2781,8 +2832,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.14.85.62628",
-                                      "templateHash": "9854816422278814627"
+                                      "version": "0.18.4.5664",
+                                      "templateHash": "10997626184589049458"
                                     }
                                   },
                                   "parameters": {
@@ -2889,38 +2940,38 @@
                           "outputs": {
                             "resourceGroupName": {
                               "type": "string",
-                              "value": "[resourceGroup().name]",
                               "metadata": {
                                 "description": "The resource group the virtual network peering was deployed into."
-                              }
+                              },
+                              "value": "[resourceGroup().name]"
                             },
                             "name": {
                               "type": "string",
-                              "value": "[parameters('name')]",
                               "metadata": {
                                 "description": "The name of the virtual network peering."
-                              }
+                              },
+                              "value": "[parameters('name')]"
                             },
                             "resourceId": {
                               "type": "string",
-                              "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('name'))]",
                               "metadata": {
                                 "description": "The resource ID of the virtual network peering."
-                              }
+                              },
+                              "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('name'))]"
                             },
                             "subnetAddressPrefix": {
                               "type": "string",
-                              "value": "[reference(resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('name')), '2021-05-01').addressPrefix]",
                               "metadata": {
                                 "description": "The address prefix for the subnet."
-                              }
+                              },
+                              "value": "[reference(resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('name')), '2021-05-01').addressPrefix]"
                             },
                             "subnetAddressPrefixes": {
                               "type": "array",
-                              "value": "[if(not(empty(parameters('addressPrefixes'))), reference(resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('name')), '2021-05-01').addressPrefixes, createArray())]",
                               "metadata": {
                                 "description": "List of address prefixes for the subnet."
-                              }
+                              },
+                              "value": "[if(not(empty(parameters('addressPrefixes'))), reference(resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('name')), '2021-05-01').addressPrefixes, createArray())]"
                             }
                           }
                         }
@@ -2935,7 +2986,7 @@
                         "count": "[length(parameters('virtualNetworkPeerings'))]"
                       },
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('{0}-virtualNetworkPeering-local-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -2965,8 +3016,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.14.85.62628",
-                              "templateHash": "11454928063863525499"
+                              "version": "0.18.4.5664",
+                              "templateHash": "11932954391601888959"
                             }
                           },
                           "parameters": {
@@ -3066,24 +3117,24 @@
                           "outputs": {
                             "resourceGroupName": {
                               "type": "string",
-                              "value": "[resourceGroup().name]",
                               "metadata": {
                                 "description": "The resource group the virtual network peering was deployed into."
-                              }
+                              },
+                              "value": "[resourceGroup().name]"
                             },
                             "name": {
                               "type": "string",
-                              "value": "[parameters('name')]",
                               "metadata": {
                                 "description": "The name of the virtual network peering."
-                              }
+                              },
+                              "value": "[parameters('name')]"
                             },
                             "resourceId": {
                               "type": "string",
-                              "value": "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('localVnetName'), parameters('name'))]",
                               "metadata": {
                                 "description": "The resource ID of the virtual network peering."
-                              }
+                              },
+                              "value": "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('localVnetName'), parameters('name'))]"
                             }
                           }
                         }
@@ -3099,7 +3150,7 @@
                       },
                       "condition": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringEnabled'), equals(parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringEnabled, true()), false())]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('{0}-virtualNetworkPeering-remote-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
                       "subscriptionId": "[split(parameters('virtualNetworkPeerings')[copyIndex()].remoteVirtualNetworkId, '/')[2]]",
                       "resourceGroup": "[split(parameters('virtualNetworkPeerings')[copyIndex()].remoteVirtualNetworkId, '/')[4]]",
@@ -3131,8 +3182,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.14.85.62628",
-                              "templateHash": "11454928063863525499"
+                              "version": "0.18.4.5664",
+                              "templateHash": "11932954391601888959"
                             }
                           },
                           "parameters": {
@@ -3232,24 +3283,24 @@
                           "outputs": {
                             "resourceGroupName": {
                               "type": "string",
-                              "value": "[resourceGroup().name]",
                               "metadata": {
                                 "description": "The resource group the virtual network peering was deployed into."
-                              }
+                              },
+                              "value": "[resourceGroup().name]"
                             },
                             "name": {
                               "type": "string",
-                              "value": "[parameters('name')]",
                               "metadata": {
                                 "description": "The name of the virtual network peering."
-                              }
+                              },
+                              "value": "[parameters('name')]"
                             },
                             "resourceId": {
                               "type": "string",
-                              "value": "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('localVnetName'), parameters('name'))]",
                               "metadata": {
                                 "description": "The resource ID of the virtual network peering."
-                              }
+                              },
+                              "value": "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('localVnetName'), parameters('name'))]"
                             }
                           }
                         }
@@ -3264,7 +3315,7 @@
                         "count": "[length(parameters('roleAssignments'))]"
                       },
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('{0}-VNet-Rbac-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -3290,8 +3341,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.14.85.62628",
-                              "templateHash": "11535404622531668174"
+                              "version": "0.18.4.5664",
+                              "templateHash": "13601024188595454496"
                             }
                           },
                           "parameters": {
@@ -3398,51 +3449,51 @@
                   "outputs": {
                     "resourceGroupName": {
                       "type": "string",
-                      "value": "[resourceGroup().name]",
                       "metadata": {
                         "description": "The resource group the virtual network was deployed into."
-                      }
+                      },
+                      "value": "[resourceGroup().name]"
                     },
                     "resourceId": {
                       "type": "string",
-                      "value": "[resourceId('Microsoft.Network/virtualNetworks', parameters('name'))]",
                       "metadata": {
                         "description": "The resource ID of the virtual network."
-                      }
+                      },
+                      "value": "[resourceId('Microsoft.Network/virtualNetworks', parameters('name'))]"
                     },
                     "name": {
                       "type": "string",
-                      "value": "[parameters('name')]",
                       "metadata": {
                         "description": "The name of the virtual network."
-                      }
+                      },
+                      "value": "[parameters('name')]"
                     },
                     "subnetNames": {
                       "type": "array",
+                      "metadata": {
+                        "description": "The names of the deployed subnets."
+                      },
                       "copy": {
                         "count": "[length(parameters('subnets'))]",
                         "input": "[parameters('subnets')[copyIndex()].name]"
-                      },
-                      "metadata": {
-                        "description": "The names of the deployed subnets."
                       }
                     },
                     "subnetResourceIds": {
                       "type": "array",
+                      "metadata": {
+                        "description": "The resource IDs of the deployed subnets."
+                      },
                       "copy": {
                         "count": "[length(parameters('subnets'))]",
                         "input": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('name'), parameters('subnets')[copyIndex()].name)]"
-                      },
-                      "metadata": {
-                        "description": "The resource IDs of the deployed subnets."
                       }
                     },
                     "location": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.Network/virtualNetworks', parameters('name')), '2021-05-01', 'full').location]",
                       "metadata": {
                         "description": "The location the resource was deployed into."
-                      }
+                      },
+                      "value": "[reference(resourceId('Microsoft.Network/virtualNetworks', parameters('name')), '2021-05-01', 'full').location]"
                     }
                   }
                 }
@@ -3454,7 +3505,7 @@
             {
               "condition": "[and(and(and(and(and(and(and(and(parameters('virtualNetworkEnabled'), parameters('virtualNetworkPeeringEnabled')), not(empty(variables('virtualHubResourceIdChecked')))), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), not(empty(variables('virtualWanHubResourceGroupName')))), not(empty(variables('virtualWanHubSubscriptionId'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2022-09-01",
               "name": "[variables('deploymentNames').createLzVirtualWanConnection]",
               "subscriptionId": "[variables('virtualWanHubSubscriptionId')]",
               "resourceGroup": "[variables('virtualWanHubResourceGroupName')]",
@@ -3497,8 +3548,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.14.85.62628",
-                      "templateHash": "13149769515416254217"
+                      "version": "0.18.4.5664",
+                      "templateHash": "3327249724665559435"
                     }
                   },
                   "parameters": {
@@ -3573,24 +3624,24 @@
                   "outputs": {
                     "resourceGroupName": {
                       "type": "string",
-                      "value": "[resourceGroup().name]",
                       "metadata": {
                         "description": "The resource group the virtual hub connection was deployed into."
-                      }
+                      },
+                      "value": "[resourceGroup().name]"
                     },
                     "resourceId": {
                       "type": "string",
-                      "value": "[resourceId('Microsoft.Network/virtualHubs/hubVirtualNetworkConnections', parameters('virtualHubName'), parameters('name'))]",
                       "metadata": {
                         "description": "The resource ID of the virtual hub connection."
-                      }
+                      },
+                      "value": "[resourceId('Microsoft.Network/virtualHubs/hubVirtualNetworkConnections', parameters('virtualHubName'), parameters('name'))]"
                     },
                     "name": {
                       "type": "string",
-                      "value": "[parameters('name')]",
                       "metadata": {
                         "description": "The name of the virtual hub connection."
-                      }
+                      },
+                      "value": "[parameters('name')]"
                     }
                   }
                 }
@@ -3606,7 +3657,7 @@
               },
               "condition": "[and(parameters('roleAssignmentEnabled'), not(empty(variables('roleAssignmentsSubscription'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2022-09-01",
               "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzRoleAssignmentsSub, uniqueString(variables('roleAssignmentsSubscription')[copyIndex()].principalId, variables('roleAssignmentsSubscription')[copyIndex()].definition, variables('roleAssignmentsSubscription')[copyIndex()].relativeScope)), 64)]",
               "location": "[deployment().location]",
               "properties": {
@@ -3637,8 +3688,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.14.85.62628",
-                      "templateHash": "101826151928830853"
+                      "version": "0.18.4.5664",
+                      "templateHash": "62918604766961614"
                     }
                   },
                   "parameters": {
@@ -3758,7 +3809,7 @@
                     {
                       "condition": "[and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName')))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))]",
                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('managementGroupId'))]",
                       "location": "[deployment().location]",
@@ -3797,8 +3848,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.14.85.62628",
-                              "templateHash": "7396197430040743902"
+                              "version": "0.18.4.5664",
+                              "templateHash": "4795143004046942480"
                             }
                           },
                           "parameters": {
@@ -4202,24 +4253,24 @@
                           "outputs": {
                             "name": {
                               "type": "string",
-                              "value": "[guid(parameters('managementGroupId'), variables('roleDefinitionId_var'), parameters('principalId'))]",
                               "metadata": {
                                 "description": "The GUID of the Role Assignment."
-                              }
+                              },
+                              "value": "[guid(parameters('managementGroupId'), variables('roleDefinitionId_var'), parameters('principalId'))]"
                             },
                             "scope": {
                               "type": "string",
-                              "value": "[tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId'))]",
                               "metadata": {
                                 "description": "The resource ID of the Role Assignment."
-                              }
+                              },
+                              "value": "[tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId'))]"
                             },
                             "resourceId": {
                               "type": "string",
-                              "value": "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Authorization/roleAssignments', guid(parameters('managementGroupId'), variables('roleDefinitionId_var'), parameters('principalId')))]",
                               "metadata": {
                                 "description": "The scope this Role Assignment applies to."
-                              }
+                              },
+                              "value": "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Authorization/roleAssignments', guid(parameters('managementGroupId'), variables('roleDefinitionId_var'), parameters('principalId')))]"
                             }
                           }
                         }
@@ -4228,7 +4279,7 @@
                     {
                       "condition": "[and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName')))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))]",
                       "subscriptionId": "[parameters('subscriptionId')]",
                       "location": "[deployment().location]",
@@ -4267,8 +4318,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.14.85.62628",
-                              "templateHash": "11718089289244220622"
+                              "version": "0.18.4.5664",
+                              "templateHash": "5233887736523526376"
                             }
                           },
                           "parameters": {
@@ -4672,24 +4723,24 @@
                           "outputs": {
                             "name": {
                               "type": "string",
-                              "value": "[guid(parameters('subscriptionId'), variables('roleDefinitionId_var'), parameters('principalId'))]",
                               "metadata": {
                                 "description": "The GUID of the Role Assignment."
-                              }
+                              },
+                              "value": "[guid(parameters('subscriptionId'), variables('roleDefinitionId_var'), parameters('principalId'))]"
                             },
                             "scope": {
                               "type": "string",
-                              "value": "[subscription().id]",
                               "metadata": {
                                 "description": "The resource ID of the Role Assignment."
-                              }
+                              },
+                              "value": "[subscription().id]"
                             },
                             "resourceId": {
                               "type": "string",
-                              "value": "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Authorization/roleAssignments', guid(parameters('subscriptionId'), variables('roleDefinitionId_var'), parameters('principalId')))]",
                               "metadata": {
                                 "description": "The scope this Role Assignment applies to."
-                              }
+                              },
+                              "value": "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Authorization/roleAssignments', guid(parameters('subscriptionId'), variables('roleDefinitionId_var'), parameters('principalId')))]"
                             }
                           }
                         }
@@ -4698,7 +4749,7 @@
                     {
                       "condition": "[and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId'))))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))]",
                       "subscriptionId": "[parameters('subscriptionId')]",
                       "resourceGroup": "[parameters('resourceGroupName')]",
@@ -4737,8 +4788,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.14.85.62628",
-                              "templateHash": "12155583514834937270"
+                              "version": "0.18.4.5664",
+                              "templateHash": "1501170999490919021"
                             }
                           },
                           "parameters": {
@@ -5141,31 +5192,31 @@
                           "outputs": {
                             "name": {
                               "type": "string",
-                              "value": "[guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionId_var'), parameters('principalId'))]",
                               "metadata": {
                                 "description": "The GUID of the Role Assignment."
-                              }
+                              },
+                              "value": "[guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionId_var'), parameters('principalId'))]"
                             },
                             "scope": {
                               "type": "string",
-                              "value": "[resourceGroup().id]",
                               "metadata": {
                                 "description": "The resource ID of the Role Assignment."
-                              }
+                              },
+                              "value": "[resourceGroup().id]"
                             },
                             "resourceId": {
                               "type": "string",
-                              "value": "[resourceId(parameters('resourceGroupName'), 'Microsoft.Authorization/roleAssignments', guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionId_var'), parameters('principalId')))]",
                               "metadata": {
                                 "description": "The scope this Role Assignment applies to."
-                              }
+                              },
+                              "value": "[resourceId(parameters('resourceGroupName'), 'Microsoft.Authorization/roleAssignments', guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionId_var'), parameters('principalId')))]"
                             },
                             "resourceGroupName": {
                               "type": "string",
-                              "value": "[resourceGroup().name]",
                               "metadata": {
                                 "description": "The name of the resource group the role assignment was applied at."
-                              }
+                              },
+                              "value": "[resourceGroup().name]"
                             }
                           }
                         }
@@ -5175,24 +5226,24 @@
                   "outputs": {
                     "name": {
                       "type": "string",
-                      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.name.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.name.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.name.value))]",
                       "metadata": {
                         "description": "The GUID of the Role Assignment."
-                      }
+                      },
+                      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value))]"
                     },
                     "resourceId": {
                       "type": "string",
-                      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.resourceId.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.resourceId.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.resourceId.value))]",
                       "metadata": {
                         "description": "The resource ID of the Role Assignment."
-                      }
+                      },
+                      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value))]"
                     },
                     "scope": {
                       "type": "string",
-                      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.scope.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.scope.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.scope.value))]",
                       "metadata": {
                         "description": "The scope this Role Assignment applies to."
-                      }
+                      },
+                      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.scope.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.scope.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.scope.value))]"
                     }
                   }
                 }
@@ -5205,7 +5256,7 @@
               },
               "condition": "[and(parameters('roleAssignmentEnabled'), not(empty(variables('roleAssignmentsResourceGroupSelf'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2022-09-01",
               "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzRoleAssignmentsRsgsSelf, uniqueString(variables('roleAssignmentsResourceGroupSelf')[copyIndex()].principalId, variables('roleAssignmentsResourceGroupSelf')[copyIndex()].definition, variables('roleAssignmentsResourceGroupSelf')[copyIndex()].relativeScope)), 64)]",
               "location": "[deployment().location]",
               "properties": {
@@ -5239,8 +5290,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.14.85.62628",
-                      "templateHash": "101826151928830853"
+                      "version": "0.18.4.5664",
+                      "templateHash": "62918604766961614"
                     }
                   },
                   "parameters": {
@@ -5360,7 +5411,7 @@
                     {
                       "condition": "[and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName')))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))]",
                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('managementGroupId'))]",
                       "location": "[deployment().location]",
@@ -5399,8 +5450,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.14.85.62628",
-                              "templateHash": "7396197430040743902"
+                              "version": "0.18.4.5664",
+                              "templateHash": "4795143004046942480"
                             }
                           },
                           "parameters": {
@@ -5804,24 +5855,24 @@
                           "outputs": {
                             "name": {
                               "type": "string",
-                              "value": "[guid(parameters('managementGroupId'), variables('roleDefinitionId_var'), parameters('principalId'))]",
                               "metadata": {
                                 "description": "The GUID of the Role Assignment."
-                              }
+                              },
+                              "value": "[guid(parameters('managementGroupId'), variables('roleDefinitionId_var'), parameters('principalId'))]"
                             },
                             "scope": {
                               "type": "string",
-                              "value": "[tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId'))]",
                               "metadata": {
                                 "description": "The resource ID of the Role Assignment."
-                              }
+                              },
+                              "value": "[tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId'))]"
                             },
                             "resourceId": {
                               "type": "string",
-                              "value": "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Authorization/roleAssignments', guid(parameters('managementGroupId'), variables('roleDefinitionId_var'), parameters('principalId')))]",
                               "metadata": {
                                 "description": "The scope this Role Assignment applies to."
-                              }
+                              },
+                              "value": "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Authorization/roleAssignments', guid(parameters('managementGroupId'), variables('roleDefinitionId_var'), parameters('principalId')))]"
                             }
                           }
                         }
@@ -5830,7 +5881,7 @@
                     {
                       "condition": "[and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName')))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))]",
                       "subscriptionId": "[parameters('subscriptionId')]",
                       "location": "[deployment().location]",
@@ -5869,8 +5920,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.14.85.62628",
-                              "templateHash": "11718089289244220622"
+                              "version": "0.18.4.5664",
+                              "templateHash": "5233887736523526376"
                             }
                           },
                           "parameters": {
@@ -6274,24 +6325,24 @@
                           "outputs": {
                             "name": {
                               "type": "string",
-                              "value": "[guid(parameters('subscriptionId'), variables('roleDefinitionId_var'), parameters('principalId'))]",
                               "metadata": {
                                 "description": "The GUID of the Role Assignment."
-                              }
+                              },
+                              "value": "[guid(parameters('subscriptionId'), variables('roleDefinitionId_var'), parameters('principalId'))]"
                             },
                             "scope": {
                               "type": "string",
-                              "value": "[subscription().id]",
                               "metadata": {
                                 "description": "The resource ID of the Role Assignment."
-                              }
+                              },
+                              "value": "[subscription().id]"
                             },
                             "resourceId": {
                               "type": "string",
-                              "value": "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Authorization/roleAssignments', guid(parameters('subscriptionId'), variables('roleDefinitionId_var'), parameters('principalId')))]",
                               "metadata": {
                                 "description": "The scope this Role Assignment applies to."
-                              }
+                              },
+                              "value": "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Authorization/roleAssignments', guid(parameters('subscriptionId'), variables('roleDefinitionId_var'), parameters('principalId')))]"
                             }
                           }
                         }
@@ -6300,7 +6351,7 @@
                     {
                       "condition": "[and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId'))))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))]",
                       "subscriptionId": "[parameters('subscriptionId')]",
                       "resourceGroup": "[parameters('resourceGroupName')]",
@@ -6339,8 +6390,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.14.85.62628",
-                              "templateHash": "12155583514834937270"
+                              "version": "0.18.4.5664",
+                              "templateHash": "1501170999490919021"
                             }
                           },
                           "parameters": {
@@ -6743,31 +6794,31 @@
                           "outputs": {
                             "name": {
                               "type": "string",
-                              "value": "[guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionId_var'), parameters('principalId'))]",
                               "metadata": {
                                 "description": "The GUID of the Role Assignment."
-                              }
+                              },
+                              "value": "[guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionId_var'), parameters('principalId'))]"
                             },
                             "scope": {
                               "type": "string",
-                              "value": "[resourceGroup().id]",
                               "metadata": {
                                 "description": "The resource ID of the Role Assignment."
-                              }
+                              },
+                              "value": "[resourceGroup().id]"
                             },
                             "resourceId": {
                               "type": "string",
-                              "value": "[resourceId(parameters('resourceGroupName'), 'Microsoft.Authorization/roleAssignments', guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionId_var'), parameters('principalId')))]",
                               "metadata": {
                                 "description": "The scope this Role Assignment applies to."
-                              }
+                              },
+                              "value": "[resourceId(parameters('resourceGroupName'), 'Microsoft.Authorization/roleAssignments', guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionId_var'), parameters('principalId')))]"
                             },
                             "resourceGroupName": {
                               "type": "string",
-                              "value": "[resourceGroup().name]",
                               "metadata": {
                                 "description": "The name of the resource group the role assignment was applied at."
-                              }
+                              },
+                              "value": "[resourceGroup().name]"
                             }
                           }
                         }
@@ -6777,24 +6828,24 @@
                   "outputs": {
                     "name": {
                       "type": "string",
-                      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.name.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.name.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.name.value))]",
                       "metadata": {
                         "description": "The GUID of the Role Assignment."
-                      }
+                      },
+                      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value))]"
                     },
                     "resourceId": {
                       "type": "string",
-                      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.resourceId.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.resourceId.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.resourceId.value))]",
                       "metadata": {
                         "description": "The resource ID of the Role Assignment."
-                      }
+                      },
+                      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value))]"
                     },
                     "scope": {
                       "type": "string",
-                      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.scope.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.scope.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.scope.value))]",
                       "metadata": {
                         "description": "The scope this Role Assignment applies to."
-                      }
+                      },
+                      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.scope.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.scope.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.scope.value))]"
                     }
                   }
                 }
@@ -6810,7 +6861,7 @@
               },
               "condition": "[and(parameters('roleAssignmentEnabled'), not(empty(variables('roleAssignmentsResourceGroupNotSelf'))))]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2022-09-01",
               "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzRoleAssignmentsRsgsNotSelf, uniqueString(variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].principalId, variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].definition, variables('roleAssignmentsResourceGroupNotSelf')[copyIndex()].relativeScope)), 64)]",
               "location": "[deployment().location]",
               "properties": {
@@ -6844,8 +6895,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.14.85.62628",
-                      "templateHash": "101826151928830853"
+                      "version": "0.18.4.5664",
+                      "templateHash": "62918604766961614"
                     }
                   },
                   "parameters": {
@@ -6965,7 +7016,7 @@
                     {
                       "condition": "[and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName')))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))]",
                       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('managementGroupId'))]",
                       "location": "[deployment().location]",
@@ -7004,8 +7055,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.14.85.62628",
-                              "templateHash": "7396197430040743902"
+                              "version": "0.18.4.5664",
+                              "templateHash": "4795143004046942480"
                             }
                           },
                           "parameters": {
@@ -7409,24 +7460,24 @@
                           "outputs": {
                             "name": {
                               "type": "string",
-                              "value": "[guid(parameters('managementGroupId'), variables('roleDefinitionId_var'), parameters('principalId'))]",
                               "metadata": {
                                 "description": "The GUID of the Role Assignment."
-                              }
+                              },
+                              "value": "[guid(parameters('managementGroupId'), variables('roleDefinitionId_var'), parameters('principalId'))]"
                             },
                             "scope": {
                               "type": "string",
-                              "value": "[tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId'))]",
                               "metadata": {
                                 "description": "The resource ID of the Role Assignment."
-                              }
+                              },
+                              "value": "[tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId'))]"
                             },
                             "resourceId": {
                               "type": "string",
-                              "value": "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Authorization/roleAssignments', guid(parameters('managementGroupId'), variables('roleDefinitionId_var'), parameters('principalId')))]",
                               "metadata": {
                                 "description": "The scope this Role Assignment applies to."
-                              }
+                              },
+                              "value": "[extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Authorization/roleAssignments', guid(parameters('managementGroupId'), variables('roleDefinitionId_var'), parameters('principalId')))]"
                             }
                           }
                         }
@@ -7435,7 +7486,7 @@
                     {
                       "condition": "[and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName')))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))]",
                       "subscriptionId": "[parameters('subscriptionId')]",
                       "location": "[deployment().location]",
@@ -7474,8 +7525,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.14.85.62628",
-                              "templateHash": "11718089289244220622"
+                              "version": "0.18.4.5664",
+                              "templateHash": "5233887736523526376"
                             }
                           },
                           "parameters": {
@@ -7879,24 +7930,24 @@
                           "outputs": {
                             "name": {
                               "type": "string",
-                              "value": "[guid(parameters('subscriptionId'), variables('roleDefinitionId_var'), parameters('principalId'))]",
                               "metadata": {
                                 "description": "The GUID of the Role Assignment."
-                              }
+                              },
+                              "value": "[guid(parameters('subscriptionId'), variables('roleDefinitionId_var'), parameters('principalId'))]"
                             },
                             "scope": {
                               "type": "string",
-                              "value": "[subscription().id]",
                               "metadata": {
                                 "description": "The resource ID of the Role Assignment."
-                              }
+                              },
+                              "value": "[subscription().id]"
                             },
                             "resourceId": {
                               "type": "string",
-                              "value": "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Authorization/roleAssignments', guid(parameters('subscriptionId'), variables('roleDefinitionId_var'), parameters('principalId')))]",
                               "metadata": {
                                 "description": "The scope this Role Assignment applies to."
-                              }
+                              },
+                              "value": "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Authorization/roleAssignments', guid(parameters('subscriptionId'), variables('roleDefinitionId_var'), parameters('principalId')))]"
                             }
                           }
                         }
@@ -7905,7 +7956,7 @@
                     {
                       "condition": "[and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId'))))]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2020-10-01",
+                      "apiVersion": "2022-09-01",
                       "name": "[format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))]",
                       "subscriptionId": "[parameters('subscriptionId')]",
                       "resourceGroup": "[parameters('resourceGroupName')]",
@@ -7944,8 +7995,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.14.85.62628",
-                              "templateHash": "12155583514834937270"
+                              "version": "0.18.4.5664",
+                              "templateHash": "1501170999490919021"
                             }
                           },
                           "parameters": {
@@ -8348,31 +8399,31 @@
                           "outputs": {
                             "name": {
                               "type": "string",
-                              "value": "[guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionId_var'), parameters('principalId'))]",
                               "metadata": {
                                 "description": "The GUID of the Role Assignment."
-                              }
+                              },
+                              "value": "[guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionId_var'), parameters('principalId'))]"
                             },
                             "scope": {
                               "type": "string",
-                              "value": "[resourceGroup().id]",
                               "metadata": {
                                 "description": "The resource ID of the Role Assignment."
-                              }
+                              },
+                              "value": "[resourceGroup().id]"
                             },
                             "resourceId": {
                               "type": "string",
-                              "value": "[resourceId(parameters('resourceGroupName'), 'Microsoft.Authorization/roleAssignments', guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionId_var'), parameters('principalId')))]",
                               "metadata": {
                                 "description": "The scope this Role Assignment applies to."
-                              }
+                              },
+                              "value": "[resourceId(parameters('resourceGroupName'), 'Microsoft.Authorization/roleAssignments', guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionId_var'), parameters('principalId')))]"
                             },
                             "resourceGroupName": {
                               "type": "string",
-                              "value": "[resourceGroup().name]",
                               "metadata": {
                                 "description": "The name of the resource group the role assignment was applied at."
-                              }
+                              },
+                              "value": "[resourceGroup().name]"
                             }
                           }
                         }
@@ -8382,24 +8433,24 @@
                   "outputs": {
                     "name": {
                       "type": "string",
-                      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.name.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.name.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.name.value))]",
                       "metadata": {
                         "description": "The GUID of the Role Assignment."
-                      }
+                      },
+                      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value))]"
                     },
                     "resourceId": {
                       "type": "string",
-                      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.resourceId.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.resourceId.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.resourceId.value))]",
                       "metadata": {
                         "description": "The resource ID of the Role Assignment."
-                      }
+                      },
+                      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value))]"
                     },
                     "scope": {
                       "type": "string",
-                      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.scope.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.scope.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2020-10-01').outputs.scope.value))]",
                       "metadata": {
                         "description": "The scope this Role Assignment applies to."
-                      }
+                      },
+                      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.scope.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.scope.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.scope.value))]"
                     }
                   }
                 }
@@ -8409,24 +8460,38 @@
         }
       },
       "dependsOn": [
-        "[tenantResourceId('Microsoft.Resources/deployments', variables('deploymentNames').createSubscription)]"
+        "[extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription)]"
       ]
     }
   ],
   "outputs": {
     "subscriptionId": {
       "type": "string",
-      "value": "[if(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), reference(tenantResourceId('Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2020-10-01').outputs.subscriptionId.value, if(contains(variables('existingSubscriptionIDEmptyCheck'), 'No Subscription ID Provided'), variables('existingSubscriptionIDEmptyCheck'), format('{0}', parameters('existingSubscriptionId'))))]",
       "metadata": {
         "description": "The Subscription ID that has been created or provided."
-      }
+      },
+      "value": "[if(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2022-09-01').outputs.subscriptionId.value, if(contains(variables('existingSubscriptionIDEmptyCheck'), 'No Subscription ID Provided'), variables('existingSubscriptionIDEmptyCheck'), format('{0}', parameters('existingSubscriptionId'))))]"
     },
     "subscriptionResourceId": {
       "type": "string",
-      "value": "[if(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), reference(tenantResourceId('Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2020-10-01').outputs.subscriptionResourceId.value, if(contains(variables('existingSubscriptionIDEmptyCheck'), 'No Subscription ID Provided'), variables('existingSubscriptionIDEmptyCheck'), format('/subscriptions/{0}', parameters('existingSubscriptionId'))))]",
       "metadata": {
         "description": "The Subscription Resource ID that has been created or provided."
-      }
+      },
+      "value": "[if(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2022-09-01').outputs.subscriptionResourceId.value, if(contains(variables('existingSubscriptionIDEmptyCheck'), 'No Subscription ID Provided'), variables('existingSubscriptionIDEmptyCheck'), format('/subscriptions/{0}', parameters('existingSubscriptionId'))))]"
+    },
+    "subscriptionAcceptOwnershipState": {
+      "type": "string",
+      "metadata": {
+        "description": "The Subscription Owner State. Only used when creating MCA Subscriptions across tenants"
+      },
+      "value": "[if(and(and(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), not(empty(parameters('subscriptionTenantId')))), not(empty(parameters('subscriptionOwnerId')))), reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2022-09-01').outputs.subscriptionAcceptOwnershipState.value, 'N/A')]"
+    },
+    "subscriptionAcceptOwnershipUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "The Subscription Ownership URL. Only used when creating MCA Subscriptions across tenants"
+      },
+      "value": "[if(and(and(and(parameters('subscriptionAliasEnabled'), empty(parameters('existingSubscriptionId'))), not(empty(parameters('subscriptionTenantId')))), not(empty(parameters('subscriptionOwnerId')))), reference(extensionResourceId(managementGroup().id, 'Microsoft.Resources/deployments', variables('deploymentNames').createSubscription), '2022-09-01').outputs.subscriptionAcceptOwnershipUrl.value, 'N/A')]"
     }
   }
 }

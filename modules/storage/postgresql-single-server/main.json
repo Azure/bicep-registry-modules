@@ -1,0 +1,964 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "1.10-experimental",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
+    "_generator": {
+      "name": "bicep",
+      "version": "0.17.1.54307",
+      "templateHash": "8348140106479819101"
+    }
+  },
+  "definitions": {
+    "diagnosticSettingsRetentionPolicyType": {
+      "type": "object",
+      "properties": {
+        "days": {
+          "type": "int",
+          "metadata": {
+            "description": "the number of days for the retention in days. A value of 0 will retain the events indefinitely."
+          }
+        },
+        "enabled": {
+          "type": "bool",
+          "metadata": {
+            "description": "a value indicating whether the retention policy is enabled."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The retention policy for this log or metric."
+      }
+    },
+    "diagnosticSettingsLogsType": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Name of a Diagnostic Log category for a resource type this setting is applied to."
+          }
+        },
+        "categoryGroup": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Create firewall rule before the virtual network has vnet service endpoint enabled."
+          }
+        },
+        "enabled": {
+          "type": "bool",
+          "metadata": {
+            "description": "A value indicating whether this log is enabled."
+          }
+        },
+        "retentionPolicy": {
+          "$ref": "#/definitions/diagnosticSettingsRetentionPolicyType",
+          "nullable": true,
+          "metadata": {
+            "description": "The retention policy for this log."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The list of logs settings."
+      }
+    },
+    "diagnosticSettingsMetricsType": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Name of a Diagnostic Metric category for a resource type this setting is applied to."
+          }
+        },
+        "enabled": {
+          "type": "bool",
+          "metadata": {
+            "description": "A value indicating whether this metric is enabled."
+          }
+        },
+        "retentionPolicy": {
+          "$ref": "#/definitions/diagnosticSettingsRetentionPolicyType",
+          "nullable": true,
+          "metadata": {
+            "description": "The retention policy for metric."
+          }
+        },
+        "timeGrain": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "the timegrain of the metric in ISO8601 format."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The list of metrics settings."
+      }
+    },
+    "diagnosticSettingsEventHubType": {
+      "type": "object",
+      "properties": {
+        "EventHubAuthorizationRuleId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resource Id for the event hub authorization rule."
+          }
+        },
+        "EventHubName": {
+          "type": "string",
+          "metadata": {
+            "description": "The name of the event hub."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The settings required to use EventHub as destination."
+      }
+    },
+    "diagnosticSettingsReceiversType": {
+      "type": "object",
+      "properties": {
+        "eventHub": {
+          "$ref": "#/definitions/diagnosticSettingsEventHubType",
+          "nullable": true
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or a target type created as follows: {normalized service identity}_{normalized category name}."
+          }
+        },
+        "marketplacePartnerId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+          }
+        },
+        "storageAccountId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The resource ID of the storage account to which you would like to send Diagnostic Logs."
+          }
+        },
+        "workspaceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The full ARM resource ID of the Log Analytics workspace to which you would like to send Diagnostic Logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Destiantion options."
+      }
+    },
+    "diagnosticSettingsPropertiesType": {
+      "type": "object",
+      "properties": {
+        "logs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/diagnosticSettingsLogsType"
+          },
+          "nullable": true
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/diagnosticSettingsMetricsType"
+          },
+          "nullable": true
+        },
+        "serviceBusRuleId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The service bus rule Id of the diagnostic setting. This is here to maintain backwards compatibility."
+          }
+        },
+        "diagnosticReceivers": {
+          "$ref": "#/definitions/diagnosticSettingsReceiversType",
+          "nullable": true
+        }
+      }
+    },
+    "firewallRulesType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "The resource name."
+          },
+          "maxLength": 128,
+          "minLength": 1
+        },
+        "startIpAddress": {
+          "type": "string",
+          "metadata": {
+            "description": "The start IP address of the server firewall rule. Must be IPv4 format."
+          }
+        },
+        "endIpAddress": {
+          "type": "string",
+          "metadata": {
+            "description": "The end IP address of the server firewall rule. Must be IPv4 format."
+          }
+        }
+      }
+    },
+    "virtualNetworkRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "The resource name."
+          },
+          "maxLength": 128,
+          "minLength": 1
+        },
+        "ignoreMissingVnetServiceEndpoint": {
+          "type": "bool",
+          "metadata": {
+            "description": "Create firewall rule before the virtual network has vnet service endpoint enabled."
+          }
+        },
+        "virtualNetworkSubnetId": {
+          "type": "string",
+          "metadata": {
+            "description": "The ARM resource id of the virtual network subnet."
+          }
+        }
+      }
+    },
+    "databaseType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "charset": {
+          "type": "string",
+          "nullable": true
+        },
+        "collation": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "description": "Optional. Database definition in the postrges instance."
+      }
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional.  The location into which your Azure resources should be deployed."
+      }
+    },
+    "prefix": {
+      "type": "string",
+      "defaultValue": "postgres",
+      "metadata": {
+        "description": "Optional. Prefix of postgres resource name. Not used if name is provided."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "[take(format('{0}-{1}', parameters('prefix'), uniqueString(resourceGroup().id, parameters('location'))), 44)]",
+      "metadata": {
+        "description": "Optional. The name of the Postgresql DB resources. Character limit: 3-44, valid characters: lowercase letters, numbers, and hyphens. It must me unique across Azure."
+      }
+    },
+    "serverName": {
+      "type": "string",
+      "defaultValue": "[parameters('name')]",
+      "metadata": {
+        "description": "Optional. Override the name of the server."
+      },
+      "maxLength": 63,
+      "minLength": 3
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Deployment tags."
+      }
+    },
+    "administratorLogin": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The administrator username of the server. Can only be specified when createMode is 'Default'."
+      }
+    },
+    "administratorLoginPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Required. The administrator login password for the SQL server. Can only be specified when the server is being created."
+      },
+      "maxLength": 128,
+      "minLength": 8
+    },
+    "backupRetentionDays": {
+      "type": "int",
+      "defaultValue": 35,
+      "maxValue": 35,
+      "minValue": 7,
+      "metadata": {
+        "description": "Optional. The number of days a backup is retained."
+      }
+    },
+    "createMode": {
+      "type": "string",
+      "defaultValue": "Default",
+      "allowedValues": [
+        "Default",
+        "GeoRestore",
+        "PointInTimeRestore",
+        "Replica"
+      ],
+      "metadata": {
+        "description": "Optional. The mode to create a new server."
+      }
+    },
+    "databases": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/databaseType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of databases to create on server."
+      }
+    },
+    "firewallRules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/firewallRulesType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of firewall rules to create on server."
+      }
+    },
+    "virtualNetworkRules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/virtualNetworkRuleType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of virtualNetworkRules to create on postgres server."
+      }
+    },
+    "infrastructureEncryption": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Status showing whether the server enabled infrastructure encryption."
+      }
+    },
+    "minimalTlsVersion": {
+      "type": "string",
+      "defaultValue": "TLS1_2",
+      "allowedValues": [
+        "TLS1_0",
+        "TLS1_1",
+        "TLS1_2",
+        "TLSEnforcementDisabled"
+      ],
+      "metadata": {
+        "description": "Optional. Enforce a minimal Tls version for the server."
+      }
+    },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Whether or not public network access is allowed for this server."
+      }
+    },
+    "version": {
+      "type": "string",
+      "defaultValue": "11",
+      "allowedValues": [
+        "9.5",
+        "9.6",
+        "10",
+        "10.0",
+        "10.2",
+        "11"
+      ],
+      "metadata": {
+        "description": "Optional. The version of the PostgreSQL server."
+      }
+    },
+    "privateEndpoints": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of privateEndpoints to create on postgres server."
+      }
+    },
+    "geoRedundantBackup": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Enable or disable geo-redundant backups. It requires at least a GeneralPurpose or MemoryOptimized skuTier."
+      }
+    },
+    "restorePointInTime": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Restore point creation time (ISO8601 format), specifying the time to restore from."
+      }
+    },
+    "serverConfigurations": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of server configurations to create on server."
+      }
+    },
+    "skuName": {
+      "type": "string",
+      "defaultValue": "GP_Gen5_2",
+      "metadata": {
+        "description": "Optional. The name of the sku, typically, tier + family + cores, e.g. B_Gen4_1, GP_Gen5_8."
+      }
+    },
+    "skuCapacity": {
+      "type": "int",
+      "defaultValue": 2,
+      "metadata": {
+        "description": "Optional. Azure database for Postgres compute capacity in vCores (2,4,8,16,32)"
+      }
+    },
+    "SkuSizeMB": {
+      "type": "int",
+      "defaultValue": 5120,
+      "metadata": {
+        "description": "Optional. Azure database for Postgres Sku Size "
+      }
+    },
+    "SkuTier": {
+      "type": "string",
+      "defaultValue": "GeneralPurpose",
+      "allowedValues": [
+        "Basic",
+        "GeneralPurpose",
+        "MemoryOptimized"
+      ],
+      "metadata": {
+        "description": "Optional. Azure database for Postgres pricing tier"
+      }
+    },
+    "skuFamily": {
+      "type": "string",
+      "defaultValue": "Gen5",
+      "metadata": {
+        "description": "Optional. Azure database for Postgres sku family"
+      }
+    },
+    "storageSizeGB": {
+      "type": "int",
+      "defaultValue": 32,
+      "metadata": {
+        "description": "Optional. Storage size for Postgresql Single Server. Expressed in Mebibytes. Cannot be scaled down."
+      }
+    },
+    "sourceServerResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The source server resource id to restore from. It's required when \"createMode\" is \"GeoRestore\" or \"Replica\" or \"PointInTimeRestore\"."
+      }
+    },
+    "enableStorageAutogrow": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Auto grow of storage."
+      }
+    },
+    "roleAssignments": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Array of role assignment objects that contain the \"roleDefinitionIdOrName\" and \"principalId\" to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, provide either the display name of the role definition, or its fully qualified ID in the following format: \"/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\""
+      }
+    },
+    "diagnosticSettingsProperties": {
+      "$ref": "#/definitions/diagnosticSettingsPropertiesType",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Provide postgres diagnostic settings properties."
+      }
+    }
+  },
+  "variables": {
+    "copy": [
+      {
+        "name": "varPrivateEndpoints",
+        "count": "[length(parameters('privateEndpoints'))]",
+        "input": {
+          "name": "[format('{0}-{1}', parameters('serverName'), parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].name)]",
+          "privateLinkServiceId": "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('serverName'))]",
+          "groupIds": [
+            "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].groupId]"
+          ],
+          "subnetId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].subnetId]",
+          "privateDnsZoneConfigs": "[coalesce(tryGet(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'privateDnsZoneConfigs'), createArray())]",
+          "customNetworkInterfaceName": "[coalesce(tryGet(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'customNetworkInterfaceName'), null())]",
+          "manualApprovalEnabled": "[coalesce(tryGet(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'manualApprovalEnabled'), false())]"
+        }
+      }
+    ],
+    "sslEnforcement": "[if(equals(parameters('minimalTlsVersion'), 'TLSEnforcementDisabled'), 'Disabled', 'Enabled')]",
+    "validStorageAutogrow": "[if(equals(parameters('createMode'), 'Replica'), '', if(parameters('enableStorageAutogrow'), 'Enabled', 'Disabled'))]",
+    "enablePostgresDiagnosticSettings": "[if(and(and(and(empty(tryGet(tryGet(parameters('diagnosticSettingsProperties'), 'diagnosticReceivers'), 'workspaceId')), empty(tryGet(tryGet(parameters('diagnosticSettingsProperties'), 'diagnosticReceivers'), 'eventHub'))), empty(tryGet(tryGet(parameters('diagnosticSettingsProperties'), 'diagnosticReceivers'), 'storageAccountId'))), empty(tryGet(tryGet(parameters('diagnosticSettingsProperties'), 'diagnosticReceivers'), 'marketplacePartnerId'))), false(), true())]"
+  },
+  "resources": {
+    "postgresServer": {
+      "type": "Microsoft.DBforPostgreSQL/servers",
+      "apiVersion": "2017-12-01",
+      "name": "[parameters('serverName')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "sku": {
+        "name": "[parameters('skuName')]",
+        "tier": "[parameters('SkuTier')]",
+        "capacity": "[parameters('skuCapacity')]",
+        "size": "[format('{0}', parameters('SkuSizeMB'))]",
+        "family": "[parameters('skuFamily')]"
+      },
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "createMode": "[parameters('createMode')]",
+        "administratorLogin": "[parameters('administratorLogin')]",
+        "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+        "version": "[parameters('version')]",
+        "sslEnforcement": "[variables('sslEnforcement')]",
+        "minimalTlsVersion": "[parameters('minimalTlsVersion')]",
+        "infrastructureEncryption": "[parameters('infrastructureEncryption')]",
+        "storageProfile": {
+          "storageMB": "[mul(parameters('storageSizeGB'), 1024)]",
+          "backupRetentionDays": "[parameters('backupRetentionDays')]",
+          "geoRedundantBackup": "[parameters('geoRedundantBackup')]",
+          "enableStorageAutogrow": "[coalesce(variables('validStorageAutogrow'), null())]"
+        },
+        "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
+        "sourceServerId": "[if(not(equals(parameters('createMode'), 'Default')), parameters('sourceServerResourceId'), null())]",
+        "restorePointInTime": "[if(equals(parameters('createMode'), 'PointInTimeRestore'), parameters('restorePointInTime'), null())]"
+      }
+    },
+    "postgresServerFirewallRules": {
+      "copy": {
+        "name": "postgresServerFirewallRules",
+        "count": "[length(parameters('firewallRules'))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "type": "Microsoft.DBforPostgreSQL/servers/firewallRules",
+      "apiVersion": "2017-12-01",
+      "name": "[format('{0}/{1}', parameters('serverName'), parameters('firewallRules')[copyIndex()].name)]",
+      "properties": {
+        "startIpAddress": "[parameters('firewallRules')[copyIndex()].startIpAddress]",
+        "endIpAddress": "[parameters('firewallRules')[copyIndex()].endIpAddress]"
+      },
+      "dependsOn": [
+        "postgresServer"
+      ]
+    },
+    "postgresServerVirtualNetworkRules": {
+      "copy": {
+        "name": "postgresServerVirtualNetworkRules",
+        "count": "[length(parameters('virtualNetworkRules'))]"
+      },
+      "type": "Microsoft.DBforPostgreSQL/servers/virtualNetworkRules",
+      "apiVersion": "2017-12-01",
+      "name": "[parameters('virtualNetworkRules')[copyIndex()].name]",
+      "properties": {
+        "ignoreMissingVnetServiceEndpoint": "[parameters('virtualNetworkRules')[copyIndex()].ignoreMissingVnetServiceEndpoint]",
+        "virtualNetworkSubnetId": "[parameters('virtualNetworkRules')[copyIndex()].virtualNetworkSubnetId]"
+      }
+    },
+    "postgresServerDatabases": {
+      "copy": {
+        "name": "postgresServerDatabases",
+        "count": "[length(parameters('databases'))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "type": "Microsoft.DBforPostgreSQL/servers/databases",
+      "apiVersion": "2017-12-01",
+      "name": "[format('{0}/{1}', parameters('serverName'), parameters('databases')[copyIndex()].name)]",
+      "properties": {
+        "charset": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'charset'), 'utf32')]",
+        "collation": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'collation'), 'utf32_general_ci')]"
+      },
+      "dependsOn": [
+        "postgresServer"
+      ]
+    },
+    "postgresServerConfig": {
+      "copy": {
+        "name": "postgresServerConfig",
+        "count": "[length(parameters('serverConfigurations'))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "type": "Microsoft.DBforPostgreSQL/servers/configurations",
+      "apiVersion": "2017-12-01",
+      "name": "[format('{0}/{1}', parameters('serverName'), parameters('serverConfigurations')[copyIndex()].name)]",
+      "properties": {
+        "value": "[parameters('serverConfigurations')[copyIndex()].value]",
+        "source": "user-override"
+      },
+      "dependsOn": [
+        "postgresServer",
+        "postgresServerFirewallRules"
+      ]
+    },
+    "postgresDiagnosticSettings": {
+      "condition": "[variables('enablePostgresDiagnosticSettings')]",
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[format('Microsoft.DBforPostgreSQL/servers/{0}', parameters('serverName'))]",
+      "name": "[format('{0}-diagnostic-settings', parameters('serverName'))]",
+      "properties": {
+        "eventHubAuthorizationRuleId": "[tryGet(tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'eventHub'), 'EventHubAuthorizationRuleId')]",
+        "eventHubName": "[tryGet(tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'eventHub'), 'EventHubName')]",
+        "logAnalyticsDestinationType": "[tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'logAnalyticsDestinationType')]",
+        "logs": "[tryGet(parameters('diagnosticSettingsProperties'), 'logs')]",
+        "marketplacePartnerId": "[tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'marketplacePartnerId')]",
+        "metrics": "[tryGet(parameters('diagnosticSettingsProperties'), 'metrics')]",
+        "serviceBusRuleId": "[tryGet(parameters('diagnosticSettingsProperties'), 'serviceBusRuleId')]",
+        "storageAccountId": "[tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'storageAccountId')]",
+        "workspaceId": "[tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'workspaceId')]"
+      },
+      "dependsOn": [
+        "postgresServer"
+      ]
+    },
+    "postgresServerRBAC": {
+      "copy": {
+        "name": "postgresServerRBAC",
+        "count": "[length(parameters('roleAssignments'))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-rbac-{1}', parameters('serverName'), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "description": {
+            "value": "[coalesce(tryGet(parameters('roleAssignments')[copyIndex()], 'description'), '')]"
+          },
+          "principalIds": {
+            "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
+          },
+          "roleDefinitionIdOrName": {
+            "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
+          },
+          "principalType": {
+            "value": "[coalesce(tryGet(parameters('roleAssignments')[copyIndex()], 'principalType'), '')]"
+          },
+          "serverName": {
+            "value": "[parameters('serverName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
+            "_generator": {
+              "name": "bicep",
+              "version": "0.17.1.54307",
+              "templateHash": "1550825306113596581"
+            }
+          },
+          "parameters": {
+            "description": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "principalIds": {
+              "type": "array"
+            },
+            "principalType": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "roleDefinitionIdOrName": {
+              "type": "string"
+            },
+            "serverName": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "builtInRoleNames": {
+              "Owner": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
+              "Contributor": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+              "Reader": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
+              "SQL DB Contributor": "9b7fa17d-e63e-47b0-bb0a-15c516ac86ec",
+              "SQL Managed Instance Contributor": "4939a1f6-9ae0-4e48-a1e0-f2cbe897382d",
+              "SQL Server Contributor": "6d8ee4ec-f05a-4a1d-8b00-a9b17e38b437",
+              "SQL Security Manager": "056cd41c-7e88-42e1-933e-88ba6a50c9c3",
+              "Log Analytics Contributor": "92aaf0da-9dab-42b6-94a3-d43ce8d16293",
+              "Log Analytics Reader": "73c42c96-874c-492b-b04d-ab87d138a893",
+              "Managed Application Contributor Role": "641177b8-a67a-45b9-a033-47bc880bb21e",
+              "Managed Application Operator Role": "c7393b34-138c-406f-901b-d8cf2b17e6ae",
+              "Managed Applications Reader": "b9331d33-8a36-4f8c-b097-4f54124fdb44",
+              "Monitoring Contributor": "749f88d5-cbae-40b8-bcfc-e573ddc772fa",
+              "Monitoring Metrics Publisher": "3913510d-42f4-4e42-8a64-420c390055eb",
+              "Monitoring Reader": "43d0d8ad-25c7-4714-9337-8ba259a9fe05",
+              "Resource Policy Contributor": "36243c78-bf99-498c-9df9-86d9f8d28608"
+            },
+            "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName')))]"
+          },
+          "resources": {
+            "postgresServer": {
+              "existing": true,
+              "type": "Microsoft.DBforPostgreSQL/servers",
+              "apiVersion": "2017-12-01",
+              "name": "[parameters('serverName')]"
+            },
+            "roleAssignment": {
+              "copy": {
+                "name": "roleAssignment",
+                "count": "[length(parameters('principalIds'))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.DBforPostgreSQL/servers/{0}', parameters('serverName'))]",
+              "name": "[guid(parameters('serverName'), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+              "properties": {
+                "description": "[parameters('description')]",
+                "roleDefinitionId": "[variables('roleDefinitionId')]",
+                "principalId": "[parameters('principalIds')[copyIndex()]]",
+                "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]"
+              }
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "postgresServer"
+      ]
+    },
+    "postgresServerPrivateEndpoint": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-private-endpoints', parameters('serverName'))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "privateEndpoints": {
+            "value": "[variables('varPrivateEndpoints')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
+            "_generator": {
+              "name": "bicep",
+              "version": "0.17.1.54307",
+              "templateHash": "18440659148863256788"
+            }
+          },
+          "definitions": {
+            "PrivateDnsZoneConfigType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The resource name"
+                  }
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "privateDnsZoneId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource id of the private dns zone."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Properties of the private dns zone configuration."
+                  }
+                }
+              }
+            },
+            "privateEndpointsType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "privateLinkServiceId": {
+                  "type": "string"
+                },
+                "groupIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "subnetId": {
+                  "type": "string"
+                },
+                "privateDnsZoneConfigs": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/PrivateDnsZoneConfigType"
+                  },
+                  "nullable": true
+                },
+                "customNetworkInterfaceName": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "manualApprovalEnabled": {
+                  "type": "bool"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "privateEndpoints": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/privateEndpointsType"
+              }
+            }
+          },
+          "resources": {
+            "privateEndpoint": {
+              "copy": {
+                "name": "privateEndpoint",
+                "count": "[length(parameters('privateEndpoints'))]",
+                "mode": "serial",
+                "batchSize": 1
+              },
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2022-05-01",
+              "name": "[format('{0}-{1}', parameters('privateEndpoints')[copyIndex()].name, uniqueString(parameters('privateEndpoints')[copyIndex()].name, parameters('privateEndpoints')[copyIndex()].subnetId, parameters('privateEndpoints')[copyIndex()].privateLinkServiceId))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "privateLinkServiceConnections": "[if(parameters('privateEndpoints')[copyIndex()].manualApprovalEnabled, null(), createArray(createObject('name', parameters('privateEndpoints')[copyIndex()].name, 'properties', createObject('privateLinkServiceId', parameters('privateEndpoints')[copyIndex()].privateLinkServiceId, 'groupIds', parameters('privateEndpoints')[copyIndex()].groupIds))))]",
+                "manualPrivateLinkServiceConnections": "[if(parameters('privateEndpoints')[copyIndex()].manualApprovalEnabled, createArray(createObject('name', parameters('privateEndpoints')[copyIndex()].name, 'properties', createObject('privateLinkServiceId', tryGet(parameters('privateEndpoints')[copyIndex()], 'privateLinkServiceId'), 'groupIds', parameters('privateEndpoints')[copyIndex()].groupIds))), null())]",
+                "subnet": {
+                  "id": "[parameters('privateEndpoints')[copyIndex()].subnetId]"
+                },
+                "customNetworkInterfaceName": "[tryGet(parameters('privateEndpoints')[copyIndex()], 'customNetworkInterfaceName')]"
+              }
+            },
+            "privateDnsZoneGroup": {
+              "copy": {
+                "name": "privateDnsZoneGroup",
+                "count": "[length(parameters('privateEndpoints'))]",
+                "mode": "serial",
+                "batchSize": 1
+              },
+              "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+              "apiVersion": "2022-05-01",
+              "name": "[format('{0}/{1}', format('{0}-{1}', parameters('privateEndpoints')[copyIndex()].name, uniqueString(parameters('privateEndpoints')[copyIndex()].name, parameters('privateEndpoints')[copyIndex()].subnetId, parameters('privateEndpoints')[copyIndex()].privateLinkServiceId)), 'default')]",
+              "properties": {
+                "privateDnsZoneConfigs": "[parameters('privateEndpoints')[copyIndex()].privateDnsZoneConfigs]"
+              },
+              "dependsOn": [
+                "[format('privateEndpoint[{0}]', copyIndex())]"
+              ]
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "postgresServer"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the Postgresql Single Server was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "fqdn": {
+      "type": "string",
+      "metadata": {
+        "description": "FQDN of the generated Postgresql Single Server"
+      },
+      "value": "[if(not(equals(parameters('createMode'), 'Replica')), reference('postgresServer').fullyQualifiedDomainName, '')]"
+    },
+    "id": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Postgresql Single Server."
+      },
+      "value": "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('serverName'))]"
+    }
+  }
+}
