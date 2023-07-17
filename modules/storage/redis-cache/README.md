@@ -58,7 +58,7 @@ This module deploys Azure Cache for Redis(Microsoft.Cache/redis) and optionally 
 ### Example 1
 
 ```bicep
-module redisCache 'br/public:data/redis-cache:1.0.0' = {
+module redisCache 'br/public:data/redis-cache:1.0.1' = {
   name: '${uniqueString(deployment().name, 'eastus')}-redis-cache'
   params: {
     location: 'eastus'
@@ -69,8 +69,8 @@ module redisCache 'br/public:data/redis-cache:1.0.0' = {
 
 ### Example 2
 
-```
-module redisCache 'br/public:data/redis-cache:1.0.0' = {
+```bicep
+module redisCache 'br/public:data/redis-cache:1.0.1' = {
   name: '${uniqueString(deployment().name, 'eastus')}-redis-cache'
   params: {
     location: 'eastus'
