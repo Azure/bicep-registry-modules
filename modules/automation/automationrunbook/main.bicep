@@ -1,3 +1,7 @@
+metadata name = 'Automation Runbook'
+metadata description = 'Creates an Azure Automation Account with Runbook, Schedule and Jobs'
+metadata owner = 'gordonby'
+
 @description('The name of the Automation Account')
 param automationAccountName string
 

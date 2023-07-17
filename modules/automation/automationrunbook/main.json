@@ -7,8 +7,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "12736098683764637639"
-    }
+      "templateHash": "2202736752808296405"
+    },
+    "name": "Automation Runbook",
+    "description": "Creates an Azure Automation Account with Runbook, Schedule and Jobs",
+    "owner": "gordonby"
   },
   "definitions": {
     "schedule": {

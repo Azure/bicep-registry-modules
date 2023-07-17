@@ -2,7 +2,7 @@
 
 Creates an Azure Automation Account with Runbook, Schedule and Jobs
 
-## Description
+## Details
 
 This module creates an Azure Automation Account with Runbook, Schedule and Jobs to quickly facilitate automation practices.
 
