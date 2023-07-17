@@ -6,8 +6,8 @@
     "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.18.4.5664",
-      "templateHash": "12206816973166304283"
+      "version": "0.19.5.34762",
+      "templateHash": "16180568952913547883"
     }
   },
   "definitions": {
@@ -190,13 +190,13 @@
     "diagnosticSettingsEventHubType": {
       "type": "object",
       "properties": {
-        "EventHubAuthorizationRuleId": {
+        "eventHubAuthorizationRuleId": {
           "type": "string",
           "metadata": {
             "description": "The resource Id for the event hub authorization rule."
           }
         },
-        "EventHubName": {
+        "eventHubName": {
           "type": "string",
           "metadata": {
             "description": "The name of the event hub."
@@ -549,8 +549,8 @@
           "family": "[if(variables('isPremium'), 'P', 'C')]",
           "name": "[parameters('skuName')]"
         },
-        "staticIP": "[coalesce(parameters('staticIP'), null())]",
-        "subnetId": "[coalesce(parameters('subnetId'), null())]",
+        "staticIP": "[if(not(empty(parameters('staticIP'))), parameters('staticIP'), null())]",
+        "subnetId": "[if(not(empty(parameters('subnetId'))), parameters('subnetId'), null())]",
         "tenantSettings": "[parameters('tenantSettings')]"
       },
       "zones": "[if(variables('isPremium'), pickZones('Microsoft.Cache', 'redis', parameters('location'), 1), null())]"
@@ -562,8 +562,8 @@
       "scope": "[format('Microsoft.Cache/redis/{0}', parameters('serverName'))]",
       "name": "[format('{0}-diagnosticSettings', parameters('serverName'))]",
       "properties": {
-        "eventHubAuthorizationRuleId": "[tryGet(tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'eventHub'), 'EventHubAuthorizationRuleId')]",
-        "eventHubName": "[tryGet(tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'eventHub'), 'EventHubName')]",
+        "eventHubAuthorizationRuleId": "[tryGet(tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'eventHub'), 'eventHubAuthorizationRuleId')]",
+        "eventHubName": "[tryGet(tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'eventHub'), 'eventHubName')]",
         "logAnalyticsDestinationType": "[tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'logAnalyticsDestinationType')]",
         "logs": "[tryGet(parameters('diagnosticSettingsProperties'), 'logs')]",
         "marketplacePartnerId": "[tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'marketplacePartnerId')]",
@@ -629,8 +629,8 @@
             "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "159234069882505178"
+              "version": "0.19.5.34762",
+              "templateHash": "13037231207085822473"
             }
           },
           "parameters": {
@@ -732,8 +732,8 @@
             "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "17055812702908829865"
+              "version": "0.19.5.34762",
+              "templateHash": "8205690049017443365"
             }
           },
           "parameters": {
@@ -849,8 +849,8 @@
             "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "7809240443940966025"
+              "version": "0.19.5.34762",
+              "templateHash": "7117239157057788955"
             }
           },
           "definitions": {
