@@ -96,7 +96,8 @@ module test_04 '../main.bicep' = {
   name: '${uniqueName}-test-04'
   params: {
     name: '${uniqueName}-test-04'
-    location: 'westus'
+    location: 'westus' // Target westus as it does not officially support AZs
+    zoneRedundancyEnabled: false // Disable AZ support
     skuName: 'Premium'
     redisVersion: '6.0'
     capacity: 1
