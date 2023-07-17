@@ -7,8 +7,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.19.5.34762",
-      "templateHash": "16180568952913547883"
-    }
+      "templateHash": "11317248834156140323"
+    },
+    "name": "Azure Cache for Redis",
+    "description": "This module deploys Azure Cache for Redis(Microsoft.Cache/redis) and optionally available integrations.",
+    "owner": "sumit-salunke"
   },
   "definitions": {
     "redisConfigurationType": {

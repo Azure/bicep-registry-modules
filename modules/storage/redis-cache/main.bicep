@@ -1,3 +1,7 @@
+metadata name = 'Azure Cache for Redis'
+metadata description = 'This module deploys Azure Cache for Redis(Microsoft.Cache/redis) and optionally available integrations.'
+metadata owner = 'sumit-salunke'
+
 @description('Optional. The prefix of the Redis cache resource name.')
 param prefix string = 'redis-'
 

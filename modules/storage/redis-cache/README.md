@@ -2,7 +2,7 @@
 
 This module deploys Azure Cache for Redis(Microsoft.Cache/redis) and optionally available integrations.
 
-## Description
+## Details
 
 [Azure Cache for Redis](https://azure.microsoft.com/en-us/pricing/details/cache/)  Azure Cache for Redis gives you the ability to use a secure open source Redis cache. It's a dedicated offering managed by Microsoft, to build highly scalable and responsive applications by providing you super-fast access to your data. You get to leverage the rich feature set and ecosystem provided by Redis
 
