@@ -121,8 +121,8 @@ resource redisCache 'Microsoft.Cache/redis@2022-06-01' = {
       family: isPremium  ? 'P' : 'C'
       name: skuName
     }
-    staticIP: staticIP ?? null
-    subnetId:  subnetId ?? null
+    staticIP: !empty(staticIP) ? staticIP : null
+    subnetId: !empty(subnetId) ? subnetId : null
     tenantSettings: tenantSettings
   }
   zones: isPremium  ? pickZones('Microsoft.Cache', 'redis', location, 1) : null
@@ -132,8 +132,8 @@ resource redisCache 'Microsoft.Cache/redis@2022-06-01' = {
 resource redisDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableMysqlDiagnosticSettings) {
   name: '${serverName}-diagnosticSettings'
   properties: {
-    eventHubAuthorizationRuleId: diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?EventHubAuthorizationRuleId
-    eventHubName:  diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?EventHubName
+    eventHubAuthorizationRuleId: diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?eventHubAuthorizationRuleId
+    eventHubName:  diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?eventHubName
     logAnalyticsDestinationType: diagnosticSettingsProperties.diagnosticReceivers.?logAnalyticsDestinationType
     logs: diagnosticSettingsProperties.?logs
     marketplacePartnerId: diagnosticSettingsProperties.diagnosticReceivers.?marketplacePartnerId
@@ -302,9 +302,9 @@ type diagnosticSettingsMetricsType = {
 @description('The settings required to use EventHub.')
 type diagnosticSettingsEventHubType = {
   @description('The resource Id for the event hub authorization rule.')
-  EventHubAuthorizationRuleId: string
+  eventHubAuthorizationRuleId: string
   @description('The name of the event hub.')
-  EventHubName: string
+  eventHubName: string
 }
 
 @description('Destiantion options.')
