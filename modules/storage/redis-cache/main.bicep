@@ -40,7 +40,6 @@ param redisVersion string = '6.0'
 @description('Optional. The size of the Redis cache to deploy. Valid values: for C (Basic/Standard) family (0, 1, 2, 3, 4, 5, 6), for P (Premium) family (1, 2, 3, 4).')
 param capacity int = 1
 
-@minValue(1)
 @description('Optional. The number of shards to be created on a Premium Cluster Cache.')
 param shardCount int = 1
 
@@ -171,7 +170,7 @@ resource redisCache 'Microsoft.Cache/redis@2022-06-01' = {
     publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : (!empty(publicNetworkAccess) ? 'Disabled' : null)
     redisConfiguration: !empty(redisConfiguration) ? redisConfiguration : null
     redisVersion: redisVersion
-    shardCount: isPremium ? shardCount : null
+    shardCount: isPremium && shardCount >= 1 ? shardCount : null
     replicasPerMaster: isPremium ? replicasPerMaster : null
     replicasPerPrimary: isPremium ? replicasPerPrimary : null
     sku: {
@@ -199,7 +198,7 @@ resource redis_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05
   scope: redisCache
 }
 
-resource redis_firewall 'Microsoft.Cache/redis/firewallRules@2022-06-01' = [ for varRedisFirewallRule in varRedisFirewallRules:  if (!empty(redisFirewallRules)) {
+resource redis_firewall 'Microsoft.Cache/redis/firewallRules@2022-06-01' = [for varRedisFirewallRule in varRedisFirewallRules: if (!empty(redisFirewallRules)) {
   name: varRedisFirewallRule.redisCacheFirewallRuleName
   parent: redisCache
   properties: {
