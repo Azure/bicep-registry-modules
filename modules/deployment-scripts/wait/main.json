@@ -5,8 +5,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "11631837455999237275"
-    }
+      "templateHash": "2559508089218452214"
+    },
+    "name": "Deployment Delay",
+    "description": "A Deployment Script that introduces a delay to the deployment process.",
+    "owner": "gordonby"
   },
   "parameters": {
     "scriptName": {

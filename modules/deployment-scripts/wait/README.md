@@ -2,7 +2,7 @@
 
 A Deployment Script that introduces a delay to the deployment process.
 
-## Description
+## Details
 
 When deploying Azure services together, it is sometimes necessary to introduce delays into the deployment to allow metadata time to propagate. This module can be declared, and referenced explicitly in the dependsOn properties of other Bicep resources in order to delay the resource deployment.
 

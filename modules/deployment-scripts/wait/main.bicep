@@ -1,3 +1,7 @@
+metadata name = 'Deployment Delay'
+metadata description = 'A Deployment Script that introduces a delay to the deployment process.'
+metadata owner = 'gordonby'
+
 @description('The delay script resource name')
 param scriptName string = '${deployment().name}-Delay'
 
