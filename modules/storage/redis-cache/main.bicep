@@ -40,7 +40,7 @@ param redisVersion string = '6.0'
 @description('Optional. The size of the Redis cache to deploy. Valid values: for C (Basic/Standard) family (0, 1, 2, 3, 4, 5, 6), for P (Premium) family (1, 2, 3, 4).')
 param capacity int = 1
 
-@description('Optional. The number of shards to be created on a Premium Cluster Cache.')
+@description('Optional. The number of shards to be created on a Premium Cluster Cache. Set 0 to disable this feature.')
 param shardCount int = 1
 
 @minValue(1)

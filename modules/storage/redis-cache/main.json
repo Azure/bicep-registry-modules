@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.19.5.34762",
-      "templateHash": "8460991489854624681"
+      "templateHash": "18262230605126107370"
     },
     "name": "Azure Cache for Redis",
     "description": "This module deploys Azure Cache for Redis(Microsoft.Cache/redis) and optionally available integrations.",
@@ -120,9 +120,8 @@
       "type": "int",
       "defaultValue": 1,
       "metadata": {
-        "description": "Optional. The number of shards to be created on a Premium Cluster Cache."
-      },
-      "minValue": 1
+        "description": "Optional. The number of shards to be created on a Premium Cluster Cache. Set 0 to disable this feature."
+      }
     },
     "replicasPerMaster": {
       "type": "int",
@@ -339,7 +338,7 @@
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('publicNetworkAccess'))), 'Disabled', null()))]",
         "redisConfiguration": "[if(not(empty(parameters('redisConfiguration'))), parameters('redisConfiguration'), null())]",
         "redisVersion": "[parameters('redisVersion')]",
-        "shardCount": "[if(variables('isPremium'), parameters('shardCount'), null())]",
+        "shardCount": "[if(and(variables('isPremium'), greaterOrEquals(parameters('shardCount'), 1)), parameters('shardCount'), null())]",
         "replicasPerMaster": "[if(variables('isPremium'), parameters('replicasPerMaster'), null())]",
         "replicasPerPrimary": "[if(variables('isPremium'), parameters('replicasPerPrimary'), null())]",
         "sku": {
