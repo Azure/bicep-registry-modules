@@ -43,8 +43,7 @@ param redisVersion string = '6.0'
 @description('Optional. The size of the Redis cache to deploy. Valid values: for C (Basic/Standard) family (0, 1, 2, 3, 4, 5, 6), for P (Premium) family (1, 2, 3, 4).')
 param capacity int = 1
 
-@minValue(1)
-@description('Optional. The number of shards to be created on a Premium Cluster Cache.')
+@description('Optional. The number of shards to be created on a Premium Cluster Cache. Set 0 to disable this feature.')
 param shardCount int = 1
 
 @minValue(1)
@@ -69,6 +68,15 @@ param roleAssignments array = []
 
 @description('Optional. List of firewall rules to create on server.')
 param firewallRules firewallRulesType[] = []
+
+@description('Should Zone Redundancy be enabled for this Redis Cache? The target Region must support availability zones, therefore even if this is set true, it will only activate zone redudancy in a supported region. Set this false to disable zone redundancy completely, regardless if a region supports availability zones.')
+param zoneRedundancyEnabled bool = true
+
+@description('The number of logical zones to enable for the Redis Cache. The default is 3. The number must be a positive integer from 1 to 3. Use 1 for single-zoned resources. For multi-zoned resources, the value must be less than or equal to the number of supported zones.')
+param numberOfZones int = 3
+
+@description('The offset from the starting logical availability zone. An error will be returned if zoneOffset plus numberOfZones exceeds the number of supported zones in the target Region.')
+param zoneOffset int = 0
 
 @description('Define Private Endpoints that should be created for Azure Redis Cache.')
 param privateEndpoints array = []
@@ -107,6 +115,12 @@ var varPrivateEndpoints = [for privateEndpoint in privateEndpoints: {
 
 var isPremium = skuName == 'Premium'
 
+// Validate the the correct SKU is being used for AZ support and that the user has not disabled zone redundancy
+var isZoneRedundant = isPremium && zoneRedundancyEnabled
+
+// Get the number of zones supported in the Region, based on the users supplied configuration
+var varZones = isZoneRedundant ? pickZones('Microsoft.Cache', 'redis', location, numberOfZones, zoneOffset) : []
+
 resource redisCache 'Microsoft.Cache/redis@2022-06-01' = {
   name: serverName
   location: location
@@ -117,19 +131,19 @@ resource redisCache 'Microsoft.Cache/redis@2022-06-01' = {
     publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : (!empty(publicNetworkAccess) ? 'Disabled' : null)
     redisConfiguration: !empty(redisConfiguration) ? redisConfiguration : null
     redisVersion: redisVersion
-    shardCount: isPremium  ? shardCount : null
-    replicasPerMaster: isPremium  ? replicasPerMaster : null
-    replicasPerPrimary: isPremium  ? replicasPerPrimary : null
+    shardCount: isPremium && shardCount >= 1 ? shardCount : null
+    replicasPerMaster: isPremium ? replicasPerMaster : null
+    replicasPerPrimary: isPremium ? replicasPerPrimary : null
     sku: {
       capacity: capacity
-      family: isPremium  ? 'P' : 'C'
+      family: isPremium ? 'P' : 'C'
       name: skuName
     }
     staticIP: !empty(staticIP) ? staticIP : null
     subnetId: !empty(subnetId) ? subnetId : null
     tenantSettings: tenantSettings
   }
-  zones: isPremium  ? pickZones('Microsoft.Cache', 'redis', location, 1) : null
+  zones: length(varZones) > 0 ? varZones : null
 }
 
 // ------ Diagnostics settings -----
