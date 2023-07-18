@@ -7,11 +7,304 @@
     "_generator": {
       "name": "bicep",
       "version": "0.19.5.34762",
-      "templateHash": "18262230605126107370"
+      "templateHash": "2681661808100535327"
     },
     "name": "Azure Cache for Redis",
     "description": "This module deploys Azure Cache for Redis(Microsoft.Cache/redis) and optionally available integrations.",
     "owner": "sumit-salunke"
+  },
+  "definitions": {
+    "redisConfigurationType": {
+      "type": "object",
+      "properties": {
+        "authNotRequired": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "  If set to true, Redis will not require AUTH to connect.\n  NOTE: authNotRequired can only be set to false if a subnet_id is specified;\n  and only works if there aren't existing instances within the subnet with enable_authentication set to true.\n  "
+          }
+        },
+        "maxmemory-delta": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "  The maximum memory a Redis instance can use, specified as a percentage of total available memory. Valid values range from 0 to 100.\n  Defaults depend on SKU; Basic is 2, Standard is 50, Premium is 200.\n  "
+          }
+        },
+        "maxmemory-policy": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "  How Redis will select what to remove when maxmemory is reached.\n  Default is volatile-lru. Available policies are volatile-lru, allkeys-lru, volatile-random, allkeys-random, volatile-ttl, noeviction.\n  "
+          }
+        },
+        "maxmemory-reserved": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "  Value in megabytes reserved for non-cache usage e.g. failover.\n  Defaults depend on SKU; Basic is 2, Standard is 50, Premium is 200.\n  "
+          }
+        },
+        "maxfragmentationmemory-reserved": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "  Value in megabytes reserved to accommodate for memory fragmentation.\n  Defaults depend on SKU; Basic is 2, Standard is 50, Premium is 200.\n  "
+          }
+        },
+        "rdb-backup-enabled": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Only available when using the Premium SKU. Is Backup Enabled? Default to false."
+          }
+        },
+        "rdb-backup-frequency": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "  Optional but required when rdbBackupEnabled is true\n  The Backup Frequency in Minutes.\n  Possible values are: 15, 30, 60, 360, 720 and 1440.\n  "
+          }
+        },
+        "rdb-backup-max-snapshot-count": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "  (Optional but required when rdbBackupEnabled is true)\n  The maximum number of snapshots to create as a backup.\n  "
+          }
+        },
+        "rdb-storage-connection-string": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "  (Optional but required when rdbBackupEnabled is true)\n  The Connection String to the Storage Account.  In the format: DefaultEndpointsProtocol=https;BlobEndpoint=my_primary_blob_endpoint;AccountName=my_sa_name;AccountKey=my_primary_access_key.\n  The maximum number of snapshots to retain on disk.\n  "
+          }
+        }
+      }
+    },
+    "redisPatchScheduleType": {
+      "type": "object",
+      "properties": {
+        "dayOfWeek": {
+          "type": "string",
+          "metadata": {
+            "description": "The day of the week when a cache can be patched. Possible values are Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday."
+          }
+        },
+        "startHourUtc": {
+          "type": "int",
+          "metadata": {
+            "description": "The start hour after which cache patching can start."
+          }
+        },
+        "maintenanceWindow": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "ISO8601 timespan specifying how much time cache patching can take."
+          }
+        }
+      }
+    },
+    "diagnosticSettingsRetentionPolicyType": {
+      "type": "object",
+      "properties": {
+        "days": {
+          "type": "int",
+          "metadata": {
+            "description": "the number of days for the retention in days. A value of 0 will retain the events indefinitely."
+          }
+        },
+        "enabled": {
+          "type": "bool",
+          "metadata": {
+            "description": "a value indicating whether the retention policy is enabled."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The retention policy for this log or metric."
+      }
+    },
+    "diagnosticSettingsLogsType": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Name of a Diagnostic Log category for a resource type this setting is applied to. e.g. 'ConnectedClientList'"
+          }
+        },
+        "categoryGroup": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Create firewall rule before the virtual network has vnet service endpoint enabled."
+          }
+        },
+        "enabled": {
+          "type": "bool",
+          "metadata": {
+            "description": "A value indicating whether this log is enabled."
+          }
+        },
+        "retentionPolicy": {
+          "$ref": "#/definitions/diagnosticSettingsRetentionPolicyType",
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "description": "The list of log settings."
+      }
+    },
+    "diagnosticSettingsMetricsType": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Name of a Diagnostic Metric category for a resource type this setting is applied to. 'AllMetrics'"
+          }
+        },
+        "enabled": {
+          "type": "bool",
+          "metadata": {
+            "description": "A value indicating whether this metric is enabled."
+          }
+        },
+        "retentionPolicy": {
+          "$ref": "#/definitions/diagnosticSettingsRetentionPolicyType",
+          "nullable": true
+        },
+        "timeGrain": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "the timegrain of the metric in ISO8601 format."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The list of metric settings."
+      }
+    },
+    "diagnosticSettingsEventHubType": {
+      "type": "object",
+      "properties": {
+        "eventHubAuthorizationRuleId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resource Id for the event hub authorization rule."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "metadata": {
+            "description": "The name of the event hub."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The settings required to use EventHub."
+      }
+    },
+    "diagnosticSettingsReceiversType": {
+      "type": "object",
+      "properties": {
+        "eventHub": {
+          "$ref": "#/definitions/diagnosticSettingsEventHubType",
+          "nullable": true
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or a target type created as follows: {normalized service identity}_{normalized category name}."
+          }
+        },
+        "marketplacePartnerId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+          }
+        },
+        "storageAccountId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The resource ID of the storage account to which you would like to send Diagnostic Logs."
+          }
+        },
+        "workspaceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The full ARM resource ID of the Log Analytics workspace to which you would like to send Diagnostic Logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Destiantion options."
+      }
+    },
+    "diagnosticSettingsPropertiesType": {
+      "type": "object",
+      "properties": {
+        "logs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/diagnosticSettingsLogsType"
+          },
+          "nullable": true
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/diagnosticSettingsMetricsType"
+          },
+          "nullable": true
+        },
+        "serviceBusRuleId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The service bus rule Id of the diagnostic setting. This is here to maintain backwards compatibility."
+          }
+        },
+        "diagnosticReceivers": {
+          "$ref": "#/definitions/diagnosticSettingsReceiversType",
+          "nullable": true
+        }
+      }
+    },
+    "firewallRulesType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "The resource name."
+          },
+          "maxLength": 128,
+          "minLength": 1
+        },
+        "startIpAddress": {
+          "type": "string",
+          "metadata": {
+            "description": "The start IP address of the server firewall rule. Must be IPv4 format."
+          }
+        },
+        "endIpAddress": {
+          "type": "string",
+          "metadata": {
+            "description": "The end IP address of the server firewall rule. Must be IPv4 format."
+          }
+        }
+      }
+    }
   },
   "parameters": {
     "prefix": {
@@ -169,43 +462,21 @@
         "description": "Optional. A dictionary of tenant settings."
       }
     },
-<<<<<<< HEAD
-=======
-    "diagnosticLogsRetentionInDays": {
-      "type": "int",
-      "defaultValue": 365,
-      "maxValue": 365,
-      "minValue": 0,
+    "roleAssignments": {
+      "type": "array",
+      "defaultValue": [],
       "metadata": {
-        "description": "Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
+        "description": "Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID"
       }
     },
-    "diagnosticStorageAccountId": {
-      "type": "string",
-      "defaultValue": "",
+    "firewallRules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/firewallRulesType"
+      },
+      "defaultValue": [],
       "metadata": {
-        "description": "Resource ID of the diagnostic storage account."
-      }
-    },
-    "diagnosticWorkspaceId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Resource ID of the diagnostic log analytics workspace."
-      }
-    },
-    "diagnosticEventHubAuthorizationRuleId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-      }
-    },
-    "diagnosticEventHubName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category."
+        "description": "Optional. List of firewall rules to create on server."
       }
     },
     "zoneRedundancyEnabled": {
@@ -227,52 +498,6 @@
       "defaultValue": 0,
       "metadata": {
         "description": "The offset from the starting logical availability zone. An error will be returned if zoneOffset plus numberOfZones exceeds the number of supported zones in the target Region."
-      }
-    },
-    "logsToEnable": {
-      "type": "array",
-      "defaultValue": [
-        "ConnectedClientList"
-      ],
-      "allowedValues": [
-        "ConnectedClientList"
-      ],
-      "metadata": {
-        "description": "The name of logs that will be streamed."
-      }
-    },
-    "metricsToEnable": {
-      "type": "array",
-      "defaultValue": [
-        "AllMetrics"
-      ],
-      "allowedValues": [
-        "AllMetrics"
-      ],
-      "metadata": {
-        "description": "The name of metrics that will be streamed."
-      }
-    },
->>>>>>> e0102a20ab7f8afe0e3ce2496cb8653953e4c285
-    "roleAssignments": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID"
-      }
-    },
-    "firewallRules": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/firewallRulesType"
-      },
-      "defaultValue": [],
-      "metadata": {
-<<<<<<< HEAD
-        "description": "Optional. List of firewall rules to create on server."
-=======
-        "description": "Optional. Firewall rule for the redis cache"
->>>>>>> e0102a20ab7f8afe0e3ce2496cb8653953e4c285
       }
     },
     "privateEndpoints": {
@@ -323,14 +548,10 @@
         }
       }
     ],
-<<<<<<< HEAD
     "enableMysqlDiagnosticSettings": "[if(and(and(and(empty(tryGet(tryGet(parameters('diagnosticSettingsProperties'), 'diagnosticReceivers'), 'workspaceId')), empty(tryGet(tryGet(parameters('diagnosticSettingsProperties'), 'diagnosticReceivers'), 'eventHub'))), empty(tryGet(tryGet(parameters('diagnosticSettingsProperties'), 'diagnosticReceivers'), 'storageAccountId'))), empty(tryGet(tryGet(parameters('diagnosticSettingsProperties'), 'diagnosticReceivers'), 'marketplacePartnerId'))), false(), true())]",
-    "isPremium": "[equals(parameters('skuName'), 'Premium')]"
-=======
     "isPremium": "[equals(parameters('skuName'), 'Premium')]",
     "isZoneRedundant": "[and(variables('isPremium'), parameters('zoneRedundancyEnabled'))]",
     "varZones": "[if(variables('isZoneRedundant'), pickZones('Microsoft.Cache', 'redis', parameters('location'), parameters('numberOfZones'), parameters('zoneOffset')), createArray())]"
->>>>>>> e0102a20ab7f8afe0e3ce2496cb8653953e4c285
   },
   "resources": {
     "redisCache": {
@@ -434,11 +655,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.19.5.34762",
-<<<<<<< HEAD
               "templateHash": "13037231207085822473"
-=======
-              "templateHash": "1108258098071014518"
->>>>>>> e0102a20ab7f8afe0e3ce2496cb8653953e4c285
             }
           },
           "parameters": {
@@ -541,11 +758,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.19.5.34762",
-<<<<<<< HEAD
               "templateHash": "8205690049017443365"
-=======
-              "templateHash": "9376650268912092515"
->>>>>>> e0102a20ab7f8afe0e3ce2496cb8653953e4c285
             }
           },
           "parameters": {
