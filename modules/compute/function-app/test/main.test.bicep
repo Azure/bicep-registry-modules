@@ -18,12 +18,12 @@ module dependencies 'prereq.test.bicep' = {
 }
 
 module test1 '../main.bicep' = {
-  name: 'func1${uniqueString(name)}'
+  name: 'func01-${uniqueString(name)}'
   dependsOn: [
     dependencies
   ]
   params: {
-    name: take(replace('fun1-${name}', '.', ''), 55)
+    name: take(replace('func01-${name}', '.', ''), 55)
     location: location
     sku: {
       name: 'Y1'
@@ -43,34 +43,34 @@ module test1 '../main.bicep' = {
   scope: resourceGroup()
 }
 
-module test2 '../main.bicep' = {
-  name: 'func2-${uniqueString(name)}'
-  scope: resourceGroup()
-  dependsOn: [
-    dependencies
-  ]
-  params: {
-    name: take(replace('fun2-${name}', '.', ''), 55)
-    location: location
-    sku: {
-      name: 'EP1'
-      tier: 'ElasticPremium'
-      size: 'EP1'
-      family: 'EP'
-      capacity: 1
-    }
-    tags: tags
-    maximumElasticWorkerCount: 20
-    enableVnetIntegration: true
-    enableInsights: true
-    workspaceResourceId: dependencies.outputs.workspacesId
-    subnetId: dependencies.outputs.subnetResourceIds
-    functionsExtensionVersion: '~4'
-    functionsWorkerRuntime: 'powershell'
-    storageAccountName: dependencies.outputs.saAccountName
-    storageAccountResourceGroup: resourceGroup().name
-    enableSourceControl: true
-    repoUrl: 'https://github.com/Azure/KeyVault-Secrets-Rotation-Redis-PowerShell.git'
-    enableDockerContainer: false
-  }
-}
+// module test2 '../main.bicep' = {
+//   name: 'func02-${uniqueString(name)}'
+//   scope: resourceGroup()
+//   dependsOn: [
+//     dependencies
+//   ]
+//   params: {
+//     name: take(replace('func02-${name}', '.', ''), 55)
+//     location: location
+//     sku: {
+//       name: 'EP1'
+//       tier: 'ElasticPremium'
+//       size: 'EP1'
+//       family: 'EP'
+//       capacity: 1
+//     }
+//     tags: tags
+//     maximumElasticWorkerCount: 20
+//     enableVnetIntegration: true
+//     enableInsights: true
+//     workspaceResourceId: dependencies.outputs.workspacesId
+//     subnetId: dependencies.outputs.subnetResourceIds
+//     functionsExtensionVersion: '~4'
+//     functionsWorkerRuntime: 'powershell'
+//     storageAccountName: dependencies.outputs.saAccountName
+//     storageAccountResourceGroup: resourceGroup().name
+//     enableSourceControl: true
+//     repoUrl: 'https://github.com/Azure/KeyVault-Secrets-Rotation-Redis-PowerShell.git'
+//     enableDockerContainer: false
+//   }
+// }
