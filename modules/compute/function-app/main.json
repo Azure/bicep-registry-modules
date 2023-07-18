@@ -6,9 +6,12 @@
     "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.18.4.5664",
-      "templateHash": "10402534079427004487"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "4252297606944310030"
+    },
+    "name": "Function app module",
+    "description": "Module to create function app for your application",
+    "owner": "rhalloul"
   },
   "definitions": {
     "functionType": {

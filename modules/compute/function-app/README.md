@@ -2,7 +2,7 @@
 
 Module to create function app for your application
 
-## Description
+## Details
 
 This is a low-level Bicep module for managing Azure Functions, it supports an array of function, also the user has the option to either choose use user assigned identity or system assigned identity and also support the storage account to be in different resource group.
 

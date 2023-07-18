@@ -1,3 +1,7 @@
+metadata name = 'Function app module'
+metadata description = 'Module to create function app for your application'
+metadata owner = 'rhalloul'
+
 /*param section*/
 @description('Required. Name for the Azure Function App.')
 @maxLength(64)
