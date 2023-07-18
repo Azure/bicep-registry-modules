@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.19.5.34762",
-      "templateHash": "2681661808100535327"
+      "templateHash": "11119322536328847528"
     },
     "name": "Azure Cache for Redis",
     "description": "This module deploys Azure Cache for Redis(Microsoft.Cache/redis) and optionally available integrations.",
@@ -462,23 +462,6 @@
         "description": "Optional. A dictionary of tenant settings."
       }
     },
-    "roleAssignments": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID"
-      }
-    },
-    "firewallRules": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/firewallRulesType"
-      },
-      "defaultValue": [],
-      "metadata": {
-        "description": "Optional. List of firewall rules to create on server."
-      }
-    },
     "zoneRedundancyEnabled": {
       "type": "bool",
       "defaultValue": true,
@@ -498,6 +481,23 @@
       "defaultValue": 0,
       "metadata": {
         "description": "The offset from the starting logical availability zone. An error will be returned if zoneOffset plus numberOfZones exceeds the number of supported zones in the target Region."
+      }
+    },
+    "roleAssignments": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID"
+      }
+    },
+    "firewallRules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/firewallRulesType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of firewall rules to create on server."
       }
     },
     "privateEndpoints": {

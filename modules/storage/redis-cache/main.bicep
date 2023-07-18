@@ -63,12 +63,6 @@ param subnetId string = ''
 @description('Optional. A dictionary of tenant settings.')
 param tenantSettings object = {}
 
-@description('Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID')
-param roleAssignments array = []
-
-@description('Optional. List of firewall rules to create on server.')
-param firewallRules firewallRulesType[] = []
-
 @description('Should Zone Redundancy be enabled for this Redis Cache? The target Region must support availability zones, therefore even if this is set true, it will only activate zone redudancy in a supported region. Set this false to disable zone redundancy completely, regardless if a region supports availability zones.')
 param zoneRedundancyEnabled bool = true
 
@@ -77,6 +71,12 @@ param numberOfZones int = 3
 
 @description('The offset from the starting logical availability zone. An error will be returned if zoneOffset plus numberOfZones exceeds the number of supported zones in the target Region.')
 param zoneOffset int = 0
+
+@description('Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID')
+param roleAssignments array = []
+
+@description('Optional. List of firewall rules to create on server.')
+param firewallRules firewallRulesType[] = []
 
 @description('Define Private Endpoints that should be created for Azure Redis Cache.')
 param privateEndpoints array = []
