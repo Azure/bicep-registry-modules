@@ -6,7 +6,10 @@ metadata owner = 'sumit-salunke'
 param prefix string = 'redis-'
 
 @description('Optional. The name of the Redis cache resource.')
-param name string = '${prefix}${uniqueString(resourceGroup().id, location)}'
+param name string = take('${prefix}${uniqueString(resourceGroup().id, location)}', 44)
+
+@description('Optional. Override the name of the server.')
+param serverName string = name
 
 @description('Required. The location to deploy the Redis cache service.')
 param location string
@@ -29,8 +32,8 @@ param minimumTlsVersion string = '1.2'
 @allowed([ '', 'Enabled', 'Disabled' ])
 param publicNetworkAccess string = ''
 
-@description('Optional. All Redis Settings. Few possible keys: rdb-backup-enabled,rdb-storage-connection-string,rdb-backup-frequency,maxmemory-delta,maxmemory-policy,notify-keyspace-events,maxmemory-samples,slowlog-log-slower-than,slowlog-max-len,list-max-ziplist-entries,list-max-ziplist-value,hash-max-ziplist-entries,hash-max-ziplist-value,set-max-intset-entries,zset-max-ziplist-entries,zset-max-ziplist-value etc.')
-param redisConfiguration object = {}
+@description('Optional. All Redis Settings.')
+param redisConfiguration redisConfigurationType = {}
 
 @allowed([ '4.0', '6.0' ])
 @description('Optional. Redis version. Only major version will be used in PUT/PATCH request with current valid values: (4, 6).')
@@ -60,23 +63,6 @@ param subnetId string = ''
 @description('Optional. A dictionary of tenant settings.')
 param tenantSettings object = {}
 
-@description('Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely.')
-@minValue(0)
-@maxValue(365)
-param diagnosticLogsRetentionInDays int = 365
-
-@description('Resource ID of the diagnostic storage account.')
-param diagnosticStorageAccountId string = ''
-
-@description('Resource ID of the diagnostic log analytics workspace.')
-param diagnosticWorkspaceId string = ''
-
-@description('Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-param diagnosticEventHubAuthorizationRuleId string = ''
-
-@description('Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category.')
-param diagnosticEventHubName string = ''
-
 @description('Should Zone Redundancy be enabled for this Redis Cache? The target Region must support availability zones, therefore even if this is set true, it will only activate zone redudancy in a supported region. Set this false to disable zone redundancy completely, regardless if a region supports availability zones.')
 param zoneRedundancyEnabled bool = true
 
@@ -86,25 +72,11 @@ param numberOfZones int = 3
 @description('The offset from the starting logical availability zone. An error will be returned if zoneOffset plus numberOfZones exceeds the number of supported zones in the target Region.')
 param zoneOffset int = 0
 
-@description('The name of logs that will be streamed.')
-@allowed([
-  'ConnectedClientList'
-])
-param logsToEnable array = [
-  'ConnectedClientList'
-]
-
-@description('The name of metrics that will be streamed.')
-@allowed([ 'AllMetrics' ])
-param metricsToEnable array = [
-  'AllMetrics'
-]
-
 @description('Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID')
 param roleAssignments array = []
 
-@description('Optional. Firewall rule for the redis cache')
-param redisFirewallRules object = {}
+@description('Optional. List of firewall rules to create on server.')
+param firewallRules firewallRulesType[] = []
 
 @description('Define Private Endpoints that should be created for Azure Redis Cache.')
 param privateEndpoints array = []
@@ -112,30 +84,19 @@ param privateEndpoints array = []
 @description('Toggle if Private Endpoints manual approval for Azure Redis Cache should be enabled.')
 param privateEndpointsApprovalEnabled bool = false
 
-var diagnosticsLogs = [for log in logsToEnable: {
-  category: log
-  enabled: true
-  retentionPolicy: {
-    enabled: true
-    days: diagnosticLogsRetentionInDays
-  }
-}]
+@description(
+'''
+The predefined schedule for patching redis server. The Patch Window lasts for 5 hours from the start_hour_utc.
+If schedule is not specified, the update can happen at any time. See https://docs.microsoft.com/en-us/azure/azure-cache-for-redis/cache-administration#schedule-updates-faq
+''')
+param redisPatchSchedule redisPatchScheduleType[] = []
 
-var diagnosticsMetrics = [for metric in metricsToEnable: {
-  category: metric
-  timeGrain: null
-  enabled: true
-  retentionPolicy: {
-    enabled: true
-    days: diagnosticLogsRetentionInDays
-  }
-}]
+@description('Provide mysql diagnostic settings properties.')
+param diagnosticSettingsProperties diagnosticSettingsPropertiesType = {}
 
-var varRedisFirewallRules = [for redisFirewallRule in items(redisFirewallRules): {
-  redisCacheFirewallRuleName: redisFirewallRule.key
-  startIP: redisFirewallRule.value.startIP
-  endIP: redisFirewallRule.value.endIP
-}]
+@description('Enable mysql diagnostic settings resource.')
+var enableMysqlDiagnosticSettings  = (empty(diagnosticSettingsProperties.?diagnosticReceivers.?workspaceId) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?eventHub) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?storageAccountId) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?marketplacePartnerId)) ? false : true
+
 
 var varPrivateEndpoints = [for privateEndpoint in privateEndpoints: {
   name: '${privateEndpoint.name}-${redisCache.name}'
@@ -161,7 +122,7 @@ var isZoneRedundant = isPremium && zoneRedundancyEnabled
 var varZones = isZoneRedundant ? pickZones('Microsoft.Cache', 'redis', location, numberOfZones, zoneOffset) : []
 
 resource redisCache 'Microsoft.Cache/redis@2022-06-01' = {
-  name: name
+  name: serverName
   location: location
   tags: tags
   properties: {
@@ -185,30 +146,35 @@ resource redisCache 'Microsoft.Cache/redis@2022-06-01' = {
   zones: length(varZones) > 0 ? varZones : null
 }
 
-resource redis_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(diagnosticStorageAccountId) || !empty(diagnosticWorkspaceId) || !empty(diagnosticEventHubAuthorizationRuleId) || !empty(diagnosticEventHubName)) {
-  name: '${redisCache.name}-diagnosticSettings'
+// ------ Diagnostics settings -----
+resource redisDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableMysqlDiagnosticSettings) {
+  name: '${serverName}-diagnosticSettings'
   properties: {
-    storageAccountId: !empty(diagnosticStorageAccountId) ? diagnosticStorageAccountId : null
-    workspaceId: !empty(diagnosticWorkspaceId) ? diagnosticWorkspaceId : null
-    eventHubAuthorizationRuleId: !empty(diagnosticEventHubAuthorizationRuleId) ? diagnosticEventHubAuthorizationRuleId : null
-    eventHubName: !empty(diagnosticEventHubName) ? diagnosticEventHubName : null
-    metrics: diagnosticsMetrics
-    logs: diagnosticsLogs
+    eventHubAuthorizationRuleId: diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?eventHubAuthorizationRuleId
+    eventHubName:  diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?eventHubName
+    logAnalyticsDestinationType: diagnosticSettingsProperties.diagnosticReceivers.?logAnalyticsDestinationType
+    logs: diagnosticSettingsProperties.?logs
+    marketplacePartnerId: diagnosticSettingsProperties.diagnosticReceivers.?marketplacePartnerId
+    metrics: diagnosticSettingsProperties.?metrics
+    serviceBusRuleId: diagnosticSettingsProperties.?serviceBusRuleId
+    storageAccountId: diagnosticSettingsProperties.diagnosticReceivers.?storageAccountId
+    workspaceId: diagnosticSettingsProperties.diagnosticReceivers.?workspaceId
   }
   scope: redisCache
 }
 
-resource redis_firewall 'Microsoft.Cache/redis/firewallRules@2022-06-01' = [for varRedisFirewallRule in varRedisFirewallRules: if (!empty(redisFirewallRules)) {
-  name: varRedisFirewallRule.redisCacheFirewallRuleName
+@batchSize(1)
+resource redisFirewall 'Microsoft.Cache/redis/firewallRules@2022-06-01' = [ for firewallRule in firewallRules:  if (!empty(firewallRules)) {
+  name: firewallRule.name
   parent: redisCache
   properties: {
-    endIP: varRedisFirewallRule.endIP
-    startIP: varRedisFirewallRule.startIP
+    endIP: firewallRule.endIpAddress
+    startIP: firewallRule.startIpAddress
   }
 }]
 
-module redis_rbac 'modules/roleAssignments.bicep' = [for (roleAssignment, index) in roleAssignments: {
-  name: '${uniqueString(deployment().name, location)}-acr-rbac-${index}'
+module redisRbac 'modules/roleAssignments.bicep' = [for (roleAssignment, index) in roleAssignments: {
+  name: '${serverName}-acr-rbac-${index}'
   params: {
     description: contains(roleAssignment, 'description') ? roleAssignment.description : ''
     principalIds: roleAssignment.principalIds
@@ -218,13 +184,21 @@ module redis_rbac 'modules/roleAssignments.bicep' = [for (roleAssignment, index)
   }
 }]
 
-module redisCache_privateEndpoint 'modules/privateEndpoint.bicep' = {
+module redisCachePrivateEndpoint 'modules/privateEndpoint.bicep' = if (!empty(varPrivateEndpoints)) {
   name: '${uniqueString(deployment().name, location)}-redis-private-endpoints'
   params: {
     location: location
     privateEndpoints: varPrivateEndpoints
     tags: tags
     manualApprovalEnabled: privateEndpointsApprovalEnabled
+  }
+}
+
+module redisCachePatchSchedule 'modules/patch-schedule.bicep' = if (!empty(redisPatchSchedule)) {
+  name: '${uniqueString(deployment().name, location)}-redis-patch-schedule'
+  params: {
+    redisCacheName: redisCache.name
+    redisPatchSchedule: redisPatchSchedule
   }
 }
 
@@ -245,3 +219,140 @@ output sslPort int = redisCache.properties.sslPort
 
 @description('The location the resource was deployed into.')
 output location string = redisCache.location
+
+
+// user defined type
+type redisConfigurationType = {
+  @description(
+  '''
+  If set to true, Redis will not require AUTH to connect.
+  NOTE: authNotRequired can only be set to false if a subnet_id is specified;
+  and only works if there aren't existing instances within the subnet with enable_authentication set to true.
+  ''')
+  authNotRequired: string? // Default true
+  @description(
+  '''
+  The maximum memory a Redis instance can use, specified as a percentage of total available memory. Valid values range from 0 to 100.
+  Defaults depend on SKU; Basic is 2, Standard is 50, Premium is 200.
+  ''')
+  'maxmemory-delta': string? // Default null
+  @description(
+  '''
+  How Redis will select what to remove when maxmemory is reached.
+  Default is volatile-lru. Available policies are volatile-lru, allkeys-lru, volatile-random, allkeys-random, volatile-ttl, noeviction.
+  ''')
+  'maxmemory-policy': string? // Default null
+  @description(
+  '''
+  Value in megabytes reserved for non-cache usage e.g. failover.
+  Defaults depend on SKU; Basic is 2, Standard is 50, Premium is 200.
+  ''')
+  'maxmemory-reserved': string? // Default null
+  @description(
+  '''
+  Value in megabytes reserved to accommodate for memory fragmentation.
+  Defaults depend on SKU; Basic is 2, Standard is 50, Premium is 200.
+  ''')
+  'maxfragmentationmemory-reserved': string? // Default null
+  @description('Only available when using the Premium SKU. Is Backup Enabled? Default to false.')
+  'rdb-backup-enabled': string? // Default 'Disabled'
+  @description(
+  '''
+  Optional but required when rdbBackupEnabled is true
+  The Backup Frequency in Minutes.
+  Possible values are: 15, 30, 60, 360, 720 and 1440.
+  ''')
+  'rdb-backup-frequency': string? // Default null
+  @description(
+  '''
+  (Optional but required when rdbBackupEnabled is true)
+  The maximum number of snapshots to create as a backup.
+  ''')
+  'rdb-backup-max-snapshot-count': string? // Default null
+  @description('''
+  (Optional but required when rdbBackupEnabled is true)
+  The Connection String to the Storage Account.  In the format: DefaultEndpointsProtocol=https;BlobEndpoint=my_primary_blob_endpoint;AccountName=my_sa_name;AccountKey=my_primary_access_key.
+  The maximum number of snapshots to retain on disk.
+  ''')
+  'rdb-storage-connection-string': string? // Default null
+}
+
+type redisPatchScheduleType = {
+  @description('The day of the week when a cache can be patched. Possible values are Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday.')
+  dayOfWeek: string
+  @description('The start hour after which cache patching can start.')
+  startHourUtc: int
+  @description('ISO8601 timespan specifying how much time cache patching can take.')
+  maintenanceWindow: int?
+}
+
+
+@description('The retention policy for this log or metric.')
+type diagnosticSettingsRetentionPolicyType = {
+  @description('the number of days for the retention in days. A value of 0 will retain the events indefinitely.')
+  days: int
+  @description('a value indicating whether the retention policy is enabled.')
+  enabled: bool
+}
+
+@description('The list of log settings.')
+type diagnosticSettingsLogsType = {
+  @description('Name of a Diagnostic Log category for a resource type this setting is applied to. e.g. \'ConnectedClientList\'')
+  category: string?
+  @description('Create firewall rule before the virtual network has vnet service endpoint enabled.')
+  categoryGroup: string?
+  @description('A value indicating whether this log is enabled.')
+  enabled: bool
+  retentionPolicy: diagnosticSettingsRetentionPolicyType?
+}
+
+@description('The list of metric settings.')
+type diagnosticSettingsMetricsType = {
+  @description('Name of a Diagnostic Metric category for a resource type this setting is applied to. \'AllMetrics\'')
+  category: string?
+  @description('A value indicating whether this metric is enabled.')
+  enabled: bool
+  retentionPolicy: diagnosticSettingsRetentionPolicyType?
+  @description('the timegrain of the metric in ISO8601 format.')
+  timeGrain: string?
+}
+
+@description('The settings required to use EventHub.')
+type diagnosticSettingsEventHubType = {
+  @description('The resource Id for the event hub authorization rule.')
+  eventHubAuthorizationRuleId: string
+  @description('The name of the event hub.')
+  eventHubName: string
+}
+
+@description('Destiantion options.')
+type diagnosticSettingsReceiversType = {
+  eventHub: diagnosticSettingsEventHubType?
+  @description('A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or a target type created as follows: {normalized service identity}_{normalized category name}.')
+  logAnalyticsDestinationType: string?
+  @description('The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
+  marketplacePartnerId: string?
+  @description('The resource ID of the storage account to which you would like to send Diagnostic Logs.')
+  storageAccountId: string?
+  @description('The full ARM resource ID of the Log Analytics workspace to which you would like to send Diagnostic Logs.')
+  workspaceId: string?
+}
+
+type diagnosticSettingsPropertiesType = {
+  logs: diagnosticSettingsLogsType[]?
+  metrics: diagnosticSettingsMetricsType[]?
+  @description('The service bus rule Id of the diagnostic setting. This is here to maintain backwards compatibility.')
+  serviceBusRuleId: string?
+  diagnosticReceivers: diagnosticSettingsReceiversType?
+}
+
+type firewallRulesType = {
+  @minLength(1)
+  @maxLength(128)
+  @description('The resource name.')
+  name: string
+  @description('The start IP address of the server firewall rule. Must be IPv4 format.')
+  startIpAddress: string
+  @description('The end IP address of the server firewall rule. Must be IPv4 format.')
+  endIpAddress: string
+}

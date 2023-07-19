@@ -37,10 +37,10 @@ resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2021-11-01' = {
   properties: {
    partitionCount: 4
   }
-  
+
 }
 
-resource authorizationRule 'Microsoft.EventHub/namespaces/authorizationRules@2022-01-01-preview' = {
+resource eventHubAuthorizationRule 'Microsoft.EventHub/namespaces/authorizationRules@2022-01-01-preview' = {
   name: 'RootManageSharedAccessKey'
   properties: {
     rights: [
@@ -102,7 +102,7 @@ output storageAccountId string = storageAccount.id
 output workspaceId string = logAnalyticsWorkspace.id
 output eventHubNamespaceId string = eventHubNamespace.id
 output eventHubName string = eventHub.name
-output authorizationRuleId string = authorizationRule.id
+output eventHubAuthorizationRuleId string = eventHubAuthorizationRule.id
 output subnetIds array = [
   virtualNetwork.properties.subnets[0].id
   virtualNetwork.properties.subnets[1].id
