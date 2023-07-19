@@ -2,7 +2,7 @@
 
 This Bicep module creates a Storage Account with zone-redundancy, encryption, virtual network access, and TLS version.
 
-## Description
+## Details
 
 {{ Add detailed description for the module. }}
 
