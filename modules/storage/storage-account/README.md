@@ -2,7 +2,7 @@
 
 This Bicep module creates a Storage Account with zone-redundancy, encryption, virtual network access, and TLS version.
 
-## Description
+## Details
 
 Azure Storage is a cloud-based storage service offered by Microsoft that provides highly scalable and durable storage for data and applications.
 Storage Accounts are the fundamental storage entity in Azure Storage and can be used to store data objects such as blobs, files, queues, tables, and disks.
@@ -25,7 +25,7 @@ The output of the module is the ID of the created or existing Storage Account, w
 | `tags`                                  | `object` | No       | Tags to be applied to the Storage Account.                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | `sku`                                   | `string` | No       | Storage Account SKU.                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `kind`                                  | `string` | No       | Storage Account Kind.                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `identityType`                          | `string` | No       | The type of identity used for the Cosmos DB account. The type "SystemAssigned, UserAssigned" includes both an implicitly created identity and a set of user-assigned identities. The type "None" will remove any identities from the Cosmos DB account.                                                                                                                                                                                                                   |
+| `identityType`                          | `string` | No       | The type of identity used for the storage account. The type "SystemAssigned, UserAssigned" includes both an implicitly created identity and a set of user-assigned identities. The type "None" will remove any identities from the resource.                                                                                                                                                                                                                              |
 | `userAssignedIdentities`                | `array`  | No       | The list of user-assigned managed identities. The user identity dictionary key references will be ARM resource ids in the form: "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}"                                                                                                                                                                                            |
 | `accessTier`                            | `string` | No       | The access tier of the storage account, which is used for billing.<br />Required for storage accounts where kind = BlobStorage. The 'Premium' access tier is the default value for premium block blobs storage account type and it cannot be changed for the premium block blobs storage account type.                                                                                                                                                                    |
 | `allowBlobPublicAccess`                 | `bool`   | No       | Allow or disallow public access to all blobs or containers in the storage account.                                                                                                                                                                                                                                                                                                                                                                                        |
@@ -72,7 +72,7 @@ The output of the module is the ID of the created or existing Storage Account, w
 This example creates a new Storage Account with a unique name in the East US region using the default Storage Account configuration settings. The module output is the ID of the created Storage Account, which can be used in other Azure resource deployments.
 
 ```bicep
-module storageAccount 'br/public:storage/storage-account:2.0.2' = {
+module storageAccount 'br/public:storage/storage-account:0.0.1' = {
   name: 'mystorageaccount'
   params: {
     location: 'eastus'
@@ -93,7 +93,7 @@ param newOrExisting string = 'new'
 param resourceGroupName string = 'myresourcegroup'
 param isZoneRedundant bool = true
 
-module storageAccount 'br/public:storage/storage-account:2.0.2' = {
+module storageAccount 'br/public:storage/storage-account:0.0.1' = {
   name: 'mystorageaccount'
   params: {
     location: location
