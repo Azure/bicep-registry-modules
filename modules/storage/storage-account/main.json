@@ -7,8 +7,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.19.5.34762",
-      "templateHash": "1551485782906346362"
-    }
+      "templateHash": "511171789404470303"
+    },
+    "name": "Azure Storage Account",
+    "description": "This Bicep module creates a Storage Account with zone-redundancy, encryption, virtual network access, and TLS version.",
+    "owner": "dciborow"
   },
   "definitions": {
     "changeFeed": {

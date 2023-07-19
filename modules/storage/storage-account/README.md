@@ -4,16 +4,7 @@ This Bicep module creates a Storage Account with zone-redundancy, encryption, vi
 
 ## Description
 
-Azure Storage is a cloud-based storage service offered by Microsoft that provides highly scalable and durable storage for data and applications.
-Storage Accounts are the fundamental storage entity in Azure Storage and can be used to store data objects such as blobs, files, queues, tables, and disks.
-
-This Bicep module allows users to create or use existing Storage Accounts with options to control redundancy, access, and security settings.
-Zone-redundancy allows data to be stored across multiple Availability Zones, increasing availability and durability.
-Virtual network rules can be used to restrict or allow network traffic to and from the Storage Account.
-Encryption and TLS settings can be configured to ensure data security.
-
-The module supports both blob and file services, allowing users to store and retrieve unstructured data and files.
-The output of the module is the ID of the created or existing Storage Account, which can be used in other Azure resource deployments.
+{{ Add detailed description for the module. }}
 
 ## Parameters
 
@@ -72,7 +63,7 @@ The output of the module is the ID of the created or existing Storage Account, w
 This example creates a new Storage Account with a unique name in the East US region using the default Storage Account configuration settings. The module output is the ID of the created Storage Account, which can be used in other Azure resource deployments.
 
 ```bicep
-module storageAccount 'br/public:storage/storage-account:2.0.2' = {
+module storageAccount 'br/public:storage/storage-account:0.0.1' = {
   name: 'mystorageaccount'
   params: {
     location: 'eastus'
