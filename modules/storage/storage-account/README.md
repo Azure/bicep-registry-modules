@@ -19,13 +19,13 @@ The output of the module is the ID of the created or existing Storage Account, w
 
 | Name                                    | Type     | Required | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | :-------------------------------------- | :------: | :------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `location`                              | `string` | Yes      | Deployment Location                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `location`                              | `string` | No       | Deployment Location                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | `prefix`                                | `string` | No       | Prefix of Storage Account Resource Name. This param is ignored when name is provided.                                                                                                                                                                                                                                                                                                                                                                                     |
 | `name`                                  | `string` | No       | Name of Storage Account. Must be unique within Azure.                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | `tags`                                  | `object` | No       | Tags to be applied to the Storage Account.                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | `sku`                                   | `string` | No       | Storage Account SKU.                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | `kind`                                  | `string` | No       | Storage Account Kind.                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| `identityType`                          | `string` | No       | The type of identity used for the Cosmos DB account. The type "SystemAssigned, UserAssigned" includes both an implicitly created identity and a set of user-assigned identities. The type "None" will remove any identities from the Cosmos DB account.                                                                                                                                                                                                                   |
+| `identityType`                          | `string` | No       | The type of identity used for the storage account. The type "SystemAssigned, UserAssigned" includes both an implicitly created identity and a set of user-assigned identities. The type "None" will remove any identities from the resource.                                                                                                                                                                                                                              |
 | `userAssignedIdentities`                | `array`  | No       | The list of user-assigned managed identities. The user identity dictionary key references will be ARM resource ids in the form: "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{identityName}"                                                                                                                                                                                            |
 | `accessTier`                            | `string` | No       | The access tier of the storage account, which is used for billing.<br />Required for storage accounts where kind = BlobStorage. The 'Premium' access tier is the default value for premium block blobs storage account type and it cannot be changed for the premium block blobs storage account type.                                                                                                                                                                    |
 | `allowBlobPublicAccess`                 | `bool`   | No       | Allow or disallow public access to all blobs or containers in the storage account.                                                                                                                                                                                                                                                                                                                                                                                        |
@@ -84,25 +84,101 @@ output storageAccountID string = storageAccount.outputs.id
 
 ### Example 2
 
-This example creates a new Storage Account with the name "mystorageaccount" in the "myresourcegroup" resource group located in the East US region. The Storage Account is configured to use zone-redundancy and virtual network access. The module output is the ID of the created or existing Storage Account, which can be used in other Azure resource deployments.
-
 ```bicep
-param location string = 'eastus'
-param name string = 'mystorageaccount'
-param newOrExisting string = 'new'
-param resourceGroupName string = 'myresourcegroup'
-param isZoneRedundant bool = true
-
-module storageAccount 'br/public:storage/storage-account:2.0.2' = {
-  name: 'mystorageaccount'
+module test '../main.bicep' = {
+  name: 'test'
+  dependsOn: [
+    prereq
+  ]
   params: {
-    location: location
-    name: name
-    newOrExisting: newOrExisting
-    resourceGroupName: resourceGroupName
-    isZoneRedundant: isZoneRedundant
+    name: 'mystorageaccountname'
+    location: 'eastus'
+    encryption: {
+      enable: true
+      configurations: {
+        keySource: 'Microsoft.Storage'
+        requireInfrastructureEncryption: true
+      }
+    }
+    blobServiceProperties: {
+      isVersioningEnabled: true
+      changeFeed: {
+        enabled: true
+      }
+      lastAccessTimeTrackingPolicy: {
+        enable: true
+      }
+    }
+    blobContainers: [
+      {
+        name: 'container1'
+      }
+      {
+        name: 'container2'
+        properties: {
+          publicAccess: 'None'
+        }
+      }
+    ]
+    storageRoleAssignments: [
+      {
+        principalId: prereq.outputs.identityPrincipalIds[0]
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Storage Blob Data Reader'
+        description: 'roleAssignment for calllog SA'
+      }
+      {
+        principalId: prereq.outputs.identityPrincipalIds[1]
+        roleDefinitionIdOrName: 'Storage Blob Data Reader'
+      }
+    ]
+    containerRoleAssignments: [
+      {
+        principalId: prereq.outputs.identityPrincipalIds[0]
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Storage Blob Data Owner'
+        containerName: 'test2container1'
+        description: 'roleAssignment for audiolog Container'
+      }
+    ]
+    managementPolicyRules: [
+      {
+        name: 'rule1'
+        definition: {
+          actions: {
+            baseBlob: {
+              enableAutoTierToHotFromCool: true
+              tierToCool: { daysAfterLastAccessTimeGreaterThan: 30 }
+            }
+            snapshot: {
+              delete: { daysAfterCreationGreaterThan: 30 }
+            }
+          }
+          filters: {
+            blobTypes: [ 'blockBlob' ]
+            prefixMatch: [ 'test' ]
+          }
+        }
+      }
+    ]
+    privateEndpoints: [
+      {
+        name: 'Test2pep-blob'
+        subnetId: prereq.outputs.subnetIds[0]
+        groupId: 'blob'
+        privateDnsZoneId: prereq.outputs.privateDNSZoneId
+        isManualApproval: false
+      }
+      {
+        name: 'Test2pep-file'
+        subnetId: prereq.outputs.subnetIds[0]
+        groupId: 'file'
+        privateDnsZoneId: prereq.outputs.privateDNSZoneId
+        isManualApproval: false
+      }
+    ]
   }
 }
 
-output storageAccountID string = storageAccount.outputs.id
+output storageAccountID string = test.outputs.id
 ```

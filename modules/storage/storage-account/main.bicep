@@ -1,11 +1,13 @@
 @description('Deployment Location')
-param location string
+param location string = resourceGroup().location
 
 @description('Prefix of Storage Account Resource Name. This param is ignored when name is provided.')
 param prefix string = 'st'
 
 @description('Name of Storage Account. Must be unique within Azure.')
-param name string = '${prefix}${uniqueString(resourceGroup().id, subscription().id)}'
+@maxLength(24)
+@minLength(3)
+param name string = '${prefix}${uniqueString(resourceGroup().id, location)}'
 
 @description('Tags to be applied to the Storage Account.')
 param tags { *: string } = {}
