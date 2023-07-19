@@ -276,3 +276,11 @@ module test3Source '../main.bicep' = {
     ]
   }
 }
+
+output resourceIds object = {
+  test1: test1.outputs.id
+  test2: test2.outputs.id
+  test3Destination1: test3Destination1.outputs.id
+  test3Destination2: test3Destination2.outputs.id
+  test3Source: test3Source.outputs.id
+}
