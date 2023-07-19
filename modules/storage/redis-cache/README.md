@@ -4,7 +4,7 @@ This module deploys Azure Cache for Redis(Microsoft.Cache/redis) and optionally 
 
 ## Details
 
-{{ Add detailed information about the module. }}
+[Azure Cache for Redis](https://azure.microsoft.com/en-us/pricing/details/cache/)  Azure Cache for Redis gives you the ability to use a secure open source Redis cache. It's a dedicated offering managed by Microsoft, to build highly scalable and responsive applications by providing you super-fast access to your data. You get to leverage the rich feature set and ecosystem provided by Redis
 
 ## Parameters
 
@@ -66,7 +66,7 @@ module redisCache 'br/public:storage/redis-cache:2.0.1' = {
 ### Example 2
 
 ```bicep
-module redisCache 'br/public:data/redis-cache:2.0.1' = {
+module redisCache 'br/public:storage/redis-cache:2.0.1' = {
   name: '${uniqueString(deployment().name, 'eastus')}-redis-cache'
   params: {
     location: 'eastus'
