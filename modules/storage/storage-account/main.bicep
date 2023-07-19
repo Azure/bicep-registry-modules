@@ -35,7 +35,7 @@ var isPremium = contains(sku, 'Premium')
 @description('Storage Account Kind.')
 param kind string = 'StorageV2'
 
-@description('The type of identity used for the Cosmos DB account. The type "SystemAssigned, UserAssigned" includes both an implicitly created identity and a set of user-assigned identities. The type "None" will remove any identities from the Cosmos DB account.')
+@description('The type of identity used for the storage account. The type "SystemAssigned, UserAssigned" includes both an implicitly created identity and a set of user-assigned identities. The type "None" will remove any identities from the resource.')
 @allowed([ 'None', 'SystemAssigned', 'SystemAssigned,UserAssigned', 'UserAssigned' ])
 param identityType string = 'None'
 
@@ -63,9 +63,7 @@ param allowedCopyScope {
   enable: bool
   @description('Required when enable=true.')
   scope: ('AAD' | 'PrivateLink')?
-} = {
-  enable: false
-}
+} = { enable: false }
 
 @description('Indicates whether the storage account permits requests to be authorized with the account access key via Shared Key. If false, then all requests, including shared access signatures, must be authorized with Azure Active Directory (Azure AD).')
 param allowSharedKeyAccess bool = true
@@ -106,18 +104,6 @@ param networkAcls networkAclsType = {
   defaultAction: 'Allow'
 }
 
-var varNetworkAclsIpRules = [for ip in networkAcls.?ipAllowlist ?? []: { action: 'Allow', value: ip }]
-
-var varNetworkAclsVirtualNetworkRules = [for subnet in networkAcls.?subnetIds ?? []: { action: 'Allow', id: subnet }]
-
-var varNetworkAcls = {
-  bypass: networkAcls.?bypass ?? 'AzureServices'
-  defaultAction: networkAcls.defaultAction
-  ipRules: varNetworkAclsIpRules
-  resourceAccessRules: networkAcls.?resourceAccessRules
-  virtualNetworkRules: varNetworkAclsVirtualNetworkRules
-}
-
 @description('Network routing choice for data transfer.')
 param routingPreference routingPreferenceType = { routingChoice: 'MicrosoftRouting' }
 
@@ -150,11 +136,6 @@ param blobContainers blobContainerType[] = []
 @description('Configuration for the blob inventory policy.')
 param managementPolicyRules managementPolicyRuleType[] = []
 
-var managementPolicyRulesWithDefaults = [for rule in managementPolicyRules: union(rule, {
-    enabled: rule.?enabled ?? true
-    type: 'Lifecycle'
-  })]
-
 @description('''
 Configure object replication on a source storage accounts.
 This config only applies to the current storage account managed by this module.
@@ -172,6 +153,23 @@ param storageRoleAssignments storageRoleAssignmentsType[] = []
 
 @description('Array of role assignment objects with blobServices/containers scope that contain the \'containerName\', \'roleDefinitionIdOrName\', \'principalId\' and \'principalType\' to define RBAC role assignments on that resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'')
 param containerRoleAssignments containerRoleAssignmentsArray[] = []
+
+var managementPolicyRulesWithDefaults = [for rule in managementPolicyRules: union(rule, {
+    enabled: rule.?enabled ?? true
+    type: 'Lifecycle'
+  })]
+
+var varNetworkAclsIpRules = [for ip in networkAcls.?ipAllowlist ?? []: { action: 'Allow', value: ip }]
+
+var varNetworkAclsVirtualNetworkRules = [for subnet in networkAcls.?subnetIds ?? []: { action: 'Allow', id: subnet }]
+
+var varNetworkAcls = {
+  bypass: networkAcls.?bypass ?? 'AzureServices'
+  defaultAction: networkAcls.defaultAction
+  ipRules: varNetworkAclsIpRules
+  resourceAccessRules: networkAcls.?resourceAccessRules
+  virtualNetworkRules: varNetworkAclsVirtualNetworkRules
+}
 
 var objectReplicationDestinationPolicyWithName = [for policy in objectReplicationDestinationPolicy: union(policy, {
     sourceStorageAccountName: last(split(policy.sourceStorageAccountId, '/'))
@@ -243,12 +241,12 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
       isLocalUserEnabled: enableLocalUser
       isNfsV3Enabled: enableNfsV3
       isSftpEnabled: enableSftp
+      largeFileSharesState: enablelargeFileShares ? 'Enabled' : 'Disabled'
       minimumTlsVersion: minimumTlsVersion
       networkAcls: varNetworkAcls
       publicNetworkAccess: enablePublicNetworkAccess ? 'Enabled' : 'Disabled'
       routingPreference: routingPreference
       supportsHttpsTrafficOnly: supportHttpsTrafficOnly
-      largeFileSharesState: enablelargeFileShares ? 'Enabled' : 'Disabled'
     },
     allowedCopyScope.enable ? { allowedCopyScope: allowedCopyScope.scope } : {},
     encryption.enable ? { encryption: encryption.configurations } : {},
@@ -259,6 +257,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
 }
 
 resource managementpolicy 'Microsoft.Storage/storageAccounts/managementPolicies@2022-09-01' = if (!empty(managementPolicyRulesWithDefaults)) {
+  dependsOn: [ blobService ]
   name: 'default'
   parent: storageAccount
   properties: {
@@ -489,7 +488,10 @@ type encryptionType = {
     keyVaultProperties: encryptionKeyVaultPropertiesType?
     @description('A boolean indicating whether or not the service applies a secondary layer of encryption with platform managed keys for data at rest.')
     requireInfrastructureEncryption: bool?
-    @description('List of services which support encryption.')
+    @description('''
+    List of services which enable encryption using customer-managed keys.
+    Azure only support enabling either blob and file, queue and table, or all of them.
+    ''')
     services: encryptionServicesType?
   }?
 }
@@ -586,7 +588,7 @@ type managementPolicyFilterType = {
   @description('An array of predefined enum values. Currently blockBlob supports all tiering and delete actions. Only delete actions are supported for appendBlob.')
   blobTypes: string[]
   @description('An array of strings for prefixes to be match.')
-  prefixMatch: string[]
+  prefixMatch: string[]?
   @description('An array of blob index tag based filters, there can be at most 10 tag filters')
   @maxLength(10)
   blobIndexMatch: managementPolicyTagFilterType[]?
