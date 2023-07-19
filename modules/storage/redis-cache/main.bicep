@@ -1,3 +1,7 @@
+metadata name = 'Azure Cache for Redis'
+metadata description = 'This module deploys Azure Cache for Redis(Microsoft.Cache/redis) and optionally available integrations.'
+metadata owner = 'sumit-salunke'
+
 @description('Optional. The prefix of the Redis cache resource name.')
 param prefix string = 'redis-'
 
@@ -36,8 +40,7 @@ param redisVersion string = '6.0'
 @description('Optional. The size of the Redis cache to deploy. Valid values: for C (Basic/Standard) family (0, 1, 2, 3, 4, 5, 6), for P (Premium) family (1, 2, 3, 4).')
 param capacity int = 1
 
-@minValue(1)
-@description('Optional. The number of shards to be created on a Premium Cluster Cache.')
+@description('Optional. The number of shards to be created on a Premium Cluster Cache. Set 0 to disable this feature.')
 param shardCount int = 1
 
 @minValue(1)
@@ -47,7 +50,6 @@ param replicasPerMaster int = 1
 @minValue(1)
 @description('Optional. Amount of replicas to create per primary for this Redis Cache.')
 param replicasPerPrimary int = 1
-
 
 @description('Optional. Static IP address. Optionally, may be specified when deploying a Redis cache inside an existing Azure Virtual Network; auto assigned by default.')
 param staticIP string = ''
@@ -75,6 +77,15 @@ param diagnosticEventHubAuthorizationRuleId string = ''
 @description('Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category.')
 param diagnosticEventHubName string = ''
 
+@description('Should Zone Redundancy be enabled for this Redis Cache? The target Region must support availability zones, therefore even if this is set true, it will only activate zone redudancy in a supported region. Set this false to disable zone redundancy completely, regardless if a region supports availability zones.')
+param zoneRedundancyEnabled bool = true
+
+@description('The number of logical zones to enable for the Redis Cache. The default is 3. The number must be a positive integer from 1 to 3. Use 1 for single-zoned resources. For multi-zoned resources, the value must be less than or equal to the number of supported zones.')
+param numberOfZones int = 3
+
+@description('The offset from the starting logical availability zone. An error will be returned if zoneOffset plus numberOfZones exceeds the number of supported zones in the target Region.')
+param zoneOffset int = 0
+
 @description('The name of logs that will be streamed.')
 @allowed([
   'ConnectedClientList'
@@ -92,7 +103,7 @@ param metricsToEnable array = [
 @description('Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID')
 param roleAssignments array = []
 
-@description('Optional.  Firewall rule for the redis cache')
+@description('Optional. Firewall rule for the redis cache')
 param redisFirewallRules object = {}
 
 @description('Define Private Endpoints that should be created for Azure Redis Cache.')
@@ -143,6 +154,12 @@ var varPrivateEndpoints = [for privateEndpoint in privateEndpoints: {
 
 var isPremium = skuName == 'Premium'
 
+// Validate the the correct SKU is being used for AZ support and that the user has not disabled zone redundancy
+var isZoneRedundant = isPremium && zoneRedundancyEnabled
+
+// Get the number of zones supported in the Region, based on the users supplied configuration
+var varZones = isZoneRedundant ? pickZones('Microsoft.Cache', 'redis', location, numberOfZones, zoneOffset) : []
+
 resource redisCache 'Microsoft.Cache/redis@2022-06-01' = {
   name: name
   location: location
@@ -153,19 +170,19 @@ resource redisCache 'Microsoft.Cache/redis@2022-06-01' = {
     publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : (!empty(publicNetworkAccess) ? 'Disabled' : null)
     redisConfiguration: !empty(redisConfiguration) ? redisConfiguration : null
     redisVersion: redisVersion
-    shardCount: isPremium  ? shardCount : null
-    replicasPerMaster: isPremium  ? replicasPerMaster : null
-    replicasPerPrimary: isPremium  ? replicasPerPrimary : null
+    shardCount: isPremium && shardCount >= 1 ? shardCount : null
+    replicasPerMaster: isPremium ? replicasPerMaster : null
+    replicasPerPrimary: isPremium ? replicasPerPrimary : null
     sku: {
       capacity: capacity
-      family: isPremium  ? 'P' : 'C'
+      family: isPremium ? 'P' : 'C'
       name: skuName
     }
     staticIP: !empty(staticIP) ? staticIP : null
     subnetId: !empty(subnetId) ? subnetId : null
     tenantSettings: tenantSettings
   }
-  zones: isPremium  ? pickZones('Microsoft.Cache', 'redis', location, 1) : null
+  zones: length(varZones) > 0 ? varZones : null
 }
 
 resource redis_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(diagnosticStorageAccountId) || !empty(diagnosticWorkspaceId) || !empty(diagnosticEventHubAuthorizationRuleId) || !empty(diagnosticEventHubName)) {
@@ -181,7 +198,7 @@ resource redis_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05
   scope: redisCache
 }
 
-resource redis_firewall 'Microsoft.Cache/redis/firewallRules@2022-06-01' = [ for varRedisFirewallRule in varRedisFirewallRules:  if (!empty(redisFirewallRules)) {
+resource redis_firewall 'Microsoft.Cache/redis/firewallRules@2022-06-01' = [for varRedisFirewallRule in varRedisFirewallRules: if (!empty(redisFirewallRules)) {
   name: varRedisFirewallRule.redisCacheFirewallRuleName
   parent: redisCache
   properties: {
