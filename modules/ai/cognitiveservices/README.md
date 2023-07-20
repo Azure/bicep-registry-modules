@@ -2,7 +2,7 @@
 
 This module deploys CognitiveServices (Microsoft.CognitiveServices/accounts) and optionally available integrations.
 
-## Description
+## Details
 
 The Bicep module deploys an Azure Cognitive Service to a specified location, allowing customization of parameters such as service type, name, tags, and network access settings. It supports advanced features like private endpoints, RBAC role assignments, and user-owned storage, providing a flexible and comprehensive solution for deploying and configuring Azure Cognitive Services.
 

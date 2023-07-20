@@ -1,3 +1,7 @@
+metadata name = 'CognitiveServices'
+metadata description = 'This module deploys CognitiveServices (Microsoft.CognitiveServices/accounts) and optionally available integrations.'
+metadata owner = 'omegavveapon'
+
 @description('The kind of Cognitive Service to create. See: https://learn.microsoft.com/en-us/azure/cognitive-services/create-account-bicep for available kinds.')
 @allowed([ 'CognitiveServices', 'ComputerVision', 'CustomVision.Prediction', 'CustomVision.Training', 'Face', 'FormRecognizer', 'SpeechServices', 'LUIS', 'QnAMaker', 'TextAnalytics', 'TextTranslation', 'AnomalyDetector', 'ContentModerator', 'Personalizer', 'OpenAI' ])
 param kind string = 'CognitiveServices'
