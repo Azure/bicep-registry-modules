@@ -3,4 +3,5 @@
   "name": "CognitiveServices",
   "summary": "This module deploys CognitiveServices (Microsoft.CognitiveServices/accounts) and optionally available integrations.",
   "owner": "omegavveapon"
+
 }
