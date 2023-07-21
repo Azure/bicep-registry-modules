@@ -1,3 +1,7 @@
+metadata name = 'Dapr ACA Environment'
+metadata description = 'Container Apps Environment for Dapr'
+metadata owner = 'gordonby'
+
 @description('Specifies the location for all resources.')
 param location string
 

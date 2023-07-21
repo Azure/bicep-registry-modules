@@ -2,7 +2,7 @@
 
 Builds a container image inside ACR from source code
 
-## Description
+## Details
 
 Azure Container Registry has the capability to build and store container images from source code repository.
 This bicep module leverages DeploymentScript to orchestrate the image build.
@@ -32,9 +32,9 @@ This bicep module leverages DeploymentScript to orchestrate the image build.
 
 ## Outputs
 
-| Name     | Type   | Description                                                         |
-| :------- | :----: | :------------------------------------------------------------------ |
-| acrImage | string | The ACR uri the image can be accessed on if building was successful |
+| Name       | Type     | Description                                                         |
+| :--------- | :------: | :------------------------------------------------------------------ |
+| `acrImage` | `string` | The ACR uri the image can be accessed on if building was successful |
 
 ## Examples
 
@@ -44,7 +44,7 @@ This bicep module leverages DeploymentScript to orchestrate the image build.
 param acrName string
 param location string
 
-module buildDaprImage 'br/public:deployment-scripts/build-acr:2.0.1' = {
+module buildDaprImage 'br/public:deployment-scripts/build-acr:2.0.2' = {
   name: 'buildAcrImage-linux-dapr'
   params: {
     AcrName: acrName
@@ -62,7 +62,7 @@ module buildDaprImage 'br/public:deployment-scripts/build-acr:2.0.1' = {
 param acrName string
 param location string
 
-module buildWinAcrImage 'br/public:deployment-scripts/build-acr:2.0.1' = {
+module buildWinAcrImage 'br/public:deployment-scripts/build-acr:2.0.2' = {
   name: 'buildAcrImage-win-eshop'
   params: {
     AcrName: acrName
@@ -83,7 +83,7 @@ param acrName string
 param acaEnvName string
 param location string
 
-module buildDaprImage 'br/public:deployment-scripts/build-acr:2.0.1' = {
+module buildDaprImage 'br/public:deployment-scripts/build-acr:2.0.2' = {
   name: 'buildAcrImage-linux-dapr'
   params: {
     AcrName: acrName

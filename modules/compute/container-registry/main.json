@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.16.2.56959",
-      "templateHash": "10364089875087163701"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "17499475671317837673"
+    },
+    "name": "Container Registry",
+    "description": "This module deploys Container Registry (Microsoft.ContainerRegistry/registries) and optionally available integrations.",
+    "owner": "thomasriley"
   },
   "parameters": {
     "name": {
@@ -427,8 +430,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "11760706098243327351"
+              "version": "0.19.5.34762",
+              "templateHash": "16232062372228641864"
             }
           },
           "parameters": {
@@ -543,8 +546,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "8728918711703682047"
+              "version": "0.19.5.34762",
+              "templateHash": "9376650268912092515"
             }
           },
           "parameters": {

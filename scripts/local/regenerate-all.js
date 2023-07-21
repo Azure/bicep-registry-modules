@@ -5,6 +5,7 @@
 
   Usage:
     cd repos/bicep-registry-modules
+    npm i
     node scripts/local/regenerate-all.js
 
 */
@@ -19,10 +20,9 @@ const {
 const { green, reset, yellow } = require("./util/colors");
 const semver = require("semver");
 
-let brm = `..\\bicep\\src\\Bicep.RegistryModuleTool\\Bin\\Debug\\net7.0\\Azure.Bicep.RegistryModuleTool`;
+let brm = `../bicep/src/Bicep.RegistryModuleTool/Bin/Debug/net7.0/Azure.Bicep.RegistryModuleTool`;
 brm = existsSync(brm) ? brm : brm + ".exe";
 brm = existsSync(brm) ? brm : "brm";
-brm = resolve(brm);
 
 console.warn(`Using this brm: ${brm}`);
 

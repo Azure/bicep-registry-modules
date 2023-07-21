@@ -4,9 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.17.1.54307",
-      "templateHash": "12950330543691830228"
+      "version": "0.19.5.34762",
+      "templateHash": "5876103950987865532"
     },
+    "name": "Array Loop",
+    "owner": "bicep-admins",
     "description": "A sample Bicep registry module demonstrating array iterations."
   },
   "parameters": {
