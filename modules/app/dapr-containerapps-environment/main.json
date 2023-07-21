@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.19.5.34762",
-      "templateHash": "15365000902064668909"
+      "version": "0.18.4.5664",
+      "templateHash": "9351916171432675857"
     },
     "name": "Dapr ACA Environment",
     "description": "Container Apps Environment for Dapr",
@@ -135,8 +135,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "9995497352071894357"
+              "version": "0.18.4.5664",
+              "templateHash": "5587468948571843008"
             }
           },
           "parameters": {
@@ -268,8 +268,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.19.5.34762",
-                      "templateHash": "4646755557889482991"
+                      "version": "0.18.4.5664",
+                      "templateHash": "18174203966551138930"
                     }
                   },
                   "parameters": {
@@ -368,8 +368,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "14465286291228127236"
+              "version": "0.18.4.5664",
+              "templateHash": "1114733898240896194"
             }
           },
           "parameters": {
@@ -503,8 +503,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "1751154414392091459"
+              "version": "0.18.4.5664",
+              "templateHash": "12904028119135763180"
             }
           },
           "parameters": {
@@ -639,8 +639,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "2884866721226176739"
+              "version": "0.18.4.5664",
+              "templateHash": "11491086061233723071"
             }
           },
           "parameters": {
