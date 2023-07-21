@@ -4,12 +4,9 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.19.5.34762",
-      "templateHash": "14496926460365009778"
-    },
-    "name": "Azure DNS zones",
-    "description": "Azure DNS is a hosting service for DNS domains that provides name resolution.",
-    "owner": "vlahane"
+      "version": "0.17.1.54307",
+      "templateHash": "2439625640065370104"
+    }
   },
   "parameters": {
     "prefix": {
