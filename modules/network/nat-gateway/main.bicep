@@ -1,7 +1,3 @@
-metadata name = 'NAT gateways'
-metadata description = 'A bicep module for simplified deployment for NAT gateways and available configuration options.'
-metadata owner = 'vlahane'
-
 @description('Required. Prefix of NAT Gateway Resource Name. This param is ignored when name is provided.')
 param prefix string = 'ng'
 
