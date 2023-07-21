@@ -5,8 +5,11 @@
     "_generator": {
       "name": "bicep",
       "version": "0.18.4.5664",
-      "templateHash": "11962472505175294096"
-    }
+      "templateHash": "4782482311635808468"
+    },
+    "name": "CognitiveServices",
+    "description": "This module deploys CognitiveServices (Microsoft.CognitiveServices/accounts) and optionally available integrations.",
+    "owner": "omegavveapon"
   },
   "parameters": {
     "kind": {
