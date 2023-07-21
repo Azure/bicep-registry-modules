@@ -1,3 +1,7 @@
+metadata name = 'Cost Management scheduled action for subscriptions'
+metadata description = 'Creates a scheduled action to notify recipients about the latest costs or when an anomaly is detected.'
+metadata owner = 'cost-management-contrib'
+
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 
