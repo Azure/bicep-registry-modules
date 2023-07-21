@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.19.5.34762",
-      "templateHash": "7958752088324758326"
+      "version": "0.18.4.5664",
+      "templateHash": "13078614904838005096"
     },
     "name": "Bing Resource",
     "description": "This module deploys Azure Bing Resource",
