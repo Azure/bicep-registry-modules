@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.19.5.34762",
-      "templateHash": "18288547414035236019"
+      "version": "0.18.4.5664",
+      "templateHash": "15693387401354824008"
     },
     "name": "Availability Set",
     "description": "This module deploys Microsoft.Compute Availability Sets and optionally available children or extensions",
@@ -142,8 +142,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "13867729327786497095"
+              "version": "0.18.4.5664",
+              "templateHash": "13951410376159317775"
             }
           },
           "parameters": {
