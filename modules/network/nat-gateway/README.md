@@ -38,7 +38,7 @@ The module creates a NAT Gateway resource using the Microsoft.Network/natGateway
 param name string = 'my-natGateway-01'
 param location = 'eastus'
 
-module natGateway 'br/public:network/nat-gateway:1.0.2' = {
+module natGateway 'br/public:network/nat-gateway:1.0.4' = {
   name: 'my-natGateway-01'
   params: {
     name: name
@@ -53,7 +53,7 @@ module natGateway 'br/public:network/nat-gateway:1.0.2' = {
 param name string = 'my-natGateway-02'
 param location = 'eastus'
 
-module natGateway 'br/public:network/nat-gateway:1.0.2' = {
+module natGateway 'br/public:network/nat-gateway:1.0.4' = {
   name: 'my-natGateway-02'
   params: {
     name: name
