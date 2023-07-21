@@ -56,7 +56,7 @@ module myenv 'br/public:app/dapr-containerapps-environment:1.0.1' = {
   }
 }
 
-module appNodeService 'br/public:app/dapr-containerapp:1.0.3' = {
+module appNodeService 'br/public:app/dapr-containerapp:1.0.4' = {
   name: 'stateNodeApp'
   params: {
     location: location
@@ -75,7 +75,7 @@ module appNodeService 'br/public:app/dapr-containerapp:1.0.3' = {
   }
 }
 
-module appPythonClient 'br/public:app/dapr-containerapp:1.0.3' = {
+module appPythonClient 'br/public:app/dapr-containerapp:1.0.4' = {
   name: 'statePyApp'
   params: {
     location: location
@@ -104,7 +104,7 @@ module myenv 'br/public:app/dapr-containerapps-environment:1.0.1' = {
   }
 }
 
-module appSubscriber 'br/public:app/dapr-containerapp:1.0.3' = {
+module appSubscriber 'br/public:app/dapr-containerapp:1.0.4' = {
   name: 'subscriber'
   params: {
     location: location
@@ -116,7 +116,7 @@ module appSubscriber 'br/public:app/dapr-containerapp:1.0.3' = {
   }
 }
 
-module appPublisher 'br/public:app/dapr-containerapp:1.0.3' = {
+module appPublisher 'br/public:app/dapr-containerapp:1.0.4' = {
   name: 'publisher'
   params: {
     location: location

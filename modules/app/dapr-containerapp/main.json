@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.19.5.34762",
-      "templateHash": "16388312805045249254"
+      "version": "0.18.4.5664",
+      "templateHash": "6845828961412582726"
     },
     "name": "dapr container app",
     "description": "A dapr optimised container app",
@@ -231,8 +231,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "437320584951531393"
+              "version": "0.18.4.5664",
+              "templateHash": "7686506153677668728"
             }
           },
           "parameters": {
@@ -519,8 +519,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "16298242698395491734"
+              "version": "0.18.4.5664",
+              "templateHash": "12056449127606722229"
             }
           },
           "parameters": {
