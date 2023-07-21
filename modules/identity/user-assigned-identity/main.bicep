@@ -1,3 +1,7 @@
+metadata name = 'Managed Identity'
+metadata description = 'Azure managed identities provide an easy way for applications to access resources securely in Azure.'
+metadata owner = 'vlahane'
+
 @description('Prefix of User Assigned Identity Resource Name. This param is ignored when name is provided.')
 param prefix string = 'uai'
 

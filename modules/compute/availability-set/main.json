@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.4.1318.3566",
-      "templateHash": "15567849158229106902"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "18288547414035236019"
+    },
+    "name": "Availability Set",
+    "description": "This module deploys Microsoft.Compute Availability Sets and optionally available children or extensions",
+    "owner": "CARML"
   },
   "parameters": {
     "name": {
@@ -113,7 +116,7 @@
         "count": "[length(parameters('roleAssignments'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-AvSet-Rbac-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -121,18 +124,14 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "description": {
-            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), parameters('roleAssignments')[copyIndex()].description, '')]"
-          },
+          "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
           "principalIds": {
             "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
           },
           "roleDefinitionIdOrName": {
             "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
           },
-          "principalType": {
-            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), parameters('roleAssignments')[copyIndex()].principalType, '')]"
-          },
+          "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
           "resourceId": {
             "value": "[resourceId('Microsoft.Compute/availabilitySets', parameters('name'))]"
           }
@@ -143,8 +142,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.1318.3566",
-              "templateHash": "8176262699368239987"
+              "version": "0.19.5.34762",
+              "templateHash": "13867729327786497095"
             }
           },
           "parameters": {
@@ -219,24 +218,24 @@
   "outputs": {
     "name": {
       "type": "string",
-      "value": "[parameters('name')]",
       "metadata": {
         "description": "The name of the availability set"
-      }
+      },
+      "value": "[parameters('name')]"
     },
     "resourceId": {
       "type": "string",
-      "value": "[resourceId('Microsoft.Compute/availabilitySets', parameters('name'))]",
       "metadata": {
         "description": "The resource ID of the availability set"
-      }
+      },
+      "value": "[resourceId('Microsoft.Compute/availabilitySets', parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
-      "value": "[resourceGroup().name]",
       "metadata": {
         "description": "The resource group the availability set was deployed into"
-      }
+      },
+      "value": "[resourceGroup().name]"
     }
   }
 }

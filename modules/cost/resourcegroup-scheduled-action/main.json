@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.17.1.54307",
-      "templateHash": "10669418079724940131"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "18225803604242511919"
+    },
+    "name": "Cost Management scheduled action for resource groups",
+    "description": "Creates a scheduled action to notify recipients about the latest costs on a recurring schedule.",
+    "owner": "cost-management-contrib"
   },
   "parameters": {
     "name": {

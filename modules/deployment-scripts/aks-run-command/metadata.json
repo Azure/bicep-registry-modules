@@ -1,6 +1,0 @@
-{
-  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
-  "name": "AKS Run Command Script",
-  "summary": "An Azure CLI Deployment Script that allows you to run a command on a Kubernetes cluster.",
-  "owner": "Aks-Bicep-Accelerator-Maintainers"
-}

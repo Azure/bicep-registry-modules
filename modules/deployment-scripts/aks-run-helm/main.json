@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.17.1.54307",
-      "templateHash": "2426182058332609954"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "13146146605378120228"
+    },
+    "name": "AKS Run Helm Script",
+    "description": "An Azure CLI Deployment Script that allows you to run a Helm command at a Kubernetes cluster.",
+    "owner": "dciborow"
   },
   "parameters": {
     "aksName": {
