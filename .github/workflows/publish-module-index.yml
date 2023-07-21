@@ -1,5 +1,7 @@
 name: Publish module index
 on:
+  schedule:
+    - cron: "13 5,21 * * *"
   workflow_dispatch:
 
 permissions:
