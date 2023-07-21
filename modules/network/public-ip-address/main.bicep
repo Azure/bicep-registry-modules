@@ -1,3 +1,7 @@
+metadata name = 'Public Ip Address'
+metadata description = 'Bicep Module for creating Public Ip Address'
+metadata owner = 'schandnani'
+
 @minLength(1)
 @maxLength(80)
 @description('Required. Specifies the name of the publicIPAddress.')

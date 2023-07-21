@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.13.1.58284",
-      "templateHash": "1371553491347240684"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "12558611171422575177"
+    },
+    "name": "ACR Image Build",
+    "description": "Builds a container image inside ACR from source code",
+    "owner": "gordonby"
   },
   "parameters": {
     "AcrName": {
@@ -228,10 +231,10 @@
   "outputs": {
     "acrImage": {
       "type": "string",
-      "value": "[format('{0}/{1}', reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('AcrName')), '2021-12-01-preview').loginServer, variables('taggedImageName'))]",
       "metadata": {
         "description": "The ACR uri the image can be accessed on if building was successful"
-      }
+      },
+      "value": "[format('{0}/{1}', reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('AcrName')), '2021-12-01-preview').loginServer, variables('taggedImageName'))]"
     }
   }
 }
