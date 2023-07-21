@@ -2,7 +2,7 @@
 
 This module deploys Azure Bing Resource
 
-## Description
+## Details
 
 Azure Bing resource refers to the integration of Bing's search capabilities into the Azure platform. Azure provides the Azure Cognitive Search service, which allows you to incorporate powerful search functionality, including web search, image search, news search, video search, and more, using Bing's search algorithms.
 This Bicep Module helps to create Bing Search Kind resource. You may need to register Microsoft/Bing resource provider for your subscription before using this module.
@@ -33,7 +33,7 @@ This Bicep Module helps to create Bing Search Kind resource. You may need to reg
 Deploy a Bing Search v7 resource with the free SKU
 
 ```
-module bing-search-resource 'br/public:ai/bing-resource:1.0.1' = {
+module bing-search-resource 'br/public:ai/bing-resource:1.0.2' = {
   name: 'bing-search-resource'
   params: {
      kind: 'Bing.Search.v7'
@@ -49,7 +49,7 @@ module bing-search-resource 'br/public:ai/bing-resource:1.0.1' = {
 Deploy a Bing Custom Search resource with the standard SKU
 
 ```
-module bing-search-resource 'br/public:ai/bing-resource:1.0.1' = {
+module bing-search-resource 'br/public:ai/bing-resource:1.0.2' = {
   name: 'bing-search-resource'
   params: {
      kind: 'Bing.CustomSearch'

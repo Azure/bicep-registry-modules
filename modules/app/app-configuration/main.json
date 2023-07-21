@@ -6,9 +6,12 @@
     "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.17.1.54307",
-      "templateHash": "1761833960528350829"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "1075095153312310718"
+    },
+    "name": "Azure App Configuration",
+    "description": "Bicep module for simplified deployment Azure App Configuration resources and optionally available integrations.",
+    "owner": "sunilthorat09"
   },
   "definitions": {
     "appConfigurationStoreKeyValueType": {
@@ -643,8 +646,8 @@
             "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "16927135025396608320"
+              "version": "0.19.5.34762",
+              "templateHash": "9269277903873652085"
             }
           },
           "parameters": {
@@ -743,8 +746,8 @@
             "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "18440659148863256788"
+              "version": "0.19.5.34762",
+              "templateHash": "17584855190782240496"
             }
           },
           "definitions": {

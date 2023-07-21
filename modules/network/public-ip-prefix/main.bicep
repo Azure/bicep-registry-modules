@@ -1,3 +1,7 @@
+metadata name = 'Public Ip Prefix'
+metadata description = 'Bicep Module for creating Public Ip Prefix'
+metadata owner = 'schandnani'
+
 @description('Required. Name of the public IP Prefix.')
 param name string
 

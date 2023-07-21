@@ -1,3 +1,7 @@
+metadata name = 'Availability Set'
+metadata description = 'This module deploys Microsoft.Compute Availability Sets and optionally available children or extensions'
+metadata owner = 'CARML'
+
 @description('Required. The name of the availability set that is being created.')
 param name string
 

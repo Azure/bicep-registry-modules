@@ -4,9 +4,10 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.17.1.54307",
-      "templateHash": "8585225941353157912"
+      "version": "0.19.5.34762",
+      "templateHash": "2905255484229578890"
     },
+    "name": "Hello World",
     "description": "A \"שָׁלוֹם עוֹלָם\" sample Bicep registry module",
     "owner": "bicep-admins"
   },

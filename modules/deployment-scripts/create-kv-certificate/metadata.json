@@ -1,6 +1,0 @@
-{
-  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
-  "name": "Key Vault Certificate Creation",
-  "summary": "Create Key Vault self-signed certificates. Requires Key Vaults to be using RBAC Authorization, not Access Policies.",
-  "owner": "Aks-Bicep-Accelerator-Maintainers"
-}
