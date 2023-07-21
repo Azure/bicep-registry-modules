@@ -1,3 +1,7 @@
+metadata name = 'Resource scoped role assignment'
+metadata description = 'Create an Azure Authorization Role Assignment at the scope of a Resource E.g. on a Storage Container'
+metadata owner = 'brwilkinson'
+
 @sys.description('The scope for the role assignment, fully qualified resourceId')
 param resourceId string
 

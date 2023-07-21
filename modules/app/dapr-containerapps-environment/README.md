@@ -2,7 +2,7 @@
 
 Container Apps Environment for Dapr
 
-## Description
+## Details
 
 Provides an optimised Container App Environment for Dapr applications.
 
@@ -39,17 +39,17 @@ State CosmosDb | Azure CosmosDb | [dapr container apps api store](https://github
 
 ## Outputs
 
-| Name                          | Type   | Description                                                     |
-| :---------------------------- | :----: | :-------------------------------------------------------------- |
-| containerAppEnvironmentName   | string | The name of the created Azure Container Apps Environment        |
-| appInsightsInstrumentationKey | string | The Azure Applications Insights (telemetry) instrumentation key |
+| Name                            | Type     | Description                                                     |
+| :------------------------------ | :------: | :-------------------------------------------------------------- |
+| `containerAppEnvironmentName`   | `string` | The name of the created Azure Container Apps Environment        |
+| `appInsightsInstrumentationKey` | `string` | The Azure Applications Insights (telemetry) instrumentation key |
 
 ## Examples
 
 ### Creation of Environment for ServiceBus PubSub apps
 
 ```bicep
-module myenv 'br/public:app/dapr-containerapps-environment:1.2.1' = {
+module myenv 'br/public:app/dapr-containerapps-environment:1.2.3' = {
   name: 'pubsub'
   params: {
     location: location
@@ -63,7 +63,7 @@ module myenv 'br/public:app/dapr-containerapps-environment:1.2.1' = {
 ### Creation of Environment for Blob based state
 
 ```bicep
-module myenv 'br/public:app/dapr-containerapps-environment:1.2.1' = {
+module myenv 'br/public:app/dapr-containerapps-environment:1.2.3' = {
   name: 'state'
   params: {
     location: location
@@ -80,7 +80,7 @@ module myenv 'br/public:app/dapr-containerapps-environment:1.2.1' = {
 ### Creation of Environment for CosmosDb based state
 
 ```bicep
-module myenv 'br/public:app/dapr-containerapps-environment:1.2.1' = {
+module myenv 'br/public:app/dapr-containerapps-environment:1.2.3' = {
   name: 'state'
   params: {
     location: location
@@ -99,7 +99,7 @@ module myenv 'br/public:app/dapr-containerapps-environment:1.2.1' = {
 Create the Azure Service and Dapr component on an existing Container Apps Environment
 
 ```bicep
-module envAndComponent1 'br/public:app/dapr-containerapps-environment:1.2.1' = {
+module envAndComponent1 'br/public:app/dapr-containerapps-environment:1.2.3' = {
   name: 'multiComponentEnvPlusCosmos'
   params: {
     location: location
@@ -116,7 +116,7 @@ module envAndComponent1 'br/public:app/dapr-containerapps-environment:1.2.1' = {
 When using multiple components, you can stack the deployments
 
 ```bicep
-module envAndComponent1 'br/public:app/dapr-containerapps-environment:1.2.1' = {
+module envAndComponent1 'br/public:app/dapr-containerapps-environment:1.2.3' = {
   name: 'multiComponentEnvPlusCosmos'
   params: {
     location: location
@@ -128,7 +128,7 @@ module envAndComponent1 'br/public:app/dapr-containerapps-environment:1.2.1' = {
   }
 }
 
-module component2 'br/public:app/dapr-containerapps-environment:1.2.1' = {
+module component2 'br/public:app/dapr-containerapps-environment:1.2.3' = {
   name: 'multicomponentBlobAddToEnv'
   params: {
     location: location
@@ -168,7 +168,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2022-05-01' = {
   }
 }
 
-module zoneRedundantEnv 'br/public:app/dapr-containerapps-environment:1.2.1' = {
+module zoneRedundantEnv 'br/public:app/dapr-containerapps-environment:1.2.3' = {
   name: 'zoneRedundantEnv'
   params: {
     location: location

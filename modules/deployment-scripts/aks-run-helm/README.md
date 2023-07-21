@@ -2,7 +2,7 @@
 
 An Azure CLI Deployment Script that allows you to run a Helm command at a Kubernetes cluster.
 
-## Description
+## Details
 
 When deploying a Kubernetes cluster, it may be useful to include Helm scripts as part of the deployment process.
 Using this Bicep module, you can directly include the setup and configuration of helm apps from any public container registry.
@@ -28,16 +28,16 @@ More information about using Helm on Azure can be found [here](https://docs.micr
 
 ## Outputs
 
-| Name        | Type  | Description                |
-| :---------- | :---: | :------------------------- |
-| helmOutputs | array | Helm Command Output Values |
+| Name          | Type    | Description                |
+| :------------ | :-----: | :------------------------- |
+| `helmOutputs` | `array` | Helm Command Output Values |
 
 ## Examples
 
 ### Running a simple command
 
 ```bicep
-module runCmd 'br/public:deployment-scripts/aks-run-helm:1.1.0' = {
+module runCmd 'br/public:deployment-scripts/aks-run-helm:2.0.3' = {
   name: 'kubectlGetPods'
   params: {
     aksName: aksName
@@ -52,7 +52,7 @@ module runCmd 'br/public:deployment-scripts/aks-run-helm:1.1.0' = {
 When working with an existing managed identity that has the correct RBAC, you can opt out of new RBAC assignments and set the initial delay to zero.
 
 ```bicep
-module runCmd 'br/public:deployment-scripts/aks-run-helm:1.1.0' = {
+module runCmd 'br/public:deployment-scripts/aks-run-helm:2.0.3' = {
   name: 'kubectlGetNodes'
   params: {
     useExistingManagedIdentity: true
@@ -72,7 +72,7 @@ The module will sequence each command to run after the previous completes. There
 var contributor='b24988ac-6180-42a0-ab88-20f7382dd24c'
 var rbacWriter='a7ffa36f-339b-4b5c-8bdf-e2c188b2c0eb'
 
-module runCmd 'br/public:deployment-scripts/aks-run-helm:1.1.0' = {
+module runCmd 'br/public:deployment-scripts/aks-run-helm:2.0.3' = {
   name: 'kubectlRunNginx'
   params: {
     aksName: aksName
@@ -83,7 +83,7 @@ module runCmd 'br/public:deployment-scripts/aks-run-helm:1.1.0' = {
 ```
 
 ```bicep
-module runCmd 'br/public:deployment-scripts/aks-run-helm:1.1.0' = {
+module runCmd 'br/public:deployment-scripts/aks-run-helm:2.0.3' = {
   name: 'kubectlRunNginx'
   params: {
     aksName: aksName
@@ -96,7 +96,7 @@ module runCmd 'br/public:deployment-scripts/aks-run-helm:1.1.0' = {
 ### Running Helm Commands
 
 ```bicep
-module helmInstallIngressController 'br/public:deployment-scripts/aks-run-helm:1.1.0' = {
+module helmInstallIngressController 'br/public:deployment-scripts/aks-run-helm:2.0.3' = {
   name: 'helmInstallIngressController'
   params: {
     aksName: aksName

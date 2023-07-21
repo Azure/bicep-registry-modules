@@ -1,3 +1,7 @@
+metadata name = 'ACR Image Import'
+metadata description = 'An Azure CLI Deployment Script that imports public container images to an Azure Container Registry'
+metadata owner = 'Aks-Bicep-Accelerator-Maintainers'
+
 @description('The name of the Azure Container Registry')
 param acrName string
 
