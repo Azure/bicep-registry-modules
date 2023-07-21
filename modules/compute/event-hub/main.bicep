@@ -1,3 +1,7 @@
+metadata name = 'Azure Event-Hub'
+metadata description = 'This module deploys Microsoft.data event clusters, event namespaces, event hubs and associated configurations.'
+metadata owner = 'sumit-salunke'
+
 @description('Optional. Name for the Event Hub cluster, Alphanumerics and hyphens characters, Start with letter, End with letter or number.')
 // We can not pass default variable value ''. Because it was showing The template resource '' of type 'Microsoft.EventHub/clusters' at line '1' is not valid. The name property cannot be null or empty.
 param clusterName string = 'null'

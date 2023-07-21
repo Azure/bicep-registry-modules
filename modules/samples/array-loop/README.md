@@ -2,7 +2,7 @@
 
 A sample Bicep registry module demonstrating array iterations.
 
-## Description
+## Details
 
 This is very detailed description for a sample Bicep registry module demonstrating array iterations.
 
@@ -22,10 +22,10 @@ Hic est descriptio valde detaliata pro modulo exemplaris Bicep registry, ostende
 
 ## Outputs
 
-| Name            | Type  | Description                                                          |
-| :-------------- | :---: | :------------------------------------------------------------------- |
-| namesByVariable | array | An output demonstrating iterating array items with an item variable. |
-| out3            | array | An output demonstrating iterating array items with an index.         |
+| Name              | Type    | Description                                                          |
+| :---------------- | :-----: | :------------------------------------------------------------------- |
+| `namesByVariable` | `array` | An output demonstrating iterating array items with an item variable. |
+| `out3`            | `array` | An output demonstrating iterating array items with an index.         |
 
 ## Examples
 

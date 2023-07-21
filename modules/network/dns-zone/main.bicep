@@ -1,3 +1,7 @@
+metadata name = 'Azure DNS zones'
+metadata description = 'Azure DNS is a hosting service for DNS domains that provides name resolution.'
+metadata owner = 'vlahane'
+
 @description('Prefix of DNS Resource Name. This param is ignored when name is provided.')
 param prefix string = 'azure-'
 
