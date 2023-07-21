@@ -1,3 +1,7 @@
+metadata name = 'Azure VMSS with Custom Image'
+metadata description = 'Create an Azure VMSS Cluster with a Custom Image to simplify creation of Marketplace Applications'
+metadata owner = 'dciborow'
+
 @description('Deployment Location')
 param location string = resourceGroup().location
 

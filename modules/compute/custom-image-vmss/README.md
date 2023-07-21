@@ -2,7 +2,7 @@
 
 Create an Azure VMSS Cluster with a Custom Image to simplify creation of Marketplace Applications
 
-## Description
+## Details
 
 The Azure Marketplace makes it easy to [create and publish](https://learn.microsoft.com/en-us/azure/marketplace/azure-vm-use-own-image) custom Virtual Machine images.
 Customers can then use the custom image to create a Virtual Machine or [Scale Set](https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/overview). But, if custom configurations are required, the user must provide the proper custom data input. Creating a [Marketplace Application](https://learn.microsoft.com/en-us/azure/marketplace/azure-app-offer-setup) enables publishers to customize the [creation experince](https://learn.microsoft.com/en-us/azure/azure-resource-manager/managed-applications/create-uidefinition-overview) in the portal.
@@ -22,7 +22,7 @@ This Bicep Module can be used to easily wrap a Marketplace or Community image fo
 | `vmssOsDiskType`             | `string`       | No       | GameDev Disk Type                                                                                                        |
 | `vmssInstanceCount`          | `int`          | No       | VMSS Instance Count                                                                                                      |
 | `administratorLogin`         | `string`       | Yes      | Administrator Login for access                                                                                           |
-| `passwordAdministratorLogin` | `secureString` | Yes      | Administrator Password for access                                                                                        |
+| `passwordAdministratorLogin` | `securestring` | Yes      | Administrator Password for access                                                                                        |
 | `vnetName`                   | `string`       | No       | Virtual Network Resource Name                                                                                            |
 | `subnetName`                 | `string`       | No       | Virtual Network Subnet Name                                                                                              |
 | `networkSecurityGroupName`   | `string`       | No       | Virtual Network Security Group Name                                                                                      |
@@ -34,10 +34,10 @@ This Bicep Module can be used to easily wrap a Marketplace or Community image fo
 
 ## Outputs
 
-| Name | Type   | Description                                |
-| :--- | :----: | :----------------------------------------- |
-| id   | string | Resource Id of Virtual Machine Scale Set   |
-| name | string | Resource Name of Virtual Machine Scale Set |
+| Name   | Type     | Description                                |
+| :----- | :------: | :----------------------------------------- |
+| `id`   | `string` | Resource Id of Virtual Machine Scale Set   |
+| `name` | `string` | Resource Name of Virtual Machine Scale Set |
 
 ## Examples
 
@@ -50,7 +50,7 @@ var communityGalleryImageId = '/CommunityGalleries/${sharedGalleryID}/Images/${d
 
 var customData = loadFileAsBase64('imageConfig.json')
 
-module Example1 'br/public:compute/custom-image-vmss:1.0.1' = {
+module Example1 'br/public:compute/custom-image-vmss:1.0.2' = {
   name: 'Example1'
   params: {
     location: location
@@ -77,7 +77,7 @@ var customData = {
     developer_mode: developer_mode
 }
 
-module Example2 'br/public:compute/custom-image-vmss:1.0.1' = {
+module Example2 'br/public:compute/custom-image-vmss:1.0.2' = {
   name: 'Example2'
   params: {
     location: location
