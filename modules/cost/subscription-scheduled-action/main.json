@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.17.1.54307",
-      "templateHash": "15316306672498633940"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "130421035190410229"
+    },
+    "name": "Cost Management scheduled action for subscriptions",
+    "description": "Creates a scheduled action to notify recipients about the latest costs or when an anomaly is detected.",
+    "owner": "cost-management-contrib"
   },
   "parameters": {
     "name": {
