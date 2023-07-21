@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.18.4.5664",
-      "templateHash": "2559508089218452214"
+      "version": "0.19.5.34762",
+      "templateHash": "13940811961644253592"
     },
     "name": "Deployment Delay",
     "description": "A Deployment Script that introduces a delay to the deployment process.",
