@@ -1,3 +1,7 @@
+metadata name = 'Bing Resource'
+metadata description = 'This module deploys Azure Bing Resource'
+metadata owner = 'tanujbhatia1708'
+
 @description('Prefix of Resource Name. Not used if name is provided')
 param prefix string = 'bng'
 
