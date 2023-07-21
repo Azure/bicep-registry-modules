@@ -1,3 +1,7 @@
+metadata name = 'AKS Run Helm Script'
+metadata description = 'An Azure CLI Deployment Script that allows you to run a Helm command at a Kubernetes cluster.'
+metadata owner = 'dciborow'
+
 @description('The name of the Azure Kubernetes Service')
 param aksName string
 

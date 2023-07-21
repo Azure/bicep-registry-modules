@@ -1,3 +1,7 @@
+metadata name = 'Key Vault Certificate Creation'
+metadata description = 'Create Key Vault self-signed certificates. Requires Key Vaults to be using RBAC Authorization, not Access Policies.'
+metadata owner = 'Aks-Bicep-Accelerator-Maintainers'
+
 @description('The name of the Azure Key Vault')
 param akvName string
 
