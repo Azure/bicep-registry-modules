@@ -1,3 +1,7 @@
+metadata name = 'Azure Storage Account'
+metadata description = 'This Bicep module creates a Storage Account with zone-redundancy, encryption, virtual network access, and TLS version.'
+metadata owner = 'dciborow'
+
 @description('Deployment Location')
 param location string
 

@@ -6,9 +6,12 @@
     "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.18.4.5664",
-      "templateHash": "12195416173280558865"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "7073195442391706573"
+    },
+    "name": "Azure Storage Account",
+    "description": "This Bicep module creates a Storage Account with zone-redundancy, encryption, virtual network access, and TLS version.",
+    "owner": "dciborow"
   },
   "definitions": {
     "blobServiceProperties": {
@@ -822,8 +825,8 @@
             "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "17195690849026502177"
+              "version": "0.19.5.34762",
+              "templateHash": "4238843759645021436"
             }
           },
           "parameters": {
@@ -950,8 +953,8 @@
             "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "4374010201633290607"
+              "version": "0.19.5.34762",
+              "templateHash": "1744702666674477029"
             }
           },
           "parameters": {
