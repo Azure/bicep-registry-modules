@@ -1,3 +1,7 @@
+metadata name = 'SSH Key Pair Creation'
+metadata description = 'Creates SSH Key Pair Stores them in KeyVault as Secrets'
+metadata owner = 'vlahane'
+
 @description('The name of the Azure Key Vault')
 param akvName string
 
