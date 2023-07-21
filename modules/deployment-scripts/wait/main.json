@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.8.9.13224",
-      "templateHash": "2218759242619531802"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "15106610939608830973"
+    },
+    "name": "Deployment Delay",
+    "description": "A Deployment Script that introduces a delay to the deployment process.",
+    "owner": "gordonby"
   },
   "parameters": {
     "waitSeconds": {
