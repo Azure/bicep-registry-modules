@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.9.1.41621",
-      "templateHash": "12378934256733711014"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "7668055054457389973"
+    },
+    "name": "Azure Game Developer VMSS",
+    "description": "Bicep Module to simplify deployment of the Azure Game Developer VMSS",
+    "owner": "dciborow"
   },
   "parameters": {
     "location": {
@@ -86,7 +89,7 @@
       }
     },
     "passwordAdministratorLogin": {
-      "type": "secureString",
+      "type": "securestring",
       "metadata": {
         "description": "Administrator Password for access"
       }
@@ -99,7 +102,7 @@
       }
     },
     "fileShareStorageAccountKey": {
-      "type": "secureString",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "File Share Storage Account key"
@@ -127,7 +130,7 @@
       }
     },
     "p4Password": {
-      "type": "secureString",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "Perforce User password"
@@ -155,7 +158,7 @@
       }
     },
     "ibLicenseKey": {
-      "type": "secureString",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "Incredibuild License Key"
@@ -194,7 +197,7 @@
       }
     },
     "teradiciRegKey": {
-      "type": "secureString",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "Teradici Registration Key"
@@ -208,7 +211,7 @@
       }
     },
     "parsecTeamKey": {
-      "type": "secureString",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "Parsec Team Key"
@@ -343,7 +346,7 @@
                     }
                   ],
                   "networkSecurityGroup": {
-                    "id": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-{1}', parameters('vnetName'), deployment().name))).outputs.nsgID.value]"
+                    "id": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-{1}', parameters('vnetName'), deployment().name)), '2022-09-01').outputs.nsgID.value]"
                   }
                 }
               }
@@ -371,7 +374,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}', parameters('vnetName'), deployment().name)]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -404,8 +407,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.9.1.41621",
-              "templateHash": "1890364574578974576"
+              "version": "0.19.5.34762",
+              "templateHash": "1372874951766645240"
             }
           },
           "parameters": {
@@ -437,7 +440,7 @@
             },
             {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2022-09-01",
               "name": "[parameters('vnetName')]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -1196,10 +1199,10 @@
           "outputs": {
             "nsgID": {
               "type": "string",
-              "value": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]",
               "metadata": {
                 "description": "Network Security Group Resource ID"
-              }
+              },
+              "value": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroupName'))]"
             }
           }
         }
@@ -1209,17 +1212,17 @@
   "outputs": {
     "id": {
       "type": "string",
-      "value": "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('vmssName'))]",
       "metadata": {
         "description": "VMSS ID"
-      }
+      },
+      "value": "[resourceId('Microsoft.Compute/virtualMachineScaleSets', parameters('vmssName'))]"
     },
     "name": {
       "type": "string",
-      "value": "[parameters('vmssName')]",
       "metadata": {
         "description": "VMSS Name"
-      }
+      },
+      "value": "[parameters('vmssName')]"
     }
   }
 }

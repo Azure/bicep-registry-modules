@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.18.4.5664",
-      "templateHash": "11962472505175294096"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "10685231688004622463"
+    },
+    "name": "CognitiveServices",
+    "description": "This module deploys CognitiveServices (Microsoft.CognitiveServices/accounts) and optionally available integrations.",
+    "owner": "omegavveapon"
   },
   "parameters": {
     "kind": {
@@ -334,8 +337,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "6961021872231945027"
+              "version": "0.19.5.34762",
+              "templateHash": "14066904857233248241"
             }
           },
           "parameters": {
@@ -436,8 +439,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "10760293756487564642"
+              "version": "0.19.5.34762",
+              "templateHash": "6983903683818437848"
             }
           },
           "parameters": {
