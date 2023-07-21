@@ -1,3 +1,7 @@
+metadata name = 'Azure App Configuration'
+metadata description = 'Bicep module for simplified deployment Azure App Configuration resources and optionally available integrations.'
+metadata owner = 'sunilthorat09'
+
 @description('Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created.. Default is the location of the resource group.')
 param location string = resourceGroup().location
 
