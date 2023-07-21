@@ -1,3 +1,7 @@
+metadata name = 'Deployment Delay'
+metadata description = 'A Deployment Script that introduces a delay to the deployment process.'
+metadata owner = 'gordonby'
+
 @minValue(1)
 @maxValue(180)
 @description('The number of seconds to wait for')
