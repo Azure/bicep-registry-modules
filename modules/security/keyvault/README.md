@@ -2,7 +2,7 @@
 
 Bicep module for simplified deployment of KeyVault; enables VNet integration and offers flexible configuration options.
 
-## Description
+## Details
 
 Azure Key Vault is a cloud service that provides secure storage of secrets such as keys and passwords. These secrets can be protected by hardware security modules (HSMs) and can only be accessed by authorized users and applications.
 
@@ -34,14 +34,14 @@ The Bicep module outputs the ID and name of the Key Vault, which can be used by 
 
 ## Outputs
 
-| Name                 | Type   | Description             |
-| :------------------- | :----: | :---------------------- |
-| id                   | string | Key Vault Id            |
-| name                 | string | Key Vault Name          |
-| secretId             | string | Key Vault Seceret Id    |
-| secretName           | string | Key Vault Secert Name   |
-| secretUri            | string | Secret URI              |
-| secretUriWithVersion | string | Secret URI with version |
+| Name                   | Type     | Description             |
+| :--------------------- | :------: | :---------------------- |
+| `id`                   | `string` | Key Vault Id            |
+| `name`                 | `string` | Key Vault Name          |
+| `secretId`             | `string` | Key Vault Seceret Id    |
+| `secretName`           | `string` | Key Vault Secert Name   |
+| `secretUri`            | `string` | Secret URI              |
+| `secretUriWithVersion` | `string` | Secret URI with version |
 
 ## Examples
 
@@ -51,7 +51,7 @@ The Bicep module outputs the ID and name of the Key Vault, which can be used by 
 param location string = 'eastus'
 param name string = 'mykeyvault'
 
-module keyVault 'br/public:security/keyvault:1.0.1' = {
+module keyVault 'br/public:security/keyvault:1.0.2' = {
   name: 'myKeyVault'
   params: {
     location: location
@@ -67,7 +67,7 @@ param roleAssignments array = [
   '4633458b-17de-408a-b874-0445c86b69e6' // rbacSecretsReaderRole
 ]
 
-module keyVault 'br/public:security/keyvault:1.0.1' = {
+module keyVault 'br/public:security/keyvault:1.0.2' = {
   name: 'myKeyVault'
   params: {
     location: location
@@ -99,7 +99,7 @@ module vnet 'br/public:network/virtual-network:1.0.1' = {
   }
 }
 
-module keyVaultModule 'br/public:security/keyvault:1.0.1' = {
+module keyVaultModule 'br/public:security/keyvault:1.0.2' = {
   name: 'keyVault-in-vnet'
   params: {
     location: location
@@ -121,7 +121,7 @@ param storageSecretName string
 @secure()
 param storageAccountSecret string
 
-module secretsBatch 'br/public:security/keyvault:1.0.1' = {
+module secretsBatch 'br/public:security/keyvault:1.0.2' = {
   name: 'secrets-${uniqueString(location, resourceGroup().id, deployment().name)}'
   params: {
     subscriptionId: subscriptionId

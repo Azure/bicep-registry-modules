@@ -2,7 +2,7 @@
 
 This module is designed to accelerate deployment of landing zones (aka Subscriptions) within an Azure AD Tenant.
 
-## Description
+## Details
 
 > ℹ️ This module requires the usage of Bicep version `v0.11.1` or later. For details on installing/upgrading Bicep see: [Install Bicep tools](https://learn.microsoft.com/azure/azure-resource-manager/bicep/install) ℹ️
 
@@ -81,7 +81,7 @@ We would like feedback on what's missing in the module. Please raise an [issue](
 ```bicep
 targetScope = 'managementGroup'
 
-module sub001 'br/public:lz/sub-vending:1.4.1' = {
+module sub001 'br/public:lz/sub-vending:1.4.2' = {
   name: 'sub001'
   params: {
     subscriptionAliasEnabled: true
@@ -106,7 +106,7 @@ targetScope = 'managementGroup'
 @description('Specifies the location for resources.')
 param location string = 'uksouth'
 
-module sub002 'br/public:lz/sub-vending:1.4.1' = {
+module sub002 'br/public:lz/sub-vending:1.4.2' = {
   name: 'sub002'
   params: {
     subscriptionAliasEnabled: true
@@ -139,7 +139,7 @@ targetScope = 'managementGroup'
 @description('Specifies the location for resources.')
 param location string = 'uksouth'
 
-module sub003 'br/public:lz/sub-vending:1.4.1' = {
+module sub003 'br/public:lz/sub-vending:1.4.2' = {
   name: 'sub003'
   params: {
     subscriptionAliasEnabled: true
@@ -174,7 +174,7 @@ targetScope = 'managementGroup'
 @description('Specifies the location for resources.')
 param location string = 'uksouth'
 
-module sub003 'br/public:lz/sub-vending:1.4.1' = {
+module sub003 'br/public:lz/sub-vending:1.4.2' = {
   name: 'sub004'
   params: {
     subscriptionAliasEnabled: true

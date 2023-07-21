@@ -2,7 +2,7 @@
 
 Create an Azure Authorization Role Assignment at the scope of a Resource E.g. on a Storage Container
 
-## Description
+## Details
 
 Using this Bicep Module allows for Role Assignments at any Scope within Azure. Pass in any ResourceId to perform the role assignment on that Scope.
 
@@ -64,7 +64,7 @@ module storageAccount 'br/public:storage/storage-account:1.0.1' = {
 }
 
 // module call with all parameters
-module roleAssignmentOperator 'br/public:authorization/resource-scope-role-assignment:1.0.1' = {
+module roleAssignmentOperator 'br/public:authorization/resource-scope-role-assignment:1.0.2' = {
   name: take('roleAssignment-storage-accountKeyOperator',64)
   params: {
     name: guid(UAI.properties.principalId, roleInfoOperator.roleDefinitionId, storageAccount.outputs.id)
@@ -120,7 +120,7 @@ module storageAccount 'br/public:storage/storage-account:1.0.1' = {
 }
 
 // module call with only required parameters
-module roleAssignmentContributor 'br/public:authorization/resource-scope-role-assignment:1.0.1' = {
+module roleAssignmentContributor 'br/public:authorization/resource-scope-role-assignment:1.0.2' = {
   name: take('roleAssignment-storage-accountContributor',64)
   params: {
     name: guid(UAI.properties.principalId, roleInfoContributor.roleDefinitionId, storageAccount.outputs.id)

@@ -1,3 +1,7 @@
+metadata name = 'AKS Run Command Script'
+metadata description = 'An Azure CLI Deployment Script that allows you to run a command on a Kubernetes cluster.'
+metadata owner = 'Aks-Bicep-Accelerator-Maintainers'
+
 @description('The name of the Azure Kubernetes Service')
 param aksName string
 

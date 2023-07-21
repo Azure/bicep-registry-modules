@@ -2,7 +2,7 @@
 
 This module deploys Microsoft.data event clusters, event namespaces, event hubs and associated configurations.
 
-## Description
+## Details
 
 [Azure Event Hubs](https://azure.microsoft.com/en-us/products/event-hubs/) is a fully managed, real-time data ingestion service that’s simple, trusted, and scalable. This module provides an Infrastructure as Code alternative for management of Azure event hubs using Bicep, and is intended to mirror the available functionality of provisioning with Azure Portal or CLI.
 
@@ -36,7 +36,7 @@ This module deploys Microsoft.data event clusters, event namespaces, event hubs 
 ### Example 1
 
 ```bicep
-module evh 'br/public:compute/event-hub:2.0.1' = {
+module evh 'br/public:compute/event-hub:2.0.2' = {
   name: 'evh-${uniqueString(deployment().name, 'eastus2')}'
   params: {
     location: 'eastus2'
@@ -108,7 +108,7 @@ module evh 'br/public:compute/event-hub:2.0.1' = {
 ### Example 2
 
 ```bicep
-module evhns 'br/public:compute/event-hub:2.0.1' = {
+module evhns 'br/public:compute/event-hub:2.0.2' = {
   name: 'evhns-${uniqueString(deployment().name, 'eastus')}'
   params: {
     location: 'eastus'
@@ -154,7 +154,7 @@ module evhns 'br/public:compute/event-hub:2.0.1' = {
 ### Example 3
 
 ```bicep
-module evhns 'br/public:compute/event-hub:2.0.1' = {
+module evhns 'br/public:compute/event-hub:2.0.2' = {
   name: 'evhns-${uniqueString(deployment().name, 'eastus')}'
   params: {
     location: 'eastus'
@@ -220,7 +220,7 @@ module evhns 'br/public:compute/event-hub:2.0.1' = {
 ### Example 4
 
 ```bicep
-module eventhubnamespace 'br/public:compute/event-hub:2.0.1' = {
+module eventhubnamespace 'br/public:compute/event-hub:2.0.2' = {
   name: 'evhns-${uniqueString(deployment().name, 'eastus')}'
   params: {
     location: 'eastus'
