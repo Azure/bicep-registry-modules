@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.18.4.5664",
-      "templateHash": "1743315769530624114"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "3959456113273968386"
+    },
+    "name": "Key Vault Certificate Creation",
+    "description": "Create Key Vault self-signed certificates. Requires Key Vaults to be using RBAC Authorization, not Access Policies.",
+    "owner": "Aks-Bicep-Accelerator-Maintainers"
   },
   "parameters": {
     "akvName": {

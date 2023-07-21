@@ -1,6 +1,0 @@
-{
-  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
-  "name": "ACR Image Import",
-  "summary": "An Azure CLI Deployment Script that imports public container images to an Azure Container Registry",
-  "owner": "Aks-Bicep-Accelerator-Maintainers"
-}

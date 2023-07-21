@@ -1,3 +1,7 @@
+metadata name = 'Cost Management scheduled action for resource groups'
+metadata description = 'Creates a scheduled action to notify recipients about the latest costs on a recurring schedule.'
+metadata owner = 'cost-management-contrib'
+
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 

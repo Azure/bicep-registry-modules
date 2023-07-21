@@ -1,3 +1,7 @@
+metadata name = 'Azure Cosmos DB'
+metadata description = 'Bicep module for simplified deployment of Cosmos DB; enables VNet integration and offers flexible configuration options.'
+metadata owner = 'dciborow'
+
 @description('The bakend API type of Cosmos DB database account. The API selection cannot be changed after account creation. Possible values: "cassandra", "gremlin", "mongodb", "sql", "table".')
 @allowed([ 'cassandra', 'gremlin', 'mongodb', 'sql', 'table' ])
 param backendApi string = 'sql'

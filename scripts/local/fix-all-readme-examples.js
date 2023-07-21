@@ -4,6 +4,7 @@
 
     Usage:
     cd repos/bicep-registry-modules
+    npm i
     node scripts/local/fix-all-readme-examples.js
 
 */
