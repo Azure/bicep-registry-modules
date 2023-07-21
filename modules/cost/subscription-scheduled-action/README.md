@@ -2,7 +2,7 @@
 
 Creates a scheduled action to notify recipients about the latest costs or when an anomaly is detected.
 
-## Description
+## Details
 
 Scheduled actions allow you to configure email alerts on a daily, weekly, or monthly basis. Scheduled actions are configured based on a Cost Management view, which can be opened and edited in Cost analysis in the Azure portal. Email alerts include a picture of the selected view and optionally a link to a CSV file with the summarized cost data. To learn more about scheduled alerts, see [Subscribe to scheduled alerts](https://learn.microsoft.com/azure/cost-management-billing/costs/save-share-views#subscribe-to-scheduled-alerts).
 
@@ -35,9 +35,9 @@ You can also use scheduled actions to configure anomaly detection alerts for sub
 
 ## Outputs
 
-| Name              | Type   | Description                          |
-| :---------------- | :----: | :----------------------------------- |
-| scheduledActionId | string | Resource ID of the scheduled action. |
+| Name                | Type     | Description                          |
+| :------------------ | :------: | :----------------------------------- |
+| `scheduledActionId` | `string` | Resource ID of the scheduled action. |
 
 ## Examples
 
@@ -46,7 +46,7 @@ You can also use scheduled actions to configure anomaly detection alerts for sub
 Creates a shared scheduled action for the DailyCosts built-in view.
 
 ```bicep
-module dailyCostsAlert 'br/public:cost/subscription-scheduled-action:1.0.1' = {
+module dailyCostsAlert 'br/public:cost/subscription-scheduled-action:1.0.2' = {
   name: 'dailyCostsAlert'
   params: {
     name: 'DailyCostsAlert'
@@ -65,7 +65,7 @@ module dailyCostsAlert 'br/public:cost/subscription-scheduled-action:1.0.1' = {
 Creates a private scheduled action for the DailyCosts built-in view with custom start/end dates.
 
 ```bicep
-module privateAlert 'br/public:cost/subscription-scheduled-action:1.0.1' = {
+module privateAlert 'br/public:cost/subscription-scheduled-action:1.0.2' = {
   name: 'privateAlert'
   params: {
     name: 'PrivateAlert'
@@ -87,7 +87,7 @@ module privateAlert 'br/public:cost/subscription-scheduled-action:1.0.1' = {
 Creates an anomaly alert.
 
 ```bicep
-module anomalyAlert 'br/public:cost/subscription-scheduled-action:1.0.1' = {
+module anomalyAlert 'br/public:cost/subscription-scheduled-action:1.0.2' = {
   name: 'anomalyAlert'
   params: {
     name: 'AnomalyAlert'

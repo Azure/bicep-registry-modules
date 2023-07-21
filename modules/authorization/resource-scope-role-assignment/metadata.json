@@ -1,6 +1,0 @@
-{
-  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
-  "name": "Resource scoped role assignment",
-  "summary": "Create an Azure Authorization Role Assignment at the scope of a Resource E.g. on a Storage Container",
-  "owner": "brwilkinson"
-}

@@ -2,7 +2,7 @@
 
 Bicep Module for creating Public Ip Address
 
-## Description
+## Details
 
 Public IP addresses allow Internet resources to communicate inbound to Azure resources. Public IP addresses enable Azure resources to communicate to Internet and public-facing Azure services. The address is dedicated to the resource, until it's unassigned by you. A resource without a public IP assigned can communicate outbound. Azure dynamically assigns an available IP address that isn't dedicated to the resource.
 [public-ip-address](https://learn.microsoft.com/en-us/azure/virtual-network/ip-services/public-ip-addresses)
@@ -27,12 +27,12 @@ Public IP addresses allow Internet resources to communicate inbound to Azure res
 
 ## Outputs
 
-| Name              | Type   | Description                                          |
-| :---------------- | :----: | :--------------------------------------------------- |
-| id                | string | Get id for publicIPAddress                           |
-| name              | string | Get name for publicIPAddress                         |
-| ipAddress         | string | Get ipAddress property from publicIPAddress resource |
-| resourceGroupName | string | Get resourceGroup name for publicIPAddress           |
+| Name                | Type     | Description                                          |
+| :------------------ | :------: | :--------------------------------------------------- |
+| `id`                | `string` | Get id for publicIPAddress                           |
+| `name`              | `string` | Get name for publicIPAddress                         |
+| `ipAddress`         | `string` | Get ipAddress property from publicIPAddress resource |
+| `resourceGroupName` | `string` | Get resourceGroup name for publicIPAddress           |
 
 ## Examples
 
@@ -41,7 +41,7 @@ Public IP addresses allow Internet resources to communicate inbound to Azure res
 ```bicep
 param location string = 'eastus'
 
-module publicIp1 'br/public:network/public-ip-address:1.0.1' = {
+module publicIp1 'br/public:network/public-ip-address:1.0.2' = {
   name: 'publicIp1'
   params: {
     location: location
@@ -55,7 +55,7 @@ module publicIp1 'br/public:network/public-ip-address:1.0.1' = {
 ```bicep
 param location string = 'eastus'
 
-module publicIp2 'br/public:network/public-ip-address:1.0.1' = {
+module publicIp2 'br/public:network/public-ip-address:1.0.2' = {
   name: 'publicIp2'
   params: {
     domainNameLabel: 'publicIp2'

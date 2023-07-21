@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.18.4.5664",
-      "templateHash": "15769869279412362289"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "10490792352555672268"
+    },
+    "name": "SSH Key Pair Creation",
+    "description": "Creates SSH Key Pair Stores them in KeyVault as Secrets",
+    "owner": "vlahane"
   },
   "parameters": {
     "akvName": {

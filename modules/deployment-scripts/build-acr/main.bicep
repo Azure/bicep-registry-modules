@@ -1,3 +1,7 @@
+metadata name = 'ACR Image Build'
+metadata description = 'Builds a container image inside ACR from source code'
+metadata owner = 'gordonby'
+
 @description('The name of the Azure Container Registry')
 param AcrName string
 

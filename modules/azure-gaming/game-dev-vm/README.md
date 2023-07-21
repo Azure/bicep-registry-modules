@@ -2,7 +2,7 @@
 
 Bicep Module to simplify deployment of the Azure Game Developer VM
 
-## Description
+## Details
 
 The Game Development Virtual Machine is a customizable development workstation or build server in Azure, pre-installed with common game development tooling for game creators to build their games in the cloud. Microsoft partnered with the top game development partners to pre-install Visual Studio, Unreal Engine, Perforce Helix Core, Parsec, Teradici, Incredibuild, Blender, DirectX/GDK/PlayFab SDKs and more in a customizable Azure workstation to make deploying your game creation environment simple, seamless, and secure. No additional costs are added above base Azure VM pricing for leveraging this VM, though Solutions like Incredibuild, Parsec and Teradici require you to Bring Your Own License (BYOL) when leveraging those products, and passing in licensing details is configurable on deployment. The Game Development Virtual Machine currently supports Windows Server 2019 and Windows 10 operating systems.
 
@@ -61,17 +61,17 @@ See our [documentation](https://docs.microsoft.com/en-us/gaming/azure/game-dev-v
 
 ## Outputs
 
-| Name      | Type   | Description                              |
-| :-------- | :----: | :--------------------------------------- |
-| Host_Name | string | Game Developer Virtual Machine Host Name |
-| UserName  | string | Game Developer Virtual Machine User Name |
+| Name        | Type     | Description                              |
+| :---------- | :------: | :--------------------------------------- |
+| `Host_Name` | `string` | Game Developer Virtual Machine Host Name |
+| `UserName`  | `string` | Game Developer Virtual Machine User Name |
 
 ## Examples
 
 ### Using the Azure Game Developer VM module
 
 ```bicep
-module gameDevVM 'br/public:azure-gaming/game-dev-vm:2.0.1' = {
+module gameDevVM 'br/public:azure-gaming/game-dev-vm:2.0.3' = {
   name: 'gameDevVM'
   params: {
     vmName: 'gameDevVM'

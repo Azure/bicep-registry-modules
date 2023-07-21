@@ -1,3 +1,7 @@
+metadata name = 'Azure Key Vault'
+metadata description = 'Bicep module for simplified deployment of KeyVault; enables VNet integration and offers flexible configuration options.'
+metadata owner = 'dciborow'
+
 @description('Deployment Location')
 param location string
 

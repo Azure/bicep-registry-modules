@@ -1,3 +1,7 @@
+metadata name = 'Log Analytics Workspace'
+metadata description = 'This module deploys Log Analytics workspace and optionally available integrations.'
+metadata owner = 'RahulTipole-Microsoft'
+
 @minLength(4)
 @maxLength(63)
 @description('Required. Name of the Log Analytics Workspace.')
