@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.17.1.54307",
-      "templateHash": "18080649983969132278"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "4893892146075890272"
+    },
+    "name": "Azure Traffic Manager",
+    "description": "Bicep module for creating a Azure Traffic Manager Profile with endpoints and monitor configurations.",
+    "owner": "dciborow"
   },
   "parameters": {
     "prefix": {
