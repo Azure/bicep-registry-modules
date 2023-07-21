@@ -11,7 +11,7 @@ async function runAsync(cmd, echo = true) {
     console.log(`${yellow}${cmd}${reset}`);
   }
 
-  const response = await execPromise(cmd);
+  const response = await execPromise(cmd, {});
   if (echo) {
     console.log(`> ${response.stdout}`);
   }

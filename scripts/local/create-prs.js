@@ -19,7 +19,7 @@
 
 const usage = `Usage: see script comments`;
 
-const { runAsync } = require("./util/runAsync.js");
+const { runAsync, queryRunAsync } = require("./util/runAsync.js");
 const { clearScreen, green, yellow, red, reset } = require("./util/colors");
 
 const { argv } = require("process");
