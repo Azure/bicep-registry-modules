@@ -20,7 +20,9 @@ const {
 const { green, reset, yellow } = require("./util/colors");
 const semver = require("semver");
 
-let brm = `../bicep/src/Bicep.RegistryModuleTool/Bin/Debug/net7.0/Azure.Bicep.RegistryModuleTool`;
+let brm = resolve(
+  `../bicep/src/Bicep.RegistryModuleTool/Bin/Debug/net7.0/Azure.Bicep.RegistryModuleTool`
+);
 brm = existsSync(brm) ? brm : brm + ".exe";
 brm = existsSync(brm) ? brm : "brm";
 
