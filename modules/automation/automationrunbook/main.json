@@ -6,8 +6,8 @@
     "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.18.4.5664",
-      "templateHash": "2202736752808296405"
+      "version": "0.19.5.34762",
+      "templateHash": "10175486995196999218"
     },
     "name": "Automation Runbook",
     "description": "Creates an Azure Automation Account with Runbook, Schedule and Jobs",
