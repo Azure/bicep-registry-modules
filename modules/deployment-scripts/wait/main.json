@@ -5,13 +5,20 @@
     "_generator": {
       "name": "bicep",
       "version": "0.19.5.34762",
-      "templateHash": "15106610939608830973"
+      "templateHash": "13940811961644253592"
     },
     "name": "Deployment Delay",
     "description": "A Deployment Script that introduces a delay to the deployment process.",
     "owner": "gordonby"
   },
   "parameters": {
+    "scriptName": {
+      "type": "string",
+      "defaultValue": "[format('{0}-Delay', deployment().name)]",
+      "metadata": {
+        "description": "The delay script resource name"
+      }
+    },
     "waitSeconds": {
       "type": "int",
       "metadata": {
@@ -32,13 +39,13 @@
     {
       "type": "Microsoft.Resources/deploymentScripts",
       "apiVersion": "2020-10-01",
-      "name": "DeployDelay",
+      "name": "[parameters('scriptName')]",
       "location": "[parameters('location')]",
       "kind": "AzurePowerShell",
       "properties": {
         "retentionInterval": "PT1H",
-        "azPowerShellVersion": "6.4",
-        "cleanupPreference": "OnSuccess",
+        "azPowerShellVersion": "9.7",
+        "cleanupPreference": "Always",
         "environmentVariables": [
           {
             "name": "waitSeconds",
