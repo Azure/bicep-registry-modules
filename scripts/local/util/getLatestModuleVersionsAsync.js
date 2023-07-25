@@ -24,7 +24,7 @@ function parseTag(tag) {
 }
 
 async function getLatestModuleVersionsAsync() {
-  const tags = (await runAsync(`git tag -l`))
+  const tags = (await runAsync(`git tag -l`, false))
     .split("\n")
     .filter((tag) => tag !== "");
   const latestModules = new Map();

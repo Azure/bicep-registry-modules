@@ -1,6 +1,0 @@
-{
-  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
-  "name": "Azure Cosmos DB",
-  "summary": "Bicep module for simplified deployment of Cosmos DB; enables VNet integration and offers flexible configuration options.",
-  "owner": "dciborow"
-}

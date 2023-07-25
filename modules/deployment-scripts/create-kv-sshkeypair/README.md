@@ -2,7 +2,7 @@
 
 Creates SSH Key Pair Stores them in KeyVault as Secrets
 
-## Description
+## Details
 
 Creates SSH key pair and stores them in provided AKV.
 

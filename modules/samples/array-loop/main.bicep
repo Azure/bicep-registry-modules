@@ -1,3 +1,5 @@
+metadata name = 'Array Loop'
+metadata owner = 'bicep-admins'
 metadata description = 'A sample Bicep registry module demonstrating array iterations.'
 
 @sys.description('An array containing names.')

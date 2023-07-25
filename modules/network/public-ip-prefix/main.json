@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.16.2.56959",
-      "templateHash": "11826943076831411493"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "3183125967978162384"
+    },
+    "name": "Public Ip Prefix",
+    "description": "Bicep Module for creating Public Ip Prefix",
+    "owner": "schandnani"
   },
   "parameters": {
     "name": {

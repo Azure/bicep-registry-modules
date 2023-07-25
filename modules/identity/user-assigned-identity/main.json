@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.17.1.54307",
-      "templateHash": "3975942133301411082"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "18188384482683233219"
+    },
+    "name": "Managed Identity",
+    "description": "Azure managed identities provide an easy way for applications to access resources securely in Azure.",
+    "owner": "vlahane"
   },
   "parameters": {
     "prefix": {

@@ -6,22 +6,20 @@
 
     Usage:
     cd repos/bicep-registry-modules
+    npm i
 
     <Do something to make changes in one or modules (e.g. `node scripts/local/regenerate-all.js`)>
 
-    node scripts/local/create-pr.js
+    make sure you're logged in to gh
+    node scripts/local/create-prs.js
+
+    <You'll have the opportunity to review the PRs before submitting>
 
 */
 
-const usage = `Usage:
-cd repos/bicep-registry-modules
-node scripts/local/create-prs.js <branch-prefix> <commit-message-prefix>
+const usage = `Usage: see script comments`;
 
-e.g.
-node scripts/local/create-prs.js myname "feat: My commit message"
-`;
-
-const { runAsync } = require("./util/runAsync.js");
+const { runAsync, queryRunAsync } = require("./util/runAsync.js");
 const { clearScreen, green, yellow, red, reset } = require("./util/colors");
 
 const { argv } = require("process");
@@ -38,47 +36,6 @@ branchPrefix = branchPrefix.endsWith("/")
   : branchPrefix;
 console.log(`${green}branch prefix: ${branchPrefix}${reset}`);
 console.log(`${green}commit message: ${commitPrefix}${reset}`);
-
-let runAll = false;
-
-function queryUserAsync(question) {
-  const readline = require("readline").createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  return new Promise((resolve) => {
-    readline.question(question, (answer) => {
-      readline.close();
-      resolve(answer);
-    });
-  });
-}
-
-async function queryRunAsync(cmds) {
-  let run = runAll === true;
-  if (!run) {
-    const answer = await queryUserAsync(
-      `${red}Run the following commands?\n${yellow}${cmds.join(
-        "\n"
-      )}"${reset}"? (y/n/a/q) `
-    );
-    console.log(`answer: ${answer}`);
-
-    if (answer === "y") {
-      run = true;
-    } else if (answer === "a") {
-      runAll = true;
-      run = true;
-    } else if (answer === "q") {
-      throw new Error("User aborted");
-    }
-  }
-
-  for (const cmd of cmds) {
-    await runAsync(cmd);
-  }
-}
 
 async function getChangedModulesAsync() {
   const changedModules = (await runAsync(`git status modules`))
@@ -104,14 +61,23 @@ async function CreatePRAsync(modulePath) {
   const commitMessage = `${commitPrefix} (${modulePath}) (auto)`;
   const prTitle = `${commitPrefix} (${modulePath}) (auto-generated)`;
   const prBody = `This PR was created by a script. Please review the changes and merge if they look good.`;
-  await queryRunAsync([
+  const prSubmitted = await queryRunAsync([
     `git commit -m "${commitMessage}"`,
     `git push -u origin ${branchName}`,
     `gh pr create --title "${prTitle}" --body "${prBody}" --label "Auto-generated"`,
   ]);
 
+  // TODO: Changes get lost for a branch if you say no
+
   await runAsync(`git checkout main`);
-  await runAsync(`git branch -d ${branchName}`);
+  if (prSubmitted) {
+    await runAsync(`git branch -d ${branchName}`);
+  } else {
+    console.log(
+      `${red}Branch ${branchName} contains the unsubmitted changes.${reset}`
+    );
+  }
+
   console.log();
 }
 

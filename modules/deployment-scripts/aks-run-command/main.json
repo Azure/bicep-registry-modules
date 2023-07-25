@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "17544908814437581068"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "14134297598922776972"
+    },
+    "name": "AKS Run Command Script",
+    "description": "An Azure CLI Deployment Script that allows you to run a command on a Kubernetes cluster.",
+    "owner": "Aks-Bicep-Accelerator-Maintainers"
   },
   "parameters": {
     "aksName": {
@@ -192,6 +195,9 @@
   "outputs": {
     "commandOutput": {
       "type": "array",
+      "metadata": {
+        "description": "Array of command output from each Deployment Script AKS run command"
+      },
       "copy": {
         "count": "[length(parameters('commands'))]",
         "input": {
@@ -199,9 +205,6 @@
           "Name": "[format('AKS-Run-{0}-{1}-{2}', parameters('aksName'), deployment().name, copyIndex())]",
           "CommandOutput": "[reference(resourceId('Microsoft.Resources/deploymentScripts', format('AKS-Run-{0}-{1}-{2}', parameters('aksName'), deployment().name, copyIndex())), '2020-10-01').outputs]"
         }
-      },
-      "metadata": {
-        "description": "Array of command output from each Deployment Script AKS run command"
       }
     }
   }
