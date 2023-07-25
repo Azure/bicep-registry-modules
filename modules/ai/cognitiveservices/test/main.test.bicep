@@ -53,7 +53,7 @@ module test_02_openAI '../main.bicep' = {
         properties: {
           model: {
             format: 'OpenAI'
-            name: 'text-davinci-002'
+            name: 'text-davinci-003'
             version: 1
           }
           raiPolicyName: 'Microsoft.Default'
