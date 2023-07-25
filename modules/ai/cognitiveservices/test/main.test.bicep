@@ -53,8 +53,8 @@ module test_02_openAI '../main.bicep' = {
         properties: {
           model: {
             format: 'OpenAI'
-            name: 'text-davinci-003'
-            version: 1
+            name: 'gpt-35-turbo'
+            version: '0301'
           }
           raiPolicyName: 'Microsoft.Default'
         }
