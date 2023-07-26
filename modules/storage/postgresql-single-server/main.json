@@ -6,9 +6,12 @@
     "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.17.1.54307",
-      "templateHash": "8348140106479819101"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "16855669211188020065"
+    },
+    "name": "PostgreSQL Single Server",
+    "description": "This module deploys PostgreSQL Single Server (Microsoft.DBforPostgreSQL/servers) and optionally available integrations.",
+    "owner": "omegavveapon"
   },
   "definitions": {
     "diagnosticSettingsRetentionPolicyType": {
@@ -710,8 +713,8 @@
             "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "1550825306113596581"
+              "version": "0.19.5.34762",
+              "templateHash": "12308055348995252367"
             }
           },
           "parameters": {
@@ -812,8 +815,8 @@
             "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "18440659148863256788"
+              "version": "0.19.5.34762",
+              "templateHash": "17584855190782240496"
             }
           },
           "definitions": {
