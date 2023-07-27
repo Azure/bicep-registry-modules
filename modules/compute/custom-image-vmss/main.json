@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.10.61.36676",
-      "templateHash": "5930544684039383739"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "1275515054012573586"
+    },
+    "name": "Azure VMSS with Custom Image",
+    "description": "Create an Azure VMSS Cluster with a Custom Image to simplify creation of Marketplace Applications",
+    "owner": "dciborow"
   },
   "parameters": {
     "location": {
@@ -80,7 +83,7 @@
       }
     },
     "passwordAdministratorLogin": {
-      "type": "secureString",
+      "type": "securestring",
       "metadata": {
         "description": "Administrator Password for access"
       }
@@ -214,7 +217,7 @@
                     }
                   ],
                   "networkSecurityGroup": {
-                    "id": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-{1}', parameters('vnetName'), uniqueString(resourceGroup().name, parameters('location'))))).outputs.nsgID.value]"
+                    "id": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-{1}', parameters('vnetName'), uniqueString(resourceGroup().name, parameters('location')))), '2022-09-01').outputs.nsgID.value]"
                   }
                 }
               }
@@ -236,7 +239,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}', parameters('vnetName'), uniqueString(resourceGroup().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -269,8 +272,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.10.61.36676",
-              "templateHash": "6599604020047045566"
+              "version": "0.19.5.34762",
+              "templateHash": "10388055362477215042"
             }
           },
           "parameters": {
@@ -302,7 +305,7 @@
             },
             {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2022-09-01",
               "name": "[format('{0}-minvnet', uniqueString(deployment().name, 'WestEurope'))]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -1061,11 +1064,11 @@
           "outputs": {
             "vnetId": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-minvnet', uniqueString(deployment().name, 'WestEurope')))).outputs.resourceId.value]"
+              "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-minvnet', uniqueString(deployment().name, 'WestEurope'))), '2022-09-01').outputs.resourceId.value]"
             },
             "vnet": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-minvnet', uniqueString(deployment().name, 'WestEurope')))).outputs.name.value]"
+              "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-minvnet', uniqueString(deployment().name, 'WestEurope'))), '2022-09-01').outputs.name.value]"
             },
             "nsgID": {
               "type": "string",
@@ -1083,17 +1086,17 @@
   "outputs": {
     "id": {
       "type": "string",
-      "value": "[resourceId('Microsoft.Compute/virtualMachineScaleSets', format('{0}-{1}', parameters('vmssName'), uniqueString(resourceGroup().name, parameters('location'))))]",
       "metadata": {
         "description": "Resource Id of Virtual Machine Scale Set"
-      }
+      },
+      "value": "[resourceId('Microsoft.Compute/virtualMachineScaleSets', format('{0}-{1}', parameters('vmssName'), uniqueString(resourceGroup().name, parameters('location'))))]"
     },
     "name": {
       "type": "string",
-      "value": "[format('{0}-{1}', parameters('vmssName'), uniqueString(resourceGroup().name, parameters('location')))]",
       "metadata": {
         "description": "Resource Name of Virtual Machine Scale Set"
-      }
+      },
+      "value": "[format('{0}-{1}', parameters('vmssName'), uniqueString(resourceGroup().name, parameters('location')))]"
     }
   }
 }

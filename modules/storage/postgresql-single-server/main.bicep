@@ -1,3 +1,7 @@
+metadata name = 'PostgreSQL Single Server'
+metadata description = 'This module deploys PostgreSQL Single Server (Microsoft.DBforPostgreSQL/servers) and optionally available integrations.'
+metadata owner = 'omegavveapon'
+
 @description('Optional.  The location into which your Azure resources should be deployed.')
 param location string = resourceGroup().location
 

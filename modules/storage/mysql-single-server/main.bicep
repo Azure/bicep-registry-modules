@@ -1,3 +1,7 @@
+metadata name = 'mysql-single-server'
+metadata description = 'This Bicep Module is used for the deployment of MySQL DB  Single Server with reusable set of parameters and resources.'
+metadata owner = 'tanujbhatia1708'
+
 targetScope = 'resourceGroup'
 
 @description('Optional. Deployment region name. Default is the location of the resource group.')
