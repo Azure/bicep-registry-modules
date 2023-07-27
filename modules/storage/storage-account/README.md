@@ -2,15 +2,24 @@
 
 This Bicep module creates a Storage Account with zone-redundancy, encryption, virtual network access, and TLS version.
 
-## Details
+## Description
 
-{{ Add detailed description for the module. }}
+Azure Storage is a cloud-based storage service offered by Microsoft that provides highly scalable and durable storage for data and applications.
+Storage Accounts are the fundamental storage entity in Azure Storage and can be used to store data objects such as blobs, files, queues, tables, and disks.
+
+This Bicep module allows users to create or use existing Storage Accounts with options to control redundancy, access, and security settings.
+Zone-redundancy allows data to be stored across multiple Availability Zones, increasing availability and durability.
+Virtual network rules can be used to restrict or allow network traffic to and from the Storage Account.
+Encryption and TLS settings can be configured to ensure data security.
+
+The module supports both blob and file services, allowing users to store and retrieve unstructured data and files.
+The output of the module is the ID of the created or existing Storage Account, which can be used in other Azure resource deployments.
 
 ## Parameters
 
 | Name                                    | Type     | Required | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | :-------------------------------------- | :------: | :------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `location`                              | `string` | No       | Deployment Location                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `location`                              | `string` | No       | Deployment Location. It defaults to the location of the resource group.                                                                                                                                                                                                                                                                                                                                                                                                   |
 | `prefix`                                | `string` | No       | Prefix of Storage Account Resource Name. This param is ignored when name is provided.                                                                                                                                                                                                                                                                                                                                                                                     |
 | `name`                                  | `string` | No       | Name of Storage Account. Must be unique within Azure.                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | `tags`                                  | `object` | No       | Tags to be applied to the Storage Account.                                                                                                                                                                                                                                                                                                                                                                                                                                |
@@ -63,7 +72,7 @@ This Bicep module creates a Storage Account with zone-redundancy, encryption, vi
 This example creates a new Storage Account with a unique name in the East US region using the default Storage Account configuration settings. The module output is the ID of the created Storage Account, which can be used in other Azure resource deployments.
 
 ```bicep
-module storageAccount 'br/public:storage/storage-account:0.0.1' = {
+module storageAccount 'br/public:storage/storage-account:3.0.1' = {
   name: 'mystorageaccount'
   params: {
     location: 'eastus'
@@ -76,11 +85,8 @@ output storageAccountID string = storageAccount.outputs.id
 ### Example 2
 
 ```bicep
-module test '../main.bicep' = {
+module test 'br/public:storage/storage-account:3.0.1' = {
   name: 'test'
-  dependsOn: [
-    prereq
-  ]
   params: {
     name: 'mystorageaccountname'
     location: 'eastus'
@@ -113,19 +119,19 @@ module test '../main.bicep' = {
     ]
     storageRoleAssignments: [
       {
-        principalId: prereq.outputs.identityPrincipalIds[0]
+        principalId: 'd6d335d7-74ab-4c1b-8c43-f20ca7cfc269' // a fake Service Principal ID
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Storage Blob Data Reader'
         description: 'roleAssignment for calllog SA'
       }
       {
-        principalId: prereq.outputs.identityPrincipalIds[1]
+        principalId: 'ad6d5375-aefb-4b76-9eaf-2e4e009a6cc3' // a fake Service Principal ID
         roleDefinitionIdOrName: 'Storage Blob Data Reader'
       }
     ]
     containerRoleAssignments: [
       {
-        principalId: prereq.outputs.identityPrincipalIds[0]
+        principalId: 'd6d335d7-74ab-4c1b-8c43-f20ca7cfc269' // a fake Service Principal ID
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Storage Blob Data Owner'
         containerName: 'test2container1'
@@ -155,16 +161,16 @@ module test '../main.bicep' = {
     privateEndpoints: [
       {
         name: 'Test2pep-blob'
-        subnetId: prereq.outputs.subnetIds[0]
+        subnetId: '/subscriptions/f020357f-3f04-4dc6-80cc-ba41715c5d70/resourceGroups/my-resource-group/providers/Microsoft.Network/virtualNetworks/my-vnet-name/subnets/my-subnet-name' // a fake subnet ID
         groupId: 'blob'
-        privateDnsZoneId: prereq.outputs.privateDNSZoneId
+        privateDnsZoneId: '/subscriptions/f020357f-3f04-4dc6-80cc-ba41715c5d70/resourceGroups/my-resource-group/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net' // a fake private DNS zone ID
         isManualApproval: false
       }
       {
         name: 'Test2pep-file'
-        subnetId: prereq.outputs.subnetIds[0]
+        subnetId: '/subscriptions/f020357f-3f04-4dc6-80cc-ba41715c5d70/resourceGroups/my-resource-group/providers/Microsoft.Network/virtualNetworks/my-vnet-name/subnets/my-subnet-name' // a fake subnet ID
         groupId: 'file'
-        privateDnsZoneId: prereq.outputs.privateDNSZoneId
+        privateDnsZoneId: '/subscriptions/f020357f-3f04-4dc6-80cc-ba41715c5d70/resourceGroups/my-resource-group/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net' // a fake private DNS zone ID
         isManualApproval: false
       }
     ]

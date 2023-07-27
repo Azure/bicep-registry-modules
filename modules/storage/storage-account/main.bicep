@@ -2,7 +2,7 @@ metadata name = 'Azure Storage Account'
 metadata description = 'This Bicep module creates a Storage Account with zone-redundancy, encryption, virtual network access, and TLS version.'
 metadata owner = 'dciborow'
 
-@description('Deployment Location')
+@description('Deployment Location. It defaults to the location of the resource group.')
 param location string = resourceGroup().location
 
 @description('Prefix of Storage Account Resource Name. This param is ignored when name is provided.')

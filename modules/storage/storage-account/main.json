@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.19.5.34762",
-      "templateHash": "511171789404470303"
+      "templateHash": "16070854840775850972"
     },
     "name": "Azure Storage Account",
     "description": "This Bicep module creates a Storage Account with zone-redundancy, encryption, virtual network access, and TLS version.",
@@ -1121,7 +1121,7 @@
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Deployment Location"
+        "description": "Deployment Location. It defaults to the location of the resource group."
       }
     },
     "prefix": {
