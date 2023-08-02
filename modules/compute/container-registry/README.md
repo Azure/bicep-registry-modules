@@ -89,6 +89,34 @@ module containerRegistry 'br/public:compute/container-registry:1.0.3' = {
         privateDnsZoneId: privateDnsZoneId
       }
     ]
+    tasks: [ {
+        taskName: 'task1'
+        status: 'Enabled'
+        platform: {
+          os: 'Linux'
+          architecture: 'Amd64'
+        }
+        agentConfiguration: {
+          cpu: 2
+        }
+        trigger: {
+          timerTriggers: [
+            {
+              name: 'trigger1'
+              status: 'Enabled'
+              schedule: '*/1 * * * Mon-Fri'
+            }
+          ]
+        }
+        step: {
+          type: 'EncodedTask'
+          encodedTaskContent: loadFileAsBase64('task.yaml')
+        }
+        identity: {
+          type: 'SystemAssigned'
+        }
+      }
+    ]
   }
 }
 ```
