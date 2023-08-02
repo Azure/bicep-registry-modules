@@ -125,7 +125,7 @@ param metricsToEnable array = [
   'AllMetrics'
 ]
 
-@description('Optional.The list of ACR tasks to create.')
+@description('Optional. The list of ACR tasks to create.')
 param tasks array = []
 
 var diagnosticsLogs = [for log in logsToEnable: {
