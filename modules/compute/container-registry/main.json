@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.19.5.34762",
-      "templateHash": "17499475671317837673"
+      "templateHash": "6783799034695383275"
     },
     "name": "Container Registry",
     "description": "This module deploys Container Registry (Microsoft.ContainerRegistry/registries) and optionally available integrations.",
@@ -262,7 +262,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional.The list of ACR tasks to create."
+        "description": "Optional. The list of ACR tasks to create."
       }
     }
   },
@@ -437,13 +437,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-<<<<<<< HEAD
-              "version": "0.18.4.5664",
-              "templateHash": "14924033546271921187"
-=======
               "version": "0.19.5.34762",
               "templateHash": "16232062372228641864"
->>>>>>> main
             }
           },
           "parameters": {
@@ -558,13 +553,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-<<<<<<< HEAD
-              "version": "0.18.4.5664",
-              "templateHash": "10295870685385568303"
-=======
               "version": "0.19.5.34762",
               "templateHash": "9376650268912092515"
->>>>>>> main
             }
           },
           "parameters": {
@@ -683,8 +673,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "13887311236692095695"
+              "version": "0.19.5.34762",
+              "templateHash": "1398425088405732302"
             }
           },
           "parameters": {
@@ -764,8 +754,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.18.4.5664",
-                      "templateHash": "14924033546271921187"
+                      "version": "0.19.5.34762",
+                      "templateHash": "16232062372228641864"
                     }
                   },
                   "parameters": {
