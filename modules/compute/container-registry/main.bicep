@@ -1,3 +1,7 @@
+metadata name = 'Container Registry'
+metadata description = 'This module deploys Container Registry (Microsoft.ContainerRegistry/registries) and optionally available integrations.'
+metadata owner = 'thomasriley'
+
 @minLength(5)
 @maxLength(50)
 @description('The name of the Azure Container Registry.')

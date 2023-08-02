@@ -1,3 +1,7 @@
+metadata name = 'Azure Game Developer VMSS'
+metadata description = 'Bicep Module to simplify deployment of the Azure Game Developer VMSS'
+metadata owner = 'dciborow'
+
 @description('Deployment Location')
 param location string = resourceGroup().location
 

@@ -1,3 +1,7 @@
+metadata name = 'CognitiveServices'
+metadata description = 'This module deploys CognitiveServices (Microsoft.CognitiveServices/accounts) and optionally available integrations.'
+metadata owner = 'omegavveapon'
+
 @description('The kind of Cognitive Service to create. See: https://learn.microsoft.com/en-us/azure/cognitive-services/create-account-bicep for available kinds.')
 @allowed([ 'CognitiveServices', 'ComputerVision', 'CustomVision.Prediction', 'CustomVision.Training', 'Face', 'FormRecognizer', 'SpeechServices', 'LUIS', 'QnAMaker', 'TextAnalytics', 'TextTranslation', 'AnomalyDetector', 'ContentModerator', 'Personalizer', 'OpenAI' ])
 param kind string = 'CognitiveServices'
@@ -87,7 +91,7 @@ param userOwnedStorage array = []
 param deployments array = []
 
 var varPrivateEndpoints = [for endpoint in privateEndpoints: {
-  name: '${cognitiveService.name}-${endpoint.name}'
+  name: '${name}-${endpoint.name}'
   privateLinkServiceId: cognitiveService.id
   groupIds: [
     endpoint.groupId
@@ -132,14 +136,15 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
 }
 
 resource cognitiveServiceDeployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = [for (deployment, index) in deployments: {
-  name: '${name}-${uniqueString(az.deployment().name, location)}-deployment-${index}'
+  name: '${name}-deploy-${index}'
   parent: cognitiveService
+  sku: deployment.sku
   properties: deployment.properties
 }]
 
 @batchSize(1)
 module cognitiveServiceRbac 'modules/rbac.bicep' = [for (roleAssignment, index) in roleAssignments: {
-  name: 'cognitive-service-rbac-${uniqueString(deployment().name, location)}-${index}'
+  name: '${name}-rbac-${index}'
   params: {
     description: contains(roleAssignment, 'description') ? roleAssignment.description : ''
     principalIds: roleAssignment.principalIds
@@ -149,8 +154,8 @@ module cognitiveServiceRbac 'modules/rbac.bicep' = [for (roleAssignment, index) 
   }
 }]
 
-module cognitiveServicePrivateEndpoint 'modules/privateEndpoint.bicep' = {
-  name: '${name}-${uniqueString(deployment().name, location)}-private-endpoints'
+module cognitiveServicePrivateEndpoint 'modules/privateEndpoint.bicep' = if (privateEndpoints != []) {
+  name: '${name}-peps'
   params: {
     location: location
     privateEndpoints: varPrivateEndpoints
@@ -159,7 +164,7 @@ module cognitiveServicePrivateEndpoint 'modules/privateEndpoint.bicep' = {
 }
 
 resource cognitiveServiceLock 'Microsoft.Authorization/locks@2020-05-01' = if (lock != 'NotSpecified') {
-  name: '${cognitiveService.name}-${toLower(lock)}-lock'
+  name: '${name}-lock'
   scope: cognitiveService
   properties: {
     level: lock

@@ -2,7 +2,7 @@
 
 This module deploys PostgreSQL Single Server (Microsoft.DBforPostgreSQL/servers) and optionally available integrations.
 
-## Description
+## Details
 
 This Bicep module deploys a PostgreSQL Single Server instance in Azure with configurable options such as backup retention, firewall rules, private endpoints, and SSL enforcement.
 
@@ -45,11 +45,11 @@ It also supports role-based access control, storage autogrow, and infrastructure
 
 ## Outputs
 
-| Name              | Type   | Description                                                        |
-| :---------------- | :----: | :----------------------------------------------------------------- |
-| resourceGroupName | string | The resource group the Postgresql Single Server was deployed into. |
-| fqdn              | string | FQDN of the generated Postgresql Single Server                     |
-| id                | string | The resource ID of the Postgresql Single Server.                   |
+| Name                | Type     | Description                                                        |
+| :------------------ | :------: | :----------------------------------------------------------------- |
+| `resourceGroupName` | `string` | The resource group the Postgresql Single Server was deployed into. |
+| `fqdn`              | `string` | FQDN of the generated Postgresql Single Server                     |
+| `id`                | `string` | The resource ID of the Postgresql Single Server.                   |
 
 ## Examples
 
@@ -61,7 +61,7 @@ Deploy a Postgresql Single Server with minimal parameters
 @secure
 param administratorLoginPassword string
 
-module postgresqlSingleServer 'br/public:storage/postgresql-single-server:1.1.0' = {
+module postgresqlSingleServer 'br/public:storage/postgresql-single-server:1.1.2' = {
   name: 'postgresqlSingleServer'
   params: {
     prefix: 'postgresql-test01'
@@ -79,7 +79,7 @@ Deploy a Postgresql Single Server primary + replica set
 @secure
 param administratorLoginPassword string
 
-module primaryPostgresqlServer 'br/public:storage/postgresql-single-server:1.1.0' = {
+module primaryPostgresqlServer 'br/public:storage/postgresql-single-server:1.1.2' = {
   name: 'primary-server'
   params: {
     prefix: 'primary-server'
@@ -89,7 +89,7 @@ module primaryPostgresqlServer 'br/public:storage/postgresql-single-server:1.1.0
   }
 }
 
-module replicaPostgresqlServer 'br/public:storage/postgresql-single-server:1.1.0' = {
+module replicaPostgresqlServer 'br/public:storage/postgresql-single-server:1.1.2' = {
   name: 'replica-server'
   dependsOn: [
     primaryPostgresqlServer
@@ -154,7 +154,7 @@ var serverConfigurations = [
   }
 ]
 
-module postgresqlSingleServer 'br/public:storage/postgresql-single-server:1.1.0' = {
+module postgresqlSingleServer 'br/public:storage/postgresql-single-server:1.1.2' = {
   name: 'postgresqlSingleServer'
   params: {
     prefix: 'postgresql-test02'

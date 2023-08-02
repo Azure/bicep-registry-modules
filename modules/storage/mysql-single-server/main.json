@@ -6,9 +6,12 @@
     "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.17.1.54307",
-      "templateHash": "18271086898096125171"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "595293575967895786"
+    },
+    "name": "mysql-single-server",
+    "description": "This Bicep Module is used for the deployment of MySQL DB  Single Server with reusable set of parameters and resources.",
+    "owner": "tanujbhatia1708"
   },
   "definitions": {
     "diagnosticSettingsRetentionPolicyType": {
@@ -714,8 +717,8 @@
             "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "12651526442207039646"
+              "version": "0.19.5.34762",
+              "templateHash": "5901804176008778240"
             }
           },
           "parameters": {
@@ -816,8 +819,8 @@
             "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "18440659148863256788"
+              "version": "0.19.5.34762",
+              "templateHash": "17584855190782240496"
             }
           },
           "definitions": {

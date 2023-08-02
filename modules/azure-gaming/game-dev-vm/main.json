@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.16.2.56959",
-      "templateHash": "6744115734082113124"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "9355827468287368970"
+    },
+    "name": "Azure Game Developer VM",
+    "description": "Bicep Module to simplify deployment of the Azure Game Developer VM",
+    "owner": "dciborow"
   },
   "parameters": {
     "location": {

@@ -56,7 +56,7 @@ resource peeringVNET 'Microsoft.Network/virtualNetworks@2021-05-01' = {
 // Diagnostics
 // ===========
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
-  name: 'adpsxxazsa${serviceShort}01'
+  name: 'storage${uniqueString(resourceGroup().id)}'
   kind: 'StorageV2'
   sku: {
     name: 'Standard_LRS'

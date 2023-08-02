@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.18.4.5664",
-      "templateHash": "3282803605215641298"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "10685231688004622463"
+    },
+    "name": "CognitiveServices",
+    "description": "This module deploys CognitiveServices (Microsoft.CognitiveServices/accounts) and optionally available integrations.",
+    "owner": "omegavveapon"
   },
   "parameters": {
     "kind": {
@@ -229,7 +232,7 @@
         "name": "varPrivateEndpoints",
         "count": "[length(parameters('privateEndpoints'))]",
         "input": {
-          "name": "[format('{0}-{1}', toLower(parameters('name')), parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].name)]",
+          "name": "[format('{0}-{1}', parameters('name'), parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].name)]",
           "privateLinkServiceId": "[resourceId('Microsoft.CognitiveServices/accounts', toLower(parameters('name')))]",
           "groupIds": [
             "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].groupId]"
@@ -279,7 +282,8 @@
       },
       "type": "Microsoft.CognitiveServices/accounts/deployments",
       "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', toLower(parameters('name')), format('{0}-{1}-deployment-{2}', parameters('name'), uniqueString(deployment().name, parameters('location')), copyIndex()))]",
+      "name": "[format('{0}/{1}', toLower(parameters('name')), format('{0}-deploy-{1}', parameters('name'), copyIndex()))]",
+      "sku": "[parameters('deployments')[copyIndex()].sku]",
       "properties": "[parameters('deployments')[copyIndex()].properties]",
       "dependsOn": [
         "[resourceId('Microsoft.CognitiveServices/accounts', toLower(parameters('name')))]"
@@ -290,7 +294,7 @@
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
       "scope": "[format('Microsoft.CognitiveServices/accounts/{0}', toLower(parameters('name')))]",
-      "name": "[format('{0}-{1}-lock', toLower(parameters('name')), toLower(parameters('lock')))]",
+      "name": "[format('{0}-lock', parameters('name'))]",
       "properties": {
         "level": "[parameters('lock')]",
         "notes": "[if(equals(parameters('lock'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot modify the resource or child resources.')]"
@@ -308,7 +312,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('cognitive-service-rbac-{0}-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-rbac-{1}', parameters('name'), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -333,8 +337,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "6961021872231945027"
+              "version": "0.19.5.34762",
+              "templateHash": "14066904857233248241"
             }
           },
           "parameters": {
@@ -409,9 +413,10 @@
       }
     },
     {
+      "condition": "[not(equals(parameters('privateEndpoints'), createArray()))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}-private-endpoints', parameters('name'), uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-peps', parameters('name'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -434,8 +439,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "10760293756487564642"
+              "version": "0.19.5.34762",
+              "templateHash": "6983903683818437848"
             }
           },
           "parameters": {

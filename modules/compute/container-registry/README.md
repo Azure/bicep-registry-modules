@@ -2,7 +2,7 @@
 
 This module deploys Container Registry (Microsoft.ContainerRegistry/registries) and optionally available integrations.
 
-## Description
+## Details
 
 [Azure Container Registry (ACR)](http://aka.ms/acr) is a hosted registry for Docker and Open Container Initiative (OCI) artifacts. This module provides an Infrastructure as Code alternative for management of Container Registry using Bicep, and is intended to mirror the available functionality of provisioning with Azure Portal or CLI.
 
@@ -59,7 +59,7 @@ This module deploys Container Registry (Microsoft.ContainerRegistry/registries) 
 An example of how to deploy Azure Container Registry using the minimum required parameters.
 
 ```bicep
-module containerRegistry 'br/public:compute/container-registry:1.1.1' = {
+module containerRegistry 'br/public:compute/container-registry:1.0.3' = {
   name: '${uniqueString(deployment().name, 'eastus')}-container-registry'
   params: {
     name: 'acr${uniqueString(deployment().name, location)}'
@@ -76,7 +76,7 @@ An example of how to deploy a 'Premium' SKU instance of Azure Container Registry
 param subnetId string
 param privateDnsZoneId string
 
-module containerRegistry 'br/public:compute/container-registry:1.1.1' = {
+module containerRegistry 'br/public:compute/container-registry:1.0.3' = {
   name: '${uniqueString(deployment().name, 'eastus')}-container-registry'
   params: {
     name: 'acr${uniqueString(deployment().name, location)}'
@@ -98,7 +98,7 @@ module containerRegistry 'br/public:compute/container-registry:1.1.1' = {
 An example of how to deploy a 'Premium' SKU instance of Azure Container Registry with replication to multiple Azure Locations.
 
 ```bicep
-module containerRegistry 'br/public:compute/container-registry:1.0.1' = {
+module containerRegistry 'br/public:compute/container-registry:1.0.3' = {
   name: '${uniqueString(deployment().name, 'eastus')}-container-registry'
   params: {
     name: 'acr${uniqueString(deployment().name, location)}'
