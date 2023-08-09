@@ -59,7 +59,7 @@ This module deploys Container Registry (Microsoft.ContainerRegistry/registries) 
 An example of how to deploy Azure Container Registry using the minimum required parameters.
 
 ```bicep
-module containerRegistry 'br/public:compute/container-registry:0.1.0' = {
+module containerRegistry 'br/public:compute/container-registry:1.1.1' = {
   name: '${uniqueString(deployment().name, 'eastus')}-container-registry'
   params: {
     name: 'acr${uniqueString(deployment().name, location)}'
@@ -76,7 +76,7 @@ An example of how to deploy a 'Premium' SKU instance of Azure Container Registry
 param subnetId string
 param privateDnsZoneId string
 
-module containerRegistry 'br/public:compute/container-registry:0.1.0' = {
+module containerRegistry 'br/public:compute/container-registry:1.1.1' = {
   name: '${uniqueString(deployment().name, 'eastus')}-container-registry'
   params: {
     name: 'acr${uniqueString(deployment().name, location)}'
@@ -126,7 +126,7 @@ module containerRegistry 'br/public:compute/container-registry:0.1.0' = {
 An example of how to deploy a 'Premium' SKU instance of Azure Container Registry with replication to multiple Azure Locations.
 
 ```bicep
-module containerRegistry 'br/public:compute/container-registry:0.1.0' = {
+module containerRegistry 'br/public:compute/container-registry:1.1.1' = {
   name: '${uniqueString(deployment().name, 'eastus')}-container-registry'
   params: {
     name: 'acr${uniqueString(deployment().name, location)}'
