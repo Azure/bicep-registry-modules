@@ -31,7 +31,7 @@ module test_01 '../main.bicep' = {
   name: '${uniqueName}-test-01'
   params: {
     location: location
-    name: '${uniqueName}-test-01'
+    prefix: 'test-01'
     skuName: 'Basic'
     redisVersion: '6.0'
     capacity: 1
@@ -46,7 +46,7 @@ module test_02 '../main.bicep' = {
     prerequisites
   ]
   params: {
-    name: '${uniqueName}-test-02'
+    prefix: 'test-02'
     location: location
     skuName: 'Standard'
     redisVersion: '6.0'
@@ -101,7 +101,7 @@ module test_03 '../main.bicep' = {
     prerequisites
   ]
   params: {
-    name: '${uniqueName}-test-03'
+    prefix: 'test-03'
     location: location
     skuName: 'Premium'
     redisVersion: '6.0'
@@ -152,7 +152,7 @@ module test_03 '../main.bicep' = {
 module test_04 '../main.bicep' = {
   name: '${uniqueName}-test-04'
   params: {
-    name: '${uniqueName}-test-04'
+    prefix: 'test-04'
     location: 'westus' // Target westus as it does not officially support AZs
     zoneRedundancyEnabled: false // Disable AZ support
     skuName: 'Premium'
