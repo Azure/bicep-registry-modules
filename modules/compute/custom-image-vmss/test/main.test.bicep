@@ -5,11 +5,7 @@ module file is a deployment test. Make sure at least one test is added.
 @description('Deployment Location')
 param location string = 'eastus'
 
-var sharedGallery = 'ScyllaDB-f6e972a4-92ec-4c3c-8999-11b863cad0f7'
-var definition = 'ScyllaDB_Enterprise'
-var imageVer = 'latest'
-
-var communityGalleryImageId = '/CommunityGalleries/${sharedGallery}/Images/${definition}/Versions/${imageVer}'
+var communityGalleryImageId = '/CommunityGalleries/scylladb-7e8d8a04-23db-487d-87ec-0e175c0615bb/Images/scylla-enterprise-2023.1'
 
 var customData = loadFileAsBase64('imageConfig.json')
 
@@ -25,5 +21,3 @@ module test1 '../main.bicep' = {
     imageLocation: 'gallery'
   }
 }
-
-

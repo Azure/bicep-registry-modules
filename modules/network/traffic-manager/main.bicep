@@ -1,3 +1,7 @@
+metadata name = 'Azure Traffic Manager'
+metadata description = 'Bicep module for creating a Azure Traffic Manager Profile with endpoints and monitor configurations.'
+metadata owner = 'dciborow'
+
 @description('Prefix of traffic manager profile resource name. This param is ignored when name is provided.')
 param prefix string = 'traf'
 

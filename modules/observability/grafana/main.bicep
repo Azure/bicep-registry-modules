@@ -1,3 +1,7 @@
+metadata name = 'Azure Managed Grafana'
+metadata description = 'Azure Managed Grafana is a data visualization platform built on top of the Grafana software by Grafana Labs.'
+metadata owner = 'vlahane'
+
 @description('The geo-location where the grafana resource lives.')
 param location string
 
