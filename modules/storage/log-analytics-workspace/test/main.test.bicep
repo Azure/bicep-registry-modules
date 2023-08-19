@@ -26,7 +26,7 @@ module test_01 '../main.bicep' = {
 module test_02 '../main.bicep' = {
   name: '${uniqueName}-test02'
   params: {
-    name: 'test02-${uniqueName}'
+    prefix: 'test02'
     tags: tags
     location: location
   }
