@@ -10,7 +10,7 @@ This module deploys Log Analytics workspace and optionally available integration
 
 | Name                              | Type     | Required | Description                                                                                              |
 | :-------------------------------- | :------: | :------: | :------------------------------------------------------------------------------------------------------- |
-| `prefix`                          | `string` | No       | Prefix of Log Analytics Workspace Resource Name.This param is ignored when name is provided.             |
+| `prefix`                          | `string` | No       | Optional. Prefix of Log Analytics Workspace Resource Name.This param is ignored when name is provided.   |
 | `name`                            | `string` | No       | Optional. Name of the Log Analytics Workspace.                                                           |
 | `location`                        | `string` | No       | Optional. Define the Azure Location that the Log Analytics Workspace should be created within.           |
 | `tags`                            | `object` | No       | Optional. Tags for Log Analytics Workspace.                                                              |

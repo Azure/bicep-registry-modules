@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "326561964632305882"
+      "templateHash": "10913144873978900801"
     },
     "name": "Log Analytics Workspace",
     "description": "This module deploys Log Analytics workspace and optionally available integrations.",
@@ -16,7 +16,7 @@
       "type": "string",
       "defaultValue": "log",
       "metadata": {
-        "description": "Prefix of Log Analytics Workspace Resource Name.This param is ignored when name is provided."
+        "description": "Optional. Prefix of Log Analytics Workspace Resource Name.This param is ignored when name is provided."
       }
     },
     "name": {
