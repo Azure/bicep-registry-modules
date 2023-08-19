@@ -6,9 +6,12 @@
     "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.18.4.5664",
-      "templateHash": "11905085497834308438"
-    }
+      "version": "0.20.4.51522",
+      "templateHash": "4738160747042515196"
+    },
+    "name": "Azure Data Explorer",
+    "description": "This Bicep module creates a Kusto Cluster with the specified number of nodes and version.",
+    "owner": "dciborow"
   },
   "definitions": {
     "kustoTier": {
@@ -74,8 +77,8 @@
     },
     "period": {
       "type": "int",
-      "maxValue": 36500,
-      "minValue": 0
+      "minValue": 0,
+      "maxValue": 36500
     },
     "principalAssignmentType": {
       "type": "object",
@@ -131,11 +134,11 @@
     "name": {
       "type": "string",
       "defaultValue": "[format('kusto{0}', uniqueString(resourceGroup().id, subscription().id))]",
+      "minLength": 4,
+      "maxLength": 22,
       "metadata": {
         "description": "Name of the Kusto Cluster. Must be unique within Azure."
-      },
-      "maxLength": 22,
-      "minLength": 4
+      }
     },
     "sku": {
       "$ref": "#/definitions/kustoSku",
@@ -154,11 +157,11 @@
     "numberOfNodes": {
       "type": "int",
       "defaultValue": "[parameters('autoScaleMin')]",
+      "minValue": 2,
+      "maxValue": 1000,
       "metadata": {
         "description": "The number of nodes in the Kusto Cluster."
-      },
-      "maxValue": 1000,
-      "minValue": 2
+      }
     },
     "version": {
       "type": "int",
@@ -177,20 +180,20 @@
     "autoScaleMin": {
       "type": "int",
       "defaultValue": 2,
+      "minValue": 2,
+      "maxValue": 999,
       "metadata": {
         "description": "The minimum number of nodes in the Kusto Cluster."
-      },
-      "maxValue": 999,
-      "minValue": 2
+      }
     },
     "autoScaleMax": {
       "type": "int",
       "defaultValue": 8,
+      "minValue": 3,
+      "maxValue": 1000,
       "metadata": {
         "description": "The maximum number of nodes in the Kusto Cluster."
-      },
-      "maxValue": 1000,
-      "minValue": 3
+      }
     },
     "tags": {
       "type": "object",
@@ -560,8 +563,8 @@
             "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "17055812702908829865"
+              "version": "0.20.4.51522",
+              "templateHash": "13783205425210393189"
             }
           },
           "parameters": {
@@ -685,8 +688,8 @@
             "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.18.4.5664",
-              "templateHash": "5814984905935214993"
+              "version": "0.20.4.51522",
+              "templateHash": "15139303132398874695"
             }
           },
           "parameters": {

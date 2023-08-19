@@ -2,7 +2,7 @@
 
 This Bicep module creates a Kusto Cluster with the specified number of nodes and version.
 
-## Description
+## Details
 
 Azure Data Explorer is a fast, fully managed data analytics service for real-time analysis on large volumes of data streaming from applications, websites, IoT devices, and more. Azure Data Explorer clusters are the fundamental resource in Azure Data Explorer. A cluster is a collection of compute resources that host databases and tables.
 
