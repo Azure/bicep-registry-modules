@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.19.5.34762",
-      "templateHash": "6783799034695383275"
+      "version": "0.20.4.51522",
+      "templateHash": "15501758245983767624"
     },
     "name": "Container Registry",
     "description": "This module deploys Container Registry (Microsoft.ContainerRegistry/registries) and optionally available integrations.",
@@ -14,11 +14,11 @@
   "parameters": {
     "name": {
       "type": "string",
+      "minLength": 5,
+      "maxLength": 50,
       "metadata": {
         "description": "The name of the Azure Container Registry."
-      },
-      "maxLength": 50,
-      "minLength": 5
+      }
     },
     "location": {
       "type": "string",
@@ -95,14 +95,14 @@
     "lock": {
       "type": "string",
       "defaultValue": "NotSpecified",
-      "metadata": {
-        "description": "Specify the type of lock."
-      },
       "allowedValues": [
         "CanNotDelete",
         "NotSpecified",
         "ReadOnly"
-      ]
+      ],
+      "metadata": {
+        "description": "Specify the type of lock."
+      }
     },
     "privateEndpoints": {
       "type": "array",
@@ -198,8 +198,8 @@
     "diagnosticLogsRetentionInDays": {
       "type": "int",
       "defaultValue": 365,
-      "maxValue": 365,
       "minValue": 0,
+      "maxValue": 365,
       "metadata": {
         "description": "Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
       }
@@ -437,8 +437,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "16232062372228641864"
+              "version": "0.20.4.51522",
+              "templateHash": "11276824333704269750"
             }
           },
           "parameters": {
@@ -553,8 +553,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "9376650268912092515"
+              "version": "0.20.4.51522",
+              "templateHash": "1569431369010361825"
             }
           },
           "parameters": {
@@ -673,8 +673,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "1398425088405732302"
+              "version": "0.20.4.51522",
+              "templateHash": "15495887558517410579"
             }
           },
           "parameters": {
@@ -754,8 +754,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.19.5.34762",
-                      "templateHash": "16232062372228641864"
+                      "version": "0.20.4.51522",
+                      "templateHash": "11276824333704269750"
                     }
                   },
                   "parameters": {
