@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.16.2.56959",
-      "templateHash": "15395286456069283977"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "14128626543611234857"
+    },
+    "name": "Azure Key Vault",
+    "description": "Bicep module for simplified deployment of KeyVault; enables VNet integration and offers flexible configuration options.",
+    "owner": "dciborow"
   },
   "parameters": {
     "location": {
@@ -182,8 +185,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "13959664894464648251"
+              "version": "0.19.5.34762",
+              "templateHash": "3207553921553376630"
             }
           },
           "parameters": {
@@ -355,8 +358,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "3117076575586483786"
+              "version": "0.19.5.34762",
+              "templateHash": "13737839350774774675"
             }
           },
           "parameters": {
@@ -420,8 +423,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "17826599313936370174"
+              "version": "0.19.5.34762",
+              "templateHash": "514858800947195894"
             }
           },
           "parameters": {

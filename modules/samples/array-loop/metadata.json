@@ -1,6 +1,0 @@
-{
-  "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
-  "name": "Array Loop",
-  "summary": "A sample Bicep registry module demonstrating array iterations.",
-  "owner": "bicep-admins"
-}

@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.16.2.56959",
-      "templateHash": "11595516812112225013"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "3959456113273968386"
+    },
+    "name": "Key Vault Certificate Creation",
+    "description": "Create Key Vault self-signed certificates. Requires Key Vaults to be using RBAC Authorization, not Access Policies.",
+    "owner": "Aks-Bicep-Accelerator-Maintainers"
   },
   "parameters": {
     "akvName": {
@@ -159,6 +162,13 @@
       },
       "maxValue": 1200,
       "minValue": 1
+    },
+    "performRoleAssignment": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Set to false to disable role assignments within this module. Default: true"
+      }
     }
   },
   "variables": {
@@ -177,6 +187,7 @@
       }
     },
     {
+      "condition": "[parameters('performRoleAssignment')]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('akvName'))]",

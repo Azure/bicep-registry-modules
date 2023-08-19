@@ -2,7 +2,7 @@
 
 This Bicep Module is used for the deployment of MySQL DB  Single Server with reusable set of parameters and resources.
 
-## Description
+## Details
 
 The MySQL Server bicep module is a piece of infrastructure as code (IaC) that defines and deploys a MySQL database server in Microsoft Azure using the Bicep language.
 Bicep is a domain-specific language that simplifies the process of deploying and managing cloud resources in Azure.
@@ -53,10 +53,10 @@ This module requires the namespace 'Microsoft.DBforMySQL' to be registered  for 
 
 ## Outputs
 
-| Name | Type   | Description                                     |
-| :--- | :----: | :---------------------------------------------- |
-| id   | string | MySQL Single Server Resource id                 |
-| fqdn | string | MySQL Single Server fully Qualified Domain Name |
+| Name   | Type     | Description                                     |
+| :----- | :------: | :---------------------------------------------- |
+| `id`   | `string` | MySQL Single Server Resource id                 |
+| `fqdn` | `string` | MySQL Single Server fully Qualified Domain Name |
 
 ## Examples
 
@@ -64,36 +64,36 @@ This module requires the namespace 'Microsoft.DBforMySQL' to be registered  for 
 
 This example deploys a MySQL Single Server database.
 
-```
-module test01 'br/public:database/mysql-single-server:1.0.1' = {
+```bicep
+module test01 'br/public:database/mysql-single-server:1.0.2' = {
   name: 'test01-${serverName}'
   params: {
+    prefix: 'mysql-test01'
     location: location
-    name: 'test01-${serverName}'
+    administratorLogin: 'testlogin'
+    administratorLoginPassword: 'test@passw0rd123'
   }
 }
-
 ```
 
 ### Example 2
 
 This example deploys a MySQL Single Server database with login and password with the sku name and firewall rules , server configurations and private endpoints.
 
-```
-module test02 'br/public:database/mysql-single-server:1.0.1' = {
+```bicep
+module test02 'br/public:database/mysql-single-server:1.0.2' = {
   name: 'mysqldb-${uniqueString(deployment().name, location)}-deployment'
   params: {
-    location: 'westus'
-    createMode : 'default'
-    serverName: 'mysqldb-${uniqueString(deployment().name, location)}'
+    prefix: 'mysql-test02'
+    location: location
+    createMode : 'Default'
     administratorLogin: 'testlogin'
     administratorLoginPassword: 'test@passw0rd123'
-    skuName: 'GP_Gen5_2'
     publicNetworkAccess: 'Enabled'
     privateEndpoints: [
       {
         name: 'endpoint1'
-        subnetId: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}"
+        subnetId: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}'
         manualApprovalEnabled: true
         groupId: 'mysqlServer'
       }
@@ -130,32 +130,31 @@ module test02 'br/public:database/mysql-single-server:1.0.1' = {
 
 This example deploys a MySQL Single Server database with Role Assignments.
 
-```
-module test03 'br/public:database/mysql-single-server:1.0.1' = {
+```bicep
+module test03 'br/public:database/mysql-single-server:1.0.2' = {
   name: 'mysqldb-${uniqueString(deployment().name, location)}-deployment'
   params: {
-    location: 'westus'
-    createMode : 'default'
-    serverName: 'mysqldb-${uniqueString(deployment().name, location)}'
+    prefix: 'mysql-test04'
+    location: location
+    createMode : 'Default'
     administratorLogin: 'testlogin'
     administratorLoginPassword: 'test@passw0rd123'
-    skuName: 'GP_Gen5_2'
     publicNetworkAccess: 'Enabled'
     roleAssignments: [
        {
          roleDefinitionIdOrName: 'SQL DB Contributor'
-         principalIds: [ dependencies.outputs.identityPrincipalIds[0] ]
+         principalIds: [ 'principal ID' ]
        }
        {
          roleDefinitionIdOrName: 'Log Analytics Reader'
-          principalIds: [ dependencies.outputs.identityPrincipalIds[1] ]
+         principalIds: [ 'principal ID' ]
        }
     ]
     privateEndpoints: [
       {
         name: 'endpoint1'
-        subnetId: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}"
-        manualApprovalEnabled: true
+        subnetId: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}'
+        manualApprovalEnabled: false
         groupId: 'mysqlServer'
       }
     ]
@@ -170,8 +169,9 @@ module test03 'br/public:database/mysql-single-server:1.0.1' = {
     {
         name: 'allowip'
         startIpAddress: '10.0.0.1'
-        endIpAddress: '10.0.0.1'
+        endIpAddress: '10.0.0.254'
     }
+    ]
     serverConfigurations: [
     {
         name: 'flush_time'

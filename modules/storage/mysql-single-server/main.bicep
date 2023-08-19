@@ -1,3 +1,7 @@
+metadata name = 'mysql-single-server'
+metadata description = 'This Bicep Module is used for the deployment of MySQL DB  Single Server with reusable set of parameters and resources.'
+metadata owner = 'tanujbhatia1708'
+
 targetScope = 'resourceGroup'
 
 @description('Optional. Deployment region name. Default is the location of the resource group.')
@@ -32,10 +36,10 @@ param backupRetentionDays int = 35
 param createMode string = 'Default'
 
 @description('Optional. List of databases to create on server.')
-param databases array = []
+param databases databaseType[] = []
 
 @description('Optional. List of server configurations to create on server.')
-param serverConfigurations array = []
+param serverConfigurations serverConfigurationType[] = []
 
 @description('Optional. Status showing whether the server enabled infrastructure encryption..')
 @allowed(['Enabled', 'Disabled'])
@@ -112,7 +116,7 @@ var varPrivateEndpoints = [for endpoint in privateEndpoints: {
   ]
   subnetId: endpoint.subnetId
   privateDnsZoneConfigs: endpoint.?privateDnsZoneConfigs ?? []
-  customNetworkInterfaceName: endpoint.?customNetworkInterfaceName ?? null
+  customNetworkInterfaceName: endpoint.?customNetworkInterfaceName
   manualApprovalEnabled: endpoint.?manualApprovalEnabled ?? false
 }]
 
@@ -227,15 +231,15 @@ var enableMysqlDiagnosticSettings  = (empty(diagnosticSettingsProperties.?diagno
 resource mysqlDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableMysqlDiagnosticSettings) {
   name: '${serverName}-diagnostic-settings'
   properties: {
-    eventHubAuthorizationRuleId: diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?EventHubAuthorizationRuleId ?? null
-    eventHubName:  diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?EventHubName ?? null
-    logAnalyticsDestinationType: diagnosticSettingsProperties.diagnosticReceivers.?logAnalyticsDestinationType ?? null
-    logs: diagnosticSettingsProperties.?logs ?? null
-    marketplacePartnerId: diagnosticSettingsProperties.diagnosticReceivers.?marketplacePartnerId ?? null
-    metrics: diagnosticSettingsProperties.?metrics ?? null
-    serviceBusRuleId: diagnosticSettingsProperties.?serviceBusRuleId ?? null
-    storageAccountId: diagnosticSettingsProperties.diagnosticReceivers.?storageAccountId ?? null
-    workspaceId: diagnosticSettingsProperties.diagnosticReceivers.?workspaceId ?? null
+    eventHubAuthorizationRuleId: diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?EventHubAuthorizationRuleId
+    eventHubName:  diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?EventHubName
+    logAnalyticsDestinationType: diagnosticSettingsProperties.diagnosticReceivers.?logAnalyticsDestinationType
+    logs: diagnosticSettingsProperties.?logs
+    marketplacePartnerId: diagnosticSettingsProperties.diagnosticReceivers.?marketplacePartnerId
+    metrics: diagnosticSettingsProperties.?metrics
+    serviceBusRuleId: diagnosticSettingsProperties.?serviceBusRuleId
+    storageAccountId: diagnosticSettingsProperties.diagnosticReceivers.?storageAccountId
+    workspaceId: diagnosticSettingsProperties.diagnosticReceivers.?workspaceId
   }
   scope: mysqlServer
 }
@@ -247,6 +251,7 @@ output fqdn string = createMode != 'Replica' ? mysqlServer.properties.fullyQuali
 
 
 // user-defined types
+@description('The retention policy for this log or metric.')
 type diagnosticSettingsRetentionPolicyType = {
   @description('the number of days for the retention in days. A value of 0 will retain the events indefinitely.')
   days: int
@@ -254,6 +259,7 @@ type diagnosticSettingsRetentionPolicyType = {
   enabled: bool
 }
 
+@description('The list of log settings.')
 type diagnosticSettingsLogsType = {
   @description('Name of a Diagnostic Log category for a resource type this setting is applied to.')
   category: string?
@@ -261,21 +267,21 @@ type diagnosticSettingsLogsType = {
   categoryGroup: string?
   @description('A value indicating whether this log is enabled.')
   enabled: bool
-  @description('The retention policy for this log.')
   retentionPolicy: diagnosticSettingsRetentionPolicyType?
 }
 
+@description('The list of metric settings.')
 type diagnosticSettingsMetricsType = {
   @description('Name of a Diagnostic Metric category for a resource type this setting is applied to.')
   category: string?
-  @description('A value indicating whether this log is enabled.')
+  @description('A value indicating whether this metric is enabled.')
   enabled: bool
-  @description('The retention policy for this log.')
   retentionPolicy: diagnosticSettingsRetentionPolicyType?
   @description('the timegrain of the metric in ISO8601 format.')
   timeGrain: string?
 }
 
+@description('The settings required to use EventHub.')
 type diagnosticSettingsEventHubType = {
   @description('The resource Id for the event hub authorization rule.')
   EventHubAuthorizationRuleId: string
@@ -283,8 +289,8 @@ type diagnosticSettingsEventHubType = {
   EventHubName: string
 }
 
+@description('Destiantion options.')
 type diagnosticSettingsReceiversType = {
-  @description('The settings required to use EventHub.')
   eventHub: diagnosticSettingsEventHubType?
   @description('A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or a target type created as follows: {normalized service identity}_{normalized category name}.')
   logAnalyticsDestinationType: string?
@@ -297,13 +303,10 @@ type diagnosticSettingsReceiversType = {
 }
 
 type diagnosticSettingsPropertiesType = {
-  @description('The list of logs settings.')
   logs: diagnosticSettingsLogsType[]?
-  @description('The list of metric settings.')
   metrics: diagnosticSettingsMetricsType[]?
   @description('The service bus rule Id of the diagnostic setting. This is here to maintain backwards compatibility.')
   serviceBusRuleId: string?
-  @description('Destiantion options.')
   diagnosticReceivers: diagnosticSettingsReceiversType?
 }
 
@@ -327,4 +330,17 @@ type virtualNetworkRuleType = {
   ignoreMissingVnetServiceEndpoint: bool
   @description('The ARM resource id of the virtual network subnet.')
   virtualNetworkSubnetId: string
+}
+
+@description('Optional. Database definition in the postrges instance.')
+type databaseType = {
+  name: string
+  charset: string?
+  collation: string?
+}
+
+@description('Optional. Configuration definition in the postrges instance.')
+type serverConfigurationType = {
+  name: string
+  value: string
 }

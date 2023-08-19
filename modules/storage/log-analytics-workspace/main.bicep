@@ -1,3 +1,7 @@
+metadata name = 'Log Analytics Workspace'
+metadata description = 'This module deploys Log Analytics workspace and optionally available integrations.'
+metadata owner = 'RahulTipole-Microsoft'
+
 @description('Prefix of Log Analytics Workspace Resource Name.This param is ignored when name is provided.')
 param prefix string = 'log'
 

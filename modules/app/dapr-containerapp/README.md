@@ -2,7 +2,7 @@
 
 A dapr optimised container app
 
-## Description
+## Details
 
 This module deploys a dapr Container App to be deployed with an optimised configuration.
 When used in combination with the dapr-ContainerApps-Environment module, the infrastructure required to deploy your applications is greatly simplified.
@@ -33,10 +33,10 @@ When used in combination with the dapr-ContainerApps-Environment module, the inf
 
 ## Outputs
 
-| Name                      | Type   | Description                                                                  |
-| :------------------------ | :----: | :--------------------------------------------------------------------------- |
-| containerAppFQDN          | string | If ingress is enabled, this is the FQDN that the Container App is exposed on |
-| userAssignedIdPrincipalId | string | The PrinicpalId of the Container Apps Managed Identity                       |
+| Name                        | Type     | Description                                                                  |
+| :-------------------------- | :------: | :--------------------------------------------------------------------------- |
+| `containerAppFQDN`          | `string` | If ingress is enabled, this is the FQDN that the Container App is exposed on |
+| `userAssignedIdPrincipalId` | `string` | The PrinicpalId of the Container Apps Managed Identity                       |
 
 ## Examples
 
@@ -56,7 +56,7 @@ module myenv 'br/public:app/dapr-containerapps-environment:1.0.1' = {
   }
 }
 
-module appNodeService 'br/public:app/dapr-containerapp:1.0.1' = {
+module appNodeService 'br/public:app/dapr-containerapp:1.0.3' = {
   name: 'stateNodeApp'
   params: {
     location: location
@@ -75,7 +75,7 @@ module appNodeService 'br/public:app/dapr-containerapp:1.0.1' = {
   }
 }
 
-module appPythonClient 'br/public:app/dapr-containerapp:1.0.1' = {
+module appPythonClient 'br/public:app/dapr-containerapp:1.0.3' = {
   name: 'statePyApp'
   params: {
     location: location
@@ -104,7 +104,7 @@ module myenv 'br/public:app/dapr-containerapps-environment:1.0.1' = {
   }
 }
 
-module appSubscriber 'br/public:app/dapr-containerapp:1.0.1' = {
+module appSubscriber 'br/public:app/dapr-containerapp:1.0.3' = {
   name: 'subscriber'
   params: {
     location: location
@@ -116,7 +116,7 @@ module appSubscriber 'br/public:app/dapr-containerapp:1.0.1' = {
   }
 }
 
-module appPublisher 'br/public:app/dapr-containerapp:1.0.1' = {
+module appPublisher 'br/public:app/dapr-containerapp:1.0.3' = {
   name: 'publisher'
   params: {
     location: location

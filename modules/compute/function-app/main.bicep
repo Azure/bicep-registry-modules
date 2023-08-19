@@ -1,3 +1,7 @@
+metadata name = 'Function app module'
+metadata description = 'Module to create function app for your application'
+metadata owner = 'rhalloul'
+
 /*param section*/
 @description('Required. Name for the Azure Function App.')
 @maxLength(64)
@@ -35,11 +39,7 @@ param targetWorkerCount int = 0
 @allowed([ 0, 1, 2 ])
 param targetWorkerSizeId int = 0
 
-@allowed([
-  'None'
-  'SystemAssigned'
-  'UserAssigned'
-  'SystemAssigned, UserAssigned'
+@allowed(['None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned, UserAssigned'
 ])
 @description('Optional. The type of identity used for the virtual machine. The type \'SystemAssigned, UserAssigned\' includes both an implicitly created identity and a set of user assigned identities. The type \'None\' will remove any identities from the sites ( app or functionapp).')
 param identityType string = 'SystemAssigned'
@@ -63,15 +63,12 @@ param kind string = 'functionapp'
 @description('Optional. Version of the function extension.')
 param functionsExtensionVersion string = '~4'
 
-@description('Optional. Runtime of the function worker.')
-@allowed([
-  'dotnet'
-  'node'
-  'python'
-  'java'
-  'powershell'
-  ''
-])
+@description('Dictates whether editing in the Azure portal is enabled.')
+@allowed(['readonly', 'readwrite'])
+param functionAppEditMode string = 'readonly'
+
+@description('Optional. Runtime of the function worker. WARNING: NOT ALL OSes SUPPORT ALL RUNTIMES!')
+@allowed(['dotnet', 'node', 'python', 'java', 'powershell', ''])
 param functionsWorkerRuntime string = ''
 
 @description('Optional. NodeJS version.')
@@ -92,14 +89,14 @@ param appInsightsType string = 'web'
 @description('Optional. The kind of application that this component refers to, used to customize UI.')
 param appInsightsKind string = 'azfunc'
 
-@description('Optional. Enabled or Disable Insights for Azure functions')
+@description('Optional. Enabled or Disable Insights for Azure functions.')
 param enableInsights bool = false
 
 @description('Optional. Resource ID of the log analytics workspace which the data will be ingested to, if enableaInsights is false.')
 param workspaceResourceId string = ''
 
 @description('Optional. List of Azure function (Actual object where our code resides).')
-param functions array = []
+param functions functionType[] = []
 
 @description('Optional. Enable Vnet Integration or not.')
 param enableVnetIntegration bool = false
@@ -126,7 +123,7 @@ param isManualIntegration bool = true
 param isMercurial bool = false
 
 @description('Required. Resource Group of storage account used by function app.')
-param storgeAccountResourceGroup string
+param storageAccountResourceGroup string
 
 @description('Optional. True to deploy functions from zip package. "functionPackageUri" must be specified if enabled. The package option and sourcecontrol option should not be enabled at the same time.')
 param enablePackageDeploy bool = false
@@ -134,7 +131,7 @@ param enablePackageDeploy bool = false
 @description('Optional. URI to the function source code zip package, must be accessible by the deployer. E.g. A zip file on Azure storage in the same resource group.')
 param functionPackageUri string = ''
 
-@description('Optional. Enable docker image deployment')
+@description('Optional. Enable docker image deployment.')
 param enableDockerContainer bool = false
 
 @description('Optional. This will be required when enableDockerContainer passed as true.')
@@ -152,10 +149,27 @@ APPINSIGHTS_INSTRUMENTATIONKEY
 APPLICATIONINSIGHTS_CONNECTION_STRING''')
 param extraAppSettings object = {}
 
+@description('The kind of resource. Empty string means windows.')
+var servicePlanKind = serverOS == 'Linux' ? toLower(serverOS) : ''
+
+@description('The state of FTP / FTPS service.')
+@allowed(['Disabled', 'AllAllowed', 'FtpsOnly'])
+param ftpsState string = 'Disabled'
+
+@description('Configures the minimum version of TLS required for SSL requests.')
+@allowed(['1.0', '1.1', '1.2'])
+param minTlsVersion string = '1.2'
+
+@description('Linux App Framework and version. e.g. PYTHON|3.9')
+param linuxFxVersion string = ''
+
+@description('The connection strings properties')
+param connectionStringProperties object = {}
+
 @description('Defines storageAccounts for Azure Function App.')
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' existing = {
   name: storageAccountName
-  scope: resourceGroup(storgeAccountResourceGroup)
+  scope: resourceGroup(storageAccountResourceGroup)
 }
 
 @description('Defines Application service plan.')
@@ -164,6 +178,7 @@ resource serverfarms 'Microsoft.Web/serverfarms@2021-02-01' = {
   location: location
   tags: tags
   sku: sku
+  kind: servicePlanKind
   properties: {
     perSiteScaling: perSiteScaling
     maximumElasticWorkerCount: maximumElasticWorkerCount
@@ -173,7 +188,7 @@ resource serverfarms 'Microsoft.Web/serverfarms@2021-02-01' = {
   }
 }
 
-@description('If enabled, this will help mornior the application using the log analytics workspace')
+@description('If enabled, this will help monitor the application using the log analytics workspace.')
 resource appInsights 'Microsoft.Insights/components@2020-02-02' = if (enableInsights) {
   name: 'ai-${name}'
   location: location
@@ -202,7 +217,9 @@ resource sites 'Microsoft.Web/sites@2022-03-01' = {
   }
   properties: {
     siteConfig: {
-      linuxFxVersion: enableDockerContainer ? 'DOCKER|${dockerImage}' : null
+      linuxFxVersion: enableDockerContainer ? 'DOCKER|${dockerImage}' : linuxFxVersion ?? null
+      ftpsState: ftpsState
+      minTlsVersion: minTlsVersion
     }
     serverFarmId: serverfarms.id
     httpsOnly: httpsOnly
@@ -223,12 +240,20 @@ resource config 'Microsoft.Web/sites/config@2021-02-01' = {
       WEBSITE_CONTENTSHARE: name
       WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: !empty(storageAccount.id) ? 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};' : any(null)
       FUNCTIONS_EXTENSION_VERSION: functionsExtensionVersion
+      FUNCTION_APP_EDIT_MODE: functionAppEditMode
       FUNCTIONS_WORKER_RUNTIME: sites.kind == 'functionapp' && !empty(functionsWorkerRuntime) ? functionsWorkerRuntime : any(null)
       WEBSITE_NODE_DEFAULT_VERSION: sites.kind == 'functionapp' && functionsWorkerRuntime == 'node' && !empty(functionsDefaultNodeversion) ? functionsDefaultNodeversion : any(null)
       APPINSIGHTS_INSTRUMENTATIONKEY: !empty(appInsights.id) && enableInsights ? appInsights.properties.InstrumentationKey : any(null)
       APPLICATIONINSIGHTS_CONNECTION_STRING: !empty(appInsights.id) && enableInsights ? appInsights.properties.ConnectionString : any(null)
     }, extraAppSettings)
   dependsOn: enableVnetIntegration ? [ networkConfig ] : []
+}
+
+resource connectionString 'Microsoft.Web/sites/config@2022-03-01' = if (!empty(connectionStringProperties)) {
+  name: 'connectionstrings'
+  kind: 'string'
+  parent: sites
+  properties: connectionStringProperties
 }
 
 resource networkConfig 'Microsoft.Web/sites/networkConfig@2022-03-01' = if (enableVnetIntegration == true) {
@@ -239,7 +264,7 @@ resource networkConfig 'Microsoft.Web/sites/networkConfig@2022-03-01' = if (enab
   }
 }
 
-@description('The resources actual is function where code exits')
+@description('The resources actual is function where code exits.')
 @batchSize(1)
 resource azureFunction 'Microsoft.Web/sites/functions@2021-02-01' = [for function in functions: {
   dependsOn: [
@@ -249,10 +274,10 @@ resource azureFunction 'Microsoft.Web/sites/functions@2021-02-01' = [for functio
   parent: sites
   name: function.name
   properties: {
-    language: function.language
-    config: function.config
-    isDisabled: function.enabled
-    files: function.files
+    language: function.properties.language
+    config: function.properties.config
+    isDisabled: function.properties.isDisabled
+    files: function.properties.files
   }
 }]
 
@@ -292,11 +317,23 @@ output serverfarmsName string = serverfarms.name
 @description('Array of functions having name , language,isDisabled and id of functions.')
 output functions array = [for function in functions: {
   name: function.name
-  language: function.language
-  isDisabled: function.enabled
+  language: function.properties.language
+  isDisabled: function.properties.isDisabled
   id: '${sites.id}/functions/${function.name}'
-  files: function.files
+  files: function.properties.files
 }]
 
 @description('Principal Id of the identity assigned to the function app.')
 output sitePrincipalId string = (sites.identity.type == 'SystemAssigned') ? sites.identity.principalId : ''
+
+
+// user defined types
+type functionType = {
+  name: string
+  properties: {
+    language: string
+    config: object
+    isDisabled: bool
+    files: object
+  }
+}
