@@ -45,7 +45,7 @@ module comosdb 'br/public:storage/cosmos-db:3.0.1' = {
             defaultTtl: 3600
             partitionKey: {
               paths: [ '/id' ]
-              kind: 'Hash'
+              kind: any('Hash')
               version: 1
             }
           }
