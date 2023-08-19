@@ -42,31 +42,64 @@ module test_01 '../main.bicep' = {
 // Test 02 - Standard SKU - Parameters,  Diagnostic Settings
 module test_02 '../main.bicep' = {
   name: '${uniqueName}-test-02'
+  dependsOn: [
+    prerequisites
+  ]
   params: {
-        name: '${uniqueName}-test-02'
-        location: location
+    name: '${uniqueName}-test-02'
+    location: location
     skuName: 'Standard'
     redisVersion: '6.0'
     capacity: 1
-    diagnosticEventHubAuthorizationRuleId: prerequisites.outputs.authorizationRuleId
-    diagnosticEventHubName: prerequisites.outputs.eventHubName
-    redisFirewallRules: {
-      Rule1: {
-        startIP: '10.2.1.20'
-        endIP: '10.2.1.25'
-
-      }
-      Rule2: {
-        startIP: '10.2.1.30'
-        endIP: '10.2.1.35'
+    diagnosticSettingsProperties: {
+      logs: [
+        {
+          category: 'ConnectedClientList'
+          enabled: true
+          retentionPolicy: {
+            enabled: true
+            days: 30
+          }
+        }
+      ]
+      metrics: [
+        {
+          category: 'AllMetrics'
+          enabled: true
+          retentionPolicy: {
+            enabled: true
+            days: 30
+          }
+        }
+      ]
+      diagnosticReceivers: {
+        eventHub: {
+          eventHubAuthorizationRuleId: prerequisites.outputs.eventHubAuthorizationRuleId
+          eventHubName: prerequisites.outputs.eventHubName
+        }
       }
     }
+    firewallRules: [
+      {
+        name: 'Rule1'
+        startIpAddress: '10.2.1.20'
+        endIpAddress: '10.2.1.25'
+      }
+      {
+        name: 'Rule2'
+        startIpAddress: '10.2.1.30'
+        endIpAddress: '10.2.1.35'
+      }
+    ]
   }
 }
 
-// Test 03 - Premium Test - Diagnostic Settings
+// Test 03 - Premium Test - Diagnostic Settings - Availability Zones
 module test_03 '../main.bicep' = {
   name: '${uniqueName}-test-03'
+  dependsOn: [
+    prerequisites
+  ]
   params: {
     name: '${uniqueName}-test-03'
     location: location
@@ -75,8 +108,32 @@ module test_03 '../main.bicep' = {
     capacity: 1
     shardCount: 1
     replicasPerMaster: 1
-    diagnosticStorageAccountId: prerequisites.outputs.storageAccountId
-    diagnosticWorkspaceId: prerequisites.outputs.workspaceId
+    diagnosticSettingsProperties: {
+      logs: [
+        {
+          category: 'ConnectedClientList'
+          enabled: true
+          retentionPolicy: {
+            enabled: true
+            days: 30
+          }
+        }
+      ]
+      metrics: [
+        {
+          category: 'AllMetrics'
+          enabled: true
+          retentionPolicy: {
+            enabled: true
+            days: 30
+          }
+        }
+      ]
+      diagnosticReceivers: {
+        storageAccountId: prerequisites.outputs.storageAccountId
+        workspaceId: prerequisites.outputs.workspaceId
+      }
+    }
     privateEndpoints: [
       {
         name: 'endpoint1'
@@ -88,5 +145,20 @@ module test_03 '../main.bicep' = {
         privateDnsZoneId: prerequisites.outputs.privateDNSZoneId
       }
     ]
+  }
+}
+
+// Test 04 - Premium Test - Region with no AZ Support
+module test_04 '../main.bicep' = {
+  name: '${uniqueName}-test-04'
+  params: {
+    name: '${uniqueName}-test-04'
+    location: 'westus' // Target westus as it does not officially support AZs
+    zoneRedundancyEnabled: false // Disable AZ support
+    skuName: 'Premium'
+    redisVersion: '6.0'
+    capacity: 1
+    shardCount: 0 // Validate that Premium SKU can be created with shardCount 0
+    replicasPerMaster: 1
   }
 }

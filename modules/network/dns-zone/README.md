@@ -2,7 +2,7 @@
 
 Azure DNS is a hosting service for DNS domains that provides name resolution.
 
-## Description
+## Details
 
 Azure DNS is a hosting service for DNS domains that provides name resolution by using Microsoft Azure infrastructure. By hosting your domains in Azure, you can manage your DNS records by using the same credentials, APIs, tools, and billing as your other Azure services.
 
@@ -26,17 +26,17 @@ Reference : https://learn.microsoft.com/en-us/azure/dns/dns-overview
 
 ## Outputs
 
-| Name        | Type   | Description                         |
-| :---------- | :----: | :---------------------------------- |
-| id          | string | Id for DNS zone                     |
-| nameServers | array  | The name servers for this DNS zone. |
+| Name          | Type     | Description                         |
+| :------------ | :------: | :---------------------------------- |
+| `id`          | `string` | Id for DNS zone                     |
+| `nameServers` | `array`  | The name servers for this DNS zone. |
 
 ## Examples
 
 ### Example 1
 
 ```bicep
-module test01 'br/public:network/dns-zone:1.0.1' = {
+module test01 'br/public:network/dns-zone:1.0.4' = {
   name: '${name}-minimal'
   params: {
     name: 'myendpoint1.example.com'
@@ -47,7 +47,7 @@ module test01 'br/public:network/dns-zone:1.0.1' = {
 ### Example 2
 
 ```bicep
-module test02 'br/public:network/dns-zone:1.0.1' = {
+module test02 'br/public:network/dns-zone:1.0.4' = {
   name: '${name}-simple'
   params: {
     name: 'myendpoint2.example.com'

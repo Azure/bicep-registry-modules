@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.16.2.56959",
-      "templateHash": "17772225198202993181"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "17707810187707545513"
+    },
+    "name": "Azure Managed Grafana",
+    "description": "Azure Managed Grafana is a data visualization platform built on top of the Grafana software by Grafana Labs.",
+    "owner": "vlahane"
   },
   "parameters": {
     "location": {
@@ -15,10 +18,18 @@
         "description": "The geo-location where the grafana resource lives."
       }
     },
+    "prefix": {
+      "type": "string",
+      "defaultValue": "grafana",
+      "metadata": {
+        "description": "Prefix of Grafana Resource Name"
+      }
+    },
     "name": {
       "type": "string",
+      "defaultValue": "[take(format('{0}-{1}', parameters('prefix'), uniqueString(resourceGroup().id)), 23)]",
       "metadata": {
-        "description": "The resource name."
+        "description": "The grafana resource name."
       },
       "maxLength": 23,
       "minLength": 2
@@ -303,8 +314,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "9329916740637926168"
+              "version": "0.19.5.34762",
+              "templateHash": "5092521256458221446"
             }
           },
           "parameters": {
@@ -386,8 +397,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "8728918711703682047"
+              "version": "0.19.5.34762",
+              "templateHash": "9376650268912092515"
             }
           },
           "parameters": {

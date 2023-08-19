@@ -4,7 +4,7 @@ param prefix string
 param blobServiceName string = 'default'
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
-  name: '${prefix}${name}01'
+  name: '${name}${prefix}01'
   kind: 'StorageV2'
   sku: {
     name: 'Standard_LRS'
@@ -21,23 +21,23 @@ resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2021-06-01'
 }
 
 resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-06-01' = {
-  name: '${prefix}${name}01'
+  name: '${name}${prefix}01'
   parent: blobService
   properties: {}
 }
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
-  name: '${prefix}-law-${name}-01'
+  name: 'law-${name}${prefix}-01'
   location: location
 }
 
-resource eventHubNamespace 'Microsoft.EventHub/namespaces@2021-11-01' = {
-  name: 'test${prefix}-evhns-${name}-01'
+resource eventHubNamespace 'Microsoft.EventHub/namespaces@2022-10-01-preview' = {
+  name: 'evhns-${name}${prefix}-01'
   location: location
 }
 
-resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2021-11-01' = {
-  name: 'test${prefix}-eventHub${name}-01'
+resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2022-10-01-preview' = {
+  name: 'eventHub-${name}${prefix}-01'
   parent: eventHubNamespace
 }
 
@@ -54,7 +54,7 @@ resource authorizationRule 'Microsoft.EventHub/namespaces/authorizationRules@202
 }
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-05-01' = {
-  name: '${prefix}-${name}-vnet'
+  name: 'vnet-${name}${prefix}-01'
   location: location
   properties: {
     addressSpace: {
@@ -82,14 +82,14 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-05-01' = {
 }
 
 resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: 'privatelink.azurecr.io'
+  name: 'privatelink.servicebus.windows.net'
   location: 'global'
   properties: {}
 }
 
 resource virtualNetworkLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   parent: privateDNSZone
-  name: '${prefix}-${name}-vnet-link'
+  name: '${name}-${prefix}-vnet-link'
   location: 'global'
   properties: {
     registrationEnabled: false
@@ -97,6 +97,16 @@ resource virtualNetworkLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLi
       id: virtualNetwork.id
     }
   }
+}
+
+resource managedIdentity_01 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+  name: '${name}-${prefix}-01'
+  location: location
+}
+
+resource managedIdentity_02 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+  name: '${name}-${prefix}-02'
+  location: location
 }
 
 output storageAccountId string = storageAccount.id
@@ -110,3 +120,7 @@ output subnetIds array = [
   virtualNetwork.properties.subnets[1].id
 ]
 output privateDNSZoneId string = privateDNSZone.id
+output identityPrincipalIds array = [
+  managedIdentity_01.properties.principalId
+  managedIdentity_02.properties.principalId
+]

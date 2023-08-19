@@ -1,3 +1,7 @@
+metadata name = 'Azure Event-Hub'
+metadata description = 'This module deploys Microsoft.data event clusters, event namespaces, event hubs and associated configurations.'
+metadata owner = 'sumit-salunke'
+
 @description('Optional. Name for the Event Hub cluster, Alphanumerics and hyphens characters, Start with letter, End with letter or number.')
 // We can not pass default variable value ''. Because it was showing The template resource '' of type 'Microsoft.EventHub/clusters' at line '1' is not valid. The name property cannot be null or empty.
 param clusterName string = 'null'
@@ -6,168 +10,52 @@ param clusterName string = 'null'
 param clusterCapacity int = 1
 
 @description('Required. Location for all resources.')
-param location string
+param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
 param tags object = {}
 
-@description('''Optional. The name of the event hub namespace to be created.
-Below paramters you can pass while creating the Azure Event Hub namespace.
-sku: (Optional) Possible values are "Basic" or "Standard" or "Premium". Detault to 'Standard'.
-capacity: (Optional) int, The Event Hubs throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units.The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units. Default to 1.
-zoneRedundant: (Optional) bool, Enabling this property creates a Standard Event Hubs Namespace in regions supported availability zones. Default to false.
-isAutoInflateEnabled: (Optional) bool,  Value that indicates whether AutoInflate is enabled for eventhub namespace. Only available for "Standard" sku. Default to false.
-maximumThroughputUnits: (Optional) int, Upper limit of throughput units when AutoInflate is enabled, value should be within 0 to 20 throughput units. ( '0' if AutoInflateEnabled = true)
-disableLocalAuth: (Optional) bool, This property disables SAS authentication for the Event Hubs namespace. Default to false.
-kafkaEnabled: (Optional) bool, Value that indicates whether Kafka is enabled for eventhub namespace. Default to true.
-''')
-param eventHubNamespaces object = {
-  'evns-${uniqueString(location)}': {
+@description('Required. The list of the event hub namespaces with its configurations to be created.')
+param namespaces namespacesType[] = [
+  {
+    name: 'evhns001'
     sku: 'Standard'
-    capacity:  1
-    maximumThroughputUnits: 0
-    zoneRedundant: false
-    isAutoInflateEnabled: false
+    capacity: 1
     disableLocalAuth: false
     kafkaEnabled: true
+    isAutoInflateEnabled: false
+    maximumThroughputUnits: 0
+    zoneRedundant: false
+    minimumTlsVersion: '1.2'
+    publicNetworkAccess: 'Enabled'
   }
-}
-
-@description(''' Optional. Name for the eventhub to be created.
-Below paramters you can pass while the creating Azure Event Hub.
-messageRetentionInDays: (Optional) int, Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Default to 1.
-partitionCount: (Optional) int, Number of partitions created for the Event Hub. Default to 2.
-eventHubNamespaceName: (Optional) string, Name of the Azure Event Hub Namespace.
-status: (Optional) string, Enumerates the possible values for the status of the Event Hub. 'Active','Creating','Deleting','Disabled','ReceiveDisabled','Renaming','Restoring','SendDisabled','Unknown'. Default to 'Active'.
-captureDescriptionDestinationName: (Optional) string, Name for capture destination.
-captureDescriptionDestinationArchiveNameFormat: (Optional) string,  Blob naming convention for archive, e.g. {Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}. Here all the parameters (Namespace,EventHub .. etc) are mandatory irrespective of order.
-captureDescriptionDestinationBlobContainer: (Optional) string, Blob container Name.
-captureDescriptionDestinationStorageAccountResourceId: (Optional) string, Resource ID of the storage account to be used to create the blobs.
-captureDescriptionEnabled: (Optional) boolean, A value that indicates whether capture description is enabled.
-captureDescriptionEncoding: (Optional) string, Enumerates the possible values for the encoding format of capture description.
-captureDescriptionIntervalInSeconds: (Optional) int, The time window allows you to set the frequency with which the capture to Azure Blobs will happen.
-captureDescriptionSizeLimitInBytes: (Optional) int, The size window defines the amount of data built up in your Event Hub before an capture operation.
-captureDescriptionSkipEmptyArchives: (Optional) boolean,  A value that indicates whether to Skip Empty Archives.
-roleAssignments: (Optional) Array, Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.
-''')
-param eventHubs object = {}
+]
 
 @description('Optional. Authorization Rules for the Event Hub Namespace.')
-param namespaceAuthorizationRules object = {}
+param namespaceAuthorizationRules authorizationRulesType[] = []
 
 @description('Optional. Role assignments for the namespace.')
-param namespaceRoleAssignments object = {}
+param namespaceRoleAssignments namespaceRoleAssignmentsType[] = []
 
 @description('Optional. The disaster recovery config for the namespace.')
-param disasterRecoveryConfigs object = {}
+param namespaceDisasterRecoveryConfigs namespaceDisasterRecoveryConfigsType[] = []
 
 @description('Optional. The Diagnostics Settings config for the namespace.')
-param diagnosticSettings object = {}
+param namespaceDiagnosticSettings namespaceDiagnosticSettingsType[] = []
+
+@description('Optional. Name for the eventhub with its all configurations to be created.')
+param eventHubs eventHubsType[] = []
 
 @description('Optional. Authorization Rules for the Event Hub .')
-param eventHubAuthorizationRules object = {}
+param eventHubAuthorizationRules authorizationRulesType[] = []
 
 @description('Optional. consumer groups for the Event Hub .')
-param consumerGroups object = {}
+param eventHubConsumerGroups eventHubConsumerGroupsType[] = []
 
-@description('Define Private Endpoints that should be created for Azure Container Registry.')
-param privateEndpoints array = []
+@description('Private Endpoints that should be created for Azure EventHub Namespaces.')
+param namespacePrivateEndpoints privateEndpointType[] = []
 
-@description('Toggle if Private Endpoints manual approval for Azure Container Registry should be enabled.')
-param privateEndpointsApprovalEnabled bool = false
-
-var varEventHubNamespaces = [for eventHubnamespace in items(eventHubNamespaces): {
-  eventHubNamespaceName: eventHubnamespace.key
-  sku: contains(eventHubnamespace.value, 'sku')? eventHubnamespace.value.sku : 'Standard'
-  capacity: contains(eventHubnamespace.value, 'capacity') ? eventHubnamespace.value.capacity: 1
-  zoneRedundant: contains(eventHubnamespace.value, 'zoneRedundant') ? eventHubnamespace.value.zoneRedundant : false
-  isAutoInflateEnabled: contains(eventHubnamespace.value, 'isAutoInflateEnabled') ? eventHubnamespace.value.isAutoInflateEnabled: false
-  maximumThroughputUnits: contains(eventHubnamespace.value, 'maximumThroughputUnits') ? eventHubnamespace.value.maximumThroughputUnits: 0
-  disableLocalAuth: contains(eventHubnamespace.value, 'disableLocalAuth') ? eventHubnamespace.value.disableLocalAuth: false
-  kafkaEnabled: contains(eventHubnamespace.value, 'kafkaEnabled') ? eventHubnamespace.value.kafkaEnabled: true
-}]
-
-var varNamespaceAuthorizationRules =  [for namespaceAuthorizationRule in items(namespaceAuthorizationRules): {
-  eventHubNamespaceAuthorizationRuleName: namespaceAuthorizationRule.key
-  rights: contains(namespaceAuthorizationRule.value, 'rights') ? namespaceAuthorizationRule.value.rights : []
-  eventHubNamespaceName: namespaceAuthorizationRule.value.eventHubNamespaceName
-}]
-
-var varDisasterRecoveryConfigs =  [for disasterRecoveryConfig in items(disasterRecoveryConfigs): {
-  disasterRecoveryConfigname: disasterRecoveryConfig.key
-  partnerNamespaceId: contains(disasterRecoveryConfig.value, 'partnerNamespaceId') ? disasterRecoveryConfig.value.partnerNamespaceId : ''
-  eventHubNamespaceName: disasterRecoveryConfig.value.eventHubNamespaceName
-}]
-
-var varEventHubs =  [for eventHub in items(eventHubs): {
-  eventHubName: eventHub.key
-  messageRetentionInDays: contains(eventHub.value, 'messageRetentionInDays') ? eventHub.value.messageRetentionInDays : 1
-  partitionCount: contains(eventHub.value, 'partitionCount') ? eventHub.value.partitionCount : 2
-  eventHubNamespaceName: eventHub.value.eventHubNamespaceName
-  status: contains(eventHub.value, 'status') ? eventHub.value.status : 'Active'
-  captureDescriptionDestinationArchiveNameFormat: contains(eventHub.value, 'captureDescriptionDestinationArchiveNameFormat') ? eventHub.value.captureDescriptionDestinationArchiveNameFormat : '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
-  captureDescriptionDestinationBlobContainer: contains(eventHub.value, 'captureDescriptionDestinationBlobContainer') ? eventHub.value.captureDescriptionDestinationBlobContainer : ''
-  captureDescriptionDestinationName: contains(eventHub.value, 'captureDescriptionDestinationName') ? eventHub.value.captureDescriptionDestinationName : 'EventHubArchive.AzureBlockBlob'
-  captureDescriptionDestinationStorageAccountResourceId: contains(eventHub.value, 'captureDescriptionDestinationStorageAccountResourceId') ? eventHub.value.captureDescriptionDestinationStorageAccountResourceId : ''
-  captureDescriptionEnabled: contains(eventHub.value, 'captureDescriptionEnabled') ? eventHub.value.captureDescriptionEnabled : false
-  captureDescriptionEncoding: contains(eventHub.value, 'captureDescriptionEncoding') ? eventHub.value.captureDescriptionEncoding : 'Avro'
-  captureDescriptionIntervalInSeconds: contains(eventHub.value, 'captureDescriptionIntervalInSeconds') ? eventHub.value.captureDescriptionIntervalInSeconds : 300
-  captureDescriptionSizeLimitInBytes: contains(eventHub.value, 'captureDescriptionSizeLimitInBytes') ? eventHub.value.captureDescriptionSizeLimitInBytes : 314572800
-  captureDescriptionSkipEmptyArchives: contains(eventHub.value, 'captureDescriptionSkipEmptyArchives') ? eventHub.value.captureDescriptionSkipEmptyArchives : false
-  roleAssignments: contains(eventHub.value, 'roleAssignments') ? eventHub.value.roleAssignments : []
-}]
-
-var varEventHubAuthorizationRules =  [for eventHubAuthorizationRule in items(eventHubAuthorizationRules): {
-  eventHubAuthorizationRuleName: eventHubAuthorizationRule.key
-  rights: contains(eventHubAuthorizationRule.value, 'rights') ? eventHubAuthorizationRule.value.rights : []
-  eventHubNamespaceName: eventHubAuthorizationRule.value.eventHubNamespaceName
-  eventHubName: eventHubAuthorizationRule.value.eventHubName
-}]
-
-var varConsumerGroups =  [for consumerGroup in items(consumerGroups): {
-  consumerGroupName: consumerGroup.key
-  eventHubNamespaceName: consumerGroup.value.eventHubNamespaceName
-  eventHubName: consumerGroup.value.eventHubName
-  userMetadata: contains(consumerGroup.value, 'userMetadata') ? consumerGroup.value.userMetadata : ''
-}]
-
-var varDiagnosticSettings = [for diagnosticSetting in items(diagnosticSettings): {
-  diagnosticSettingName: diagnosticSetting.key
-  diagnosticEnableNamespaceName: diagnosticSetting.value.diagnosticEnablenamespaceName
-  diagnosticStorageAccountId: contains(diagnosticSetting.value, 'diagnosticStorageAccountId') ? diagnosticSetting.value.diagnosticStorageAccountId : ''
-  diagnosticWorkspaceId: contains(diagnosticSetting.value, 'diagnosticWorkspaceId') ? diagnosticSetting.value.diagnosticWorkspaceId : ''
-  diagnosticEventHubAuthorizationRuleId: contains(diagnosticSetting.value, 'diagnosticEventHubAuthorizationRuleId') ? diagnosticSetting.value.diagnosticEventHubAuthorizationRuleId : ''
-  diagnosticEventHubName: contains(diagnosticSetting.value, 'diagnosticEventHubName') ? diagnosticSetting.value.diagnosticEventHubName : ''
-  diagnosticsMetrics: contains(diagnosticSetting.value, 'diagnosticsMetrics') ? diagnosticSetting.value.diagnosticsMetrics : []
-  diagnosticsLogs: contains(diagnosticSetting.value, 'diagnosticsLogs') ? diagnosticSetting.value.diagnosticsLogs : []
-}]
-
-var varNamespaceRoleAssignments =  [for namespaceRoleAssignment in items(namespaceRoleAssignments): {
-  eventHubNamespaceAuthorizationRuleName: namespaceRoleAssignment.key
-  description: contains(namespaceRoleAssignment.value, 'description') ? namespaceRoleAssignment.value.description : ''
-  principalIds: namespaceRoleAssignment.value.principalIds
-  principalType: contains(namespaceRoleAssignment.value, 'principalType') ? namespaceRoleAssignment.value.principalType: ''
-  roleDefinitionIdOrName: namespaceRoleAssignment.value.roleDefinitionIdOrName
-  eventHubNamespaceName: namespaceRoleAssignment.value.eventHubNamespaceName
-}]
-
-var varPrivateEndpoints = [for privateEndpoint in privateEndpoints: {
-  name: privateEndpoint.name
-  eventHubNamespaceName: privateEndpoint.eventHubNamespaceName
-  groupIds: [
-    'namespace'
-  ]
-  subnetId: privateEndpoint.subnetId
-  customNetworkInterfaceName: contains(privateEndpoint, 'customNetworkInterfaceName') ? privateEndpoint.customNetworkInterfaceName : ''
-  privateDnsZones: contains(privateEndpoint, 'privateDnsZoneId') ? [
-    {
-      name: 'default'
-      zoneId: privateEndpoint.privateDnsZoneId
-    }
-  ] : []
-}]
-
-resource cluster 'Microsoft.EventHub/clusters@2021-11-01' = if (clusterName != 'null' )  {
+resource cluster 'Microsoft.EventHub/clusters@2022-10-01-preview' = if (clusterName != 'null') {
   name: clusterName
   location: location
   tags: tags
@@ -175,160 +63,345 @@ resource cluster 'Microsoft.EventHub/clusters@2021-11-01' = if (clusterName != '
     name: 'Dedicated'
     capacity: clusterCapacity
   }
-  properties: {}
-  dependsOn: [
-    resourceGroup()
-  ]
 }
 
-resource eventHubNamespace 'Microsoft.EventHub/namespaces@2021-11-01' = [for varEventHubNamespace in varEventHubNamespaces: {
-  name: varEventHubNamespace.eventHubNamespaceName
+resource evhns 'Microsoft.EventHub/namespaces@2022-10-01-preview' = [for ns in namespaces: {
+  name: ns.name
   location: location
   sku: {
-    name: varEventHubNamespace.sku
-    tier: varEventHubNamespace.sku
-    capacity: varEventHubNamespace.capacity
+    name: ns.?sku ?? 'Standard'
+    capacity: ns.?capacity ?? 1
   }
   properties: {
-    disableLocalAuth: varEventHubNamespace.disableLocalAuth
-    kafkaEnabled: varEventHubNamespace.kafkaEnabled
-    isAutoInflateEnabled: varEventHubNamespace.isAutoInflateEnabled
-    maximumThroughputUnits: ((varEventHubNamespace.isAutoInflateEnabled) ? varEventHubNamespace.maximumThroughputUnits : 0)
-    zoneRedundant: varEventHubNamespace.zoneRedundant
-    clusterArmId: (clusterName != 'null') ? cluster.id: null
+    disableLocalAuth: ns.?disableLocalAuth ?? false
+    kafkaEnabled: ns.?kafkaEnabled ?? true
+    isAutoInflateEnabled: ns.?isAutoInflateEnabled ?? false
+    maximumThroughputUnits: ns.?maximumThroughputUnits ?? 0
+    zoneRedundant: ns.?zoneRedundant ?? false
+    clusterArmId: (clusterName != 'null') ? cluster.id : null
+    minimumTlsVersion: ns.?minimumTlsVersion ?? '1.2'
+    publicNetworkAccess: ns.?publicNetworkAccess ?? 'Enabled'
   }
   tags: tags
 }]
 
-module eventHubNamespace_authorizationRules 'modules/authorizationRules.bicep' = [for (varNamespaceAuthorizationRule, index) in varNamespaceAuthorizationRules:{
-  name: '${uniqueString(deployment().name, location)}-EvhbNamespace-AuthRule-${index}'
+module evhns_authorizationRules 'modules/authorizationRule.bicep' = [for (rule, index) in namespaceAuthorizationRules: {
+  name: '${uniqueString(deployment().name, location)}-evhns-authrule-${index}'
   params: {
-    namespaceName: varNamespaceAuthorizationRule.eventHubNamespaceName
-    name: varNamespaceAuthorizationRule.eventHubNamespaceAuthorizationRuleName
-    rights: varNamespaceAuthorizationRule.rights
+    name: rule.name
+    rights: rule.rights
+    namespaceName: rule.namespaceName
   }
   dependsOn: [
-    eventHubNamespace
+    evhns
   ]
 }]
 
-module eventHubNamespace_disasterRecoveryConfigs 'modules/disasterRecoveryConfigs.bicep' = [for (varDisasterRecoveryConfig, index) in varDisasterRecoveryConfigs: {
-  name: '${uniqueString(deployment().name, location)}-EvhbNamespace-DisRecConfig-${index}'
+module evhns_roleAssignments 'modules/roleAssignment.bicep' = [for (role, index) in namespaceRoleAssignments: {
+  name: '${deployment().name}-evhns-role-${index}'
   params: {
-    namespaceName: varDisasterRecoveryConfig.eventHubNamespaceName
-    name: varDisasterRecoveryConfig.disasterRecoveryConfigname
-    partnerNamespaceId: varDisasterRecoveryConfig.partnerNamespaceId
+    roleName: role.?name ?? ''
+    description: role.?description ?? ''
+    principalIds: role.principalIds
+    principalType: role.?principalType ?? ''
+    roleDefinitionIdOrName: role.roleDefinitionIdOrName
+    namespaceName: role.namespaceName
   }
   dependsOn: [
-    eventHubNamespace
+    evhns
   ]
 }]
 
-module eventHubNamespace_roleAssignments 'modules/roleAssignments.bicep' = [for (varNamespaceRoleAssignment, index) in varNamespaceRoleAssignments: {
-  name: '${deployment().name}-Namespace-Rbac-${index}'
+module evhns_disasterRecoveryConfigs 'modules/disasterRecoveryConfig.bicep' = [for (drConfig, index) in namespaceDisasterRecoveryConfigs: {
+  name: '${uniqueString(deployment().name, location)}-evhns-drconfig-${index}'
   params: {
-    description: varNamespaceRoleAssignment.description
-    principalIds: varNamespaceRoleAssignment.principalIds
-    principalType: varNamespaceRoleAssignment.principalType
-    roleDefinitionIdOrName: varNamespaceRoleAssignment.roleDefinitionIdOrName
-    eventHubNamespaceName: varNamespaceRoleAssignment.eventHubNamespaceName
+    name: drConfig.name
+    partnerNamespaceId: drConfig.partnerNamespaceId
+    namespaceName: drConfig.namespaceName
   }
   dependsOn: [
-    eventHubNamespace
+    evhns
   ]
 }]
 
-module eventHubNamespace_eventHubs 'modules/eventHubs/deploy.bicep' = [for (varEventHub, index) in varEventHubs: {
-  name: '${uniqueString(deployment().name, location)}-EvhbNamespace-EventHub-${index}'
+module evh 'modules/eventHub/eventHub.bicep' = [for (evh, index) in eventHubs: {
+  name: '${uniqueString(deployment().name, location)}-evh-${index}'
   params: {
-    namespaceName: varEventHub.eventHubNamespaceName
-    name: varEventHub.eventHubName
-    messageRetentionInDays: varEventHub.messageRetentionInDays
-    partitionCount: varEventHub.partitionCount
-    status: varEventHub.status
-    captureDescriptionEnabled: varEventHub.captureDescriptionEnabled
-    captureDescriptionDestinationArchiveNameFormat: varEventHub.captureDescriptionDestinationArchiveNameFormat
-    captureDescriptionDestinationBlobContainer: varEventHub.captureDescriptionDestinationBlobContainer
-    captureDescriptionDestinationName: varEventHub.captureDescriptionDestinationName
-    captureDescriptionDestinationStorageAccountResourceId: varEventHub.captureDescriptionDestinationStorageAccountResourceId
-    captureDescriptionEncoding:  varEventHub.captureDescriptionEncoding
-    captureDescriptionIntervalInSeconds: varEventHub.captureDescriptionIntervalInSeconds
-    captureDescriptionSizeLimitInBytes: varEventHub.captureDescriptionSizeLimitInBytes
-    captureDescriptionSkipEmptyArchives: varEventHub.captureDescriptionSkipEmptyArchives
-    roleAssignments: varEventHub.roleAssignments
+    namespaceName: evh.namespaceName
+    name: evh.name
+    messageRetentionInDays: evh.?messageRetentionInDays ?? 1
+    partitionCount: evh.?partitionCount ?? 2
+    status: evh.?status ?? 'Active'
+    captureDescriptionEnabled: evh.?captureDescriptionEnabled ?? false
+    captureDescriptionEncoding: evh.?captureDescriptionEncoding ?? 'Avro'
+    captureDescriptionIntervalInSeconds: evh.?captureDescriptionIntervalInSeconds ?? 300
+    captureDescriptionSizeLimitInBytes: evh.?captureDescriptionSizeLimitInBytes ?? 314572800
+    captureDescriptionSkipEmptyArchives: evh.?captureDescriptionSkipEmptyArchives ?? false
+    captureDescriptionDestinationName: evh.?captureDescriptionDestinationName ?? 'EventHubArchive.AzureBlockBlob'
+    captureDescriptionDestinationArchiveNameFormat: evh.?captureDescriptionDestinationArchiveNameFormat ?? '{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}'
+    captureDescriptionDestinationBlobContainer: evh.?captureDescriptionDestinationBlobContainer ?? ''
+    captureDescriptionDestinationStorageAccountResourceId: evh.?captureDescriptionDestinationStorageAccountResourceId ?? ''
+    captureDescriptionDestinationdataLakeAccountName: evh.?captureDescriptionDestinationdataLakeAccountName ?? ''
+    captureDescriptionDestinationdataLakeFolderPath: evh.?captureDescriptionDestinationdataLakeFolderPath ?? ''
+    captureDescriptionDestinationdataLakeSubscriptionId: evh.?captureDescriptionDestinationdataLakeSubscriptionId ?? ''
+    roleAssignments: evh.?roleAssignments ?? []
   }
   dependsOn: [
-    eventHubNamespace
+    evhns
   ]
 }]
 
-module eventHub_authorizationRules 'modules/eventHubs/authorizationRules.bicep' = [for (varEventHubAuthorizationRule, index) in varEventHubAuthorizationRules: {
-  name: '${uniqueString(deployment().name, location)}-Evhub-AuthRule-${index}'
+module evh_authorizationRules 'modules/eventHub/authorizationRule.bicep' = [for (rule, index) in eventHubAuthorizationRules: {
+  name: '${uniqueString(deployment().name, location)}-evh-authrule-${index}'
   params: {
-    namespaceName: varEventHubAuthorizationRule.eventHubNamespaceName
-    eventHubName: varEventHubAuthorizationRule.eventHubName
-    name: varEventHubAuthorizationRule.eventHubAuthorizationRuleName
-    rights: varEventHubAuthorizationRule.rights
+    namespaceName: rule.namespaceName
+    eventHubName: rule.eventHubName
+    name: rule.name
+    rights: rule.rights
   }
   dependsOn: [
-    eventHubNamespace_eventHubs
+    evh
   ]
 }]
 
-module eventHub_consumerGroup 'modules/eventHubs/consumerGroups.bicep' = [for (varConsumerGroup, index) in varConsumerGroups: {
-  name: '${deployment().name}-ConsumerGroup-${index}'
+module evh_consumerGroups 'modules/eventHub/consumerGroup.bicep' = [for (cg, index) in eventHubConsumerGroups: {
+  name: '${deployment().name}-evh-cg-${index}'
   params: {
-    namespaceName: varConsumerGroup.eventHubNamespaceName
-    eventHubName: varConsumerGroup.eventHubName
-    name: varConsumerGroup.consumerGroupName
-    userMetadata: varConsumerGroup.userMetadata
+    namespaceName: cg.namespaceName
+    eventHubName: cg.eventHubName
+    name: cg.name
+    userMetadata: cg.?userMetadata ?? ''
   }
   dependsOn: [
-    eventHubNamespace_eventHubs
+    evh
   ]
 }]
 
-module eventHubNamespace_diagnosticSettings 'modules/diagnosticSettings.bicep' = [for (varDiagnosticSetting, index) in varDiagnosticSettings: {
-  name: '${deployment().name}-diagnosticSettings-${index}'
+module evhns_diagnosticSettings 'modules/diagnosticSetting.bicep' = [for (ds, index) in namespaceDiagnosticSettings: {
+  name: '${deployment().name}-evhns-diagnosticSettings-${index}'
   params: {
-    namespaceName: varDiagnosticSetting.diagnosticEnableNamespaceName
-    name: varDiagnosticSetting.diagnosticSettingName
-    diagnosticStorageAccountId: varDiagnosticSetting.diagnosticStorageAccountId
-    diagnosticWorkspaceId: varDiagnosticSetting.diagnosticWorkspaceId
-    diagnosticEventHubAuthorizationRuleId: varDiagnosticSetting.diagnosticEventHubAuthorizationRuleId
-    diagnosticEventHubName:varDiagnosticSetting.diagnosticEventHubName
-    diagnosticsMetrics: varDiagnosticSetting.diagnosticsMetrics
-    diagnosticsLogs: varDiagnosticSetting.diagnosticsLogs
+    namespaceName: ds.namespaceName
+    name: ds.name
+    storageAccountId: ds.?storageAccountId ?? ''
+    workspaceId: ds.?workspaceId ?? ''
+    eventHubAuthorizationRuleId: ds.?eventHubAuthorizationRuleId ?? ''
+    eventHubName: ds.?eventHubName ?? ''
+    metricsSettings: ds.?metricsSettings ?? []
+    logsSettings: ds.?logsSettings ?? []
   }
   dependsOn: [
-    eventHubNamespace
+    evhns
   ]
 }]
 
-module eventHubNamespace_privateEndpoint 'modules/privateEndpoint.bicep'= [for (varPrivateEndpoint, index) in varPrivateEndpoints: {
-  name: '${uniqueString(deployment().name)}-eventnamespace-private-endpoints-${index}'
+module evhns_privateEndpoints 'modules/privateEndpoint.bicep' = [for (pep, index) in namespacePrivateEndpoints: {
+  name: '${uniqueString(deployment().name)}-evhns-pep-${index}'
   params: {
-    name: varPrivateEndpoint.name
-    namespaceName: varPrivateEndpoint.eventHubNamespaceName
+    name: pep.name
+    namespaceName: pep.namespaceName
     location: location
-    groupIds: varPrivateEndpoint.groupIds
-    subnetId: varPrivateEndpoint.subnetId
-    privateDnsZones: contains(varPrivateEndpoint, 'privateDnsZones') ? varPrivateEndpoint.privateDnsZones : []
-    customNetworkInterfaceName: varPrivateEndpoint.customNetworkInterfaceName
+    groupIds: pep.?groupIds ?? [ 'namespace' ]
+    subnetId: pep.subnetId
+    privateDnsZoneId: pep.?privateDnsZoneId ?? ''
     tags: tags
-    manualApprovalEnabled: privateEndpointsApprovalEnabled
+    manualApprovalEnabled: pep.?manualApprovalEnabled ?? false
   }
   dependsOn: [
-    eventHubNamespace
+    evhns
   ]
 }]
 
-@description('The resource group the Azure Event Hub was deployed into.')
-output resourceGroupName string = resourceGroup().name
+// output
+@description('Azure Event Hub namespace names.')
+output eventHubNamespaceNames array = [for ns in namespaces: ns.name]
 
-@description('Azure Event Hub namespace details.')
-output eventHubNamespaceDetails array = [for varEventHubNamespace in varEventHubNamespaces: {
-  id: reference(varEventHubNamespace.eventHubNamespaceName,'2021-11-01','Full').resourceId
-  serviceBusEndpoint: reference(varEventHubNamespace.eventHubNamespaceName,'2021-11-01','Full').properties.serviceBusEndpoint
-  status: reference(varEventHubNamespace.eventHubNamespaceName,'2021-11-01','Full').properties.status
-}]
+@description('Azure Event Hub namespace resource Ids.')
+output eventHubNamespaceResourceIds array = [for ns in namespaces: resourceId('Microsoft.EventHub/namespaces', ns.name)]
+
+// user defined type
+type namespacesType = {
+  @description('Name of the Event Hub Namespace.')
+  name: string
+  @description('SKU of the Event Hub Namespace. Possible values are "Basic" or "Standard" or "Premium')
+  sku: ('Basic' | 'Standard' | 'Premium')?// Default 'Standard'
+  @description('Event Hubs throughput units for Basic or Standard tiers where value should be 0 to 20 units. For Premium tier, value should be 0 to 10 premium units.')
+  capacity: int?// Default 1
+  @description('Enabling this property creates a Standard Event Hubs Namespace in regions supported availability zones.')
+  zoneRedundant: bool?// Default false
+  @description('Whether to enable AutoInflate or not.')
+  isAutoInflateEnabled: bool?// Default false
+  @description('Upper limit of throughput units when AutoInflate is enabled.')
+  maximumThroughputUnits: int?// Default 0
+  @description('Whether to enable Kafka or not.')
+  kafkaEnabled: bool?// Default 'true'
+  @description('Whethere tp disable SAS authentication or not.')
+  disableLocalAuth: bool?// Default false
+  @description('Whether to enable public network access or not.')
+  publicNetworkAccess: ('Enabled' | 'Disabled' | 'SecuredByPerimeter')?// Default 'Enabled'
+  @description('Set the minimum TLS version for the Event Hub Namespace.')
+  minimumTlsVersion: ('1.0' | '1.1' | '1.2')?// Default '1.2'
+
+}
+
+type authorizationRulesType = {
+  @description('Name of the namespace authorization rule.')
+  name: string
+  @description('The rights associated with the rule.')
+  rights: string[]
+  @description('The eventhub namespace name.')
+  namespaceName: string
+  @description('The eventhub name. Optional if the authorization rule is for namespace and not for an eventhub.')
+  eventHubName: string?
+}
+
+type namespaceRoleAssignmentsType = {
+  @description('Name of the namespace role assignment.')
+  name: string?
+  @description('The description of the role assignment.')
+  description: string?
+  @description('The principal ids associated with the role assignment.')
+  principalIds: string[]
+  @description('The principal type associated with the role assignment.')
+  principalType: ('Device' | 'ForeignGroup' | 'Group' | 'ServicePrincipal' | 'User')?
+  @description('The role definition id or name associated with the role assignment.')
+  roleDefinitionIdOrName: string
+  @description('The eventhub namespace name.')
+  namespaceName: string
+}
+
+type eventHubRoleAssignmentsType = {
+  @description('Name of the namespace role assignment.')
+  name: string?
+  @description('The description of the role assignment.')
+  description: string?
+  @description('The principal ids associated with the role assignment.')
+  principalIds: string[]
+  @description('The principal type associated with the role assignment.')
+  principalType: ('Device' | 'ForeignGroup' | 'Group' | 'ServicePrincipal' | 'User')?
+  @description('The role definition id or name associated with the role assignment.')
+  roleDefinitionIdOrName: string
+}
+
+type namespaceDisasterRecoveryConfigsType = {
+  @description('Name of the namespace disaster recovery config.')
+  name: string
+  @description('The resource id of the secondary partner namespace, which is part of GEO DR pairing.')
+  partnerNamespaceId: string
+  @description('The eventhub namespace name.')
+  namespaceName: string
+}
+
+type eventHubsType = {
+  @description('Name of the Event Hub.')
+  name: string
+  @description('The eventhub namespace name.')
+  namespaceName: string
+  @description('Number of partitions created for the Event Hub, allowed values are from 1 to 32 partitions.')
+  partitionCount: int?// Default 2
+  @description('Number of days to retain the events for this Event Hub, value should be 1 to 7 days.')
+  messageRetentionInDays: int?// Default 1
+  @description('A value that indicates whether capture description is enabled.')
+  captureDescriptionEnabled: bool?// Default false
+  @description('TEnumerates the possible values for the encoding format of capture description.')
+  captureDescriptionEncoding: ('Avro' | 'Parquet')?// Default 'Avro'
+  @description('The time window allows you to set the frequency with which the capture to Azure Blobs will happen, value should between 60 to 900 seconds.')
+  captureDescriptionIntervalInSeconds: int?
+  @description('The size window defines the amount of data built up in your Event Hub before an capture operation, value should be between 10485760 to 524288000 bytes.')
+  captureDescriptionSizeLimitInBytes: int?
+  @description('A value that indicates whether to Skip Empty Archives')
+  captureDescriptionSkipEmptyArchives: bool?
+  @description('The eventhub capture destination name.')
+  captureDescriptionDestinationName: ('EventHubArchive.AzureBlockBlob' | 'EventHubArchive.AzureDataLake')?// Default 'EventHubArchive.AzureBlockBlob'
+  @description('Blob naming convention for archive, e.g. {Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}.')
+  captureDescriptionDestinationArchiveNameFormat: string?
+  @description('The eventhub capture description destination blob container name.')
+  captureDescriptionDestinationBlobContainer: string?
+  @description('TSubscription Id of Azure Data Lake Store')
+  captureDescriptionDestinationStorageAccountResourceId: string?
+  @description('The Azure Data Lake Store name for the captured events')
+  captureDescriptionDestinationdataLakeAccountName: string?
+  @description('The destination folder path for the captured events')
+  captureDescriptionDestinationdataLakeFolderPath: string?
+  @description('Subscription Id of Azure Data Lake Store')
+  captureDescriptionDestinationdataLakeSubscriptionId: string?
+  @description('The role assignements scoped to event hub.')
+  roleAssignments: eventHubRoleAssignmentsType[]?
+  @description('The possible values for the status of the Event Hub..')
+  status: ('Active' | 'Disabled' | 'SendDisabled')?// Default 'Active'
+}
+
+type eventHubConsumerGroupsType = {
+  @description('Name of the Event Hub Consumer Group.')
+  name: string
+  @description('The eventhub namespace name.')
+  namespaceName: string
+  @description('The eventhub name.')
+  eventHubName: string
+  @description('The user metadata.')
+  userMetadata: string?
+}
+
+type namespaceDiagnosticSettingsType = {
+  @description('Name of the namespace diagnostic setting.')
+  name: string
+  @description('The eventhub namespace name.')
+  namespaceName: string
+  @description('The log analytics workspace id.')
+  workspaceId: string?
+  @description('The storage account id.')
+  storageAccountId: string?
+  @description('The eventhub name.')
+  eventHubName: string?
+  @description('The eventhub authorization rule id.')
+  eventHubAuthorizationRuleId: string?
+  @description('The list of metic settings.')
+  metricsSettings: metricSettingsType[]
+  @description('The list of logs settings.')
+  logsSettings: logSettingsType[]
+}
+
+type metricSettingsType = {
+  @description('A value indicating whether this category is enabled.')
+  enabled: bool
+  @description('The category of the metrics.')
+  category: ('AllMetrics')
+  @description('The time grain of the metric in ISO8601 format.')
+  timeGrain: string?
+  @description('The retention policy of the metric.')
+  retentionPolicy: retentionPolicyType?
+}
+
+type retentionPolicyType = {
+  @description('The retention period of the metric.')
+  days: int
+  @description('The retention policy enabled flag.')
+  enabled: bool
+}
+
+type logSettingsType = {
+  @description('A value indicating whether this log is enabled.')
+  enabled: bool
+  @description('The category of the logs.')
+  category: string?
+  @description('The category group of the logs.')
+  categoryGroup: ('allLogs' | 'audit')?
+  @description('The retention policy of the logs.')
+  retentionPolicy: retentionPolicyType?
+}
+
+type privateEndpointType = {
+  @description('The name of the private endpoint.')
+  name: string
+  @description('The eventhub namespace name.')
+  namespaceName: string
+  @description('The subnet that the private endpoint should be created in.')
+  subnetId: string
+  @description('The subresource name of the target Azure resource that private endpoint will connect to.')
+  groupIds: array?// Default ['namespace']
+  @description('The ID of the private DNS zone in which private endpoint will register its private IP address.')
+  privateDnsZoneId: string?
+  @description('When set to true, users will need to manually approve the private endpoint connection request.')
+  manualApprovalEnabled: bool?// Default false
+  @description('Tags for the resource.')
+  tags: { *: string }?
+}

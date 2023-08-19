@@ -2,7 +2,7 @@
 
 Azure Managed Grafana is a data visualization platform built on top of the Grafana software by Grafana Labs.
 
-## Description
+## Details
 
 Azure Managed Grafana is a data visualization platform built on top of the Grafana software by Grafana Labs. It’s built as a fully managed Azure service operated and supported by Microsoft. Grafana helps you bring together metrics, logs and traces into a single user interface. With its extensive support for data sources and graphing capabilities, you can view and analyze your application and infrastructure telemetry data in real-time. Azure Managed Grafana is optimized for the Azure environment.
 (Overview)[https://learn.microsoft.com/en-us/azure/managed-grafana/overview]
@@ -14,7 +14,8 @@ Azure Managed Grafana is a data visualization platform built on top of the Grafa
 | Name                                    | Type     | Required | Description                                                                                                                                                                                                                                                                                                                                                                                          |
 | :-------------------------------------- | :------: | :------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `location`                              | `string` | Yes      | The geo-location where the grafana resource lives.                                                                                                                                                                                                                                                                                                                                                   |
-| `name`                                  | `string` | Yes      | The resource name.                                                                                                                                                                                                                                                                                                                                                                                   |
+| `prefix`                                | `string` | No       | Prefix of Grafana Resource Name                                                                                                                                                                                                                                                                                                                                                                      |
+| `name`                                  | `string` | No       | The grafana resource name.                                                                                                                                                                                                                                                                                                                                                                           |
 | `tags`                                  | `object` | No       | The tags for grafana resource.                                                                                                                                                                                                                                                                                                                                                                       |
 | `resourceSku`                           | `string` | No       | The Sku of the grafana resource.                                                                                                                                                                                                                                                                                                                                                                     |
 | `apiKey`                                | `string` | No       | The api key setting of the Grafana instance. Default value is Disabled.                                                                                                                                                                                                                                                                                                                              |
@@ -37,17 +38,17 @@ Azure Managed Grafana is a data visualization platform built on top of the Grafa
 
 ## Outputs
 
-| Name | Type   | Description           |
-| :--- | :----: | :-------------------- |
-| id   | string | Grafana resouce id    |
-| name | string | Grafana resource name |
+| Name   | Type     | Description           |
+| :----- | :------: | :-------------------- |
+| `id`   | `string` | Grafana resouce id    |
+| `name` | `string` | Grafana resource name |
 
 ## Examples
 
 ### Example 1
 
 ```bicep
-module test0 'br/public:observability/grafana:1.0.1' = {
+module test0 'br/public:observability/grafana:1.0.3' = {
   name: 'test0-${uniqueString(resourceGroup().id)}'
   params: {
     name: take('test0-${name}', 23)
@@ -62,7 +63,7 @@ module test0 'br/public:observability/grafana:1.0.1' = {
 ### Example 2
 
 ```bicep
-module test1 'br/public:observability/grafana:1.0.1' = {
+module test1 'br/public:observability/grafana:1.0.3' = {
   name: 'test1-${uniqueString(resourceGroup().id)}'
   params: {
     name: take('test1-${name}', 23)

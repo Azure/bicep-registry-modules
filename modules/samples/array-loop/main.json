@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.4.1318.3566",
-      "templateHash": "3301425885685314729"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "5876103950987865532"
+    },
+    "name": "Array Loop",
+    "owner": "bicep-admins",
+    "description": "A sample Bicep registry module demonstrating array iterations."
   },
   "parameters": {
     "names": {
@@ -26,26 +29,26 @@
   "outputs": {
     "namesByVariable": {
       "type": "array",
+      "metadata": {
+        "description": "An output demonstrating iterating array items with an item variable."
+      },
       "copy": {
         "count": "[length(parameters('names'))]",
         "input": {
           "name": "[parameters('names')[copyIndex()]]"
         }
-      },
-      "metadata": {
-        "description": "An output demonstrating iterating array items with an item variable."
       }
     },
     "out3": {
       "type": "array",
+      "metadata": {
+        "description": "An output demonstrating iterating array items with an index."
+      },
       "copy": {
         "count": "[length(parameters('names'))]",
         "input": {
           "name": "[parameters('names')[copyIndex()]]"
         }
-      },
-      "metadata": {
-        "description": "An output demonstrating iterating array items with an index."
       }
     }
   }

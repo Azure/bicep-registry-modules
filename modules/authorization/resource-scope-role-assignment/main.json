@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.17.1.54307",
-      "templateHash": "8247725218821663644"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "11361975863315929988"
+    },
+    "name": "Resource scoped role assignment",
+    "description": "Create an Azure Authorization Role Assignment at the scope of a Resource E.g. on a Storage Container",
+    "owner": "brwilkinson"
   },
   "parameters": {
     "resourceId": {

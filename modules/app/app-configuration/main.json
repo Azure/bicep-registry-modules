@@ -1,11 +1,331 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "1.10-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
+    "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.16.2.56959",
-      "templateHash": "16913245589958538752"
+      "version": "0.19.5.34762",
+      "templateHash": "1075095153312310718"
+    },
+    "name": "Azure App Configuration",
+    "description": "Bicep module for simplified deployment Azure App Configuration resources and optionally available integrations.",
+    "owner": "sunilthorat09"
+  },
+  "definitions": {
+    "appConfigurationStoreKeyValueType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "contentType": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "See as examples: https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-leverage-json-content-type#valid-json-content-type"
+          }
+        },
+        "value": {
+          "type": "string",
+          "nullable": true
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "description": "Create a key-value pair in appConfiguration."
+      }
+    },
+    "diagnosticSettingsRetentionPolicyType": {
+      "type": "object",
+      "properties": {
+        "days": {
+          "type": "int",
+          "metadata": {
+            "description": "the number of days for the retention in days. A value of 0 will retain the events indefinitely."
+          }
+        },
+        "enabled": {
+          "type": "bool",
+          "metadata": {
+            "description": "a value indicating whether the retention policy is enabled."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The retention policy for this log or metric."
+      }
+    },
+    "diagnosticSettingsLogsType": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Name of a Diagnostic Log category for a resource type this setting is applied to."
+          }
+        },
+        "categoryGroup": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Create firewall rule before the virtual network has vnet service endpoint enabled."
+          }
+        },
+        "enabled": {
+          "type": "bool",
+          "metadata": {
+            "description": "A value indicating whether this log is enabled."
+          }
+        },
+        "retentionPolicy": {
+          "$ref": "#/definitions/diagnosticSettingsRetentionPolicyType",
+          "nullable": true,
+          "metadata": {
+            "description": "The retention policy for this log."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The list of logs settings."
+      }
+    },
+    "diagnosticSettingsMetricsType": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Name of a Diagnostic Metric category for a resource type this setting is applied to."
+          }
+        },
+        "enabled": {
+          "type": "bool",
+          "metadata": {
+            "description": "A value indicating whether this metric is enabled."
+          }
+        },
+        "retentionPolicy": {
+          "$ref": "#/definitions/diagnosticSettingsRetentionPolicyType",
+          "nullable": true,
+          "metadata": {
+            "description": "The retention policy for metric."
+          }
+        },
+        "timeGrain": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "the timegrain of the metric in ISO8601 format."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The list of metrics settings."
+      }
+    },
+    "diagnosticSettingsEventHubType": {
+      "type": "object",
+      "properties": {
+        "EventHubAuthorizationRuleId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resource Id for the event hub authorization rule."
+          }
+        },
+        "EventHubName": {
+          "type": "string",
+          "metadata": {
+            "description": "The name of the event hub."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The settings required to use EventHub as destination."
+      }
+    },
+    "diagnosticSettingsReceiversType": {
+      "type": "object",
+      "properties": {
+        "eventHub": {
+          "$ref": "#/definitions/diagnosticSettingsEventHubType",
+          "nullable": true
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or a target type created as follows: {normalized service identity}_{normalized category name}."
+          }
+        },
+        "marketplacePartnerId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+          }
+        },
+        "storageAccountId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The resource ID of the storage account to which you would like to send Diagnostic Logs."
+          }
+        },
+        "workspaceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The full ARM resource ID of the Log Analytics workspace to which you would like to send Diagnostic Logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Destiantion options."
+      }
+    },
+    "diagnosticSettingsPropertiesType": {
+      "type": "object",
+      "properties": {
+        "logs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/diagnosticSettingsLogsType"
+          },
+          "nullable": true
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/diagnosticSettingsMetricsType"
+          },
+          "nullable": true
+        },
+        "serviceBusRuleId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The service bus rule Id of the diagnostic setting. This is here to maintain backwards compatibility."
+          }
+        },
+        "diagnosticReceivers": {
+          "$ref": "#/definitions/diagnosticSettingsReceiversType",
+          "nullable": true
+        }
+      }
+    },
+    "firewallRulesType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "The resource name."
+          },
+          "maxLength": 128,
+          "minLength": 1
+        },
+        "startIpAddress": {
+          "type": "string",
+          "metadata": {
+            "description": "The start IP address of the server firewall rule. Must be IPv4 format."
+          }
+        },
+        "endIpAddress": {
+          "type": "string",
+          "metadata": {
+            "description": "The end IP address of the server firewall rule. Must be IPv4 format."
+          }
+        }
+      }
+    },
+    "virtualNetworkRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "The resource name."
+          },
+          "maxLength": 128,
+          "minLength": 1
+        },
+        "ignoreMissingVnetServiceEndpoint": {
+          "type": "bool",
+          "metadata": {
+            "description": "Create firewall rule before the virtual network has vnet service endpoint enabled."
+          }
+        },
+        "virtualNetworkSubnetId": {
+          "type": "string",
+          "metadata": {
+            "description": "The ARM resource id of the virtual network subnet."
+          }
+        }
+      }
+    },
+    "databaseType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "charset": {
+          "type": "string",
+          "nullable": true
+        },
+        "collation": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "description": "Database definition in the postrges instance."
+      }
+    },
+    "roleAssignmentsType": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "nullable": true
+        },
+        "principalIds": {
+          "type": "array"
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string"
+        },
+        "principalType": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "description": "Define role Assignment for appConfiguration"
+      }
+    },
+    "keyVaultPropertiesType": {
+      "type": "object",
+      "properties": {
+        "keyIdentifier": {
+          "type": "string",
+          "nullable": true
+        },
+        "identityClientId": {
+          "type": "string",
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "description": "The key vault configuration used to encrypt the data in the configuration store."
+      }
     }
   },
   "parameters": {
@@ -16,9 +336,16 @@
         "description": "Specifies the supported Azure location where the resource exists. Changing this forces a new resource to be created.. Default is the location of the resource group."
       }
     },
+    "prefix": {
+      "type": "string",
+      "defaultValue": "appconf",
+      "metadata": {
+        "description": "Prefix of appconf resource name. Not used if name is provided."
+      }
+    },
     "name": {
       "type": "string",
-      "defaultValue": "[format('appconf-{0}', uniqueString(resourceGroup().id, subscription().id))]",
+      "defaultValue": "[format('{0}-{1}', parameters('prefix'), uniqueString(resourceGroup().id, subscription().id))]",
       "metadata": {
         "description": "Specifies the name of the App Configuration instance. Changing this forces a new resource to be created. It must me unique across Azure. Valid characters: Alphanumerics,underscores, and hyphens."
       },
@@ -34,6 +361,17 @@
       ],
       "metadata": {
         "description": "The SKU name of the configuration store."
+      }
+    },
+    "createMode": {
+      "type": "string",
+      "defaultValue": "Default",
+      "allowedValues": [
+        "Default",
+        "Recover"
+      ],
+      "metadata": {
+        "description": "Indicates whether the configuration store need to be recovered."
       }
     },
     "softDeleteRetentionInDays": {
@@ -70,18 +408,21 @@
         "description": "Enables the purge protection feature for the configuration store.  This field only works for \"Standard\" sku."
       }
     },
-    "identityClientId": {
-      "type": "string",
-      "defaultValue": "",
+    "appConfigurationStoreKeyValues": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/appConfigurationStoreKeyValueType"
+      },
+      "defaultValue": [],
       "metadata": {
-        "description": "The client id of the identity which will be used to access key vault."
+        "description": "List of key-value pair to add in the appConfiguration."
       }
     },
-    "keyVaultKeyIdentifier": {
-      "type": "string",
-      "defaultValue": "",
+    "appConfigEncryption": {
+      "$ref": "#/definitions/keyVaultPropertiesType",
+      "defaultValue": {},
       "metadata": {
-        "description": "The resource URI of the key vault key used to encrypt the data in the configuration store."
+        "description": "The configuration used to encrypt the data in the configuration store."
       }
     },
     "replicas": {
@@ -108,7 +449,7 @@
         "UserAssigned"
       ],
       "metadata": {
-        "description": "TSpecifies the type of Managed Service Identity that should be configured on this App Configuration. The type \"SystemAssigned, UserAssigned\" includes both an implicitly created identity and a set of user-assigned identities. The type \"None\" will remove any identities from the Cosmos DB account."
+        "description": "TSpecifies the type of Managed Service Identity that should be configured on this App Configuration. The type \"SystemAssigned, UserAssigned\" includes both an implicitly created identity and a set of user-assigned identities."
       }
     },
     "userAssignedIdentities": {
@@ -127,11 +468,14 @@
         "ReadOnly"
       ],
       "metadata": {
-        "description": "Specify the type of lock on Cosmos DB account resource."
+        "description": "Specify the type of lock on app conf resource."
       }
     },
     "roleAssignments": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentsType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Array of role assignment objects that contain the \"roleDefinitionIdOrName\" and \"principalId\" to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, provide either the display name of the role definition, or its fully qualified ID in the following format: \"/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\""
@@ -141,118 +485,39 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Private Endpoints that should be created for Azure Cosmos DB account."
+        "description": "Private Endpoints that should be created for app conf."
       }
     },
-    "diagnosticLogsRetentionInDays": {
-      "type": "int",
-      "defaultValue": 365,
-      "maxValue": 365,
-      "minValue": 0,
+    "diagnosticSettingsProperties": {
+      "$ref": "#/definitions/diagnosticSettingsPropertiesType",
+      "defaultValue": {},
       "metadata": {
-        "description": "Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
-      }
-    },
-    "diagnosticStorageAccountId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Resource ID of the diagnostic storage account."
-      }
-    },
-    "diagnosticWorkspaceId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Resource ID of the diagnostic log analytics workspace."
-      }
-    },
-    "diagnosticEventHubAuthorizationRuleId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-      }
-    },
-    "diagnosticEventHubName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category."
-      }
-    },
-    "logsToEnable": {
-      "type": "array",
-      "defaultValue": [
-        "HttpRequest",
-        "Audit"
-      ],
-      "allowedValues": [
-        "HttpRequest",
-        "Audit"
-      ],
-      "metadata": {
-        "description": "The name of logs that will be streamed."
-      }
-    },
-    "metricsToEnable": {
-      "type": "array",
-      "defaultValue": [
-        "AllMetrics"
-      ],
-      "allowedValues": [
-        "AllMetrics"
-      ],
-      "metadata": {
-        "description": "The name of metrics that will be streamed."
+        "description": "Provide appConfiguration diagnostic settings properties."
       }
     }
   },
   "variables": {
     "copy": [
       {
-        "name": "diagnosticsLogsWithDefaults",
-        "count": "[length(parameters('logsToEnable'))]",
-        "input": {
-          "category": "[parameters('logsToEnable')[copyIndex('diagnosticsLogsWithDefaults')]]",
-          "enabled": true,
-          "retentionPolicy": {
-            "enabled": "[if(not(equals(parameters('diagnosticLogsRetentionInDays'), 0)), true(), false())]",
-            "days": "[parameters('diagnosticLogsRetentionInDays')]"
-          }
-        }
-      },
-      {
-        "name": "diagnosticsMetricsWithDefaults",
-        "count": "[length(parameters('metricsToEnable'))]",
-        "input": {
-          "category": "[parameters('metricsToEnable')[copyIndex('diagnosticsMetricsWithDefaults')]]",
-          "timeGrain": null,
-          "enabled": true,
-          "retentionPolicy": {
-            "enabled": "[if(not(equals(parameters('diagnosticLogsRetentionInDays'), 0)), true(), false())]",
-            "days": "[parameters('diagnosticLogsRetentionInDays')]"
-          }
-        }
-      },
-      {
-        "name": "privateEndpointsWithDefaults",
+        "name": "varPrivateEndpoints",
         "count": "[length(parameters('privateEndpoints'))]",
         "input": {
-          "name": "[format('{0}-{1}', parameters('name'), parameters('privateEndpoints')[copyIndex('privateEndpointsWithDefaults')].name)]",
+          "name": "[format('{0}-{1}', parameters('name'), parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].name)]",
           "privateLinkServiceId": "[resourceId('Microsoft.AppConfiguration/configurationStores', parameters('name'))]",
           "groupIds": [
             "configurationStores"
           ],
-          "subnetId": "[parameters('privateEndpoints')[copyIndex('privateEndpointsWithDefaults')].subnetId]",
-          "privateDnsZones": "[if(contains(parameters('privateEndpoints')[copyIndex('privateEndpointsWithDefaults')], 'privateDnsZoneId'), createArray(createObject('name', 'default', 'zoneId', parameters('privateEndpoints')[copyIndex('privateEndpointsWithDefaults')].privateDnsZoneId)), createArray())]",
-          "manualApprovalEnabled": "[if(contains(parameters('privateEndpoints')[copyIndex('privateEndpointsWithDefaults')], 'manualApprovalEnabled'), parameters('privateEndpoints')[copyIndex('privateEndpointsWithDefaults')].manualApprovalEnabled, false())]"
+          "subnetId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].subnetId]",
+          "privateDnsZoneConfigs": "[coalesce(tryGet(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'privateDnsZoneConfigs'), createArray())]",
+          "customNetworkInterfaceName": "[tryGet(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'customNetworkInterfaceName')]",
+          "manualApprovalEnabled": "[coalesce(tryGet(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'manualApprovalEnabled'), false())]"
         }
       }
-    ]
+    ],
+    "enableAppConfigurationDiagnosticSettings": "[if(and(and(and(empty(tryGet(tryGet(parameters('diagnosticSettingsProperties'), 'diagnosticReceivers'), 'workspaceId')), empty(tryGet(tryGet(parameters('diagnosticSettingsProperties'), 'diagnosticReceivers'), 'eventHub'))), empty(tryGet(tryGet(parameters('diagnosticSettingsProperties'), 'diagnosticReceivers'), 'storageAccountId'))), empty(tryGet(tryGet(parameters('diagnosticSettingsProperties'), 'diagnosticReceivers'), 'marketplacePartnerId'))), false(), true())]"
   },
-  "resources": [
-    {
+  "resources": {
+    "appConfiguration": {
       "type": "Microsoft.AppConfiguration/configurationStores",
       "apiVersion": "2023-03-01",
       "name": "[parameters('name')]",
@@ -261,16 +526,22 @@
         "name": "[parameters('skuName')]"
       },
       "properties": {
+        "createMode": "[parameters('createMode')]",
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "disableLocalAuth": "[parameters('disableLocalAuth')]",
-        "enablePurgeProtection": "[if(equals(parameters('skuName'), 'Standard'), parameters('enablePurgeProtection'), null())]",
-        "encryption": "[if(and(not(empty(parameters('keyVaultKeyIdentifier'))), not(empty(parameters('identityClientId')))), createObject('keyVaultProperties', createObject('keyIdentifier', parameters('keyVaultKeyIdentifier'), 'identityClientId', parameters('identityClientId'))), null())]",
+        "enablePurgeProtection": "[if(and(equals(parameters('skuName'), 'Standard'), parameters('enablePurgeProtection')), true(), false())]",
+        "encryption": {
+          "keyVaultProperties": {
+            "keyIdentifier": "[tryGet(parameters('appConfigEncryption'), 'keyIdentifier')]",
+            "identityClientId": "[tryGet(parameters('appConfigEncryption'), 'identityClientId')]"
+          }
+        },
         "softDeleteRetentionInDays": "[if(equals(parameters('skuName'), 'Standard'), parameters('softDeleteRetentionInDays'), null())]"
       },
       "tags": "[parameters('tags')]",
       "identity": "[if(contains(parameters('identityType'), 'UserAssigned'), createObject('type', parameters('identityType'), 'userAssignedIdentities', if(contains(parameters('identityType'), 'UserAssigned'), parameters('userAssignedIdentities'), createObject())), createObject('type', parameters('identityType')))]"
     },
-    {
+    "appConfigurationReplicas": {
       "copy": {
         "name": "appConfigurationReplicas",
         "count": "[length(parameters('replicas'))]",
@@ -282,49 +553,69 @@
       "name": "[format('{0}/{1}', parameters('name'), parameters('replicas')[copyIndex()].name)]",
       "location": "[parameters('replicas')[copyIndex()].location]",
       "dependsOn": [
-        "[resourceId('Microsoft.AppConfiguration/configurationStores', parameters('name'))]"
+        "appConfiguration"
       ]
     },
-    {
-      "condition": "[or(or(or(not(empty(parameters('diagnosticStorageAccountId'))), not(empty(parameters('diagnosticWorkspaceId')))), not(empty(parameters('diagnosticEventHubAuthorizationRuleId')))), not(empty(parameters('diagnosticEventHubName'))))]",
+    "appConfigurationStoreKeyValue": {
+      "copy": {
+        "name": "appConfigurationStoreKeyValue",
+        "count": "[length(parameters('appConfigurationStoreKeyValues'))]"
+      },
+      "type": "Microsoft.AppConfiguration/configurationStores/keyValues",
+      "apiVersion": "2023-03-01",
+      "name": "[format('{0}/{1}', parameters('name'), parameters('appConfigurationStoreKeyValues')[copyIndex()].name)]",
+      "properties": {
+        "contentType": "[tryGet(parameters('appConfigurationStoreKeyValues')[copyIndex()], 'contentType')]",
+        "tags": "[tryGet(parameters('appConfigurationStoreKeyValues')[copyIndex()], 'tags')]",
+        "value": "[tryGet(parameters('appConfigurationStoreKeyValues')[copyIndex()], 'value')]"
+      },
+      "dependsOn": [
+        "appConfiguration"
+      ]
+    },
+    "appConfigurationDiagnosticSettings": {
+      "condition": "[variables('enableAppConfigurationDiagnosticSettings')]",
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
       "scope": "[format('Microsoft.AppConfiguration/configurationStores/{0}', parameters('name'))]",
-      "name": "[format('{0}-diagnosticSettings', parameters('name'))]",
+      "name": "[format('{0}-diagnostic-settings', parameters('name'))]",
       "properties": {
-        "storageAccountId": "[if(not(empty(parameters('diagnosticStorageAccountId'))), parameters('diagnosticStorageAccountId'), null())]",
-        "workspaceId": "[if(not(empty(parameters('diagnosticWorkspaceId'))), parameters('diagnosticWorkspaceId'), null())]",
-        "eventHubAuthorizationRuleId": "[if(not(empty(parameters('diagnosticEventHubAuthorizationRuleId'))), parameters('diagnosticEventHubAuthorizationRuleId'), null())]",
-        "eventHubName": "[if(not(empty(parameters('diagnosticEventHubName'))), parameters('diagnosticEventHubName'), null())]",
-        "metrics": "[variables('diagnosticsMetricsWithDefaults')]",
-        "logs": "[variables('diagnosticsLogsWithDefaults')]"
+        "eventHubAuthorizationRuleId": "[tryGet(tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'eventHub'), 'EventHubAuthorizationRuleId')]",
+        "eventHubName": "[tryGet(tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'eventHub'), 'EventHubName')]",
+        "logAnalyticsDestinationType": "[tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'logAnalyticsDestinationType')]",
+        "logs": "[tryGet(parameters('diagnosticSettingsProperties'), 'logs')]",
+        "marketplacePartnerId": "[tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'marketplacePartnerId')]",
+        "metrics": "[tryGet(parameters('diagnosticSettingsProperties'), 'metrics')]",
+        "serviceBusRuleId": "[tryGet(parameters('diagnosticSettingsProperties'), 'serviceBusRuleId')]",
+        "storageAccountId": "[tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'storageAccountId')]",
+        "workspaceId": "[tryGet(parameters('diagnosticSettingsProperties').diagnosticReceivers, 'workspaceId')]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.AppConfiguration/configurationStores', parameters('name'))]"
+        "appConfiguration"
       ]
     },
-    {
+    "appConfigurationLock": {
       "condition": "[not(equals(parameters('lock'), 'NotSpecified'))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
       "scope": "[format('Microsoft.AppConfiguration/configurationStores/{0}', parameters('name'))]",
-      "name": "[format('{0}-{1}-lock', parameters('name'), toLower(parameters('lock')))]",
+      "name": "[format('{0}-lock', parameters('name'))]",
       "properties": {
         "level": "[parameters('lock')]",
         "notes": "[if(equals(parameters('lock'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot modify the resource or child resources.')]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.AppConfiguration/configurationStores', parameters('name'))]"
+        "appConfiguration"
       ]
     },
-    {
+    "appConfigurationRbac": {
       "copy": {
-        "name": "appConfiguration_rbac",
+        "name": "appConfigurationRbac",
         "count": "[length(parameters('roleAssignments'))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('cosmosdb-rbac-{0}-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-rbac-{1}', parameters('name'), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -349,12 +640,14 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "6726558242263499767"
+              "version": "0.19.5.34762",
+              "templateHash": "9269277903873652085"
             }
           },
           "parameters": {
@@ -378,24 +671,31 @@
           },
           "variables": {
             "builtInRoleNames": {
-              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
-              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-              "App Configuration Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5ae67dd6-50cb-40e7-96ff-dc2bfa4b606b')]",
-              "App Configuration Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '516239f1-63e1-4d78-a4de-a74fb236a071')]",
-              "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
-              "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
-              "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
-              "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
-              "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
-              "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
-              "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
-              "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
-              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]"
-            }
+              "Owner": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
+              "Contributor": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+              "Reader": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
+              "App Configuration Data Owner": "5ae67dd6-50cb-40e7-96ff-dc2bfa4b606b",
+              "App Configuration Data Reader": "516239f1-63e1-4d78-a4de-a74fb236a071",
+              "Log Analytics Contributor": "92aaf0da-9dab-42b6-94a3-d43ce8d16293",
+              "Log Analytics Reader": "73c42c96-874c-492b-b04d-ab87d138a893",
+              "Managed Application Contributor Role": "641177b8-a67a-45b9-a033-47bc880bb21e",
+              "Managed Application Operator Role": "c7393b34-138c-406f-901b-d8cf2b17e6ae",
+              "Managed Applications Reader": "b9331d33-8a36-4f8c-b097-4f54124fdb44",
+              "Monitoring Contributor": "749f88d5-cbae-40b8-bcfc-e573ddc772fa",
+              "Monitoring Metrics Publisher": "3913510d-42f4-4e42-8a64-420c390055eb",
+              "Monitoring Reader": "43d0d8ad-25c7-4714-9337-8ba259a9fe05",
+              "Resource Policy Contributor": "36243c78-bf99-498c-9df9-86d9f8d28608"
+            },
+            "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName')))]"
           },
-          "resources": [
-            {
+          "resources": {
+            "appConfiguration": {
+              "existing": true,
+              "type": "Microsoft.AppConfiguration/configurationStores",
+              "apiVersion": "2023-03-01",
+              "name": "[last(split(parameters('resourceId'), '/'))]"
+            },
+            "roleAssignment": {
               "copy": {
                 "name": "roleAssignment",
                 "count": "[length(parameters('principalIds'))]"
@@ -403,25 +703,25 @@
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
               "scope": "[format('Microsoft.AppConfiguration/configurationStores/{0}', last(split(parameters('resourceId'), '/')))]",
-              "name": "[guid(last(split(parameters('resourceId'), '/')), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+              "name": "[guid(last(split(parameters('resourceId'), '/')), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'), uniqueString(resourceGroup().id))]",
               "properties": {
                 "description": "[parameters('description')]",
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
+                "roleDefinitionId": "[variables('roleDefinitionId')]",
                 "principalId": "[parameters('principalIds')[copyIndex()]]",
-                "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]"
+                "principalType": "[coalesce(parameters('principalType'), null())]"
               }
             }
-          ]
+          }
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.AppConfiguration/configurationStores', parameters('name'))]"
+        "appConfiguration"
       ]
     },
-    {
+    "appConfigurationPrivateEndpoint": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}-private-endpoints', parameters('name'), uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-private-endpoints', parameters('name'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -432,7 +732,7 @@
             "value": "[parameters('location')]"
           },
           "privateEndpoints": {
-            "value": "[variables('privateEndpointsWithDefaults')]"
+            "value": "[variables('varPrivateEndpoints')]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -440,12 +740,75 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "1.10-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.16.2.56959",
-              "templateHash": "5781174049967211056"
+              "version": "0.19.5.34762",
+              "templateHash": "17584855190782240496"
+            }
+          },
+          "definitions": {
+            "PrivateDnsZoneConfigType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The resource name"
+                  }
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "privateDnsZoneId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource id of the private dns zone."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Properties of the private dns zone configuration."
+                  }
+                }
+              }
+            },
+            "privateEndpointsType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "privateLinkServiceId": {
+                  "type": "string"
+                },
+                "groupIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "subnetId": {
+                  "type": "string"
+                },
+                "privateDnsZoneConfigs": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/PrivateDnsZoneConfigType"
+                  },
+                  "nullable": true
+                },
+                "customNetworkInterfaceName": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "manualApprovalEnabled": {
+                  "type": "bool"
+                }
+              }
             }
           },
           "parameters": {
@@ -456,84 +819,59 @@
               "type": "object"
             },
             "privateEndpoints": {
-              "type": "array"
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/privateEndpointsType"
+              }
             }
           },
-          "variables": {
-            "copy": [
-              {
-                "name": "varPrivateEndpoints",
-                "count": "[length(parameters('privateEndpoints'))]",
-                "input": {
-                  "name": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].name]",
-                  "privateLinkServiceId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].privateLinkServiceId]",
-                  "groupIds": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].groupIds]",
-                  "subnetId": "[parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')].subnetId]",
-                  "privateDnsZones": "[coalesce(tryGet(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'privateDnsZones'), createArray())]",
-                  "customNetworkInterfaceName": "[coalesce(tryGet(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'customNetworkInterfaceName'), null())]",
-                  "manualApprovalEnabled": "[coalesce(tryGet(parameters('privateEndpoints')[copyIndex('varPrivateEndpoints')], 'manualApprovalEnabled'), false())]"
-                }
-              }
-            ]
-          },
-          "resources": [
-            {
+          "resources": {
+            "privateEndpoint": {
               "copy": {
                 "name": "privateEndpoint",
-                "count": "[length(variables('varPrivateEndpoints'))]",
+                "count": "[length(parameters('privateEndpoints'))]",
                 "mode": "serial",
                 "batchSize": 1
               },
               "type": "Microsoft.Network/privateEndpoints",
               "apiVersion": "2022-05-01",
-              "name": "[format('{0}-{1}', variables('varPrivateEndpoints')[copyIndex()].name, uniqueString(variables('varPrivateEndpoints')[copyIndex()].name, variables('varPrivateEndpoints')[copyIndex()].subnetId, variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId))]",
+              "name": "[format('{0}-{1}', parameters('privateEndpoints')[copyIndex()].name, uniqueString(parameters('privateEndpoints')[copyIndex()].name, parameters('privateEndpoints')[copyIndex()].subnetId, parameters('privateEndpoints')[copyIndex()].privateLinkServiceId))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
               "properties": {
-                "privateLinkServiceConnections": "[if(variables('varPrivateEndpoints')[copyIndex()].manualApprovalEnabled, null(), createArray(createObject('name', variables('varPrivateEndpoints')[copyIndex()].name, 'properties', createObject('privateLinkServiceId', variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId, 'groupIds', if(not(empty(variables('varPrivateEndpoints')[copyIndex()].groupIds)), variables('varPrivateEndpoints')[copyIndex()].groupIds, null())))))]",
-                "manualPrivateLinkServiceConnections": "[if(variables('varPrivateEndpoints')[copyIndex()].manualApprovalEnabled, createArray(createObject('name', variables('varPrivateEndpoints')[copyIndex()].name, 'properties', createObject('privateLinkServiceId', variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId, 'groupIds', if(not(empty(variables('varPrivateEndpoints')[copyIndex()].groupIds)), variables('varPrivateEndpoints')[copyIndex()].groupIds, null())))), null())]",
+                "privateLinkServiceConnections": "[if(parameters('privateEndpoints')[copyIndex()].manualApprovalEnabled, null(), createArray(createObject('name', parameters('privateEndpoints')[copyIndex()].name, 'properties', createObject('privateLinkServiceId', parameters('privateEndpoints')[copyIndex()].privateLinkServiceId, 'groupIds', parameters('privateEndpoints')[copyIndex()].groupIds))))]",
+                "manualPrivateLinkServiceConnections": "[if(parameters('privateEndpoints')[copyIndex()].manualApprovalEnabled, createArray(createObject('name', parameters('privateEndpoints')[copyIndex()].name, 'properties', createObject('privateLinkServiceId', tryGet(parameters('privateEndpoints')[copyIndex()], 'privateLinkServiceId'), 'groupIds', parameters('privateEndpoints')[copyIndex()].groupIds))), null())]",
                 "subnet": {
-                  "id": "[variables('varPrivateEndpoints')[copyIndex()].subnetId]"
+                  "id": "[parameters('privateEndpoints')[copyIndex()].subnetId]"
                 },
-                "customNetworkInterfaceName": "[variables('varPrivateEndpoints')[copyIndex()].customNetworkInterfaceName]"
+                "customNetworkInterfaceName": "[tryGet(parameters('privateEndpoints')[copyIndex()], 'customNetworkInterfaceName')]"
               }
             },
-            {
+            "privateDnsZoneGroup": {
               "copy": {
                 "name": "privateDnsZoneGroup",
-                "count": "[length(variables('varPrivateEndpoints'))]",
+                "count": "[length(parameters('privateEndpoints'))]",
                 "mode": "serial",
                 "batchSize": 1
               },
               "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
               "apiVersion": "2022-05-01",
-              "name": "[format('{0}/{1}', format('{0}-{1}', variables('varPrivateEndpoints')[copyIndex()].name, uniqueString(variables('varPrivateEndpoints')[copyIndex()].name, variables('varPrivateEndpoints')[copyIndex()].subnetId, variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId)), 'default')]",
+              "name": "[format('{0}/{1}', format('{0}-{1}', parameters('privateEndpoints')[copyIndex()].name, uniqueString(parameters('privateEndpoints')[copyIndex()].name, parameters('privateEndpoints')[copyIndex()].subnetId, parameters('privateEndpoints')[copyIndex()].privateLinkServiceId)), 'default')]",
               "properties": {
-                "copy": [
-                  {
-                    "name": "privateDnsZoneConfigs",
-                    "count": "[length(variables('varPrivateEndpoints')[copyIndex()].privateDnsZones)]",
-                    "input": {
-                      "name": "[coalesce(tryGet(variables('varPrivateEndpoints')[copyIndex()].privateDnsZones[copyIndex('privateDnsZoneConfigs')], 'name'), 'default')]",
-                      "properties": {
-                        "privateDnsZoneId": "[variables('varPrivateEndpoints')[copyIndex()].privateDnsZones[copyIndex('privateDnsZoneConfigs')].zoneId]"
-                      }
-                    }
-                  }
-                ]
+                "privateDnsZoneConfigs": "[parameters('privateEndpoints')[copyIndex()].privateDnsZoneConfigs]"
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Network/privateEndpoints', format('{0}-{1}', variables('varPrivateEndpoints')[copyIndex()].name, uniqueString(variables('varPrivateEndpoints')[copyIndex()].name, variables('varPrivateEndpoints')[copyIndex()].subnetId, variables('varPrivateEndpoints')[copyIndex()].privateLinkServiceId)))]"
+                "[format('privateEndpoint[{0}]', copyIndex())]"
               ]
             }
-          ]
+          }
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.AppConfiguration/configurationStores', parameters('name'))]"
+        "appConfiguration"
       ]
     }
-  ],
+  },
   "outputs": {
     "id": {
       "type": "string",
@@ -552,9 +890,9 @@
     "systemAssignedIdentityPrincipalId": {
       "type": "string",
       "metadata": {
-        "description": "Object Id of system assigned managed identity for Cosmos DB account (if enabled)."
+        "description": "Object Id of system assigned managed identity for app configuration (if enabled)."
       },
-      "value": "[if(contains(parameters('identityType'), 'SystemAssigned'), reference(resourceId('Microsoft.AppConfiguration/configurationStores', parameters('name')), '2023-03-01', 'full').identity.principalId, '')]"
+      "value": "[if(contains(parameters('identityType'), 'SystemAssigned'), reference('appConfiguration', '2023-03-01', 'full').identity.principalId, '')]"
     }
   }
 }

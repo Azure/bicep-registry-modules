@@ -7,7 +7,7 @@ The following instructions are created to help with the development of Bicep pub
 ## Prerequisite
 
 - Create a fork of the [Azure/bicep-registry-modules](https://github.com/Azure/bicep-registry-modules) repository and clone the fork to your local machine.
-- Install [.NET 6.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/6.0/runtime)
+- Install [.NET 7.0 Runtime](https://dotnet.microsoft.com/en-us/download/dotnet/7.0/runtime)
 - Install the [Bicep registry module](https://www.nuget.org/packages/Azure.Bicep.RegistryModuleTool/) tool by running:
   - `dotnet tool install --global Azure.Bicep.RegistryModuleTool`
 
@@ -40,37 +40,28 @@ brm generate
 You should be able to see these files created in the module folder:
 | File Name | Description |
 | :--------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `metadata.json` | An JSON file containing module metadata. You must edit the file to provide the metadata values. |
-| `main.bicep` | An empty Bicep file that you need to update. This is the main module file. |
+| `main.bicep` | An empty Bicep file that you need to update. This is the main module file. You must edit the "metadata" statements to provide the module name, description and owner. |
 | `test/main.test.bicep` | A Bicep file to be deployed in the PR merge validation pipeline to test if `main.bicep` is deployable. You must add at least one test to the file. A module referencing `main.bicep` is considered a test. |
 | `main.json` | The main ARM template file compiled from `main.bicep`. This is the artifact that will be published to the Bicep public registry. You should not modify the file. |
-| `README.md` | The README file generated based on the contents of `metadata.json` and `main.bicep`. You need to update this file to add examples. |
+| `README.md` | The README file generated based on the contents of `main.bicep`. You need to update this file to add examples. |
 | `version.json` | The module version file. It is used together with `main.json` to calculate the patch version number of the module. Every time `main.json` is changed, the patch version number gets bumped. The full version (`<ModuleMajorVersion>.<ModuleMinorVersion>.<ModulePatchVersion>`) will then be assigned to the module before it gets published to the Bicep public module registry. The process is handled by the module publishing CI automatically. You should not edit this file. |
+
+NOTE: The `metadata.json` file is now obsolete. Running `brm generate` will automatically remove this file and place its contents into the main.bicep file as `metadata` statements (see below).
 
 ### Authoring module files
 
-The files that you need to edit are `metadata.json`, `main.bicep`, `test/main.test.bicep`, `README.md`, and `version.json`.
-
-The `metadata.json` file contains metadata of the module including `name`, `description`, and `owner`. You must provide the values for them. Below is a sample metadata file with the constraints of each property commented:
-
-```JSONC
-{
-  "$schema": "https://aka.ms/bicep-registry-module-metadata-schema#",
-  // The name of the module (10 - 60 characters).
-  "name": "Sample module",
-  // The description of the module (10 - 1000 characters).
-  "description": "Sample module description",
-  // The owner of the module. Must be a GitHub username or a team under the Azure organization
-  "owner": "sampleusername"
-}
-
-```
+The files that you need to edit are `main.bicep`, `test/main.test.bicep`, `README.md`, and `version.json`.
 
 #### `main.bicep`
 
 The `main.bicep` file is the public interface of the module. When authoring `main.bicep`, make sure to provide a description for each parameter and output. You are free to create other Bicep files inside the module folder and reference them as local modules in `main.bicep` if needed. You may also reference other registry modules to help build your module. If you do so, make sure to add them as external references with specific version numbers. You should not reference other registry modules through local file path, since they may get updated overtime. The `main.bicep` most follow various static code analysis checks, such as including descriptions on every parameter and output. This will be used to automatically generate the `README.md`.
 
 ```bicep
+metadata name = 'Sample module'
+metadata description = '''Sample module description. This should be a short description of the functionality of the module.
+A more detailed description can be included in the README.md file.'''
+metadata owner = 'sampleusername'
+
 @description('Deployment Location')
 param location string = resourceGroup().location
 
@@ -97,13 +88,13 @@ output name string = name
 output id string = resource.id
 ```
 
-We try to maintain the consistancies demostrated above.
+We try to maintain the consistencies demostrated above.
 
 Each template should include the following 3 parameters: `location`, `prefix` and `name`; and following 2 outputs: `name` and `id`.
 
 ##### Parameters
 
-- The `location` parameter is set to `resourceGroup().name` in only the `main.bicep`, and should be required when present in nested templates.
+- The `location` parameter is set to `resourceGroup().location` in only the `main.bicep`, and should be required when present in nested templates.
 - The `prefix` should use the recommended abbreviations collected [here](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations).
 - The `name` should include a min and max length constraint. It should also generate a unique name for the user, that will remain the same when redeployed with the same parameters, such as with `uniqueString(resourceGroup().id, location)`. If multiple resources are including in a module, the default values of other names should be based on this value.
 
@@ -154,7 +145,7 @@ module testMain '../main.bicep' = {
 }
 ```
 
-The `README.md` file is the documentation of the module. A large proportion of the file contents, such as the parameter and output tables, are generated based on the contents of other files. However, you must update the `Examples` section manually to provide examples of how the module can be used.
+The `README.md` file is the documentation of the module. A large proportion of the file contents, such as the parameter and output tables, are generated based on the contents of other files. However, you must update the `Description` and `Examples` sections manually, to provide a detailed description for the module and examples of how the module can be used.
 
 The `version.json` file defines the MAJOR and MINOR version number of the module. Update the value of the `“version"` property to specify a version, e.g., `"1.0"`.
 
@@ -176,6 +167,79 @@ Instead go with:
 - `./main.bicep`
 - `./modules/storage.bicep`
 - `./modules/compute.bicep`
+
+## User-Defined Types (Preview)
+
+The repository has been setup to leverage the preview feature, [user-defined types](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/user-defined-data-types), on a per module basis.
+
+While the feature is in Preview, [to enable](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/user-defined-data-types#enable-the-preview-feature) include a `bicepconfig.json` in your module directory.
+
+`type` assignments should be declared to the end of the file, after the declaration of `outputs`. Types should include descriptions, which can be copied from the Azure API documentation when wrapping existing RP objects. Nested `type` declarations do not need a description. `type` should be reserved for use in complex cases and should not be used to in place of primitive types.
+
+```bicep
+@description('The properties of a storage account’s Blob service.')
+type blobServiceProperties = {
+  changeFeed: changeFeed?
+  containerDeleteRetentionPolicy: containerDeleteRetentionPolicy?
+  cors: cors?
+  deleteRetentionPolicy: deleteRetentionPolicy?
+  isVersioningEnabled: isVersioningEnabled?
+  lastAccessTimeTrackingPolicy: lastAccessTimeTrackingPolicy?
+  restorePolicy: restorePolicy?
+}
+
+@description('The blob service properties for change feed events.')
+type changeFeed = {
+  enabled: boo
+  @minValue(1)
+  @maxValue(146000)
+  retentionInDays: int?
+}
+
+@description('The blob service properties for container soft delete.')
+type containerDeleteRetentionPolicy = {
+  allowPermanentDelete: bool
+  @minValue(1)
+  @maxValue(365)
+  days: int?
+  enabled: bool
+}
+```
+
+Avoid these patterns.
+
+```bicep
+type enabled = bool  // Avoid setting aliases for primitive types
+type retentionInDays = int
+
+@description('The properties of a storage account’s Blob service.')
+type blobServiceProperties = {
+  @description('The blob service properties for change feed events.')
+  changeFeed: {
+    enabled: enabled
+
+    @minValue(1)
+    @maxValue(146000)
+    retentionInDays: retentionInDays?
+  }?
+
+  // Avoid nesting complex type definitions
+  @description('The blob service properties for container soft delete.')
+  containerDeleteRetentionPolicy: {
+    allowPermanentDelete: bool
+    @minValue(1)
+    @maxValue(365)
+    days: int?
+    enabled: bool
+  }?
+
+  cors: cors?
+  deleteRetentionPolicy: deleteRetentionPolicy?
+  isVersioningEnabled: isVersioningEnabled?
+  lastAccessTimeTrackingPolicy: lastAccessTimeTrackingPolicy?
+  restorePolicy: restorePolicy?
+}
+```
 
 ## Updating an existing module
 
@@ -213,9 +277,9 @@ You should increase the MINOR version when you change the module in a backward-c
 
 ### Bumping PATCH version
 
-If your change is non-breaking but does not require updating the MINOR version, the PATCH version will be bumped by the CI automatically when publishing the module to the Bicep registry once your pull request is merged. The PATCH version is increased by the git commit "height" since last time the `main.json` or `metadata.json` file of a module was changed on the `main` branch. Because we only allow squash merging, the git commit height is always 1 for each module update PR merged into `main`. The following scenarios will trigger a PATCH version bump:
+If your change is non-breaking but does not require updating the MINOR version, the PATCH version will be bumped by the CI automatically when publishing the module to the Bicep registry once your pull request is merged. The PATCH version is increased by the git commit "height" since last time the `main.json` file of a module was changed on the `main` branch. Because we only allow squash merging, the git commit height is always 1 for each module update PR merged into `main`. The following scenarios will trigger a PATCH version bump:
 
-- Updating the metadata file
+- Updating the bicep file
 - Updating the description of a parameter
 - Updating the description of an output
 - Adding a variable

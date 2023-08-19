@@ -2,7 +2,7 @@
 
 This module deploys PostgreSQL Single Server (Microsoft.DBforPostgreSQL/servers) and optionally available integrations.
 
-## Description
+## Details
 
 This Bicep module deploys a PostgreSQL Single Server instance in Azure with configurable options such as backup retention, firewall rules, private endpoints, and SSL enforcement.
 
@@ -10,39 +10,46 @@ It also supports role-based access control, storage autogrow, and infrastructure
 
 ## Parameters
 
-| Name                             | Type           | Required | Description                                                                                                                                                                                                                                                                                                                                                                                  |
-| :------------------------------- | :------------: | :------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `location`                       | `string`       | No       | The location into which your Azure resources should be deployed.                                                                                                                                                                                                                                                                                                                             |
-| `sqlServerName`                  | `string`       | Yes      | The name of the Postgresql Single Server instance.                                                                                                                                                                                                                                                                                                                                           |
-| `tags`                           | `object`       | No       | The tags to apply to each resource.                                                                                                                                                                                                                                                                                                                                                          |
-| `sqlServerAdministratorLogin`    | `string`       | Yes      | The administrator username of the server. Can only be specified when the server is being created.                                                                                                                                                                                                                                                                                            |
-| `sqlServerAdministratorPassword` | `securestring` | Yes      | The administrator login password for the SQL server. Can only be specified when the server is being created.                                                                                                                                                                                                                                                                                 |
-| `backupRetentionDays`            | `int`          | No       | Number of days a backup is retained for point-in-time restores.                                                                                                                                                                                                                                                                                                                              |
-| `createMode`                     | `string`       | No       | The mode to create a new server.                                                                                                                                                                                                                                                                                                                                                             |
-| `databases`                      | `array`        | No       | List of databases to create on server.                                                                                                                                                                                                                                                                                                                                                       |
-| `firewallRules`                  | `array`        | No       | List of firewall rules to create on server.                                                                                                                                                                                                                                                                                                                                                  |
-| `geoRedundantBackup`             | `bool`         | No       | Toggle geo-redundant backups. Cannot be changed after server creation.                                                                                                                                                                                                                                                                                                                       |
-| `infrastructureEncryption`       | `bool`         | No       | Toggle infrastructure double encryption. Cannot be changed after server creation.                                                                                                                                                                                                                                                                                                            |
-| `minimalTlsVersion`              | `string`       | No       | Minimal supported TLS version.                                                                                                                                                                                                                                                                                                                                                               |
-| `publicNetworkAccess`            | `bool`         | No       | Toggle public network access.                                                                                                                                                                                                                                                                                                                                                                |
-| `sqlServerPostgresqlVersion`     | `string`       | No       | PostgreSQL version                                                                                                                                                                                                                                                                                                                                                                           |
-| `privateEndpoints`               | `array`        | No       | List of privateEndpoints to create on server.                                                                                                                                                                                                                                                                                                                                                |
-| `restorePointInTime`             | `string`       | No       | The point in time (ISO8601 format) of the source server to restore from.                                                                                                                                                                                                                                                                                                                     |
-| `sqlServerConfigurations`        | `array`        | No       | List of server configurations to create on server.                                                                                                                                                                                                                                                                                                                                           |
-| `skuName`                        | `string`       | No       | The name of the sku, typically, tier + family + cores, e.g. B_Gen4_1.                                                                                                                                                                                                                                                                                                                        |
-| `sqlServerStorageSize`           | `int`          | No       | Storage size for Postgresql Single Server. Expressed in Mebibytes. Cannot be scaled down.                                                                                                                                                                                                                                                                                                    |
-| `sourceServerResourceId`         | `string`       | No       | The source server id to restore from. Leave empty if creating from scratch.                                                                                                                                                                                                                                                                                                                  |
-| `sslEnforcement`                 | `bool`         | No       | Toggle SSL enforcement for incoming connections.                                                                                                                                                                                                                                                                                                                                             |
-| `storageAutogrow`                | `bool`         | No       | Toggle storage autogrow.                                                                                                                                                                                                                                                                                                                                                                     |
-| `roleAssignments`                | `array`        | No       | Array of role assignment objects that contain the "roleDefinitionIdOrName" and "principalId" to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, provide either the display name of the role definition, or its fully qualified ID in the following format: "/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11" |
+| Name                           | Type           | Required | Description                                                                                                                                                                                                                                                                                                                                                                                  |
+| :----------------------------- | :------------: | :------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `location`                     | `string`       | No       | Optional.  The location into which your Azure resources should be deployed.                                                                                                                                                                                                                                                                                                                  |
+| `prefix`                       | `string`       | No       | Optional. Prefix of postgres resource name. Not used if name is provided.                                                                                                                                                                                                                                                                                                                    |
+| `name`                         | `string`       | No       | Optional. The name of the Postgresql DB resources. Character limit: 3-44, valid characters: lowercase letters, numbers, and hyphens. It must me unique across Azure.                                                                                                                                                                                                                         |
+| `serverName`                   | `string`       | No       | Optional. Override the name of the server.                                                                                                                                                                                                                                                                                                                                                   |
+| `tags`                         | `object`       | No       | Optional. Deployment tags.                                                                                                                                                                                                                                                                                                                                                                   |
+| `administratorLogin`           | `string`       | Yes      | Required. The administrator username of the server. Can only be specified when createMode is 'Default'.                                                                                                                                                                                                                                                                                      |
+| `administratorLoginPassword`   | `securestring` | Yes      | Required. The administrator login password for the SQL server. Can only be specified when the server is being created.                                                                                                                                                                                                                                                                       |
+| `backupRetentionDays`          | `int`          | No       | Optional. The number of days a backup is retained.                                                                                                                                                                                                                                                                                                                                           |
+| `createMode`                   | `string`       | No       | Optional. The mode to create a new server.                                                                                                                                                                                                                                                                                                                                                   |
+| `databases`                    | `array`        | No       | Optional. List of databases to create on server.                                                                                                                                                                                                                                                                                                                                             |
+| `firewallRules`                | `array`        | No       | Optional. List of firewall rules to create on server.                                                                                                                                                                                                                                                                                                                                        |
+| `virtualNetworkRules`          | `array`        | No       | Optional. List of virtualNetworkRules to create on postgres server.                                                                                                                                                                                                                                                                                                                          |
+| `infrastructureEncryption`     | `string`       | No       | Optional. Status showing whether the server enabled infrastructure encryption.                                                                                                                                                                                                                                                                                                               |
+| `minimalTlsVersion`            | `string`       | No       | Optional. Enforce a minimal Tls version for the server.                                                                                                                                                                                                                                                                                                                                      |
+| `publicNetworkAccess`          | `string`       | No       | Optional. Whether or not public network access is allowed for this server.                                                                                                                                                                                                                                                                                                                   |
+| `version`                      | `string`       | No       | Optional. The version of the PostgreSQL server.                                                                                                                                                                                                                                                                                                                                              |
+| `privateEndpoints`             | `array`        | No       | Optional. List of privateEndpoints to create on postgres server.                                                                                                                                                                                                                                                                                                                             |
+| `geoRedundantBackup`           | `string`       | No       | Optional. Enable or disable geo-redundant backups. It requires at least a GeneralPurpose or MemoryOptimized skuTier.                                                                                                                                                                                                                                                                         |
+| `restorePointInTime`           | `string`       | No       | Optional. Restore point creation time (ISO8601 format), specifying the time to restore from.                                                                                                                                                                                                                                                                                                 |
+| `serverConfigurations`         | `array`        | No       | Optional. List of server configurations to create on server.                                                                                                                                                                                                                                                                                                                                 |
+| `skuName`                      | `string`       | No       | Optional. The name of the sku, typically, tier + family + cores, e.g. B_Gen4_1, GP_Gen5_8.                                                                                                                                                                                                                                                                                                   |
+| `skuCapacity`                  | `int`          | No       | Optional. Azure database for Postgres compute capacity in vCores (2,4,8,16,32)                                                                                                                                                                                                                                                                                                               |
+| `SkuSizeMB`                    | `int`          | No       | Optional. Azure database for Postgres Sku Size                                                                                                                                                                                                                                                                                                                                               |
+| `SkuTier`                      | `string`       | No       | Optional. Azure database for Postgres pricing tier                                                                                                                                                                                                                                                                                                                                           |
+| `skuFamily`                    | `string`       | No       | Optional. Azure database for Postgres sku family                                                                                                                                                                                                                                                                                                                                             |
+| `storageSizeGB`                | `int`          | No       | Optional. Storage size for Postgresql Single Server. Expressed in Mebibytes. Cannot be scaled down.                                                                                                                                                                                                                                                                                          |
+| `sourceServerResourceId`       | `string`       | No       | Optional. The source server resource id to restore from. It's required when "createMode" is "GeoRestore" or "Replica" or "PointInTimeRestore".                                                                                                                                                                                                                                               |
+| `enableStorageAutogrow`        | `bool`         | No       | Optional. Auto grow of storage.                                                                                                                                                                                                                                                                                                                                                              |
+| `roleAssignments`              | `array`        | No       | Array of role assignment objects that contain the "roleDefinitionIdOrName" and "principalId" to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, provide either the display name of the role definition, or its fully qualified ID in the following format: "/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11" |
+| `diagnosticSettingsProperties` | `object`       | No       | Provide postgres diagnostic settings properties.                                                                                                                                                                                                                                                                                                                                             |
 
 ## Outputs
 
-| Name              | Type   | Description                                                        |
-| :---------------- | :----: | :----------------------------------------------------------------- |
-| resourceGroupName | string | The resource group the Postgresql Single Server was deployed into. |
-| fqdn              | string | FQDN of the generated Postgresql Single Server                     |
-| id                | string | The resource ID of the Postgresql Single Server.                   |
+| Name                | Type     | Description                                                        |
+| :------------------ | :------: | :----------------------------------------------------------------- |
+| `resourceGroupName` | `string` | The resource group the Postgresql Single Server was deployed into. |
+| `fqdn`              | `string` | FQDN of the generated Postgresql Single Server                     |
+| `id`                | `string` | The resource ID of the Postgresql Single Server.                   |
 
 ## Examples
 
@@ -54,12 +61,12 @@ Deploy a Postgresql Single Server with minimal parameters
 @secure
 param administratorLoginPassword string
 
-module postgresqlSingleServer 'br/public:storage/postgresql-single-server:1.0.1' = {
+module postgresqlSingleServer 'br/public:storage/postgresql-single-server:1.1.2' = {
   name: 'postgresqlSingleServer'
   params: {
-    sqlServerAdministratorLogin: 'testlogin'
-    sqlServerAdministratorPassword: administratorLoginPassword
-    sqlServerName: 'postgresql-${uniqueString(deployment().name, location)}'
+    prefix: 'postgresql-test01'
+    administratorLogin: 'testlogin'
+    administratorLoginPassword: administratorLoginPassword
   }
 }
 ```
@@ -72,25 +79,28 @@ Deploy a Postgresql Single Server primary + replica set
 @secure
 param administratorLoginPassword string
 
-module primaryPostgresqlServer 'br/public:storage/postgresql-single-server:1.0.1' = {
+module primaryPostgresqlServer 'br/public:storage/postgresql-single-server:1.1.2' = {
   name: 'primary-server'
   params: {
+    prefix: 'primary-server'
     location: location
-    sqlServerAdministratorLogin: 'testlogin'
-    sqlServerAdministratorPassword: administratorLoginPassword
-    sqlServerName: 'primary-server-${uniqueString(deployment().name, location)}'
+    administratorLogin: 'testlogin'
+    administratorLoginPassword: administratorLoginPassword
   }
 }
 
-module replicaPostgresqlServer 'br/public:storage/postgresql-single-server:1.0.1' = {
+module replicaPostgresqlServer 'br/public:storage/postgresql-single-server:1.1.2' = {
   name: 'replica-server'
+  dependsOn: [
+    primaryPostgresqlServer
+  ]
   params: {
+    prefix: 'replica-server'
     location: location
     createMode: 'Replica'
     sourceServerResourceId: primaryPostgresqlServer.outputs.id
-    sqlServerAdministratorLogin: 'testlogin'
-    sqlServerAdministratorPassword: administratorLoginPassword
-    sqlServerName: 'replica-server-${uniqueString(deployment().name, location)}'
+    administratorLogin: 'testlogin'
+    administratorLoginPassword: administratorLoginPassword
   }
 }
 ```
@@ -129,7 +139,7 @@ var firewallRules = [
   }
 ]
 
-var sqlServerConfigurations = [
+var serverConfigurations = [
   {
     name: 'backend_flush_after'
     value: '256'
@@ -144,18 +154,18 @@ var sqlServerConfigurations = [
   }
 ]
 
-module postgresqlSingleServer 'br/public:storage/postgresql-single-server:1.0.1' = {
+module postgresqlSingleServer 'br/public:storage/postgresql-single-server:1.1.2' = {
   name: 'postgresqlSingleServer'
   params: {
+    prefix: 'postgresql-test02'
     location: location
-    publicNetworkAccess: true
+    publicNetworkAccess: 'Enabled'
     tags: tags
-    sqlServerAdministratorLogin: 'testlogin'
-    sqlServerAdministratorPassword: administratorLoginPassword
-    sqlServerName: 'postgresql-${uniqueString(deployment().name, location)}'
+    administratorLogin: 'testlogin'
+    administratorLoginPassword: administratorLoginPassword
     databases: databases
     firewallRules: firewallRules
-    sqlServerConfigurations: sqlServerConfigurations
+    serverConfigurations: serverConfigurations
   }
 }
 ```

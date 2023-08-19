@@ -2,7 +2,7 @@
 
 A Deployment Script that introduces a delay to the deployment process.
 
-## Description
+## Details
 
 When deploying Azure services together, it is sometimes necessary to introduce delays into the deployment to allow metadata time to propagate. This module can be declared, and referenced explicitly in the dependsOn properties of other Bicep resources in order to delay the resource deployment.
 
@@ -10,6 +10,7 @@ When deploying Azure services together, it is sometimes necessary to introduce d
 
 | Name          | Type     | Required | Description                             |
 | :------------ | :------: | :------: | :-------------------------------------- |
+| `scriptName`  | `string` | No       | The delay script resource name          |
 | `waitSeconds` | `int`    | Yes      | The number of seconds to wait for       |
 | `location`    | `string` | No       | The location to deploy the resources to |
 
@@ -26,7 +27,7 @@ When deploying Azure services together, it is sometimes necessary to introduce d
 param location string = resourceGroup().location
 param waitSeconds int =  60
 
-module delayDeployment 'br/public:deployment-scripts/wait:1.0.1' = {
+module delayDeployment 'br/public:deployment-scripts/wait:1.1.1' = {
   name: 'delayDeployment'
   params: {
     waitSeconds: waitSeconds
