@@ -4,26 +4,35 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.19.5.34762",
-      "templateHash": "2722660321014642989"
+      "version": "0.20.4.51522",
+      "templateHash": "10913144873978900801"
     },
     "name": "Log Analytics Workspace",
     "description": "This module deploys Log Analytics workspace and optionally available integrations.",
     "owner": "RahulTipole-Microsoft"
   },
   "parameters": {
+    "prefix": {
+      "type": "string",
+      "defaultValue": "log",
+      "metadata": {
+        "description": "Optional. Prefix of Log Analytics Workspace Resource Name.This param is ignored when name is provided."
+      }
+    },
     "name": {
       "type": "string",
-      "metadata": {
-        "description": "Required. Name of the Log Analytics Workspace."
-      },
+      "defaultValue": "[take(format('{0}{1}', parameters('prefix'), uniqueString(resourceGroup().id, subscription().id)), 63)]",
+      "minLength": 4,
       "maxLength": 63,
-      "minLength": 4
+      "metadata": {
+        "description": "Optional. Name of the Log Analytics Workspace."
+      }
     },
     "location": {
       "type": "string",
+      "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Required. Define the Azure Location that the Log Analytics Workspace should be created within."
+        "description": "Optional. Define the Azure Location that the Log Analytics Workspace should be created within."
       }
     },
     "tags": {
@@ -36,9 +45,6 @@
     "skuName": {
       "type": "string",
       "defaultValue": "PerGB2018",
-      "metadata": {
-        "description": "Optional. sku of Log Analytics Workspace. Default set to PerGB2018"
-      },
       "allowedValues": [
         "CapacityReservation",
         "Free",
@@ -48,14 +54,14 @@
         "Premium",
         "Standalone",
         "Standard"
-      ]
+      ],
+      "metadata": {
+        "description": "Optional. sku of Log Analytics Workspace. Default set to PerGB2018"
+      }
     },
     "retentionInDays": {
       "type": "int",
       "defaultValue": 30,
-      "metadata": {
-        "description": "Optional. The workspace data retention in days. Default set to 30"
-      },
       "allowedValues": [
         30,
         31,
@@ -67,30 +73,33 @@
         550,
         730
       ],
+      "minValue": 30,
       "maxValue": 730,
-      "minValue": 30
+      "metadata": {
+        "description": "Optional. The workspace data retention in days. Default set to 30"
+      }
     },
     "publicNetworkAccessForIngestion": {
       "type": "string",
       "defaultValue": "Enabled",
-      "metadata": {
-        "description": "Optional. The network access type for operating on the Log Analytics Workspace. By default it is Enabled"
-      },
       "allowedValues": [
         "Enabled",
         "Disabled"
-      ]
+      ],
+      "metadata": {
+        "description": "Optional. The network access type for operating on the Log Analytics Workspace. By default it is Enabled"
+      }
     },
     "publicNetworkAccessForQuery": {
       "type": "string",
       "defaultValue": "Enabled",
-      "metadata": {
-        "description": "Optional. The network access type for operating on the Log Analytics Workspace. By default it is Enabled"
-      },
       "allowedValues": [
         "Enabled",
         "Disabled"
-      ]
+      ],
+      "metadata": {
+        "description": "Optional. The network access type for operating on the Log Analytics Workspace. By default it is Enabled"
+      }
     },
     "dailyQuotaGb": {
       "type": "int",
