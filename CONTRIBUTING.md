@@ -88,7 +88,7 @@ output name string = name
 output id string = resource.id
 ```
 
-We try to maintain the consistencies demostrated above.
+We try to maintain the consistencies demonstrated above.
 
 Each template should include the following 3 parameters: `location`, `prefix` and `name`; and following 2 outputs: `name` and `id`.
 
@@ -103,9 +103,9 @@ Each template should include the following 3 parameters: `location`, `prefix` an
 - The `name` output should link to the `name` parameter.
 - THe `id` output should link to the main resource of the deployment. Additional ID parameters may be provided.
 
-##### Zone Redudancy
+##### Zone Redundancy
 
-Including an option to enable Zone Redudancy is recommended, but not required. When it is included, it should be enabled using the following parameter.
+Including an option to enable Zone Redundancy is recommended, but not required. When it is included, it should be enabled using the following parameter.
 
 ```bicep
 @description('Flag to indicate whether or not this region is an AvailabilityZone region')
@@ -290,7 +290,7 @@ If your change is non-breaking but does not require updating the MINOR version, 
 
 ## Validating module files
 
-> Before running the command, don't forget to run `generate` to ensure all files are up-to-date.
+> Before running the command, don't forget to run `brm generate` to ensure all files are up-to-date.
 
 You may use the Bicep registry module tool to validate the contents of the registry module files. To do so, invoke the follow command from the module folder:
 
