@@ -31,7 +31,7 @@ jobs:
     needs: get-module-to-validate
     if: needs.get-module-to-validate.outputs.module_dir
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }} # A PAT must be used to re-trigger workflows after commit. This PAT should NOT have the workflow scope.
 

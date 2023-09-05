@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.19.5.34762",
-      "templateHash": "10685231688004622463"
+      "version": "0.20.4.51522",
+      "templateHash": "12705091931520921510"
     },
     "name": "CognitiveServices",
     "description": "This module deploys CognitiveServices (Microsoft.CognitiveServices/accounts) and optionally available integrations.",
@@ -53,11 +53,11 @@
     "name": {
       "type": "string",
       "defaultValue": "[take(format('{0}-{1}-{2}', parameters('prefix'), parameters('kind'), uniqueString(resourceGroup().id, parameters('location'))), 64)]",
+      "minLength": 2,
+      "maxLength": 64,
       "metadata": {
         "description": "The name of the Cognitive Service."
-      },
-      "maxLength": 64,
-      "minLength": 2
+      }
     },
     "tags": {
       "type": "object",
@@ -132,14 +132,14 @@
     "lock": {
       "type": "string",
       "defaultValue": "NotSpecified",
-      "metadata": {
-        "description": "Specify the type of lock on Cosmos DB account resource."
-      },
       "allowedValues": [
         "CanNotDelete",
         "NotSpecified",
         "ReadOnly"
-      ]
+      ],
+      "metadata": {
+        "description": "Specify the type of lock on Cosmos DB account resource."
+      }
     },
     "apiProperties": {
       "type": "object",
@@ -328,7 +328,7 @@
           },
           "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
           "cognitiveServiceName": {
-            "value": "[parameters('name')]"
+            "value": "[toLower(parameters('name'))]"
           }
         },
         "template": {
@@ -337,8 +337,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "14066904857233248241"
+              "version": "0.20.4.51522",
+              "templateHash": "8581926810814449607"
             }
           },
           "parameters": {
@@ -410,7 +410,10 @@
             }
           ]
         }
-      }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.CognitiveServices/accounts', toLower(parameters('name')))]"
+      ]
     },
     {
       "condition": "[not(equals(parameters('privateEndpoints'), createArray()))]",
@@ -439,8 +442,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "6983903683818437848"
+              "version": "0.20.4.51522",
+              "templateHash": "18056016311003016070"
             }
           },
           "parameters": {
@@ -535,7 +538,7 @@
       "metadata": {
         "description": "Resource Name"
       },
-      "value": "[parameters('name')]"
+      "value": "[toLower(parameters('name'))]"
     },
     "id": {
       "type": "string",
