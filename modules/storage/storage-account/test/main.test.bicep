@@ -6,26 +6,26 @@ module file is a deployment test. Make sure at least one test is added.
 param location string = resourceGroup().location
 var uniqueName = uniqueString(resourceGroup().id, deployment().name, location)
 
-var maxNameLength = 23
-var uniqueStoragename = substring(replace(guid(uniqueName, resourceGroup().name, subscription().id), '-', ''), 0, maxNameLength)
+var maxNameLength = 24
+var uniqueStoragename = replace(guid(uniqueName), '-', '')
 var names = {
   test1: {
-    storage: '1${uniqueStoragename}'
+    storage: take('st1${uniqueStoragename}', maxNameLength)
   }
   test2: {
-    storage: '2${uniqueStoragename}'
+    storage: take('st2${uniqueStoragename}', maxNameLength)
     containers: [ 'test2container1', 'test2container2' ]
   }
   test3d1: {
-    storage: take('3dest1${uniqueStoragename}', 24)
+    storage: take('st3dest1${uniqueStoragename}', maxNameLength)
     containers: [ 'destinationcontainer1' ]
   }
   test3d2: {
-    storage: take('3dest2${uniqueStoragename}', 24)
+    storage: take('st3dest2${uniqueStoragename}', maxNameLength)
     containers: [ 'destinationcontainer2' ]
   }
   test3s: {
-    storage: take('3sour${uniqueStoragename}', 24)
+    storage: take('st3sour${uniqueStoragename}', maxNameLength)
     containers: [ 'sourcecontainer1', 'sourcecontainer2' ]
   }
 }
