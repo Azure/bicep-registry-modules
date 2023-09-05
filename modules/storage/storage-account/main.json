@@ -6,8 +6,8 @@
     "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
     "_generator": {
       "name": "bicep",
-      "version": "0.19.5.34762",
-      "templateHash": "16070854840775850972"
+      "version": "0.20.4.51522",
+      "templateHash": "15934104031067333572"
     },
     "name": "Azure Storage Account",
     "description": "This Bicep module creates a Storage Account with zone-redundancy, encryption, virtual network access, and TLS version.",
@@ -23,11 +23,11 @@
         "retentionInDays": {
           "type": "int",
           "nullable": true,
+          "minValue": 1,
+          "maxValue": 146000,
           "metadata": {
             "description": "Indicates the duration of changeFeed retention in days. A null value indicates an infinite retention of the change feed."
-          },
-          "maxValue": 146000,
-          "minValue": 1
+          }
         }
       },
       "metadata": {
@@ -46,11 +46,11 @@
         "days": {
           "type": "int",
           "nullable": true,
+          "minValue": 1,
+          "maxValue": 365,
           "metadata": {
             "description": "Indicates the number of days that the deleted item should be retained."
-          },
-          "maxValue": 365,
-          "minValue": 1
+          }
         },
         "enabled": {
           "type": "bool"
@@ -185,8 +185,8 @@
       "properties": {
         "name": {
           "type": "string",
-          "maxLength": 63,
-          "minLength": 3
+          "minLength": 3,
+          "maxLength": 63
         },
         "properties": {
           "$ref": "#/definitions/blobContainerPropertiesType",
@@ -763,8 +763,8 @@
       "properties": {
         "name": {
           "type": "string",
-          "maxLength": 128,
           "minLength": 1,
+          "maxLength": 128,
           "metadata": {
             "description": "This is the filter tag name, it can have 1 - 128 characters"
           }
@@ -1170,16 +1170,16 @@
     "kind": {
       "type": "string",
       "defaultValue": "StorageV2",
-      "metadata": {
-        "description": "Storage Account Kind."
-      },
       "allowedValues": [
         "BlobStorage",
         "BlockBlobStorage",
         "FileStorage",
         "Storage",
         "StorageV2"
-      ]
+      ],
+      "metadata": {
+        "description": "Storage Account Kind."
+      }
     },
     "identityType": {
       "type": "string",
@@ -1672,8 +1672,8 @@
             "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "15439854011093082303"
+              "version": "0.20.4.51522",
+              "templateHash": "57663108792819753"
             }
           },
           "definitions": {
@@ -1821,8 +1821,8 @@
             "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "15439854011093082303"
+              "version": "0.20.4.51522",
+              "templateHash": "57663108792819753"
             }
           },
           "definitions": {
@@ -1973,8 +1973,8 @@
             "_EXPERIMENTAL_WARNING": "Symbolic name support in ARM is experimental, and should be enabled for testing purposes only. Do not enable this setting for any production usage, or you may be unexpectedly broken at any time!",
             "_generator": {
               "name": "bicep",
-              "version": "0.19.5.34762",
-              "templateHash": "4189238903923397195"
+              "version": "0.20.4.51522",
+              "templateHash": "6354356391494568367"
             }
           },
           "parameters": {
