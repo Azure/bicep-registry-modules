@@ -161,6 +161,9 @@ module cognitiveServicePrivateEndpoint 'modules/privateEndpoint.bicep' = if (pri
     privateEndpoints: varPrivateEndpoints
     tags: tags
   }
+  dependsOn: [
+    cognitiveService
+  ]
 }
 
 resource cognitiveServiceLock 'Microsoft.Authorization/locks@2020-05-01' = if (lock != 'NotSpecified') {
