@@ -135,6 +135,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   }
 }
 
+@batchSize(1)
 resource cognitiveServiceDeployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = [for (deployment, index) in deployments: {
   name: '${name}-deploy-${index}'
   parent: cognitiveService
@@ -161,9 +162,6 @@ module cognitiveServicePrivateEndpoint 'modules/privateEndpoint.bicep' = if (pri
     privateEndpoints: varPrivateEndpoints
     tags: tags
   }
-  dependsOn: [
-    cognitiveService
-  ]
 }
 
 resource cognitiveServiceLock 'Microsoft.Authorization/locks@2020-05-01' = if (lock != 'NotSpecified') {

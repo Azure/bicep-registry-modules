@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "12705091931520921510"
+      "templateHash": "4658231277982806422"
     },
     "name": "CognitiveServices",
     "description": "This module deploys CognitiveServices (Microsoft.CognitiveServices/accounts) and optionally available integrations.",
@@ -278,7 +278,9 @@
     {
       "copy": {
         "name": "cognitiveServiceDeployment",
-        "count": "[length(parameters('deployments'))]"
+        "count": "[length(parameters('deployments'))]",
+        "mode": "serial",
+        "batchSize": 1
       },
       "type": "Microsoft.CognitiveServices/accounts/deployments",
       "apiVersion": "2023-05-01",
