@@ -150,7 +150,7 @@ module cognitiveServiceRbac 'modules/rbac.bicep' = [for (roleAssignment, index) 
     principalIds: roleAssignment.principalIds
     roleDefinitionIdOrName: roleAssignment.roleDefinitionIdOrName
     principalType: contains(roleAssignment, 'principalType') ? roleAssignment.principalType : ''
-    cognitiveServiceName: name
+    cognitiveServiceName: cognitiveService.name
   }
 }]
 
@@ -173,7 +173,7 @@ resource cognitiveServiceLock 'Microsoft.Authorization/locks@2020-05-01' = if (l
 }
 
 @description('Resource Name')
-output name string = name
+output name string = cognitiveService.name
 
 @description('Resource Id')
 output id string = cognitiveService.id
