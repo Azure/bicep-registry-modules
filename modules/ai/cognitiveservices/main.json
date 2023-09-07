@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "4658231277982806422"
+      "templateHash": "10408867290421167068"
     },
     "name": "CognitiveServices",
     "description": "This module deploys CognitiveServices (Microsoft.CognitiveServices/accounts) and optionally available integrations.",
@@ -68,7 +68,7 @@
     },
     "customSubDomainName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[parameters('name')]",
       "metadata": {
         "description": "A custom subdomain to reach the Cognitive Service."
       }
@@ -268,7 +268,7 @@
         "encryption": "[if(equals(parameters('encryption'), createObject()), null(), parameters('encryption'))]",
         "locations": "[if(equals(parameters('locations'), createObject()), null(), parameters('locations'))]",
         "migrationToken": "[parameters('migrationToken')]",
-        "networkAcls": "[parameters('networkAcls')]",
+        "networkAcls": "[if(equals(parameters('networkAcls'), createObject()), null(), parameters('networkAcls'))]",
         "publicNetworkAccess": "[if(parameters('publicNetworkAccess'), 'Enabled', 'Disabled')]",
         "restore": "[parameters('restore')]",
         "restrictOutboundNetworkAccess": "[parameters('restrictOutboundNetworkAccess')]",
@@ -284,8 +284,8 @@
       },
       "type": "Microsoft.CognitiveServices/accounts/deployments",
       "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', toLower(parameters('name')), format('{0}-deploy-{1}', parameters('name'), copyIndex()))]",
-      "sku": "[parameters('deployments')[copyIndex()].sku]",
+      "name": "[format('{0}/{1}', toLower(parameters('name')), parameters('deployments')[copyIndex()].name)]",
+      "sku": "[if(contains(parameters('deployments')[copyIndex()], 'sku'), parameters('deployments')[copyIndex()].sku, createObject('name', 'Standard', 'capacity', 20))]",
       "properties": "[parameters('deployments')[copyIndex()].properties]",
       "dependsOn": [
         "[resourceId('Microsoft.CognitiveServices/accounts', toLower(parameters('name')))]"
