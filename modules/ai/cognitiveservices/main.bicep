@@ -135,6 +135,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
   }
 }
 
+@batchSize(1)
 resource cognitiveServiceDeployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = [for (deployment, index) in deployments: {
   name: '${name}-deploy-${index}'
   parent: cognitiveService
