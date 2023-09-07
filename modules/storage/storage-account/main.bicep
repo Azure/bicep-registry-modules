@@ -16,6 +16,9 @@ param name string = '${prefix}${uniqueString(resourceGroup().id, location)}'
 @description('Tags to be applied to the Storage Account.')
 param tags { *: string } = {}
 
+@description('This toggle changes the default value of the sku parameter from Standard_LRS to Standard_ZRS.')
+param isZoneRedundant bool = false
+
 @description('Storage Account SKU.')
 @allowed([
   'Premium_LRS'
@@ -27,7 +30,7 @@ param tags { *: string } = {}
   'Standard_RAGZRS'
   'Standard_ZRS'
 ])
-param sku string = 'Standard_LRS'
+param sku string = isZoneRedundant ? 'Standard_ZRS' : 'Standard_LRS'
 
 var isPremium = contains(sku, 'Premium')
 

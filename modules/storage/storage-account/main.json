@@ -7,7 +7,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.20.4.51522",
-      "templateHash": "15934104031067333572"
+      "templateHash": "14407591854696997315"
     },
     "name": "Azure Storage Account",
     "description": "This Bicep module creates a Storage Account with zone-redundancy, encryption, virtual network access, and TLS version.",
@@ -1150,9 +1150,16 @@
         "description": "Tags to be applied to the Storage Account."
       }
     },
+    "isZoneRedundant": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "This toggle changes the default value of the sku parameter from Standard_LRS to Standard_ZRS."
+      }
+    },
     "sku": {
       "type": "string",
-      "defaultValue": "Standard_LRS",
+      "defaultValue": "[if(parameters('isZoneRedundant'), 'Standard_ZRS', 'Standard_LRS')]",
       "allowedValues": [
         "Premium_LRS",
         "Premium_ZRS",
