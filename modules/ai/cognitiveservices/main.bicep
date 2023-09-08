@@ -24,7 +24,7 @@ param name string = take('${prefix}-${kind}-${uniqueString(resourceGroup().id, l
 param tags object = {}
 
 @description('A custom subdomain to reach the Cognitive Service.')
-param customSubDomainName string = ''
+param customSubDomainName string = name
 
 @description('The Public Network Access setting of the Cognitive Service. When false, only requests from Private Endpoints can access it.')
 param publicNetworkAccess bool = true
@@ -127,7 +127,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
     encryption: encryption == {} ? null : encryption
     locations: locations == {} ? null : locations
     migrationToken: migrationToken
-    networkAcls: networkAcls
+    networkAcls: networkAcls == {} ? null : networkAcls
     publicNetworkAccess: publicNetworkAccess ? 'Enabled' : 'Disabled'
     restore: restore
     restrictOutboundNetworkAccess: restrictOutboundNetworkAccess
@@ -137,9 +137,12 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
 
 @batchSize(1)
 resource cognitiveServiceDeployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = [for (deployment, index) in deployments: {
-  name: '${name}-deploy-${index}'
+  name: deployment.name
   parent: cognitiveService
-  sku: deployment.sku
+  sku: contains(deployment, 'sku') ? deployment.sku : {
+    name: 'Standard'
+    capacity: 20
+  }
   properties: deployment.properties
 }]
 
