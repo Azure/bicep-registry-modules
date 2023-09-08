@@ -60,7 +60,7 @@ jobs:
           default_bump: false
 
       - name: Update Version
-        if: steps.tag_version.outputs.release_type
+        if: steps.tag_version.outputs.release_type && steps.tag_version.outputs.new_version != '0.0.0'
         shell: bash
         env:
           OLD_VERSION: ${{ steps.tag_version.outputs.previous_version }}
