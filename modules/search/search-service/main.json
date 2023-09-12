@@ -1,15 +1,48 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.20.4.51522",
-      "templateHash": "7630531587902010603"
+      "version": "0.21.1.54444",
+      "templateHash": "1972298591973994192"
     },
     "name": "Azure Cognitive Search",
     "description": "Bicep module for simplified deployment of Azure Cognitive Search.",
     "owner": "jong"
+  },
+  "definitions": {
+    "authOptionsType": {
+      "type": "object",
+      "properties": {
+        "aadOrApiKey": {
+          "$ref": "#/definitions/aadOrApiKeyType",
+          "nullable": true
+        },
+        "apiKeyOnly": {
+          "type": "object",
+          "nullable": true
+        }
+      }
+    },
+    "aadOrApiKeyType": {
+      "type": "object",
+      "properties": {
+        "aadAuthFailureMode": {
+          "$ref": "#/definitions/aadAuthFailureModeType",
+          "nullable": true
+        }
+      }
+    },
+    "aadAuthFailureModeType": {
+      "type": "string",
+      "allowedValues": [
+        "http401WithBearerChallenge",
+        "http403"
+      ],
+      "nullable": true
+    }
   },
   "parameters": {
     "prefix": {
@@ -52,8 +85,8 @@
       }
     },
     "authOptions": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/authOptionsType",
+      "nullable": true,
       "metadata": {
         "description": "AuthOptions of the Azure Cognitive Search Resource"
       }
@@ -140,8 +173,8 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "search": {
       "type": "Microsoft.Search/searchServices",
       "apiVersion": "2021-04-01-preview",
       "name": "[parameters('name')]",
@@ -164,7 +197,7 @@
       },
       "sku": "[parameters('sku')]"
     }
-  ],
+  },
   "outputs": {
     "id": {
       "type": "string",

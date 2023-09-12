@@ -21,8 +21,19 @@ param sku object = {
   name: 'standard'
 }
 
+type authOptionsType = {
+  aadOrApiKey: aadOrApiKeyType?
+  apiKeyOnly: object?
+}
+
+type aadOrApiKeyType = {
+  aadAuthFailureMode: aadAuthFailureModeType?
+}
+
+type aadAuthFailureModeType = 'http401WithBearerChallenge' | 'http403'
+
 @description('AuthOptions of the Azure Cognitive Search Resource')
-param authOptions object = {}
+param authOptions authOptionsType?
 
 @description('DisableLocalAuth of the Azure Cognitive Search Resource')
 param disableLocalAuth bool = false

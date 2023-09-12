@@ -45,7 +45,7 @@ Deploys a Azure Cognitive Search Service
 ```
 param location string = 'eastus'
 
-module searchService 'br/public:search/search-service:1.0.0' = {
+module searchService 'br/public:search/search-service:1.0.1' = {
   name: 'mySearchService'
   params: {
     location: location

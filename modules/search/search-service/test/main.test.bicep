@@ -9,6 +9,11 @@ module test0 '../main.bicep' = {
     sku: {
       name: 'standard'
     }
+    authOptions: {
+      aadOrApiKey: {
+        aadAuthFailureMode: 'http401WithBearerChallenge'
+      }
+    }
     semanticSearch: 'free'
   }
 }
