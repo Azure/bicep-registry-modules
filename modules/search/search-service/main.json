@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "1972298591973994192"
+      "templateHash": "12462588077820873562"
     },
     "name": "Azure Cognitive Search",
     "description": "Bicep module for simplified deployment of Azure Cognitive Search.",
@@ -24,6 +24,9 @@
           "type": "object",
           "nullable": true
         }
+      },
+      "metadata": {
+        "description": "aadOrApiKey indicates that either the API key or an access token from Azure Active Directory can be used for authentication. apiKeyOnly Indicates that only the API key needs to be used for authentication."
       }
     },
     "aadOrApiKeyType": {
@@ -33,6 +36,9 @@
           "$ref": "#/definitions/aadAuthFailureModeType",
           "nullable": true
         }
+      },
+      "metadata": {
+        "description": "The type to use for aadOrApiKey"
       }
     },
     "aadAuthFailureModeType": {
@@ -41,7 +47,9 @@
         "http401WithBearerChallenge",
         "http403"
       ],
-      "nullable": true
+      "metadata": {
+        "description": "The type to use for aadAuthFailureMode"
+      }
     }
   },
   "parameters": {
@@ -86,7 +94,7 @@
     },
     "authOptions": {
       "$ref": "#/definitions/authOptionsType",
-      "nullable": true,
+      "defaultValue": {},
       "metadata": {
         "description": "AuthOptions of the Azure Cognitive Search Resource"
       }
