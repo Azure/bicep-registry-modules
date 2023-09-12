@@ -21,22 +21,25 @@ param sku object = {
   name: 'standard'
 }
 
-@description('aadOrApiKey indicates that either the API key or an access token from Azure Active Directory can be used for authentication. apiKeyOnly Indicates that only the API key needs to be used for authentication.')
-type authOptionsType = {
-  aadOrApiKey: aadOrApiKeyType?
-  apiKeyOnly: object?
-}
+// @description('aadOrApiKey indicates that either the API key or an access token from Azure Active Directory can be used for authentication. apiKeyOnly Indicates that only the API key needs to be used for authentication.')
+// type authOptionsType = {
+//   aadOrApiKey: aadOrApiKeyType?
+//   apiKeyOnly: object?
+// }
 
-@description('The type to use for aadOrApiKey')
-type aadOrApiKeyType = {
-  aadAuthFailureMode: aadAuthFailureModeType?
-}
+// @description('The type to use for aadOrApiKey')
+// type aadOrApiKeyType = {
+//   aadAuthFailureMode: aadAuthFailureModeType?
+// }
 
-@description('The type to use for aadAuthFailureMode')
-type aadAuthFailureModeType = 'http401WithBearerChallenge' | 'http403'
+// @description('The type to use for aadAuthFailureMode')
+// type aadAuthFailureModeType = 'http401WithBearerChallenge' | 'http403'
+
+// @description('AuthOptions of the Azure Cognitive Search Resource')
+// param authOptions authOptionsType = {}
 
 @description('AuthOptions of the Azure Cognitive Search Resource')
-param authOptions authOptionsType = {}
+param authOptions object = {}
 
 @description('DisableLocalAuth of the Azure Cognitive Search Resource')
 param disableLocalAuth bool = false

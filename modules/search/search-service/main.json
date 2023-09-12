@@ -1,56 +1,15 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "12462588077820873562"
+      "templateHash": "16029320630204173564"
     },
     "name": "Azure Cognitive Search",
     "description": "Bicep module for simplified deployment of Azure Cognitive Search.",
     "owner": "jong"
-  },
-  "definitions": {
-    "authOptionsType": {
-      "type": "object",
-      "properties": {
-        "aadOrApiKey": {
-          "$ref": "#/definitions/aadOrApiKeyType",
-          "nullable": true
-        },
-        "apiKeyOnly": {
-          "type": "object",
-          "nullable": true
-        }
-      },
-      "metadata": {
-        "description": "aadOrApiKey indicates that either the API key or an access token from Azure Active Directory can be used for authentication. apiKeyOnly Indicates that only the API key needs to be used for authentication."
-      }
-    },
-    "aadOrApiKeyType": {
-      "type": "object",
-      "properties": {
-        "aadAuthFailureMode": {
-          "$ref": "#/definitions/aadAuthFailureModeType",
-          "nullable": true
-        }
-      },
-      "metadata": {
-        "description": "The type to use for aadOrApiKey"
-      }
-    },
-    "aadAuthFailureModeType": {
-      "type": "string",
-      "allowedValues": [
-        "http401WithBearerChallenge",
-        "http403"
-      ],
-      "metadata": {
-        "description": "The type to use for aadAuthFailureMode"
-      }
-    }
   },
   "parameters": {
     "prefix": {
@@ -93,7 +52,7 @@
       }
     },
     "authOptions": {
-      "$ref": "#/definitions/authOptionsType",
+      "type": "object",
       "defaultValue": {},
       "metadata": {
         "description": "AuthOptions of the Azure Cognitive Search Resource"
@@ -181,8 +140,8 @@
       }
     }
   },
-  "resources": {
-    "search": {
+  "resources": [
+    {
       "type": "Microsoft.Search/searchServices",
       "apiVersion": "2021-04-01-preview",
       "name": "[parameters('name')]",
@@ -205,7 +164,7 @@
       },
       "sku": "[parameters('sku')]"
     }
-  },
+  ],
   "outputs": {
     "id": {
       "type": "string",
