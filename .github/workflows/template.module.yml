@@ -17,7 +17,6 @@ on:
         required: true
 
 env:
-  variablesPath: 'settings.yml'
   AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
   ARM_SUBSCRIPTION_ID: '${{ secrets.ARM_SUBSCRIPTION_ID }}'
   ARM_MGMTGROUP_ID: '${{ secrets.ARM_MGMTGROUP_ID }}'
@@ -38,9 +37,7 @@ jobs:
   #       with:
   #         fetch-depth: 0
   #     - name: Set environment
-  #       uses: ./.github/actions/templates/setEnvironment
-  #       with:
-  #         variablesPath: ${{ env.variablesPath }}
+  #       uses: ./.github/actions/templates/setEnvironment}
   #     - name: 'Run tests'
   #       uses: ./.github/actions/templates/validateModulePester
   #       with:
@@ -63,8 +60,6 @@ jobs:
   #       uses: actions/checkout@v3
   #     - name: Set environment
   #       uses: ./.github/actions/templates/setEnvironment
-  #       with:
-  #         variablesPath: ${{ env.variablesPath }}
   #     - name: Set PSRule validation
   #       uses: ./.github/actions/templates/validateModulePSRule
   #       with:
@@ -97,13 +92,12 @@ jobs:
       - name: Set environment
         uses: ./.github/actions/templates/setEnvironment
         with:
-          variablesPath: ${{ env.variablesPath }}
           removeDeployment: '${{ fromJson(inputs.workflowInput).removeDeployment }}'
       - name: 'Using test file [${{ matrix.moduleTestFilePaths }}]'
         uses: ./.github/actions/templates/validateModuleDeployment
         with:
           templateFilePath: '${{ inputs.modulePath }}/${{ matrix.moduleTestFilePaths }}'
-          location: '${{ env.location }}'
+          location: 'WestEurope'
           subscriptionId: '${{ secrets.ARM_SUBSCRIPTION_ID }}'
           managementGroupId: '${{ secrets.ARM_MGMTGROUP_ID }}'
           removeDeployment: '${{ fromJson(inputs.workflowInput).removeDeployment }}'
@@ -124,20 +118,8 @@ jobs:
   #         fetch-depth: 0
   #     - name: Set environment
   #       uses: ./.github/actions/templates/setEnvironment
-  #       with:
-  #         variablesPath: ${{ env.variablesPath }}
   #     - name: 'Publishing'
   #       uses: ./.github/actions/templates/publishModule
   #       with:
   #         templateFilePath: '${{ inputs.modulePath }}/main.bicep'
   #         subscriptionId: '${{ secrets.ARM_SUBSCRIPTION_ID }}'
-  #         templateSpecsRGName: '${{ env.templateSpecsRGName }}'
-  #         templateSpecsRGLocation: '${{ env.templateSpecsRGLocation }}'
-  #         templateSpecsDescription: '${{ env.templateSpecsDescription }}'
-  #         templateSpecsDoPublish: '${{ env.templateSpecsDoPublish }}'
-  #         bicepRegistryName: '${{ env.bicepRegistryName }}'
-  #         bicepRegistryRGName: '${{ env.bicepRegistryRGName }}'
-  #         bicepRegistryRgLocation: '${{ env.bicepRegistryRgLocation }}'
-  #         bicepRegistryDoPublish: '${{ env.bicepRegistryDoPublish }}'
-  #         publishLatest: '${{ env.publishLatest }}'
-  #         useApiSpecsAlignedName: '${{ env.useApiSpecsAlignedName }}'
