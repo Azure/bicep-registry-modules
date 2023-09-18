@@ -1,0 +1,143 @@
+name: '.Template - Module Pipeline'
+
+on:
+  workflow_call:
+    inputs:
+      workflowInput:
+        type: string
+        description: 'Input from the workflow caller in JSON format'
+        required: true
+      moduleTestFilePaths:
+        type: string
+        description: 'List of relative path to the module test files in JSON format'
+        required: true
+      modulePath:
+        type: string
+        description: 'Relative path to the module folder'
+        required: true
+
+env:
+  variablesPath: 'settings.yml'
+  AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+  ARM_SUBSCRIPTION_ID: '${{ secrets.ARM_SUBSCRIPTION_ID }}'
+  ARM_MGMTGROUP_ID: '${{ secrets.ARM_MGMTGROUP_ID }}'
+  ARM_TENANT_ID: '${{ secrets.ARM_TENANT_ID }}'
+  TOKEN_NAMEPREFIX: '${{ secrets.TOKEN_NAMEPREFIX }}'
+
+jobs:
+  #########################
+  #   Static validation   #
+  #########################
+  job_module_static_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+    name: 'Static validation'
+    runs-on: ubuntu-20.04
+    if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set environment
+        uses: ./.github/actions/templates/setEnvironment
+        with:
+          variablesPath: ${{ env.variablesPath }}
+      - name: 'Run tests'
+        uses: ./.github/actions/templates/validateModulePester
+        with:
+          modulePath: '${{ inputs.modulePath }}'
+          moduleTestFilePath: '${{ env.moduleTestFilePath }}'
+
+  #########################
+  #   PSRule validation   #
+  #########################
+  job_psrule_test: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+    name: 'PSRule validation'
+    runs-on: ubuntu-20.04
+    if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        moduleTestFilePaths: ${{ fromJson(inputs.moduleTestFilePaths) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set environment
+        uses: ./.github/actions/templates/setEnvironment
+        with:
+          variablesPath: ${{ env.variablesPath }}
+      - name: Set PSRule validation
+        uses: ./.github/actions/templates/validateModulePSRule
+        with:
+          templateFilePath: '${{ inputs.modulePath }}/${{ matrix.moduleTestFilePaths }}'
+          subscriptionId: '${{ secrets.ARM_SUBSCRIPTION_ID }}'
+          managementGroupId: '${{ secrets.ARM_MGMTGROUP_ID }}'
+
+  #############################
+  #   Deployment validation   #
+  #############################
+  job_module_deploy_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+    name: 'Deployment validation'
+    runs-on: ubuntu-20.04
+    if: |
+      !cancelled() &&
+      (fromJson(inputs.workflowInput)).deploymentValidation == 'true' &&
+      needs.job_module_static_validation.result != 'failure'
+    needs:
+      - job_module_static_validation
+      # - job_psrule_test # Ignoring dependency whilst PSRule gets bedded in, in this project
+    strategy:
+      fail-fast: false
+      matrix:
+        moduleTestFilePaths: ${{ fromJson(inputs.moduleTestFilePaths) }}
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set environment
+        uses: ./.github/actions/templates/setEnvironment
+        with:
+          variablesPath: ${{ env.variablesPath }}
+          removeDeployment: '${{ fromJson(inputs.workflowInput).removeDeployment }}'
+      - name: 'Using test file [${{ matrix.moduleTestFilePaths }}]'
+        uses: ./.github/actions/templates/validateModuleDeployment
+        with:
+          templateFilePath: '${{ inputs.modulePath }}/${{ matrix.moduleTestFilePaths }}'
+          location: '${{ env.location }}'
+          subscriptionId: '${{ secrets.ARM_SUBSCRIPTION_ID }}'
+          managementGroupId: '${{ secrets.ARM_MGMTGROUP_ID }}'
+          removeDeployment: '${{ fromJson(inputs.workflowInput).removeDeployment }}'
+
+  ##################
+  #   Publishing   #
+  ##################
+  job_publish_module: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+    name: 'Publishing'
+    runs-on: ubuntu-20.04
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || fromJson(inputs.workflowInput).prerelease == 'true'
+    needs:
+      - job_module_deploy_validation
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set environment
+        uses: ./.github/actions/templates/setEnvironment
+        with:
+          variablesPath: ${{ env.variablesPath }}
+      - name: 'Publishing'
+        uses: ./.github/actions/templates/publishModule
+        with:
+          templateFilePath: '${{ inputs.modulePath }}/main.bicep'
+          subscriptionId: '${{ secrets.ARM_SUBSCRIPTION_ID }}'
+          templateSpecsRGName: '${{ env.templateSpecsRGName }}'
+          templateSpecsRGLocation: '${{ env.templateSpecsRGLocation }}'
+          templateSpecsDescription: '${{ env.templateSpecsDescription }}'
+          templateSpecsDoPublish: '${{ env.templateSpecsDoPublish }}'
+          bicepRegistryName: '${{ env.bicepRegistryName }}'
+          bicepRegistryRGName: '${{ env.bicepRegistryRGName }}'
+          bicepRegistryRgLocation: '${{ env.bicepRegistryRgLocation }}'
+          bicepRegistryDoPublish: '${{ env.bicepRegistryDoPublish }}'
+          publishLatest: '${{ env.publishLatest }}'
+          useApiSpecsAlignedName: '${{ env.useApiSpecsAlignedName }}'

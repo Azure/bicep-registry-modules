@@ -1,0 +1,84 @@
+name: 'Network - PrivateEndpoints'
+
+on:
+  workflow_dispatch:
+    inputs:
+      staticValidation:
+        type: boolean
+        description: 'Execute static validation'
+        required: false
+        default: true
+      deploymentValidation:
+        type: boolean
+        description: 'Execute deployment validation'
+        required: false
+        default: true
+      removeDeployment:
+        type: boolean
+        description: 'Remove deployed module'
+        required: false
+        default: true
+      prerelease:
+        type: boolean
+        description: 'Publish prerelease module'
+        required: false
+        default: false
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/actions/templates/**'
+      - '.github/workflows/template.module.yml'
+      - '.github/workflows/ms.network.privateendpoints.yml'
+      - 'modules/network/private-endpoint/**'
+      - 'utilities/pipelines/**'
+      - '!utilities/pipelines/deploymentRemoval/**'
+      - '!*/**/README.md'
+
+env:
+  modulePath: 'modules/network/private-endpoint'
+  workflowPath: '.github/workflows/ms.network.privateendpoints.yml'
+
+concurrency:
+  group: ${{ github.workflow }}
+
+jobs:
+  ###########################
+  #   Initialize pipeline   #
+  ###########################
+  job_initialize_pipeline:
+    runs-on: ubuntu-20.04
+    name: 'Initialize pipeline'
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: 'Set input parameters to output variables'
+        id: get-workflow-param
+        uses: ./.github/actions/templates/getWorkflowInput
+        with:
+          workflowPath: '${{ env.workflowPath}}'
+      - name: 'Get parameter file paths'
+        id: get-module-test-file-paths
+        uses: ./.github/actions/templates/getModuleTestFiles
+        with:
+          modulePath: '${{ env.modulePath }}'
+    outputs:
+      workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
+      moduleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.moduleTestFilePaths }}
+      modulePath: '${{ env.modulePath }}'
+
+  ##############################
+  #   Call reusable workflow   #
+  ##############################
+  call-workflow-passing-data:
+    name: 'Module'
+    needs:
+      - job_initialize_pipeline
+    uses: ./.github/workflows/template.module.yml
+    with:
+      workflowInput: '${{ needs.job_initialize_pipeline.outputs.workflowInput }}'
+      moduleTestFilePaths: '${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}'
+      modulePath: '${{ needs.job_initialize_pipeline.outputs.modulePath}}'
+    secrets: inherit

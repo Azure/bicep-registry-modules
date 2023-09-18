@@ -1,0 +1,108 @@
+#########################################################
+## 'Set environment' Composite Action                   ##
+#########################################################
+##
+## This composite action contains the logic to read a YAML file containing a list (dictionary) of key-value pairs and convert each key as an environment variable.
+## Example YAML File content:
+## listName:
+##  key1: 'value1'
+##  key2: 'value2'
+#########################################################
+##
+##-------------------------------------------##
+## ACTION PARAMETERS                         ##
+##-------------------------------------------##
+##
+##   |==================================================================================================================================================================|
+##   | Parameter          | Required | Default | Description                                                                              | Example                     |
+##   |--------------------|----------|---------|------------------------------------------------------------------------------------------|-----------------------------|
+##   | variablesPath      | true     | ''      | The path to the YAML file that contains the key value pairs for environment variables    | './settings.yml'    |
+##   |==================================================================================================================================================================|
+##
+##---------------------------------------------##
+
+name: 'Set environment'
+description: 'Set environment'
+
+inputs:
+  variablesPath:
+    description: 'The path to the YAML file that contains the key value pairs for environment variables'
+    required: true
+  removeDeployment:
+    description: 'Set "true" to setup runner with PowerShell modules needed for custom resource removal'
+    default: 'true'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    # [Setup] task(s)
+    # ---------------
+    - name: 'Setup agent'
+      shell: pwsh
+      run: |
+        # Grouping task logs
+        Write-Output '::group::Setup agent'
+
+        Write-Verbose "Caller job id: ${{ github.job }}" -Verbose
+
+        # Load used functions
+        . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Set-EnvironmentOnAgent.ps1')
+
+        # Define PS modules to install on the runner
+        $modules = @(
+            @{ Name = 'Az.Accounts' },
+            @{ Name = 'Az.Resources' },
+            @{ Name = 'powershell-yaml'; Version = '0.4.2'}
+        )
+
+        # Additional PS modules need to be installed for the deployment validation removal step in case it is enabled
+        if (('${{ github.job}}' -eq 'job_module_deploy_validation') -and ('${{ inputs.removeDeployment}}' -eq 'true')) {
+          $modules += @(
+            @{ Name = 'Az.CognitiveServices' },
+            @{ Name = 'Az.Compute' },
+            @{ Name = 'Az.KeyVault' },
+            @{ Name = 'Az.MachineLearningServices' },
+            @{ Name = 'Az.Monitor' },
+            @{ Name = 'Az.OperationalInsights' },
+            @{ Name = 'Az.RecoveryServices' }
+          )
+        }
+
+        # Additional PS modules need to be installed for the publish job
+        if ('${{ github.job}}' -eq 'job_publish_module') {
+          $modules += @(
+            @{ Name = 'Az.ContainerRegistry' }
+          )
+        }
+
+        # Set agent up
+        Set-EnvironmentOnAgent -PSModules $modules
+
+        Write-Output '::endgroup::'
+
+    # [Set environment] task(s)
+    # ---------------
+    - name: 'Set environment variables'
+      id: set-env-variables
+      shell: pwsh
+      run: |
+        # Grouping task logs
+        Write-Output '::group::Set environment variables'
+
+        # Load used functions
+        . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Add-YamlListToFile.ps1')
+
+        $functionInput = @{
+          InputFilePath   = '${{ inputs.variablesPath }}'
+          ListName        = 'variables'
+          OutputFilePath  =  $Env:GITHUB_ENV
+        }
+
+        Write-Verbose "Invoke task with" -Verbose
+        Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+        # Convert YAML Variable File to Environment Variables
+        Add-YamlListToFile @functionInput
+
+        Write-Output '::endgroup::'

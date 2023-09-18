@@ -1,0 +1,97 @@
+#########################################################
+## 'Get workflow input' Composite Action               ##
+#########################################################
+##
+## This composite action contains the logic to read workflow runtime parameters and publih their value as a workflow output.
+## This is essential in case a module workflow was not triggered via the 'workflow_dispatch' method, so these runtime parameters will not be available to use when the workflow runs.
+## To solve this, the action reads the workflow file for the module, and looks for the default values of the workflow inputs and publishes them as an output, regardless of how the workflow was triggered.
+##
+## Currently publishes the runtime parameter(s):
+## - removeDeployment
+##
+#########################################################
+##
+##-------------------------------------------##
+## ACTION PARAMETERS                         ##
+##-------------------------------------------##
+##
+##   |===================================================================================================================================================================|
+##   | Parameter    | Required | Default | Description                                                                      | Example                                    |
+##   |--------------|----------|---------|----------------------------------------------------------------------------------|--------------------------------------------|
+##   | workflowPath | true     | ''      | The path to the workflow file used to retrieve default workflow input parameters | '.github/workflows/ms.keyvault.vaults.yml' |
+##   |===================================================================================================================================================================|
+##
+#########################################################
+##
+##----------------------------------------##
+## ACTION OUTPUTS                         ##
+##----------------------------------------##
+##
+##   |==========================================================================================|
+##   | Output        | Description                                                              |
+##   |---------------|--------------------------------------------------------------------------|
+##   | workflowInput | A table of all pipeline input parameters and their value in JSON format. |
+##   |==========================================================================================|
+##
+##---------------------------------------------##
+
+name: 'Get Workflow Input'
+description: 'Get Workflow Input'
+
+inputs:
+  workflowPath:
+    description: 'The path to the workflow file used to retrieve default workflow input parameters.'
+    required: true
+
+outputs:
+  workflowInput:
+    description: 'A table of all pipeline input parameters and their value in JSON format.'
+    value: ${{ steps.get-input-param-action.outputs.workflowInput }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Get workflow input parameters
+      id: get-input-param-action
+      run: |
+        # Grouping task logs
+        Write-Output '::group::Get workflow input parameters'
+
+        Write-Verbose "The workflow trigger is: ${{ github.event_name }}" -Verbose
+
+        # When running from workflow_dispatch event get input values
+        if ('${{ github.event_name }}' -eq 'workflow_dispatch') {
+          $parameters = '${{ toJSON(github.event.inputs) }}' | ConvertFrom-Json -AsHashTable
+
+          # Output values to be accessed by next jobs
+          $workflowInput = @{}
+          foreach($parameterName in $parameters.Keys) {
+            Write-Verbose ('Passing output [{0}] with value [{1}]' -f $parameterName, $parameters[$parameterName]) -Verbose
+            $workflowInput[$parameterName] = $parameters[$parameterName]
+          }
+          Write-Output ('{0}={1}' -f 'workflowInput', ($workflowInput | ConvertTo-Json -Compress)) >> $env:GITHUB_OUTPUT
+        }
+        # Otherwise retrieve default values
+        else {
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-GitHubWorkflowDefaultInput.ps1')
+
+          $functionInput = @{
+            workflowPath = '${{ inputs.workflowPath }}'
+          }
+
+          Write-Verbose "Invoke task with" -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+          $workflowParameters = Get-GitHubWorkflowDefaultInput @functionInput -Verbose
+
+          # Output values to be accessed by next jobs
+          $workflowInput = @{}
+          foreach($parameterName in $workflowParameters.Keys) {
+            Write-Verbose ('Passing output [{0}] with value [{1}]' -f $parameterName, $workflowParameters[$parameterName]) -Verbose
+            $workflowInput[$parameterName] = $workflowParameters[$parameterName].toString()
+          }
+          Write-Output ('{0}={1}' -f 'workflowInput', ($workflowInput | ConvertTo-Json -Compress)) >> $env:GITHUB_OUTPUT
+        }
+        Write-Output '::endgroup::'
+      shell: pwsh
