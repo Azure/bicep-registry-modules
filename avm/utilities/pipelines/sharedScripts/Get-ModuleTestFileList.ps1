@@ -27,35 +27,35 @@ Returns the relative file paths of all test files of the virtual-machine module 
 #>
 function Get-ModuleTestFileList {
 
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory)]
-        [string] $ModulePath,
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory)]
+    [string] $ModulePath,
 
-        [Parameter(Mandatory = $false)]
-        [string] $SearchFolder = '.test',
+    [Parameter(Mandatory = $false)]
+    [string] $SearchFolder = 'tests/e2e',
 
-        [Parameter(Mandatory = $false)]
-        [string[]] $TestFilePattern = @('*.json', 'main.test.bicep')
-    )
+    [Parameter(Mandatory = $false)]
+    [string[]] $TestFilePattern = @('*.json', 'main.test.bicep')
+  )
 
-    $deploymentTests = @()
-    if (Test-Path (Join-Path $ModulePath $SearchFolder)) {
-        $deploymentTests += (Get-ChildItem -Path (Join-Path $ModulePath $SearchFolder) -Recurse -Include $TestFilePattern -File).FullName | Where-Object {
-            $_ -ne (Join-Path (Join-Path $ModulePath $SearchFolder) 'main.test.bicep') # Excluding PBR test file
-        }
+  $deploymentTests = @()
+  if (Test-Path (Join-Path $ModulePath $SearchFolder)) {
+    $deploymentTests += (Get-ChildItem -Path (Join-Path $ModulePath $SearchFolder) -Recurse -Include $TestFilePattern -File).FullName | Where-Object {
+      $_ -ne (Join-Path (Join-Path $ModulePath $SearchFolder) 'main.test.bicep') # Excluding PBR test file
     }
+  }
 
-    if (-not $deploymentTests) {
-        throw "No deployment test files found for module [$ModulePath]"
-    }
+  if (-not $deploymentTests) {
+    throw "No deployment test files found for module [$ModulePath]"
+  }
 
-    $deploymentTests = $deploymentTests | ForEach-Object {
-        $_.Replace($ModulePath, '').Trim('\').Trim('/')
-    }
+  $deploymentTests = $deploymentTests | ForEach-Object {
+    $_.Replace($ModulePath, '').Trim('\').Trim('/')
+  }
 
-    Write-Verbose 'Found parameter files'
-    $deploymentTests | ForEach-Object { Write-Verbose "- $_" }
+  Write-Verbose 'Found parameter files'
+  $deploymentTests | ForEach-Object { Write-Verbose "- $_" }
 
-    return $deploymentTests
+  return $deploymentTests
 }
