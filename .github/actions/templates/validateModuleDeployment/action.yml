@@ -24,32 +24,32 @@
 ##
 #########################################################
 
-name: 'Deploy module'
-description: 'Deploy module'
+name: "Deploy module"
+description: "Deploy module"
 
 inputs:
   templateFilePath:
-    description: 'The path to the template file to use for deployment'
+    description: "The path to the template file to use for deployment"
     required: true
   location:
-    description: 'The location to use for deployment'
+    description: "The location to use for deployment"
     required: true
   subscriptionId:
-    description: 'The subscription ID to deploy to'
+    description: "The subscription ID to deploy to"
     required: false
   managementGroupId:
-    description: 'The management group ID to deploy to'
+    description: "The management group ID to deploy to"
     required: false
   customTokens:
     description: 'Additional parameter file token pairs in json format. e.g. {"tokenName":"tokenValue"}'
     required: false
   removeDeployment:
     description: 'Set "true" to set module up for removal'
-    default: 'true'
+    default: "true"
     required: false
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Azure Login
       uses: Azure/login@v1
@@ -59,10 +59,10 @@ runs:
 
     # [Token replacement] task(s)
     # ---------------------------
-    - name: 'Replace tokens in template file'
+    - name: "Replace tokens in template file"
       uses: azure/powershell@v1
       with:
-        azPSVersion: 'latest'
+        azPSVersion: "latest"
         inlineScript: |
           # Grouping task logs
           Write-Output '::group::Replace tokens in template file'
@@ -77,8 +77,8 @@ runs:
           $ConvertTokensInputs = @{
             FilePathList = $targetFileList
             Tokens       = @{}
-            TokenPrefix  = '${{ env.tokenPrefix }}'
-            TokenSuffix  = '${{ env.tokenSuffix }}'
+            TokenPrefix  = '[['
+            TokenSuffix  = ']]'
           }
 
           # Add enforced tokens
@@ -118,10 +118,10 @@ runs:
 
     # [Deployment validation] task(s)
     # -------------------------------
-    - name: 'Validate template file'
+    - name: "Validate template file"
       uses: azure/powershell@v1
       with:
-        azPSVersion: 'latest'
+        azPSVersion: "latest"
         inlineScript: |
           # Grouping task logs
           Write-Output '::group::Validate template file'
@@ -174,11 +174,11 @@ runs:
 
     # [Deployment execution] task(s)
     # ------------------------------
-    - name: 'Deploy template file'
+    - name: "Deploy template file"
       id: deploy_step
       uses: azure/powershell@v1
       with:
-        azPSVersion: 'latest'
+        azPSVersion: "latest"
         inlineScript: |
           # Grouping task logs
           Write-Output '::group::Deploy template file'
@@ -251,11 +251,11 @@ runs:
 
     # [Deployment removal] task(s)
     # ----------------------------
-    - name: 'Remove deployed resources'
+    - name: "Remove deployed resources"
       if: ${{ (success() || failure()) && inputs.removeDeployment == 'true' && steps.deploy_step.outputs.deploymentNames != '' }}
       uses: azure/powershell@v1
       with:
-        azPSVersion: 'latest'
+        azPSVersion: "latest"
         inlineScript: |
           # Grouping task logs
           Write-Output '::group::Remove deployed resources'
