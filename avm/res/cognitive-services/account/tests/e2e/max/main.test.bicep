@@ -12,7 +12,7 @@ param resourceGroupName string = 'ms.cognitiveservices.accounts-${serviceShort}-
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'csacom'
+param serviceShort string = 'csamax'
 
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
 param enableDefaultTelemetry bool = true
@@ -37,12 +37,13 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    location: location
   }
 }
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../.shared/.templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-diagnosticDependencies'
   params: {
@@ -58,7 +59,7 @@ module diagnosticDependencies '../../../../.shared/.templates/diagnostic.depende
 // Test Execution //
 // ============== //
 
-module testDeployment '../../main.bicep' = {
+module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
@@ -66,6 +67,7 @@ module testDeployment '../../main.bicep' = {
     name: '${namePrefix}${serviceShort}001'
     kind: 'Face'
     customSubDomainName: '${namePrefix}xdomain'
+    location: location
     diagnosticSettings: [
       {
         // logAnalyticsDestinationType:

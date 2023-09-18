@@ -41,6 +41,7 @@ module nestedDependencies 'dependencies.bicep' = {
     cognitiveServiceName: '${namePrefix}${serviceShort}001'
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
+    location: location
   }
 }
 
@@ -48,13 +49,14 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-module testDeployment '../../main.bicep' = {
+module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
     enableDefaultTelemetry: enableDefaultTelemetry
     name: nestedDependencies.outputs.cognitiveServiceName
     kind: 'SpeechServices'
+    location: location
     customerManagedKey: {
       keyName: nestedDependencies.outputs.keyVaultKeyName
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId

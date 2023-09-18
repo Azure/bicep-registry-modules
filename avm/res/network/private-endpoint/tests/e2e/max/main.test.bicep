@@ -6,13 +6,13 @@ targetScope = 'subscription'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'ms.keyvault.vaults-${serviceShort}-rg'
+param resourceGroupName string = 'ms.network.privateendpoints-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'kvvpe'
+param serviceShort string = 'npemax'
 
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
 param enableDefaultTelemetry bool = true
@@ -36,6 +36,9 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    applicationSecurityGroupName: 'dep-${namePrefix}-asg-${serviceShort}'
     location: location
   }
 }
@@ -51,26 +54,40 @@ module testDeployment '../../../main.bicep' = {
     enableDefaultTelemetry: enableDefaultTelemetry
     name: '${namePrefix}${serviceShort}001'
     location: location
-    privateEndpoints: [
+    groupIds: [
+      'vault'
+    ]
+    serviceResourceId: nestedDependencies.outputs.keyVaultResourceId
+    subnetResourceId: nestedDependencies.outputs.subnetResourceId
+    lock: 'CanNotDelete'
+    privateDnsZoneResourceIds: [
+      nestedDependencies.outputs.privateDNSZoneResourceId
+    ]
+    roleAssignments: [
       {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSResourceId
-        ]
-        service: 'vault'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
+        roleDefinitionIdOrName: 'Reader'
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
+      }
+    ]
+    ipConfigurations: [
+      {
+        name: 'myIPconfig'
+        properties: {
+          groupId: 'vault'
+          memberName: 'default'
+          privateIPAddress: '10.0.0.10'
         }
       }
+    ]
+    customNetworkInterfaceName: '${namePrefix}${serviceShort}001nic'
+    applicationSecurityGroupResourceIds: [
+      nestedDependencies.outputs.applicationSecurityGroupResourceId
     ]
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    // Only for testing purposes
-    enablePurgeProtection: false
   }
 }
