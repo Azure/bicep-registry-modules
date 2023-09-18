@@ -1,0 +1,97 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.21.1.54444",
+      "templateHash": "10458348557666655329"
+    },
+    "name": "Key Vault Access Policies",
+    "description": "This module deploys a Key Vault Access Policy.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "keyVaultName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent key vault. Required if the template is used in a standalone deployment."
+      }
+    },
+    "accessPolicies": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. An array of 0 to 16 identities that have access to the key vault. All identities in the array must use the same tenant ID as the key vault's tenant ID."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "variables": {
+    "copy": [
+      {
+        "name": "formattedAccessPolicies",
+        "count": "[length(parameters('accessPolicies'))]",
+        "input": {
+          "applicationId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'applicationId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].applicationId, '')]",
+          "objectId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'objectId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].objectId, '')]",
+          "permissions": "[parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].permissions]",
+          "tenantId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'tenantId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].tenantId, tenant().tenantId)]"
+        }
+      }
+    ]
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/accessPolicies",
+      "apiVersion": "2022-07-01",
+      "name": "[format('{0}/{1}', parameters('keyVaultName'), 'add')]",
+      "properties": {
+        "accessPolicies": "[variables('formattedAccessPolicies')]"
+      }
+    }
+  ],
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the access policies assignment was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the access policies assignment."
+      },
+      "value": "add"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the access policies assignment."
+      },
+      "value": "[resourceId('Microsoft.KeyVault/vaults/accessPolicies', parameters('keyVaultName'), 'add')]"
+    }
+  }
+}
