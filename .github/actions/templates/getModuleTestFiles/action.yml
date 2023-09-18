@@ -21,7 +21,7 @@ runs:
         # Grouping task logs
         Write-Output '::group::Get parameter files'
         # Load used functions
-        . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-ModuleTestFileList.ps1')
+        . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-ModuleTestFileList.ps1')
 
         $functionInput = @{
           ModulePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.modulePath }}'
