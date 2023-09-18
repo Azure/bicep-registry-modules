@@ -158,13 +158,6 @@ runs:
             AdditionalParameters = @{}
           }
 
-          # Handle additional parameters
-          if (-not [System.Convert]::ToBoolean('${{  env.enableDefaultTelemetry }}') -and ($moduleTemplatePossibleParameters.Keys -contains 'enableDefaultTelemetry')) {
-              $functionInput['additionalParameters'] += @{
-                  enableDefaultTelemetry = [System.Convert]::ToBoolean('${{  env.enableDefaultTelemetry }}')
-              }
-          }
-
           Write-Verbose 'Invoke task with' -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
@@ -215,12 +208,6 @@ runs:
             AdditionalParameters = @{}
           }
 
-          # Handle additional parameters
-          if (-not [System.Convert]::ToBoolean('${{  env.enableDefaultTelemetry }}') -and ($moduleTemplatePossibleParameters.Keys -contains 'enableDefaultTelemetry')) {
-              $functionInput['additionalParameters'] += @{
-                  enableDefaultTelemetry = [System.Convert]::ToBoolean('${{  env.enableDefaultTelemetry }}')
-              }
-          }
 
           Write-Verbose 'Invoke task with' -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
