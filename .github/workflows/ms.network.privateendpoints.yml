@@ -30,13 +30,13 @@ on:
       - '.github/actions/templates/**'
       - '.github/workflows/template.module.yml'
       - '.github/workflows/ms.network.privateendpoints.yml'
-      - 'modules/network/private-endpoint/**'
-      - 'utilities/pipelines/**'
-      - '!utilities/pipelines/deploymentRemoval/**'
+      - 'avm/res/network/private-endpoint/**'
+      - 'avm/utilities/pipelines/**'
+      - '!avm/utilities/pipelines/deploymentRemoval/**'
       - '!*/**/README.md'
 
 env:
-  modulePath: 'modules/network/private-endpoint'
+  modulePath: 'avm/res/network/private-endpoint'
   workflowPath: '.github/workflows/ms.network.privateendpoints.yml'
 
 concurrency:
