@@ -6,13 +6,13 @@ targetScope = 'subscription'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'ms.keyvault.vaults-${serviceShort}-rg'
+param resourceGroupName string = 'ms.cognitiveservices.accounts-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'kvvcom'
+param serviceShort string = 'csawaf'
 
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
 param enableDefaultTelemetry bool = true
@@ -26,7 +26,7 @@ param namePrefix string = '[[namePrefix]]'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: resourceGroupName
   location: location
 }
@@ -37,19 +37,20 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    location: location
   }
 }
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../.shared/.templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-diagnosticDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
+    storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
-    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
     location: location
   }
 }
@@ -58,41 +59,15 @@ module diagnosticDependencies '../../../../.shared/.templates/diagnostic.depende
 // Test Execution //
 // ============== //
 
-module testDeployment '../../main.bicep' = {
+module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
     enableDefaultTelemetry: enableDefaultTelemetry
-    name: '${namePrefix}${serviceShort}002'
-    accessPolicies: [
-      {
-        objectId: nestedDependencies.outputs.managedIdentityPrincipalId
-        permissions: {
-          keys: [
-            'get'
-            'list'
-            'update'
-          ]
-          secrets: [
-            'all'
-          ]
-        }
-        tenantId: tenant().tenantId
-      }
-      {
-        objectId: nestedDependencies.outputs.managedIdentityPrincipalId
-        permissions: {
-          certificates: [
-            'backup'
-            'create'
-            'delete'
-          ]
-          secrets: [
-            'all'
-          ]
-        }
-      }
-    ]
+    name: '${namePrefix}${serviceShort}001'
+    kind: 'Face'
+    location: location
+    customSubDomainName: '${namePrefix}xdomain'
     diagnosticSettings: [
       {
         // logAnalyticsDestinationType:
@@ -105,10 +80,10 @@ module testDeployment '../../main.bicep' = {
         ]
         logCategoriesAndGroups: [
           {
-            category: 'AzurePolicyEvaluationDetails'
+            category: 'RequestResponse'
           }
           {
-            category: 'AuditEvent'
+            category: 'Audit'
           }
         ]
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
@@ -121,51 +96,10 @@ module testDeployment '../../main.bicep' = {
         eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
         storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    // Only for testing purposes
-    enablePurgeProtection: false
-    enableRbacAuthorization: false
-    keys: [
-      {
-        attributesExp: 1725109032
-        attributesNbf: 10000
-        name: 'keyName'
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
-        rotationPolicy: {
-          attributes: {
-            expiryTime: 'P2Y'
-          }
-          lifetimeActions: [
-            {
-              trigger: {
-                timeBeforeExpiry: 'P2M'
-              }
-              action: {
-                type: 'Rotate'
-              }
-            }
-            {
-              trigger: {
-                timeBeforeExpiry: 'P30D'
-              }
-              action: {
-                type: 'Notify'
-              }
-            }
-          ]
-        }
       }
     ]
     lock: 'CanNotDelete'
     networkAcls: {
-      bypass: 'AzureServices'
       defaultAction: 'Deny'
       ipRules: [
         {
@@ -179,27 +113,6 @@ module testDeployment '../../main.bicep' = {
         }
       ]
     }
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSResourceId
-        ]
-        service: 'vault'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
-      }
-    ]
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Reader'
@@ -207,25 +120,27 @@ module testDeployment '../../main.bicep' = {
         principalType: 'ServicePrincipal'
       }
     ]
-    secrets: {
-      secureList: [
-        {
-          attributesExp: 1702648632
-          attributesNbf: 10000
-          contentType: 'Something'
-          name: 'secretName'
-          roleAssignments: [
-            {
-              roleDefinitionIdOrName: 'Reader'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-          ]
-          value: 'secretValue'
-        }
+    sku: 'S0'
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourcesIds: [
+        nestedDependencies.outputs.managedIdentityResourceId
       ]
     }
-    softDeleteRetentionInDays: 7
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSZoneResourceId
+        ]
+        service: 'account'
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
