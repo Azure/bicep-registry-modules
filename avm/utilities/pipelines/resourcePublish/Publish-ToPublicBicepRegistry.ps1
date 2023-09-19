@@ -18,6 +18,7 @@ function Publish-ToPublicBicepRegistry {
     . (Join-Path $PSScriptRoot 'Publish-ModuleToPrivateBicepRegistry.ps1')
 
     $moduleRelativePath = Split-Path $TemplateFilePath -Parent
+    $moduleJsonFilePath = Join-Path $moduleRelativePath 'main.json'
 
     # 0. Get Modules to Publish
     # -> Is there a diff to head
@@ -38,12 +39,17 @@ function Publish-ToPublicBicepRegistry {
 
     # -2. Replace telemetry version value (in JSON)
     $tokenConfiguration = @{
-
+        FilePathList = @($moduleJsonFilePath)
+        Tokens       = @{
+            'ModuleTelemetryVersion' = $targetVersion
+        }
+        TokenPrefix  = '[['
+        TokenSuffix  = ']]'
     }
     $null = Convert-TokensInFileList @tokenConfiguration
 
     # -1. Publish
-    $jsonTemplateFilePath = Join-Path $moduleRelativePath 'main.json'
+    $jsonTemplateFilePath = $moduleJsonFilePath
     $plainPublicRegistryServer = ConvertFrom-SecureString $PublicRegistryServer -AsPlainText
     $publishingTargetPath = "br:{0}/public/bicep/{1}:{2}" -f $plainPublicRegistryServer, $publishedModuleName, $targetVersion
 
