@@ -53,65 +53,20 @@ runs:
           }
 
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'resourcePublish' 'Get-ModulesToPublish.ps1')
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'resourcePublish' 'Get-ModulesMissingFromPrivateBicepRegistry.ps1')
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'resourcePublish' 'Publish-ModuleToPrivateBicepRegistry.ps1')
-
-          $modulesToPublish = @()
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'resourcePublish' 'Publish-ToPublicBicepRegistry.ps1')
 
           ################################
           ##   Get modules to publish   ##
           ################################
           $functionInput = @{
-            TemplateFilePath = Join-Path $env:GITHUB_WORKSPACE "${{ inputs.templateFilePath }}"
+            TemplateFilePath     = Join-Path $env:GITHUB_WORKSPACE "${{ inputs.templateFilePath }}"
+            PublicRegistryServer = ConvertTo-SecureString '${{ secrets.PUBLISH_REGISTRY_SERVER }}' -AsPlainText -Force
           }
 
           Write-Verbose "Invoke task with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
           # Get the modified child resources
-          $modulesToPublish += Get-ModulesToPublish @functionInput -Verbose
-
-          #############################
-          ##   Get missing modules   ##
-          #############################
-          # Add all modules that don't exist in the target location
-          $missingInputObject = @{
-              TemplateFilePath    = Join-Path $env:GITHUB_WORKSPACE "${{ inputs.templateFilePath }}"
-              BicepRegistryName   = 'avmtemptesting-acr'
-              BicepRegistryRgName = 'avmtemptesting-rg'
-          }
-
-          Write-Verbose "Invoke Get-ModulesMissingFromPrivateBicepRegistry with" -Verbose
-          Write-Verbose ($missingInputObject | ConvertTo-Json | Out-String) -Verbose
-
-          $missingModules = Get-ModulesMissingFromPrivateBicepRegistry @missingInputObject
-
-          foreach($missingModule in $missingModules) {
-            if($modulesToPublish.TemplateFilePath -notcontains $missingModule.TemplateFilePath) {
-              $modulesToPublish += $missingModule
-            }
-          }
-
-          #################
-          ##   Publish   ##
-          #################
-          foreach ($moduleToPublish in $modulesToPublish) {
-            $RelPath = (($moduleToPublish.TemplateFilePath).Split('/modules/')[-1]).Split('/main.')[0]
-            Write-Output "::group::$(' - [{0}] [{1}]' -f $RelPath, $moduleToPublish.Version)"
-
-            $functionInput = @{
-              TemplateFilePath        = $moduleToPublish.TemplateFilePath
-              BicepRegistryName       = 'avmtemptestingacr'
-              BicepRegistryRgName     = 'avmtemptesting-rg'
-              BicepRegistryRgLocation = 'WestEurope'
-              ModuleVersion           = $moduleToPublish.Version
-            }
-
-            Write-Verbose "Invoke task with" -Verbose
-            Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
-
-            Publish-ModuleToPrivateBicepRegistry @functionInput -Verbose
-          }
+          Publish-ToPublicBicepRegistry @functionInput -Verbose
 
           Write-Output '::endgroup::'
