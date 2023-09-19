@@ -18,11 +18,7 @@ on:
         description: 'Remove deployed module'
         required: false
         default: true
-      prerelease:
-        type: boolean
-        description: 'Publish prerelease module'
-        required: false
-        default: false
+
   push:
     branches:
       - main

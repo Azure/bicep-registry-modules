@@ -105,21 +105,21 @@ jobs:
   # ##################
   # #   Publishing   #
   # ##################
-  # job_publish_module: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-  #   name: 'Publishing'
-  #   runs-on: ubuntu-20.04
-  #   if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || fromJson(inputs.workflowInput).prerelease == 'true'
-  #   needs:
-  #     - job_module_deploy_validation
-  #   steps:
-  #     - name: 'Checkout'
-  #       uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: 0
-  #     - name: Set environment
-  #       uses: ./.github/actions/templates/avm-setEnvironment
-  #     - name: 'Publishing'
-  #       uses: ./.github/actions/templates/avm-publishModule
-  #       with:
-  #         templateFilePath: '${{ inputs.modulePath }}/main.bicep'
-  #         subscriptionId: '${{ secrets.ARM_SUBSCRIPTION_ID }}'
+  job_publish_module: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+    name: 'Publishing'
+    runs-on: ubuntu-20.04
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    needs:
+      - job_module_deploy_validation
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set environment
+        uses: ./.github/actions/templates/avm-setEnvironment
+      - name: 'Publishing'
+        uses: ./.github/actions/templates/avm-publishModule
+        with:
+          templateFilePath: '${{ inputs.modulePath }}/main.bicep'
+          subscriptionId: '${{ secrets.ARM_SUBSCRIPTION_ID }}'
