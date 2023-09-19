@@ -6,13 +6,13 @@ targetScope = 'subscription'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'ms.cognitiveservices.accounts-${serviceShort}-rg'
+param resourceGroupName string = 'ms.network.privateendpoints-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'csamin'
+param serviceShort string = 'nped'
 
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
 param enableDefaultTelemetry bool = true
@@ -26,9 +26,19 @@ param namePrefix string = '[[namePrefix]]'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
   location: location
+}
+
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, location)}-nestedDependencies'
+  params: {
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
+    location: location
+  }
 }
 
 // ============== //
@@ -41,7 +51,11 @@ module testDeployment '../../../main.bicep' = {
   params: {
     enableDefaultTelemetry: enableDefaultTelemetry
     name: '${namePrefix}${serviceShort}001'
-    kind: 'SpeechServices'
     location: location
+    groupIds: [
+      'vault'
+    ]
+    serviceResourceId: nestedDependencies.outputs.keyVaultResourceId
+    subnetResourceId: nestedDependencies.outputs.subnetResourceId
   }
 }
