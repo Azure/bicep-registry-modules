@@ -20,22 +20,22 @@ function Publish-ToPublicBicepRegistry {
     $moduleRelativePath = Split-Path $TemplateFilePath -Parent
     $moduleJsonFilePath = Join-Path $moduleRelativePath 'main.json'
 
-    # 0. Get Modules to Publish
+    # 1. Test if module qualifies for publishing
     if (-not (Test-ModuleQualifiesForPublish -ModuleRelativePath $moduleRelativePath)) {
         Write-Verbose "No changes detected. Skipping publishing" -Verbose
         return
     }
 
-    # 1. Get-ModuleTargetVersion
+    # 2. Calculate the version that we would publish with
     $targetVersion = Get-ModuleTargetVersion -ModuleRelativePath $moduleRelativePath
 
-    # 2. Get Target Published Module Name
+    # 3. Get Target Published Module Name
     $publishedModuleName = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
 
-    # 3. Get-ModuleReadmeLink
+    # 4. Get the documentation link
     $documentationUri = Get-ModuleReadmeLink -ModuleRelativePath $moduleRelativePath
 
-    # -2. Replace telemetry version value (in JSON)
+    # 5. Replace telemetry version value (in JSON)
     $tokenConfiguration = @{
         FilePathList = @($moduleJsonFilePath)
         Tokens       = @{
@@ -46,17 +46,14 @@ function Publish-ToPublicBicepRegistry {
     }
     $null = Convert-TokensInFileList @tokenConfiguration
 
-    # -1. Publish
-    $jsonTemplateFilePath = $moduleJsonFilePath
-    $plainPublicRegistryServer = ConvertFrom-SecureString $PublicRegistryServer -AsPlainText
-    $publishingTargetPath = "br:{0}/public/bicep/{1}:{2}" -f $plainPublicRegistryServer, $publishedModuleName, $targetVersion
-
     #################
     ##   Publish   ##
     #################
+    $plainPublicRegistryServer = ConvertFrom-SecureString $PublicRegistryServer -AsPlainText
+
     $publishInput = @(
-        $jsonTemplateFilePath
-        '--target', $publishingTargetPath
+        $moduleJsonFilePath
+        '--target', ("br:{0}/public/bicep/{1}:{2}" -f $plainPublicRegistryServer, $publishedModuleName, $targetVersion)
         '--documentationUri', $documentationUri
         '--force'
     )
