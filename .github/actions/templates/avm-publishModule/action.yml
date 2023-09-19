@@ -40,7 +40,6 @@ runs:
 
     # TODO: Only for testing. Should be removed in favor of public registry later
     - name: "Publish module to private bicep registry"
-      if: ${{ inputs.bicepRegistryDoPublish == 'true' }}
       uses: azure/powershell@v1
       with:
         azPSVersion: "latest"
