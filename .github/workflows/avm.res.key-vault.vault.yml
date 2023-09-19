@@ -1,4 +1,4 @@
-name: 'AVM Res: Network - PrivateEndpoint'
+name: 'AVM Res: KeyVault - Vault'
 
 on:
   workflow_dispatch:
@@ -23,21 +23,22 @@ on:
         description: 'Publish prerelease module'
         required: false
         default: false
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/actions/templates/avm-**'
-      - '.github/workflows/avm.template.module.yml'
-      - '.github/workflows/avm.res.network.private-endpoint.yml'
-      - 'avm/res/network/private-endpoint/**'
-      - 'avm/utilities/pipelines/**'
-      - '!avm/utilities/pipelines/deploymentRemoval/**'
-      - '!*/**/README.md'
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - '.github/actions/templates/avm-**'
+  #     - '.github/workflows/avm.template.module.yml'
+  #     - '.github/workflows/avm.res.key-vault.vault.yml'
+  #     - 'avm/res/key-vault/vault/**'
+  #     - 'avm/res/network/private-endpoint/**'
+  #     - 'avm/utilities/pipelines/**'
+  #     - '!avm/utilities/pipelines/deploymentRemoval/**'
+  #     - '!*/**/README.md'
 
 env:
-  modulePath: 'avm/res/network/private-endpoint'
-  workflowPath: '.github/workflows/avm.res.network.private-endpoint.yml'
+  modulePath: 'avm/res/key-vault/vault'
+  workflowPath: '.github/workflows/avm.res.key-vault.vault.yml'
 
 concurrency:
   group: ${{ github.workflow }}
