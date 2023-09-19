@@ -54,7 +54,7 @@ function Publish-ModuleToPrivateBicepRegistry {
         Write-Debug ('{0} entered' -f $MyInvocation.MyCommand)
 
         # Load used functions
-        . (Join-Path $PSScriptRoot 'Get-PrivateRegistryRepositoryName.ps1')
+        . (Join-Path $PSScriptRoot 'Get-BRMRepositoryName.ps1')
     }
 
     process {
@@ -80,7 +80,7 @@ function Publish-ModuleToPrivateBicepRegistry {
         }
 
         # Get a valid Container Registry name
-        $moduleRegistryIdentifier = Get-PrivateRegistryRepositoryName -TemplateFilePath $TemplateFilePath
+        $moduleRegistryIdentifier = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
 
         #############################################
         ##    Publish to private bicep registry    ##

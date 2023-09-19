@@ -47,7 +47,7 @@ function Get-ModulesMissingFromPrivateBicepRegistry {
         Write-Debug ('{0} entered' -f $MyInvocation.MyCommand)
 
         # Load used functions
-        . (Join-Path $PSScriptRoot 'Get-PrivateRegistryRepositoryName.ps1')
+        . (Join-Path $PSScriptRoot 'Get-BRMRepositoryName.ps1')
     }
 
     process {
@@ -64,7 +64,7 @@ function Get-ModulesMissingFromPrivateBicepRegistry {
             foreach ($templatePath in $availableModuleTemplatePaths) {
 
                 # Get a valid Container Registry name
-                $moduleRegistryIdentifier = Get-PrivateRegistryRepositoryName -TemplateFilePath $templatePath
+                $moduleRegistryIdentifier = Get-BRMRepositoryName -TemplateFilePath $templatePath
 
                 $null = Get-AzContainerRegistryTag -RepositoryName $moduleRegistryIdentifier -RegistryName $BicepRegistryName -ErrorAction 'SilentlyContinue' -ErrorVariable 'result'
 
