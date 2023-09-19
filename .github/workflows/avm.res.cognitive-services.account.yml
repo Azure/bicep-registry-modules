@@ -1,4 +1,4 @@
-name: 'AVM Res: CognitiveServices - Account'
+name: 'avm.res.cognitive-services.account'
 
 on:
   workflow_dispatch:

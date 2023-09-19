@@ -1,4 +1,4 @@
-name: 'AVM Res: Network - PrivateEndpoint'
+name: 'avm.res.network.private-endpoint'
 
 on:
   workflow_dispatch:

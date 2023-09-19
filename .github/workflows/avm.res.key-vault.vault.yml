@@ -1,4 +1,4 @@
-name: 'AVM Res: KeyVault - Vault'
+name: 'avm.res.key-vault.vault'
 
 on:
   workflow_dispatch:
