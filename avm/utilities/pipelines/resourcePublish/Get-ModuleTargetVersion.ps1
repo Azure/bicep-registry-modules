@@ -24,4 +24,12 @@ function Get-ModuleTargetVersion {
         [Parameter()]
         [string] $ModuleRelativePath
     )
+
+    # 1. Check if [version.json] file version property was updated (compare with previous head)
+    # IF so, we reset the patch/bug version back to 0
+    # ELSE we call Get-ModuleTargetPatchVersion to get the next patch/bug version
+
+    # 2. Concat the version elements
+
+    # 3. Return the version
 }
