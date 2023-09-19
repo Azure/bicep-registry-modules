@@ -1,4 +1,4 @@
-name: '.Template - Module Pipeline'
+name: 'AVM .Template - Module Pipeline'
 
 on:
   workflow_call:
@@ -37,9 +37,9 @@ jobs:
   #       with:
   #         fetch-depth: 0
   #     - name: Set environment
-  #       uses: ./.github/actions/templates/setEnvironment}
+  #       uses: ./.github/actions/templates/avm-setEnvironment}
   #     - name: 'Run tests'
-  #       uses: ./.github/actions/templates/validateModulePester
+  #       uses: ./.github/actions/templates/avm-validateModulePester
   #       with:
   #         modulePath: '${{ inputs.modulePath }}'
   #         moduleTestFilePath: '${{ env.moduleTestFilePath }}'
@@ -59,9 +59,9 @@ jobs:
   #     - name: Checkout
   #       uses: actions/checkout@v3
   #     - name: Set environment
-  #       uses: ./.github/actions/templates/setEnvironment
+  #       uses: ./.github/actions/templates/avm-setEnvironment
   #     - name: Set PSRule validation
-  #       uses: ./.github/actions/templates/validateModulePSRule
+  #       uses: ./.github/actions/templates/avm-validateModulePSRule
   #       with:
   #         templateFilePath: '${{ inputs.modulePath }}/${{ matrix.moduleTestFilePaths }}'
   #         subscriptionId: '${{ secrets.ARM_SUBSCRIPTION_ID }}'
@@ -90,11 +90,11 @@ jobs:
         with:
           fetch-depth: 0
       - name: Set environment
-        uses: ./.github/actions/templates/setEnvironment
+        uses: ./.github/actions/templates/avm-setEnvironment
         with:
           removeDeployment: '${{ fromJson(inputs.workflowInput).removeDeployment }}'
       - name: 'Using test file [${{ matrix.moduleTestFilePaths }}]'
-        uses: ./.github/actions/templates/validateModuleDeployment
+        uses: ./.github/actions/templates/avm-validateModuleDeployment
         with:
           templateFilePath: '${{ inputs.modulePath }}/${{ matrix.moduleTestFilePaths }}'
           location: 'WestEurope'
@@ -117,9 +117,9 @@ jobs:
   #       with:
   #         fetch-depth: 0
   #     - name: Set environment
-  #       uses: ./.github/actions/templates/setEnvironment
+  #       uses: ./.github/actions/templates/avm-setEnvironment
   #     - name: 'Publishing'
-  #       uses: ./.github/actions/templates/publishModule
+  #       uses: ./.github/actions/templates/avm-publishModule
   #       with:
   #         templateFilePath: '${{ inputs.modulePath }}/main.bicep'
   #         subscriptionId: '${{ secrets.ARM_SUBSCRIPTION_ID }}'
