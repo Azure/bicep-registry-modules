@@ -57,7 +57,7 @@ function Publish-ToPublicBicepRegistry {
     #################
     foreach ($moduleToPublish in $modulesToPublish) {
         $RelPath = (($moduleToPublish.TemplateFilePath).Split('/modules/')[-1]).Split('/main.')[0]
-        Write-Output "::group::$(' - [{0}] [{1}]' -f $RelPath, $moduleToPublish.Version)"
+        Write-Verbose (' - [{0}] [{1}]' -f $RelPath, $moduleToPublish.Version) -Verbose
 
         $functionInput = @{
             TemplateFilePath        = $moduleToPublish.TemplateFilePath
