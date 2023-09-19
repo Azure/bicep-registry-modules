@@ -102,7 +102,7 @@ runs:
 
             $functionInput = @{
               TemplateFilePath        = $moduleToPublish.TemplateFilePath
-              BicepRegistryName       = 'avmtemptesting-acr'
+              BicepRegistryName       = 'avmtemptestingacr'
               BicepRegistryRgName     = 'avmtemptesting-rg'
               BicepRegistryRgLocation = 'WestEurope'
               ModuleVersion           = $moduleToPublish.Version
