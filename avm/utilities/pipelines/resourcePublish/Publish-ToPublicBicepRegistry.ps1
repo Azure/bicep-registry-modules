@@ -11,9 +11,48 @@ function Publish-ToPublicBicepRegistry {
     )
 
     # Load used functions
-    . (Join-Path $PSScriptRoot 'Get-ModulesToPublish.ps1')
-    . (Join-Path $PSScriptRoot 'Get-ModulesMissingFromPrivateBicepRegistry.ps1')
+    . (Join-Path $PSScriptRoot 'Get-ModuleTargetVersion.ps1')
+    . (Join-Path $PSScriptRoot 'Get-BRMRepositoryName.ps1')
+    . (Join-Path $PSScriptRoot 'Get-ModuleReadmeLink.ps1')
     . (Join-Path $PSScriptRoot 'Publish-ModuleToPrivateBicepRegistry.ps1')
+
+    $moduleRelativePath = Split-Path $TemplateFilePath -Parent
+
+    # 1. Get-ModuleTargetVersion
+    $targetVersion = Get-ModuleTargetVersion -ModuleRelativePath $moduleRelativePath
+
+    # 2. Get Target Published Module Name
+    $publishedModuleName = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
+
+    # 3. Get-ModuleReadmeLink
+    $documentationUri = Get-ModuleReadmeLink -ModuleRelativePath $moduleRelativePath
+
+    # -2. Replace telemetry version value (in JSON)
+    $tokenConfiguration = @{
+
+    }
+    $null = Convert-TokensInFileList @tokenConfiguration
+
+    # -1. Publish
+    $jsonTemplateFilePath = Join-Path $moduleRelativePath 'main.json'
+    $plainPublicRegistryServer = ConvertFrom-SecureString $PublicRegistryServer -AsPlainText
+    $publishingTargetPath = "br:{0}/public/bicep/{1}:{2}" -f $plainPublicRegistryServer, $publishedModuleName, $targetVersion
+
+    # THIS would publish to the public registry
+    $publishInput = @(
+        $jsonTemplateFilePath
+        '--target', $publishingTargetPath
+        '--documentationUri', $documentationUri
+        '--force'
+    )
+    # bicep publish @publishInput
+
+
+
+
+
+
+
 
     $modulesToPublish = @()
 
@@ -31,26 +70,7 @@ function Publish-ToPublicBicepRegistry {
     # Get the modified child resources
     $modulesToPublish += Get-ModulesToPublish @functionInput -Verbose
 
-    #############################
-    ##   Get missing modules   ##
-    #############################
-    # Add all modules that don't exist in the target location
-    $missingInputObject = @{
-        TemplateFilePath    = $TemplateFilePath
-        BicepRegistryName   = 'avmtemptesting-acr'
-        BicepRegistryRgName = 'avmtemptesting-rg'
-    }
 
-    Write-Verbose "Invoke Get-ModulesMissingFromPrivateBicepRegistry with" -Verbose
-    Write-Verbose ($missingInputObject | ConvertTo-Json | Out-String) -Verbose
-
-    $missingModules = Get-ModulesMissingFromPrivateBicepRegistry @missingInputObject
-
-    foreach ($missingModule in $missingModules) {
-        if ($modulesToPublish.TemplateFilePath -notcontains $missingModule.TemplateFilePath) {
-            $modulesToPublish += $missingModule
-        }
-    }
 
     #################
     ##   Publish   ##
@@ -73,15 +93,7 @@ function Publish-ToPublicBicepRegistry {
         Publish-ModuleToPrivateBicepRegistry @functionInput -Verbose
 
 
-        $targetVersion = '' # "${{ steps.parse-tag.outputs.version }}"
-        $moduleFilePath = '' # ${{ steps.parse-tag.outputs.module_path }}
-        $jsonTemplateFilePath = Join-Path (Split-Path $moduleToPublish.TemplateFilePath -Parent) 'main.json'
-        $plainPublicRegistryServer = ConvertFrom-SecureString $PublicRegistryServer -AsPlainText
-        $publishingTargetPath = "br:{0}/public/bicep/{1}:{2}" -f $plainPublicRegistryServer, $moduleFilePath, $targetVersion
-        $documentationUri = '' # "${{ steps.parse-tag.outputs.documentation_uri }}"
 
-        # THIS would publish to the public registry
-        # bicep publish $jsonTemplateFilePath --target $publishingTargetPath --documentationUri $documentationUri --force
     }
 
 }

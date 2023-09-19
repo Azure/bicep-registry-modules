@@ -16,3 +16,12 @@ Mandatory. The relative path of the module e.g. `avm/res/network/private-endpoin
 
 
 #>
+
+function Get-ModuleTargetVersion {
+
+    [CmdletBinding()]
+    param (
+        [Parameter()]
+        [string] $ModuleRelativePath
+    )
+}
