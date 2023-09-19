@@ -70,3 +70,5 @@ runs:
           Publish-ToPublicBicepRegistry @functionInput -Verbose
 
           Write-Output '::endgroup::'
+
+        # TODO Add publish validation (as per PBR pipeline template 'publish-module.yml')
