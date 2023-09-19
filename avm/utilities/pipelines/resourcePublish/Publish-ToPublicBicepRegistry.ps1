@@ -21,8 +21,6 @@ function Publish-ToPublicBicepRegistry {
     $moduleJsonFilePath = Join-Path $moduleRelativePath 'main.json'
 
     # 0. Get Modules to Publish
-    # -> Is there a diff to head
-    # -> Is there a diff to PBR
     if (-not (Test-ModuleQualifiesForPublish -ModuleRelativePath $moduleRelativePath)) {
         Write-Verbose "No changes detected. Skipping publishing" -Verbose
         return
@@ -41,7 +39,7 @@ function Publish-ToPublicBicepRegistry {
     $tokenConfiguration = @{
         FilePathList = @($moduleJsonFilePath)
         Tokens       = @{
-            'ModuleTelemetryVersion' = $targetVersion
+            'ModuleTelemetryVersion' = $targetVersion # TODO : Check if we need to replace '.' with '-'
         }
         TokenPrefix  = '[['
         TokenSuffix  = ']]'
