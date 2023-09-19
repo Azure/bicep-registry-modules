@@ -11,12 +11,21 @@ function Publish-ToPublicBicepRegistry {
     )
 
     # Load used functions
+    . (Join-Path $PSScriptRoot 'Test-ModuleQualifiesForPublish.ps1')
     . (Join-Path $PSScriptRoot 'Get-ModuleTargetVersion.ps1')
     . (Join-Path $PSScriptRoot 'Get-BRMRepositoryName.ps1')
     . (Join-Path $PSScriptRoot 'Get-ModuleReadmeLink.ps1')
     . (Join-Path $PSScriptRoot 'Publish-ModuleToPrivateBicepRegistry.ps1')
 
     $moduleRelativePath = Split-Path $TemplateFilePath -Parent
+
+    # 0. Get Modules to Publish
+    # -> Is there a diff to head
+    # -> Is there a diff to PBR
+    if (-not (Test-ModuleQualifiesForPublish -ModuleRelativePath $moduleRelativePath)) {
+        Write-Verbose "No changes detected. Skipping publishing" -Verbose
+        return
+    }
 
     # 1. Get-ModuleTargetVersion
     $targetVersion = Get-ModuleTargetVersion -ModuleRelativePath $moduleRelativePath
@@ -38,7 +47,9 @@ function Publish-ToPublicBicepRegistry {
     $plainPublicRegistryServer = ConvertFrom-SecureString $PublicRegistryServer -AsPlainText
     $publishingTargetPath = "br:{0}/public/bicep/{1}:{2}" -f $plainPublicRegistryServer, $publishedModuleName, $targetVersion
 
-    # THIS would publish to the public registry
+    #################
+    ##   Publish   ##
+    #################
     $publishInput = @(
         $jsonTemplateFilePath
         '--target', $publishingTargetPath
@@ -46,54 +57,4 @@ function Publish-ToPublicBicepRegistry {
         '--force'
     )
     # bicep publish @publishInput
-
-
-
-
-
-
-
-
-    $modulesToPublish = @()
-
-    ################################
-    ##   Get modules to publish   ##
-    ################################
-
-    $functionInput = @{
-        TemplateFilePath = $TemplateFilePath
-    }
-
-    Write-Verbose "Invoke task with" -Verbose
-    Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
-
-    # Get the modified child resources
-    $modulesToPublish += Get-ModulesToPublish @functionInput -Verbose
-
-
-
-    #################
-    ##   Publish   ##
-    #################
-    foreach ($moduleToPublish in $modulesToPublish) {
-        $RelPath = (($moduleToPublish.TemplateFilePath).Split('/modules/')[-1]).Split('/main.')[0]
-        Write-Verbose (' - [{0}] [{1}]' -f $RelPath, $moduleToPublish.Version) -Verbose
-
-        $functionInput = @{
-            TemplateFilePath        = $moduleToPublish.TemplateFilePath
-            BicepRegistryName       = 'avmtemptestingacr'
-            BicepRegistryRgName     = 'avmtemptesting-rg'
-            BicepRegistryRgLocation = 'WestEurope'
-            ModuleVersion           = $moduleToPublish.Version
-        }
-
-        Write-Verbose "Invoke task with" -Verbose
-        Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
-
-        Publish-ModuleToPrivateBicepRegistry @functionInput -Verbose
-
-
-
-    }
-
 }
