@@ -73,16 +73,16 @@ param publicNetworkAccess string = ''
 param lock string = ''
 
 @description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-param roleAssignments roleAssignmentType[] = []
+param roleAssignments roleAssignmentType
 
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
-param privateEndpoints privateEndpointType[] = []
+param privateEndpoints privateEndpointType
 
 @description('Optional. Resource tags.')
 param tags object = {}
 
 @description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType[] = []
+param diagnosticSettings diagnosticSettingType
 
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
 param enableDefaultTelemetry bool = true
@@ -172,7 +172,7 @@ resource keyVault_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(l
   scope: keyVault
 }
 
-resource keyVault_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in diagnosticSettings: {
+resource keyVault_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
   name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
   properties: {
     storageAccountId: diagnosticSetting.?storageAccountResourceId ?? null
@@ -242,7 +242,7 @@ module keyVault_keys 'key/main.bicep' = [for (key, index) in keys: {
   }
 }]
 
-module keyVault_privateEndpoints '../../network/private-endpoint/main.bicep' = [for (privateEndpoint, index) in privateEndpoints: {
+module keyVault_privateEndpoints '../../network/private-endpoint/main.bicep' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-KeyVault-PrivateEndpoint-${index}'
   params: {
     groupIds: [
@@ -265,7 +265,7 @@ module keyVault_privateEndpoints '../../network/private-endpoint/main.bicep' = [
   }
 }]
 
-resource keyVault_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in roleAssignments: {
+resource keyVault_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
   name: guid(keyVault.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
   properties: {
     roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : roleAssignment.roleDefinitionIdOrName
@@ -337,7 +337,7 @@ type diagnosticSettingType = {
 
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
-}
+}[]?
 
 type roleAssignmentType = {
   @description('Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.')
@@ -360,7 +360,7 @@ type roleAssignmentType = {
 
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
-}
+}[]?
 
 type privateEndpointType = {
 
@@ -413,4 +413,4 @@ type privateEndpointType = {
 
   @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
   enableDefaultTelemetry: bool?
-}
+}[]?
