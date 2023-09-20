@@ -5,10 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "2469208411936339156"
+      "templateHash": "2469208411936339153"
     },
     "name": "Private Endpoint Private DNS Zone Groups",
-    "description": "This module deploys a Private Endpoint Private DNS Zone Group....",
+    "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
     "owner": "Azure/module-maintainers"
   },
   "parameters": {
