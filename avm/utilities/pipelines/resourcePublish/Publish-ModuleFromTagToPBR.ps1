@@ -1,4 +1,4 @@
-function Publish-ToPublicBicepRegistry {
+function Publish-ModuleFromTagToPBR {
 
     [CmdletBinding()]
     param (
@@ -13,6 +13,7 @@ function Publish-ToPublicBicepRegistry {
     . (Join-Path $PSScriptRoot 'helper' 'Test-ModuleQualifiesForPublish.ps1')
     . (Join-Path $PSScriptRoot 'helper' 'Get-ModuleTargetVersion.ps1')
     . (Join-Path $PSScriptRoot 'helper' 'Get-BRMRepositoryName.ps1')
+    . (Join-Path $PSScriptRoot 'helper' 'Set-ModuleReleaseTag.ps1')
     . (Join-Path $PSScriptRoot 'helper' 'Get-ModuleReadmeLink.ps1')
     . (Join-Path $PSScriptRoot 'helper' 'Publish-ModuleToPrivateBicepRegistry.ps1')
 
@@ -31,7 +32,8 @@ function Publish-ToPublicBicepRegistry {
     # 3. Get Target Published Module Name
     $publishedModuleName = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
 
-    # 4.TODO: Create release tag
+    # 4.Create release tag
+    Set-ModuleReleaseTag -ModuleRelativePath $moduleRelativePath
 
     # 5. Get the documentation link
     $documentationUri = Get-ModuleReadmeLink -ModuleRelativePath $moduleRelativePath
