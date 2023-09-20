@@ -26,19 +26,19 @@ function Get-ModifiedFileList {
   return $ModifiedFiles
 }
 
-# <#
-# .SYNOPSIS
-# Get the name of the current checked out branch.
-#
-# .DESCRIPTION
-# Get the name of the current checked out branch. If git cannot find it, best effort based on environment variables is used.
-#
-# .EXAMPLE
-# Get-CurrentBranch
-#
-# feature-branch-1
-#
-# Get the name of the current checked out branch.
+<#
+.SYNOPSIS
+Get the name of the current checked out branch.
+
+.DESCRIPTION
+Get the name of the current checked out branch. If git cannot find it, best effort based on environment variables is used.
+
+.EXAMPLE
+Get-CurrentBranch
+
+feature-branch-1
+
+Get the name of the current checked out branch.
 #>
 function Get-GitBranchName {
   [CmdletBinding()]
