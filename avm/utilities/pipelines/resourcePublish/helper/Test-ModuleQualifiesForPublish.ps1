@@ -83,14 +83,39 @@ function Get-TemplateFileToPublish {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory)]
-    [string] $ModuleFolderPath
+    [string] $ModuleFolderPath,
+
+    [Parameter(Mandatory)]
+    [string[]] $PathsToInclude = @()
   )
+
   $ModuleFolderRelPath = $ModuleFolderPath.Split('/avm/')[-1]
   $ModifiedFiles = Get-ModifiedFileList -Verbose
   Write-Verbose "Looking for modified files under: [$ModuleFolderRelPath]" -Verbose
-  $ModifiedModuleFiles = $ModifiedFiles.FullName | Where-Object { $_ -like "*$ModuleFolderPath*" }
+  $modifiedModuleFiles = $ModifiedFiles.FullName | Where-Object { $_ -like "*$ModuleFolderPath*" }
 
-  $TemplateFilesToPublish = $ModifiedModuleFiles | ForEach-Object {
+
+  # C:\dev\ip\Azure-bicep-registry-modules\eriqua-fork\avm\res\network\private-endpoint\private-dns-zone-group\README.md
+  # C:\dev\ip\Azure-bicep-registry-modules\eriqua-fork\avm\res\network\private-endpoint\main.json
+  # C:\dev\ip\Azure-bicep-registry-modules\eriqua-fork\avm\res\network\private-endpoint\main.bicep
+
+  # ./main.json
+  # ./version.json
+  # /sfds/../../tests/main.bicep
+
+  $relevantPaths = @()
+  $PathsToInclude += 'version.json' # Add the file itself to be considered too
+  foreach ($modifiedFile in $modifiedModuleFiles) {
+
+    foreach ($path in  $PathsToInclude) {
+      if ($modifiedFile -eq (Resolve-Path (Join-Path (Split-Path $modifiedFile) $path))) {
+        $relevantPaths += $modifiedFile
+      }
+    }
+  }
+
+
+  $TemplateFilesToPublish = $relevantPaths | ForEach-Object {
     Find-TemplateFile -Path $_ -Verbose
   } | Sort-Object -Unique -Descending
 
@@ -166,12 +191,16 @@ function Test-ModuleQualifiesForPublish {
     [string] $ModuleFolderPath
   )
 
-  $TemplateFilesToPublish = Get-TemplateFileToPublish -ModuleFolderPath $ModuleFolderPath | Sort-Object FullName -Descending
+  $versionFile = (Get-Content (Join-Path $ModuleFolderPath 'version.json') -Raw) | ConvertFrom-Json
+  $PathsToInclude = $versionFile.PathFilters
+
+  $TemplateFilesToPublish = Get-TemplateFileToPublish -ModuleFolderPath $ModuleFolderPath -PathsToInclude $PathsToInclude
   $TemplateFilesToPublish
 }
 
 
 Test-ModuleQualifiesForPublish -ModuleFolderPath 'C:\dev\ip\Azure-bicep-registry-modules\eriqua-fork\avm\res\network\private-endpoint'
+# Test-ModuleQualifiesForPublish -ModuleFolderPath 'C:\dev\ip\Azure-bicep-registry-modules\eriqua-fork\avm\res\network\private-endpoint\private-dns-zone-group'
 
 # #region Helper functions
 
