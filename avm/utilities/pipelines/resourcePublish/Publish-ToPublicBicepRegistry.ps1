@@ -31,10 +31,12 @@ function Publish-ToPublicBicepRegistry {
     # 3. Get Target Published Module Name
     $publishedModuleName = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
 
-    # 4. Get the documentation link
+    # 4.TODO: Create release tag
+
+    # 5. Get the documentation link
     $documentationUri = Get-ModuleReadmeLink -ModuleRelativePath $moduleRelativePath
 
-    # 5. Replace telemetry version value (in JSON)
+    # 6. Replace telemetry version value (in JSON)
     $tokenConfiguration = @{
         FilePathList = @($moduleJsonFilePath)
         Tokens       = @{
@@ -45,9 +47,9 @@ function Publish-ToPublicBicepRegistry {
     }
     $null = Convert-TokensInFileList @tokenConfiguration
 
-    #################
-    ##   Publish   ##
-    #################
+    ###################
+    ## 7.  Publish   ##
+    ###################
     $plainPublicRegistryServer = ConvertFrom-SecureString $PublicRegistryServer -AsPlainText
 
     $publishInput = @(
