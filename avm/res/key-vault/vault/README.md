@@ -39,7 +39,7 @@ This module deploys a Key Vault.
 | [`accessPolicies`](#parameter-accesspolicies) | array | All access policies to create. |
 | [`createMode`](#parameter-createmode) | string | The vault's create mode to indicate whether the vault need to be recovered or not. - recover or default. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enableTelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Provide 'true' to enable Key Vault's purge protection feature. |
 | [`enableRbacAuthorization`](#parameter-enablerbacauthorization) | bool | Property that controls how data actions are authorized. When true, the key vault will use Role Based Access Control (RBAC) for authorization of data actions, and the access policies specified in vault properties will be ignored (warning: this is a preview feature). When false, the key vault will use the access policies specified in vault properties, and any policy stored on Azure Resource Manager will be ignored. If null or not specified, the vault is created with the default value of false. Note that management actions are always authorized with RBAC. |
 | [`enableSoftDelete`](#parameter-enablesoftdelete) | bool | Switch to enable/disable Key Vault's soft delete feature. |
@@ -79,7 +79,7 @@ The diagnostic settings of the service.
 - Type: array
 - Default: `[]`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
 Enable telemetry via a Globally Unique Identifier (GUID).
 - Required: No
@@ -502,7 +502,7 @@ module vault './key-vault/vault/main.bicep' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
     enablePurgeProtection: false
     enableRbacAuthorization: false
     keys: [
@@ -690,8 +690,8 @@ module vault './key-vault/vault/main.bicep' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "enablePurgeProtection": {
       "value": false
@@ -840,7 +840,7 @@ module vault './key-vault/vault/main.bicep' = {
     // Required parameters
     name: 'kvvmin002'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
     enablePurgeProtection: false
   }
 }
@@ -863,8 +863,8 @@ module vault './key-vault/vault/main.bicep' = {
       "value": "kvvmin002"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "enablePurgeProtection": {
       "value": false
@@ -889,7 +889,7 @@ module vault './key-vault/vault/main.bicep' = {
     // Required parameters
     name: 'kvvpe001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
     enablePurgeProtection: false
     privateEndpoints: [
       {
@@ -931,8 +931,8 @@ module vault './key-vault/vault/main.bicep' = {
       "value": "kvvpe001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "enablePurgeProtection": {
       "value": false

@@ -85,7 +85,7 @@ param tags object = {}
 param diagnosticSettings diagnosticSettingType
 
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
+param enableTelemetry bool = true
 
 // =========== //
 // Variables   //
@@ -122,7 +122,7 @@ var enableReferencedModulesTelemetry = false
 // ============ //
 // Dependencies //
 // ============ //
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
+resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
   name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
   properties: {
     mode: 'Incremental'
@@ -203,7 +203,7 @@ module keyVault_accessPolicies 'access-policy/main.bicep' = if (!empty(accessPol
   params: {
     keyVaultName: keyVault.name
     accessPolicies: formattedAccessPolicies
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -219,7 +219,7 @@ module keyVault_secrets 'secret/main.bicep' = [for (secret, index) in secretList
     contentType: contains(secret, 'contentType') ? secret.contentType : ''
     tags: contains(secret, 'tags') ? secret.tags : {}
     roleAssignments: contains(secret, 'roleAssignments') ? secret.roleAssignments : []
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -237,7 +237,7 @@ module keyVault_keys 'key/main.bicep' = [for (key, index) in keys: {
     kty: contains(key, 'kty') ? key.kty : 'EC'
     tags: contains(key, 'tags') ? key.tags : {}
     roleAssignments: contains(key, 'roleAssignments') ? key.roleAssignments : []
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
     rotationPolicy: contains(key, 'rotationPolicy') ? key.rotationPolicy : {}
   }
 }]
@@ -251,7 +251,7 @@ module keyVault_privateEndpoints '../../network/private-endpoint/main.bicep' = [
     name: privateEndpoint.?name ?? 'pe-${last(split(keyVault.id, '/'))}-${privateEndpoint.service}-${index}'
     serviceResourceId: keyVault.id
     subnetResourceId: privateEndpoint.subnetResourceId
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds ?? []
@@ -412,5 +412,5 @@ type privateEndpointType = {
   manualPrivateLinkServiceConnections: array?
 
   @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-  enableDefaultTelemetry: bool?
+  enableTelemetry: bool?
 }[]?

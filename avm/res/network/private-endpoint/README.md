@@ -47,7 +47,7 @@ The following resources are required to be able to deploy this resource:
 | `applicationSecurityGroupResourceIds` | array | `[]` |  | Application security groups in which the private endpoint IP configuration is included. |
 | `customDnsConfigs` | array | `[]` |  | Custom DNS configurations. |
 | `customNetworkInterfaceName` | string | `''` |  | The custom name of the network interface attached to the private endpoint. |
-| `enableDefaultTelemetry` | bool | `True` |  | Enable telemetry via a Globally Unique Identifier (GUID). |
+| `enableTelemetry` | bool | `True` |  | Enable telemetry via a Globally Unique Identifier (GUID). |
 | `ipConfigurations` | array | `[]` |  | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
 | `location` | string | `[resourceGroup().location]` |  | Location for all Resources. |
 | `lock` | string | `''` | `['', CanNotDelete, ReadOnly]` | Specify the type of lock. |
@@ -312,7 +312,7 @@ module privateEndpoint './network/private-endpoint/main.bicep' = {
       '<applicationSecurityGroupResourceId>'
     ]
     customNetworkInterfaceName: 'npecom001nic'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
     ipConfigurations: [
       {
         name: 'myIPconfig'
@@ -379,8 +379,8 @@ module privateEndpoint './network/private-endpoint/main.bicep' = {
     "customNetworkInterfaceName": {
       "value": "npecom001nic"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "ipConfigurations": {
       "value": [
@@ -443,7 +443,7 @@ module privateEndpoint './network/private-endpoint/main.bicep' = {
     serviceResourceId: '<serviceResourceId>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
   }
 }
 ```
@@ -476,8 +476,8 @@ module privateEndpoint './network/private-endpoint/main.bicep' = {
       "value": "<subnetResourceId>"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     }
   }
 }

@@ -179,7 +179,7 @@
         "description": "Optional. Manual PrivateLink Service Connections."
       }
     },
-    "enableDefaultTelemetry": {
+    "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
@@ -204,7 +204,7 @@
   },
   "resources": {
     "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2021-04-01",
       "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
@@ -304,7 +304,7 @@
           "privateEndpointName": {
             "value": "[parameters('name')]"
           },
-          "enableDefaultTelemetry": {
+          "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
@@ -343,7 +343,7 @@
                 "description": "Optional. The name of the private DNS zone group."
               }
             },
-            "enableDefaultTelemetry": {
+            "enableTelemetry": {
               "type": "bool",
               "defaultValue": true,
               "metadata": {
@@ -367,7 +367,7 @@
           },
           "resources": [
             {
-              "condition": "[parameters('enableDefaultTelemetry')]",
+              "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2021-04-01",
               "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",

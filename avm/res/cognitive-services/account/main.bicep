@@ -122,7 +122,7 @@ param userOwnedStorage array = []
 param managedIdentities managedIdentitiesType
 
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
+param enableTelemetry bool = true
 
 var enableReferencedModulesTelemetry = false
 
@@ -164,7 +164,7 @@ var builtInRoleNames = {
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
-resource defaultTelemetry 'Microsoft.Resources/deployments@2022-09-01' = if (enableDefaultTelemetry) {
+resource defaultTelemetry 'Microsoft.Resources/deployments@2022-09-01' = if (enableTelemetry) {
   name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
   properties: {
     mode: 'Incremental'
@@ -271,7 +271,7 @@ module cognitiveService_privateEndpoints '../../network/private-endpoint/main.bi
     name: privateEndpoint.?name ?? 'pe-${last(split(cognitiveService.id, '/'))}-${privateEndpoint.service}-${index}'
     serviceResourceId: cognitiveService.id
     subnetResourceId: privateEndpoint.subnetResourceId
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds ?? []
@@ -432,7 +432,7 @@ type privateEndpointType = {
   manualPrivateLinkServiceConnections: array?
 
   @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-  enableDefaultTelemetry: bool?
+  enableTelemetry: bool?
 }[]?
 
 type managedIdentitiesType = {

@@ -315,7 +315,7 @@
             "description": "Optional. Manual PrivateLink Service Connections."
           }
         },
-        "enableDefaultTelemetry": {
+        "enableTelemetry": {
           "type": "bool",
           "nullable": true,
           "metadata": {
@@ -496,7 +496,7 @@
         "description": "Optional. The diagnostic settings of the service."
       }
     },
-    "enableDefaultTelemetry": {
+    "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
@@ -538,7 +538,7 @@
   },
   "resources": {
     "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2021-04-01",
       "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
@@ -652,7 +652,7 @@
           "accessPolicies": {
             "value": "[variables('formattedAccessPolicies')]"
           },
-          "enableDefaultTelemetry": {
+          "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
@@ -683,7 +683,7 @@
                 "description": "Optional. An array of 0 to 16 identities that have access to the key vault. All identities in the array must use the same tenant ID as the key vault's tenant ID."
               }
             },
-            "enableDefaultTelemetry": {
+            "enableTelemetry": {
               "type": "bool",
               "defaultValue": true,
               "metadata": {
@@ -707,7 +707,7 @@
           },
           "resources": [
             {
-              "condition": "[parameters('enableDefaultTelemetry')]",
+              "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2021-04-01",
               "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
@@ -787,7 +787,7 @@
           "contentType": "[if(contains(variables('secretList')[copyIndex()], 'contentType'), createObject('value', variables('secretList')[copyIndex()].contentType), createObject('value', ''))]",
           "tags": "[if(contains(variables('secretList')[copyIndex()], 'tags'), createObject('value', variables('secretList')[copyIndex()].tags), createObject('value', createObject()))]",
           "roleAssignments": "[if(contains(variables('secretList')[copyIndex()], 'roleAssignments'), createObject('value', variables('secretList')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-          "enableDefaultTelemetry": {
+          "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
@@ -923,7 +923,7 @@
                 "description": "Required. The value of the secret. NOTE: \"value\" will never be returned from the service, as APIs using this model are is intended for internal use in ARM deployments. Users should use the data-plane REST service for interaction with vault secrets."
               }
             },
-            "enableDefaultTelemetry": {
+            "enableTelemetry": {
               "type": "bool",
               "defaultValue": true,
               "metadata": {
@@ -958,7 +958,7 @@
           },
           "resources": {
             "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
+              "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2021-04-01",
               "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
@@ -1076,7 +1076,7 @@
           "kty": "[if(contains(parameters('keys')[copyIndex()], 'kty'), createObject('value', parameters('keys')[copyIndex()].kty), createObject('value', 'EC'))]",
           "tags": "[if(contains(parameters('keys')[copyIndex()], 'tags'), createObject('value', parameters('keys')[copyIndex()].tags), createObject('value', createObject()))]",
           "roleAssignments": "[if(contains(parameters('keys')[copyIndex()], 'roleAssignments'), createObject('value', parameters('keys')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-          "enableDefaultTelemetry": {
+          "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
           },
           "rotationPolicy": "[if(contains(parameters('keys')[copyIndex()], 'rotationPolicy'), createObject('value', parameters('keys')[copyIndex()].rotationPolicy), createObject('value', createObject()))]"
@@ -1263,7 +1263,7 @@
                 "description": "Optional. Key rotation policy properties object."
               }
             },
-            "enableDefaultTelemetry": {
+            "enableTelemetry": {
               "type": "bool",
               "defaultValue": true,
               "metadata": {
@@ -1291,7 +1291,7 @@
           },
           "resources": {
             "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
+              "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2021-04-01",
               "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
@@ -1411,7 +1411,7 @@
           "subnetResourceId": {
             "value": "[parameters('privateEndpoints')[copyIndex()].subnetResourceId]"
           },
-          "enableDefaultTelemetry": {
+          "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
           },
           "location": {
@@ -1626,7 +1626,7 @@
                 "description": "Optional. Manual PrivateLink Service Connections."
               }
             },
-            "enableDefaultTelemetry": {
+            "enableTelemetry": {
               "type": "bool",
               "defaultValue": true,
               "metadata": {
@@ -1651,7 +1651,7 @@
           },
           "resources": {
             "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
+              "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2021-04-01",
               "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
@@ -1751,7 +1751,7 @@
                   "privateEndpointName": {
                     "value": "[parameters('name')]"
                   },
-                  "enableDefaultTelemetry": {
+                  "enableTelemetry": {
                     "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
@@ -1790,7 +1790,7 @@
                         "description": "Optional. The name of the private DNS zone group."
                       }
                     },
-                    "enableDefaultTelemetry": {
+                    "enableTelemetry": {
                       "type": "bool",
                       "defaultValue": true,
                       "metadata": {
@@ -1814,7 +1814,7 @@
                   },
                   "resources": [
                     {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
+                      "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2021-04-01",
                       "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",

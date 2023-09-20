@@ -39,7 +39,7 @@ This module deploys a Key Vault Secret.
 | `attributesExp` | int | `-1` | Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible. |
 | `attributesNbf` | int | `-1` | Not before date in seconds since 1970-01-01T00:00:00Z. |
 | `contentType` | securestring | `''` | The content type of the secret. |
-| `enableDefaultTelemetry` | bool | `True` | Enable telemetry via a Globally Unique Identifier (GUID). |
+| `enableTelemetry` | bool | `True` | Enable telemetry via a Globally Unique Identifier (GUID). |
 | `roleAssignments` | array | `[]` | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 | `tags` | object | `{object}` | Resource tags. |
 

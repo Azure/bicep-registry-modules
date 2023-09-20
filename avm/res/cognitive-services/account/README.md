@@ -47,7 +47,7 @@ This module deploys a Cognitive Service.
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Allow only Azure AD authentication. Should be enabled for security reasons. |
 | [`dynamicThrottlingEnabled`](#parameter-dynamicthrottlingenabled) | bool | The flag to enable dynamic throttling. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enableTelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | string | Specify the type of lock. |
 | [`managedIdentities`](#parameter-managedidentities) |  | The managed identity definition for this resource |
@@ -80,7 +80,7 @@ The API properties for special APIs.
 
 The customer managed key definition.
 - Required: Yes
-- Type: 
+- Type:
 
 ### Parameter: `customSubDomainName`
 
@@ -110,7 +110,7 @@ The flag to enable dynamic throttling.
 - Type: bool
 - Default: `False`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
 Enable telemetry via a Globally Unique Identifier (GUID).
 - Required: No
@@ -143,7 +143,7 @@ Specify the type of lock.
 
 The managed identity definition for this resource
 - Required: Yes
-- Type: 
+- Type:
 
 ### Parameter: `migrationToken`
 
@@ -498,7 +498,7 @@ module account './cognitive-services/account/main.bicep' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
     lock: 'CanNotDelete'
     networkAcls: {
       defaultAction: 'Deny'
@@ -606,8 +606,8 @@ module account './cognitive-services/account/main.bicep' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "lock": {
       "value": "CanNotDelete"
@@ -694,7 +694,7 @@ module account './cognitive-services/account/main.bicep' = {
     }
     name: 'csaencr001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
     publicNetworkAccess: 'Enabled'
     restrictOutboundNetworkAccess: false
     sku: 'S0'
@@ -736,8 +736,8 @@ module account './cognitive-services/account/main.bicep' = {
       "value": "csaencr001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "publicNetworkAccess": {
       "value": "Enabled"
@@ -776,7 +776,7 @@ module account './cognitive-services/account/main.bicep' = {
     }
     name: '<name>'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
     publicNetworkAccess: 'Enabled'
     restrictOutboundNetworkAccess: false
     sku: 'S0'
@@ -815,8 +815,8 @@ module account './cognitive-services/account/main.bicep' = {
       "value": "<name>"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "publicNetworkAccess": {
       "value": "Enabled"
@@ -847,7 +847,7 @@ module account './cognitive-services/account/main.bicep' = {
     // Required parameters
     kind: 'SpeechServices'
     name: 'csamin001'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
   }
 }
 ```
@@ -871,8 +871,8 @@ module account './cognitive-services/account/main.bicep' = {
     "name": {
       "value": "csamin001"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     }
   }
 }
@@ -902,7 +902,7 @@ module account './cognitive-services/account/main.bicep' = {
     name: 'csaspeech001'
     // Non-required parameters
     customSubDomainName: 'speechdomain'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -958,8 +958,8 @@ module account './cognitive-services/account/main.bicep' = {
     "customSubDomainName": {
       "value": "speechdomain"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "privateEndpoints": {
       "value": [
