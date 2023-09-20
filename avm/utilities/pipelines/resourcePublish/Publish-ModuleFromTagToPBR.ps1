@@ -1,9 +1,16 @@
 function Publish-ModuleFromTagToPBR {
 
+<<<<<<< HEAD
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string] $ModuleReleaseTagName,
+=======
   [CmdletBinding()]
   param (
     [Parameter(Mandatory = $true)]
     [string] $TemplateFilePath,
+>>>>>>> 5c6008414f381dd3a5a500006621d277859abb04
 
     [Parameter(Mandatory = $true)]
     [secureString] $PublicRegistryServer
