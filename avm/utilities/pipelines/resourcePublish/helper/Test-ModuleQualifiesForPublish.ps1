@@ -18,7 +18,7 @@ Get modified files between previous and current commit depending on if you are r
 function Get-ModifiedFileList {
 
   # TODO : Replace back to 'main'
-  if ((Get-GitBranchName) -eq 'users/alsehr/introduceDiffBranch') {
+  if ((Get-GitBranchName) -eq 'main') {
     Write-Verbose 'Gathering modified files from the previous head' -Verbose
     $Diff = git diff --name-only --diff-filter=AM HEAD^ HEAD
   }
