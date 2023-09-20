@@ -20,10 +20,11 @@ function New-ModuleReleaseTag {
     [string] $TargetVersion
   )
 
-  $ModuleRelativeFolderPath = $ModuleRelativeFolderPath -replace '[\/|\\]'
+  $ModuleRelativeFolderPath = $ModuleRelativeFolderPath -replace '\\', '/'
 
   # 1 Build Tag
   $tagName = '{0}/{1}' -f $ModuleRelativeFolderPath, $TargetVersion
+  Write-Verbose "Publishing tag [$tagName]" -Verbose
 
   # 2 Check tag format
   $wellFormattedTag = git check-ref-format --normalize $tagName
