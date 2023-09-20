@@ -169,6 +169,9 @@ function Test-ModuleQualifiesForPublish {
   $TemplateFilesToPublish
 }
 
+
+Test-ModuleQualifiesForPublish -ModuleFolderPath 'C:\dev\ip\Azure-bicep-registry-modules\eriqua-fork\avm\res\network\private-endpoint'
+
 # #region Helper functions
 
 # <#
