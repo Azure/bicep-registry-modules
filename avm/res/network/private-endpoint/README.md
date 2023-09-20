@@ -1,6 +1,6 @@
 # Private Endpoints `[Microsoft.Network/privateEndpoints]`
 
-This module deploys a Private Endpoint.
+This module deploys a Private Endpoint...
 
 ## Navigation
 

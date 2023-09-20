@@ -104,7 +104,7 @@ function Get-TemplateFileToPublish {
   # /sfds/../../tests/main.bicep
 
   $relevantPaths = @()
-  $PathsToInclude += 'version.json' # Add the file itself to be considered too
+  $PathsToInclude += './version.json' # Add the file itself to be considered too
   foreach ($modifiedFile in $modifiedModuleFiles) {
 
     foreach ($path in  $PathsToInclude) {
