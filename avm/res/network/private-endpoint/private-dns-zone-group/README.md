@@ -4,12 +4,10 @@ This module deploys a Private Endpoint Private DNS Zone Group.
 
 ## Navigation
 
-- [Private Endpoint Private DNS Zone Groups `[Microsoft.Network/privateEndpoints/privateDnsZoneGroups]`](#private-endpoint-private-dns-zone-groups-microsoftnetworkprivateendpointsprivatednszonegroups)
-  - [Navigation](#navigation)
-  - [Resource Types](#resource-types)
-  - [Parameters](#parameters)
-  - [Outputs](#outputs)
-  - [Cross-referenced modules](#cross-referenced-modules)
+- [Resource Types](#Resource-Types)
+- [Parameters](#Parameters)
+- [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
