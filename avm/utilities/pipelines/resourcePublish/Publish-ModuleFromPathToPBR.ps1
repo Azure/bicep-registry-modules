@@ -16,26 +16,26 @@ function Publish-ModuleFromPathToPBR {
     . (Join-Path $PSScriptRoot 'helper' 'Set-ModuleReleaseTag.ps1')
     . (Join-Path $PSScriptRoot 'helper' 'Get-ModuleReadmeLink.ps1')
 
-    $moduleRelativePath = Split-Path $TemplateFilePath -Parent
-    $moduleJsonFilePath = Join-Path $moduleRelativePath 'main.json'
+    $moduleFolderPath = Split-Path $TemplateFilePath -Parent
+    $moduleJsonFilePath = Join-Path $moduleFolderPath 'main.json'
 
     # 1. Test if module qualifies for publishing
-    if (-not (Test-ModuleQualifiesForPublish -ModuleRelativePath $moduleRelativePath)) {
+    if (-not (Test-ModuleQualifiesForPublish -moduleFolderPath $moduleFolderPath)) {
         Write-Verbose "No changes detected. Skipping publishing" -Verbose
         return
     }
 
     # 2. Calculate the version that we would publish with
-    $targetVersion = Get-ModuleTargetVersion -ModuleRelativePath $moduleRelativePath
+    $targetVersion = Get-ModuleTargetVersion -moduleFolderPath $moduleFolderPath
 
     # 3. Get Target Published Module Name
     $publishedModuleName = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
 
     # 4.Create release tag
-    Set-ModuleReleaseTag -ModuleRelativePath $moduleRelativePath
+    Set-ModuleReleaseTag -moduleFolderPath $moduleFolderPath
 
     # 5. Get the documentation link
-    $documentationUri = Get-ModuleReadmeLink -ModuleRelativePath $moduleRelativePath
+    $documentationUri = Get-ModuleReadmeLink -moduleFolderPath $moduleFolderPath
 
     # 6. Replace telemetry version value (in JSON)
     $tokenConfiguration = @{

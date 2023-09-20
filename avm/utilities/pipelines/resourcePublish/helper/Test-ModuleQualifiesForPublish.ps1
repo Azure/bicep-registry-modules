@@ -162,10 +162,10 @@ function Test-ModuleQualifiesForPublish {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory)]
-    [string] $ModuleRelativePath
+    [string] $ModuleFolderPath
   )
 
-  $TemplateFilesToPublish = Get-TemplateFileToPublish -ModuleFolderPath $ModuleRelativePath | Sort-Object FullName -Descending
+  $TemplateFilesToPublish = Get-TemplateFileToPublish -ModuleFolderPath $ModuleFolderPath | Sort-Object FullName -Descending
   $TemplateFilesToPublish
 }
 

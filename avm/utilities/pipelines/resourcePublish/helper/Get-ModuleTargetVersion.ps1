@@ -9,7 +9,7 @@ Builds version as major.minor.patch
 
 If new major/minor patch is 0
 
-.PARAMETER ModuleRelativePath
+.PARAMETER ModuleFolderPath
 Mandatory. The relative path of the module e.g. `avm/res/network/private-endpoint`
 
 .EXAMPLE
@@ -22,7 +22,7 @@ function Get-ModuleTargetVersion {
   [CmdletBinding()]
   param (
     [Parameter()]
-    [string] $ModuleRelativePath
+    [string] $ModuleFolderPath
   )
 
   # 1. Get MAJOR and MINOR from [version.json]
