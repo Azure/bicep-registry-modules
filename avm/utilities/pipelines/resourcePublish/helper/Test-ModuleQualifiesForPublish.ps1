@@ -17,8 +17,9 @@ Get modified files between previous and current commit depending on if you are r
 #>
 function Get-ModifiedFileList {
 
-  if (Get-GitBranchName -eq 'main') {
-    Write-Verbose 'Gathering modified files from the pull request' -Verbose
+  # TODO : Replace back to 'main'
+  if ((Get-GitBranchName) -eq 'users/alsehr/introduceDiffBranch') {
+    Write-Verbose 'Gathering modified files from the previous head' -Verbose
     $Diff = git diff --name-only --diff-filter=AM HEAD^ HEAD
   }
   $ModifiedFiles = $Diff | Get-Item -Force
@@ -87,11 +88,11 @@ function Get-TemplateFileToPublish {
   $ModuleFolderRelPath = $ModuleFolderPath.Split('/avm/')[-1]
   $ModifiedFiles = Get-ModifiedFileList -Verbose
   Write-Verbose "Looking for modified files under: [$ModuleFolderRelPath]" -Verbose
-  $ModifiedModuleFiles = $ModifiedFiles | Where-Object { $_.FullName -like "*$ModuleFolderPath*" }
+  $ModifiedModuleFiles = $ModifiedFiles.FullName | Where-Object { $_ -like "*$ModuleFolderPath*" }
 
   $TemplateFilesToPublish = $ModifiedModuleFiles | ForEach-Object {
-    Find-TemplateFile -Path $_.FullName -Verbose
-  } | Sort-Object -Property FullName -Unique -Descending
+    Find-TemplateFile -Path $_ -Verbose
+  } | Sort-Object -Unique -Descending
 
   if ($TemplateFilesToPublish.Count -eq 0) {
     Write-Verbose 'No template file found in the modified module.' -Verbose
@@ -99,7 +100,7 @@ function Get-TemplateFileToPublish {
 
   Write-Verbose ('Modified modules found: [{0}]' -f $TemplateFilesToPublish.count) -Verbose
   $TemplateFilesToPublish | ForEach-Object {
-    $RelPath = ($_.FullName).Split('/avm/')[-1]
+    $RelPath = $_.Split('/avm/')[-1]
     $RelPath = $RelPath.Split('/main.')[0]
     Write-Verbose " - [$RelPath]" -Verbose
   }
@@ -147,7 +148,7 @@ function Find-TemplateFile {
     return Find-TemplateFile -Path $FolderPath
   }
 
-  return $TemplateFilePath | Get-Item
+  return ($TemplateFilePath | Get-Item).FullName
 }
 
 

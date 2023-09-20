@@ -4,16 +4,18 @@ This module deploys a Private Endpoint Private DNS Zone Group.
 
 ## Navigation
 
-- [Resource Types](#Resource-Types)
-- [Parameters](#Parameters)
-- [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
+- [Private Endpoint Private DNS Zone Groups `[Microsoft.Network/privateEndpoints/privateDnsZoneGroups]`](#private-endpoint-private-dns-zone-groups-microsoftnetworkprivateendpointsprivatednszonegroups)
+  - [Navigation](#navigation)
+  - [Resource Types](#resource-types)
+  - [Parameters](#parameters)
+  - [Outputs](#outputs)
+  - [Cross-referenced modules](#cross-referenced-modules)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroup` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Parameters
 
