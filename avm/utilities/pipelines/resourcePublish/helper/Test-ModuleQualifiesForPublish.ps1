@@ -36,8 +36,6 @@ Get the name of the current checked out branch. If git cannot find it, best effo
 .EXAMPLE
 Get-CurrentBranch
 
-feature-branch-1
-
 Get the name of the current checked out branch.
 #>
 function Get-GitBranchName {
