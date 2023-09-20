@@ -3,7 +3,7 @@ function Publish-ModuleFromTagToPBR {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
-        [string] $TemplateFilePath,
+        [string] $ModuleReleaseTagName,
 
         [Parameter(Mandatory = $true)]
         [secureString] $PublicRegistryServer

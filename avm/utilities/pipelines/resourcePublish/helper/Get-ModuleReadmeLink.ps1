@@ -1,16 +1,38 @@
 <#
 .SYNOPSIS
-Get the formatted readme url
+Get the formatted README url for the published module
 
 .DESCRIPTION
+Get the formatted README url for the published module
 
-.PARAMETER ModuleFolderPath
-Mandatory. The relative path of the module e.g. `avm/res/network/private-endpoint`
+.PARAMETER ModuleRelativeFolderPath
+Mandatory. The relative path of the module. For example: `avm\res\network\private-endpoint`.
+
+.PARAMETER TagName
+Mandatory. The tag name of the module. For example: `avm/res/network/private-endpoint/1.0.0`.
+
+.PARAMETER RegistryBaseUri
+Optional. The uri of the Bicep Registry Repository file tree.
 
 .EXAMPLE
+Get-ModuleReadmeLink -ModuleRelativeFolderPath 'avm\res\network\private-endpoint' -TagName 'avm/res/network/private-endpoint/1.0.0'
 
-`https://github.com/Azure/bicep-registry-modules/tree/${tag}/${moduleFolderPath}/README.md`;
-
-e.g. `https://github.com/Azure/bicep-registry-modules/tree/  avm-res-network-privateendpoint/1.0.0  /avm/res/network/private-endpoint/README.md`;
-
+Returns 'https://github.com/Azure/bicep-registry-modules/tree/avm/res/network/private-endpoint/1.0.0/avm/res/network/private-endpoint.README.md'
 #>
+function Get-ModuleReadmeLink {
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string] $ModuleRelativeFolderPath,
+
+        [Parameter(Mandatory = $true)]
+        [string] $TagName,
+
+        [Parameter(Mandatory = $false)]
+        [string] $RegistryBaseUri = 'https://github.com/Azure/bicep-registry-modules/tree'
+    )
+
+    return (('{0}/{1}/{2}.README.md' -f $RegistryBaseUri, $TagName, $ModuleRelativeFolderPath) -replace '\\', '/')
+}
+
