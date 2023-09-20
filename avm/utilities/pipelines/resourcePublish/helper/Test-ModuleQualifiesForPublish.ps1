@@ -1,50 +1,31 @@
+#region Helper functions
 
-# -> Is there a diff to head
-# -> Is there a diff to PBR
+<#
+.SYNOPSIS
+Get modified files between previous and current commit depending on if you are running on main/master or a custom branch.
 
-function Test-ModuleQualifiesForPublish {
-  [CmdletBinding()]
-  param (
+.EXAMPLE
+Get-ModifiedFileList
 
-  )
+    Directory: .avm\utilities\pipelines\resourcePublish
 
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+la---          08.12.2021    15:50           7133 Script.ps1
+
+Get modified files between previous and current commit depending on if you are running on main/master or a custom branch.
+#>
+function Get-ModifiedFileList {
+
+  if (Get-GitBranchName -eq 'main') {
+    Write-Verbose 'Gathering modified files from the pull request' -Verbose
+    $Diff = git diff --name-only --diff-filter=AM HEAD^ HEAD
+  }
+  $ModifiedFiles = $Diff | Get-Item -Force
+
+  return $ModifiedFiles
 }
 
-# #region Helper functions
-
-# <#
-# .SYNOPSIS
-# Get modified files between previous and current commit depending on if you are running on main/master or a custom branch.
-
-# .EXAMPLE
-# Get-ModifiedFileList
-
-#     Directory: .avm\utilities\pipelines\resourcePublish
-
-# Mode                 LastWriteTime         Length Name
-# ----                 -------------         ------ ----
-# la---          08.12.2021    15:50           7133 Script.ps1
-
-# Get modified files between previous and current commit depending on if you are running on main/master or a custom branch.
-# #>
-# function Get-ModifiedFileList {
-#   $CurrentBranch = Get-GitBranchName
-#   if (($CurrentBranch -eq 'main') -or ($CurrentBranch -eq 'master')) {
-#       Write-Verbose 'Gathering modified files from the pull request' -Verbose
-#       $Diff = git diff --name-only --diff-filter=AM HEAD^ HEAD
-#   }
-#   else {
-#       Write-Verbose 'Gathering modified files between current branch and main' -Verbose
-#       $Diff = git diff --name-only --diff-filter=AM origin/main
-#       if ($Diff.count -eq 0) {
-#           Write-Verbose 'Gathering modified files between current branch and master' -Verbose
-#           $Diff = git diff --name-only --diff-filter=AM origin/master
-#       }
-#   }
-#   $ModifiedFiles = $Diff | Get-Item -Force
-
-#   return $ModifiedFiles
-# }
 
 # <#
 # .SYNOPSIS
@@ -61,118 +42,134 @@ function Test-ModuleQualifiesForPublish {
 # Get the name of the current checked out branch.
 
 # #>
-# function Get-GitBranchName {
-#   [CmdletBinding()]
-#   param ()
+function Get-GitBranchName {
+  [CmdletBinding()]
+  param ()
 
-#   # Get branch name from Git
-#   $BranchName = git branch --show-current
+  # Get branch name from Git
+  $BranchName = git branch --show-current
 
-#   # If git could not get name, try GitHub variable
-#   if ([string]::IsNullOrEmpty($BranchName) -and (Test-Path env:GITHUB_REF_NAME)) {
-#       $BranchName = $env:GITHUB_REF_NAME
-#   }
+  # If git could not get name, try GitHub variable
+  if ([string]::IsNullOrEmpty($BranchName) -and (Test-Path env:GITHUB_REF_NAME)) {
+    $BranchName = $env:GITHUB_REF_NAME
+  }
 
-#   # If git could not get name, try Azure DevOps variable
-#   if ([string]::IsNullOrEmpty($BranchName) -and (Test-Path env:BUILD_SOURCEBRANCHNAME)) {
-#       $BranchName = $env:BUILD_SOURCEBRANCHNAME
-#   }
+  return $BranchName
+}
 
-#   return $BranchName
-# }
+<#
+.SYNOPSIS
+Find the closest main.bicep file to the changed files in the module folder structure.
 
-# <#
-# .SYNOPSIS
-# Find the closest main.bicep file to the current directory/file.
+.DESCRIPTION
+Find the closest main.bicep file to the changed files in the module folder structure.
 
-# .DESCRIPTION
-# This function will search the current directory and all parent directories for a main.bicep file.
+.PARAMETER ModuleFolderPath
+Mandatory. Path to the main/parent module folder.
 
-# .PARAMETER Path
-# Mandatory. Path to the folder/file that should be searched
+.EXAMPLE
+Get-TemplateFileToPublish -ModuleFolderPath ".\avm\storage\storage-account\"
 
-# .EXAMPLE
-# Find-TemplateFile -Path ".\avm\storage\storage-account\table-service\table\.bicep\nested_roleAssignments.bicep"
+.\avm\storage\storage-account\table-service\table\main.bicep
 
-#   Directory: .\avm\storage\storage-account\table-service\table
+Gets the closest main.bicep file to the changed files in the module folder structure.
+Assuming there is a changed file in 'storage\storage-account\table-service\table'
+the function would return the main.bicep file in the same folder.
 
-# Mode                 LastWriteTime         Length Name
-# ----                 -------------         ------ ----
-# la---          05.12.2021    22:45           1230 main.bicep
+#>
+function Get-TemplateFileToPublish {
 
-# Gets the closest main.bicep file to the current directory.
-# #>
-# function Find-TemplateFile {
-#   [CmdletBinding()]
-#   param (
-#       [Parameter(Mandatory)]
-#       [string] $Path
-#   )
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory)]
+    [string] $ModuleFolderPath
+  )
+  $ModuleFolderRelPath = $ModuleFolderPath.Split('/avm/')[-1]
+  $ModifiedFiles = Get-ModifiedFileList -Verbose
+  Write-Verbose "Looking for modified files under: [$ModuleFolderRelPath]" -Verbose
+  $ModifiedModuleFiles = $ModifiedFiles | Where-Object { $_.FullName -like "*$ModuleFolderPath*" }
 
-#   $FolderPath = Split-Path $Path -Parent
-#   $FolderName = Split-Path $Path -Leaf
-#   if ($FolderName -eq 'modules') {
-#       return $null
-#   }
+  $TemplateFilesToPublish = $ModifiedModuleFiles | ForEach-Object {
+    Find-TemplateFile -Path $_.FullName -Verbose
+  } | Sort-Object -Property FullName -Unique -Descending
 
-#   $TemplateFilePath = Join-Path $FolderPath 'main.bicep'
+  if ($TemplateFilesToPublish.Count -eq 0) {
+    Write-Verbose 'No template file found in the modified module.' -Verbose
+  }
 
-#   if (-not (Test-Path $TemplateFilePath)) {
-#       return Find-TemplateFile -Path $FolderPath
-#   }
+  Write-Verbose ('Modified modules found: [{0}]' -f $TemplateFilesToPublish.count) -Verbose
+  $TemplateFilesToPublish | ForEach-Object {
+    $RelPath = ($_.FullName).Split('/avm/')[-1]
+    $RelPath = $RelPath.Split('/main.')[0]
+    Write-Verbose " - [$RelPath]" -Verbose
+  }
 
-#   return $TemplateFilePath | Get-Item
-# }
+  return $TemplateFilesToPublish
+}
 
-# <#
-# .SYNOPSIS
-# Find the closest main.bicep file to the changed files in the module folder structure.
+<#
+.SYNOPSIS
+Find the closest main.bicep file to the current directory/file.
 
-# .DESCRIPTION
-# Find the closest main.bicep file to the changed files in the module folder structure.
+.DESCRIPTION
+This function will search the current directory and all parent directories for a main.bicep file.
 
-# .PARAMETER ModuleFolderPath
-# Mandatory. Path to the main/parent module folder.
+.PARAMETER Path
+Mandatory. Path to the folder/file that should be searched
 
-# .EXAMPLE
-# Get-TemplateFileToPublish -ModuleFolderPath ".\avm\storage\storage-account\"
+.EXAMPLE
+Find-TemplateFile -Path ".\avm\storage\storage-account\table-service\table\.bicep\nested_roleAssignments.bicep"
 
-# .\avm\storage\storage-account\table-service\table\main.bicep
+  Directory: .\avm\storage\storage-account\table-service\table
 
-# Gets the closest main.bicep file to the changed files in the module folder structure.
-# Assuming there is a changed file in 'storage\storage-account\table-service\table'
-# the function would return the main.bicep file in the same folder.
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+la---          05.12.2021    22:45           1230 main.bicep
 
-# #>
-# function Get-TemplateFileToPublish {
+Gets the closest main.bicep file to the current directory.
+#>
+function Find-TemplateFile {
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory)]
+    [string] $Path
+  )
 
-#   [CmdletBinding()]
-#   param (
-#       [Parameter(Mandatory)]
-#       [string] $ModuleFolderPath
-#   )
-#   $ModuleFolderRelPath = $ModuleFolderPath.Split('/avm/')[-1]
-#   $ModifiedFiles = Get-ModifiedFileList -Verbose
-#   Write-Verbose "Looking for modified files under: [$ModuleFolderRelPath]" -Verbose
-#   $ModifiedModuleFiles = $ModifiedFiles | Where-Object { $_.FullName -like "*$ModuleFolderPath*" }
+  $FolderPath = Split-Path $Path -Parent
+  $FolderName = Split-Path $Path -Leaf
+  if ($FolderName -eq 'modules') {
+    return $null
+  }
 
-#   $TemplateFilesToPublish = $ModifiedModuleFiles | ForEach-Object {
-#       Find-TemplateFile -Path $_.FullName -Verbose
-#   } | Sort-Object -Property FullName -Unique -Descending
+  $TemplateFilePath = Join-Path $FolderPath 'main.bicep'
 
-#   if ($TemplateFilesToPublish.Count -eq 0) {
-#       Write-Verbose 'No template file found in the modified module.' -Verbose
-#   }
+  if (-not (Test-Path $TemplateFilePath)) {
+    return Find-TemplateFile -Path $FolderPath
+  }
 
-#   Write-Verbose ('Modified modules found: [{0}]' -f $TemplateFilesToPublish.count) -Verbose
-#   $TemplateFilesToPublish | ForEach-Object {
-#       $RelPath = ($_.FullName).Split('/avm/')[-1]
-#       $RelPath = $RelPath.Split('/main.')[0]
-#       Write-Verbose " - [$RelPath]" -Verbose
-#   }
+  return $TemplateFilePath | Get-Item
+}
 
-#   return $TemplateFilesToPublish
-# }
+
+#endregion
+
+# -> Is there a diff to head
+# -> Is there a diff to PBR
+
+function Test-ModuleQualifiesForPublish {
+
+
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory)]
+    [string] $ModuleRelativePath
+  )
+
+  $TemplateFilesToPublish = Get-TemplateFileToPublish -ModuleFolderPath $ModuleRelativePath | Sort-Object FullName -Descending
+  $TemplateFilesToPublish
+}
+
+# #region Helper functions
 
 # <#
 # .SYNOPSIS
