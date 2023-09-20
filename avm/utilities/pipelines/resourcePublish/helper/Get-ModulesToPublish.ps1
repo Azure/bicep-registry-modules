@@ -163,7 +163,26 @@ function Find-TemplateFile {
 }
 #endregion
 
-function Test-ModuleQualifiesForPublish {
+<#
+.SYNOPSIS
+Get any template (main.json) files in the given folder path that would qualify for publishing.
+
+.DESCRIPTION
+Get any template (main.json) files in the given folder path that would qualify for publishing.
+Uses Head^-1 to check for changed files and filters them by the module path & path filter of the version.json
+
+.PARAMETER ModuleFolderPath
+Mandatory. The path to the module to check for changed files in.
+
+.EXAMPLE
+Get-ModulesToPublish -ModuleFolderPath "C:\avm\storage\storage-account"
+
+Could return paths like
+- C:\avm\storage\storage-account\main.json
+- C:\avm\storage\storage-account\blob-service\main.json
+
+#>
+function Get-ModulesToPublish {
 
 
   [CmdletBinding()]
@@ -179,10 +198,10 @@ function Test-ModuleQualifiesForPublish {
   $TemplateFilesToPublish = Get-TemplateFileToPublish -ModuleFolderPath $ModuleFolderPath -PathsToInclude $PathsToInclude
 
   # Filter out any children (as they're currently not considered for publishing)
-  $TemplateFilesToPublish = $TemplateFilesToPublish | Where-Object {
-    # e.g., res\network\private-endpoint\main.json
-    (($_ -split 'avm[\/|\\]')[1] -split '[\/|\\]').Count -le 4
-  }
+  # $TemplateFilesToPublish = $TemplateFilesToPublish | Where-Object {
+  #   # e.g., res\network\private-endpoint\main.json
+  #   (($_ -split 'avm[\/|\\]')[1] -split '[\/|\\]').Count -le 4
+  # }
 
   # Return the remaining template file(s)
   return $TemplateFilesToPublish
