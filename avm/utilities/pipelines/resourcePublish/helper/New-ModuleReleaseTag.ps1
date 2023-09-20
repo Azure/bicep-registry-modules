@@ -20,13 +20,29 @@ function New-ModuleReleaseTag {
     [string] $TargetVersion
   )
 
+  $ModuleRelativeFolderPath = $ModuleRelativeFolderPath -replace '[\/|\\]'
+
   # 1 Build Tag
-  $tagName = '{0}.{1}' -f $ModuleRelativeFolderPath, $TargetVersion
+  $tagName = '{0}/{1}' -f $ModuleRelativeFolderPath, $TargetVersion
 
-  # 2 Check tag already existing, if so return
+  # 2 Check tag format
+  $wellFormattedTag = git check-ref-format --normalize $tagName
+  if (-not $wellFormattedTag) {
+    Write-Verbose "Tag [$tagName] is not well formatted" -Verbose
+    # TODO what if tag not formatted correctly
+  }
 
-  # 3 Create local tag
+  # 3 Check tag already existing, if so return
+  $existingTag = git ls-remote --tags origin $tagName
+  if ($existingTag) {
+    Write-Verbose "Tag [$tagName] already exists" -Verbose
+    # TODO what if tag already existing
+  }
 
-  # 4 Push Tag
-  # Update logic, progressive number
+  # 3 Create and push tag
+  git tag $tagName
+  git push origin $tag
+
+  # 4 Return
+  return $tagName
 }
