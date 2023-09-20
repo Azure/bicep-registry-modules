@@ -38,7 +38,7 @@ function Publish-ModuleFromPathToPBR {
   $publishedModuleName = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
 
   # 4.Create release tag
-  $tagName = New-ModuleReleaseTag -ModuleRelativeFolderPath $moduleRelativeFolderPath
+  $tagName = New-ModuleReleaseTag -ModuleRelativeFolderPath $moduleRelativeFolderPath -TargetVersion $targetVersion
 
   # 5. Get the documentation link
   $documentationUri = Get-ModuleReadmeLink -TagName $tagName -ModuleRelativeFolderPath $moduleRelativeFolderPath

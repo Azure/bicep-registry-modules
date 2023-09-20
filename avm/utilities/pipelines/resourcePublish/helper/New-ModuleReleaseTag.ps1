@@ -14,11 +14,19 @@ function New-ModuleReleaseTag {
   [CmdletBinding()]
   param (
     [Parameter()]
-    [string] $ModuleFolderPath
+    [string] $ModuleRelativeFolderPath,
+
+    [Parameter()]
+    [string] $TargetVersion
   )
 
-  $oldPatch = 0
-  $newPatch = $oldPatch + 1
-  return $newPatch
+  # 1 Build Tag
+  $tagName = '{0}.{1}' -f $ModuleRelativeFolderPath, $TargetVersion
+
+  # 2 Check tag already existing, if so return
+
+  # 3 Create local tag
+
+  # 4 Push Tag
   # Update logic, progressive number
 }
