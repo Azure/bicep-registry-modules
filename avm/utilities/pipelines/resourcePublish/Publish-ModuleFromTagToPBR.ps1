@@ -57,4 +57,3 @@ function Publish-ModuleFromTagToPBR {
 }
 
 Publish-ModuleFromTagToPBR -ModuleReleaseTagName 'avm/res/key-vault/vault/0.6.10' -PublicRegistryServer (ConvertTo-SecureString 'myserver' -AsPlainText -Force)
-```
