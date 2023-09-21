@@ -37,7 +37,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Set environment
-        uses: ./.github/actions/templates/avm-setEnvironment}
+        uses: ./.github/actions/templates/avm-setEnvironment
       - name: 'Run tests'
         uses: ./.github/actions/templates/avm-validateModulePester
         with:
