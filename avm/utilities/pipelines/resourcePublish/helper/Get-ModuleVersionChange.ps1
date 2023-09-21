@@ -6,10 +6,6 @@ function Get-ModuleVersionChange {
     [string] $VersionFilePath
   )
 
-  # 1 boolean check if version changed
-
-  # 2 boolean check if version value changed
-
   $diff = git diff --diff-filter=AM HEAD^ HEAD $VersionFilePath | Out-String
 
 

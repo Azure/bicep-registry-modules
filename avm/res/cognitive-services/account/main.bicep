@@ -2,10 +2,10 @@ metadata name = 'Cognitive Services'
 metadata description = 'This module deploys a Cognitive Service.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. The name of Cognitive Services account.')
+@description('Required. The name of Cognitive Services resource.')
 param name string
 
-@description('Required. Kind of the Cognitive Services. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
+@description('Required. Kind of the Cognitive Services resource. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
 @allowed([
   'AnomalyDetector'
   'Bing.Autosuggest.v7'
