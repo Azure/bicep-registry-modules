@@ -1,14 +1,14 @@
 ﻿##############################
 #   Load general functions   #
 ##############################
-$repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent.FullName
+$repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent.Parent.FullName
 
-. (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-NestedResourceList.ps1')
-. (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-ScopeOfTemplateFile.ps1')
-. (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Get-ModuleTestFileList.ps1')
-. (Join-Path $repoRootPath 'utilities' 'tools' 'Get-CrossReferencedModuleList.ps1')
-. (Join-Path $repoRootPath 'utilities' 'tools' 'helper' 'ConvertTo-OrderedHashtable.ps1')
-. (Join-Path $repoRootPath 'utilities' 'tools' 'helper' 'Get-PipelineFileName.ps1')
+. (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-NestedResourceList.ps1')
+. (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-ScopeOfTemplateFile.ps1')
+. (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-ModuleTestFileList.ps1')
+. (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-PipelineFileName.ps1')
+. (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'ConvertTo-OrderedHashtable.ps1')
+# . (Join-Path $repoRootPath 'utilities' 'tools' 'Get-CrossReferencedModuleList.ps1')
 
 ####################################
 #   Load test-specific functions   #
@@ -34,21 +34,21 @@ Get the index of the '# Parameters' header in the given markdown array @('# Para
 #>
 function Get-MarkdownSectionStartIndex {
 
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory = $true)]
-        [array] $ReadMeContent,
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true)]
+    [array] $ReadMeContent,
 
-        [Parameter(Mandatory = $true)]
-        [string] $MarkdownSectionIdentifier
-    )
+    [Parameter(Mandatory = $true)]
+    [string] $MarkdownSectionIdentifier
+  )
 
-    $sectionStartIndex = 0
-    while ($ReadMeContent[$sectionStartIndex] -notlike $MarkdownSectionIdentifier -and -not ($sectionStartIndex -ge $ReadMeContent.count)) {
-        $sectionStartIndex++
-    }
+  $sectionStartIndex = 0
+  while ($ReadMeContent[$sectionStartIndex] -notlike $MarkdownSectionIdentifier -and -not ($sectionStartIndex -ge $ReadMeContent.count)) {
+    $sectionStartIndex++
+  }
 
-    return $sectionStartIndex
+  return $sectionStartIndex
 }
 
 <#
@@ -71,21 +71,21 @@ Search for the end index of the section starting in index 2 in array @('somrthin
 #>
 function Get-MarkdownSectionEndIndex {
 
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory = $true)]
-        [array] $ReadMeContent,
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true)]
+    [array] $ReadMeContent,
 
-        [Parameter(Mandatory = $true)]
-        [int] $SectionStartIndex
-    )
+    [Parameter(Mandatory = $true)]
+    [int] $SectionStartIndex
+  )
 
-    $sectionEndIndex = $sectionStartIndex + 1
-    while ($readMeContent[$sectionEndIndex] -notlike '*# *' -and -not ($sectionEndIndex -ge $ReadMeContent.count)) {
-        $sectionEndIndex++
-    }
+  $sectionEndIndex = $sectionStartIndex + 1
+  while ($readMeContent[$sectionEndIndex] -notlike '*# *' -and -not ($sectionEndIndex -ge $ReadMeContent.count)) {
+    $sectionEndIndex++
+  }
 
-    return $sectionEndIndex
+  return $sectionEndIndex
 }
 
 <#
@@ -108,28 +108,28 @@ Get the start & end index of the table in section '# Parameters' in the given Re
 #>
 function Get-TableStartAndEndIndex {
 
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory = $true)]
-        [array] $ReadMeContent,
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true)]
+    [array] $ReadMeContent,
 
-        [Parameter(Mandatory = $true)]
-        [string] $MarkdownSectionIdentifier
-    )
+    [Parameter(Mandatory = $true)]
+    [string] $MarkdownSectionIdentifier
+  )
 
-    $sectionStartIndex = Get-MarkdownSectionStartIndex -ReadMeContent $ReadMeContent -MarkdownSectionIdentifier $MarkdownSectionIdentifier
+  $sectionStartIndex = Get-MarkdownSectionStartIndex -ReadMeContent $ReadMeContent -MarkdownSectionIdentifier $MarkdownSectionIdentifier
 
-    $tableStartIndex = $sectionStartIndex + 1
-    while ($readMeContent[$tableStartIndex] -notlike '*|*' -and -not ($tableStartIndex -ge $readMeContent.count)) {
-        $tableStartIndex++
-    }
+  $tableStartIndex = $sectionStartIndex + 1
+  while ($readMeContent[$tableStartIndex] -notlike '*|*' -and -not ($tableStartIndex -ge $readMeContent.count)) {
+    $tableStartIndex++
+  }
 
-    $tableEndIndex = $tableStartIndex + 2
-    while ($readMeContent[$tableEndIndex] -like '|*' -and -not ($tableEndIndex -ge $readMeContent.count)) {
-        $tableEndIndex++
-    }
+  $tableEndIndex = $tableStartIndex + 2
+  while ($readMeContent[$tableEndIndex] -like '|*' -and -not ($tableEndIndex -ge $readMeContent.count)) {
+    $tableEndIndex++
+  }
 
-    return $tableStartIndex, $tableEndIndex
+  return $tableStartIndex, $tableEndIndex
 }
 
 <#
@@ -149,17 +149,17 @@ Returns @{ b = 'b' }
 #>
 function Remove-JSONMetadata {
 
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory = $true)]
-        [hashtable] $TemplateObject
-    )
-    $TemplateObject.Remove('metadata')
-    for ($index = 0; $index -lt $TemplateObject.resources.Count; $index++) {
-        if ($TemplateObject.resources[$index].type -eq 'Microsoft.Resources/deployments') {
-            $TemplateObject.resources[$index] = Remove-JSONMetadata -TemplateObject $TemplateObject.resources[$index].properties.template
-        }
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true)]
+    [hashtable] $TemplateObject
+  )
+  $TemplateObject.Remove('metadata')
+  for ($index = 0; $index -lt $TemplateObject.resources.Count; $index++) {
+    if ($TemplateObject.resources[$index].type -eq 'Microsoft.Resources/deployments') {
+      $TemplateObject.resources[$index] = Remove-JSONMetadata -TemplateObject $TemplateObject.resources[$index].properties.template
     }
+  }
 
-    return $TemplateObject
+  return $TemplateObject
 }

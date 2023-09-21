@@ -7,7 +7,7 @@ param (
     }),
 
   [Parameter(Mandatory = $false)]
-  [string] $repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.FullName,
+  [string] $repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent.FullName,
 
   # Dedicated Tokens configuration hashtable containing the tokens and token prefix and suffix.
   [Parameter(Mandatory = $false)]
@@ -37,7 +37,7 @@ $script:templateNotFoundException = 'No template file found in folder [{0}]' # -
 # Import any helper function used in this test script
 Import-Module (Join-Path $PSScriptRoot 'helper' 'helper.psm1') -Force
 
-$script:crossReferencedModuleList = Get-CrossReferencedModuleList
+# $script:crossReferencedModuleList = Get-CrossReferencedModuleList
 
 Describe 'File/folder tests' -Tag 'Modules' {
 
