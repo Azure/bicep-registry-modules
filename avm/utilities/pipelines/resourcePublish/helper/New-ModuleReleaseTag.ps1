@@ -14,13 +14,13 @@ function New-ModuleReleaseTag {
   [CmdletBinding()]
   param (
     [Parameter()]
-    [string] $ModuleRelativeFolderPath,
+    [string] $ModuleFolderPath,
 
     [Parameter()]
     [string] $TargetVersion
   )
 
-  $ModuleRelativeFolderPath = $ModuleRelativeFolderPath -replace '\\', '/'
+  $ModuleRelativeFolderPath = ($ModuleFolderPath -split '[\/|\\]avm[\/|\\]')[-1] -replace '\\', '/'
 
   # 1 Build Tag
   $tagName = '{0}/{1}' -f $ModuleRelativeFolderPath, $TargetVersion

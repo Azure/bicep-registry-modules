@@ -1,4 +1,4 @@
-function Test-ModuleVersionUpdate {
+function Get-ModuleVersionChange {
 
   [CmdletBinding()]
   param (

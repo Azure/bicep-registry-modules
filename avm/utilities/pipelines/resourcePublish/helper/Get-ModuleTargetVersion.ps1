@@ -26,7 +26,7 @@ function Get-ModuleTargetVersion {
   )
 
   # Load used functions
-  . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Test-ModuleVersionUpdate.ps1')
+  . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Get-ModuleVersionChange.ps1')
   . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Get-ModuleTargetPatchVersion.ps1')
 
   # 1. Get [version.json] file path
@@ -42,7 +42,7 @@ function Get-ModuleTargetVersion {
   # 3. Get PATCH
   # Check if [version.json] file version property was updated (compare with previous head)
   # TODO: update with diff function call
-  $versionChange = Test-ModuleVersionUpdate -VersionFilePath $VersionFilePath
+  $versionChange = Get-ModuleVersionChange -VersionFilePath $VersionFilePath
 
   # $versionChange = Get-VersionChange -VersionFilePath $VersionFilePath
 

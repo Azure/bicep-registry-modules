@@ -20,9 +20,7 @@ function Get-ModuleTargetPatchVersion {
     [string] $MajMinVersion
   )
 
-  # TODO test .10 patch version and sort
-  $ModuleRelativeFolderPath = ($ModuleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]
-  $ModuleRelativeFolderPath = $ModuleRelativeFolderPath -replace '\\', '/'
+  $ModuleRelativeFolderPath = ($ModuleFolderPath -split '[\/|\\]avm[\/|\\]')[-1] -replace '\\', '/'
 
   # 1. Get all released module tags
   $existingTagList = git ls-remote --tag origin "$ModuleRelativeFolderPath/$MajMinVersion*"

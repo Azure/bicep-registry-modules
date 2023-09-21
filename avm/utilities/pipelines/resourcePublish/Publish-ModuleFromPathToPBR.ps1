@@ -33,10 +33,10 @@ function Publish-ModuleFromPathToPBR {
   $publishedModuleName = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
 
   # 4.Create release tag
-  $tagName = New-ModuleReleaseTag -ModuleRelativeFolderPath $moduleRelativeFolderPath -TargetVersion $targetVersion
+  $tagName = New-ModuleReleaseTag -ModuleFolderPath $moduleFolderPath -TargetVersion $targetVersion
 
   # 5. Get the documentation link
-  $documentationUri = Get-ModuleReadmeLink -TagName $tagName -ModuleRelativeFolderPath $moduleRelativeFolderPath
+  $documentationUri = Get-ModuleReadmeLink -TagName $tagName -ModuleFolderPath $moduleFolderPath
 
   # 6. Replace telemetry version value (in JSON)
   $tokenConfiguration = @{

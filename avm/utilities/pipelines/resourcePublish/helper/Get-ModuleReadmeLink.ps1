@@ -21,18 +21,19 @@ Returns 'https://github.com/Azure/bicep-registry-modules/tree/avm/res/network/pr
 #>
 function Get-ModuleReadmeLink {
 
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory = $true)]
-        [string] $ModuleRelativeFolderPath,
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true)]
+    [string] $ModuleFolderPath,
 
-        [Parameter(Mandatory = $true)]
-        [string] $TagName,
+    [Parameter(Mandatory = $true)]
+    [string] $TagName,
 
-        [Parameter(Mandatory = $false)]
-        [string] $RegistryBaseUri = 'https://github.com/Azure/bicep-registry-modules/tree'
-    )
+    [Parameter(Mandatory = $false)]
+    [string] $RegistryBaseUri = 'https://github.com/Azure/bicep-registry-modules/tree'
+  )
 
-    return (('{0}/{1}/{2}.README.md' -f $RegistryBaseUri, $TagName, $ModuleRelativeFolderPath) -replace '\\', '/')
+  $ModuleRelativeFolderPath = ($ModuleFolderPath -split '[\/|\\]avm[\/|\\]')[-1] -replace '\\', '/'
+  return (('{0}/{1}/{2}.README.md' -f $RegistryBaseUri, $TagName, $ModuleRelativeFolderPath) -replace '\\', '/')
 }
 
