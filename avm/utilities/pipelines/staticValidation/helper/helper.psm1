@@ -8,7 +8,7 @@ $repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent.Parent.Full
 . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-ModuleTestFileList.ps1')
 . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-PipelineFileName.ps1')
 . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'ConvertTo-OrderedHashtable.ps1')
-# . (Join-Path $repoRootPath 'utilities' 'tools' 'Get-CrossReferencedModuleList.ps1')
+. (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-CrossReferencedModuleList.ps1')
 
 ####################################
 #   Load test-specific functions   #
