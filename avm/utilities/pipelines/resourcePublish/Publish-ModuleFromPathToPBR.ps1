@@ -60,4 +60,5 @@ function Publish-ModuleFromPathToPBR {
     '--force'
   )
   # bicep publish @publishInput
+  # TODO move to its own task to show that as skipped if no file qualifies for new version
 }

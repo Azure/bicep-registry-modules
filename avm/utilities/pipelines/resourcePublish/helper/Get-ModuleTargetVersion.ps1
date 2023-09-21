@@ -36,7 +36,7 @@ function Get-ModuleTargetVersion {
 
   # 2. Get MAJOR and MINOR from [version.json]
   $versionFileTargetVersion = (Get-Content $VersionFilePath | ConvertFrom-Json).version
-  $major, $minor = $versionFileTargetVersion -split '\.', 2
+  $major, $minor = $versionFileTargetVersion -split '\.'
 
   # 3. Get PATCH
   # Check if [version.json] file version property was updated (compare with previous head)
@@ -50,7 +50,7 @@ function Get-ModuleTargetVersion {
   else {
     # Otherwise calculate the patch version
     Write-Verbose "[version.json] file version property was not updated. Calculating new PATCH version." -Verbose
-    $patch = Get-ModuleTargetPatchVersion -ModuleFolderPath $ModuleFolderPath -MajMinVersion '$major.$minor'
+    $patch = Get-ModuleTargetPatchVersion -ModuleFolderPath $ModuleFolderPath -MajMinVersion "$major.$minor"
   }
 
   # 4. Get full Semver as MAJOR.MINOR.PATCH

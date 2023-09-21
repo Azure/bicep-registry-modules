@@ -20,6 +20,7 @@ function Get-ModuleTargetPatchVersion {
     [string] $MajMinVersion
   )
 
+  # TODO test .10 patch version and sort
   $ModuleRelativeFolderPath = $ModuleRelativeFolderPath -replace '\\', '/'
 
   # 1. Get all released module tags
