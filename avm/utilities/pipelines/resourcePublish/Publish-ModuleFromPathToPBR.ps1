@@ -10,11 +10,12 @@ function Publish-ModuleFromPathToPBR {
   )
 
   # Load used functions
-  . (Join-Path $PSScriptRoot 'helper' 'Test-ModuleQualifiesForPublish.ps1')
+  . (Join-Path $PSScriptRoot 'helper' 'Get-ModulesToPublish.ps1')
   . (Join-Path $PSScriptRoot 'helper' 'Get-ModuleTargetVersion.ps1')
   . (Join-Path $PSScriptRoot 'helper' 'Get-BRMRepositoryName.ps1')
   . (Join-Path $PSScriptRoot 'helper' 'New-ModuleReleaseTag.ps1')
   . (Join-Path $PSScriptRoot 'helper' 'Get-ModuleReadmeLink.ps1')
+  . (Join-Path $PSScriptRoot '..' 'tokensReplacement' 'Convert-TokensInFileList.ps1')
 
   $moduleFolderPath = Split-Path $TemplateFilePath -Parent
   $moduleJsonFilePath = Join-Path $moduleFolderPath 'main.json'
