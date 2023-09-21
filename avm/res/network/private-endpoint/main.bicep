@@ -133,7 +133,6 @@ module privateEndpoint_privateDnsZoneGroup 'private-dns-zone-group/main.bicep' =
   params: {
     privateDNSResourceIds: privateDnsZoneResourceIds
     privateEndpointName: privateEndpoint.name
-    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 

@@ -117,8 +117,6 @@ var formattedAccessPolicies = [for accessPolicy in accessPolicies: {
 
 var secretList = !empty(secrets) ? secrets.secureList : []
 
-var enableReferencedModulesTelemetry = false
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -213,7 +211,6 @@ module keyVault_accessPolicies 'access-policy/main.bicep' = if (!empty(accessPol
   params: {
     keyVaultName: keyVault.name
     accessPolicies: formattedAccessPolicies
-    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -229,7 +226,6 @@ module keyVault_secrets 'secret/main.bicep' = [for (secret, index) in secretList
     contentType: contains(secret, 'contentType') ? secret.contentType : ''
     tags: contains(secret, 'tags') ? secret.tags : {}
     roleAssignments: contains(secret, 'roleAssignments') ? secret.roleAssignments : []
-    enableTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -247,7 +243,6 @@ module keyVault_keys 'key/main.bicep' = [for (key, index) in keys: {
     kty: contains(key, 'kty') ? key.kty : 'EC'
     tags: contains(key, 'tags') ? key.tags : {}
     roleAssignments: contains(key, 'roleAssignments') ? key.roleAssignments : []
-    enableTelemetry: enableReferencedModulesTelemetry
     rotationPolicy: contains(key, 'rotationPolicy') ? key.rotationPolicy : {}
   }
 }]
@@ -261,7 +256,7 @@ module keyVault_privateEndpoints '../../network/private-endpoint/main.bicep' = [
     name: privateEndpoint.?name ?? 'pe-${last(split(keyVault.id, '/'))}-${privateEndpoint.service}-${index}'
     serviceResourceId: keyVault.id
     subnetResourceId: privateEndpoint.subnetResourceId
-    enableTelemetry: enableReferencedModulesTelemetry
+    enableTelemetry: enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds ?? []
