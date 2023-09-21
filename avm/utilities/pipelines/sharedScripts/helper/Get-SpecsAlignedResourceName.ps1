@@ -60,11 +60,14 @@ function Get-SpecsAlignedResourceName {
         [string] $ResourceIdentifier,
 
         [Parameter(Mandatory = $false)]
-        [string] $SpecsFilePath
+        [string] $ApiSpecsFileUri = 'https://azure.github.io/Azure-Verified-Modules/governance/apiSpecsList.json'
     )
 
-    # TODO: Implement file fetch from web
-    $specs = ConvertFrom-Json (Get-Content $specsFilePath -Raw) -AsHashtable
+    if (-not( $apiSpecs = Invoke-WebRequest -Uri $ApiSpecsFileUri)) {
+        throw "Failed to donnloaded API specs file from [$ApiSpecsFileUri]"
+    }
+
+    $specs = ConvertFrom-Json $apiSpecs.Content -AsHashtable
 
     $reducedResourceIdentifier = $ResourceIdentifier -replace '-'
 
