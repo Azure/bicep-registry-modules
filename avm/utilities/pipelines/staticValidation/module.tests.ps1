@@ -45,10 +45,13 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
     $moduleFolderTestCases = [System.Collections.ArrayList] @()
     foreach ($moduleFolderPath in $moduleFolderPaths) {
+
+      $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
+
       $moduleFolderTestCases += @{
-        moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
+        moduleFolderName = $resourceTypeIdentifier
         moduleFolderPath = $moduleFolderPath
-        isTopLevelModule = (($moduleFolderPath -split '[\/|\\]avm[\/|\\]')[1] -split '[\/|\\]').Count -eq 3 # (res|ptn)/<provider>/<resourceType>
+        isTopLevelModule = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
       }
     }
 
@@ -154,22 +157,18 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
   $moduleFolderTestCases = [System.Collections.ArrayList] @()
   foreach ($moduleFolderPath in $moduleFolderPaths) {
 
-    $resourceTypeIdentifier = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
+    $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
 
     $moduleFolderTestCases += @{
-      moduleFolderName   = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
-      moduleFolderPath   = $moduleFolderPath
-      isTopLevelModule   = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1].Split('/').Count -eq 2 # <provider>/<resourceType>
-      templateReferences = $crossReferencedModuleList[$resourceTypeIdentifier]
+      moduleFolderName = $resourceTypeIdentifier
+      isTopLevelModule = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
     }
   }
 
-  #if (Test-Path (Join-Path $repoRootPath '.github')) {
   It '[<moduleFolderName>] Module should have a GitHub workflow.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
 
     param(
-      [string] $moduleFolderName,
-      [string] $moduleFolderPath
+      [string] $moduleFolderName
     )
 
     $workflowsFolderName = Join-Path $repoRootPath '.github' 'workflows'
