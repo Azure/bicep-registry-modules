@@ -20,7 +20,7 @@ function Get-ModuleTargetPatchVersion {
     [string] $MajMinVersion
   )
 
-  $ModuleRelativeFolderPath = ($ModuleFolderPath -split '[\/|\\]avm[\/|\\]')[-1] -replace '\\', '/'
+  $ModuleRelativeFolderPath = ("avm/{0}" -f ($ModuleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]) -replace '\\', '/'
 
   # 1. Get all released module tags
   $existingTagList = git ls-remote --tag origin "$ModuleRelativeFolderPath/$MajMinVersion*"
