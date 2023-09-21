@@ -133,7 +133,7 @@ function Set-PesterGitHubOutput {
       Write-Verbose "$intermediateNameElements"
       Write-Verbose "failedTest $failedTest"
       Write-Verbose "failedTestErrorRecord $($failedTest.ErrorRecord)"
-      Write-Verbose "failedTestErrorRecordTargetObject $($failedTest.ErrorRecord.TargetObject)"
+      Write-Verbose "failedTestErrorRecordTargetObject $($($failedTest.ErrorRecord).TargetObject)"
 
       $errorTestFile = (Split-Path $failedTest.ErrorRecord.TargetObject.File -Leaf).Trim()
 
