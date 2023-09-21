@@ -25,6 +25,7 @@ function Get-ModuleTargetPatchVersion {
 
   # 1. Get all released module tags
   $existingTagList = git ls-remote --tag origin "$ModuleRelativeFolderPath/$MajMinVersion*"
+  # $existingTagList = git ls-remote -t origin "$modulerelativefolderpath/$MajMinVersion*"
   if ( $existingTagList.count -eq 0 ) {
     # If first module tag, reset patch
     Write-Verbose "No existing tag for module [$ModuleRelativeFolderPath] starting with version [MajMinVersion]" -Verbose
@@ -33,11 +34,10 @@ function Get-ModuleTargetPatchVersion {
   }
   else {
     # Otherwise get latest patch
-    $existingVersionList = @()
-    foreach ($tag in $existingTagList) {
-      $existingVersionList += Split-Path ($tag | out-string) -Leaf
-    }
-    $latestPatch = ''
+    # $existingTagList | ForEach-Object { [int](($_ -split '\.')[-1]) } | Sort-object -Descending
+    $patchList = $existingTagList | ForEach-Object { [int](($_ -split '\.')[-1]) }
+    $latestPatch = ($patchList | Measure-Object -Maximum).Maximum
+    write-Verbose "Latest tag is [$ModuleRelativeFolderPath/$MajMinVersion.$latestPatch]. Bumping patch." -Verbose
     # Increase patch count
     $patch = $latestPatch + 1
   }
