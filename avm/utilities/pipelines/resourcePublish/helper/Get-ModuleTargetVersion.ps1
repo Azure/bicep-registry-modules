@@ -28,16 +28,17 @@ function Get-ModuleTargetVersion {
   # Load used functions
   . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Get-ModuleTargetPatchVersion.ps1')
 
+  # 1. Get [version.json] file path
   $versionFilePath = Join-Path $ModuleFolderPath 'version.json'
   if (-not (Test-Path -Path $VersionFilePath)) {
     throw "No version file found at: [$VersionFilePath]"
   }
 
-  # 1. Get MAJOR and MINOR from [version.json]
+  # 2. Get MAJOR and MINOR from [version.json]
   $versionFileTargetVersion = (Get-Content $VersionFilePath | ConvertFrom-Json).version
   $major, $minor = $versionFileTargetVersion -split '\.', 2
 
-  # 2. Get PATCH
+  # 3. Get PATCH
   # Check if [version.json] file version property was updated (compare with previous head)
   # TODO: update with diff function call
   $versionChange = 1
@@ -49,13 +50,13 @@ function Get-ModuleTargetVersion {
   else {
     # Otherwise calculate the patch version
     Write-Verbose "[version.json] file version property was not updated. Calculating new PATCH version." -Verbose
-    $patch = Get-ModuleTargetPatchVersion -ModuleFolderPath $ModuleFolderPath
+    $patch = Get-ModuleTargetPatchVersion -ModuleFolderPath $ModuleFolderPath -MajMinVersion '$major.$minor'
   }
 
-  # 3. Get full Semver as MAJOR.MINOR.PATCH
+  # 4. Get full Semver as MAJOR.MINOR.PATCH
   $targetModuleVersion = '{0}.{1}.{2}' -f $major, $minor, $patch
   Write-Verbose "Target version is [$targetModuleVersion]." -Verbose
 
-  # 3. Return the version
+  # 5. Return the version
   return $targetModuleVersion
 }

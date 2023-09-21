@@ -42,7 +42,7 @@ function New-ModuleReleaseTag {
 
   # 3 Create and push tag
   git tag $tagName
-  git push origin $tag
+  git push origin $tagName
 
   # 4 Return
   return $tagName
