@@ -165,7 +165,10 @@ module testDeployment '../../../main.bicep' = {
         }
       }
     ]
-    lock: 'CanNotDelete'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     networkAcls: {
       bypass: 'AzureServices'
       defaultAction: 'Deny'
