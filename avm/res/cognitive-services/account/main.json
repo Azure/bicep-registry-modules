@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "5343566490667359317"
+      "templateHash": "14873011871980725389"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service.",
@@ -636,7 +636,7 @@
       "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
-    "moduleVersion": "[[moduleVersion]]"
+    "moduleVersion": "#_moduleVersion_#"
   },
   "resources": {
     "cMKKeyVault::cMKKey": {
@@ -848,7 +848,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.21.1.54444",
-              "templateHash": "5601742427885699637"
+              "templateHash": "13250116040740648439"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -1042,7 +1042,7 @@
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
               "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
             },
-            "moduleVersion": "[[moduleVersion]]"
+            "moduleVersion": "#_moduleVersion_#"
           },
           "resources": {
             "avmTelemetry": {

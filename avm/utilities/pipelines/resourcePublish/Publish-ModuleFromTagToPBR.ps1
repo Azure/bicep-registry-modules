@@ -37,8 +37,8 @@ function Publish-ModuleFromTagToPBR {
     Tokens       = @{
       'moduleVersion' = $targetVersion
     }
-    TokenPrefix  = '[['
-    TokenSuffix  = ']]'
+    TokenPrefix  = '#_'
+    TokenSuffix  = '_#'
   }
   $null = Convert-TokensInFileList @tokenConfiguration
 

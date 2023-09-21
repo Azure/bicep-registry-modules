@@ -165,7 +165,7 @@ var builtInRoleNames = {
 }
 
 @description('The current released version of the module. Used for telemetry.')
-var moduleVersion = '[[moduleVersion]]' // for example '1.0.0'
+var moduleVersion = '#_moduleVersion_#' // for example '1.0.0'
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.cognitiveservices-account.${replace(moduleVersion, '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
