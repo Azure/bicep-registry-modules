@@ -65,7 +65,8 @@ function Publish-ModuleFromPathToPBR {
 }
 
 #$TemplateFilePath = "C:\dev\ip\GitHub\eriqua\bicep-registry-modules\avm\res\key-vault\vault\main.bicep"
-$TemplateFilePath = "C:\dev\ip\GitHub\eriqua\bicep-registry-modules\avm\res\network\private-endpoint\main.bicep"
+# $TemplateFilePath = "C:\dev\ip\GitHub\eriqua\bicep-registry-modules\avm\res\network\private-endpoint\main.bicep"
+$TemplateFilePath = "C:\dev\ip\GitHub\eriqua\bicep-registry-modules\avm\res\cognitive-services\account\main.bicep"
 
 $PublicRegistryServer = ConvertTo-SecureString -String "whateva" -AsPlainText -Force
 Publish-ModuleFromPathToPBR -TemplateFilePath $TemplateFilePath -PublicRegistryServer $PublicRegistryServer -Verbose
