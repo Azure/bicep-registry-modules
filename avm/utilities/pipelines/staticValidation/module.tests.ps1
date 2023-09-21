@@ -45,21 +45,30 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
     $moduleFolderTestCases = [System.Collections.ArrayList] @()
     foreach ($moduleFolderPath in $moduleFolderPaths) {
+
+      $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
+
       $moduleFolderTestCases += @{
-        moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
+        moduleFolderName = $resourceTypeIdentifier
         moduleFolderPath = $moduleFolderPath
-        isTopLevelModule = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1].Split('/').Count -eq 2 # <provider>/<resourceType>
+        isTopLevelModule = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
       }
     }
 
-    # TODO: Split in two test cases
-    It '[<moduleFolderName>] Module should contain a [` main.json ` & ` main.bicep `] file.' -TestCases $moduleFolderTestCases {
+    It '[<moduleFolderName>] Module should contain a [` main.bicep `] file.' -TestCases $moduleFolderTestCases {
+
+      param( [string] $moduleFolderPath )
+
+      $hasBicep = Test-Path (Join-Path -Path $moduleFolderPath 'main.bicep')
+      $hasBicep | Should -Be $true
+    }
+
+    It '[<moduleFolderName>] Module should contain a [` main.json `] file.' -TestCases $moduleFolderTestCases {
 
       param( [string] $moduleFolderPath )
 
       $hasARM = Test-Path (Join-Path -Path $moduleFolderPath 'main.json')
-      $hasBicep = Test-Path (Join-Path -Path $moduleFolderPath 'main.bicep')
-                ($hasARM -or $hasBicep) | Should -Be $true
+      $hasARM | Should -Be $true
     }
 
     It '[<moduleFolderName>] Module should contain a [` README.md `] file.' -TestCases $moduleFolderTestCases {
@@ -76,18 +85,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
       $file.Name | Should -BeExactly 'README.md'
     }
 
-    # TODO: e2e folder ( + MUST have test folders [min + waf-aligned])
-    It '[<moduleFolderName>] Module should contain a [` tests `] folder.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
-
-      param(
-        [string] $moduleFolderPath
-      )
-
-      $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath '.test')
-      $pathExisting | Should -Be $true
-    }
-
-    It '[<moduleFolderName>] Module should contain a [` version.json `] file.' -TestCases $moduleFolderTestCases {
+    It '[<moduleFolderName>] Module should contain a [` version.json `] file.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
 
       param (
         [string] $moduleFolderPath
@@ -98,7 +96,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
     }
   }
 
-  Context 'e2e folder' {
+  Context 'tests folder' {
 
     $folderTestCases = [System.Collections.ArrayList]@()
     foreach ($moduleFolderPath in $moduleFolderPaths) {
@@ -106,8 +104,39 @@ Describe 'File/folder tests' -Tag 'Modules' {
         $folderTestCases += @{
           moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
           moduleFolderPath = $moduleFolderPath
+          isTopLevelModule = (($moduleFolderPath -split '[\/|\\]avm[\/|\\]')[1] -split '[\/|\\]').Count -eq 3 # (res|ptn)/<provider>/<resourceType>
         }
       }
+    }
+
+    It '[<moduleFolderName>] Module should contain a [` tests `] folder.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+
+      param(
+        [string] $moduleFolderPath
+      )
+
+      $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'tests')
+      $pathExisting | Should -Be $true
+    }
+
+    It '[<moduleFolderName>] Module should contain a [` tests/waf-aligned `] folder.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+
+      param(
+        [string] $moduleFolderPath
+      )
+
+      $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'tests' 'waf-aligned')
+      $pathExisting | Should -Be $true
+    }
+
+    It '[<moduleFolderName>] Module should contain a [` min `] folder.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+
+      param(
+        [string] $moduleFolderPath
+      )
+
+      $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'tests' 'min')
+      $pathExisting | Should -Be $true
     }
 
     It '[<moduleFolderName>] Folder should contain one or more test files.' -TestCases $folderTestCases {
@@ -128,22 +157,18 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
   $moduleFolderTestCases = [System.Collections.ArrayList] @()
   foreach ($moduleFolderPath in $moduleFolderPaths) {
 
-    $resourceTypeIdentifier = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
+    $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
 
     $moduleFolderTestCases += @{
-      moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
-      moduleFolderPath = $moduleFolderPath
-      isTopLevelModule = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1].Split('/').Count -eq 2 # <provider>/<resourceType>
-      # templateReferences = $crossReferencedModuleList[$resourceTypeIdentifier]
+      moduleFolderName = $resourceTypeIdentifier
+      isTopLevelModule = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
     }
   }
 
-  #if (Test-Path (Join-Path $repoRootPath '.github')) {
   It '[<moduleFolderName>] Module should have a GitHub workflow.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
 
     param(
-      [string] $moduleFolderName,
-      [string] $moduleFolderPath
+      [string] $moduleFolderName
     )
 
     $workflowsFolderName = Join-Path $repoRootPath '.github' 'workflows'
