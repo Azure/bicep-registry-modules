@@ -10,47 +10,39 @@ function Publish-ModuleFromTagToPBR {
   )
 
   # Load used functions
-  . (Join-Path $PSScriptRoot 'helper' 'Test-ModuleQualifiesForPublish.ps1')
-  . (Join-Path $PSScriptRoot 'helper' 'Get-ModuleTargetVersion.ps1')
   . (Join-Path $PSScriptRoot 'helper' 'Get-BRMRepositoryName.ps1')
-  . (Join-Path $PSScriptRoot 'helper' 'New-ModuleReleaseTag.ps1')
   . (Join-Path $PSScriptRoot 'helper' 'Get-ModuleReadmeLink.ps1')
-  . (Join-Path $PSScriptRoot 'helper' 'Publish-ModuleToPrivateBicepRegistry.ps1')
+  . (Join-Path $PSScriptRoot '..' 'tokensReplacement' 'Convert-TokensInFileList.ps1')
 
-  $moduleFolderPath = Split-Path $TemplateFilePath -Parent
+  # TODO: Diff in between tag & tag^-1 to find modules to publish?
+
+  # 1. Find tag as per function input
+  $repositoryRoot = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent
+  $targetVersion = Split-Path $ModuleReleaseTagName -Leaf
+  $moduleRelativeFolderPath = $ModuleReleaseTagName -replace "\/$targetVersion$", ''
+  $moduleFolderPath = Join-Path $repositoryRoot $moduleRelativeFolderPath
   $moduleJsonFilePath = Join-Path $moduleFolderPath 'main.json'
 
-  # 1. Test if module qualifies for publishing
-  if (-not (Test-ModuleQualifiesForPublish -moduleFolderPath $moduleFolderPath)) {
-    Write-Verbose "No changes detected. Skipping publishing" -Verbose
-    return
-  }
 
-  # 2. Calculate the version that we would publish with
-  $targetVersion = Get-ModuleTargetVersion -moduleFolderPath $moduleFolderPath
+  # 2. Get Target Published Module Name
+  $publishedModuleName = Get-BRMRepositoryName -TemplateFilePath $moduleJsonFilePath
 
-  # 3. Get Target Published Module Name
-  $publishedModuleName = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
+  # 3. Get the documentation link
+  $documentationUri = Get-ModuleReadmeLink -TagName $ModuleReleaseTagName -ModuleRelativeFolderPath $moduleRelativeFolderPath
 
-  # 4.Create release tag
-  New-ModuleReleaseTag -moduleFolderPath $moduleFolderPath
-
-  # 5. Get the documentation link
-  $documentationUri = Get-ModuleReadmeLink -moduleFolderPath $moduleFolderPath
-
-  # 6. Replace telemetry version value (in JSON)
+  # 4. Replace telemetry version value (in JSON)
   $tokenConfiguration = @{
     FilePathList = @($moduleJsonFilePath)
     Tokens       = @{
       'moduleVersion' = $targetVersion
     }
-    TokenPrefix  = '[['
-    TokenSuffix  = ']]'
+    TokenPrefix  = '#_'
+    TokenSuffix  = '_#'
   }
   $null = Convert-TokensInFileList @tokenConfiguration
 
   ###################
-  ## 7.  Publish   ##
+  ## 5.  Publish   ##
   ###################
   $plainPublicRegistryServer = ConvertFrom-SecureString $PublicRegistryServer -AsPlainText
 

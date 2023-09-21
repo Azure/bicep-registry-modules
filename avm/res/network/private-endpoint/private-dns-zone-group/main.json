@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "2469208411936339153"
+      "templateHash": "1698104586574073002"
     },
     "name": "Private Endpoint Private DNS Zone Groups",
     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -32,13 +32,6 @@
       "metadata": {
         "description": "Optional. The name of the private DNS zone group."
       }
-    },
-    "enableTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-      }
     }
   },
   "variables": {
@@ -56,20 +49,6 @@
     ]
   },
   "resources": [
-    {
-      "condition": "[parameters('enableTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": []
-        }
-      }
-    },
     {
       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
       "apiVersion": "2023-04-01",
