@@ -132,7 +132,9 @@ function Set-PesterGitHubOutput {
       $errorTestLine = $failedTest.ErrorRecord.TargetObject.Line
       #TODO Remove
       Write-Verbose "1"
+      Write-Verbose "$($failedTest.ErrorRecord.TargetObject.File)"
       $errorTestFile = (Split-Path $failedTest.ErrorRecord.TargetObject.File -Leaf).Trim()
+
       #TODO Remove
       Write-Verbose "2"
       $errorMessage = $failedTest.ErrorRecord.TargetObject.Message.Trim() -replace '\n', '<br>' # Replace new lines with <br> to enable line breaks in markdown
