@@ -64,8 +64,8 @@ function Publish-ModuleFromPathToPBR {
   # TODO move to its own task to show that as skipped if no file qualifies for new version
 }
 
-$TemplateFilePath = "C:\dev\ip\GitHub\eriqua\bicep-registry-modules\avm\res\key-vault\vault\main.bicep"
-#$TemplateFilePath = "C:\dev\ip\GitHub\eriqua\bicep-registry-modules\avm\res\network\private-endpoint\main.bicep"
+#$TemplateFilePath = "C:\dev\ip\GitHub\eriqua\bicep-registry-modules\avm\res\key-vault\vault\main.bicep"
+$TemplateFilePath = "C:\dev\ip\GitHub\eriqua\bicep-registry-modules\avm\res\network\private-endpoint\main.bicep"
 
 $PublicRegistryServer = ConvertTo-SecureString -String "whateva" -AsPlainText -Force
 Publish-ModuleFromPathToPBR -TemplateFilePath $TemplateFilePath -PublicRegistryServer $PublicRegistryServer -Verbose
