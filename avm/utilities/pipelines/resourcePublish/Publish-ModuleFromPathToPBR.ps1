@@ -19,6 +19,9 @@ function Publish-ModuleFromPathToPBR {
 
   $moduleFolderPath = Split-Path $TemplateFilePath -Parent
   $moduleJsonFilePath = Join-Path $moduleFolderPath 'main.json'
+  # TODO remove write verbose
+  Write-Verbose "moduleJsonFilePath $moduleJsonFilePath" -Verbose
+  Write-Verbose "moduleFolderPath $moduleFolderPath" -Verbose
 
   # 1. Test if module qualifies for publishing
   if (-not (Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath)) {
