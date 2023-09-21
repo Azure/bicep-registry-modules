@@ -4,13 +4,13 @@ This module deploys a Private Endpoint.
 
 ## Navigation
 
-- [Resource types](#Resource-types)
+- [Resource Types](#Resource-Types)
+- [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
-- [Deployment examples](#Deployment-examples)
 
-## Resource types
+## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
@@ -19,299 +19,102 @@ This module deploys a Private Endpoint.
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
 
-### Resource dependency
-
-The following resources are required to be able to deploy this resource:
-
-- `PrivateDNSZone`
-- `VirtualNetwork/subnet`
-- The service that needs to be connected through private endpoint
-
-**Important**: Destination subnet must be created with the following configuration option - `"privateEndpointNetworkPolicies": "Disabled"`. Setting this option acknowledges that NSG rules are not applied to Private Endpoints (this capability is coming soon).
-
-## Parameters
-
-**Required parameters**
-
-| Parameter Name | Type | Description |
-| :-- | :-- | :-- |
-| `groupIds` | array | Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to. |
-| `name` | string | Name of the private endpoint resource to create. |
-| `serviceResourceId` | string | Resource ID of the resource that needs to be connected to the network. |
-| `subnetResourceId` | string | Resource ID of the subnet where the endpoint needs to be created. |
-
-**Optional parameters**
-
-| Parameter Name | Type | Default Value | Allowed Values | Description |
-| :-- | :-- | :-- | :-- | :-- |
-| `applicationSecurityGroupResourceIds` | array | `[]` |  | Application security groups in which the private endpoint IP configuration is included. |
-| `customDnsConfigs` | array | `[]` |  | Custom DNS configurations. |
-| `customNetworkInterfaceName` | string | `''` |  | The custom name of the network interface attached to the private endpoint. |
-| `enableTelemetry` | bool | `True` |  | Enable telemetry via a Globally Unique Identifier (GUID). |
-| `ipConfigurations` | array | `[]` |  | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
-| `location` | string | `[resourceGroup().location]` |  | Location for all Resources. |
-| `lock` | string | `''` | `['', CanNotDelete, ReadOnly]` | Specify the type of lock. |
-| `manualPrivateLinkServiceConnections` | array | `[]` |  | Manual PrivateLink Service Connections. |
-| `privateDnsZoneResourceIds` | array | `[]` |  | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
-| `roleAssignments` | array | `[]` |  | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| `tags` | object | `{object}` |  | Tags to be applied on all resources/resource groups in this deployment. |
-
-
-### Parameter Usage: `tags`
-
-Tag names and tag values can be provided as needed. A tag can be left without a value.
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"tags": {
-    "value": {
-        "Environment": "Non-Prod",
-        "Contact": "test.user@testcompany.com",
-        "PurchaseOrder": "1234",
-        "CostCenter": "7890",
-        "ServiceName": "DeploymentValidation",
-        "Role": "DeploymentValidation"
-    }
-}
-```
-
-</details>
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-tags: {
-    Environment: 'Non-Prod'
-    Contact: 'test.user@testcompany.com'
-    PurchaseOrder: '1234'
-    CostCenter: '7890'
-    ServiceName: 'DeploymentValidation'
-    Role: 'DeploymentValidation'
-}
-```
-
-</details>
-<p>
-
-### Parameter Usage: `roleAssignments`
-
-Create a role assignment for the given resource. If you want to assign a service principal / managed identity that is created in the same deployment, make sure to also specify the `'principalType'` parameter and set it to `'ServicePrincipal'`. This will ensure the role assignment waits for the principal's propagation in Azure.
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"roleAssignments": {
-    "value": [
-        {
-            "roleDefinitionIdOrName": "Reader",
-            "description": "Reader Role Assignment",
-            "principalIds": [
-                "12345678-1234-1234-1234-123456789012", // object 1
-                "78945612-1234-1234-1234-123456789012" // object 2
-            ]
-        },
-        {
-            "roleDefinitionIdOrName": "/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11",
-            "principalIds": [
-                "12345678-1234-1234-1234-123456789012" // object 1
-            ],
-            "principalType": "ServicePrincipal"
-        }
-    ]
-}
-```
-
-</details>
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-roleAssignments: [
-    {
-        roleDefinitionIdOrName: 'Reader'
-        description: 'Reader Role Assignment'
-        principalIds: [
-            '12345678-1234-1234-1234-123456789012' // object 1
-            '78945612-1234-1234-1234-123456789012' // object 2
-        ]
-    }
-    {
-        roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
-        principalIds: [
-            '12345678-1234-1234-1234-123456789012' // object 1
-        ]
-        principalType: 'ServicePrincipal'
-    }
-]
-```
-
-</details>
-<p>
-
-### Parameter Usage: `applicationSecurityGroups`
-
-You can attach multiple Application Security Groups to a private endpoint resource.
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"applicationSecurityGroups": {
-    "value": [
-        {
-            "id": "<applicationSecurityGroupResourceId>"
-        },
-        {
-            "id": "<applicationSecurityGroupResourceId>"
-        }
-    ]
-}
-```
-
-</details>
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-applicationSecurityGroups: [
-    {
-        id: '<applicationSecurityGroupResourceId>'
-    }
-    {
-        id: '<applicationSecurityGroupResourceId>'
-    }
-]
-```
-
-</details>
-<p>
-
-### Parameter Usage: `customNetworkInterfaceName`
-
-You can customize the name of the private endpoint network interface instead of the default one that contains the string 'nic.GUID'. This helps with having consistent naming standards across all resources. Existing private endpoints cannot be renamed. See [documentation](https://learn.microsoft.com/en-us/azure/private-link/manage-private-endpoint?tabs=manage-private-link-powershell#network-interface-rename) for more details.
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"customNetworkInterfaceName": {
-    "value": "myPrivateEndpointName-Nic"
-}
-```
-
-</details>
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-customNetworkInterfaceName: 'myPrivateEndpointName-Nic'
-```
-
-</details>
-<p>
-
-### Parameter Usage: `ipConfigurations`
-
-You can use this property to define a static IP address for the private endpoint instead of the default dynamic one. To do that, first extract the `memberName` and `groupId` for the resource type you are creating the private endpoint for. See [documentation](https://learn.microsoft.com/en-us/azure/private-link/manage-private-endpoint?tabs=manage-private-link-powershell#determine-groupid-and-membername) for guidance on how to do that. Also provide the `privateIPAddress` for the private endpoint from the subnet range you are creating the private endpoint in. Note that static IP addresses [can be applied](https://learn.microsoft.com/en-us/azure/private-link/manage-private-endpoint?tabs=manage-private-link-powershell#custom-properties) when the private endpoint is created.
-
-<details>
-
-<summary>Parameter JSON format</summary>
-
-```json
-"customNetworkInterfaceName": {
-    "value": [
-      {
-          "name": "myIPconfig",
-          "properties": {
-              "memberName": "<memberName>", // e.g. default, sites, blob
-              "groupId": "<groupId>", // e.g. vault, registry, blob
-              "privateIPAddress": "10.10.10.10"
-          }
-      }
-    ]
-}
-```
-
-</details>
-
-<details>
-
-<summary>Bicep format</summary>
-
-```bicep
-ipConfigurations: [
-    {
-        name: 'myIPconfig'
-        properties: {
-            memberName: '<memberName>' // e.g. default, sites, blob
-            groupId: '<groupId>' // e.g. vault, registry, blob
-            privateIPAddress: '10.10.10.10'
-        }
-    }
-]
-```
-
-</details>
-<p>
-
-## Outputs
-
-| Output Name | Type | Description |
-| :-- | :-- | :-- |
-| `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the private endpoint. |
-| `resourceGroupName` | string | The resource group the private endpoint was deployed into. |
-| `resourceId` | string | The resource ID of the private endpoint. |
-
-## Cross-referenced modules
-
-_None_
-
-## Deployment examples
+## Usage examples
 
 The following module usage examples are retrieved from the content of the files hosted in the module's `.test` folder.
    >**Note**: The name of each example is based on the name of the file from which it is taken.
 
    >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
-<h3>Example 1: Common</h3>
+   >**Note**: To reference the module, please use the following syntax `br/public:avm-res-network-privateendpoint:1.0.0`.
+
+<h3>Example 1: Defaults</h3>
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module privateEndpoint './network/private-endpoint/main.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-test-npecom'
+module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-nped'
   params: {
     // Required parameters
     groupIds: [
       'vault'
     ]
-    name: 'npecom001'
+    name: 'nped001'
+    serviceResourceId: '<serviceResourceId>'
+    subnetResourceId: '<subnetResourceId>'
+    // Non-required parameters
+    enableTelemetry: '<enableTelemetry>'
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "groupIds": {
+      "value": [
+        "vault"
+      ]
+    },
+    "name": {
+      "value": "nped001"
+    },
+    "serviceResourceId": {
+      "value": "<serviceResourceId>"
+    },
+    "subnetResourceId": {
+      "value": "<subnetResourceId>"
+    },
+    // Non-required parameters
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<h3>Example 2: Max</h3>
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-npemax'
+  params: {
+    // Required parameters
+    groupIds: [
+      'vault'
+    ]
+    name: 'npemax001'
     serviceResourceId: '<serviceResourceId>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     applicationSecurityGroupResourceIds: [
       '<applicationSecurityGroupResourceId>'
     ]
-    customNetworkInterfaceName: 'npecom001nic'
+    customNetworkInterfaceName: 'npemax001nic'
     enableTelemetry: '<enableTelemetry>'
     ipConfigurations: [
       {
@@ -323,7 +126,11 @@ module privateEndpoint './network/private-endpoint/main.bicep' = {
         }
       }
     ]
-    lock: 'CanNotDelete'
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     privateDnsZoneResourceIds: [
       '<privateDNSZoneResourceId>'
     ]
@@ -362,7 +169,7 @@ module privateEndpoint './network/private-endpoint/main.bicep' = {
       ]
     },
     "name": {
-      "value": "npecom001"
+      "value": "npemax001"
     },
     "serviceResourceId": {
       "value": "<serviceResourceId>"
@@ -377,7 +184,7 @@ module privateEndpoint './network/private-endpoint/main.bicep' = {
       ]
     },
     "customNetworkInterfaceName": {
-      "value": "npecom001nic"
+      "value": "npemax001nic"
     },
     "enableTelemetry": {
       "value": "<enableTelemetry>"
@@ -394,8 +201,14 @@ module privateEndpoint './network/private-endpoint/main.bicep' = {
         }
       ]
     },
+    "location": {
+      "value": "<location>"
+    },
     "lock": {
-      "value": "CanNotDelete"
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
     },
     "privateDnsZoneResourceIds": {
       "value": [
@@ -425,25 +238,59 @@ module privateEndpoint './network/private-endpoint/main.bicep' = {
 </details>
 <p>
 
-<h3>Example 2: Min</h3>
+<h3>Example 3: Waf-Aligned</h3>
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module privateEndpoint './network/private-endpoint/main.bicep' = {
-  name: '${uniqueString(deployment().name, location)}-test-npemin'
+module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-npewaf'
   params: {
     // Required parameters
     groupIds: [
       'vault'
     ]
-    name: 'npemin001'
+    name: 'npewaf001'
     serviceResourceId: '<serviceResourceId>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
+    applicationSecurityGroupResourceIds: [
+      '<applicationSecurityGroupResourceId>'
+    ]
+    customNetworkInterfaceName: 'npewaf001nic'
     enableTelemetry: '<enableTelemetry>'
+    ipConfigurations: [
+      {
+        name: 'myIPconfig'
+        properties: {
+          groupId: 'vault'
+          memberName: 'default'
+          privateIPAddress: '10.0.0.10'
+        }
+      }
+    ]
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    privateDnsZoneResourceIds: [
+      '<privateDNSZoneResourceId>'
+    ]
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -467,7 +314,7 @@ module privateEndpoint './network/private-endpoint/main.bicep' = {
       ]
     },
     "name": {
-      "value": "npemin001"
+      "value": "npewaf001"
     },
     "serviceResourceId": {
       "value": "<serviceResourceId>"
@@ -476,8 +323,58 @@ module privateEndpoint './network/private-endpoint/main.bicep' = {
       "value": "<subnetResourceId>"
     },
     // Non-required parameters
+    "applicationSecurityGroupResourceIds": {
+      "value": [
+        "<applicationSecurityGroupResourceId>"
+      ]
+    },
+    "customNetworkInterfaceName": {
+      "value": "npewaf001nic"
+    },
     "enableTelemetry": {
       "value": "<enableTelemetry>"
+    },
+    "ipConfigurations": {
+      "value": [
+        {
+          "name": "myIPconfig",
+          "properties": {
+            "groupId": "vault",
+            "memberName": "default",
+            "privateIPAddress": "10.0.0.10"
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "privateDnsZoneResourceIds": {
+      "value": [
+        "<privateDNSZoneResourceId>"
+      ]
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Reader"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
@@ -485,3 +382,227 @@ module privateEndpoint './network/private-endpoint/main.bicep' = {
 
 </details>
 <p>
+
+
+## Parameters
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupIds`](#parameter-groupids) | array | Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to. |
+| [`name`](#parameter-name) | string | Name of the private endpoint resource to create. |
+| [`serviceResourceId`](#parameter-serviceresourceid) | string | Resource ID of the resource that needs to be connected to the network. |
+| [`subnetResourceId`](#parameter-subnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`applicationSecurityGroupResourceIds`](#parameter-applicationsecuritygroupresourceids) | array | Application security groups in which the private endpoint IP configuration is included. |
+| [`customDnsConfigs`](#parameter-customdnsconfigs) | array | Custom DNS configurations. |
+| [`customNetworkInterfaceName`](#parameter-customnetworkinterfacename) | string | The custom name of the network interface attached to the private endpoint. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`ipConfigurations`](#parameter-ipconfigurations) | array | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
+| [`location`](#parameter-location) | string | Location for all Resources. |
+| [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`manualPrivateLinkServiceConnections`](#parameter-manualprivatelinkserviceconnections) | array | Manual PrivateLink Service Connections. |
+| [`privateDnsZoneResourceIds`](#parameter-privatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`tags`](#parameter-tags) | object | Tags to be applied on all resources/resource groups in this deployment. |
+
+### Parameter: `applicationSecurityGroupResourceIds`
+
+Application security groups in which the private endpoint IP configuration is included.
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `customDnsConfigs`
+
+Custom DNS configurations.
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `customNetworkInterfaceName`
+
+The custom name of the network interface attached to the private endpoint.
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `groupIds`
+
+Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to.
+- Required: Yes
+- Type: array
+
+### Parameter: `ipConfigurations`
+
+A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `location`
+
+Location for all Resources.
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
+
+### Parameter: `lock`
+
+The lock settings of the service.
+- Required: No
+- Type: object
+
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`kind`](#parameter-lockkind) | No | string | Optional. Specify the type of lock. |
+| [`name`](#parameter-lockname) | No | string | Optional. Specify the name of lock. |
+
+### Parameter: `lock.kind`
+
+Optional. Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed: `[CanNotDelete, None, ReadOnly]`
+
+### Parameter: `lock.name`
+
+Optional. Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `manualPrivateLinkServiceConnections`
+
+Manual PrivateLink Service Connections.
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `name`
+
+Name of the private endpoint resource to create.
+- Required: Yes
+- Type: string
+
+### Parameter: `privateDnsZoneResourceIds`
+
+The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `roleAssignments`
+
+Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+- Required: No
+- Type: array
+
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`condition`](#parameter-roleassignmentscondition) | No | string | Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`conditionVersion`](#parameter-roleassignmentsconditionversion) | No | string | Optional. Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | No | string | Optional. The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-roleassignmentsdescription) | No | string | Optional. The description of the role assignment. |
+| [`principalId`](#parameter-roleassignmentsprincipalid) | Yes | string | Required. The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`principalType`](#parameter-roleassignmentsprincipaltype) | No | string | Optional. The principal type of the assigned principal ID. |
+| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead. |
+
+### Parameter: `roleAssignments.condition`
+
+Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.conditionVersion`
+
+Optional. Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed: `[2.0]`
+
+### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
+
+Optional. The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.description`
+
+Optional. The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.principalId`
+
+Required. The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `roleAssignments.principalType`
+
+Optional. The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed: `[Device, ForeignGroup, Group, ServicePrincipal, User]`
+
+### Parameter: `roleAssignments.roleDefinitionIdOrName`
+
+Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `serviceResourceId`
+
+Resource ID of the resource that needs to be connected to the network.
+- Required: Yes
+- Type: string
+
+### Parameter: `subnetResourceId`
+
+Resource ID of the subnet where the endpoint needs to be created.
+- Required: Yes
+- Type: string
+
+### Parameter: `tags`
+
+Tags to be applied on all resources/resource groups in this deployment.
+- Required: No
+- Type: object
+- Default: `{object}`
+
+
+## Outputs
+
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `location` | string | The location the resource was deployed into. |
+| `name` | string | The name of the private endpoint. |
+| `resourceGroupName` | string | The resource group the private endpoint was deployed into. |
+| `resourceId` | string | The resource ID of the private endpoint. |
+
+## Cross-referenced modules
+
+_None_
