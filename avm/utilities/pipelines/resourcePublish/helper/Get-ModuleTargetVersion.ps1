@@ -43,6 +43,9 @@ function Get-ModuleTargetVersion {
   # Check if [version.json] file version property was updated (compare with previous head)
   # TODO: update with diff function call
   $versionChange = Test-ModuleVersionUpdate -VersionFilePath $VersionFilePath
+
+  # $versionChange = Get-VersionChange -VersionFilePath $VersionFilePath
+
   if ($versionChange) {
     # If [version.json] file version property was updated, reset the patch/bug version back to 0
     Write-Verbose "[version.json] file version property was updated. Resetting PATCH back to 0." -Verbose
