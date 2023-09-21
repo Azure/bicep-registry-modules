@@ -39,13 +39,13 @@ runs:
         enable-AzPSSession: true
 
     # TODO: Only for testing. Should be removed in favor of public registry later
-    - name: "Publish module to private bicep registry"
+    - name: "Publish module to public bicep registry"
       uses: azure/powershell@v1
       with:
         azPSVersion: "latest"
         inlineScript: |
           # Grouping task logs
-          Write-Output '::group::Publish module to private bicep registry'
+          Write-Output '::group::Publish module to public bicep registry'
 
           if (-not [String]::IsNullOrEmpty('${{ inputs.subscriptionId }}')) {
             Write-Verbose ('Setting context to subscription [{0}]' -f '${{ inputs.subscriptionId }}') -Verbose
