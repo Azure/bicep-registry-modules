@@ -499,7 +499,10 @@ module account './cognitive-services/account/main.bicep' = {
       }
     ]
     enableTelemetry: '<enableTelemetry>'
-    lock: 'CanNotDelete'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     networkAcls: {
       defaultAction: 'Deny'
       ipRules: [
