@@ -163,17 +163,17 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
     }
   }
 
-  # It '[<moduleFolderName>] Module should have a GitHub workflow.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+  It '[<moduleFolderName>] Module should have a GitHub workflow.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
 
-  #   param(
-  #     [string] $moduleFolderName
-  #   )
+    param(
+      [string] $moduleFolderName
+    )
 
-  #   $workflowsFolderName = Join-Path $repoRootPath '.github' 'workflows'
-  #   $workflowFileName = Get-PipelineFileName -ResourceIdentifier $moduleFolderName
-  #   $workflowPath = Join-Path $workflowsFolderName $workflowFileName
-  #   Test-Path $workflowPath | Should -Be $true -Because "path [$workflowPath] should exist."
-  # }
+    $workflowsFolderName = Join-Path $repoRootPath '.github' 'workflows'
+    $workflowFileName = Get-PipelineFileName -ResourceIdentifier $moduleFolderName
+    $workflowPath = Join-Path $workflowsFolderName $workflowFileName
+    Test-Path $workflowPath | Should -Be $true -Because "path [$workflowPath] should exist."
+  }
 }
 
 Describe 'Module tests' -Tag 'Module' {
@@ -924,175 +924,179 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
   }
 }
 
-# Describe 'API version tests' -Tag 'ApiCheck' {
+Describe 'API version tests' -Tag 'ApiCheck' {
 
-#     $testCases = @()
-#     $apiSpecsFilePath = Join-Path $repoRootPath 'utilities' 'src' 'apiSpecsList.json'
+  $testCases = @()
+  $apiSpecsFileUri = 'https://azure.github.io/Azure-Verified-Modules/governance/apiSpecsList.json'
 
-#     if (-not (Test-Path $apiSpecsFilePath)) {
-#         Write-Verbose "Skipping API tests as no API version are available in path [$apiSpecsFilePath]"
-#         return
-#     }
+  if (-not( $apiSpecs = Invoke-WebRequest -Uri $apiSpecsFileUri)) {
+    throw "Failed to donnloaded API specs file from [$apiSpecsFileUri]"
+  }
 
-#     $ApiVersions = Get-Content -Path $apiSpecsFilePath -Raw | ConvertFrom-Json
-#     foreach ($moduleFolderPath in $moduleFolderPaths) {
+  $ApiVersions = ConvertFrom-Json $apiSpecs.Content
 
-#         $moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
+  foreach ($moduleFolderPath in $moduleFolderPaths) {
 
-#         # For runtime purposes, we cache the compiled template in a hashtable that uses a formatted relative module path as a key
-#         $moduleFolderPathKey = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1].Trim('/').Replace('/', '-')
-#         if (-not ($convertedTemplates.Keys -contains $moduleFolderPathKey)) {
-#             if (Test-Path (Join-Path $moduleFolderPath 'main.bicep')) {
-#                 $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
-#                 $templateContent = bicep build $templateFilePath --stdout | ConvertFrom-Json -AsHashtable
+    $moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
 
-#                 if (-not $templateContent) {
-#                     throw ($bicepTemplateCompilationFailedException -f $templateFilePath)
-#                 }
-#             } elseIf (Test-Path (Join-Path $moduleFolderPath 'main.json')) {
-#                 $templateFilePath = Join-Path $moduleFolderPath 'main.json'
-#                 $templateContent = Get-Content $templateFilePath -Raw | ConvertFrom-Json -AsHashtable
+    # For runtime purposes, we cache the compiled template in a hashtable that uses a formatted relative module path as a key
+    $moduleFolderPathKey = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1].Trim('/').Replace('/', '-')
+    if (-not ($convertedTemplates.Keys -contains $moduleFolderPathKey)) {
+      if (Test-Path (Join-Path $moduleFolderPath 'main.bicep')) {
+        $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
+        $templateContent = bicep build $templateFilePath --stdout | ConvertFrom-Json -AsHashtable
 
-#                 if (-not $templateContent) {
-#                     throw ($jsonTemplateLoadFailedException -f $templateFilePath)
-#                 }
-#             } else {
-#                 throw ($templateNotFoundException -f $moduleFolderPath)
-#             }
-#             $convertedTemplates[$moduleFolderPathKey] = @{
-#                 templateFilePath = $templateFilePath
-#                 templateContent  = $templateContent
-#             }
-#         } else {
-#             $templateContent = $convertedTemplates[$moduleFolderPathKey].templateContent
-#             $templateFilePath = $convertedTemplates[$moduleFolderPathKey].templateFilePath
-#         }
+        if (-not $templateContent) {
+          throw ($bicepTemplateCompilationFailedException -f $templateFilePath)
+        }
+      }
+      elseIf (Test-Path (Join-Path $moduleFolderPath 'main.json')) {
+        $templateFilePath = Join-Path $moduleFolderPath 'main.json'
+        $templateContent = Get-Content $templateFilePath -Raw | ConvertFrom-Json -AsHashtable
 
-#         $nestedResources = Get-NestedResourceList -TemplateFileContent $templateContent | Where-Object {
-#             $_.type -notin @('Microsoft.Resources/deployments') -and $_
-#         } | Select-Object 'Type', 'ApiVersion' -Unique | Sort-Object Type
+        if (-not $templateContent) {
+          throw ($jsonTemplateLoadFailedException -f $templateFilePath)
+        }
+      }
+      else {
+        throw ($templateNotFoundException -f $moduleFolderPath)
+      }
+      $convertedTemplates[$moduleFolderPathKey] = @{
+        templateFilePath = $templateFilePath
+        templateContent  = $templateContent
+      }
+    }
+    else {
+      $templateContent = $convertedTemplates[$moduleFolderPathKey].templateContent
+      $templateFilePath = $convertedTemplates[$moduleFolderPathKey].templateFilePath
+    }
 
-#         foreach ($resource in $nestedResources) {
+    $nestedResources = Get-NestedResourceList -TemplateFileContent $templateContent | Where-Object {
+      $_.type -notin @('Microsoft.Resources/deployments') -and $_
+    } | Select-Object 'Type', 'ApiVersion' -Unique | Sort-Object Type
 
-#             switch ($resource.type) {
-#                 { $PSItem -like '*diagnosticsettings*' } {
-#                     $testCases += @{
-#                         moduleName                     = $moduleFolderName
-#                         resourceType                   = 'diagnosticsettings'
-#                         ProviderNamespace              = 'Microsoft.Insights'
-#                         TargetApi                      = $resource.ApiVersion
-#                         AvailableApiVersions           = $ApiVersions
-#                         AllowPreviewVersionsInAPITests = $AllowPreviewVersionsInAPITests
-#                     }
-#                     break
-#                 }
-#                 { $PSItem -like '*locks' } {
-#                     $testCases += @{
-#                         moduleName                     = $moduleFolderName
-#                         resourceType                   = 'locks'
-#                         ProviderNamespace              = 'Microsoft.Authorization'
-#                         TargetApi                      = $resource.ApiVersion
-#                         AvailableApiVersions           = $ApiVersions
-#                         AllowPreviewVersionsInAPITests = $AllowPreviewVersionsInAPITests
-#                     }
-#                     break
-#                 }
-#                 { $PSItem -like '*roleAssignments' } {
-#                     $testCases += @{
-#                         moduleName                     = $moduleFolderName
-#                         resourceType                   = 'roleassignments'
-#                         ProviderNamespace              = 'Microsoft.Authorization'
-#                         TargetApi                      = $resource.ApiVersion
-#                         AvailableApiVersions           = $ApiVersions
-#                         AllowPreviewVersionsInAPITests = $AllowPreviewVersionsInAPITests
-#                     }
-#                     break
-#                 }
-#                 { $PSItem -like '*privateEndpoints' -and ($PSItem -notlike '*managedPrivateEndpoints') } {
-#                     $testCases += @{
-#                         moduleName                     = $moduleFolderName
-#                         resourceType                   = 'privateEndpoints'
-#                         ProviderNamespace              = 'Microsoft.Network'
-#                         TargetApi                      = $resource.ApiVersion
-#                         AvailableApiVersions           = $ApiVersions
-#                         AllowPreviewVersionsInAPITests = $AllowPreviewVersionsInAPITests
-#                     }
-#                     break
-#                 }
-#                 Default {
-#                     $ProviderNamespace, $rest = $resource.Type.Split('/')
-#                     $testCases += @{
-#                         moduleName                     = $moduleFolderName
-#                         resourceType                   = $rest -join '/'
-#                         ProviderNamespace              = $ProviderNamespace
-#                         TargetApi                      = $resource.ApiVersion
-#                         AvailableApiVersions           = $ApiVersions
-#                         AllowPreviewVersionsInAPITests = $AllowPreviewVersionsInAPITests
-#                     }
-#                     break
-#                 }
-#             }
-#         }
-#     }
+    foreach ($resource in $nestedResources) {
 
-#     It 'In [<moduleName>] used resource type [<ResourceType>] should use one of the recent API version(s). Currently using [<TargetApi>].' -TestCases $TestCases {
+      switch ($resource.type) {
+        { $PSItem -like '*diagnosticsettings*' } {
+          $testCases += @{
+            moduleName                     = $moduleFolderName
+            resourceType                   = 'diagnosticsettings'
+            ProviderNamespace              = 'Microsoft.Insights'
+            TargetApi                      = $resource.ApiVersion
+            AvailableApiVersions           = $ApiVersions
+            AllowPreviewVersionsInAPITests = $AllowPreviewVersionsInAPITests
+          }
+          break
+        }
+        { $PSItem -like '*locks' } {
+          $testCases += @{
+            moduleName                     = $moduleFolderName
+            resourceType                   = 'locks'
+            ProviderNamespace              = 'Microsoft.Authorization'
+            TargetApi                      = $resource.ApiVersion
+            AvailableApiVersions           = $ApiVersions
+            AllowPreviewVersionsInAPITests = $AllowPreviewVersionsInAPITests
+          }
+          break
+        }
+        { $PSItem -like '*roleAssignments' } {
+          $testCases += @{
+            moduleName                     = $moduleFolderName
+            resourceType                   = 'roleassignments'
+            ProviderNamespace              = 'Microsoft.Authorization'
+            TargetApi                      = $resource.ApiVersion
+            AvailableApiVersions           = $ApiVersions
+            AllowPreviewVersionsInAPITests = $AllowPreviewVersionsInAPITests
+          }
+          break
+        }
+        { $PSItem -like '*privateEndpoints' -and ($PSItem -notlike '*managedPrivateEndpoints') } {
+          $testCases += @{
+            moduleName                     = $moduleFolderName
+            resourceType                   = 'privateEndpoints'
+            ProviderNamespace              = 'Microsoft.Network'
+            TargetApi                      = $resource.ApiVersion
+            AvailableApiVersions           = $ApiVersions
+            AllowPreviewVersionsInAPITests = $AllowPreviewVersionsInAPITests
+          }
+          break
+        }
+        Default {
+          $ProviderNamespace, $rest = $resource.Type.Split('/')
+          $testCases += @{
+            moduleName                     = $moduleFolderName
+            resourceType                   = $rest -join '/'
+            ProviderNamespace              = $ProviderNamespace
+            TargetApi                      = $resource.ApiVersion
+            AvailableApiVersions           = $ApiVersions
+            AllowPreviewVersionsInAPITests = $AllowPreviewVersionsInAPITests
+          }
+          break
+        }
+      }
+    }
+  }
 
-#         param(
-#             [string] $moduleName,
-#             [string] $ResourceType,
-#             [string] $TargetApi,
-#             [string] $ProviderNamespace,
-#             [PSCustomObject] $AvailableApiVersions,
-#             [bool] $AllowPreviewVersionsInAPITests
-#         )
+  It 'In [<moduleName>] used resource type [<ResourceType>] should use one of the recent API version(s). Currently using [<TargetApi>].' -TestCases $TestCases {
 
-#         if (-not (($AvailableApiVersions | Get-Member -Type NoteProperty).Name -contains $ProviderNamespace)) {
-#             Write-Warning "[API Test] The Provider Namespace [$ProviderNamespace] is missing in your Azure API versions file. Please consider updating it and if it is still missing to open an issue in the 'AzureAPICrawler' PowerShell module's GitHub repository."
-#             Set-ItResult -Skipped -Because "The Azure API version file is missing the Provider Namespace [$ProviderNamespace]."
-#             return
-#         }
-#         if (-not (($AvailableApiVersions.$ProviderNamespace | Get-Member -Type NoteProperty).Name -contains $ResourceType)) {
-#             Write-Warning "[API Test] The Provider Namespace [$ProviderNamespace] is missing the Resource Type [$ResourceType] in your API versions file. Please consider updating it and if it is still missing to open an issue in the 'AzureAPICrawler' PowerShell module's GitHub repository."
-#             Set-ItResult -Skipped -Because "The Azure API version file is missing the Resource Type [$ResourceType] for Provider Namespace [$ProviderNamespace]."
-#             return
-#         }
+    param(
+      [string] $moduleName,
+      [string] $ResourceType,
+      [string] $TargetApi,
+      [string] $ProviderNamespace,
+      [PSCustomObject] $AvailableApiVersions,
+      [bool] $AllowPreviewVersionsInAPITests
+    )
 
-#         $resourceTypeApiVersions = $AvailableApiVersions.$ProviderNamespace.$ResourceType
+    if (-not (($AvailableApiVersions | Get-Member -Type NoteProperty).Name -contains $ProviderNamespace)) {
+      Write-Warning "[API Test] The Provider Namespace [$ProviderNamespace] is missing in your Azure API versions file. Please consider updating it and if it is still missing to open an issue in the 'AzureAPICrawler' PowerShell module's GitHub repository."
+      Set-ItResult -Skipped -Because "The Azure API version file is missing the Provider Namespace [$ProviderNamespace]."
+      return
+    }
+    if (-not (($AvailableApiVersions.$ProviderNamespace | Get-Member -Type NoteProperty).Name -contains $ResourceType)) {
+      Write-Warning "[API Test] The Provider Namespace [$ProviderNamespace] is missing the Resource Type [$ResourceType] in your API versions file. Please consider updating it and if it is still missing to open an issue in the 'AzureAPICrawler' PowerShell module's GitHub repository."
+      Set-ItResult -Skipped -Because "The Azure API version file is missing the Resource Type [$ResourceType] for Provider Namespace [$ProviderNamespace]."
+      return
+    }
 
-#         if (-not $resourceTypeApiVersions) {
-#             Write-Warning ('[API Test] We are currently unable to determine the available API versions for resource type [{0}/{1}].' -f $ProviderNamespace, $resourceType)
-#             continue
-#         }
+    $resourceTypeApiVersions = $AvailableApiVersions.$ProviderNamespace.$ResourceType
 
-#         $approvedApiVersions = @()
-#         if ($AllowPreviewVersionsInAPITests) {
-#             # We allow the latest 5 including previews (in case somebody wants to use preview), or the latest 3 non-preview
-#             $approvedApiVersions += $resourceTypeApiVersions | Select-Object -Last 5
-#             $approvedApiVersions += $resourceTypeApiVersions | Where-Object { $_ -notlike '*-preview' } | Select-Object -Last 5
-#         } else {
-#             # We allow the latest 5 non-preview preview
-#             $approvedApiVersions += $resourceTypeApiVersions | Where-Object { $_ -notlike '*-preview' } | Select-Object -Last 5
-#         }
+    if (-not $resourceTypeApiVersions) {
+      Write-Warning ('[API Test] We are currently unable to determine the available API versions for resource type [{0}/{1}].' -f $ProviderNamespace, $resourceType)
+      continue
+    }
 
-#         $approvedApiVersions = $approvedApiVersions | Sort-Object -Unique -Descending
-#         $approvedApiVersions | Should -Contain $TargetApi
+    $approvedApiVersions = @()
+    if ($AllowPreviewVersionsInAPITests) {
+      # We allow the latest 5 including previews (in case somebody wants to use preview), or the latest 3 non-preview
+      $approvedApiVersions += $resourceTypeApiVersions | Select-Object -Last 5
+      $approvedApiVersions += $resourceTypeApiVersions | Where-Object { $_ -notlike '*-preview' } | Select-Object -Last 5
+    }
+    else {
+      # We allow the latest 5 non-preview preview
+      $approvedApiVersions += $resourceTypeApiVersions | Where-Object { $_ -notlike '*-preview' } | Select-Object -Last 5
+    }
 
-#         # Provide a warning if an API version is second to next to expire.
-#         if ($approvedApiVersions -contains $TargetApi) {
-#             $indexOfVersion = $approvedApiVersions.IndexOf($TargetApi)
+    $approvedApiVersions = $approvedApiVersions | Sort-Object -Unique -Descending
+    $approvedApiVersions | Should -Contain $TargetApi
 
-#             # Example
-#             # Available versions:
-#             #
-#             # 2017-08-01-beta
-#             # 2017-08-01        < $TargetApi (Index = 1)
-#             # 2017-07-14
-#             # 2016-05-16
+    # Provide a warning if an API version is second to next to expire.
+    if ($approvedApiVersions -contains $TargetApi) {
+      $indexOfVersion = $approvedApiVersions.IndexOf($TargetApi)
 
-#             if ($indexOfVersion -gt ($approvedApiVersions.Count - 2)) {
-#                 $newerAPIVersions = $approvedApiVersions[0..($indexOfVersion - 1)]
-#                 Write-Warning ("The used API version [$TargetApi] for Resource Type [$ProviderNamespace/$ResourceType] will soon expire. Please consider updating it. Consider using one of the newer API versions [{0}]" -f ($newerAPIVersions -join ', '))
-#             }
-#         }
-#     }
-# }
+      # Example
+      # Available versions:
+      #
+      # 2017-08-01-beta
+      # 2017-08-01        < $TargetApi (Index = 1)
+      # 2017-07-14
+      # 2016-05-16
+
+      if ($indexOfVersion -gt ($approvedApiVersions.Count - 2)) {
+        $newerAPIVersions = $approvedApiVersions[0..($indexOfVersion - 1)]
+        Write-Warning ("The used API version [$TargetApi] for Resource Type [$ProviderNamespace/$ResourceType] will soon expire. Please consider updating it. Consider using one of the newer API versions [{0}]" -f ($newerAPIVersions -join ', '))
+      }
+    }
+  }
+}
