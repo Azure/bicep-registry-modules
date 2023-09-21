@@ -67,7 +67,7 @@ runs:
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
           # Get the modified child resources
-          Publish-ToPublicBicepRegistry @functionInput -Verbose
+          Publish-ModuleFromPathToPBR @functionInput -Verbose
 
           Write-Output '::endgroup::'
 
