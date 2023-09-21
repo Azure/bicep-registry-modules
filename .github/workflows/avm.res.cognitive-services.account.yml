@@ -19,18 +19,18 @@ on:
         required: false
         default: true
 
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/actions/templates/avm-**'
-      - '.github/workflows/avm.template.module.yml'
-      - '.github/workflows/avm.res.cognitive-services.account.yml'
-      - 'avm-res/cognitive-services/account/**'
-      - 'avm/res/network/private-endpoint/**'
-      - 'avm/utilities/pipelines/**'
-      - '!avm/utilities/pipelines/deploymentRemoval/**'
-      - '!*/**/README.md'
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - '.github/actions/templates/avm-**'
+  #     - '.github/workflows/avm.template.module.yml'
+  #     - '.github/workflows/avm.res.cognitive-services.account.yml'
+  #     - 'avm-res/cognitive-services/account/**'
+  #     - 'avm/res/network/private-endpoint/**'
+  #     - 'avm/utilities/pipelines/**'
+  #     - '!avm/utilities/pipelines/deploymentRemoval/**'
+  #     - '!*/**/README.md'
 
 env:
   modulePath: 'avm-res/cognitive-services/account'
