@@ -17,7 +17,7 @@ function Publish-ModuleFromTagToPBR {
   # TODO: Diff in between tag & tag^-1 to find modules to publish?
 
   # 1. Find tag as per function input
-  $repositoryRoot = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent
+  $repositoryRoot = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent.Parent
   $targetVersion = Split-Path $ModuleReleaseTagName -Leaf
   $moduleRelativeFolderPath = $ModuleReleaseTagName -replace "\/$targetVersion$", ''
   $moduleFolderPath = Join-Path $repositoryRoot $moduleRelativeFolderPath

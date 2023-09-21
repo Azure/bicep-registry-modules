@@ -7,7 +7,7 @@ param (
     }),
 
   [Parameter(Mandatory = $false)]
-  [string] $repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.FullName,
+  [string] $repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent.FullName,
 
   # Dedicated Tokens configuration hashtable containing the tokens and token prefix and suffix.
   [Parameter(Mandatory = $false)]
@@ -37,7 +37,7 @@ $script:templateNotFoundException = 'No template file found in folder [{0}]' # -
 # Import any helper function used in this test script
 Import-Module (Join-Path $PSScriptRoot 'helper' 'helper.psm1') -Force
 
-$script:crossReferencedModuleList = Get-CrossReferencedModuleList
+# $script:crossReferencedModuleList = Get-CrossReferencedModuleList
 
 Describe 'File/folder tests' -Tag 'Modules' {
 
@@ -131,10 +131,10 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
     $resourceTypeIdentifier = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
 
     $moduleFolderTestCases += @{
-      moduleFolderName   = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
-      moduleFolderPath   = $moduleFolderPath
-      isTopLevelModule   = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1].Split('/').Count -eq 2 # <provider>/<resourceType>
-      templateReferences = $crossReferencedModuleList[$resourceTypeIdentifier]
+      moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
+      moduleFolderPath = $moduleFolderPath
+      isTopLevelModule = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1].Split('/').Count -eq 2 # <provider>/<resourceType>
+      # templateReferences = $crossReferencedModuleList[$resourceTypeIdentifier]
     }
   }
 
@@ -204,7 +204,7 @@ Describe 'Module tests' -Tag 'Module' {
         readMeContent          = Get-Content (Join-Path -Path $moduleFolderPath 'README.md')
         isTopLevelModule       = $resourceTypeIdentifier.Split('/').Count -eq 2 # <provider>/<resourceType>
         resourceTypeIdentifier = $resourceTypeIdentifier
-        templateReferences     = $crossReferencedModuleList[$resourceTypeIdentifier]
+        # templateReferences     = $crossReferencedModuleList[$resourceTypeIdentifier]
       }
     }
 
