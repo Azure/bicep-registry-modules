@@ -37,8 +37,6 @@ $script:templateNotFoundException = 'No template file found in folder [{0}]' # -
 # Import any helper function used in this test script
 Import-Module (Join-Path $PSScriptRoot 'helper' 'helper.psm1') -Force
 
-# $script:crossReferencedModuleList = Get-CrossReferencedModuleList
-
 Describe 'File/folder tests' -Tag 'Modules' {
 
   Context 'General module folder tests' {
@@ -221,11 +219,10 @@ Describe 'Module tests' -Tag 'Module' {
       $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
 
       $readmeFileTestCases += @{
-        moduleFolderName   = $resourceTypeIdentifier
-        templateContent    = $templateContent
-        templateFilePath   = $templateFilePath
-        readMeFilePath     = Join-Path -Path $moduleFolderPath 'README.md'
-        templateReferences = $crossReferencedModuleList[$resourceTypeIdentifier]
+        moduleFolderName = $resourceTypeIdentifier
+        templateContent  = $templateContent
+        templateFilePath = $templateFilePath
+        readMeFilePath   = Join-Path -Path $moduleFolderPath 'README.md'
       }
     }
 
@@ -454,15 +451,21 @@ Describe 'Module tests' -Tag 'Module' {
     }
 
     # TODO: Should be null, not empty
-    It '[<moduleFolderName>] If delete lock is implemented, the template should have a lock parameter with an empty default value.' -TestCases $deploymentFolderTestCases {
+    # TODO : Add for other extension resources too?
+    It '[<moduleFolderName>] If delete lock is implemented, the template should have a lock parameter that''s a user defined type with an empty default value.' -TestCases $deploymentFolderTestCases {
 
       param(
         [string] $moduleFolderName,
         [hashtable] $templateContent
       )
+
       if ($lock = $templateContent.parameters.lock) {
-        $lock.Keys | Should -Contain 'defaultValue'
-        $lock.defaultValue | Should -Be ''
+
+        $lock.Keys | Should -Contain '$ref' # Should be a user defined type
+
+        $type = $templateContent.definitions[(Split-Path ($lock.'$ref') -Leaf)]
+
+        $type.nullable | Should -Be $true
       }
     }
 
