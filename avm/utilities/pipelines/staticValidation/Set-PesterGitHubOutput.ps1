@@ -137,7 +137,9 @@ function Set-PesterGitHubOutput {
 
       #TODO Remove
       Write-Verbose "2"
-      $errorMessage = $failedTest.ErrorRecord.TargetObject.Message.Trim() -replace '\n', '<br>' # Replace new lines with <br> to enable line breaks in markdown
+      # $errorMessage = $failedTest.ErrorRecord.TargetObject.Message.Trim() -replace '\n', '<br>' # Replace new lines with <br> to enable line breaks in markdown
+      $errorMessage = ''
+
       #TODO Remove
       Write-Verbose "3"
       $testReference = '{0}:{1}' -f $errorTestFile, $errorTestLine
@@ -145,7 +147,7 @@ function Set-PesterGitHubOutput {
       Write-Verbose "4"
       if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
         # Creating URL to test file to enable users to 'click' on it
-        $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/utilities/pipelines/staticValidation/module.tests.ps1#L$errorTestLine)"
+        $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/avm/utilities/pipelines/staticValidation/module.tests.ps1#L$errorTestLine)"
         #TODO Remove
         Write-Verbose "5"
       }
