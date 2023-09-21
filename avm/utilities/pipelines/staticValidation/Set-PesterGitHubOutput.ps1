@@ -121,8 +121,6 @@ function Set-PesterGitHubOutput {
       '| Name | Error | Source |',
       '| :-- | :-- | :-- |'
     )
-    #TODO Remove
-    Write-Verbose 'Before foreach'
     foreach ($failedTest in ($failedTests | Sort-Object -Property { $PSItem.ExpandedName })) {
 
       $intermediateNameElements = $failedTest.Path
@@ -130,15 +128,24 @@ function Set-PesterGitHubOutput {
       $testName = (($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|').Trim()
 
       #TODO Remove
-      Write-Verbose 'testName $testName'
+      Write-Verbose "testName $testName"
       $errorTestLine = $failedTest.ErrorRecord.TargetObject.Line
+      #TODO Remove
+      Write-Verbose "1"
       $errorTestFile = (Split-Path $failedTest.ErrorRecord.TargetObject.File -Leaf).Trim()
+      #TODO Remove
+      Write-Verbose "2"
       $errorMessage = $failedTest.ErrorRecord.TargetObject.Message.Trim() -replace '\n', '<br>' # Replace new lines with <br> to enable line breaks in markdown
-
+      #TODO Remove
+      Write-Verbose "3"
       $testReference = '{0}:{1}' -f $errorTestFile, $errorTestLine
+      #TODO Remove
+      Write-Verbose "4"
       if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
         # Creating URL to test file to enable users to 'click' on it
         $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/utilities/pipelines/staticValidation/module.tests.ps1#L$errorTestLine)"
+        #TODO Remove
+        Write-Verbose "5"
       }
 
       $fileContent += '| {0} | {1} | <code>{2}</code> |' -f $testName, $errorMessage, $testReference
