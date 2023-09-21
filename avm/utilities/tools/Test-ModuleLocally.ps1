@@ -302,3 +302,24 @@ function Test-ModuleLocally {
     end {
     }
 }
+
+$TestModuleLocallyInput = @{
+    TemplateFilePath           = 'C:\dev\ip\Azure-bicep-registry-modules\eriqua-fork\avm\res\network\private-endpoint\main.bicep'
+    ModuleTestFilePath         = 'C:\dev\ip\Azure-bicep-registry-modules\eriqua-fork\avm\res\network\private-endpoint\tests\e2e\defaults\main.test.bicep'
+    PesterTest                 = $true
+    ValidationTest             = $true
+    DeploymentTest             = $false
+    ValidateOrDeployParameters = @{
+        Location          = 'westeurope'
+        SubscriptionId    = 'a7439831-1cd9-435d-a091-4aa863c96556'
+        ManagementGroupId = '3d9faf2f-6186-4865-9b12-156ee64ba23b'
+        RemoveDeployment  = $false
+    }
+    AdditionalTokens           = @{
+        deploymentSpId = 'e58511af-4da2-449c-a5cd-6a10271cfb83'
+        tenantId       = '449fbe1d-9c99-4509-9014-4fd5cf25b014'
+        namePrefix     = 'avm'
+    }
+}
+Test-ModuleLocally @TestModuleLocallyInput
+
