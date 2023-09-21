@@ -60,9 +60,10 @@ function Get-SpecsAlignedResourceName {
         [string] $ResourceIdentifier,
 
         [Parameter(Mandatory = $false)]
-        [string] $SpecsFilePath = (Join-Path (Split-Path (Split-Path $PSScriptRoot)) 'src' 'apiSpecsList.json')
+        [string] $SpecsFilePath
     )
 
+    # TODO: Implement file fetch from web
     $specs = ConvertFrom-Json (Get-Content $specsFilePath -Raw) -AsHashtable
 
     $reducedResourceIdentifier = $ResourceIdentifier -replace '-'
@@ -75,7 +76,8 @@ function Get-SpecsAlignedResourceName {
     if (-not $foundProviderNamespaceMatches) {
         $providerNamespace = "Microsoft.$rawProviderNamespace"
         Write-Warning "Failed to identify provider namespace [$rawProviderNamespace]. Falling back to [$providerNamespace]."
-    } else {
+    }
+    else {
         $providerNamespace = ($foundProviderNamespaceMatches.Count -eq 1) ? $foundProviderNamespaceMatches : $foundProviderNamespaceMatches[0]
     }
 
@@ -112,7 +114,8 @@ function Get-SpecsAlignedResourceName {
             # if we still don't find anything (because the resource type straight up does not exist, we fall back to itself as the default)
             Write-Warning "Resource type [$rawResourceType] does not exist in the API / is custom. Falling back to it as default."
             $resourceType = $rawResourceType
-        } else {
+        }
+        else {
             Write-Warning ('Failed to find exact match between core matched resource types and [{0}]. Fallback on [{1}].' -f $rawResourceType, (Split-Path $rawResourceType -Parent))
         }
     }
