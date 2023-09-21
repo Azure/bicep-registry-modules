@@ -60,7 +60,7 @@ runs:
           ################################
           $functionInput = @{
             TemplateFilePath     = Join-Path $env:GITHUB_WORKSPACE "${{ inputs.templateFilePath }}"
-            PublicRegistryServer = ConvertTo-SecureString '${{ secrets.PUBLISH_REGISTRY_SERVER }}' -AsPlainText -Force
+            PublicRegistryServer = ConvertTo-SecureString '${{ env.PUBLISH_REGISTRY_SERVER }}' -AsPlainText -Force
           }
 
           Write-Verbose "Invoke task with" -Verbose
