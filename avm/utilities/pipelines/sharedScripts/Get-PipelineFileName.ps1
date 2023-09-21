@@ -27,7 +27,7 @@ function Get-PipelineFileName {
         [string] $ResourceIdentifier
     )
 
-    . (Join-Path $PSScriptRoot 'Get-SpecsAlignedResourceName.ps1')
+    . (Join-Path $PSScriptRoot 'helper' 'Get-SpecsAlignedResourceName.ps1')
 
     $provider, $parentType, $childTypeString = $ResourceIdentifier -split '[\/|\\]', 3
     $parentResourceIdentifier = $provider, $parentType -join '/'
