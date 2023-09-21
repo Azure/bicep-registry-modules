@@ -59,24 +59,24 @@ runs:
         foreach ($moduleFolderPath in $moduleFolderPaths) {
           Write-Verbose "- [($moduleFolderPath]" -Verbose
         }
+        # TODO: remove token replacement if not needed
+        # # Construct Token Configuration Input and enforced tokens list
+        # $GlobalVariablesObject = Get-Content -Path 'settings.yml' | ConvertFrom-Yaml | Select-Object -ExpandProperty variables
+        # $tokenConfiguration = @{
+        #   Tokens      = @{}
+        #   TokenPrefix = $GlobalVariablesObject | Select-Object -ExpandProperty tokenPrefix
+        #   TokenSuffix = $GlobalVariablesObject | Select-Object -ExpandProperty tokenSuffix
+        # }
 
-        # Construct Token Configuration Input and enforced tokens list
-        $GlobalVariablesObject = Get-Content -Path 'settings.yml' | ConvertFrom-Yaml | Select-Object -ExpandProperty variables
-        $tokenConfiguration = @{
-          Tokens      = @{}
-          TokenPrefix = $GlobalVariablesObject | Select-Object -ExpandProperty tokenPrefix
-          TokenSuffix = $GlobalVariablesObject | Select-Object -ExpandProperty tokenSuffix
-        }
-
-        if (-not [String]::IsNullOrEmpty('${{ env.ARM_SUBSCRIPTION_ID }}')) {
-          $tokenConfiguration.Tokens['subscriptionId'] = '${{ env.ARM_SUBSCRIPTION_ID }}'
-        }
-        if (-not [String]::IsNullOrEmpty('${{ env.ARM_MGMTGROUP_ID }}')) {
-          $tokenConfiguration.Tokens['managementGroupId'] = '${{ env.ARM_MGMTGROUP_ID }}'
-        }
-        if (-not [String]::IsNullOrEmpty('${{ env.ARM_TENANT_ID }}')) {
-          $tokenConfiguration.Tokens['tenantId'] = '${{ env.ARM_TENANT_ID }}'
-        }
+        # if (-not [String]::IsNullOrEmpty('${{ env.ARM_SUBSCRIPTION_ID }}')) {
+        #   $tokenConfiguration.Tokens['subscriptionId'] = '${{ env.ARM_SUBSCRIPTION_ID }}'
+        # }
+        # if (-not [String]::IsNullOrEmpty('${{ env.ARM_MGMTGROUP_ID }}')) {
+        #   $tokenConfiguration.Tokens['managementGroupId'] = '${{ env.ARM_MGMTGROUP_ID }}'
+        # }
+        # if (-not [String]::IsNullOrEmpty('${{ env.ARM_TENANT_ID }}')) {
+        #   $tokenConfiguration.Tokens['tenantId'] = '${{ env.ARM_TENANT_ID }}'
+        # }
 
         $moduleTestFilePath = '${{ inputs.moduleTestFilePath }}'
 
