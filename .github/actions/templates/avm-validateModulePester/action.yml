@@ -88,7 +88,7 @@ runs:
             Container = New-PesterContainer -Path (Join-Path $repoRootPath $moduleTestFilePath) -Data @{
               moduleFolderPaths              = $moduleFolderPaths
               # tokenConfiguration             = $tokenConfiguration
-              allowPreviewVersionsInAPITests = [System.Convert]::ToBoolean('${{ env.allowPreviewVersionsInAPITests }}')
+              # allowPreviewVersionsInAPITests = [System.Convert]::ToBoolean('${{ env.allowPreviewVersionsInAPITests }}')
             }
             PassThru  = $true
           }
