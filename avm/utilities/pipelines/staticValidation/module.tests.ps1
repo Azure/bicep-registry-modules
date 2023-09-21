@@ -450,7 +450,6 @@ Describe 'Module tests' -Tag 'Module' {
       $templateContent.Keys | Should -Contain 'resources'
     }
 
-    # TODO: Should be null, not empty
     # TODO : Add for other extension resources too?
     It '[<moduleFolderName>] If delete lock is implemented, the template should have a lock parameter that''s a user defined type with an empty default value.' -TestCases $deploymentFolderTestCases {
 
