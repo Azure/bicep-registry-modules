@@ -156,21 +156,23 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
   foreach ($moduleFolderPath in $moduleFolderPaths) {
 
     $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
+    $relativeModulePath = Join-Path 'avm' ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}')[1]
 
     $moduleFolderTestCases += @{
-      moduleFolderName = $resourceTypeIdentifier
-      isTopLevelModule = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
+      moduleFolderName   = $resourceTypeIdentifier
+      relativeModulePath = $relativeModulePath
+      isTopLevelModule   = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
     }
   }
 
   It '[<moduleFolderName>] Module should have a GitHub workflow.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
 
     param(
-      [string] $moduleFolderName
+      [string] $relativeModulePath
     )
 
     $workflowsFolderName = Join-Path $repoRootPath '.github' 'workflows'
-    $workflowFileName = Get-PipelineFileName -ResourceIdentifier $moduleFolderName
+    $workflowFileName = Get-PipelineFileName -ResourceIdentifier $relativeModulePath
     $workflowPath = Join-Path $workflowsFolderName $workflowFileName
     Test-Path $workflowPath | Should -Be $true -Because "path [$workflowPath] should exist."
   }
@@ -547,17 +549,17 @@ Describe 'Module tests' -Tag 'Module' {
         [string] $moduleFolderName,
         [hashtable] $templateContent
       )
-      $enableDefaultTelemetryFlag = @()
+      $enableTelemetryFlag = @()
       $Schemaverion = $templateContent.'$schema'
       if ((($Schemaverion.Split('/')[5]).Split('.')[0]) -eq (($RGdeployment.Split('/')[5]).Split('.')[0])) {
-        if (($templateContent.resources.type -ccontains 'Microsoft.Resources/deployments' -and $templateContent.resources.condition -like "*[parameters('enableDefaultTelemetry')]*") -or ($templateContent.resources.resources.type -ccontains 'Microsoft.Resources/deployments' -and $templateContent.resources.resources.condition -like "*[parameters('enableDefaultTelemetry')]*")) {
-          $enableDefaultTelemetryFlag += $true
+        if (($templateContent.resources.type -ccontains 'Microsoft.Resources/deployments' -and $templateContent.resources.condition -like "*[parameters('enableTelemetry')]*") -or ($templateContent.resources.resources.type -ccontains 'Microsoft.Resources/deployments' -and $templateContent.resources.resources.condition -like "*[parameters('enableTelemetry')]*")) {
+          $enableTelemetryFlag += $true
         }
         else {
-          $enableDefaultTelemetryFlag += $false
+          $enableTelemetryFlag += $false
         }
       }
-      $enableDefaultTelemetryFlag | Should -Not -Contain $false
+      $enableTelemetryFlag | Should -Not -Contain $false
     }
 
     It '[<moduleFolderName>] The Location should be defined as a parameter, with the default value of [resourceGroup().Location] or global for ResourceGroup deployment scope.' -TestCases $deploymentFolderTestCases {
