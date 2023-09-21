@@ -127,13 +127,13 @@ function Set-PesterGitHubOutput {
       $intermediateNameElements[-1] = '**{0}**' -f $failedTest.ExpandedName
       $testName = (($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|').Trim()
 
-      #TODO Remove
-      Write-Verbose "testName $testName"
       $errorTestLine = $failedTest.ErrorRecord.TargetObject.Line
       #TODO Remove
       Write-Verbose "1"
+      Write-Verbose "testName $testName"
       Write-Verbose "$intermediateNameElements"
-      $errorTestFile = (Split-Path $failedTest.ErrorRecord.TargetObject.File -Leaf).Trim()
+      # $errorTestFile = (Split-Path $failedTest.ErrorRecord.TargetObject.File -Leaf).Trim()
+      $errorTestFile = ""
 
       #TODO Remove
       Write-Verbose "2"
