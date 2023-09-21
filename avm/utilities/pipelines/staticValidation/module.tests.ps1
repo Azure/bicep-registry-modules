@@ -851,9 +851,16 @@ Describe 'Module tests' -Tag 'Module' {
       $templateFileContent.metadata.description | Should -Not -BeNullOrEmpty
     }
 
-    # TODO: Add test for module owner
+    It '[<moduleFolderName>] template file should have a module owner specified.' -TestCases $metadataFileTestCases {
+
+      param(
+        [string] $moduleFolderName,
+        [hashtable] $templateFileContent
+      )
+
+      $templateFileContent.metadata.owner | Should -Not -BeNullOrEmpty
+    }
   }
-}
 }
 
 Describe 'Test file tests' -Tag 'TestTemplate' {
