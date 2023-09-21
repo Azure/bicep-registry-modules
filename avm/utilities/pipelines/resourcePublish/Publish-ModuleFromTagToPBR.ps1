@@ -16,7 +16,6 @@ function Publish-ModuleFromTagToPBR {
 
   # TODO: Diff in between tag & tag^-1 to find modules to publish?
 
-  # ModuleReleaseTagName = 'avm/res/key-vault/vault/0.6.10'
   # 1. Find tag as per function input
   $repositoryRoot = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent
   $targetVersion = Split-Path $ModuleReleaseTagName -Leaf
