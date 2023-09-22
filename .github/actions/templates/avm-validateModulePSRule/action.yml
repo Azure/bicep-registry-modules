@@ -99,7 +99,8 @@ runs:
         inputPath: '${{ inputs.templateFilePath}}'
         outputFormat: Csv
         outputPath: '${{ inputs.templateFilePath}}-PSRule-output.csv'
-        option: '${{ inputs.psruleYamlPath}}'
+        option: '${{ inputs.psruleYamlPath}}/ps-rule.yaml'
+        source: '${{ inputs.psruleYamlPath}}/.ps-rule'
         # path: '${{ inputs.psruleYamlPath}}'
 
     - name: 'Parse CSV content'

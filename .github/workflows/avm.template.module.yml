@@ -66,7 +66,7 @@ jobs:
           templateFilePath: '${{ inputs.modulePath }}/${{ matrix.moduleTestFilePaths }}'
           subscriptionId: '${{ secrets.ARM_SUBSCRIPTION_ID }}'
           managementGroupId: '${{ secrets.ARM_MGMTGROUP_ID }}'
-          psruleYamlPath: '${{ github.workspace }}/avm/ps-rule.yaml'
+          psruleYamlPath: '${{ github.workspace }}/avm'
 
   #############################
   #   Deployment validation   #
