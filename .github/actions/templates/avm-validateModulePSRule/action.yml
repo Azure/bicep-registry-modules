@@ -81,8 +81,6 @@ runs:
           $ConvertTokensInputs = @{
             FilePathList = @($templateFilePath)
             Tokens       = $Tokens
-            # TokenPrefix  = '${{ env.tokenPrefix }}'
-            # TokenSuffix  = '${{ env.tokenSuffix }}'
           }
 
           Write-Verbose ("Convert Tokens Input:`n {0}" -f ($ConvertTokensInputs | ConvertTo-Json -Depth 10)) -Verbose
@@ -101,7 +99,8 @@ runs:
         inputPath: '${{ inputs.templateFilePath}}'
         outputFormat: Csv
         outputPath: '${{ inputs.templateFilePath}}-PSRule-output.csv'
-        path: '${{ inputs.psruleYamlPath}}'
+        option: '${{ inputs.psruleYamlPath}}'
+        # path: '${{ inputs.psruleYamlPath}}'
 
     - name: 'Parse CSV content'
       if: always()
