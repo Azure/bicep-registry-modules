@@ -1,0 +1,145 @@
+#########################################################
+## 'Validate module with PSRule' Composite Action      ##
+#########################################################
+##
+## This composite action contains the logic to validate a module using a set of PSRule tests
+##
+#########################################################
+##
+##-------------------------------------------##
+## ACTION PARAMETERS                         ##
+##-------------------------------------------##
+##
+##   |=================================================================================================================================================================|
+##   | Parameter                | Required | Default | Description                          | Example                                                                  |
+##   |--------------------------|----------|---------|--------------------------------------|--------------------------------------------------------------------------|
+##   | templateFilePath         | true     | ''      | The path to the module PSRule tests. | 'modules/api-management/service/.test/common/main.test.bicep'            |
+##   | subscriptionId           | false    | ''      | The subscriptionId to deploy to      | '1a97b80a-4dda-4f50-ab53-349e29344654'                                   |
+##   | managementGroupId        | false    | ''      | The managementGroupId to deploy to   | '1a97b80a-4dda-4f50-ab53-349e29344654'                                   |
+##   |=================================================================================================================================================================|
+##
+##---------------------------------------------##
+
+name: 'Execute PSRule module tests'
+description: 'Execute PSRule module tests (if any)'
+
+inputs:
+  templateFilePath:
+    description: 'The path to the test file'
+    required: true
+    default: ''
+  subscriptionId:
+    description: 'The subscription ID to deploy to'
+    required: false
+  managementGroupId:
+    description: 'The management group ID to deploy to'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    # [Module PSRule Test] task(s)
+    #-----------------------------
+    - name: 'Replace tokens in template file'
+      uses: azure/powershell@v1
+      with:
+        azPSVersion: 'latest'
+        inlineScript: |
+          $templateFilePath = '${{ inputs.templateFilePath}}'
+          # Grouping task logs
+          Write-Output '::group::Replace tokens in template file'
+
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'tokensReplacement' 'Convert-TokensInFileList.ps1')
+
+          # Populate tokens
+          $Tokens = @{
+            resourceGroupName = '${{ env.resourceGroupName }}'
+            subscriptionId    = '${{ inputs.subscriptionId }}'
+            managementGroupId = '${{ inputs.managementGroupId }}'
+            tenantId          = '${{ env.ARM_TENANT_ID }}'
+          }
+
+          ## Add local (source control) tokens
+          $tokenMap = @{}
+          foreach ($token in (Get-ChildItem env: | Where-Object -Property Name -Like "localToken_*")) {
+            $tokenMap += @{ $token.Name.Replace('localToken_','','OrdinalIgnoreCase') = $token.value }
+          }
+          Write-Verbose ('Using local tokens [{0}]' -f ($tokenMap.Keys -join ', ')) -Verbose
+          $Tokens += $tokenMap
+
+          ## Swap 'namePrefix' token if empty and provided as a GitHub secret
+          if([String]::IsNullOrEmpty($Tokens['namePrefix'])){
+            Write-Verbose 'Using [namePrefix] token from GitHub' -Verbose
+            $Tokens['namePrefix'] = '${{ env.TOKEN_NAMEPREFIX }}'
+          }
+
+          # Construct Token Function Input
+          $ConvertTokensInputs = @{
+            FilePathList = @($templateFilePath)
+            Tokens       = $Tokens
+            TokenPrefix  = '${{ env.tokenPrefix }}'
+            TokenSuffix  = '${{ env.tokenSuffix }}'
+          }
+
+          Write-Verbose ("Convert Tokens Input:`n {0}" -f ($ConvertTokensInputs | ConvertTo-Json -Depth 10)) -Verbose
+
+          # Invoke Token Replacement Functionality [For Module]
+          $null = Convert-TokensInFileList @ConvertTokensInputs
+
+          Write-Output '::endgroup::'
+
+    # Run analysis by using the PSRule GitHub action.
+    - name: Run PSRule analysis
+      uses: microsoft/ps-rule@v2.4.0
+      continue-on-error: true # Setting this whilst PSRule gets bedded in, in this project
+      with:
+        modules: 'PSRule.Rules.Azure'
+        inputPath: '${{ inputs.templateFilePath}}'
+        outputFormat: Csv
+        outputPath: '${{ inputs.templateFilePath}}-PSRule-output.csv'
+
+    - name: 'Parse CSV content'
+      if: always()
+      uses: azure/powershell@v1
+      with:
+        azPSVersion: 'latest'
+        inlineScript: |
+          # Grouping task logs
+          Write-Output '::group::Parse CSV content'
+
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'staticValidation' 'psrule' 'Set-PSRuleGitHubOutput.ps1')
+
+          # Populate parameter input
+          $ParameterInput = @{
+            inputFilePath           = '${{ inputs.templateFilePath}}-PSRule-output.csv'
+            outputFilePath          = '${{ inputs.templateFilePath}}-PSRule-output.md'
+            skipPassedRulesReport   = $false
+          }
+
+          Write-Verbose ('Set PS Rule Output with following parameters:`n{0}' -f (ConvertTo-Json $ParameterInput -Depth 10)) -Verbose
+
+          # Invoke Set PSRule Output Functionality
+          $null = Set-PSRuleGitHubOutput @ParameterInput
+
+          Write-Output '::endgroup::'
+
+    - name: 'Output to GitHub job summaries'
+      if: always()
+      shell: pwsh
+      run: |
+        # Grouping task logs
+        Write-Output '::group::Output to GitHub job summaries'
+
+        $mdPSRuleOutputFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath}}-PSRule-output.md'
+
+        if (-not (Test-Path $mdPSRuleOutputFilePath)) {
+          Write-Warning ('Input file [{0}] not found. Please check if the previous task threw an error and try again.' -f $mdPSRuleOutputFilePath)
+          return ''
+        } else {
+          Get-Content $mdPSRuleOutputFilePath >> $env:GITHUB_STEP_SUMMARY
+          Write-Verbose ('Successfully printed out file [{0}] to Job Summaries' -f $mdPSRuleOutputFilePath) -Verbose
+        }
+
+        Write-Output '::endgroup::'

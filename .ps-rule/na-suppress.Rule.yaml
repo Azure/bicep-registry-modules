@@ -1,0 +1,32 @@
+---
+# Synopsis: Suppress Rules for Not Available resources
+apiVersion: github.com/microsoft/PSRule/v1
+kind: SuppressionGroup
+metadata:
+  name: 'SuppressNA'
+spec:
+  rule:
+   - Azure.Resource.UseTags
+  if:
+    type: '.'
+    in:
+      - Microsoft.OperationsManagement/solutions
+      - Microsoft.ManagedServices/registrationDefinitions
+      - Microsoft.ManagedServices/registrationAssignments
+      - Microsoft.Management/managementGroups
+      - Microsoft.Resources/resourceGroups
+      - Microsoft.Network/networkWatchers
+      - Microsoft.PolicyInsights/remediations
+      - Microsoft.KubernetesConfiguration/fluxConfigurations
+      - Microsoft.KubernetesConfiguration/extensions
+      - Microsoft.Sql/managedInstances
+      - Microsoft.Network/privateDnsZones
+      - Microsoft.Authorization/policyAssignments
+      - Microsoft.Authorization/policyDefinitions
+      - Microsoft.Authorization/policyExemptions
+      - Microsoft.Authorization/policySetDefinitions
+      - Microsoft.Authorization/locks
+      - Microsoft.AAD/DomainServices/oucontainer
+      - Microsoft.ApiManagement/service/eventGridFilters
+      - Microsoft.EventGrid/eventSubscriptions
+      - Microsoft.Automation/automationAccounts/softwareUpdateConfigurations
