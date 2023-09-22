@@ -7,7 +7,7 @@ param (
     }),
 
   [Parameter(Mandatory = $false)]
-  [string] $repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent.FullName,
+  [string] $repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent.Parent.FullName,
 
   # Dedicated Tokens configuration hashtable containing the tokens and token prefix and suffix.
   [Parameter(Mandatory = $false)]
@@ -877,7 +877,7 @@ Describe 'Module tests' -Tag 'Module' {
 
     foreach ($moduleFolderPath in $moduleFolderPaths) {
 
-      $moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
+      $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
 
       # For runtime purposes, we cache the compiled template in a hashtable that uses a formatted relative module path as a key
       $moduleFolderPathKey = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1].Trim('/').Replace('/', '-')
