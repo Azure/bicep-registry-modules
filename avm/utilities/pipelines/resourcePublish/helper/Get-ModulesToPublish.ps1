@@ -84,7 +84,6 @@ function Get-TemplateFileToPublish {
     [string[]] $PathsToInclude = @()
   )
 
-  # $ModuleRelativeFolderPath = $ModuleFolderPath.Split('/avm/')[-1]
   $ModuleRelativeFolderPath = ("avm/{0}" -f ($ModuleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]) -replace '\\', '/'
   $ModifiedFiles = Get-ModifiedFileList -Verbose
   Write-Verbose "Looking for modified files under: [$ModuleRelativeFolderPath]" -Verbose

@@ -12,10 +12,10 @@ Mandatory. The list of file paths that contain tokens to be replaced.
 Mandatory. An object containing the parameter file tokens to set
 
 .PARAMETER TokenPrefix
-Mandatory. The prefix used to identify a token in the parameter file (i.e. <<)
+Mandatory. The prefix used to identify a token in the parameter file (i.e. #_)
 
 .PARAMETER TokenSuffix
-Mandatory. The suffix used to identify a token in the parameter file (i.e. >>)
+Mandatory. The suffix used to identify a token in the parameter file (i.e. _#)
 
 .PARAMETER SwapValueWithName
 Optional. A boolean that enables the search for the original value and replaces it with a token. Used to revert configuration. Default is false

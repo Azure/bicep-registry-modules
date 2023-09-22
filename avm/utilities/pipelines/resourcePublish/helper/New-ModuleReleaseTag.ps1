@@ -1,22 +1,30 @@
 <#
 .SYNOPSIS
-Creates a new release tag
+Create a new release tag
 
 .DESCRIPTION
-TBD
+Create a new release tag for the specified module
+
+.PARAMETER ModuleFolderPath
+Mandatory. Path to the main/parent module folder.
+
+.PARAMETER TargetVersion
+Mandatory. Target version of the module to be published.
 
 .EXAMPLE
+New-ModuleReleaseTag -ModuleFolderPath 'C:\avm\key-vault\vault' -TargetVersion '1.0.0'
 
+Creates 'avm/key-vault/vault/1.0.0' tag
 #>
 
 function New-ModuleReleaseTag {
 
   [CmdletBinding()]
   param (
-    [Parameter()]
+    [Parameter(Mandatory = $true)]
     [string] $ModuleFolderPath,
 
-    [Parameter()]
+    [Parameter(Mandatory = $true)]
     [string] $TargetVersion
   )
 
@@ -33,7 +41,7 @@ function New-ModuleReleaseTag {
     # TODO exception if tag not formatted correctly
   }
 
-  # 3 Check tag already existing, if so return
+  # 3 Check tag not already existing
   $existingTag = git ls-remote --tags origin $tagName
   if ($existingTag) {
     Write-Verbose "Tag [$tagName] already exists" -Verbose
