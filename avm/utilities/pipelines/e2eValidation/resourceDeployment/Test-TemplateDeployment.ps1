@@ -75,7 +75,7 @@ function Test-TemplateDeployment {
         Write-Debug ('{0} entered' -f $MyInvocation.MyCommand)
 
         # Load helper
-        . (Join-Path (Get-Item -Path $PSScriptRoot).parent.FullName 'sharedScripts' 'Get-ScopeOfTemplateFile.ps1')
+        . (Join-Path (Get-Item -Path $PSScriptRoot).parent.parent.FullName 'sharedScripts' 'Get-ScopeOfTemplateFile.ps1')
     }
 
     process {
@@ -174,7 +174,8 @@ function Test-TemplateDeployment {
             if ($res.Details) { Write-Warning ($res.Details | ConvertTo-Json -Depth 10 | Out-String) }
             if ($res.Message) { Write-Warning $res.Message }
             Write-Error 'Template is not valid.'
-        } else {
+        }
+        else {
             Write-Verbose 'Template is valid' -Verbose
         }
     }
