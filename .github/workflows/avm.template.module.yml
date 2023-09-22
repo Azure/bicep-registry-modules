@@ -47,25 +47,25 @@ jobs:
   #########################
   #   PSRule validation   #
   #########################
-  # job_psrule_test: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-  #   name: 'PSRule validation'
-  #   runs-on: ubuntu-20.04
-  #   if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       moduleTestFilePaths: ${{ fromJson(inputs.moduleTestFilePaths) }}
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
-  #     - name: Set environment
-  #       uses: ./.github/actions/templates/avm-setEnvironment
-  #     - name: Set PSRule validation
-  #       uses: ./.github/actions/templates/avm-validateModulePSRule
-  #       with:
-  #         templateFilePath: '${{ inputs.modulePath }}/${{ matrix.moduleTestFilePaths }}'
-  #         subscriptionId: '${{ secrets.ARM_SUBSCRIPTION_ID }}'
-  #         managementGroupId: '${{ secrets.ARM_MGMTGROUP_ID }}'
+  job_psrule_test: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
+    name: 'PSRule validation'
+    runs-on: ubuntu-20.04
+    if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        moduleTestFilePaths: ${{ fromJson(inputs.moduleTestFilePaths) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set environment
+        uses: ./.github/actions/templates/avm-setEnvironment
+      - name: Set PSRule validation
+        uses: ./.github/actions/templates/avm-validateModulePSRule
+        with:
+          templateFilePath: '${{ inputs.modulePath }}/${{ matrix.moduleTestFilePaths }}'
+          subscriptionId: '${{ secrets.ARM_SUBSCRIPTION_ID }}'
+          managementGroupId: '${{ secrets.ARM_MGMTGROUP_ID }}'
 
   #############################
   #   Deployment validation   #
