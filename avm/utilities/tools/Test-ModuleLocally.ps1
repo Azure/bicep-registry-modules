@@ -166,8 +166,8 @@ function Test-ModuleLocally {
         # Load Tokens Converter Scripts
         . (Join-Path $utilitiesFolderPath 'pipelines' 'tokensReplacement' 'Convert-TokensInFileList.ps1')
         # Load Modules Validation / Deployment Scripts
-        . (Join-Path $utilitiesFolderPath 'pipelines' 'resourceDeployment' 'New-TemplateDeployment.ps1')
-        . (Join-Path $utilitiesFolderPath 'pipelines' 'resourceDeployment' 'Test-TemplateDeployment.ps1')
+        . (Join-Path $utilitiesFolderPath 'pipelines' 'e2eValidation' 'resourceDeployment' 'New-TemplateDeployment.ps1')
+        . (Join-Path $utilitiesFolderPath 'pipelines' 'e2eValidation' 'resourceDeployment' 'Test-TemplateDeployment.ps1')
     }
     process {
 

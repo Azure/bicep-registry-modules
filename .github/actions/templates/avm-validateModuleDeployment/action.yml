@@ -127,7 +127,7 @@ runs:
           Write-Output '::group::Validate template file'
 
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'resourceDeployment' 'Test-TemplateDeployment.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'Test-TemplateDeployment.ps1')
 
           # Prepare general parameters
           # --------------------------
@@ -177,7 +177,7 @@ runs:
           Write-Output '::group::Deploy template file'
 
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'resourceDeployment' 'New-TemplateDeployment.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'New-TemplateDeployment.ps1')
 
           # Prepare general parameters
           # --------------------------
@@ -248,7 +248,7 @@ runs:
           Write-Output '::group::Remove deployed resources'
 
           # Load used function
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'resourceRemoval' 'Initialize-DeploymentRemoval.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'resourceRemoval' 'Initialize-DeploymentRemoval.ps1')
 
           $functionInput = @{
             TemplateFilePath  = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
