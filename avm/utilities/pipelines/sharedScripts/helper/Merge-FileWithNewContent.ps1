@@ -227,7 +227,9 @@ function Merge-FileWithNewContent {
                 }
 
                 $startContent = $OldContent[0..($startIndex)]
-                $endContent = $OldContent[$endIndex..($OldContent.Count - 1)]
+                if ($endIndex -ne $OldContent.Count - 1) {
+                    $endContent = $OldContent[$endIndex..($OldContent.Count - 1)]
+                }
             }
             Default {}
         }
