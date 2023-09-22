@@ -57,5 +57,6 @@ module testDeployment '../../../main.bicep' = {
     ]
     serviceResourceId: nestedDependencies.outputs.keyVaultResourceId
     subnetResourceId: nestedDependencies.outputs.subnetResourceId
+    lock: {}
   }
 }
