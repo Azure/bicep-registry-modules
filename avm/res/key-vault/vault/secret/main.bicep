@@ -81,10 +81,6 @@ resource secretVault_roleAssignments 'Microsoft.Authorization/roleAssignments@20
   scope: secret
 }]
 
-module dummy 'br/public:ai/cognitiveservices:1.1.1' = {
-  name: 'test'
-}
-
 @description('The name of the secret.')
 output name string = secret.name
 

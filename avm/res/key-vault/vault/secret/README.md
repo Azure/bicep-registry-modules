@@ -20,133 +20,91 @@ This module deploys a Key Vault Secret.
 
 **Required parameters**
 
-| Parameter Name | Type | Description |
+| Parameter | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the secret. |
-| `value` | securestring | The value of the secret. NOTE: "value" will never be returned from the service, as APIs using this model are is intended for internal use in ARM deployments. Users should use the data-plane REST service for interaction with vault secrets. |
+| [`name`](#parameter-name) | string | The name of the secret. |
+| [`value`](#parameter-value) | securestring | The value of the secret. NOTE: "value" will never be returned from the service, as APIs using this model are is intended for internal use in ARM deployments. Users should use the data-plane REST service for interaction with vault secrets. |
 
 **Conditional parameters**
 
-| Parameter Name | Type | Description |
+| Parameter | Type | Description |
 | :-- | :-- | :-- |
-| `keyVaultName` | string | The name of the parent key vault. Required if the template is used in a standalone deployment. |
+| [`keyVaultName`](#parameter-keyvaultname) | string | The name of the parent key vault. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
-| Parameter Name | Type | Default Value | Description |
-| :-- | :-- | :-- | :-- |
-| `attributesEnabled` | bool | `True` | Determines whether the object is enabled. |
-| `attributesExp` | int | `-1` | Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible. |
-| `attributesNbf` | int | `-1` | Not before date in seconds since 1970-01-01T00:00:00Z. |
-| `contentType` | securestring | `''` | The content type of the secret. |
-| `enableTelemetry` | bool | `True` | Enable telemetry via a Globally Unique Identifier (GUID). |
-| `roleAssignments` | array | `[]` | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| `tags` | object | `{object}` | Resource tags. |
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`attributesEnabled`](#parameter-attributesenabled) | bool | Determines whether the object is enabled. |
+| [`attributesExp`](#parameter-attributesexp) | int | Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible. |
+| [`attributesNbf`](#parameter-attributesnbf) | int | Not before date in seconds since 1970-01-01T00:00:00Z. |
+| [`contentType`](#parameter-contenttype) | securestring | The content type of the secret. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`tags`](#parameter-tags) | object | Resource tags. |
 
+### Parameter: `attributesEnabled`
 
-### Parameter Usage: `tags`
+Determines whether the object is enabled.
+- Required: No
+- Type: bool
+- Default: `True`
 
-Tag names and tag values can be provided as needed. A tag can be left without a value.
+### Parameter: `attributesExp`
 
-<details>
+Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible.
+- Required: No
+- Type: int
+- Default: `-1`
 
-<summary>Parameter JSON format</summary>
+### Parameter: `attributesNbf`
 
-```json
-"tags": {
-    "value": {
-        "Environment": "Non-Prod",
-        "Contact": "test.user@testcompany.com",
-        "PurchaseOrder": "1234",
-        "CostCenter": "7890",
-        "ServiceName": "DeploymentValidation",
-        "Role": "DeploymentValidation"
-    }
-}
-```
+Not before date in seconds since 1970-01-01T00:00:00Z.
+- Required: No
+- Type: int
+- Default: `-1`
 
-</details>
+### Parameter: `contentType`
 
-<details>
+The content type of the secret.
+- Required: No
+- Type: securestring
+- Default: `''`
 
-<summary>Bicep format</summary>
+### Parameter: `keyVaultName`
 
-```bicep
-tags: {
-    Environment: 'Non-Prod'
-    Contact: 'test.user@testcompany.com'
-    PurchaseOrder: '1234'
-    CostCenter: '7890'
-    ServiceName: 'DeploymentValidation'
-    Role: 'DeploymentValidation'
-}
-```
+The name of the parent key vault. Required if the template is used in a standalone deployment.
+- Required: Yes
+- Type: string
 
-</details>
-<p>
+### Parameter: `name`
 
-### Parameter Usage: `roleAssignments`
+The name of the secret.
+- Required: Yes
+- Type: string
 
-Create a role assignment for the given resource. If you want to assign a service principal / managed identity that is created in the same deployment, make sure to also specify the `'principalType'` parameter and set it to `'ServicePrincipal'`. This will ensure the role assignment waits for the principal's propagation in Azure.
+### Parameter: `roleAssignments`
 
-<details>
+Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+- Required: Yes
+- Type: array
 
-<summary>Parameter JSON format</summary>
+### Parameter: `tags`
 
-```json
-"roleAssignments": {
-    "value": [
-        {
-            "roleDefinitionIdOrName": "Reader",
-            "description": "Reader Role Assignment",
-            "principalIds": [
-                "12345678-1234-1234-1234-123456789012", // object 1
-                "78945612-1234-1234-1234-123456789012" // object 2
-            ]
-        },
-        {
-            "roleDefinitionIdOrName": "/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11",
-            "principalIds": [
-                "12345678-1234-1234-1234-123456789012" // object 1
-            ],
-            "principalType": "ServicePrincipal"
-        }
-    ]
-}
-```
+Resource tags.
+- Required: No
+- Type: object
+- Default: `{object}`
 
-</details>
+### Parameter: `value`
 
-<details>
+The value of the secret. NOTE: "value" will never be returned from the service, as APIs using this model are is intended for internal use in ARM deployments. Users should use the data-plane REST service for interaction with vault secrets.
+- Required: Yes
+- Type: securestring
 
-<summary>Bicep format</summary>
-
-```bicep
-roleAssignments: [
-    {
-        roleDefinitionIdOrName: 'Reader'
-        description: 'Reader Role Assignment'
-        principalIds: [
-            '12345678-1234-1234-1234-123456789012' // object 1
-            '78945612-1234-1234-1234-123456789012' // object 2
-        ]
-    }
-    {
-        roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'
-        principalIds: [
-            '12345678-1234-1234-1234-123456789012' // object 1
-        ]
-        principalType: 'ServicePrincipal'
-    }
-]
-```
-
-</details>
-<p>
 
 ## Outputs
 
-| Output Name | Type | Description |
+| Output | Type | Description |
 | :-- | :-- | :-- |
 | `name` | string | The name of the secret. |
 | `resourceGroupName` | string | The name of the resource group the secret was created in. |

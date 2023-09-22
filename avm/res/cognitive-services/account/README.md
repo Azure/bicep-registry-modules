@@ -863,7 +863,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`migrationToken`](#parameter-migrationtoken) | string | Resource migration token. |
 | [`networkAcls`](#parameter-networkacls) | object | A collection of rules governing the accessibility from specific network locations. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
@@ -1117,7 +1117,7 @@ Optional. Specify the name of lock.
 
 ### Parameter: `managedIdentities`
 
-The managed identity definition for this resource
+The managed identity definition for this resource.
 - Required: No
 - Type: object
 
@@ -1448,8 +1448,4 @@ The storage accounts for this resource.
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |
-| `network/private-endpoint` | Local reference |
+_None_
