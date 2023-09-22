@@ -184,8 +184,6 @@ function Test-ModuleLocally {
         $tokenConfiguration = @{
             FilePathList = $moduleTestFiles
             Tokens       = @{}
-            TokenPrefix  = '#_'
-            TokenSuffix  = '_#'
         }
 
         # Add Other Parameter File Tokens (For Testing)

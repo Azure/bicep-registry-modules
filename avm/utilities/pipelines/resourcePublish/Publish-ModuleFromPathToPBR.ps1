@@ -48,8 +48,6 @@ function Publish-ModuleFromPathToPBR {
     Tokens       = @{
       'moduleVersion' = $targetVersion
     }
-    TokenPrefix  = '#_'
-    TokenSuffix  = '_#'
   }
   $null = Convert-TokensInFileList @tokenConfiguration
 
