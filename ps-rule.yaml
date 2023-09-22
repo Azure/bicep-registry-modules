@@ -38,7 +38,7 @@ input:
     # Exclude all files.
     - '*'
     # Only process default and waf-aligned test files.
-    - '!**/default/main.test.bicep'
+    - '!**/*.test.bicep'
 
 configuration:
   # Enable automatic expansion of Azure parameter files.
