@@ -53,7 +53,7 @@ function Remove-Deployment {
         Write-Debug ('{0} entered' -f $MyInvocation.MyCommand)
 
         # Load helper
-        . (Join-Path (Get-Item -Path $PSScriptRoot).parent.parent.FullName 'sharedScripts' 'Get-ScopeOfTemplateFile.ps1')
+        . (Join-Path (Get-Item -Path $PSScriptRoot).parent.parent.parent.FullName 'sharedScripts' 'Get-ScopeOfTemplateFile.ps1')
         . (Join-Path (Split-Path $PSScriptRoot -Parent) 'helper' 'Get-DeploymentTargetResourceList.ps1')
         . (Join-Path (Split-Path $PSScriptRoot -Parent) 'helper' 'Get-ResourceIdsAsFormattedObjectList.ps1')
         . (Join-Path (Split-Path $PSScriptRoot -Parent) 'helper' 'Get-OrderedResourcesList.ps1')
@@ -152,7 +152,8 @@ function Remove-Deployment {
             if ($PSCmdlet.ShouldProcess(('[{0}] resources' -f (($resourcesToRemove -is [array]) ? $resourcesToRemove.Count : 1)), 'Remove')) {
                 Remove-ResourceList -ResourcesToRemove $resourcesToRemove
             }
-        } else {
+        }
+        else {
             Write-Verbose 'Found [0] resources to remove'
         }
     }
