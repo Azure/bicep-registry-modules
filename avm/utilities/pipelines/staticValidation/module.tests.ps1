@@ -20,10 +20,10 @@ param (
 Write-Verbose ("repoRootPath: $repoRootPath") -Verbose
 Write-Verbose ("moduleFolderPaths: $($moduleFolderPaths.count)") -Verbose
 
-$script:RGdeployment = 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-$script:Subscriptiondeployment = 'https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#'
-$script:MGdeployment = 'https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#'
-$script:Tenantdeployment = 'https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#'
+$script:RGdeploymentSchema = 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+$script:SubscriptionDeploymentSchema = 'https://schema.management.azure.com/schemas/2018-05-01/SubscriptionDeploymentSchemaTemplate.json#'
+$script:MgDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#'
+$script:TenantDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/TenantDeploymentSchemaTemplate.json#'
 $script:moduleFolderPaths = $moduleFolderPaths
 
 # For runtime purposes, we cache the compiled template in a hashtable that uses a formatted relative module path as a key
@@ -392,6 +392,7 @@ Describe 'Module tests' -Tag 'Module' {
         templateFilePath  = $templateFilePath
         testFileTestCases = $testFileTestCases
         readMeFilePath    = Join-Path (Split-Path $templateFilePath) 'README.md'
+        isTopLevelModule  = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
       }
     }
 
@@ -414,16 +415,16 @@ Describe 'Module tests' -Tag 'Module' {
 
       $Schemaverion = $templateContent.'$schema'
       $SchemaArray = @()
-      if ($Schemaverion -eq $RGdeployment) {
+      if ($Schemaverion -eq $RGdeploymentSchema) {
         $SchemaOutput = $true
       }
-      elseIf ($Schemaverion -eq $Subscriptiondeployment) {
+      elseIf ($Schemaverion -eq $SubscriptionDeploymentSchema) {
         $SchemaOutput = $true
       }
-      elseIf ($Schemaverion -eq $MGdeployment) {
+      elseIf ($Schemaverion -eq $MgDeploymentSchema) {
         $SchemaOutput = $true
       }
-      elseIf ($Schemaverion -eq $Tenantdeployment) {
+      elseIf ($Schemaverion -eq $TenantDeploymentSchema) {
         $SchemaOutput = $true
       }
       else {
@@ -543,23 +544,74 @@ Describe 'Module tests' -Tag 'Module' {
       $CamelCasingFlag | Should -Not -Contain $false
     }
 
-    It '[<moduleFolderName>] Telemetry deployment should be present in the template.' -TestCases $deploymentFolderTestCases {
+    It '[<moduleFolderName>] Telemetry deployment should be present in the template.' -TestCases ($deploymentFolderTestCases | Where-Object { $_.isTopLevelModule }) {
 
       param(
         [string] $moduleFolderName,
         [hashtable] $templateContent
       )
-      $enableTelemetryFlag = @()
-      $Schemaverion = $templateContent.'$schema'
-      if ((($Schemaverion.Split('/')[5]).Split('.')[0]) -eq (($RGdeployment.Split('/')[5]).Split('.')[0])) {
-        if (($templateContent.resources.type -ccontains 'Microsoft.Resources/deployments' -and $templateContent.resources.condition -like "*[parameters('enableTelemetry')]*") -or ($templateContent.resources.resources.type -ccontains 'Microsoft.Resources/deployments' -and $templateContent.resources.resources.condition -like "*[parameters('enableTelemetry')]*")) {
-          $enableTelemetryFlag += $true
-        }
-        else {
-          $enableTelemetryFlag += $false
-        }
+
+      # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
+      if ($templateContent.resources.GetType().Name -eq 'Object[]') {
+        $templateResources = $templateContent.resources
       }
-      $enableTelemetryFlag | Should -Not -Contain $false
+      else {
+        $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
+      }
+
+      $telemetryDeployment = $templateResources | Where-Object { $_.name -like "*'46d3xbcp.*" } # The AVM telemetry prefix
+      $telemetryDeployment | Should -Not -BeNullOrEmpty -Because 'The telemetry resource with name prefix [46d3xbcp] should be present in the tempalte'
+    }
+
+    It '[<moduleFolderName>] Telemetry deployment should have correct condition in the template.' -TestCases ($deploymentFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+
+      param(
+        [string] $moduleFolderName,
+        [hashtable] $templateContent
+      )
+
+      # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
+      if ($templateContent.resources.GetType().Name -eq 'Object[]') {
+        $templateResources = $templateContent.resources
+      }
+      else {
+        $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
+      }
+
+      $telemetryDeployment = $templateResources | Where-Object { $_.name -like "*'46d3xbcp.*" } # The AVM telemetry prefix
+
+      if (-not $telemetryDeployment) {
+        Set-ItResult -Skipped -Because 'Skipping this test as telemetry was not implemented in template'
+        return
+      }
+
+      $telemetryDeployment.condition | Should -Be "[parameters('enableTelemetry')]"
+    }
+
+    It '[<moduleFolderName>] Telemetry deployment should have expected inner output for verbosity.' -TestCases ($deploymentFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+
+      param(
+        [string] $moduleFolderName,
+        [hashtable] $templateContent
+      )
+
+      # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
+      if ($templateContent.resources.GetType().Name -eq 'Object[]') {
+        $templateResources = $templateContent.resources
+      }
+      else {
+        $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
+      }
+
+      $telemetryDeployment = $templateResources | Where-Object { $_.name -like "*'46d3xbcp.*" } # The AVM telemetry prefix
+
+      if (-not $telemetryDeployment) {
+        Set-ItResult -Skipped -Because 'Skipping this test as telemetry was not implemented in template'
+        return
+      }
+
+      $telemetryDeployment.properties.template.outputs.Keys | Should -Contain 'telemetry'
+      $telemetryDeployment.properties.template.outputs['telemetry'].value | Should -Be 'For more information, see https://aka.ms/avm/TelemetryInfo'
     }
 
     It '[<moduleFolderName>] The Location should be defined as a parameter, with the default value of [resourceGroup().Location] or global for ResourceGroup deployment scope.' -TestCases $deploymentFolderTestCases {
@@ -570,7 +622,7 @@ Describe 'Module tests' -Tag 'Module' {
       )
       $LocationFlag = $true
       $Schemaverion = $templateContent.'$schema'
-      if ((($Schemaverion.Split('/')[5]).Split('.')[0]) -eq (($RGdeployment.Split('/')[5]).Split('.')[0])) {
+      if ((($Schemaverion.Split('/')[5]).Split('.')[0]) -eq (($RGdeploymentSchema.Split('/')[5]).Split('.')[0])) {
         $Locationparamoutputvalue = $templateContent.parameters.location.defaultValue
         $Locationparamoutput = $templateContent.parameters.Keys
         if ($Locationparamoutput -contains 'Location') {
@@ -1081,10 +1133,16 @@ Describe 'API version tests' -Tag 'ApiCheck' {
     }
 
     $approvedApiVersions = $approvedApiVersions | Sort-Object -Unique -Descending
-    $approvedApiVersions | Should -Contain $TargetApi
 
-    # Provide a warning if an API version is second to next to expire.
-    if ($approvedApiVersions -contains $TargetApi) {
+    if ( $approvedApiVersions -notcontains $TargetApi) {
+      # Using a warning now instead of an error, as we don't want to block PRs for this.
+      Write-Warning ("The used API version [$TargetApi] is not one of the most recent 5 versions. Please consider upgrading to one of the following: {0}" -f $approvedApiVersions -join ', ')
+
+      # The original failed test was
+      # $approvedApiVersions | Should -Contain $TargetApi
+    }
+    else {
+      # Provide a warning if an API version is second to next to expire.
       $indexOfVersion = $approvedApiVersions.IndexOf($TargetApi)
 
       # Example
