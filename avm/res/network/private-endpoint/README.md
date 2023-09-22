@@ -36,13 +36,13 @@ The following module usage examples are retrieved from the content of the files 
 
 ```bicep
 module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-nped'
+  name: '${uniqueString(deployment().name, location)}-test-npemin'
   params: {
     // Required parameters
     groupIds: [
       'vault'
     ]
-    name: 'nped001'
+    name: 'npemin001'
     serviceResourceId: '<serviceResourceId>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
@@ -71,7 +71,7 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
       ]
     },
     "name": {
-      "value": "nped001"
+      "value": "npemin001"
     },
     "serviceResourceId": {
       "value": "<serviceResourceId>"
