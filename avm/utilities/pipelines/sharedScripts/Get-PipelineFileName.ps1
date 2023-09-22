@@ -27,8 +27,6 @@ function Get-PipelineFileName {
         [string] $ResourceIdentifier
     )
 
-    . (Join-Path $PSScriptRoot 'helper' 'Get-SpecsAlignedResourceName.ps1')
-
     $avm, $type, $provider, $parentType, $childTypeString = $ResourceIdentifier -split '[\/|\\]', 5
     $parentResourceIdentifier = $provider, $parentType -join '/'
     $pipelineFileName = ('{0}.{1}.{2}.yml' -f $avm, $type, ($parentResourceIdentifier -replace '\/', '.')).ToLower()
