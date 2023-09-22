@@ -155,7 +155,7 @@ function New-TemplateDeploymentInner {
         Write-Debug ('{0} entered' -f $MyInvocation.MyCommand)
 
         # Load helper
-        . (Join-Path (Get-Item -Path $PSScriptRoot).parent.FullName 'sharedScripts' 'Get-ScopeOfTemplateFile.ps1')
+        . (Join-Path (Get-Item -Path $PSScriptRoot).parent.parent.FullName 'sharedScripts' 'Get-ScopeOfTemplateFile.ps1')
     }
 
     process {
@@ -288,7 +288,8 @@ function New-TemplateDeploymentInner {
                     throw "Deployed failed with provisioning state [Failed]. Error Message: [$exceptionMessage]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
                 }
                 $Stoploop = $true
-            } catch {
+            }
+            catch {
                 if ($retryCount -ge $retryLimit) {
                     if ($doNotThrow) {
 
@@ -300,7 +301,8 @@ function New-TemplateDeploymentInner {
                                 ResourceGroupName = $resourceGroupName
                             }
                             $exceptionMessage = Get-ErrorMessageForScope @errorInputObject
-                        } else {
+                        }
+                        else {
                             $exceptionMessage = $PSitem.Exception.Message
                         }
 
@@ -308,11 +310,13 @@ function New-TemplateDeploymentInner {
                             DeploymentNames = $usedDeploymentNames
                             Exception       = $exceptionMessage
                         }
-                    } else {
+                    }
+                    else {
                         throw $PSitem.Exception.Message
                     }
                     $Stoploop = $true
-                } else {
+                }
+                else {
                     Write-Verbose "Resource deployment Failed.. ($retryCount/$retryLimit) Retrying in 5 Seconds.. `n"
                     Write-Verbose ($PSitem.Exception.Message | Out-String) -Verbose
                     Start-Sleep -Seconds 5
@@ -458,12 +462,14 @@ function New-TemplateDeployment {
                     }
                 }
                 return $deploymentResult
-            } else {
+            }
+            else {
                 if ($PSCmdlet.ShouldProcess("Deployment for single parameter file [$parameterFilePath]", 'Trigger')) {
                     return New-TemplateDeploymentInner @deploymentInputObject -parameterFilePath $parameterFilePath
                 }
             }
-        } else {
+        }
+        else {
             if ($PSCmdlet.ShouldProcess('Deployment without parameter file', 'Trigger')) {
                 return New-TemplateDeploymentInner @deploymentInputObject
             }
