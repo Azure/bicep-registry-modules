@@ -28,7 +28,6 @@ on:
       - '.github/workflows/avm.res.network.private-endpoint.yml'
       - 'avm/res/network/private-endpoint/**'
       - 'avm/utilities/pipelines/**'
-      - '!avm/utilities/pipelines/deploymentRemoval/**'
       - '!*/**/README.md'
 
 env:
