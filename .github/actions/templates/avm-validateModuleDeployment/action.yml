@@ -77,8 +77,6 @@ runs:
           $ConvertTokensInputs = @{
             FilePathList = $targetFileList
             Tokens       = @{}
-            TokenPrefix  = '[['
-            TokenSuffix  = ']]'
           }
 
           # Add enforced tokens
