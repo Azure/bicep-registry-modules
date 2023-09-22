@@ -33,10 +33,10 @@ output:
 
 input:
   pathIgnore:
-    # Ignore other files in the repository.
-    - '**/*'
-    # Do not ignore tests.
-    - '!modules/**/*.test.bicep'
+    # Exclude all files.
+    - '*'
+    # Only process default and waf-aligned test files.
+    - '!**/default/main.test.bicep'
 
 configuration:
   # Enable automatic expansion of Azure parameter files.
