@@ -33,75 +33,76 @@ Optional. A string for a custom output directory of the modified parameter file
 #>
 
 function Convert-TokensInFileList {
-    [CmdletBinding()]
-    param (
-        [parameter(
-            Mandatory = $true,
-            ValueFromPipeline = $true
-        )]
-        [String[]] $FilePathList,
+  [CmdletBinding()]
+  param (
+    [parameter(
+      Mandatory = $true,
+      ValueFromPipeline = $true
+    )]
+    [String[]] $FilePathList,
 
-        [parameter(Mandatory = $true)]
-        [hashtable] $Tokens,
+    [parameter(Mandatory = $true)]
+    [hashtable] $Tokens,
 
-        [parameter(Mandatory = $true)]
-        [string] $TokenPrefix,
+    [parameter(Mandatory = $false)]
+    [string] $TokenPrefix = '#_',
 
-        [parameter(Mandatory = $true)]
-        [string] $TokenSuffix,
+    [parameter(Mandatory = $false)]
+    [string] $TokenSuffix = '_#',
 
-        [parameter(Mandatory = $false)]
-        [bool] $SwapValueWithName = $false,
+    [parameter(Mandatory = $false)]
+    [bool] $SwapValueWithName = $false,
 
-        [parameter(Mandatory = $false)]
-        [string] $OutputDirectory
-    )
+    [parameter(Mandatory = $false)]
+    [string] $OutputDirectory
+  )
 
-    begin {
-        # Load used funtions
-        . (Join-Path $PSScriptRoot 'helper' 'Convert-TokenInFile.ps1')
+  begin {
+    # Load used funtions
+    . (Join-Path $PSScriptRoot 'helper' 'Convert-TokenInFile.ps1')
+  }
+
+  process {
+    # Combine All Input Token Types, Remove Duplicates and Only Select entries with on empty values
+    $FilteredTokens = ($Tokens | Sort-Object -Unique).Clone()
+    @($FilteredTokens.Keys) | ForEach-Object {
+      if ([String]::IsNullOrEmpty($FilteredTokens[$_])) {
+        $FilteredTokens.Remove($_)
+      }
     }
+    Write-Verbose ('Using [{0}] tokens' -f $FilteredTokens.Keys.Count)
 
-    process {
-        # Combine All Input Token Types, Remove Duplicates and Only Select entries with on empty values
-        $FilteredTokens = ($Tokens | Sort-Object -Unique).Clone()
-        @($FilteredTokens.Keys) | ForEach-Object {
-            if ([String]::IsNullOrEmpty($FilteredTokens[$_])) {
-                $FilteredTokens.Remove($_)
-            }
-        }
-        Write-Verbose ('Using [{0}] tokens' -f $FilteredTokens.Keys.Count)
-
-        # Apply Prefix and Suffix to Tokens and Prepare Object for Conversion
-        Write-Verbose ("Applying Token Prefix '$TokenPrefix' and Token Suffix '$TokenSuffix'")
-        foreach ($Token in @($FilteredTokens.Keys)) {
-            $newKey = -join ($TokenPrefix, $Token, $TokenSuffix)
-            $FilteredTokens[$newKey] = $FilteredTokens[$Token] # Add formatted entry
-            $FilteredTokens.Remove($Token) # Replace original
-        }
-        # Convert Tokens in Parameter Files
-        try {
-            foreach ($FilePath in $FilePathList) {
-                # Prepare Input to Token Converter Function
-                $ConvertTokenListFunctionInput = @{
-                    FilePath             = $FilePath
-                    TokenNameValueObject = $FilteredTokens.Clone()
-                    SwapValueWithName    = $SwapValueWithName
-                }
-                if ($OutputDirectory) {
-                    $ConvertTokenListFunctionInput += @{OutputDirectory = $OutputDirectory }
-                }
-                # Convert Tokens in the File
-                Convert-TokenInFile @ConvertTokenListFunctionInput
-                $ConversionStatus = $true
-            }
-        } catch {
-            $ConversionStatus = $false
-            Write-Verbose $_.Exception.Message -Verbose
-        }
+    # Apply Prefix and Suffix to Tokens and Prepare Object for Conversion
+    Write-Verbose ("Applying Token Prefix '$TokenPrefix' and Token Suffix '$TokenSuffix'")
+    foreach ($Token in @($FilteredTokens.Keys)) {
+      $newKey = -join ($TokenPrefix, $Token, $TokenSuffix)
+      $FilteredTokens[$newKey] = $FilteredTokens[$Token] # Add formatted entry
+      $FilteredTokens.Remove($Token) # Replace original
     }
-    end {
-        Write-Verbose "Token Replacement Status: $ConversionStatus"
-        return [bool] $ConversionStatus
+    # Convert Tokens in Parameter Files
+    try {
+      foreach ($FilePath in $FilePathList) {
+        # Prepare Input to Token Converter Function
+        $ConvertTokenListFunctionInput = @{
+          FilePath             = $FilePath
+          TokenNameValueObject = $FilteredTokens.Clone()
+          SwapValueWithName    = $SwapValueWithName
+        }
+        if ($OutputDirectory) {
+          $ConvertTokenListFunctionInput += @{OutputDirectory = $OutputDirectory }
+        }
+        # Convert Tokens in the File
+        Convert-TokenInFile @ConvertTokenListFunctionInput
+        $ConversionStatus = $true
+      }
     }
+    catch {
+      $ConversionStatus = $false
+      Write-Verbose $_.Exception.Message -Verbose
+    }
+  }
+  end {
+    Write-Verbose "Token Replacement Status: $ConversionStatus"
+    return [bool] $ConversionStatus
+  }
 }

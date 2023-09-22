@@ -78,8 +78,8 @@ runs:
           $ConvertTokensInputs = @{
             FilePathList = @($templateFilePath)
             Tokens       = $Tokens
-            TokenPrefix  = '${{ env.tokenPrefix }}'
-            TokenSuffix  = '${{ env.tokenSuffix }}'
+            # TokenPrefix  = '${{ env.tokenPrefix }}'
+            # TokenSuffix  = '${{ env.tokenSuffix }}'
           }
 
           Write-Verbose ("Convert Tokens Input:`n {0}" -f ($ConvertTokensInputs | ConvertTo-Json -Depth 10)) -Verbose
