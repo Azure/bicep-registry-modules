@@ -678,32 +678,11 @@ Describe 'Module tests' -Tag 'Module' {
       }
     }
 
-    It '[<moduleFolderName>] Resource name output should exist.' -TestCases $deploymentFolderTestCases {
+    It '[<moduleFolderName>] Resource modules should have a name output.' -TestCases $deploymentFolderTestCases {
 
       param(
         [string] $moduleFolderName,
         [hashtable] $templateContent,
-        $templateFilePath
-      )
-
-      # check if module contains a 'primary' resource we could draw a name from
-      $moduleResourceType = (Split-Path (($templateFilePath -replace '\\', '/') -split '/avm/')[1] -Parent) -replace '\\', '/'
-      if ($templateContent.resources.type -notcontains $moduleResourceType) {
-        Set-ItResult -Skipped -Because 'the module template has no primary resource to fetch a name from.'
-        return
-      }
-
-      # Otherwise test for standard outputs
-      $outputs = $templateContent.outputs.Keys
-      $outputs | Should -Contain 'name'
-    }
-
-    It '[<moduleFolderName>] Resource ID output should exist.' -TestCases $deploymentFolderTestCases {
-
-      param(
-        [string] $moduleFolderName,
-        [hashtable] $templateContent,
-        [string] $templateFilePath,
         [string] $readMeFilePath
       )
 
@@ -717,8 +696,52 @@ Describe 'Module tests' -Tag 'Module' {
         return
       }
 
+      # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
+      if ($templateContent.resources.GetType().Name -eq 'Object[]') {
+        $templateResources = $templateContent.resources
+      }
+      else {
+        $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
+      }
+
+      if ($templateResources.type -notcontains $primaryResourceType) {
+        Set-ItResult -Skipped -Because 'the module template has no primary resource to fetch a name from.'
+        return
+      }
+
+      # Otherwise test for standard outputs
+      $outputs = $templateContent.outputs.Keys
+      $outputs | Should -Contain 'name'
+    }
+
+    It '[<moduleFolderName>] Resource modules should have a Resource ID output.' -TestCases $deploymentFolderTestCases {
+
+      param(
+        [string] $moduleFolderName,
+        [hashtable] $templateContent,
+        [string] $readMeFilePath
+      )
+
+      # We're fetching the primary resource type from the first line of the readme
+      $readMeFileContentHeader = (Get-Content -Path $readMeFilePath)[0]
+      if ($readMeFileContentHeader -match '^.*`\[(.+)\]`.*') {
+        $primaryResourceType = $matches[1]
+      }
+      else {
+        Write-Error "Cannot identity primary resource type in readme header [$readMeFileContentHeader] and cannot execute the test."
+        return
+      }
+
+      # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
+      if ($templateContent.resources.GetType().Name -eq 'Object[]') {
+        $templateResources = $templateContent.resources
+      }
+      else {
+        $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
+      }
+
       # check if module contains a 'primary' resource we could draw a resource ID from
-      if ($templateContent.resources.type -notcontains $primaryResourceType) {
+      if ($templateResources.type -notcontains $primaryResourceType) {
         Set-ItResult -Skipped -Because 'the module template has no primary resource to fetch a resource ID from.'
         return
       }
@@ -728,7 +751,7 @@ Describe 'Module tests' -Tag 'Module' {
       $outputs | Should -Contain 'resourceId'
     }
 
-    It '[<moduleFolderName>] Principal ID output should exist, if supported.' -TestCases $deploymentFolderTestCases {
+    It '[<moduleFolderName>] Resource modules Principal ID output should exist, if supported.' -TestCases $deploymentFolderTestCases {
 
       param(
         [string] $moduleFolderName,
@@ -741,6 +764,12 @@ Describe 'Module tests' -Tag 'Module' {
         return
       }
 
+      $typeRef = Split-Path $templateContent.parameters.managedIdentities.'$ref' -Leaf
+      $typeProperties = ($templateContent.definitions[$typeRef]).properties
+      if ($typeProperties.Keys -notcontains 'systemAssigned') {
+        Set-ItResult -Skipped -Because 'the managedIdentities input does not support system-assigned identities.'
+        return
+      }
 
       # Otherwise test for standard outputs
       $outputs = $templateContent.outputs.Keys

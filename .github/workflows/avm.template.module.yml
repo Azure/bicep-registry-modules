@@ -43,7 +43,6 @@ jobs:
         uses: ./.github/actions/templates/avm-validateModulePester
         with:
           modulePath: '${{ inputs.modulePath }}'
-          moduleTestFilePath: '${{ env.moduleTestFilePath }}'
 
   #########################
   #   PSRule validation   #

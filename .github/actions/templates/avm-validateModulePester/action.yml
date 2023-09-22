@@ -10,34 +10,34 @@
 ## ACTION PARAMETERS                         ##
 ##-------------------------------------------##
 ##
-##   |==================================================================================================================================================|
-##   | Parameter                | Required | Default | Description                          | Example                                                   |
-##   |--------------------------|----------|---------|--------------------------------------|-----------------------------------------------------------|
-##   | modulePath               | true     | ''      | The path to the module's folder      | 'modules/api-management/service'                          |
-##   | moduleTestFilePath       | true     | ''      | The path to the module Pester tests. | 'utilities/pipelines/staticValidation/module.tests.ps1'   |
-##   |==================================================================================================================================================|
+##   |===========================================================================================================================================================|
+##   | Parameter                | Required | Default | Description                          | Example                                                            |
+##   |--------------------------|----------|---------|--------------------------------------|--------------------------------------------------------------------|
+##   | modulePath               | true     | ''      | The path to the module's folder      | 'modules/api-management/service'                                   |
+##   | moduleTestFilePath       | true     | ''      | The path to the module Pester tests. | 'utilities/pipelines/staticValidation/compliance/module.tests.ps1' |
+##   |===========================================================================================================================================================|
 ##
 ##---------------------------------------------##
 
-name: 'Execute Pester module tests'
-description: 'Execute Pester module tests (if any)'
+name: "Execute Pester module tests"
+description: "Execute Pester module tests (if any)"
 
 inputs:
   modulePath:
     description: "The path to the module's folder"
     required: true
-    default: ''
+    default: ""
   moduleTestFilePath:
-    description: 'The path to the test file'
+    description: "The path to the test file"
     required: true
-    default: ''
+    default: "avm/utilities/pipelines/staticValidation/compliance/module.tests.ps1"
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     # [Module Pester Test] task(s)
     #-----------------------------
-    - name: 'Run Pester tests'
+    - name: "Run Pester tests"
       id: pester_run_step
       shell: pwsh
       run: |
@@ -45,7 +45,7 @@ runs:
         Write-Output '::group::Run Pester tests'
 
         # Load used functions
-        . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'staticValidation' 'Set-PesterGitHubOutput.ps1')
+        . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'staticValidation' 'compliance' 'Set-PesterGitHubOutput.ps1')
 
         # Set repo root path
         $repoRootPath = $env:GITHUB_WORKSPACE
@@ -86,7 +86,7 @@ runs:
         $pesterConfiguration = @{
           Run    = @{
             Container = New-PesterContainer -Path (Join-Path $repoRootPath $moduleTestFilePath) -Data @{
-              moduleFolderPaths              = $moduleFolderPaths
+              moduleFolderPaths                = $moduleFolderPaths
               # tokenConfiguration             = $tokenConfiguration
               # allowPreviewVersionsInAPITests = [System.Convert]::ToBoolean('${{ env.allowPreviewVersionsInAPITests }}')
             }
@@ -120,7 +120,7 @@ runs:
 
         Write-Output ('{0}={1}' -f 'formattedPesterResultsPath', $functionInput.outputFilePath) >> $env:GITHUB_OUTPUT
 
-    - name: 'Output to GitHub job summaries'
+    - name: "Output to GitHub job summaries"
       if: always()
       shell: pwsh
       run: |

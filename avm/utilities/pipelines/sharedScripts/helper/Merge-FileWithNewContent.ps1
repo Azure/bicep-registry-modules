@@ -111,7 +111,7 @@ function Merge-FileWithNewContent {
         [string] $SectionStartIdentifier,
 
         [Parameter(Mandatory = $false)]
-        [ValidateSet('table', 'list', 'none')]
+        [ValidateSet('table', 'list', 'none', 'nextH2')]
         [string] $ContentType = 'none'
     )
 
@@ -148,7 +148,8 @@ function Merge-FileWithNewContent {
             $startContent = $startContent + @('', $SectionStartIdentifier)
         }
         $endContent = @()
-    } else {
+    }
+    else {
         switch ($ContentType) {
             'table' {
                 $tableStartIndex = $startIndex + 1
@@ -168,7 +169,8 @@ function Merge-FileWithNewContent {
                     if ($ReadMeFileContent[$startIndex] -notcontains $SectionStartIdentifier) {
                         $newContent = @('', $SectionStartIdentifier) + $newContent
                     }
-                } else {
+                }
+                else {
                     $endIndex = Get-EndIndex -ReadMeFileContent $OldContent -startIndex $tableStartIndex -ContentType $ContentType
                     if ($endIndex -ne $OldContent.Count - 1) {
                         $endContent = $OldContent[$endIndex..($OldContent.Count - 1)]
@@ -193,7 +195,8 @@ function Merge-FileWithNewContent {
                     if ($ReadMeFileContent[$startIndex] -notcontains $SectionStartIdentifier) {
                         $newContent = @('', $SectionStartIdentifier) + $newContent
                     }
-                } else {
+                }
+                else {
                     $endIndex = Get-EndIndex -ReadMeFileContent $OldContent -startIndex $listStartIndex -ContentType $ContentType
                     if ($endIndex -ne $OldContent.Count - 1) {
                         $endContent = $OldContent[$endIndex..($OldContent.Count - 1)]
@@ -206,13 +209,26 @@ function Merge-FileWithNewContent {
                     $startContent = $OldContent[0..($startIndex)]
                     $newContent = @($SectionStartIdentifier, '') + $newContent
                     $endContent = $OldContent[($startIndex + 1)..($OldContent.Count - 1)]
-                } else {
+                }
+                else {
                     # section was found
                     $startContent = $OldContent[0..($startIndex)]
                     $endIndex = Get-EndIndex -ReadMeFileContent $OldContent -startIndex $startIndex -ContentType $ContentType
                     if ($endIndex -ne $OldContent.Count - 1) {
                         $endContent = $OldContent[$endIndex..($OldContent.Count - 1)]
                     }
+                }
+            }
+            'nextH2' {
+                $endIndex = $startIndex + 1
+
+                while (-not $OldContent[$endIndex].StartsWith('## ') -and -not (($endIndex + 1) -ge $OldContent.count)) {
+                    $endIndex++
+                }
+
+                $startContent = $OldContent[0..($startIndex)]
+                if ($endIndex -ne $OldContent.Count - 1) {
+                    $endContent = $OldContent[$endIndex..($OldContent.Count - 1)]
                 }
             }
             Default {}
