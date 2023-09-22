@@ -34,6 +34,9 @@ inputs:
   managementGroupId:
     description: 'The management group ID to deploy to'
     required: false
+  psruleYamlPath:
+    description: 'The custom path to the ps-rule.yaml configuration file'
+    required: false
 
 runs:
   using: 'composite'
@@ -98,6 +101,7 @@ runs:
         inputPath: '${{ inputs.templateFilePath}}'
         outputFormat: Csv
         outputPath: '${{ inputs.templateFilePath}}-PSRule-output.csv'
+        path: '${{ inputs.psruleYamlPath}}'
 
     - name: 'Parse CSV content'
       if: always()
