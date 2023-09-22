@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "15547486634180132508"
+      "templateHash": "807982798508862947"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint.",
@@ -316,7 +316,7 @@
       "condition": "[not(empty(parameters('privateDnsZoneResourceIds')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-PrivateEndpoint-PrivateDnsZoneGroup', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-PE-PrivateDnsZoneGroup', uniqueString(deployment().name))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
