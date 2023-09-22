@@ -1252,7 +1252,7 @@ function Set-UsageExamplesSection {
                         $expectedValue = $matches[1]
                     }
                     elseif ($row -match '\[.*reference\(extensionResourceId.+\.([a-zA-Z]+).*\].*"') {
-                        # e.g. "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policySetDefinitions', format('dep-[[namePrefix]]-polSet-{0}', parameters('serviceShort'))), '2021-06-01').policyDefinitions[0].policyDefinitionReferenceId]"
+                        # e.g. "[reference(extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policySetDefinitions', format('dep-#_namePrefix_#-polSet-{0}', parameters('serviceShort'))), '2021-06-01').policyDefinitions[0].policyDefinitionReferenceId]"
                         $expectedValue = $matches[1]
                     }
                     else {
@@ -1270,7 +1270,7 @@ function Set-UsageExamplesSection {
                     if ($jsonParameterContentArray[$index] -match '(\s*"value"): "\[.+\]"') {
                         # e.g.
                         # "policyAssignmentId": {
-                        #   "value": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyAssignments', format('dep-[[namePrefix]]-psa-{0}', parameters('serviceShort')))]"
+                        #   "value": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/policyAssignments', format('dep-#_namePrefix_#-psa-{0}', parameters('serviceShort')))]"
                         $prefix = $matches[1]
 
                         $headerIndex = $index
@@ -1290,7 +1290,7 @@ function Set-UsageExamplesSection {
                         # e.g.
                         # "policyDefinitionReferenceIds": {
                         #  "value": [
-                        #     "[reference(subscriptionResourceId('Microsoft.Authorization/policySetDefinitions', format('dep-[[namePrefix]]-polSet-{0}', parameters('serviceShort'))), '2021-06-01').policyDefinitions[0].policyDefinitionReferenceId]"
+                        #     "[reference(subscriptionResourceId('Microsoft.Authorization/policySetDefinitions', format('dep-#_namePrefix_#-polSet-{0}', parameters('serviceShort'))), '2021-06-01').policyDefinitions[0].policyDefinitionReferenceId]"
                         $prefix = $matches[1]
 
                         $headerIndex = $index
