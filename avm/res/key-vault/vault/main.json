@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "6314634577812331017"
+      "templateHash": "52641334487503796"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -290,22 +290,14 @@
             }
           },
           "lock": {
-            "type": "string",
-            "allowedValues": [
-              "",
-              "CanNotDelete",
-              "ReadOnly"
-            ],
+            "$ref": "#/definitions/lockType",
             "nullable": true,
             "metadata": {
               "description": "Optional. Specify the type of lock."
             }
           },
           "roleAssignments": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/roleAssignmentType"
-            },
+            "$ref": "#/definitions/roleAssignmentType",
             "nullable": true,
             "metadata": {
               "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
@@ -331,6 +323,31 @@
             "metadata": {
               "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
             }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
           }
         }
       },
@@ -460,15 +477,9 @@
       }
     },
     "lock": {
-      "type": "string",
-      "defaultValue": "",
-      "allowedValues": [
-        "",
-        "CanNotDelete",
-        "ReadOnly"
-      ],
+      "$ref": "#/definitions/lockType",
       "metadata": {
-        "description": "Optional. Specify the type of lock."
+        "description": "Optional. The lock settings of the service."
       }
     },
     "roleAssignments": {
@@ -583,14 +594,14 @@
       }
     },
     "keyVault_lock": {
-      "condition": "[not(empty(parameters('lock')))]",
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('name'))]",
-      "name": "[format('{0}-{1}-lock', parameters('name'), parameters('lock'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
-        "level": "[parameters('lock')]",
-        "notes": "[if(equals(parameters('lock'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot modify the resource or child resources.')]"
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
       },
       "dependsOn": [
         "keyVault"
@@ -1393,7 +1404,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.21.1.54444",
-              "templateHash": "13250116040740648439"
+              "templateHash": "13438182834931170603"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -1465,6 +1476,31 @@
                 }
               },
               "nullable": true
+            },
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "nullable": true
             }
           },
           "parameters": {
@@ -1528,15 +1564,9 @@
               }
             },
             "lock": {
-              "type": "string",
-              "defaultValue": "",
-              "allowedValues": [
-                "",
-                "CanNotDelete",
-                "ReadOnly"
-              ],
+              "$ref": "#/definitions/lockType",
               "metadata": {
-                "description": "Optional. Specify the type of lock."
+                "description": "Optional. The lock settings of the service."
               }
             },
             "roleAssignments": {
@@ -1587,7 +1617,7 @@
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
               "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
             },
-            "moduleVersion": "#_moduleVersion_#"
+            "moduleVersion": "1.0.0"
           },
           "resources": {
             "avmTelemetry": {
@@ -1645,14 +1675,14 @@
               }
             },
             "privateEndpoint_lock": {
-              "condition": "[not(empty(parameters('lock')))]",
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
               "type": "Microsoft.Authorization/locks",
               "apiVersion": "2020-05-01",
               "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
-              "name": "[format('{0}-{1}-lock', parameters('name'), parameters('lock'))]",
+              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
               "properties": {
-                "level": "[parameters('lock')]",
-                "notes": "[if(equals(parameters('lock'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot modify the resource or child resources.')]"
+                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
               },
               "dependsOn": [
                 "privateEndpoint"
@@ -1684,7 +1714,7 @@
               "condition": "[not(empty(parameters('privateDnsZoneResourceIds')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-PrivateEndpoint-PrivateDnsZoneGroup', uniqueString(deployment().name, parameters('location')))]",
+              "name": "[format('{0}-PrivateEndpoint-PrivateDnsZoneGroup', uniqueString(deployment().name))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"

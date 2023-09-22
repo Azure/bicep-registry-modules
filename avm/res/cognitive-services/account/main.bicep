@@ -113,7 +113,7 @@ param restrictOutboundNetworkAccess bool = true
 @description('Optional. The storage accounts for this resource.')
 param userOwnedStorage array = []
 
-@description('Optional. The managed identity definition for this resource')
+@description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
 
 @description('Optional. Enable/Disable usage telemetry for module.')
