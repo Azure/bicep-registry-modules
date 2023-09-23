@@ -100,7 +100,7 @@ runs:
         outputFormat: Csv
         outputPath: '${{ inputs.templateFilePath}}-PSRule-output.csv'
         option: '${{ inputs.psruleYamlPath}}/ps-rule.yaml'
-        source: '${{ inputs.psruleYamlPath}}/.ps-rule/'
+        source: 'source/.ps-rule/'
         summary: false
         # path: '${{ inputs.psruleYamlPath}}'
 
