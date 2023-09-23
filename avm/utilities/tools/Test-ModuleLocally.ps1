@@ -190,9 +190,13 @@ function Test-ModuleLocally {
 
         # Construct Token Configuration Input
         $tokenConfiguration = @{
-            FilePathList = @($moduleTestFiles, $TemplateFilePath)
+            FilePathList = @($moduleTestFiles)
             Tokens       = @{}
         }
+
+        # Add other template files as they may contain the 'moduleVersion'
+        $moduleRoot = Split-Path $TemplateFilePath
+        $tokenConfiguration.FilePathList += (Get-ChildItem -Path $moduleRoot -Recurse -File).FullName | Where-Object { $_ -match '.+(main.json|main.bicep)$' }
 
         # Add Other Parameter File Tokens (For Testing)
         $AdditionalTokens.Keys | ForEach-Object {
