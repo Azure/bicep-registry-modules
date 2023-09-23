@@ -147,10 +147,10 @@ function Set-ModuleFileAndFolderSetup {
                 $wafTestTemplateSourceFileContent = Get-Content -Path $wafTestTemplateSourceFilePath
 
                 $suggestedServiceShort = '{0}waf' -f (($resourceTypeIdentifier -split '[\/|\\|-]' | ForEach-Object { $_[0] }) -join '') # e.g., npemin
-                $defaultTestTemplateSourceFileContent = $defaultTestTemplateSourceFileContent -replace '<serviceShort>', $suggestedServiceShort
+                $wafTestTemplateSourceFileContent = $wafTestTemplateSourceFileContent -replace '<serviceShort>', $suggestedServiceShort
 
                 $suggestedResourceGroupName = $resourceTypeIdentifier -replace '[\/|\\]', '.' -replace '-' # e.g., network.privateendpoints
-                $defaultTestTemplateSourceFileContent = $defaultTestTemplateSourceFileContent -replace '<The test resource group name>', $suggestedResourceGroupName
+                $wafTestTemplateSourceFileContent = $wafTestTemplateSourceFileContent -replace '<The test resource group name>', $suggestedResourceGroupName
 
                 if ($PSCmdlet.ShouldProcess("content for file [$wafTestFilePath]", "Set")) {
                     $null = Set-Content -Path $wafTestFilePath -Value $wafTestTemplateSourceFileContent
