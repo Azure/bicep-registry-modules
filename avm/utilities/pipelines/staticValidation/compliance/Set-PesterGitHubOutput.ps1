@@ -128,7 +128,7 @@ function Set-PesterGitHubOutput {
       $testName = (($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|').Trim()
 
       $errorTestLine = $failedTest.ErrorRecord.TargetObject.Line
-      $errorTestFile = (Split-Path $failedTest.ErrorRecord.TargetObject.File -Leaf).Trim()
+      $errorTestFile = (($failedTest.ErrorRecord.TargetObject.File -split '[\/|\\](avm[\/|\\])')[-2, -1] -join '') -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
 
       $errorMessage = $failedTest.ErrorRecord.TargetObject.Message.Trim() -replace '\n', '<br>' # Replace new lines with <br> to enable line breaks in markdown
 
@@ -136,7 +136,7 @@ function Set-PesterGitHubOutput {
 
       if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
         # Creating URL to test file to enable users to 'click' on it
-        $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/avm/utilities/pipelines/staticValidation/module.tests.ps1#L$errorTestLine)"
+        $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/$errorTestFile#L$errorTestLine)"
 
       }
 
@@ -177,7 +177,7 @@ function Set-PesterGitHubOutput {
       $testName = (($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|').Trim()
 
       $testLine = $passedTest.ScriptBlock.StartPosition.StartLine
-      $testFile = (Split-Path $passedTest.ScriptBlock.File -Leaf).Trim()
+      $testFile = (($passedTest.ScriptBlock.File -split '[\/|\\](avm[\/|\\])')[-2, -1] -join '') -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
 
       $testReference = '{0}:{1}' -f $testFile, $testLine
       if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
@@ -225,7 +225,7 @@ function Set-PesterGitHubOutput {
       $reason = ('Test {0}' -f $skippedTest.ErrorRecord.Exception.Message -replace '\|', '\|').Trim()
 
       $testLine = $passedTest.ScriptBlock.StartPosition.StartLine
-      $testFile = (Split-Path $passedTest.ScriptBlock.File -Leaf).Trim()
+      $testFile = (($passedTest.ScriptBlock.File -split '[\/|\\](avm[\/|\\])')[-2, -1] -join '') -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
 
       $testReference = '{0}:{1}' -f $testFile, $testLine
       if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {

@@ -57,24 +57,21 @@ runs:
         }
         Write-Verbose 'Execute tests in path(s):' -Verbose
         foreach ($moduleFolderPath in $moduleFolderPaths) {
-          Write-Verbose "- [($moduleFolderPath]" -Verbose
+          Write-Verbose "- [$moduleFolderPath]" -Verbose
         }
-
-
-        $moduleTestFilePath = '${{ inputs.moduleTestFilePath }}'
 
         # --------------------- #
         # Invoke Pester test(s) #
         # --------------------- #
         $testFiles = @(
-          (Join-Path $repoRootPath $moduleTestFilePath),        # AVM Compliance Tests
-          (Join-Path "${{ inputs.modulePath }}" 'tests' 'unit') # Custom Unit Tests
+          (Join-Path $repoRootPath '${{ inputs.moduleTestFilePath }}'), # AVM Compliance Tests
+          (Join-Path "${{ inputs.modulePath }}" 'tests' 'unit')         # Custom Unit Tests
         )
 
         $pesterConfiguration = @{
           Run    = @{
             Container = New-PesterContainer -Path $testFiles -Data @{
-              moduleFolderPaths                = $moduleFolderPaths
+              moduleFolderPaths = $moduleFolderPaths
             }
             PassThru  = $true
           }
