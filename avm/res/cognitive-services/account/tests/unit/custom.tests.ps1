@@ -5,6 +5,6 @@ Describe "Custom Test" {
     }
 
     It "Should fail" {
-        $true | Should -Be $true
+        $false | Should -Be $true
     }
 }

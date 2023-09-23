@@ -84,7 +84,7 @@ runs:
         }
 
         Write-Verbose 'Invoke test with' -Verbose
-        Write-Verbose ($pesterConfiguration | ConvertTo-Json -Depth 5 | Out-String) -Verbose
+        Write-Verbose ($pesterConfiguration | ConvertTo-Json -Depth 2 | Out-String) -Verbose
 
         $testResults = Invoke-Pester -Configuration $pesterConfiguration
 
