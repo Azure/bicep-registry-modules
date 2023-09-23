@@ -99,8 +99,8 @@ runs:
         inputPath: '${{ inputs.templateFilePath}}'
         outputFormat: Csv
         outputPath: '${{ inputs.templateFilePath}}-PSRule-output.csv'
-        option: '${{ inputs.psruleYamlPath}}/ps-rule.yaml'
-        source: 'avm/.ps-rule/'
+        option: '${{ github.workspace }}/${{ inputs.psruleYamlPath}}/ps-rule.yaml'
+        source: '${{ inputs.psruleYamlPath}}/.ps-rule/' # 'avm/.ps-rule/' #avm\utilities\pipelines\staticValidation\psrule
         summary: false
         # path: '${{ inputs.psruleYamlPath}}'
 
