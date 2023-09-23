@@ -45,7 +45,7 @@ For the [key-vault\vault] module or any of its children, build only the Bicep mo
 #>
 function Set-AVMModule {
 
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess = $true)]
     param (
         [Parameter(Mandatory = $true)]
         [string] $ModuleFolderPath,
@@ -86,31 +86,33 @@ function Set-AVMModule {
         })
 
     # Using threading to speed up the process
-    $threadObjects | ForEach-Object -ThrottleLimit $ThrottleLimit -Parallel {
-        $resourceTypeIdentifier = 'avm-{0}' -f ($_.path -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] # avm/res/<provider>/<resourceType>
+    if ($PSCmdlet.ShouldProcess(('Building & generation of [{0}] modules in path [{1}]' -f $threadObjects.Count, $ModuleFolderPath), "Execute")) {
+        $threadObjects | ForEach-Object -ThrottleLimit $ThrottleLimit -Parallel {
+            $resourceTypeIdentifier = 'avm-{0}' -f ($_.path -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] # avm/res/<provider>/<resourceType>
 
-        foreach ($scriptPath in $_.scriptsToLoad) {
-            . $scriptPath
-        }
+            foreach ($scriptPath in $_.scriptsToLoad) {
+                . $scriptPath
+            }
 
-        ###############
-        ##   Build   ##
-        ###############
-        if (-not $_.SkipBuild) {
-            Write-Output "Building [$resourceTypeIdentifier]"
-            bicep build $_.path
-        }
+            ###############
+            ##   Build   ##
+            ###############
+            if (-not $_.SkipBuild) {
+                Write-Output "Building [$resourceTypeIdentifier]"
+                bicep build $_.path
+            }
 
-        ################
-        ##   ReadMe   ##
-        ################
-        if (-not $_.SkipReadMe) {
-            Write-Output "Generating readme for [$resourceTypeIdentifier]"
+            ################
+            ##   ReadMe   ##
+            ################
+            if (-not $_.SkipReadMe) {
+                Write-Output "Generating readme for [$resourceTypeIdentifier]"
 
-            # If the template was just build, we can pass the JSON into the readme script to be more efficient
-            $readmeTemplateFilePath = (-not $_.SkipBuild) ? (Join-Path (Split-Path $_.path -Parent) 'main.json') : ($_.path)
+                # If the template was just build, we can pass the JSON into the readme script to be more efficient
+                $readmeTemplateFilePath = (-not $_.SkipBuild) ? (Join-Path (Split-Path $_.path -Parent) 'main.json') : ($_.path)
 
-            Set-ModuleReadMe -TemplateFilePath $readmeTemplateFilePath
+                Set-ModuleReadMe -TemplateFilePath $readmeTemplateFilePath
+            }
         }
     }
 }
