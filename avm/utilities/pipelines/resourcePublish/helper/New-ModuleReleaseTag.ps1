@@ -14,7 +14,7 @@ Mandatory. Target version of the module to be published.
 .EXAMPLE
 New-ModuleReleaseTag -ModuleFolderPath 'C:\avm\key-vault\vault' -TargetVersion '1.0.0'
 
-Creates 'avm/key-vault/vault/1.0.0' tag
+Creates 'avm/key-vault/vault/1.0.0' release tag
 #>
 
 function New-ModuleReleaseTag {

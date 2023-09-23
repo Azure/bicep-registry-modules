@@ -3,6 +3,7 @@
 Calculates the module target SemVer version
 
 .DESCRIPTION
+Calculates the module target SemVer version
 Gets major and minor from version.json
 Gets patch calling Get-ModuleTargetPatchVersion
 Builds version as major.minor.patch
@@ -10,10 +11,13 @@ Builds version as major.minor.patch
 If new major/minor patch is 0
 
 .PARAMETER ModuleFolderPath
-Mandatory. The relative path of the module e.g. `avm/res/network/private-endpoint`
+Mandatory. Path to the main/parent module folder.
 
 .EXAMPLE
+# Note: "version" value is "0.1" and was not updated in the last commit
+Get-ModuleTargetVersion -ModuleFolderPath 'C:\avm\key-vault\vault'
 
+Returns 1.0.0
 
 #>
 
@@ -41,10 +45,7 @@ function Get-ModuleTargetVersion {
 
   # 3. Get PATCH
   # Check if [version.json] file version property was updated (compare with previous head)
-  # TODO: update with diff function call
   $versionChange = Get-ModuleVersionChange -VersionFilePath $VersionFilePath
-
-  # $versionChange = Get-VersionChange -VersionFilePath $VersionFilePath
 
   if ($versionChange) {
     # If [version.json] file version property was updated, reset the patch/bug version back to 0

@@ -4,22 +4,25 @@ Get current and previous major and minor version, if different.
 
 .DESCRIPTION
 Get current and previous major and minor version, if different.
-Retrieves target Major.Minor from module version.json and compares with values from the previous head.
+Retrieves target Major.Minor from module version.json and compares with values from the previous git head.
 
 .PARAMETER VersionFilePath
 Mandatory. Path to the module version.json file.
 
 .EXAMPLE
-"version" value is "0.1" and was not updated
-  Get-ModuleVersionChange -VersionFilePath 'C:\avm\key-vault\vault\version.json'
+# Note: "version" value is "0.1" and was not updated in the last commit
+Get-ModuleVersionChange -VersionFilePath 'C:\avm\key-vault\vault\version.json'
 
 Returns null
 
 .EXAMPLE
-"version" value is updated from "0.1" to "0.2"
-  Get-ModuleVersionChange -VersionFilePath 'C:\avm\key-vault\vault\version.json'
+# Note:"version" value is updated from "0.1" to "0.2" in the last commit
+Get-ModuleVersionChange -VersionFilePath 'C:\avm\key-vault\vault\version.json'
 
-Returns
+Name                           Value
+----                           -----
+oldVersion                     0.1
+newVersion                     0.2
 
 #>
 function Get-ModuleVersionChange {
