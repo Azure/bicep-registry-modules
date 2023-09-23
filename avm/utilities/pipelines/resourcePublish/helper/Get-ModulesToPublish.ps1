@@ -7,7 +7,7 @@ Get modified files between previous and current commit depending on if you are r
 .EXAMPLE
 Get-ModifiedFileList
 
-    Directory: .avm\utilities\pipelines\resourcePublish
+    Directory: .avm\utilities\pipelines\publish
 
 Mode                 LastWriteTime         Length Name
 ----                 -------------         ------ ----

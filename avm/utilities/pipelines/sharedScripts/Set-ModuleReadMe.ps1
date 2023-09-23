@@ -1027,7 +1027,7 @@ function Set-UsageExamplesSection {
 
     # Load used function(s)
     . (Join-Path $PSScriptRoot 'Get-ModuleTestFileList.ps1')
-    . (Join-Path (Split-Path $PSScriptRoot -Parent) 'resourcePublish' 'helper' 'Get-BRMRepositoryName.ps1')
+    . (Join-Path (Split-Path $PSScriptRoot -Parent) 'publish' 'helper' 'Get-BRMRepositoryName.ps1')
 
     $brLink = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
 
