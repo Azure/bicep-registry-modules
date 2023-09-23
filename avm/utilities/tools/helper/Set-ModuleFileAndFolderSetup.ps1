@@ -22,8 +22,8 @@ function Set-ModuleFileAndFolderSetup {
         if (-not (Test-Path $providerNamespaceFolderPath)) {
             if ($PSCmdlet.ShouldProcess("Folder [$providerNamespaceFolderPath]", "Add")) {
                 $null = New-Item -Path $providerNamespaceFolderPath -ItemType 'Directory'
-                Write-Verbose "Added folder [$providerNamespaceFolderPath]" -Verbose
             }
+            Write-Verbose "Added folder [$providerNamespaceFolderPath]" -Verbose
         }
 
         $resourceTypeFolderPath = Join-Path $avmModuleRoot $providerNamespace $resourceType
@@ -35,8 +35,8 @@ function Set-ModuleFileAndFolderSetup {
     if (-not (Test-Path $currentLevelFolderPath)) {
         if ($PSCmdlet.ShouldProcess("Folder [$currentLevelFolderPath]", "Add")) {
             $null = New-Item -Path $currentLevelFolderPath -ItemType 'Directory'
-            Write-Verbose "Added folder [$currentLevelFolderPath]" -Verbose
         }
+        Write-Verbose "Added folder [$currentLevelFolderPath]" -Verbose
     }
 
     $bicepFilePath = Join-Path $CurrentLevelFolderPath 'main.bicep'
@@ -52,7 +52,6 @@ function Set-ModuleFileAndFolderSetup {
                 $null = Set-Content -Path $bicepFilePath -Value $defaultTemplateSourceFileContent
             }
         }
-
         Write-Verbose "Added file [$bicepFilePath]" -Verbose
     }
 
@@ -78,7 +77,6 @@ function Set-ModuleFileAndFolderSetup {
                     $null = Set-Content -Path $versionFilePath -Value $versionSourceFileContent
                 }
             }
-
             Write-Verbose "Added file [$versionFilePath]" -Verbose
         }
 
@@ -86,24 +84,24 @@ function Set-ModuleFileAndFolderSetup {
         if (-not (Test-Path $testFolderPath)) {
             if ($PSCmdlet.ShouldProcess("Folder [$testFolderPath]", "Add")) {
                 $null = New-Item -Path $testFolderPath -ItemType 'Directory'
-                Write-Verbose "Added folder [$testFolderPath]" -Verbose
             }
+            Write-Verbose "Added folder [$testFolderPath]" -Verbose
         }
 
         $e2eTestFolderPath = Join-Path $testFolderPath 'e2e'
         if (-not (Test-Path $e2eTestFolderPath)) {
             if ($PSCmdlet.ShouldProcess("Folder [$e2eTestFolderPath]", "Add")) {
                 $null = New-Item -Path $e2eTestFolderPath -ItemType 'Directory'
-                Write-Verbose "Added folder [$e2eTestFolderPath]" -Verbose
             }
+            Write-Verbose "Added folder [$e2eTestFolderPath]" -Verbose
         }
 
         $defaultTestFolderPath = Join-Path $e2eTestFolderPath 'default'
         if (-not (Test-Path $defaultTestFolderPath)) {
             if ($PSCmdlet.ShouldProcess("Folder [$defaultTestFolderPath]", "Add")) {
                 $null = New-Item -Path $defaultTestFolderPath -ItemType 'Directory'
-                Write-Verbose "Added folder [$defaultTestFolderPath]" -Verbose
             }
+            Write-Verbose "Added folder [$defaultTestFolderPath]" -Verbose
         }
 
         $defaultTestFilePath = Join-Path $defaultTestFolderPath 'main.test.bicep'
@@ -134,8 +132,8 @@ function Set-ModuleFileAndFolderSetup {
         if (-not (Test-Path $wafTestFolderPath)) {
             if ($PSCmdlet.ShouldProcess("Folder [$wafTestFolderPath]", "Add")) {
                 $null = New-Item -Path $wafTestFolderPath -ItemType 'Directory'
-                Write-Verbose "Added folder [$wafTestFolderPath]" -Verbose
             }
+            Write-Verbose "Added folder [$wafTestFolderPath]" -Verbose
         }
 
         $wafTestFilePath = Join-Path $wafTestFolderPath 'main.test.bicep'
@@ -169,4 +167,3 @@ function Set-ModuleFileAndFolderSetup {
         Set-ModuleFileAndFolderSetup -FullModuleFolderPath $FullModuleFolderPath -CurrentLevelFolderPath (Join-Path $CurrentLevelFolderPath $nextChild)
     }
 }
-Set-ModuleFileAndFolderSetup -FullModuleFolderPath 'C:\dev\ip\Azure-bicep-registry-modules\eriqua-fork\avm\res\storage\storage-account\blob-service\container' -WhatIf
