@@ -17,9 +17,6 @@ param serviceShort string = 'csaecrs'
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableTelemetry bool = true
-
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
@@ -53,7 +50,6 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
-    enableTelemetry: enableTelemetry
     name: nestedDependencies.outputs.cognitiveServiceName
     kind: 'SpeechServices'
     location: location
