@@ -48,6 +48,8 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
     // Non-required parameters
     enableTelemetry: '<enableTelemetry>'
     location: '<location>'
+    lock: {}
+    roleAssignments: []
   }
 }
 ```
@@ -85,6 +87,12 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
     },
     "location": {
       "value": "<location>"
+    },
+    "lock": {
+      "value": {}
+    },
+    "roleAssignments": {
+      "value": []
     }
   }
 }
