@@ -61,6 +61,7 @@ runs:
             subscriptionId    = '${{ inputs.subscriptionId }}'
             managementGroupId = '${{ inputs.managementGroupId }}'
             tenantId          = '${{ env.ARM_TENANT_ID }}'
+            moduleVersion     = '0.0.0'
           }
 
           ## Add local (source control) tokens
@@ -78,7 +79,7 @@ runs:
           }
 
           # Construct Token Function Input
-          $ConvertTokensInputs = @{
+           nsInputs = @{
             FilePathList = @($templateFilePath)
             Tokens       = $Tokens
           }
