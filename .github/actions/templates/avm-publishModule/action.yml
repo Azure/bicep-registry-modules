@@ -53,7 +53,7 @@ runs:
           }
 
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'resourcePublish' 'Publish-ModuleFromPathToPBR.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'publish' 'Publish-ModuleFromPathToPBR.ps1')
 
           ################################
           ##   Get modules to publish   ##

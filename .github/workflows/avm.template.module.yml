@@ -1,4 +1,4 @@
-name: 'AVM .Template - Module Pipeline'
+name: 'avm.template.module'
 
 on:
   workflow_call:
@@ -66,7 +66,7 @@ jobs:
           templateFilePath: '${{ inputs.modulePath }}/${{ matrix.moduleTestFilePaths }}'
           subscriptionId: '${{ secrets.ARM_SUBSCRIPTION_ID }}'
           managementGroupId: '${{ secrets.ARM_MGMTGROUP_ID }}'
-          psruleYamlPath: '${{ github.workspace }}/avm'
+          psrulePath: 'avm/utilities/pipelines/staticValidation/psrule' #'${{ github.workspace }}/avm'
 
   #############################
   #   Deployment validation   #

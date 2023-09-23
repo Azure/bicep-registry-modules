@@ -24,9 +24,7 @@ include:
     - PSRule.Rules.Azure
 
 execution:
-  # suppressedRuleWarning: false
-  # notProcessedWarning: false
-  ruleSuppressed: Warn
+  ruleSuppressed: Debug
   unprocessedObject: Warn
 
 output:

@@ -7,7 +7,7 @@ Get modified files between previous and current commit depending on if you are r
 .EXAMPLE
 Get-ModifiedFileList
 
-    Directory: .avm\utilities\pipelines\resourcePublish
+    Directory: .avm\utilities\pipelines\publish
 
 Mode                 LastWriteTime         Length Name
 ----                 -------------         ------ ----
@@ -84,7 +84,6 @@ function Get-TemplateFileToPublish {
     [string[]] $PathsToInclude = @()
   )
 
-  # $ModuleRelativeFolderPath = $ModuleFolderPath.Split('/avm/')[-1]
   $ModuleRelativeFolderPath = ("avm/{0}" -f ($ModuleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]) -replace '\\', '/'
   $ModifiedFiles = Get-ModifiedFileList -Verbose
   Write-Verbose "Looking for modified files under: [$ModuleRelativeFolderPath]" -Verbose

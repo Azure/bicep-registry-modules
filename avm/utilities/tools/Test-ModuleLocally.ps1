@@ -172,7 +172,7 @@ function Test-ModuleLocally {
         $utilitiesFolderPath = Split-Path $PSScriptRoot -Parent
         Write-Verbose "Running local tests for [$ModuleName]"
         # Load Tokens Converter Scripts
-        . (Join-Path $utilitiesFolderPath 'pipelines' 'tokensReplacement' 'Convert-TokensInFileList.ps1')
+        . (Join-Path $utilitiesFolderPath 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
         # Load Modules Validation / Deployment Scripts
         . (Join-Path $utilitiesFolderPath 'pipelines' 'e2eValidation' 'resourceDeployment' 'New-TemplateDeployment.ps1')
         . (Join-Path $utilitiesFolderPath 'pipelines' 'e2eValidation' 'resourceDeployment' 'Test-TemplateDeployment.ps1')
