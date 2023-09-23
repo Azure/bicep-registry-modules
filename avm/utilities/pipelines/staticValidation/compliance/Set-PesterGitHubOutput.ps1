@@ -182,7 +182,7 @@ function Set-PesterGitHubOutput {
       $testReference = '{0}:{1}' -f $testFile, $testLine
       if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
         # Creating URL to test file to enable users to 'click' on it
-        $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/utilities/pipelines/staticValidation/module.tests.ps1#L$testLine)"
+        $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/$testFile#L$testLine)"
       }
 
       $fileContent += '| {0} | <code>{1}</code> |' -f $testName, $testReference
@@ -230,7 +230,7 @@ function Set-PesterGitHubOutput {
       $testReference = '{0}:{1}' -f $testFile, $testLine
       if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
         # Creating URL to test file to enable users to 'click' on it
-        $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/utilities/pipelines/staticValidation/module.tests.ps1#L$testLine)"
+        $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/$testFile#L$testLine)"
       }
 
       $fileContent += '| {0} | {1} | <code>{2}</code> |' -f $testName, $reason, $testReference
