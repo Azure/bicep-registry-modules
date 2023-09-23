@@ -49,7 +49,7 @@ function Set-ModuleFileAndFolderSetup {
             $null = New-Item -Path $bicepFilePath -ItemType 'File'
         }
 
-        $defaultTemplateSourceFilePath = Join-Path $PSScriptRoot 'src' ($isTopLevel ? 'src.main.bicep' : 'src.child.main')
+        $defaultTemplateSourceFilePath = Join-Path $PSScriptRoot 'src' ($isTopLevel ? 'src.main.bicep' : 'src.child.main.bicep')
         if (Test-Path $defaultTemplateSourceFilePath) {
             $defaultTemplateSourceFileContent = Get-Content -Path $defaultTemplateSourceFilePath
             if ($PSCmdlet.ShouldProcess("content for file [$bicepFilePath]", "Set")) {
