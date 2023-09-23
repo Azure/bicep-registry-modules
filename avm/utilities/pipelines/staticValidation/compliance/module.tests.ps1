@@ -228,40 +228,40 @@ Describe 'Module tests' -Tag 'Module' {
       }
     }
 
-    # It '[<moduleFolderName>] `Set-ModuleReadMe` script should not apply any updates.' -TestCases $readmeFileTestCases {
+    It '[<moduleFolderName>] `Set-ModuleReadMe` script should not apply any updates.' -TestCases $readmeFileTestCases {
 
-    #   param(
-    #     [string] $moduleFolderName,
-    #     [string] $templateFilePath,
-    #     [hashtable] $templateContent,
-    #     [string] $readMeFilePath
-    #   )
+      param(
+        [string] $moduleFolderName,
+        [string] $templateFilePath,
+        [hashtable] $templateContent,
+        [string] $readMeFilePath
+      )
 
-    #   # Get current hash
-    #   $fileHashBefore = (Get-FileHash $readMeFilePath).Hash
+      # Get current hash
+      $fileHashBefore = (Get-FileHash $readMeFilePath).Hash
 
-    #   # Load function
-    #   . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
+      # Load function
+      . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
 
-    #   # Apply update with already compiled template content
-    #   Set-ModuleReadMe -TemplateFilePath $templateFilePath -TemplateFileContent $templateContent
+      # Apply update with already compiled template content
+      Set-ModuleReadMe -TemplateFilePath $templateFilePath -TemplateFileContent $templateContent
 
-    #   # Get hash after 'update'
-    #   $fileHashAfter = (Get-FileHash $readMeFilePath).Hash
+      # Get hash after 'update'
+      $fileHashAfter = (Get-FileHash $readMeFilePath).Hash
 
-    #   # Compare
-    #   $filesAreTheSame = $fileHashBefore -eq $fileHashAfter
-    #   if (-not $filesAreTheSame) {
-    #     $diffReponse = git diff $readMeFilePath
-    #     Write-Warning ($diffReponse | Out-String) -Verbose
+      # Compare
+      $filesAreTheSame = $fileHashBefore -eq $fileHashAfter
+      if (-not $filesAreTheSame) {
+        $diffReponse = git diff $readMeFilePath
+        Write-Warning ($diffReponse | Out-String) -Verbose
 
-    #     # Reset readme file to original state
-    #     git checkout HEAD -- $readMeFilePath
-    #   }
+        # Reset readme file to original state
+        git checkout HEAD -- $readMeFilePath
+      }
 
-    #   $mdFormattedDiff = ($diffReponse -join '</br>') -replace '\|', '\|'
-    #   $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `Set-ModuleReadMe` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the script for this module''s template.' -f $mdFormattedDiff)
-    # }
+      $mdFormattedDiff = ($diffReponse -join '</br>') -replace '\|', '\|'
+      $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `Set-ModuleReadMe` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the script for this module''s template.' -f $mdFormattedDiff)
+    }
   }
 
   Context 'Compiled ARM template tests' -Tag 'ARM' {
@@ -1012,11 +1012,15 @@ Describe 'API version tests' -Tag 'ApiCheck' {
   $testCases = @()
   $apiSpecsFileUri = 'https://azure.github.io/Azure-Verified-Modules/governance/apiSpecsList.json'
 
-  if (-not( $apiSpecs = Invoke-WebRequest -Uri $apiSpecsFileUri)) {
-    throw "Failed to donnloaded API specs file from [$apiSpecsFileUri]"
+  try {
+    $apiSpecs = Invoke-WebRequest -Uri $ApiSpecsFileUri
+    $ApiVersions = ConvertFrom-Json $apiSpecs.Content -AsHashtable
   }
-
-  $ApiVersions = ConvertFrom-Json $apiSpecs.Content
+  catch {
+    Write-Warning "Failed to download API specs file from [$ApiSpecsFileUri]. Skipping API tests"
+    Set-ItResult -Skipped -Because "Failed to download API specs file from [$ApiSpecsFileUri]. Skipping API tests."
+    return
+  }
 
   foreach ($moduleFolderPath in $moduleFolderPaths) {
 

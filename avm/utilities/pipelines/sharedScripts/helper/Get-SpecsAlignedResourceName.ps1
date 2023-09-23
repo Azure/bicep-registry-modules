@@ -63,11 +63,14 @@ function Get-SpecsAlignedResourceName {
         [string] $ApiSpecsFileUri = 'https://azure.github.io/Azure-Verified-Modules/governance/apiSpecsList.json'
     )
 
-    if (-not( $apiSpecs = Invoke-WebRequest -Uri $ApiSpecsFileUri)) {
-        throw "Failed to donnloaded API specs file from [$ApiSpecsFileUri]"
+    try {
+        $apiSpecs = Invoke-WebRequest -Uri $ApiSpecsFileUri
+        $specs = ConvertFrom-Json $apiSpecs.Content -AsHashtable
     }
-
-    $specs = ConvertFrom-Json $apiSpecs.Content -AsHashtable
+    catch {
+        Write-Warning "Failed to download API specs file from [$ApiSpecsFileUri]"
+        $specs = @{}
+    }
 
     $reducedResourceIdentifier = $ResourceIdentifier -replace '-'
 

@@ -1,4 +1,48 @@
 #requires -version 7.3
+
+<#
+.SYNOPSIS
+Create/update all content of an AVM module that can be generated for the user
+
+.DESCRIPTION
+Create/update all content of an AVM module that can be generated for the user
+This includes
+- The `main.json` template(s)
+- The `README.md` file(s)
+
+.PARAMETER ModuleFolderPath
+Mandatory. The path to the module folder to generate the content for.
+
+.PARAMETER Recurse
+Optional. Set this parameter if you not only want to generate the content for one module, but also any nested module in the same path.
+
+.PARAMETER SkipBuild
+Optional. Set this parameter if you don't want to build/compile the JSON template(s) for the contained `main.bicep` file(s).
+
+.PARAMETER SkipReadMe
+Optional. Set this parameter if you don't want to generate the ReadMe file(s) for the module(s).
+
+.PARAMETER ThrottleLimit
+Optional. The number of parallel threads to use for the generation. Defaults to 5.
+
+.PARAMETER ReadMeScriptFilePath
+Optional. The absolute path to the `Set-ModuleReadMe` script. Relevant only if `SkipReadMe` is not set and defaults to the default path of the script in the repository.
+
+.EXAMPLE
+Set-AVMModule -ModuleFolderPath 'C:\avm\res\key-vault\vault'
+
+For the [key-vault\vault] module, build the Bicep module template & generate its ReadMe.
+
+.EXAMPLE
+Set-AVMModule -ModuleFolderPath 'C:\avm\res\key-vault\vault' -Recurse
+
+For the [key-vault\vault] module or any of its children, build the Bicep module template & generate the ReadMe.
+
+.EXAMPLE
+Set-AVMModule -ModuleFolderPath 'C:\avm\res\key-vault\vault' -Recurse -SkipReadMe
+
+For the [key-vault\vault] module or any of its children, build only the Bicep module template.
+#>
 function Set-AVMModule {
 
     [CmdletBinding()]
@@ -41,6 +85,7 @@ function Set-AVMModule {
             }
         })
 
+    # Using threading to speed up the process
     $threadObjects | ForEach-Object -ThrottleLimit $ThrottleLimit -Parallel {
         $resourceTypeIdentifier = 'avm-{0}' -f ($_.path -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] # avm/res/<provider>/<resourceType>
 
@@ -61,8 +106,11 @@ function Set-AVMModule {
         ################
         if (-not $_.SkipReadMe) {
             Write-Output "Generating readme for [$resourceTypeIdentifier]"
-            Set-ModuleReadMe $_.path
+
+            # If the template was just build, we can pass the JSON into the readme script to be more efficient
+            $readmeTemplateFilePath = (-not $_.SkipBuild) ? (Join-Path (Split-Path $_.path -Parent) 'main.json') : ($_.path)
+
+            Set-ModuleReadMe -TemplateFilePath $readmeTemplateFilePath
         }
     }
 }
-Set-AVMModule -ModuleFolderPath 'C:\dev\ip\Azure-bicep-registry-modules\eriqua-fork\avm\res\network\private-endpoint' -Recurse
