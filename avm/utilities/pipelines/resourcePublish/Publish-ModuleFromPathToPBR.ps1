@@ -15,7 +15,7 @@ function Publish-ModuleFromPathToPBR {
   . (Join-Path $PSScriptRoot 'helper' 'Get-BRMRepositoryName.ps1')
   . (Join-Path $PSScriptRoot 'helper' 'New-ModuleReleaseTag.ps1')
   . (Join-Path $PSScriptRoot 'helper' 'Get-ModuleReadmeLink.ps1')
-  . (Join-Path $PSScriptRoot '..' 'tokensReplacement' 'Convert-TokensInFileList.ps1')
+  . (Join-Path $PSScriptRoot '..' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
 
   $moduleFolderPath = Split-Path $TemplateFilePath -Parent
   # TODO remove next write verbose
