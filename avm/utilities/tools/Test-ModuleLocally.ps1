@@ -218,9 +218,14 @@ function Test-ModuleLocally {
             }
 
             try {
+                $testFiles = @(
+                    (Join-Path $repoRootPath $PesterTestFilePath), # AVM Compliance Tests
+                    (Join-Path $moduleRoot 'tests' 'unit')         # Module Unit Tests
+                )
+
                 Invoke-Pester -Configuration @{
                     Run    = @{
-                        Container = New-PesterContainer -Path (Join-Path $repoRootPath $PesterTestFilePath) -Data @{
+                        Container = New-PesterContainer -Path $testFiles -Data @{
                             repoRootPath       = $repoRootPath
                             moduleFolderPaths  = Split-Path $TemplateFilePath -Parent
                             tokenConfiguration = $PesterTokenConfiguration
