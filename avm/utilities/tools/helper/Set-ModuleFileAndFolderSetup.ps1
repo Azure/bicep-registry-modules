@@ -104,7 +104,7 @@ function Set-ModuleFileAndFolderSetup {
 
         # Default test file
         # -----------------
-        $defaultTestFilePath = Join-Path $CurrentLevelFolderPath 'tests' 'default' 'main.test.bicep'
+        $defaultTestFilePath = Join-Path $CurrentLevelFolderPath 'tests' 'e2e' 'default' 'main.test.bicep'
         if (-not (Test-Path $defaultTestFilePath)) {
             if ($PSCmdlet.ShouldProcess("file [$defaultTestFilePath]", "Add")) {
                 $null = New-Item -Path $defaultTestFilePath -ItemType 'File' -Force
@@ -130,7 +130,7 @@ function Set-ModuleFileAndFolderSetup {
 
         # WAF-aligned test file
         # ---------------------
-        $wafTestFilePath = Join-Path $CurrentLevelFolderPath 'tests' 'waf-aligned' 'main.test.bicep'
+        $wafTestFilePath = Join-Path $CurrentLevelFolderPath 'tests' 'e2e' 'waf-aligned' 'main.test.bicep'
         if (-not (Test-Path $wafTestFilePath)) {
             if ($PSCmdlet.ShouldProcess("file [$wafTestFilePath]", "Add")) {
                 $null = New-Item -Path $wafTestFilePath -ItemType 'File' -Force
