@@ -104,7 +104,7 @@ function Set-ModuleFileAndFolderSetup {
 
         # Default test file
         # -----------------
-        $defaultTestFilePath = Join-Path $CurrentLevelFolderPath 'tests' 'e2e' 'default' 'main.test.bicep'
+        $defaultTestFilePath = Join-Path $CurrentLevelFolderPath 'tests' 'e2e' 'defaults' 'main.test.bicep'
         if (-not (Test-Path $defaultTestFilePath)) {
             if ($PSCmdlet.ShouldProcess("file [$defaultTestFilePath]", "Add")) {
                 $null = New-Item -Path $defaultTestFilePath -ItemType 'File' -Force
