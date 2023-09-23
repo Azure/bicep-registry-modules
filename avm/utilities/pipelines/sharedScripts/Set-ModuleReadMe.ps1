@@ -1,5 +1,4 @@
 ﻿#requires -version 7.3
-#requires -Modules powershell-yaml
 
 <#
 .SYNOPSIS
