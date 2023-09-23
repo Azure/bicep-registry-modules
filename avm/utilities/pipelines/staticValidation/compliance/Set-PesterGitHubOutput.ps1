@@ -131,7 +131,7 @@ function Set-PesterGitHubOutput {
       $errorTestFile = (($failedTest.ErrorRecord.TargetObject.File -split '[\/|\\](avm[\/|\\])')[-2, -1] -join '') -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
       $errorMessage = $failedTest.ErrorRecord.TargetObject.Message.Trim() -replace '\n', '<br>' # Replace new lines with <br> to enable line breaks in markdown
 
-      $testReference = '{0}:{1}' -f $errorTestFile, $errorTestLine
+      $testReference = '{0}:{1}' -f (Split-Path $errorTestFile -Leaf), $errorTestLine
 
       if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
         # Creating URL to test file to enable users to 'click' on it
@@ -177,7 +177,7 @@ function Set-PesterGitHubOutput {
       $testLine = $passedTest.ScriptBlock.StartPosition.StartLine
       $testFile = (($passedTest.ScriptBlock.File -split '[\/|\\](avm[\/|\\])')[-2, -1] -join '') -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
 
-      $testReference = '{0}:{1}' -f $testFile, $testLine
+      $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
       if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
         # Creating URL to test file to enable users to 'click' on it
         $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/$testFile#L$testLine)"
@@ -225,7 +225,7 @@ function Set-PesterGitHubOutput {
       $testLine = $passedTest.ScriptBlock.StartPosition.StartLine
       $testFile = (($passedTest.ScriptBlock.File -split '[\/|\\](avm[\/|\\])')[-2, -1] -join '') -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
 
-      $testReference = '{0}:{1}' -f $testFile, $testLine
+      $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
       if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
         # Creating URL to test file to enable users to 'click' on it
         $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/$testFile#L$testLine)"
