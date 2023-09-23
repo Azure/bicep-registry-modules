@@ -18,11 +18,8 @@ function Publish-ModuleFromPathToPBR {
   . (Join-Path $PSScriptRoot '..' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
 
   $moduleFolderPath = Split-Path $TemplateFilePath -Parent
-  # TODO remove next write verbose
-  Write-Verbose "moduleFolderPath $moduleFolderPath" -Verbose
+
   $moduleJsonFilePath = Join-Path $moduleFolderPath 'main.json'
-
-
 
   # 1. Test if module qualifies for publishing
   if (-not (Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath)) {
