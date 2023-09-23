@@ -42,5 +42,6 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
     // You parameters go here
+    name: '${namePrefix}${serviceShort}001'
   }
 }
