@@ -46,7 +46,9 @@ $TestModuleLocallyInput = @{
         RemoveDeployment  = $false
     }
     AdditionalTokens           = @{
-        tenantId = '00000000-0000-0000-0000-000000000000'
+        tenantId      = '00000000-0000-0000-0000-000000000000'
+        namePrefix    = 'avm'
+        moduleVersion = '1.0.0'
     }
 }
 Test-ModuleLocally @TestModuleLocallyInput -Verbose
@@ -69,7 +71,9 @@ $TestModuleLocallyInput = @{
         RemoveDeployment  = $false
     }
     AdditionalTokens           = @{
-        tenantId = '00000000-0000-0000-0000-000000000000'
+        tenantId      = '00000000-0000-0000-0000-000000000000'
+        namePrefix    = 'avm'
+        moduleVersion = '1.0.0'
     }
 }
 Test-ModuleLocally @TestModuleLocallyInput -Verbose
@@ -91,7 +95,9 @@ $TestModuleLocallyInput = @{
         RemoveDeployment  = $false
     }
     AdditionalTokens           = @{
-        tenantId = '00000000-0000-0000-0000-000000000000'
+        tenantId      = '00000000-0000-0000-0000-000000000000'
+        namePrefix    = 'avm'
+        moduleVersion = '1.0.0'
     }
 }
 Test-ModuleLocally @TestModuleLocallyInput -Verbose
@@ -118,7 +124,9 @@ $TestModuleLocallyInput = @{
         ManagementGroupId = '00000000-0000-0000-0000-000000000000'
     }
     AdditionalTokens           = @{
-        tenantId = '00000000-0000-0000-0000-000000000000'
+        tenantId      = '00000000-0000-0000-0000-000000000000'
+        namePrefix    = 'avm'
+        moduleVersion = '1.0.0'
     }
 }
 Test-ModuleLocally @TestModuleLocallyInput -Verbose
@@ -182,9 +190,13 @@ function Test-ModuleLocally {
 
         # Construct Token Configuration Input
         $tokenConfiguration = @{
-            FilePathList = $moduleTestFiles
+            FilePathList = @($moduleTestFiles)
             Tokens       = @{}
         }
+
+        # Add other template files as they may contain the 'moduleVersion'
+        $moduleRoot = Split-Path $TemplateFilePath
+        $tokenConfiguration.FilePathList += (Get-ChildItem -Path $moduleRoot -Recurse -File).FullName | Where-Object { $_ -match '.+(main.json|main.bicep)$' }
 
         # Add Other Parameter File Tokens (For Testing)
         $AdditionalTokens.Keys | ForEach-Object {
@@ -300,24 +312,3 @@ function Test-ModuleLocally {
     end {
     }
 }
-
-$TestModuleLocallyInput = @{
-    TemplateFilePath           = 'C:\dev\ip\Azure-bicep-registry-modules\eriqua-fork\avm\res\network\private-endpoint\main.bicep'
-    ModuleTestFilePath         = 'C:\dev\ip\Azure-bicep-registry-modules\eriqua-fork\avm\res\network\private-endpoint\tests\e2e\defaults\main.test.bicep'
-    PesterTest                 = $true
-    ValidationTest             = $true
-    DeploymentTest             = $false
-    ValidateOrDeployParameters = @{
-        Location          = 'westeurope'
-        SubscriptionId    = 'a7439831-1cd9-435d-a091-4aa863c96556'
-        ManagementGroupId = '3d9faf2f-6186-4865-9b12-156ee64ba23b'
-        RemoveDeployment  = $false
-    }
-    AdditionalTokens           = @{
-        deploymentSpId = 'e58511af-4da2-449c-a5cd-6a10271cfb83'
-        tenantId       = '449fbe1d-9c99-4509-9014-4fd5cf25b014'
-        namePrefix     = 'avm'
-    }
-}
-Test-ModuleLocally @TestModuleLocallyInput
-

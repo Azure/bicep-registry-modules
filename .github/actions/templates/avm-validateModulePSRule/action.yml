@@ -92,7 +92,7 @@ runs:
 
     # Run analysis by using the PSRule GitHub action.
     - name: Run PSRule analysis
-      uses: microsoft/ps-rule@v2.4.0
+      uses: microsoft/ps-rule@v2.9.0
       continue-on-error: true # Setting this whilst PSRule gets bedded in, in this project
       with:
         modules: 'PSRule.Rules.Azure'
@@ -100,7 +100,8 @@ runs:
         outputFormat: Csv
         outputPath: '${{ inputs.templateFilePath}}-PSRule-output.csv'
         option: '${{ inputs.psruleYamlPath}}/ps-rule.yaml'
-        source: '${{ inputs.psruleYamlPath}}/.ps-rule'
+        source: 'avm/.ps-rule/'
+        summary: false
         # path: '${{ inputs.psruleYamlPath}}'
 
     - name: 'Parse CSV content'

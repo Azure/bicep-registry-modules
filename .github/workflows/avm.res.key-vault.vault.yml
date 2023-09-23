@@ -1,6 +1,8 @@
 name: 'avm.res.key-vault.vault'
 
 on:
+  schedule:
+    - cron: "0 12 1/15 * *" # Bi-Weekly Test (on 1st & 15th of month)
   workflow_dispatch:
     inputs:
       staticValidation:
@@ -27,7 +29,6 @@ on:
   #     - '.github/workflows/avm.template.module.yml'
   #     - '.github/workflows/avm.res.key-vault.vault.yml'
   #     - 'avm/res/key-vault/vault/**'
-  #     - 'avm/res/network/private-endpoint/**'
   #     - 'avm/utilities/pipelines/**'
   #     - '!avm/utilities/pipelines/deploymentRemoval/**'
   #     - '!*/**/README.md'
