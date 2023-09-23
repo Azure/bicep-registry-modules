@@ -1,10 +1,7 @@
-Describe "Custom Test" {
-
-    It "Should pass" {
-        $true | Should -Be $true
-    }
-
-    It "Should fail" {
-        $false | Should -Be $true
-    }
-}
+#############################
+## Addition unit tests     ##
+#############################
+##
+## You can add any custom static validation tests you want here, or add them spread accross multple test files in the unit folder.
+##
+#############################
