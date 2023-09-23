@@ -30,6 +30,10 @@ function Set-ModuleFileAndFolderSetup {
         $currentLevelFolderPath = $resourceTypeFolderPath
     }
 
+    # Collect data
+    $resourceTypeIdentifier = ($CurrentLevelFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] # avm/res/<provider>/<resourceType>
+    $isTopLevel = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
+
     # Mandatory file & folders
     # =======================
     if (-not (Test-Path $currentLevelFolderPath)) {
@@ -45,7 +49,7 @@ function Set-ModuleFileAndFolderSetup {
             $null = New-Item -Path $bicepFilePath -ItemType 'File'
         }
 
-        $defaultTemplateSourceFilePath = Join-Path $PSScriptRoot 'src' 'src.main.bicep'
+        $defaultTemplateSourceFilePath = Join-Path $PSScriptRoot 'src' ($isTopLevel ? 'src.main.bicep' : 'src.child.main')
         if (Test-Path $defaultTemplateSourceFilePath) {
             $defaultTemplateSourceFileContent = Get-Content -Path $defaultTemplateSourceFilePath
             if ($PSCmdlet.ShouldProcess("content for file [$bicepFilePath]", "Set")) {
@@ -60,9 +64,6 @@ function Set-ModuleFileAndFolderSetup {
 
     # Top-level-only files & folders
     # ==============================
-    $resourceTypeIdentifier = ($CurrentLevelFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] # avm/res/<provider>/<resourceType>
-    $isTopLevel = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
-
     if ($isTopLevel) {
         $versionFilePath = Join-Path $CurrentLevelFolderPath 'version.json'
         if (-not (Test-Path $versionFilePath)) {
