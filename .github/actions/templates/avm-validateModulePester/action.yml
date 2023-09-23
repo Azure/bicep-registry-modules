@@ -53,42 +53,25 @@ runs:
         # Set test input module path
         $moduleFolderPaths = @(Join-Path $repoRootPath "${{ inputs.modulePath }}")
         $moduleFolderPaths += (Get-ChildItem $moduleFolderPaths -Recurse -Directory -Force).FullName | Where-Object {
-                  (Get-ChildItem $_ -File -Depth 0 -Include @('main.json', 'main.bicep') -Force).Count -gt 0
+          (Get-ChildItem $_ -File -Depth 0 -Include @('main.json', 'main.bicep') -Force).Count -gt 0
         }
         Write-Verbose 'Execute tests in path(s):' -Verbose
         foreach ($moduleFolderPath in $moduleFolderPaths) {
-          Write-Verbose "- [($moduleFolderPath]" -Verbose
+          Write-Verbose "- [$moduleFolderPath]" -Verbose
         }
-        # TODO: remove token replacement if not needed
-        # # Construct Token Configuration Input and enforced tokens list
-        # $GlobalVariablesObject = Get-Content -Path 'settings.yml' | ConvertFrom-Yaml | Select-Object -ExpandProperty variables
-        # $tokenConfiguration = @{
-        #   Tokens      = @{}
-        #   TokenPrefix = $GlobalVariablesObject | Select-Object -ExpandProperty tokenPrefix
-        #   TokenSuffix = $GlobalVariablesObject | Select-Object -ExpandProperty tokenSuffix
-        # }
-
-        # if (-not [String]::IsNullOrEmpty('${{ env.ARM_SUBSCRIPTION_ID }}')) {
-        #   $tokenConfiguration.Tokens['subscriptionId'] = '${{ env.ARM_SUBSCRIPTION_ID }}'
-        # }
-        # if (-not [String]::IsNullOrEmpty('${{ env.ARM_MGMTGROUP_ID }}')) {
-        #   $tokenConfiguration.Tokens['managementGroupId'] = '${{ env.ARM_MGMTGROUP_ID }}'
-        # }
-        # if (-not [String]::IsNullOrEmpty('${{ env.ARM_TENANT_ID }}')) {
-        #   $tokenConfiguration.Tokens['tenantId'] = '${{ env.ARM_TENANT_ID }}'
-        # }
-
-        $moduleTestFilePath = '${{ inputs.moduleTestFilePath }}'
 
         # --------------------- #
         # Invoke Pester test(s) #
         # --------------------- #
+        $testFiles = @(
+          (Join-Path $repoRootPath '${{ inputs.moduleTestFilePath }}'), # AVM Compliance Tests
+          (Join-Path "${{ inputs.modulePath }}" 'tests' 'unit')         # Custom Unit Tests
+        )
+
         $pesterConfiguration = @{
           Run    = @{
-            Container = New-PesterContainer -Path (Join-Path $repoRootPath $moduleTestFilePath) -Data @{
-              moduleFolderPaths                = $moduleFolderPaths
-              # tokenConfiguration             = $tokenConfiguration
-              # allowPreviewVersionsInAPITests = [System.Convert]::ToBoolean('${{ env.allowPreviewVersionsInAPITests }}')
+            Container = New-PesterContainer -Path $testFiles -Data @{
+              moduleFolderPaths = $moduleFolderPaths
             }
             PassThru  = $true
           }
@@ -98,7 +81,7 @@ runs:
         }
 
         Write-Verbose 'Invoke test with' -Verbose
-        Write-Verbose ($pesterConfiguration | ConvertTo-Json -Depth 5 | Out-String) -Verbose
+        Write-Verbose ($pesterConfiguration | ConvertTo-Json -Depth 4 | Out-String) -Verbose
 
         $testResults = Invoke-Pester -Configuration $pesterConfiguration
 

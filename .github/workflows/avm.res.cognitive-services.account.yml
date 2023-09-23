@@ -34,7 +34,7 @@ on:
   #     - '!*/**/README.md'
 
 env:
-  modulePath: 'avm-res/cognitive-services/account'
+  modulePath: 'avm/res/cognitive-services/account'
   workflowPath: '.github/workflows/avm.res.cognitive-services.account.yml'
 
 concurrency:
