@@ -46,7 +46,6 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
     serviceResourceId: '<serviceResourceId>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     lock: {}
     roleAssignments: []
@@ -82,9 +81,6 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
       "value": "<subnetResourceId>"
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
@@ -123,7 +119,6 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
       '<applicationSecurityGroupResourceId>'
     ]
     customNetworkInterfaceName: 'npemax001nic'
-    enableTelemetry: '<enableTelemetry>'
     ipConfigurations: [
       {
         name: 'myIPconfig'
@@ -193,9 +188,6 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
     },
     "customNetworkInterfaceName": {
       "value": "npemax001nic"
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "ipConfigurations": {
       "value": [
@@ -268,7 +260,6 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
       '<applicationSecurityGroupResourceId>'
     ]
     customNetworkInterfaceName: 'npewaf001nic'
-    enableTelemetry: '<enableTelemetry>'
     ipConfigurations: [
       {
         name: 'myIPconfig'
@@ -338,9 +329,6 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
     },
     "customNetworkInterfaceName": {
       "value": "npewaf001nic"
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "ipConfigurations": {
       "value": [

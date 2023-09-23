@@ -44,7 +44,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     kind: 'SpeechServices'
     name: 'csad001'
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
   }
 }
@@ -70,9 +69,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       "value": "csad001"
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     }
@@ -126,7 +122,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -236,9 +231,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         }
       ]
     },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
@@ -329,7 +321,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     name: 'csaspeech001'
     // Non-required parameters
     customSubDomainName: 'speechdomain'
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     managedIdentities: {
       systemAssigned: true
@@ -383,9 +374,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     // Non-required parameters
     "customSubDomainName": {
       "value": "speechdomain"
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "location": {
       "value": "<location>"
@@ -449,7 +437,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
     }
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     managedIdentities: {
       systemAssigned: true
@@ -486,9 +473,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         "keyName": "<keyName>",
         "keyVaultResourceId": "<keyVaultResourceId>"
       }
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "location": {
       "value": "<location>"
@@ -533,7 +517,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     managedIdentities: {
       userAssignedResourcesIds: [
@@ -573,9 +556,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         "keyVaultResourceId": "<keyVaultResourceId>",
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "location": {
       "value": "<location>"
@@ -646,7 +626,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -755,9 +734,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "location": {
       "value": "<location>"

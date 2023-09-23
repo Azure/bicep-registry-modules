@@ -47,7 +47,6 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
     name: 'kvvd002'
     // Non-required parameters
     enablePurgeProtection: false
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
   }
 }
@@ -72,9 +71,6 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
     // Non-required parameters
     "enablePurgeProtection": {
       "value": false
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "location": {
       "value": "<location>"
@@ -156,7 +152,6 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
     ]
     enablePurgeProtection: false
     enableRbacAuthorization: false
-    enableTelemetry: '<enableTelemetry>'
     keys: [
       {
         attributesExp: 1725109032
@@ -352,9 +347,6 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
     "enableRbacAuthorization": {
       "value": false
     },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "keys": {
       "value": [
         {
@@ -503,7 +495,6 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
     name: 'kvvpe001'
     // Non-required parameters
     enablePurgeProtection: false
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     privateEndpoints: [
       {
@@ -547,9 +538,6 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
     // Non-required parameters
     "enablePurgeProtection": {
       "value": false
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "location": {
       "value": "<location>"
@@ -654,7 +642,6 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
     ]
     enablePurgeProtection: false
     enableRbacAuthorization: false
-    enableTelemetry: '<enableTelemetry>'
     keys: [
       {
         attributesExp: 1725109032
@@ -849,9 +836,6 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
     },
     "enableRbacAuthorization": {
       "value": false
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "keys": {
       "value": [
