@@ -21,6 +21,9 @@ Optional. Set this parameter if you don't want to build/compile the JSON templat
 .PARAMETER SkipReadMe
 Optional. Set this parameter if you don't want to generate the ReadMe file(s) for the module(s).
 
+.PARAMETER SkipFileAndFolderSetup
+Optional. Set this parameter if you don't want to setup the file & folder structure for the module(s).
+
 .PARAMETER ThrottleLimit
 Optional. The number of parallel threads to use for the generation. Defaults to 5.
 
@@ -41,6 +44,11 @@ For the [key-vault\vault] module or any of its children, build the Bicep module 
 Set-AVMModule -ModuleFolderPath 'C:\avm\res\key-vault\vault' -Recurse -SkipReadMe
 
 For the [key-vault\vault] module or any of its children, build only the Bicep module template.
+
+.EXAMPLE
+Set-AVMModule -ModuleFolderPath 'C:\avm\res' -Recurse
+
+For all modules in path [C:\avm\res], build the Bicep module template & generate the ReadMe.
 #>
 function Set-AVMModule {
 
@@ -59,11 +67,21 @@ function Set-AVMModule {
         [switch] $SkipReadMe,
 
         [Parameter(Mandatory = $false)]
+        [switch] $SkipFileAndFolderSetup,
+
+        [Parameter(Mandatory = $false)]
         [int] $ThrottleLimit = 5,
 
         [Parameter(Mandatory = $false)]
         [string] $ReadMeScriptFilePath = (Join-Path (Get-Item $PSScriptRoot).Parent.FullName 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
     )
+
+    # Build up module file & folder structure if not yet existing. Should only run if an actuall module path was provided (and not any of their parent paths)
+    if (-not $SkipFileAndFolderSetup -and ((Split-Path $ModuleFolderPath -Leaf) -notin @('avm', 'res', 'ptn')) ) {
+        if ($PSCmdlet.ShouldProcess("File & folder structure for path [$ModuleFolderPath]", "Setup")) {
+            Set-ModuleFileAndFolderSetup -FullModuleFolderPath $ModuleFolderPath
+        }
+    }
 
     if ($Recurse) {
         $relevantTemplatePaths = (Get-ChildItem -Path $ModuleFolderPath -Recurse -File -Filter 'main.bicep').FullName
