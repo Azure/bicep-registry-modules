@@ -38,7 +38,16 @@ runs:
         creds: ${{ env.AZURE_CREDENTIALS }}
         enable-AzPSSession: true
 
-    # TODO: Only for testing. Should be removed in favor of public registry later
+    # Adding a step to explicitly install the latest Bicep CLI because there is
+    # always a delay in updating Bicep CLI in the job runner environments.
+    - name: Install the latest Bicep CLI
+      shell: bash
+      run: |
+        curl -Lo bicep https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64
+        chmod +x ./bicep
+        sudo mv ./bicep /usr/local/bin/bicep
+        bicep --version
+
     - name: "Publish module to public bicep registry"
       uses: azure/powershell@v1
       with:
@@ -63,7 +72,7 @@ runs:
             PublicRegistryServer = ConvertTo-SecureString '${{ env.PUBLISH_REGISTRY_SERVER }}' -AsPlainText -Force
           }
 
-          Write-Verbose "Invoke task with" -Verbose
+          Write-Verbose "Invoke function with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
           # Get the modified child resources
