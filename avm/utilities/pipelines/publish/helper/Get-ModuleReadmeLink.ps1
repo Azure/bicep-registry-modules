@@ -5,8 +5,8 @@ Get the formatted README url for the published module
 .DESCRIPTION
 Get the formatted README url for the published module
 
-.PARAMETER ModuleRelativeFolderPath
-Mandatory. The relative path of the module. For example: `avm\res\network\private-endpoint`.
+.PARAMETER ModuleFolderPath
+Mandatory. Path to the main/parent module folder. For example: `C:\avm\res\network\private-endpoint`.
 
 .PARAMETER TagName
 Mandatory. The tag name of the module. For example: `avm/res/network/private-endpoint/1.0.0`.

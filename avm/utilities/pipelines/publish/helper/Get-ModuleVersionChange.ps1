@@ -11,13 +11,13 @@ Mandatory. Path to the module version.json file.
 
 .EXAMPLE
 # Note: "version" value is "0.1" and was not updated in the last commit
-Get-ModuleVersionChange -VersionFilePath 'C:\avm\key-vault\vault\version.json'
+Get-ModuleVersionChange -VersionFilePath 'C:\avm\res\key-vault\vault\version.json'
 
 Returns null
 
 .EXAMPLE
 # Note:"version" value is updated from "0.1" to "0.2" in the last commit
-Get-ModuleVersionChange -VersionFilePath 'C:\avm\key-vault\vault\version.json'
+Get-ModuleVersionChange -VersionFilePath 'C:\avm\res\key-vault\vault\version.json'
 
 Name                           Value
 ----                           -----

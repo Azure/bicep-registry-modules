@@ -1,23 +1,22 @@
 <#
 .SYNOPSIS
-Calculates the module target SemVer version
+Calculates the module target SemVer version.
 
 .DESCRIPTION
-Calculates the module target SemVer version
-Gets major and minor from version.json
-Gets patch calling Get-ModuleTargetPatchVersion
-Builds version as major.minor.patch
-
-If new major/minor patch is 0
+Calculates the module target SemVer version based on version.json file and existing published release tags.
+Resets patch version if major or minor is updated.
+Bumps patch version otherwise
+Builds target version as major.minor.patch
 
 .PARAMETER ModuleFolderPath
 Mandatory. Path to the main/parent module folder.
 
 .EXAMPLE
-# Note: "version" value is "0.1" and was not updated in the last commit
-Get-ModuleTargetVersion -ModuleFolderPath 'C:\avm\key-vault\vault'
+# Note: "version" value in version.json is "0.1" and was not updated in the last commit
+# Note: The latest published release tag is "avm/res/key-vault/vault/0.1.6"
+Get-ModuleTargetVersion -ModuleFolderPath 'C:\avm\res\key-vault\vault'
 
-Returns 1.0.0
+Returns 0.1.7
 
 #>
 
@@ -25,7 +24,7 @@ function Get-ModuleTargetVersion {
 
   [CmdletBinding()]
   param (
-    [Parameter()]
+    [Parameter(Mandatory = $true)]
     [string] $ModuleFolderPath
   )
 

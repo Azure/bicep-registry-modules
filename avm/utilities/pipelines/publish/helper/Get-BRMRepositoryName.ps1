@@ -9,9 +9,9 @@ Convert the given template file path into a valid Container Registry repository 
 Mandatory. The template file path to convert
 
 .EXAMPLE
-Get-BRMRepositoryName -TemplateFilePath 'C:\avm\key-vault\vault\main.bicep'
+Get-BRMRepositoryName -TemplateFilePath 'C:\avm\res\key-vault\vault\main.bicep'
 
-Convert 'C:\avm\key-vault\vault\main.bicep' to e.g. 'avm-res-keyvault-vault'
+Convert 'C:\avm\res\key-vault\vault\main.bicep' to e.g. 'avm-res-keyvault-vault'
 #>
 function Get-BRMRepositoryName {
 
