@@ -51,7 +51,7 @@ param enablePurgeProtection bool = true
   'premium'
   'standard'
 ])
-param vaultSku string = 'premium'
+param sku string = 'premium'
 
 @description('Optional. Service endpoint object information. For security reasons, it is recommended to set the DefaultAction Deny.')
 param networkAcls object = {}
@@ -153,7 +153,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     tenantId: subscription().tenantId
     accessPolicies: formattedAccessPolicies
     sku: {
-      name: vaultSku
+      name: sku
       family: 'A'
     }
     networkAcls: !empty(networkAcls) ? {

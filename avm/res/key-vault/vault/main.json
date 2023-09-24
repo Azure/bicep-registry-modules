@@ -446,7 +446,7 @@
         "description": "Optional. Provide 'true' to enable Key Vault's purge protection feature."
       }
     },
-    "vaultSku": {
+    "sku": {
       "type": "string",
       "defaultValue": "premium",
       "allowedValues": [
@@ -586,7 +586,7 @@
         "tenantId": "[subscription().tenantId]",
         "accessPolicies": "[variables('formattedAccessPolicies')]",
         "sku": {
-          "name": "[parameters('vaultSku')]",
+          "name": "[parameters('sku')]",
           "family": "A"
         },
         "networkAcls": "[if(not(empty(parameters('networkAcls'))), createObject('bypass', if(contains(parameters('networkAcls'), 'bypass'), parameters('networkAcls').bypass, null()), 'defaultAction', if(contains(parameters('networkAcls'), 'defaultAction'), parameters('networkAcls').defaultAction, null()), 'virtualNetworkRules', if(contains(parameters('networkAcls'), 'virtualNetworkRules'), parameters('networkAcls').virtualNetworkRules, createArray()), 'ipRules', if(contains(parameters('networkAcls'), 'ipRules'), parameters('networkAcls').ipRules, createArray())), null())]",
