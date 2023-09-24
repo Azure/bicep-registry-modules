@@ -15,7 +15,7 @@ binding:
 
 # Require minimum versions of modules.
 requires:
-  PSRule: '@pre >=2.4.0'
+  PSRule: '@pre >=2.9.0'
   PSRule.Rules.Azure: '>=1.29.0'
 
 # Use PSRule for Azure.
@@ -34,9 +34,9 @@ output:
 input:
   pathIgnore:
     # Exclude all files.
-    - '*'
+    - '**/*'
     # Only process default and waf-aligned test files.
-    - '!**/*.test.bicep'
+    - '!avm/**/*.test.bicep'
 
 configuration:
   # Enable automatic expansion of Azure parameter files.
