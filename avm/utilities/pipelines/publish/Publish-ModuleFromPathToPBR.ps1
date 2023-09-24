@@ -1,3 +1,24 @@
+<#
+.SYNOPSIS
+Publish module to Public Bicep Registry.
+
+.DESCRIPTION
+Publish module to Public Bicep Registry.
+Checks if module qualifies for publishing.
+Calculates the target module version based on version.json file and existing published release tags.
+Creates and publishes release tag.
+Retrieves module readme url.
+
+.PARAMETER TemplateFilePath
+Mandatory. The path to the deployment file
+
+.PARAMETER PublicRegistryServer
+Mandatory. The public registry server.
+
+.EXAMPLE
+Publish-ModuleFromPathToPBR -TemplateFilePath 'C:\avm\res\key-vault\vault\main.bicep -PublicRegistryServer '<secureString>'
+
+#>
 function Publish-ModuleFromPathToPBR {
 
   [CmdletBinding()]
