@@ -1,4 +1,4 @@
-name: AVM - Publish module
+name: AVM - Publish module via tag
 
 on:
   # workflow_call:
