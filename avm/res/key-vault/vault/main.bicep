@@ -82,6 +82,8 @@ param diagnosticSettings diagnosticSettingType
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+module test 'br:mcr.microsoft.com/bicep/ai/bing-resource:1.0.2'
+
 // =========== //
 // Variables   //
 // =========== //
