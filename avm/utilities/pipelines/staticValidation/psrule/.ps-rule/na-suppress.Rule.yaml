@@ -3,12 +3,12 @@
 apiVersion: github.com/microsoft/PSRule/v1
 kind: SuppressionGroup
 metadata:
-  name: 'SuppressNA'
+  name: "SuppressNA"
 spec:
   rule:
-   - Azure.Resource.UseTags
+    - Azure.Resource.UseTags
   if:
-    type: '.'
+    type: "."
     in:
       - Microsoft.OperationsManagement/solutions
       - Microsoft.ManagedServices/registrationDefinitions

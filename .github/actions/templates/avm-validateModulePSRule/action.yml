@@ -20,26 +20,26 @@
 ##
 ##---------------------------------------------##
 
-name: 'Execute PSRule module tests'
-description: 'Execute PSRule module tests (if any)'
+name: "Execute PSRule module tests"
+description: "Execute PSRule module tests (if any)"
 
 inputs:
   templateFilePath:
-    description: 'The path to the test file'
+    description: "The path to the test file"
     required: true
-    default: ''
+    default: ""
   subscriptionId:
-    description: 'The subscription ID to deploy to'
+    description: "The subscription ID to deploy to"
     required: false
   managementGroupId:
-    description: 'The management group ID to deploy to'
+    description: "The management group ID to deploy to"
     required: false
   psrulePath:
-    description: 'The path to PSRule configurations'
+    description: "The path to PSRule configurations"
     required: false
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     # [Token replacement] task(s)
     # ---------------------------
@@ -118,19 +118,19 @@ runs:
       uses: microsoft/ps-rule@v2.9.0
       continue-on-error: true # Setting this whilst PSRule gets bedded in, in this project
       with:
-        modules: 'PSRule.Rules.Azure'
-        inputPath: '${{ inputs.templateFilePath}}'
+        modules: "PSRule.Rules.Azure"
+        inputPath: "${{ inputs.templateFilePath}}"
         outputFormat: Csv
-        outputPath: '${{ inputs.templateFilePath}}-PSRule-output.csv'
-        option: '${{ github.workspace }}/${{ inputs.psrulePath}}/ps-rule.yaml' # Path to PSRule configuration options file
-        source: '${{ inputs.psrulePath}}/.ps-rule/' # Path to folder containing suppression rules to use for analysis.
+        outputPath: "${{ inputs.templateFilePath}}-PSRule-output.csv"
+        option: "${{ github.workspace }}/${{ inputs.psrulePath}}/ps-rule.yaml" # Path to PSRule configuration options file
+        source: "${{ inputs.psrulePath}}/.ps-rule/" # Path to folder containing suppression rules to use for analysis.
         summary: false # Disabling as taken care in customized task
 
-    - name: 'Parse CSV content'
+    - name: "Parse CSV content"
       if: always()
       uses: azure/powershell@v1
       with:
-        azPSVersion: 'latest'
+        azPSVersion: "latest"
         inlineScript: |
           # Grouping task logs
           Write-Output '::group::Parse CSV content'
@@ -152,7 +152,7 @@ runs:
 
           Write-Output '::endgroup::'
 
-    - name: 'Output to GitHub job summaries'
+    - name: "Output to GitHub job summaries"
       if: always()
       shell: pwsh
       run: |
