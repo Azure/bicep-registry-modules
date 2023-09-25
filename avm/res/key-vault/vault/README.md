@@ -46,8 +46,12 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
     // Required parameters
     name: 'kvvd002'
     // Non-required parameters
+    diagnosticSettings: []
     enablePurgeProtection: false
     location: '<location>'
+    lock: {}
+    privateEndpoints: []
+    roleAssignments: []
   }
 }
 ```
@@ -69,11 +73,23 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
       "value": "kvvd002"
     },
     // Non-required parameters
+    "diagnosticSettings": {
+      "value": []
+    },
     "enablePurgeProtection": {
       "value": false
     },
     "location": {
       "value": "<location>"
+    },
+    "lock": {
+      "value": {}
+    },
+    "privateEndpoints": {
+      "value": []
+    },
+    "roleAssignments": {
+      "value": []
     }
   }
 }

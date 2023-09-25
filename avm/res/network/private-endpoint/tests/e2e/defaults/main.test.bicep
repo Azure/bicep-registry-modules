@@ -53,6 +53,7 @@ module testDeployment '../../../main.bicep' = {
     ]
     serviceResourceId: nestedDependencies.outputs.keyVaultResourceId
     subnetResourceId: nestedDependencies.outputs.subnetResourceId
+    // Workaround for PSRule
     lock: {}
     roleAssignments: []
   }

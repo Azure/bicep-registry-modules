@@ -39,5 +39,11 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}${serviceShort}001'
     kind: 'SpeechServices'
     location: location
+    // Workaround for PSRule
+    lock: {}
+    roleAssignments: []
+    diagnosticSettings: []
+    managedIdentities: {}
+    privateEndpoints: []
   }
 }

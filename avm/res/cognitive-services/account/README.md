@@ -44,7 +44,12 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     kind: 'SpeechServices'
     name: 'csad001'
     // Non-required parameters
+    diagnosticSettings: []
     location: '<location>'
+    lock: {}
+    managedIdentities: {}
+    privateEndpoints: []
+    roleAssignments: []
   }
 }
 ```
@@ -69,8 +74,23 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       "value": "csad001"
     },
     // Non-required parameters
+    "diagnosticSettings": {
+      "value": []
+    },
     "location": {
       "value": "<location>"
+    },
+    "lock": {
+      "value": {}
+    },
+    "managedIdentities": {
+      "value": {}
+    },
+    "privateEndpoints": {
+      "value": []
+    },
+    "roleAssignments": {
+      "value": []
     }
   }
 }
