@@ -17,15 +17,10 @@ on:
         required: true
 
 env:
-  AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
   ARM_SUBSCRIPTION_ID: '${{ secrets.ARM_SUBSCRIPTION_ID }}'
   ARM_MGMTGROUP_ID: '${{ secrets.ARM_MGMTGROUP_ID }}'
   ARM_TENANT_ID: '${{ secrets.ARM_TENANT_ID }}'
   TOKEN_NAMEPREFIX: '${{ secrets.TOKEN_NAMEPREFIX }}'
-  PUBLISH_REGISTRY_SERVER: '${{ secrets.PUBLISH_REGISTRY_SERVER }}'
-  PUBLISH_CLIENT_ID: '${{ secrets.PUBLISH_CLIENT_ID }}'
-  PUBLISH_TENANT_ID: '${{ secrets.PUBLISH_TENANT_ID }}'
-  PUBLISH_SUBSCRIPTION_ID: '${{ secrets.PUBLISH_SUBSCRIPTION_ID }}'
 
 jobs:
   #########################
@@ -104,6 +99,8 @@ jobs:
           subscriptionId: '${{ secrets.ARM_SUBSCRIPTION_ID }}'
           managementGroupId: '${{ secrets.ARM_MGMTGROUP_ID }}'
           removeDeployment: '${{ fromJson(inputs.workflowInput).removeDeployment }}'
+        env:
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
   ##################
   #   Publishing   #
@@ -126,3 +123,8 @@ jobs:
         with:
           templateFilePath: '${{ inputs.modulePath }}/main.bicep'
           subscriptionId: '${{ secrets.ARM_SUBSCRIPTION_ID }}'
+        env:
+          PUBLISH_REGISTRY_SERVER: '${{ secrets.PUBLISH_REGISTRY_SERVER }}'
+          PUBLISH_CLIENT_ID: '${{ secrets.PUBLISH_CLIENT_ID }}'
+          PUBLISH_TENANT_ID: '${{ secrets.PUBLISH_TENANT_ID }}'
+          PUBLISH_SUBSCRIPTION_ID: '${{ secrets.PUBLISH_SUBSCRIPTION_ID }}'
