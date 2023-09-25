@@ -1064,8 +1064,14 @@ function Set-UsageExamplesSection {
     }
 
     $testFilePaths = Get-ModuleTestFileList -ModulePath $moduleRoot | ForEach-Object { Join-Path $moduleRoot $_ }
-    #$RequiredParametersList = $TemplateFileContent.parameters.Keys | Where-Object { $TemplateFileContent.parameters[$_].Keys -notcontains 'defaultValue' } | Sort-Object
-    $RequiredParametersList = $TemplateFileContent.parameters.Keys | Where-Object { ((($TemplateFileContent.parameters[$_].Keys -notcontains 'defaultValue') -and (-not $TemplateFileContent.parameters[$_].ContainsKey('$ref'))) -or ($TemplateFileContent.parameters[$_].ContainsKey('$ref') -and (-not $TemplateFileContent.definitions[(Split-Path $TemplateFileContent.parameters[$_].'$ref' -Leaf)]['nullable']))) } | Sort-Object
+
+    $RequiredParametersList = $TemplateFileContent.parameters.Keys
+    | Where-Object {
+        $hasNoDefaultValue = $TemplateFileContent.parameters[$_].Keys -notcontains 'defaultValue'
+        $isUserDefinedType = $TemplateFileContent.parameters[$_].Keys -contains '$ref'
+        $isNullable = $TemplateFileContent.parameters[$_].Keys -contains '$ref' ? $TemplateFileContent.definitions[(Split-Path $TemplateFileContent.parameters[$_].'$ref' -Leaf)]['nullable'] : $false
+        (($hasNoDefaultValue -and -not $isUserDefinedType) -or ($isUserDefinedType -and -not $isNullable))
+    } | Sort-Object
 
     ############################
     ##   Process test files   ##
