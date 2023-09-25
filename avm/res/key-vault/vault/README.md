@@ -1002,9 +1002,9 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 | [`secrets`](#parameter-secrets) | secureObject | All secrets to create. |
+| [`sku`](#parameter-sku) | string | Specifies the SKU for the vault. |
 | [`softDeleteRetentionInDays`](#parameter-softdeleteretentionindays) | int | softDelete data retention days. It accepts >=7 and <=90. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
-| [`sku`](#parameter-sku) | string | Specifies the SKU for the vault. |
 
 ### Parameter: `accessPolicies`
 
@@ -1347,7 +1347,7 @@ Optional. The location to deploy the private endpoint to.
 Optional. Specify the type of lock.
 
 - Required: No
-- Type:
+- Type: 
 
 ### Parameter: `privateEndpoints.manualPrivateLinkServiceConnections`
 
@@ -1375,7 +1375,7 @@ Optional. The private DNS zone groups to associate the private endpoint with. A 
 Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: No
-- Type:
+- Type: 
 
 ### Parameter: `privateEndpoints.service`
 
@@ -1481,6 +1481,14 @@ All secrets to create.
 - Type: secureObject
 - Default: `{object}`
 
+### Parameter: `sku`
+
+Specifies the SKU for the vault.
+- Required: No
+- Type: string
+- Default: `'premium'`
+- Allowed: `[premium, standard]`
+
 ### Parameter: `softDeleteRetentionInDays`
 
 softDelete data retention days. It accepts >=7 and <=90.
@@ -1494,14 +1502,6 @@ Resource tags.
 - Required: No
 - Type: object
 - Default: `{object}`
-
-### Parameter: `sku`
-
-Specifies the SKU for the vault.
-- Required: No
-- Type: string
-- Default: `'premium'`
-- Allowed: `[premium, standard]`
 
 
 ## Outputs

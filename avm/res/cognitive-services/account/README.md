@@ -30,7 +30,7 @@ The following module usage examples are retrieved from the content of the files 
 
    >**Note**: To reference the module, please use the following syntax `br/public:avm-res-cognitiveservices-account:1.0.0`.
 
-<h3>Example 1: Defauts</h3>
+<h3>Example 1: Defaults</h3>
 
 <details>
 
