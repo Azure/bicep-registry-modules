@@ -23,6 +23,9 @@ env:
   ARM_TENANT_ID: '${{ secrets.ARM_TENANT_ID }}'
   TOKEN_NAMEPREFIX: '${{ secrets.TOKEN_NAMEPREFIX }}'
   PUBLISH_REGISTRY_SERVER: '${{ secrets.PUBLISH_REGISTRY_SERVER }}'
+  PUBLISH_CLIENT_ID: '${{ secrets.PUBLISH_CLIENT_ID }}'
+  PUBLISH_TENANT_ID: '${{ secrets.PUBLISH_TENANT_ID }}'
+  PUBLISH_SUBSCRIPTION_ID: '${{ secrets.PUBLISH_SUBSCRIPTION_ID }}'
 
 jobs:
   #########################
