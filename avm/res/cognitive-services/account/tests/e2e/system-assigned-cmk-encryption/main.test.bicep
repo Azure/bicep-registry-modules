@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Customer-Managed-Keys with System-Assigned identity'
+metadata description = 'This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once to create the System-Assigned Idenity, and one to us it for accessing the Customer-Managed-Key secret.'
+
 // ========== //
 // Parameters //
 // ========== //

@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Large parameter set'
+metadata description = 'This instance deploys the module with most of its features enabled.'
+
 // ========== //
 // Parameters //
 // ========== //
