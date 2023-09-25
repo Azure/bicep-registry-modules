@@ -439,7 +439,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 4: System-Assigned Cmk Encryption</h3>
+<h3>Example 4: System-Assigned-Cmk-Encryption</h3>
 
 <details>
 
@@ -518,7 +518,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 5: User-Assigned Cmk Encryption</h3>
+<h3>Example 5: User-Assigned-Cmk-Encryption</h3>
 
 <details>
 

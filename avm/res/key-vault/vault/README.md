@@ -497,7 +497,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 3: Private Endpoint</h3>
+<h3>Example 3: Private-Endpoint</h3>
 
 <details>
 
