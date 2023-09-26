@@ -113,7 +113,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     kind: 'Face'
     name: 'csamax001'
     // Non-required parameters
-    customSubDomainName: 'xdomain'
+    customSubDomainName: 'xcsamax'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -219,7 +219,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     },
     // Non-required parameters
     "customSubDomainName": {
-      "value": "xdomain"
+      "value": "xcsamax"
     },
     "diagnosticSettings": {
       "value": [
@@ -617,7 +617,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     kind: 'Face'
     name: 'csawaf001'
     // Non-required parameters
-    customSubDomainName: 'xdomain'
+    customSubDomainName: 'xcsawaf'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -723,7 +723,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     },
     // Non-required parameters
     "customSubDomainName": {
-      "value": "xdomain"
+      "value": "xcsawaf"
     },
     "diagnosticSettings": {
       "value": [
