@@ -21,14 +21,18 @@ This module deploys a Private Endpoint.
 
 ## Usage examples
 
-The following module usage examples are retrieved from the content of the files hosted in the module's `.test` folder.
+The following module usage examples are retrieved from the content of the files hosted in the module's `tests` folder.
    >**Note**: The name of each example is based on the name of the file from which it is taken.
 
    >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
    >**Note**: To reference the module, please use the following syntax `br/public:avm-res-network-privateendpoint:1.0.0`.
 
-<h3>Example 1: <i>Only defaults</i></h3>
+- [Only defaults](#example-1-only-defaults)
+- [Large parameter set](#example-2-large-parameter-set)
+- [WAF-aligned](#example-3-wafaligned)
+
+### Example 1: _Only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -100,7 +104,7 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 2: <i>Large parameter set</i></h3>
+### Example 2: _Large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -244,7 +248,7 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 3: <i>WAF-aligned</i></h3>
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-pratices of the Well-Architectured-Framework.
 

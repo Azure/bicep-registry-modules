@@ -1032,7 +1032,7 @@ function Set-UsageExamplesSection {
 
     # Process content
     $SectionContent = [System.Collections.ArrayList]@(
-        'The following module usage examples are retrieved from the content of the files hosted in the module''s `.test` folder.',
+        'The following module usage examples are retrieved from the content of the files hosted in the module''s `tests` folder.',
         '   >**Note**: The name of each example is based on the name of the file from which it is taken.',
         '',
         '   >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.',
@@ -1077,6 +1077,8 @@ function Set-UsageExamplesSection {
     ##   Process test files   ##
     ############################
     $pathIndex = 1
+    $usageExampleSectionHeaders = @()
+    $testFilesContent = @()
     foreach ($testFilePath in $testFilePaths) {
 
         # Read content
@@ -1099,13 +1101,18 @@ function Set-UsageExamplesSection {
             $exampleTitle = $textInfo.ToTitleCase($exampleTitle)
         }
 
-        $SectionContent += @(
-            '<h3>Example {0}: <i>{1}</i></h3>' -f $pathIndex, $exampleTitle
+        $fullTestFileTitle = '### Example {0}: _{1}_' -f $pathIndex, $exampleTitle
+        $testFilesContent += @(
+            $fullTestFileTitle
         )
+        $usageExampleSectionHeaders += @{
+            title  = $exampleTitle
+            header = $fullTestFileTitle
+        }
 
         # If a description is added in the template's metadata, we can add it too
         if ($compiledTestFileContent.metadata.Keys -contains 'description') {
-            $SectionContent += @(
+            $testFilesContent += @(
                 '',
                 $compiledTestFileContent.metadata.description,
                 ''
@@ -1199,7 +1206,7 @@ function Set-UsageExamplesSection {
                 }
 
                 # Build result
-                $SectionContent += @(
+                $testFilesContent += @(
                     '',
                     '<details>'
                     ''
@@ -1227,7 +1234,7 @@ function Set-UsageExamplesSection {
                 $orderedJSONExample = Build-OrderedJSONObject @orderingInputObject
 
                 # [2/2] Create the final content block
-                $SectionContent += @(
+                $testFilesContent += @(
                     '',
                     '<details>'
                     ''
@@ -1394,7 +1401,7 @@ function Set-UsageExamplesSection {
                 # - the 'existing' Key Vault resources
                 # - a 'module' header that mimics a module deployment
                 # - all parameters in Bicep format
-                $SectionContent += @(
+                $testFilesContent += @(
                     '',
                     '<details>'
                     ''
@@ -1428,7 +1435,7 @@ function Set-UsageExamplesSection {
                 $orderedJSONExample = Build-OrderedJSONObject @orderingInputObject
 
                 # [2/2] Create the final content block
-                $SectionContent += @(
+                $testFilesContent += @(
                     '',
                     '<details>',
                     '',
@@ -1444,19 +1451,28 @@ function Set-UsageExamplesSection {
             }
         }
 
-        $SectionContent += @(
+        $testFilesContent += @(
             ''
         )
 
         $pathIndex++
     }
 
+    foreach ($rawHeader in $usageExampleSectionHeaders) {
+        $navigationHeader = (($rawHeader.header -replace '<\/?.+?>|[^A-Za-z0-9\s]').Trim() -replace '\s+', '-').ToLower() # Remove any html and non-identifer elements
+        $SectionContent += "- [{0}](#{1})" -f $rawHeader.title, $navigationHeader
+    }
+    $SectionContent += ''
+
+
+    $SectionContent += $testFilesContent
+
     ######################
     ##   Built result   ##
     ######################
     if ($SectionContent) {
         if ($PSCmdlet.ShouldProcess('Original file with new template references content', 'Merge')) {
-            return Merge-FileWithNewContent -oldContent $ReadMeFileContent -newContent $SectionContent -SectionStartIdentifier $SectionStartIdentifier
+            return Merge-FileWithNewContent -oldContent $ReadMeFileContent -newContent $SectionContent -SectionStartIdentifier $SectionStartIdentifier -ContentType 'nextH2'
         }
     }
     else {
