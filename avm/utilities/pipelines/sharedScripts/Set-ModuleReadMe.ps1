@@ -1032,7 +1032,7 @@ function Set-UsageExamplesSection {
 
     # Process content
     $SectionContent = [System.Collections.ArrayList]@(
-        'The following module usage examples are retrieved from the content of the files hosted in the module''s `.test` folder.',
+        'The following module usage examples are retrieved from the content of the files hosted in the module''s `tests` folder.',
         '   >**Note**: The name of each example is based on the name of the file from which it is taken.',
         '',
         '   >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.',
