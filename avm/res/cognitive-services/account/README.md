@@ -113,7 +113,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     kind: 'Face'
     name: 'csamax001'
     // Non-required parameters
-    customSubDomainName: 'xdomain'
+    customSubDomainName: 'xcsamax'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -219,7 +219,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     },
     // Non-required parameters
     "customSubDomainName": {
-      "value": "xdomain"
+      "value": "xcsamax"
     },
     "diagnosticSettings": {
       "value": [
@@ -617,7 +617,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     kind: 'Face'
     name: 'csawaf001'
     // Non-required parameters
-    customSubDomainName: 'xdomain'
+    customSubDomainName: 'xcsawaf'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -723,7 +723,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     },
     // Non-required parameters
     "customSubDomainName": {
-      "value": "xdomain"
+      "value": "xcsawaf"
     },
     "diagnosticSettings": {
       "value": [
@@ -1444,4 +1444,8 @@ The storage accounts for this resource.
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `res/network/private-endpoint` | Local reference |
