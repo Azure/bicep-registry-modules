@@ -23,14 +23,21 @@ This module deploys a Cognitive Service.
 
 ## Usage examples
 
-The following module usage examples are retrieved from the content of the files hosted in the module's `.test` folder.
+The following module usage examples are retrieved from the content of the files hosted in the module's `tests` folder.
    >**Note**: The name of each example is based on the name of the file from which it is taken.
 
    >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
    >**Note**: To reference the module, please use the following syntax `br/public:avm-res-cognitiveservices-account:1.0.0`.
 
-<h3>Example 1: <i>Only defaults</i></h3>
+- [Only defaults](#example-1-only-defaults)
+- [Large parameter set](#example-2-large-parameter-set)
+- [As Speech Service](#example-3-as-speech-service)
+- [Customer-Managed-Keys with System-Assigned identity](#example-4-customermanagedkeys-with-systemassigned-identity)
+- [Customer-Managed-Keys with User-Assigned identity](#example-5-customermanagedkeys-with-userassigned-identity)
+- [WAF-aligned](#example-6-wafaligned)
+
+### Example 1: _Only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -102,7 +109,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 2: <i>Large parameter set</i></h3>
+### Example 2: _Large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -332,7 +339,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 3: <i>As Speech Service</i></h3>
+### Example 3: _As Speech Service_
 
 This instance deploys the module as a Speech Service.
 
@@ -448,7 +455,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 4: <i>Customer-Managed-Keys with System-Assigned identity</i></h3>
+### Example 4: _Customer-Managed-Keys with System-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once to create the System-Assigned Idenity, and one to us it for accessing the Customer-Managed-Key secret.
 
@@ -530,7 +537,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 5: <i>Customer-Managed-Keys with User-Assigned identity</i></h3>
+### Example 5: _Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -618,7 +625,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 6: <i>WAF-aligned</i></h3>
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-pratices of the Well-Architectured-Framework.
 
