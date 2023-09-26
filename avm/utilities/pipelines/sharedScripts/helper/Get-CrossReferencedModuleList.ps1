@@ -41,22 +41,58 @@ function Resolve-DependencyList {
     return $resolvedDependencies
 }
 
+<#
+.SYNOPSIS
+Get all references of a given module template
+
+.DESCRIPTION
+Get all references of a given module template.
+This includes local references, online/remote references & resource deployments
+
+.PARAMETER ModuleTemplateFilePath
+Mandatory. The path to the template to search the references for
+
+.EXAMPLE
+Get-ReferenceObject -ModuleTemplateFilePath 'C:\dev\key-vault\vault\main.bicep'
+
+Search all references for module 'key-vault\vault'
+#>
 function Get-ReferenceObject {
 
     [CmdletBinding()]
     param (
-        [Parameter()]
+        [Parameter(Mandatory = $true)]
         [string] $ModuleTemplateFilePath
     )
 
-    $moduleContent = Get-Content -Path $ModuleTemplateFilePath
+    . (Join-Path (Get-Item $PSScriptRoot).Parent 'Get-LocallyReferencedFileList.ps1')
+    $involvedFilePaths = Get-LocallyReferencedFileList -FilePath $ModuleTemplateFilePath
 
-    $resourceReferences = $moduleContent | Where-Object { $_ -match "^resource .+ '(.+)' .+$" } | ForEach-Object { $matches[1] }
-    $remoteReferences = $moduleContent | Where-Object { $_ -match "^module .+ '(.+:.+)' .+$" } | ForEach-Object { $matches[1] }
+    $resultSet = @{
+        resourceReferences  = @()
+        remoteReferences    = @()
+        localPathReferences = $involvedFilePaths | Where-Object {
+            $involvedFilePath = $_
+            # We only care about module templates
+            (Split-Path $involvedFilePath -Leaf) -eq 'main.bicep' -and
+            # We only care about a direct references and no children when it comes to returning local references
+            (@(@($involvedFilePaths) + @($ModuleTemplateFilePath)) | Where-Object {
+                (Split-Path $involvedFilePath) -match ('{0}[\/|\\].+' -f [Regex]::Escape((Split-Path $_ -Parent))) # i.e., if a path has its parent in the list, kick it out
+            }).count -eq 0
+        }
+    }
+
+    foreach ($involvedFilePath in $involvedFilePaths) {
+        $moduleContent = Get-Content -Path $involvedFilePath
+
+        $resultSet.resourceReferences += @() + $moduleContent | Where-Object { $_ -match "^resource .+ '(.+)' .+$" } | ForEach-Object { $matches[1] }
+        $resultSet.remoteReferences += @() + $moduleContent | Where-Object { $_ -match "^module .+ '(.+:.+)' .+$" } | ForEach-Object { $matches[1] }
+    }
 
     return @{
-        resourceReferences = @() + ($resourceReferences | Select-Object -Unique)
-        remoteReferences   = @() + ($remoteReferences | Select-Object -Unique)
+        resourceReferences  = $resultSet.resourceReferences | Sort-Object -Unique
+        remoteReferences    = $resultSet.remoteReferences | Sort-Object -Unique
+        localPathReferences = $resultSet.localPathReferences | Sort-Object -Unique
     }
 }
 #endregion
@@ -108,6 +144,7 @@ function Get-CrossReferencedModuleList {
         [string] $Path = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent
     )
 
+    $repoRoot = ($Path -split '[\/|\\]{1}avm[\/|\\]{1}')[0]
     $resultSet = [ordered]@{}
 
     $moduleTemplatePaths = (Get-ChildItem -Path $path -Recurse -File -Filter 'main.bicep').FullName
@@ -115,13 +152,12 @@ function Get-CrossReferencedModuleList {
 
         $referenceObject = Get-ReferenceObject -ModuleTemplateFilePath $moduleTemplatePath
 
-        # Add additional level of nesting for children of template path
-        $childModuleTemplatePaths = (Get-ChildItem -Path $moduleTemplatePath -Recurse -File -Filter 'main.bicep').FullName | Where-Object { $_ -ne $moduleTemplatePath }
-        foreach ($childModuleTemplatePath in $childModuleTemplatePaths) {
-            $childReferenceObject = Get-ReferenceObject -ModuleTemplateFilePath $childModuleTemplatePath
-
-            $referenceObject.resourceReferences = ($referenceObject.resourceReferences + $childReferenceObject.resourceReferences) | Select-Object -Unique
-            $referenceObject.remoteReferences += ($referenceObject.remoteReferences + $childReferenceObject.remoteReferences) | Select-Object -Unique
+        # Convert local absolute references to relative references
+        $referenceObject.localPathReferences = $referenceObject.localPathReferences | ForEach-Object {
+            $result = $_ -replace ('{0}[\/|\\]' -f [Regex]::Escape($repoRoot)), '' # Remove root
+            $result = Split-Path $result -Parent # Use only folder name
+            $result = $result -replace '\\', '/' # Replaces slashes
+            return $result
         }
 
         $moduleFolderPath = Split-Path $moduleTemplatePath -Parent
