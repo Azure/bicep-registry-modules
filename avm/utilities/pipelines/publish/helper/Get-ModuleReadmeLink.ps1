@@ -36,4 +36,3 @@ function Get-ModuleReadmeLink {
   $ModuleRelativeFolderPath = ("avm/{0}" -f ($ModuleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]) -replace '\\', '/'
   return (('{0}/{1}/{2}/README.md' -f $RegistryBaseUri, $TagName, $ModuleRelativeFolderPath) -replace '\\', '/')
 }
-
