@@ -30,7 +30,10 @@ The following module usage examples are retrieved from the content of the files 
 
    >**Note**: To reference the module, please use the following syntax `br/public:avm-res-cognitiveservices-account:1.0.0`.
 
-<h3>Example 1: Defaults</h3>
+<h3>Example 1: <i>Only defaults</i></h3>
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -99,7 +102,10 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 2: Max</h3>
+<h3>Example 2: <i>Large parameter set</i></h3>
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -326,7 +332,10 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 3: Speech</h3>
+<h3>Example 3: <i>As Speech Service</i></h3>
+
+This instance deploys the module as a Speech Service.
+
 
 <details>
 
@@ -439,7 +448,10 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 4: System-Assigned-Cmk-Encryption</h3>
+<h3>Example 4: <i>Customer-Managed-Keys with System-Assigned identity</i></h3>
+
+This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once to create the System-Assigned Idenity, and one to us it for accessing the Customer-Managed-Key secret.
+
 
 <details>
 
@@ -518,7 +530,10 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 5: User-Assigned-Cmk-Encryption</h3>
+<h3>Example 5: <i>Customer-Managed-Keys with User-Assigned identity</i></h3>
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
 
 <details>
 
@@ -603,7 +618,10 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 6: Waf-Aligned</h3>
+<h3>Example 6: <i>WAF-aligned</i></h3>
+
+This instance deploys the module in alignment with the best-pratices of the Well-Architectured-Framework.
+
 
 <details>
 

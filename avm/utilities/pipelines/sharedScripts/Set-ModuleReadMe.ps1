@@ -1081,20 +1081,36 @@ function Set-UsageExamplesSection {
 
         # Read content
         $rawContentArray = Get-Content -Path $testFilePath
+        $compiledTestFileContent = bicep build $testFilePath --stdout | ConvertFrom-Json -AsHashtable
         $rawContent = Get-Content -Path $testFilePath -Encoding 'utf8' | Out-String
 
         # Format example header
-        if ((Split-Path (Split-Path $testFilePath -Parent) -Leaf) -ne '.test') {
-            $exampleTitle = Split-Path (Split-Path $testFilePath -Parent) -Leaf
+        if ($compiledTestFileContent.metadata.Keys -contains 'name') {
+            $exampleTitle = $compiledTestFileContent.metadata.name
         }
         else {
-            $exampleTitle = ((Split-Path $testFilePath -LeafBase) -replace '\.', ' ') -replace ' parameters', ''
+            if ((Split-Path (Split-Path $testFilePath -Parent) -Leaf) -ne '.test') {
+                $exampleTitle = Split-Path (Split-Path $testFilePath -Parent) -Leaf
+            }
+            else {
+                $exampleTitle = ((Split-Path $testFilePath -LeafBase) -replace '\.', ' ') -replace ' parameters', ''
+            }
+            $textInfo = (Get-Culture -Name 'en-US').TextInfo
+            $exampleTitle = $textInfo.ToTitleCase($exampleTitle)
         }
-        $textInfo = (Get-Culture -Name 'en-US').TextInfo
-        $exampleTitle = $textInfo.ToTitleCase($exampleTitle)
+
         $SectionContent += @(
-            '<h3>Example {0}: {1}</h3>' -f $pathIndex, $exampleTitle
+            '<h3>Example {0}: <i>{1}</i></h3>' -f $pathIndex, $exampleTitle
         )
+
+        # If a description is added in the template's metadata, we can add it too
+        if ($compiledTestFileContent.metadata.Keys -contains 'description') {
+            $SectionContent += @(
+                '',
+                $compiledTestFileContent.metadata.description,
+                ''
+            )
+        }
 
         ## ----------------------------------- ##
         ##   Handle by type (Bicep vs. JSON)   ##

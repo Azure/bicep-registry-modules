@@ -33,7 +33,10 @@ The following module usage examples are retrieved from the content of the files 
 
    >**Note**: To reference the module, please use the following syntax `br/public:avm-res-keyvault-vault:1.0.0`.
 
-<h3>Example 1: Defaults</h3>
+<h3>Example 1: <i>Only defaults</i></h3>
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -98,7 +101,10 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 2: Max</h3>
+<h3>Example 2: <i>Large parameter set</i></h3>
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -497,7 +503,10 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 3: Private-Endpoint</h3>
+<h3>Example 3: <i>With Private Endpoints</i></h3>
+
+This instance deploys the module with Private Endpoints.
+
 
 <details>
 
@@ -588,7 +597,10 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 4: Waf-Aligned</h3>
+<h3>Example 4: <i>WAF-aligned</i></h3>
+
+This instance deploys the module in alignment with the best-pratices of the Well-Architectured-Framework.
+
 
 <details>
 
@@ -599,77 +611,22 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-kvvwaf'
   params: {
     name: 'kvvwaf002'
-    accessPolicies: [
-      {
-        objectId: '<objectId>'
-        permissions: {
-          keys: [
-            'get'
-            'list'
-            'update'
-          ]
-          secrets: [
-            'all'
-          ]
-        }
-        tenantId: '<tenantId>'
-      }
-      {
-        objectId: '<objectId>'
-        permissions: {
-          certificates: [
-            'backup'
-            'create'
-            'delete'
-          ]
-          secrets: [
-            'all'
-          ]
-        }
-      }
-    ]
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
-        logCategoriesAndGroups: [
-          {
-            category: 'AzurePolicyEvaluationDetails'
-          }
-          {
-            category: 'AuditEvent'
-          }
-        ]
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
+        name: 'enableAll'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
     enablePurgeProtection: false
-    enableRbacAuthorization: false
+    enableRbacAuthorization: true
     keys: [
       {
         attributesExp: 1725109032
         attributesNbf: 10000
         name: 'keyName'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
         rotationPolicy: {
           attributes: {
             expiryTime: 'P2Y'
@@ -703,44 +660,14 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
     networkAcls: {
       bypass: 'AzureServices'
       defaultAction: 'Deny'
-      ipRules: [
-        {
-          value: '40.74.28.0/23'
-        }
-      ]
-      virtualNetworkRules: [
-        {
-          id: '<id>'
-          ignoreMissingVnetServiceEndpoint: false
-        }
-      ]
     }
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
           '<privateDNSResourceId>'
         ]
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
         service: 'vault'
         subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
-      }
-    ]
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
       }
     ]
     secrets: {
@@ -750,13 +677,6 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
           attributesNbf: 10000
           contentType: 'Something'
           name: 'secretName'
-          roleAssignments: [
-            {
-              principalId: '<principalId>'
-              principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Reader'
-            }
-          ]
           value: 'secretValue'
         }
       ]
@@ -786,62 +706,12 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
     "name": {
       "value": "kvvwaf002"
     },
-    "accessPolicies": {
-      "value": [
-        {
-          "objectId": "<objectId>",
-          "permissions": {
-            "keys": [
-              "get",
-              "list",
-              "update"
-            ],
-            "secrets": [
-              "all"
-            ]
-          },
-          "tenantId": "<tenantId>"
-        },
-        {
-          "objectId": "<objectId>",
-          "permissions": {
-            "certificates": [
-              "backup",
-              "create",
-              "delete"
-            ],
-            "secrets": [
-              "all"
-            ]
-          }
-        }
-      ]
-    },
     "diagnosticSettings": {
       "value": [
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
-          "logCategoriesAndGroups": [
-            {
-              "category": "AzurePolicyEvaluationDetails"
-            },
-            {
-              "category": "AuditEvent"
-            }
-          ],
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        },
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
+          "name": "enableAll",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
@@ -851,7 +721,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
       "value": false
     },
     "enableRbacAuthorization": {
-      "value": false
+      "value": true
     },
     "keys": {
       "value": [
@@ -859,13 +729,6 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
           "attributesExp": 1725109032,
           "attributesNbf": 10000,
           "name": "keyName",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
           "rotationPolicy": {
             "attributes": {
               "expiryTime": "P2Y"
@@ -904,18 +767,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
     "networkAcls": {
       "value": {
         "bypass": "AzureServices",
-        "defaultAction": "Deny",
-        "ipRules": [
-          {
-            "value": "40.74.28.0/23"
-          }
-        ],
-        "virtualNetworkRules": [
-          {
-            "id": "<id>",
-            "ignoreMissingVnetServiceEndpoint": false
-          }
-        ]
+        "defaultAction": "Deny"
       }
     },
     "privateEndpoints": {
@@ -924,29 +776,8 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
           "privateDnsZoneResourceIds": [
             "<privateDNSResourceId>"
           ],
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
           "service": "vault",
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          }
-        }
-      ]
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
@@ -958,13 +789,6 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
             "attributesNbf": 10000,
             "contentType": "Something",
             "name": "secretName",
-            "roleAssignments": [
-              {
-                "principalId": "<principalId>",
-                "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "Reader"
-              }
-            ],
             "value": "secretValue"
           }
         ]
