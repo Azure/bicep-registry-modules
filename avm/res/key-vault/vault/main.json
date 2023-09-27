@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "9844480828749170058"
+      "templateHash": "167861790396816165"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -329,7 +329,7 @@
             "type": "bool",
             "nullable": true,
             "metadata": {
-              "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              "description": "Optional. Enable/Disable usage telemetry for module."
             }
           }
         }
@@ -1372,7 +1372,7 @@
             ]
           },
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pe-{0}-{1}-{2}', last(split(resourceId('Microsoft.KeyVault/vaults', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex()))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pe-{0}-{1}-{2}', last(split(resourceId('Microsoft.KeyVault/vaults', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'vault'), copyIndex()))]"
           },
           "serviceResourceId": {
             "value": "[resourceId('Microsoft.KeyVault/vaults', parameters('name'))]"

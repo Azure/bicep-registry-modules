@@ -248,7 +248,7 @@ module keyVault_privateEndpoints '../../network/private-endpoint/main.bicep' = [
     groupIds: [
       privateEndpoint.?service ?? 'vault'
     ]
-    name: privateEndpoint.?name ?? 'pe-${last(split(keyVault.id, '/'))}-${privateEndpoint.service}-${index}'
+    name: privateEndpoint.?name ?? 'pe-${last(split(keyVault.id, '/'))}-${privateEndpoint.?service ?? 'vault'}-${index}'
     serviceResourceId: keyVault.id
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: enableTelemetry

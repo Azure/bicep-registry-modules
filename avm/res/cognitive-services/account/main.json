@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "4518990608215843089"
+      "templateHash": "12123303560474072139"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service.",
@@ -298,22 +298,14 @@
             }
           },
           "lock": {
-            "type": "string",
-            "allowedValues": [
-              "",
-              "CanNotDelete",
-              "ReadOnly"
-            ],
+            "$ref": "#/definitions/lockType",
             "nullable": true,
             "metadata": {
               "description": "Optional. Specify the type of lock."
             }
           },
           "roleAssignments": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/roleAssignmentType"
-            },
+            "$ref": "#/definitions/roleAssignmentType",
             "nullable": true,
             "metadata": {
               "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
@@ -337,7 +329,7 @@
             "type": "bool",
             "nullable": true,
             "metadata": {
-              "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              "description": "Optional. Enable/Disable usage telemetry for module."
             }
           }
         }
@@ -824,7 +816,7 @@
             ]
           },
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pe-{0}-{1}-{2}', last(split(resourceId('Microsoft.CognitiveServices/accounts', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex()))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pe-{0}-{1}-{2}', last(split(resourceId('Microsoft.CognitiveServices/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'vault'), copyIndex()))]"
           },
           "serviceResourceId": {
             "value": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('name'))]"

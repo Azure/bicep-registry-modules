@@ -1262,7 +1262,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`applicationSecurityGroupResourceIds`](#parameter-privateendpointsapplicationsecuritygroupresourceids) | No | array | Optional. Application security groups in which the private endpoint IP configuration is included. |
 | [`customDnsConfigs`](#parameter-privateendpointscustomdnsconfigs) | No | array | Optional. Custom DNS configurations. |
 | [`customNetworkInterfaceName`](#parameter-privateendpointscustomnetworkinterfacename) | No | string | Optional. The custom name of the network interface attached to the private endpoint. |
-| [`enableTelemetry`](#parameter-privateendpointsenabletelemetry) | No | bool | Optional. Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-privateendpointsenabletelemetry) | No | bool | Optional. Enable/Disable usage telemetry for module. |
 | [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | No | array | Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
 | [`location`](#parameter-privateendpointslocation) | No | string | Optional. The location to deploy the private endpoint to. |
 | [`lock`](#parameter-privateendpointslock) | No |  | Optional. Specify the type of lock. |
@@ -1312,7 +1312,7 @@ Optional. The custom name of the network interface attached to the private endpo
 
 ### Parameter: `privateEndpoints.enableTelemetry`
 
-Optional. Enable telemetry via a Globally Unique Identifier (GUID).
+Optional. Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
