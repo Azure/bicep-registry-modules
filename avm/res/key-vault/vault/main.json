@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "17531422081011382057"
+      "templateHash": "9181741770760472596"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -379,21 +379,21 @@
     },
     "accessPolicies": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. All access policies to create."
       }
     },
     "secrets": {
       "type": "secureObject",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. All secrets to create."
       }
     },
     "keys": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. All keys to create."
       }
@@ -504,7 +504,7 @@
     },
     "tags": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Resource tags."
       }
@@ -527,12 +527,12 @@
     "copy": [
       {
         "name": "formattedAccessPolicies",
-        "count": "[length(parameters('accessPolicies'))]",
+        "count": "[length(coalesce(parameters('accessPolicies'), createArray()))]",
         "input": {
-          "applicationId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'applicationId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].applicationId, '')]",
-          "objectId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'objectId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].objectId, '')]",
-          "permissions": "[parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].permissions]",
-          "tenantId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'tenantId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].tenantId, tenant().tenantId)]"
+          "applicationId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'applicationId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].applicationId, '')]",
+          "objectId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'objectId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].objectId, '')]",
+          "permissions": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].permissions]",
+          "tenantId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'tenantId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].tenantId, tenant().tenantId)]"
         }
       }
     ],
@@ -552,7 +552,7 @@
       "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
-    "secretList": "[if(not(empty(parameters('secrets'))), parameters('secrets').secureList, createArray())]",
+    "secretList": "[coalesce(tryGet(parameters('secrets'), 'secureList'), createArray())]",
     "moduleVersion": "#_moduleVersion_#"
   },
   "resources": {
@@ -680,12 +680,13 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.21.1.54444",
-              "templateHash": "5988194349836968099"
+              "templateHash": "10553793947812900894"
             },
             "name": "Key Vault Access Policies",
             "description": "This module deploys a Key Vault Access Policy.",
@@ -700,7 +701,7 @@
             },
             "accessPolicies": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. An array of 0 to 16 identities that have access to the key vault. All identities in the array must use the same tenant ID as the key vault's tenant ID."
               }
@@ -710,26 +711,35 @@
             "copy": [
               {
                 "name": "formattedAccessPolicies",
-                "count": "[length(parameters('accessPolicies'))]",
+                "count": "[length(coalesce(parameters('accessPolicies'), createArray()))]",
                 "input": {
-                  "applicationId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'applicationId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].applicationId, '')]",
-                  "objectId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'objectId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].objectId, '')]",
-                  "permissions": "[parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].permissions]",
-                  "tenantId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'tenantId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].tenantId, tenant().tenantId)]"
+                  "applicationId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'applicationId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].applicationId, '')]",
+                  "objectId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'objectId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].objectId, '')]",
+                  "permissions": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].permissions]",
+                  "tenantId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'tenantId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].tenantId, tenant().tenantId)]"
                 }
               }
             ]
           },
-          "resources": [
-            {
+          "resources": {
+            "keyVault": {
+              "existing": true,
+              "type": "Microsoft.KeyVault/vaults",
+              "apiVersion": "2022-07-01",
+              "name": "[parameters('keyVaultName')]"
+            },
+            "policies": {
               "type": "Microsoft.KeyVault/vaults/accessPolicies",
               "apiVersion": "2022-07-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), 'add')]",
               "properties": {
                 "accessPolicies": "[variables('formattedAccessPolicies')]"
-              }
+              },
+              "dependsOn": [
+                "keyVault"
+              ]
             }
-          ],
+          },
           "outputs": {
             "resourceGroupName": {
               "type": "string",
@@ -797,7 +807,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.21.1.54444",
-              "templateHash": "11436599112934051193"
+              "templateHash": "11602873550277002353"
             },
             "name": "Key Vault Secrets",
             "description": "This module deploys a Key Vault Secret.",
@@ -886,7 +896,7 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Resource tags."
               }
@@ -1030,7 +1040,7 @@
     "keyVault_keys": {
       "copy": {
         "name": "keyVault_keys",
-        "count": "[length(parameters('keys'))]"
+        "count": "[length(coalesce(parameters('keys'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1042,21 +1052,21 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('keys')[copyIndex()].name]"
+            "value": "[coalesce(parameters('keys'), createArray())[copyIndex()].name]"
           },
           "keyVaultName": {
             "value": "[parameters('name')]"
           },
-          "attributesEnabled": "[if(contains(parameters('keys')[copyIndex()], 'attributesEnabled'), createObject('value', parameters('keys')[copyIndex()].attributesEnabled), createObject('value', true()))]",
-          "attributesExp": "[if(contains(parameters('keys')[copyIndex()], 'attributesExp'), createObject('value', parameters('keys')[copyIndex()].attributesExp), createObject('value', -1))]",
-          "attributesNbf": "[if(contains(parameters('keys')[copyIndex()], 'attributesNbf'), createObject('value', parameters('keys')[copyIndex()].attributesNbf), createObject('value', -1))]",
-          "curveName": "[if(contains(parameters('keys')[copyIndex()], 'curveName'), createObject('value', parameters('keys')[copyIndex()].curveName), createObject('value', 'P-256'))]",
-          "keyOps": "[if(contains(parameters('keys')[copyIndex()], 'keyOps'), createObject('value', parameters('keys')[copyIndex()].keyOps), createObject('value', createArray()))]",
-          "keySize": "[if(contains(parameters('keys')[copyIndex()], 'keySize'), createObject('value', parameters('keys')[copyIndex()].keySize), createObject('value', -1))]",
-          "kty": "[if(contains(parameters('keys')[copyIndex()], 'kty'), createObject('value', parameters('keys')[copyIndex()].kty), createObject('value', 'EC'))]",
-          "tags": "[if(contains(parameters('keys')[copyIndex()], 'tags'), createObject('value', parameters('keys')[copyIndex()].tags), createObject('value', createObject()))]",
-          "roleAssignments": "[if(contains(parameters('keys')[copyIndex()], 'roleAssignments'), createObject('value', parameters('keys')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-          "rotationPolicy": "[if(contains(parameters('keys')[copyIndex()], 'rotationPolicy'), createObject('value', parameters('keys')[copyIndex()].rotationPolicy), createObject('value', createObject()))]"
+          "attributesEnabled": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesEnabled'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].attributesEnabled), createObject('value', true()))]",
+          "attributesExp": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesExp'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].attributesExp), createObject('value', -1))]",
+          "attributesNbf": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesNbf'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].attributesNbf), createObject('value', -1))]",
+          "curveName": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'curveName'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].curveName), createObject('value', 'P-256'))]",
+          "keyOps": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'keyOps'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].keyOps), createObject('value', createArray()))]",
+          "keySize": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'keySize'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].keySize), createObject('value', -1))]",
+          "kty": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'kty'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].kty), createObject('value', 'EC'))]",
+          "tags": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'tags'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].tags), createObject('value', createObject()))]",
+          "roleAssignments": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'roleAssignments'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].roleAssignments), createObject('value', createArray()))]",
+          "rotationPolicy": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'rotationPolicy'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].rotationPolicy), createObject('value', createObject()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1066,7 +1076,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.21.1.54444",
-              "templateHash": "6796710145791572557"
+              "templateHash": "2337714221072963213"
             },
             "name": "Key Vault Keys",
             "description": "This module deploys a Key Vault Key.",
@@ -1155,7 +1165,7 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Resource tags."
               }
@@ -1169,14 +1179,14 @@
             },
             "attributesExp": {
               "type": "int",
-              "defaultValue": -1,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible."
               }
             },
             "attributesNbf": {
               "type": "int",
-              "defaultValue": -1,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Not before date in seconds since 1970-01-01T00:00:00Z."
               }
@@ -1196,7 +1206,7 @@
             },
             "keyOps": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "allowedValues": [
                 "decrypt",
                 "encrypt",
@@ -1212,7 +1222,7 @@
             },
             "keySize": {
               "type": "int",
-              "defaultValue": -1,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The key size in bits. For example: 2048, 3072, or 4096 for RSA."
               }
@@ -1238,7 +1248,7 @@
             },
             "rotationPolicy": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Key rotation policy properties object."
               }
@@ -1277,14 +1287,14 @@
               "properties": {
                 "attributes": {
                   "enabled": "[parameters('attributesEnabled')]",
-                  "exp": "[if(not(equals(parameters('attributesExp'), -1)), parameters('attributesExp'), null())]",
-                  "nbf": "[if(not(equals(parameters('attributesNbf'), -1)), parameters('attributesNbf'), null())]"
+                  "exp": "[parameters('attributesExp')]",
+                  "nbf": "[parameters('attributesNbf')]"
                 },
                 "curveName": "[parameters('curveName')]",
                 "keyOps": "[parameters('keyOps')]",
-                "keySize": "[if(not(equals(parameters('keySize'), -1)), parameters('keySize'), null())]",
+                "keySize": "[parameters('keySize')]",
                 "kty": "[parameters('kty')]",
-                "rotationPolicy": "[if(not(empty(parameters('rotationPolicy'))), parameters('rotationPolicy'), null())]"
+                "rotationPolicy": "[parameters('rotationPolicy')]"
               },
               "dependsOn": [
                 "keyVault"

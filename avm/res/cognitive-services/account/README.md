@@ -874,14 +874,12 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 List of allowed FQDN.
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `apiProperties`
 
 The API properties for special APIs.
 - Required: No
 - Type: object
-- Default: `{object}`
 
 ### Parameter: `customerManagedKey`
 
@@ -930,7 +928,6 @@ Optional. User assigned identity to use when fetching the customer managed key. 
 Subdomain name used for token-based authentication. Required if 'networkAcls' or 'privateEndpoints' are set.
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `diagnosticSettings`
 
@@ -1140,7 +1137,6 @@ Optional. The resource ID(s) to assign to the resource. Required if a user assig
 Resource migration token.
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `name`
 
@@ -1329,8 +1325,7 @@ Optional. Tags to be applied on all resources/resource groups in this deployment
 Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set.
 - Required: No
 - Type: string
-- Default: `''`
-- Allowed: `['', Disabled, Enabled]`
+- Allowed: `[Disabled, Enabled]`
 
 ### Parameter: `restore`
 
@@ -1427,14 +1422,12 @@ SKU of the Cognitive Services resource. Use 'Get-AzCognitiveServicesAccountSku' 
 Tags of the resource.
 - Required: No
 - Type: object
-- Default: `{object}`
 
 ### Parameter: `userOwnedStorage`
 
 The storage accounts for this resource.
 - Required: No
 - Type: array
-- Default: `[]`
 
 
 ## Outputs

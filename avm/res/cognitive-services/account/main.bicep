@@ -62,14 +62,13 @@ param diagnosticSettings diagnosticSettingType
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set.')
 @allowed([
-  ''
   'Enabled'
   'Disabled'
 ])
-param publicNetworkAccess string = ''
+param publicNetworkAccess string?
 
 @description('Conditional. Subdomain name used for token-based authentication. Required if \'networkAcls\' or \'privateEndpoints\' are set.')
-param customSubDomainName string = ''
+param customSubDomainName string?
 
 @description('Optional. A collection of rules governing the accessibility from specific network locations.')
 param networkAcls object = {}
@@ -84,13 +83,13 @@ param lock lockType
 param roleAssignments roleAssignmentType
 
 @description('Optional. Tags of the resource.')
-param tags object = {}
+param tags object?
 
 @description('Optional. List of allowed FQDN.')
-param allowedFqdnList array = []
+param allowedFqdnList array?
 
 @description('Optional. The API properties for special APIs.')
-param apiProperties object = {}
+param apiProperties object?
 
 @description('Optional. Allow only Azure AD authentication. Should be enabled for security reasons.')
 param disableLocalAuth bool = true
@@ -102,7 +101,7 @@ param customerManagedKey customerManagedKeyType
 param dynamicThrottlingEnabled bool = false
 
 @description('Optional. Resource migration token.')
-param migrationToken string = ''
+param migrationToken string?
 
 @description('Optional. Restore a soft-deleted cognitive service at deployment time. Will fail if no such soft-deleted resource exists.')
 param restore bool = false
@@ -111,7 +110,7 @@ param restore bool = false
 param restrictOutboundNetworkAccess bool = true
 
 @description('Optional. The storage accounts for this resource.')
-param userOwnedStorage array = []
+param userOwnedStorage array?
 
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
@@ -202,13 +201,13 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
     name: sku
   }
   properties: {
-    customSubDomainName: !empty(customSubDomainName) ? customSubDomainName : null
+    customSubDomainName: customSubDomainName
     networkAcls: !empty(networkAcls) ? {
       defaultAction: contains(networkAcls, 'defaultAction') ? networkAcls.defaultAction : null
       virtualNetworkRules: contains(networkAcls, 'virtualNetworkRules') ? networkAcls.virtualNetworkRules : []
       ipRules: contains(networkAcls, 'ipRules') ? networkAcls.ipRules : []
     } : null
-    publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : (!empty(privateEndpoints) && empty(networkAcls) ? 'Disabled' : null)
+    publicNetworkAccess: publicNetworkAccess ?? (!empty(privateEndpoints) && empty(networkAcls) ? 'Disabled' : null)
     allowedFqdnList: allowedFqdnList
     apiProperties: apiProperties
     disableLocalAuth: disableLocalAuth
@@ -221,10 +220,10 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
         keyVersion: !empty(customerManagedKey.?keyVersion ?? '') ? customerManagedKey!.keyVersion : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
       }
     } : null
-    migrationToken: !empty(migrationToken) ? migrationToken : null
+    migrationToken: migrationToken
     restore: restore
     restrictOutboundNetworkAccess: restrictOutboundNetworkAccess
-    userOwnedStorage: !empty(userOwnedStorage) ? userOwnedStorage : null
+    userOwnedStorage: userOwnedStorage
     dynamicThrottlingEnabled: dynamicThrottlingEnabled
   }
 }

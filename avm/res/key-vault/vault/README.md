@@ -1025,7 +1025,6 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
 All access policies to create.
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `createMode`
 
@@ -1203,7 +1202,6 @@ Specifies if the vault is enabled for a template deployment.
 All keys to create.
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `location`
 
@@ -1501,7 +1499,6 @@ Required. The name of the role to assign. If it cannot be found you can specify 
 All secrets to create.
 - Required: No
 - Type: secureObject
-- Default: `{object}`
 
 ### Parameter: `sku`
 
@@ -1523,7 +1520,6 @@ softDelete data retention days. It accepts >=7 and <=90.
 Resource tags.
 - Required: No
 - Type: object
-- Default: `{object}`
 
 
 ## Outputs
