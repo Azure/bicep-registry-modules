@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "12123303560474072139"
+      "templateHash": "13060232317927260302"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service.",
@@ -816,7 +816,7 @@
             ]
           },
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pe-{0}-{1}-{2}', last(split(resourceId('Microsoft.CognitiveServices/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'vault'), copyIndex()))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pe-{0}-{1}-{2}', last(split(resourceId('Microsoft.CognitiveServices/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'account'), copyIndex()))]"
           },
           "serviceResourceId": {
             "value": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('name'))]"
