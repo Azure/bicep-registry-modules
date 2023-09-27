@@ -415,7 +415,7 @@ type privateEndpointType = {
   @description('Optional. Manual PrivateLink Service Connections.')
   manualPrivateLinkServiceConnections: array?
 
-  @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+  @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
 }[]?
 

@@ -426,10 +426,10 @@ type privateEndpointType = {
   customNetworkInterfaceName: string?
 
   @description('Optional. Specify the type of lock.')
-  lock: ('CanNotDelete' | 'ReadOnly' | '')?
+  lock: lockType?
 
   @description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleAssignments: roleAssignmentType[]?
+  roleAssignments: roleAssignmentType?
 
   @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
   tags: object?
@@ -437,7 +437,7 @@ type privateEndpointType = {
   @description('Optional. Manual PrivateLink Service Connections.')
   manualPrivateLinkServiceConnections: array?
 
-  @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+  @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
 }[]?
 
