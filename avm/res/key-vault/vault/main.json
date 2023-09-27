@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "906532672506379950"
+      "templateHash": "167861790396816165"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -206,14 +206,22 @@
           },
           "service": {
             "type": "string",
+            "nullable": true,
             "metadata": {
-              "description": "Required. The service (sub-) type to deploy the private endpoint for. For example \"vault\" or \"blob\"."
+              "description": "Optional. The service (sub-) type to deploy the private endpoint for. For example \"vault\" or \"blob\"."
             }
           },
           "subnetResourceId": {
             "type": "string",
             "metadata": {
               "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
+            }
+          },
+          "privateDnsZoneGroupName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided."
             }
           },
           "privateDnsZoneResourceIds": {
@@ -321,7 +329,7 @@
             "type": "bool",
             "nullable": true,
             "metadata": {
-              "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              "description": "Optional. Enable/Disable usage telemetry for module."
             }
           }
         }
@@ -371,21 +379,21 @@
     },
     "accessPolicies": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. All access policies to create."
       }
     },
     "secrets": {
       "type": "secureObject",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. All secrets to create."
       }
     },
     "keys": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. All keys to create."
       }
@@ -496,7 +504,7 @@
     },
     "tags": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Resource tags."
       }
@@ -519,12 +527,12 @@
     "copy": [
       {
         "name": "formattedAccessPolicies",
-        "count": "[length(parameters('accessPolicies'))]",
+        "count": "[length(coalesce(parameters('accessPolicies'), createArray()))]",
         "input": {
-          "applicationId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'applicationId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].applicationId, '')]",
-          "objectId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'objectId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].objectId, '')]",
-          "permissions": "[parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].permissions]",
-          "tenantId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'tenantId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].tenantId, tenant().tenantId)]"
+          "applicationId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'applicationId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].applicationId, '')]",
+          "objectId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'objectId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].objectId, '')]",
+          "permissions": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].permissions]",
+          "tenantId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'tenantId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].tenantId, tenant().tenantId)]"
         }
       }
     ],
@@ -544,7 +552,7 @@
       "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
-    "secretList": "[if(not(empty(parameters('secrets'))), parameters('secrets').secureList, createArray())]",
+    "secretList": "[coalesce(tryGet(parameters('secrets'), 'secureList'), createArray())]",
     "moduleVersion": "#_moduleVersion_#"
   },
   "resources": {
@@ -672,12 +680,13 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.21.1.54444",
-              "templateHash": "5988194349836968099"
+              "templateHash": "10553793947812900894"
             },
             "name": "Key Vault Access Policies",
             "description": "This module deploys a Key Vault Access Policy.",
@@ -692,7 +701,7 @@
             },
             "accessPolicies": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. An array of 0 to 16 identities that have access to the key vault. All identities in the array must use the same tenant ID as the key vault's tenant ID."
               }
@@ -702,26 +711,35 @@
             "copy": [
               {
                 "name": "formattedAccessPolicies",
-                "count": "[length(parameters('accessPolicies'))]",
+                "count": "[length(coalesce(parameters('accessPolicies'), createArray()))]",
                 "input": {
-                  "applicationId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'applicationId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].applicationId, '')]",
-                  "objectId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'objectId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].objectId, '')]",
-                  "permissions": "[parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].permissions]",
-                  "tenantId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'tenantId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].tenantId, tenant().tenantId)]"
+                  "applicationId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'applicationId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].applicationId, '')]",
+                  "objectId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'objectId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].objectId, '')]",
+                  "permissions": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].permissions]",
+                  "tenantId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'tenantId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].tenantId, tenant().tenantId)]"
                 }
               }
             ]
           },
-          "resources": [
-            {
+          "resources": {
+            "keyVault": {
+              "existing": true,
+              "type": "Microsoft.KeyVault/vaults",
+              "apiVersion": "2022-07-01",
+              "name": "[parameters('keyVaultName')]"
+            },
+            "policies": {
               "type": "Microsoft.KeyVault/vaults/accessPolicies",
               "apiVersion": "2022-07-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), 'add')]",
               "properties": {
                 "accessPolicies": "[variables('formattedAccessPolicies')]"
-              }
+              },
+              "dependsOn": [
+                "keyVault"
+              ]
             }
-          ],
+          },
           "outputs": {
             "resourceGroupName": {
               "type": "string",
@@ -789,7 +807,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.21.1.54444",
-              "templateHash": "11436599112934051193"
+              "templateHash": "11602873550277002353"
             },
             "name": "Key Vault Secrets",
             "description": "This module deploys a Key Vault Secret.",
@@ -878,7 +896,7 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Resource tags."
               }
@@ -1022,7 +1040,7 @@
     "keyVault_keys": {
       "copy": {
         "name": "keyVault_keys",
-        "count": "[length(parameters('keys'))]"
+        "count": "[length(coalesce(parameters('keys'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1034,21 +1052,21 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('keys')[copyIndex()].name]"
+            "value": "[coalesce(parameters('keys'), createArray())[copyIndex()].name]"
           },
           "keyVaultName": {
             "value": "[parameters('name')]"
           },
-          "attributesEnabled": "[if(contains(parameters('keys')[copyIndex()], 'attributesEnabled'), createObject('value', parameters('keys')[copyIndex()].attributesEnabled), createObject('value', true()))]",
-          "attributesExp": "[if(contains(parameters('keys')[copyIndex()], 'attributesExp'), createObject('value', parameters('keys')[copyIndex()].attributesExp), createObject('value', -1))]",
-          "attributesNbf": "[if(contains(parameters('keys')[copyIndex()], 'attributesNbf'), createObject('value', parameters('keys')[copyIndex()].attributesNbf), createObject('value', -1))]",
-          "curveName": "[if(contains(parameters('keys')[copyIndex()], 'curveName'), createObject('value', parameters('keys')[copyIndex()].curveName), createObject('value', 'P-256'))]",
-          "keyOps": "[if(contains(parameters('keys')[copyIndex()], 'keyOps'), createObject('value', parameters('keys')[copyIndex()].keyOps), createObject('value', createArray()))]",
-          "keySize": "[if(contains(parameters('keys')[copyIndex()], 'keySize'), createObject('value', parameters('keys')[copyIndex()].keySize), createObject('value', -1))]",
-          "kty": "[if(contains(parameters('keys')[copyIndex()], 'kty'), createObject('value', parameters('keys')[copyIndex()].kty), createObject('value', 'EC'))]",
-          "tags": "[if(contains(parameters('keys')[copyIndex()], 'tags'), createObject('value', parameters('keys')[copyIndex()].tags), createObject('value', createObject()))]",
-          "roleAssignments": "[if(contains(parameters('keys')[copyIndex()], 'roleAssignments'), createObject('value', parameters('keys')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-          "rotationPolicy": "[if(contains(parameters('keys')[copyIndex()], 'rotationPolicy'), createObject('value', parameters('keys')[copyIndex()].rotationPolicy), createObject('value', createObject()))]"
+          "attributesEnabled": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesEnabled'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].attributesEnabled), createObject('value', true()))]",
+          "attributesExp": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesExp'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].attributesExp), createObject('value', -1))]",
+          "attributesNbf": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesNbf'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].attributesNbf), createObject('value', -1))]",
+          "curveName": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'curveName'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].curveName), createObject('value', 'P-256'))]",
+          "keyOps": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'keyOps'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].keyOps), createObject('value', createArray()))]",
+          "keySize": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'keySize'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].keySize), createObject('value', -1))]",
+          "kty": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'kty'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].kty), createObject('value', 'EC'))]",
+          "tags": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'tags'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].tags), createObject('value', createObject()))]",
+          "roleAssignments": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'roleAssignments'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].roleAssignments), createObject('value', createArray()))]",
+          "rotationPolicy": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'rotationPolicy'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].rotationPolicy), createObject('value', createObject()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1058,7 +1076,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.21.1.54444",
-              "templateHash": "6796710145791572557"
+              "templateHash": "2337714221072963213"
             },
             "name": "Key Vault Keys",
             "description": "This module deploys a Key Vault Key.",
@@ -1147,7 +1165,7 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Resource tags."
               }
@@ -1161,14 +1179,14 @@
             },
             "attributesExp": {
               "type": "int",
-              "defaultValue": -1,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible."
               }
             },
             "attributesNbf": {
               "type": "int",
-              "defaultValue": -1,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Not before date in seconds since 1970-01-01T00:00:00Z."
               }
@@ -1188,7 +1206,7 @@
             },
             "keyOps": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "allowedValues": [
                 "decrypt",
                 "encrypt",
@@ -1204,7 +1222,7 @@
             },
             "keySize": {
               "type": "int",
-              "defaultValue": -1,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The key size in bits. For example: 2048, 3072, or 4096 for RSA."
               }
@@ -1230,7 +1248,7 @@
             },
             "rotationPolicy": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Key rotation policy properties object."
               }
@@ -1269,14 +1287,14 @@
               "properties": {
                 "attributes": {
                   "enabled": "[parameters('attributesEnabled')]",
-                  "exp": "[if(not(equals(parameters('attributesExp'), -1)), parameters('attributesExp'), null())]",
-                  "nbf": "[if(not(equals(parameters('attributesNbf'), -1)), parameters('attributesNbf'), null())]"
+                  "exp": "[parameters('attributesExp')]",
+                  "nbf": "[parameters('attributesNbf')]"
                 },
                 "curveName": "[parameters('curveName')]",
                 "keyOps": "[parameters('keyOps')]",
-                "keySize": "[if(not(equals(parameters('keySize'), -1)), parameters('keySize'), null())]",
+                "keySize": "[parameters('keySize')]",
                 "kty": "[parameters('kty')]",
-                "rotationPolicy": "[if(not(empty(parameters('rotationPolicy'))), parameters('rotationPolicy'), null())]"
+                "rotationPolicy": "[parameters('rotationPolicy')]"
               },
               "dependsOn": [
                 "keyVault"
@@ -1350,11 +1368,11 @@
         "parameters": {
           "groupIds": {
             "value": [
-              "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service]"
+              "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'vault')]"
             ]
           },
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pe-{0}-{1}-{2}', last(split(resourceId('Microsoft.KeyVault/vaults', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex()))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pe-{0}-{1}-{2}', last(split(resourceId('Microsoft.KeyVault/vaults', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'vault'), copyIndex()))]"
           },
           "serviceResourceId": {
             "value": "[resourceId('Microsoft.KeyVault/vaults', parameters('name'))]"
@@ -1370,6 +1388,9 @@
           },
           "lock": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
+          },
+          "privateDnsZoneGroupName": {
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroupName'), 'default')]"
           },
           "privateDnsZoneResourceIds": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneResourceIds'), createArray())]"
@@ -1404,7 +1425,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.21.1.54444",
-              "templateHash": "18008341392159466529"
+              "templateHash": "10397201760229716051"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -1524,21 +1545,21 @@
             },
             "applicationSecurityGroupResourceIds": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
               }
             },
             "customNetworkInterfaceName": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The custom name of the network interface attached to the private endpoint."
               }
             },
             "ipConfigurations": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
               }
@@ -1549,9 +1570,16 @@
                 "description": "Required. Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to."
               }
             },
+            "privateDnsZoneGroupName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided."
+              }
+            },
             "privateDnsZoneResourceIds": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones."
               }
@@ -1577,21 +1605,21 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
               }
             },
             "customDnsConfigs": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Custom DNS configurations."
               }
             },
             "manualPrivateLinkServiceConnections": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Manual PrivateLink Service Connections."
               }
@@ -1650,16 +1678,16 @@
                 "copy": [
                   {
                     "name": "applicationSecurityGroups",
-                    "count": "[length(parameters('applicationSecurityGroupResourceIds'))]",
+                    "count": "[length(coalesce(parameters('applicationSecurityGroupResourceIds'), createArray()))]",
                     "input": {
-                      "id": "[parameters('applicationSecurityGroupResourceIds')[copyIndex('applicationSecurityGroups')]]"
+                      "id": "[coalesce(parameters('applicationSecurityGroupResourceIds'), createArray())[copyIndex('applicationSecurityGroups')]]"
                     }
                   }
                 ],
-                "customDnsConfigs": "[parameters('customDnsConfigs')]",
-                "customNetworkInterfaceName": "[parameters('customNetworkInterfaceName')]",
-                "ipConfigurations": "[parameters('ipConfigurations')]",
-                "manualPrivateLinkServiceConnections": "[parameters('manualPrivateLinkServiceConnections')]",
+                "customDnsConfigs": "[coalesce(parameters('customDnsConfigs'), createArray())]",
+                "customNetworkInterfaceName": "[coalesce(parameters('customNetworkInterfaceName'), '')]",
+                "ipConfigurations": "[coalesce(parameters('ipConfigurations'), createArray())]",
+                "manualPrivateLinkServiceConnections": "[coalesce(parameters('manualPrivateLinkServiceConnections'), createArray())]",
                 "privateLinkServiceConnections": [
                   {
                     "name": "[parameters('name')]",
@@ -1721,8 +1749,11 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "name": {
+                    "value": "[coalesce(parameters('privateDnsZoneGroupName'), 'default')]"
+                  },
                   "privateDNSResourceIds": {
-                    "value": "[parameters('privateDnsZoneResourceIds')]"
+                    "value": "[coalesce(parameters('privateDnsZoneResourceIds'), createArray())]"
                   },
                   "privateEndpointName": {
                     "value": "[parameters('name')]"

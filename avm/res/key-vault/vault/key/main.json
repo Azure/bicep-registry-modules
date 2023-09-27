@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "6796710145791572557"
+      "templateHash": "2337714221072963213"
     },
     "name": "Key Vault Keys",
     "description": "This module deploys a Key Vault Key.",
@@ -95,7 +95,7 @@
     },
     "tags": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Resource tags."
       }
@@ -109,14 +109,14 @@
     },
     "attributesExp": {
       "type": "int",
-      "defaultValue": -1,
+      "nullable": true,
       "metadata": {
         "description": "Optional. Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible."
       }
     },
     "attributesNbf": {
       "type": "int",
-      "defaultValue": -1,
+      "nullable": true,
       "metadata": {
         "description": "Optional. Not before date in seconds since 1970-01-01T00:00:00Z."
       }
@@ -136,7 +136,7 @@
     },
     "keyOps": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "allowedValues": [
         "decrypt",
         "encrypt",
@@ -152,7 +152,7 @@
     },
     "keySize": {
       "type": "int",
-      "defaultValue": -1,
+      "nullable": true,
       "metadata": {
         "description": "Optional. The key size in bits. For example: 2048, 3072, or 4096 for RSA."
       }
@@ -178,7 +178,7 @@
     },
     "rotationPolicy": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Key rotation policy properties object."
       }
@@ -217,14 +217,14 @@
       "properties": {
         "attributes": {
           "enabled": "[parameters('attributesEnabled')]",
-          "exp": "[if(not(equals(parameters('attributesExp'), -1)), parameters('attributesExp'), null())]",
-          "nbf": "[if(not(equals(parameters('attributesNbf'), -1)), parameters('attributesNbf'), null())]"
+          "exp": "[parameters('attributesExp')]",
+          "nbf": "[parameters('attributesNbf')]"
         },
         "curveName": "[parameters('curveName')]",
         "keyOps": "[parameters('keyOps')]",
-        "keySize": "[if(not(equals(parameters('keySize'), -1)), parameters('keySize'), null())]",
+        "keySize": "[parameters('keySize')]",
         "kty": "[parameters('kty')]",
-        "rotationPolicy": "[if(not(empty(parameters('rotationPolicy'))), parameters('rotationPolicy'), null())]"
+        "rotationPolicy": "[parameters('rotationPolicy')]"
       },
       "dependsOn": [
         "keyVault"

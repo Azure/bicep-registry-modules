@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "10343365646392943955"
+      "templateHash": "12123303560474072139"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service.",
@@ -206,14 +206,22 @@
           },
           "service": {
             "type": "string",
+            "nullable": true,
             "metadata": {
-              "description": "Required. The service (sub-) type to deploy the private endpoint for. For example \"vault\" or \"blob\"."
+              "description": "Optional. The service (sub-) type to deploy the private endpoint for. For example \"vault\" or \"blob\"."
             }
           },
           "subnetResourceId": {
             "type": "string",
             "metadata": {
               "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
+            }
+          },
+          "privateDnsZoneGroupName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided."
             }
           },
           "privateDnsZoneResourceIds": {
@@ -290,22 +298,14 @@
             }
           },
           "lock": {
-            "type": "string",
-            "allowedValues": [
-              "",
-              "CanNotDelete",
-              "ReadOnly"
-            ],
+            "$ref": "#/definitions/lockType",
             "nullable": true,
             "metadata": {
               "description": "Optional. Specify the type of lock."
             }
           },
           "roleAssignments": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/roleAssignmentType"
-            },
+            "$ref": "#/definitions/roleAssignmentType",
             "nullable": true,
             "metadata": {
               "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
@@ -329,7 +329,7 @@
             "type": "bool",
             "nullable": true,
             "metadata": {
-              "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              "description": "Optional. Enable/Disable usage telemetry for module."
             }
           }
         }
@@ -507,7 +507,7 @@
     },
     "customSubDomainName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. Subdomain name used for token-based authentication. Required if 'networkAcls' or 'privateEndpoints' are set."
       }
@@ -539,21 +539,21 @@
     },
     "tags": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Tags of the resource."
       }
     },
     "allowedFqdnList": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. List of allowed FQDN."
       }
     },
     "apiProperties": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. The API properties for special APIs."
       }
@@ -580,7 +580,7 @@
     },
     "migrationToken": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Resource migration token."
       }
@@ -601,7 +601,7 @@
     },
     "userOwnedStorage": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The storage accounts for this resource."
       }
@@ -719,17 +719,17 @@
         "name": "[parameters('sku')]"
       },
       "properties": {
-        "customSubDomainName": "[if(not(empty(parameters('customSubDomainName'))), parameters('customSubDomainName'), null())]",
+        "customSubDomainName": "[parameters('customSubDomainName')]",
         "networkAcls": "[if(not(empty(parameters('networkAcls'))), createObject('defaultAction', if(contains(parameters('networkAcls'), 'defaultAction'), parameters('networkAcls').defaultAction, null()), 'virtualNetworkRules', if(contains(parameters('networkAcls'), 'virtualNetworkRules'), parameters('networkAcls').virtualNetworkRules, createArray()), 'ipRules', if(contains(parameters('networkAcls'), 'ipRules'), parameters('networkAcls').ipRules, createArray())), null())]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkAcls'))), 'Disabled', null()))]",
         "allowedFqdnList": "[parameters('allowedFqdnList')]",
         "apiProperties": "[parameters('apiProperties')]",
         "disableLocalAuth": "[parameters('disableLocalAuth')]",
         "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.KeyVault', 'keyVaultProperties', createObject('identityClientId', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), ''))), reference('cMKUserAssignedIdentity').clientId, null()), 'keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null())]",
-        "migrationToken": "[if(not(empty(parameters('migrationToken'))), parameters('migrationToken'), null())]",
+        "migrationToken": "[parameters('migrationToken')]",
         "restore": "[parameters('restore')]",
         "restrictOutboundNetworkAccess": "[parameters('restrictOutboundNetworkAccess')]",
-        "userOwnedStorage": "[if(not(empty(parameters('userOwnedStorage'))), parameters('userOwnedStorage'), null())]",
+        "userOwnedStorage": "[parameters('userOwnedStorage')]",
         "dynamicThrottlingEnabled": "[parameters('dynamicThrottlingEnabled')]"
       },
       "dependsOn": [
@@ -812,11 +812,11 @@
         "parameters": {
           "groupIds": {
             "value": [
-              "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service]"
+              "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'account')]"
             ]
           },
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pe-{0}-{1}-{2}', last(split(resourceId('Microsoft.CognitiveServices/accounts', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex()))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pe-{0}-{1}-{2}', last(split(resourceId('Microsoft.CognitiveServices/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'vault'), copyIndex()))]"
           },
           "serviceResourceId": {
             "value": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('name'))]"
@@ -832,6 +832,9 @@
           },
           "lock": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
+          },
+          "privateDnsZoneGroupName": {
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroupName'), 'default')]"
           },
           "privateDnsZoneResourceIds": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneResourceIds'), createArray())]"
@@ -866,7 +869,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.21.1.54444",
-              "templateHash": "18008341392159466529"
+              "templateHash": "10397201760229716051"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -986,21 +989,21 @@
             },
             "applicationSecurityGroupResourceIds": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
               }
             },
             "customNetworkInterfaceName": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The custom name of the network interface attached to the private endpoint."
               }
             },
             "ipConfigurations": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
               }
@@ -1011,9 +1014,16 @@
                 "description": "Required. Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to."
               }
             },
+            "privateDnsZoneGroupName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided."
+              }
+            },
             "privateDnsZoneResourceIds": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones."
               }
@@ -1039,21 +1049,21 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
               }
             },
             "customDnsConfigs": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Custom DNS configurations."
               }
             },
             "manualPrivateLinkServiceConnections": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Manual PrivateLink Service Connections."
               }
@@ -1112,16 +1122,16 @@
                 "copy": [
                   {
                     "name": "applicationSecurityGroups",
-                    "count": "[length(parameters('applicationSecurityGroupResourceIds'))]",
+                    "count": "[length(coalesce(parameters('applicationSecurityGroupResourceIds'), createArray()))]",
                     "input": {
-                      "id": "[parameters('applicationSecurityGroupResourceIds')[copyIndex('applicationSecurityGroups')]]"
+                      "id": "[coalesce(parameters('applicationSecurityGroupResourceIds'), createArray())[copyIndex('applicationSecurityGroups')]]"
                     }
                   }
                 ],
-                "customDnsConfigs": "[parameters('customDnsConfigs')]",
-                "customNetworkInterfaceName": "[parameters('customNetworkInterfaceName')]",
-                "ipConfigurations": "[parameters('ipConfigurations')]",
-                "manualPrivateLinkServiceConnections": "[parameters('manualPrivateLinkServiceConnections')]",
+                "customDnsConfigs": "[coalesce(parameters('customDnsConfigs'), createArray())]",
+                "customNetworkInterfaceName": "[coalesce(parameters('customNetworkInterfaceName'), '')]",
+                "ipConfigurations": "[coalesce(parameters('ipConfigurations'), createArray())]",
+                "manualPrivateLinkServiceConnections": "[coalesce(parameters('manualPrivateLinkServiceConnections'), createArray())]",
                 "privateLinkServiceConnections": [
                   {
                     "name": "[parameters('name')]",
@@ -1183,8 +1193,11 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "name": {
+                    "value": "[coalesce(parameters('privateDnsZoneGroupName'), 'default')]"
+                  },
                   "privateDNSResourceIds": {
-                    "value": "[parameters('privateDnsZoneResourceIds')]"
+                    "value": "[coalesce(parameters('privateDnsZoneResourceIds'), createArray())]"
                   },
                   "privateEndpointName": {
                     "value": "[parameters('name')]"

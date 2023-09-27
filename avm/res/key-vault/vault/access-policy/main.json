@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "5988194349836968099"
+      "templateHash": "10553793947812900894"
     },
     "name": "Key Vault Access Policies",
     "description": "This module deploys a Key Vault Access Policy.",
@@ -20,7 +21,7 @@
     },
     "accessPolicies": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. An array of 0 to 16 identities that have access to the key vault. All identities in the array must use the same tenant ID as the key vault's tenant ID."
       }
@@ -30,26 +31,35 @@
     "copy": [
       {
         "name": "formattedAccessPolicies",
-        "count": "[length(parameters('accessPolicies'))]",
+        "count": "[length(coalesce(parameters('accessPolicies'), createArray()))]",
         "input": {
-          "applicationId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'applicationId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].applicationId, '')]",
-          "objectId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'objectId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].objectId, '')]",
-          "permissions": "[parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].permissions]",
-          "tenantId": "[if(contains(parameters('accessPolicies')[copyIndex('formattedAccessPolicies')], 'tenantId'), parameters('accessPolicies')[copyIndex('formattedAccessPolicies')].tenantId, tenant().tenantId)]"
+          "applicationId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'applicationId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].applicationId, '')]",
+          "objectId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'objectId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].objectId, '')]",
+          "permissions": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].permissions]",
+          "tenantId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'tenantId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].tenantId, tenant().tenantId)]"
         }
       }
     ]
   },
-  "resources": [
-    {
+  "resources": {
+    "keyVault": {
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2022-07-01",
+      "name": "[parameters('keyVaultName')]"
+    },
+    "policies": {
       "type": "Microsoft.KeyVault/vaults/accessPolicies",
       "apiVersion": "2022-07-01",
       "name": "[format('{0}/{1}', parameters('keyVaultName'), 'add')]",
       "properties": {
         "accessPolicies": "[variables('formattedAccessPolicies')]"
-      }
+      },
+      "dependsOn": [
+        "keyVault"
+      ]
     }
-  ],
+  },
   "outputs": {
     "resourceGroupName": {
       "type": "string",

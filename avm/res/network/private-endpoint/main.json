@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "18008341392159466529"
+      "templateHash": "10397201760229716051"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint.",
@@ -126,21 +126,21 @@
     },
     "applicationSecurityGroupResourceIds": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
       }
     },
     "customNetworkInterfaceName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The custom name of the network interface attached to the private endpoint."
       }
     },
     "ipConfigurations": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
       }
@@ -151,9 +151,16 @@
         "description": "Required. Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to."
       }
     },
+    "privateDnsZoneGroupName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided."
+      }
+    },
     "privateDnsZoneResourceIds": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones."
       }
@@ -179,21 +186,21 @@
     },
     "tags": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
       }
     },
     "customDnsConfigs": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Custom DNS configurations."
       }
     },
     "manualPrivateLinkServiceConnections": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Manual PrivateLink Service Connections."
       }
@@ -252,16 +259,16 @@
         "copy": [
           {
             "name": "applicationSecurityGroups",
-            "count": "[length(parameters('applicationSecurityGroupResourceIds'))]",
+            "count": "[length(coalesce(parameters('applicationSecurityGroupResourceIds'), createArray()))]",
             "input": {
-              "id": "[parameters('applicationSecurityGroupResourceIds')[copyIndex('applicationSecurityGroups')]]"
+              "id": "[coalesce(parameters('applicationSecurityGroupResourceIds'), createArray())[copyIndex('applicationSecurityGroups')]]"
             }
           }
         ],
-        "customDnsConfigs": "[parameters('customDnsConfigs')]",
-        "customNetworkInterfaceName": "[parameters('customNetworkInterfaceName')]",
-        "ipConfigurations": "[parameters('ipConfigurations')]",
-        "manualPrivateLinkServiceConnections": "[parameters('manualPrivateLinkServiceConnections')]",
+        "customDnsConfigs": "[coalesce(parameters('customDnsConfigs'), createArray())]",
+        "customNetworkInterfaceName": "[coalesce(parameters('customNetworkInterfaceName'), '')]",
+        "ipConfigurations": "[coalesce(parameters('ipConfigurations'), createArray())]",
+        "manualPrivateLinkServiceConnections": "[coalesce(parameters('manualPrivateLinkServiceConnections'), createArray())]",
         "privateLinkServiceConnections": [
           {
             "name": "[parameters('name')]",
@@ -323,8 +330,11 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('privateDnsZoneGroupName'), 'default')]"
+          },
           "privateDNSResourceIds": {
-            "value": "[parameters('privateDnsZoneResourceIds')]"
+            "value": "[coalesce(parameters('privateDnsZoneResourceIds'), createArray())]"
           },
           "privateEndpointName": {
             "value": "[parameters('name')]"

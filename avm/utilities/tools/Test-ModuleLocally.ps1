@@ -27,6 +27,9 @@ Optional. A switch parameter that triggers the validation of the module only wit
 .PARAMETER SkipParameterFileTokens
 Optional. A switch parameter that enables you to skip the search for local custom parameter file tokens.
 
+.PARAMETER AdditionalParameters
+Optional. Additional parameters you can provide with the deployment. E.g. @{ resourceGroupName = 'myResourceGroup' }
+
 .PARAMETER AdditionalTokens
 Optional. A hashtable parameter that contains custom tokens to be replaced in the paramter files for deployment
 
@@ -154,6 +157,9 @@ function Test-ModuleLocally {
         [Psobject] $ValidateOrDeployParameters = @{},
 
         [Parameter(Mandatory = $false)]
+        [hashtable] $AdditionalParameters = @{},
+
+        [Parameter(Mandatory = $false)]
         [hashtable] $AdditionalTokens = @{},
 
         [Parameter(Mandatory = $false)]
@@ -173,6 +179,7 @@ function Test-ModuleLocally {
         Write-Verbose "Running local tests for [$ModuleName]"
         # Load Tokens Converter Scripts
         . (Join-Path $utilitiesFolderPath 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
+        . (Join-Path $utilitiesFolderPath 'pipelines' 'sharedScripts' 'Get-LocallyReferencedFileList.ps1')
         # Load Modules Validation / Deployment Scripts
         . (Join-Path $utilitiesFolderPath 'pipelines' 'e2eValidation' 'resourceDeployment' 'New-TemplateDeployment.ps1')
         . (Join-Path $utilitiesFolderPath 'pipelines' 'e2eValidation' 'resourceDeployment' 'Test-TemplateDeployment.ps1')
@@ -193,6 +200,12 @@ function Test-ModuleLocally {
             FilePathList = @($moduleTestFiles)
             Tokens       = @{}
         }
+
+        # Add any additional file that may contain tokens
+        foreach ($testFilePath in $moduleTestFiles) {
+            $tokenConfiguration.FilePathList += (Get-LocallyReferencedFileList -FilePath $testFilePath)
+        }
+        $tokenConfiguration.FilePathList = $tokenConfiguration.FilePathList | Sort-Object -Unique
 
         # Add other template files as they may contain the 'moduleVersion'
         $moduleRoot = Split-Path $TemplateFilePath
@@ -253,12 +266,13 @@ function Test-ModuleLocally {
             # Deployment & Validation Testing
             # -------------------------------
             $functionInput = @{
-                TemplateFilePath  = $TemplateFilePath
-                location          = $ValidateOrDeployParameters.Location
-                resourceGroupName = $ValidateOrDeployParameters.ResourceGroupName
-                subscriptionId    = $ValidateOrDeployParameters.SubscriptionId
-                managementGroupId = $ValidateOrDeployParameters.ManagementGroupId
-                Verbose           = $true
+                TemplateFilePath     = $TemplateFilePath
+                location             = $ValidateOrDeployParameters.Location
+                resourceGroupName    = $ValidateOrDeployParameters.ResourceGroupName
+                subscriptionId       = $ValidateOrDeployParameters.SubscriptionId
+                managementGroupId    = $ValidateOrDeployParameters.ManagementGroupId
+                additionalParameters = $additionalParameters
+                Verbose              = $true
             }
 
             try {

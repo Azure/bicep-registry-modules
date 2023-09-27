@@ -13,14 +13,14 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. All access policies to create.')
-param accessPolicies array = []
+param accessPolicies array?
 
 @description('Optional. All secrets to create.')
 @secure()
-param secrets object = {}
+param secrets object?
 
 @description('Optional. All keys to create.')
-param keys array = []
+param keys array?
 
 @description('Optional. Specifies if the vault is enabled for deployment by script or compute.')
 param enableVaultForDeployment bool = true
@@ -74,7 +74,7 @@ param roleAssignments roleAssignmentType
 param privateEndpoints privateEndpointType
 
 @description('Optional. Resource tags.')
-param tags object = {}
+param tags object?
 
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
@@ -103,14 +103,14 @@ var builtInRoleNames = {
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
-var formattedAccessPolicies = [for accessPolicy in accessPolicies: {
+var formattedAccessPolicies = [for accessPolicy in (accessPolicies ?? []): {
   applicationId: contains(accessPolicy, 'applicationId') ? accessPolicy.applicationId : ''
   objectId: contains(accessPolicy, 'objectId') ? accessPolicy.objectId : ''
   permissions: accessPolicy.permissions
   tenantId: contains(accessPolicy, 'tenantId') ? accessPolicy.tenantId : tenant().tenantId
 }]
 
-var secretList = !empty(secrets) ? secrets.secureList : []
+var secretList = secrets.?secureList ?? []
 
 // ============ //
 // Dependencies //
@@ -224,7 +224,7 @@ module keyVault_secrets 'secret/main.bicep' = [for (secret, index) in secretList
   }
 }]
 
-module keyVault_keys 'key/main.bicep' = [for (key, index) in keys: {
+module keyVault_keys 'key/main.bicep' = [for (key, index) in (keys ?? []): {
   name: '${uniqueString(deployment().name, location)}-KeyVault-Key-${index}'
   params: {
     name: key.name
@@ -246,14 +246,15 @@ module keyVault_privateEndpoints '../../network/private-endpoint/main.bicep' = [
   name: '${uniqueString(deployment().name, location)}-KeyVault-PrivateEndpoint-${index}'
   params: {
     groupIds: [
-      privateEndpoint.service
+      privateEndpoint.?service ?? 'vault'
     ]
-    name: privateEndpoint.?name ?? 'pe-${last(split(keyVault.id, '/'))}-${privateEndpoint.service}-${index}'
+    name: privateEndpoint.?name ?? 'pe-${last(split(keyVault.id, '/'))}-${privateEndpoint.?service ?? 'vault'}-${index}'
     serviceResourceId: keyVault.id
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
+    privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName ?? 'default'
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds ?? []
     roleAssignments: privateEndpoint.?roleAssignments ?? []
     tags: privateEndpoint.?tags ?? {}
@@ -370,11 +371,14 @@ type privateEndpointType = {
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
-  @description('Required. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".')
-  service: string
+  @description('Optional. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".')
+  service: string?
 
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
+
+  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
+  privateDnsZoneGroupName: string?
 
   @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
   privateDnsZoneResourceIds: string[]?
@@ -411,7 +415,7 @@ type privateEndpointType = {
   @description('Optional. Manual PrivateLink Service Connections.')
   manualPrivateLinkServiceConnections: array?
 
-  @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+  @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
 }[]?
 

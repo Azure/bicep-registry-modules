@@ -93,7 +93,6 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 Resource tags.
 - Required: No
 - Type: object
-- Default: `{object}`
 
 ### Parameter: `value`
 

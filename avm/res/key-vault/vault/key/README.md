@@ -57,14 +57,12 @@ Determines whether the object is enabled.
 Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible.
 - Required: No
 - Type: int
-- Default: `-1`
 
 ### Parameter: `attributesNbf`
 
 Not before date in seconds since 1970-01-01T00:00:00Z.
 - Required: No
 - Type: int
-- Default: `-1`
 
 ### Parameter: `curveName`
 
@@ -79,7 +77,6 @@ The elliptic curve name.
 Array of JsonWebKeyOperation.
 - Required: No
 - Type: array
-- Default: `[]`
 - Allowed: `[decrypt, encrypt, import, sign, unwrapKey, verify, wrapKey]`
 
 ### Parameter: `keySize`
@@ -87,7 +84,6 @@ Array of JsonWebKeyOperation.
 The key size in bits. For example: 2048, 3072, or 4096 for RSA.
 - Required: No
 - Type: int
-- Default: `-1`
 
 ### Parameter: `keyVaultName`
 
@@ -182,14 +178,12 @@ Required. The name of the role to assign. If it cannot be found you can specify 
 Key rotation policy properties object.
 - Required: No
 - Type: object
-- Default: `{object}`
 
 ### Parameter: `tags`
 
 Resource tags.
 - Required: No
 - Type: object
-- Default: `{object}`
 
 
 ## Outputs
