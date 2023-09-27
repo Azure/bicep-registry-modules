@@ -12,19 +12,22 @@ param subnetResourceId string
 param serviceResourceId string
 
 @description('Optional. Application security groups in which the private endpoint IP configuration is included.')
-param applicationSecurityGroupResourceIds array = []
+param applicationSecurityGroupResourceIds array?
 
 @description('Optional. The custom name of the network interface attached to the private endpoint.')
-param customNetworkInterfaceName string = ''
+param customNetworkInterfaceName string?
 
 @description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
-param ipConfigurations array = []
+param ipConfigurations array?
 
 @description('Required. Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to.')
 param groupIds array
 
+@description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
+param privateDnsZoneGroupName string?
+
 @description('Optional. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
-param privateDnsZoneResourceIds array = []
+param privateDnsZoneResourceIds array?
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
@@ -36,13 +39,13 @@ param lock lockType
 param roleAssignments roleAssignmentType
 
 @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
-param tags object = {}
+param tags object?
 
 @description('Optional. Custom DNS configurations.')
-param customDnsConfigs array = []
+param customDnsConfigs array?
 
 @description('Optional. Manual PrivateLink Service Connections.')
-param manualPrivateLinkServiceConnections array = []
+param manualPrivateLinkServiceConnections array?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -86,13 +89,13 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-04-01' = {
   location: location
   tags: tags
   properties: {
-    applicationSecurityGroups: [for applicationSecurityGroupResourceId in applicationSecurityGroupResourceIds: {
+    applicationSecurityGroups: [for applicationSecurityGroupResourceId in (applicationSecurityGroupResourceIds ?? []): {
       id: applicationSecurityGroupResourceId
     }]
-    customDnsConfigs: customDnsConfigs
-    customNetworkInterfaceName: customNetworkInterfaceName
-    ipConfigurations: ipConfigurations
-    manualPrivateLinkServiceConnections: manualPrivateLinkServiceConnections
+    customDnsConfigs: customDnsConfigs ?? []
+    customNetworkInterfaceName: customNetworkInterfaceName ?? ''
+    ipConfigurations: ipConfigurations ?? []
+    manualPrivateLinkServiceConnections: manualPrivateLinkServiceConnections ?? []
     privateLinkServiceConnections: [
       {
         name: name
@@ -112,7 +115,8 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-04-01' = {
 module privateEndpoint_privateDnsZoneGroup 'private-dns-zone-group/main.bicep' = if (!empty(privateDnsZoneResourceIds)) {
   name: '${uniqueString(deployment().name)}-PrivateEndpoint-PrivateDnsZoneGroup'
   params: {
-    privateDNSResourceIds: privateDnsZoneResourceIds
+    name: privateDnsZoneGroupName ?? 'default'
+    privateDNSResourceIds: privateDnsZoneResourceIds ?? []
     privateEndpointName: privateEndpoint.name
   }
 }

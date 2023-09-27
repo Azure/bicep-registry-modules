@@ -17,7 +17,7 @@ Optional. The uri of the Bicep Registry Repository file tree.
 .EXAMPLE
 Get-ModuleReadmeLink -ModuleRelativeFolderPath 'avm\res\network\private-endpoint' -TagName 'avm/res/network/private-endpoint/1.0.0'
 
-Returns 'https://github.com/Azure/bicep-registry-modules/tree/avm/res/network/private-endpoint/1.0.0/avm/res/network/private-endpoint.README.md'
+Returns 'https://github.com/Azure/bicep-registry-modules/tree/avm/res/network/private-endpoint/1.0.0/avm/res/network/private-endpoint/README.md'
 #>
 function Get-ModuleReadmeLink {
 
@@ -34,6 +34,5 @@ function Get-ModuleReadmeLink {
   )
 
   $ModuleRelativeFolderPath = ("avm/{0}" -f ($ModuleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]) -replace '\\', '/'
-  return (('{0}/{1}/{2}.README.md' -f $RegistryBaseUri, $TagName, $ModuleRelativeFolderPath) -replace '\\', '/')
+  return (('{0}/{1}/{2}/README.md' -f $RegistryBaseUri, $TagName, $ModuleRelativeFolderPath) -replace '\\', '/')
 }
-

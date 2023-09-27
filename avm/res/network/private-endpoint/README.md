@@ -28,7 +28,14 @@ The following module usage examples are retrieved from the content of the files 
 
    >**Note**: To reference the module, please use the following syntax `br/public:avm-res-network-privateendpoint:1.0.0`.
 
-<h3>Example 1: Defaults</h3>
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
+
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -97,7 +104,10 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 2: Max</h3>
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -238,7 +248,10 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 3: Waf-Aligned</h3>
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-pratices of the Well-Architectured-Framework.
+
 
 <details>
 
@@ -403,6 +416,7 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`manualPrivateLinkServiceConnections`](#parameter-manualprivatelinkserviceconnections) | array | Manual PrivateLink Service Connections. |
+| [`privateDnsZoneGroupName`](#parameter-privatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 | [`tags`](#parameter-tags) | object | Tags to be applied on all resources/resource groups in this deployment. |
@@ -412,21 +426,18 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
 Application security groups in which the private endpoint IP configuration is included.
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `customDnsConfigs`
 
 Custom DNS configurations.
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `customNetworkInterfaceName`
 
 The custom name of the network interface attached to the private endpoint.
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `enableTelemetry`
 
@@ -446,7 +457,6 @@ Subtype(s) of the connection to be created. The allowed values depend on the typ
 A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `location`
 
@@ -487,7 +497,6 @@ Optional. Specify the name of lock.
 Manual PrivateLink Service Connections.
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `name`
 
@@ -495,12 +504,17 @@ Name of the private endpoint resource to create.
 - Required: Yes
 - Type: string
 
+### Parameter: `privateDnsZoneGroupName`
+
+The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
+- Required: No
+- Type: string
+
 ### Parameter: `privateDnsZoneResourceIds`
 
 The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `roleAssignments`
 
@@ -587,7 +601,6 @@ Resource ID of the subnet where the endpoint needs to be created.
 Tags to be applied on all resources/resource groups in this deployment.
 - Required: No
 - Type: object
-- Default: `{object}`
 
 
 ## Outputs
