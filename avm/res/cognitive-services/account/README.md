@@ -30,7 +30,17 @@ The following module usage examples are retrieved from the content of the files 
 
    >**Note**: To reference the module, please use the following syntax `br/public:avm-res-cognitiveservices-account:1.0.0`.
 
-<h3>Example 1: Defaults</h3>
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [As Speech Service](#example-3-as-speech-service)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-4-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-5-using-customer-managed-keys-with-user-assigned-identity)
+- [WAF-aligned](#example-6-waf-aligned)
+
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -99,7 +109,10 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 2: Max</h3>
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -324,7 +337,10 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 3: Speech</h3>
+### Example 3: _As Speech Service_
+
+This instance deploys the module as a Speech Service.
+
 
 <details>
 
@@ -437,7 +453,10 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 4: System-Assigned-Cmk-Encryption</h3>
+### Example 4: _Using Customer-Managed-Keys with System-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once to create the System-Assigned Idenity, and one to us it for accessing the Customer-Managed-Key secret.
+
 
 <details>
 
@@ -516,7 +535,10 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 5: User-Assigned-Cmk-Encryption</h3>
+### Example 5: _Using Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
 
 <details>
 
@@ -601,7 +623,10 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 6: Waf-Aligned</h3>
+### Example 6: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-pratices of the Well-Architectured-Framework.
+
 
 <details>
 

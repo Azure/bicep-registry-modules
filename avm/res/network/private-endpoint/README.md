@@ -28,7 +28,14 @@ The following module usage examples are retrieved from the content of the files 
 
    >**Note**: To reference the module, please use the following syntax `br/public:avm-res-network-privateendpoint:1.0.0`.
 
-<h3>Example 1: Defaults</h3>
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
+
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -97,7 +104,10 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 2: Max</h3>
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -238,7 +248,10 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
 </details>
 <p>
 
-<h3>Example 3: Waf-Aligned</h3>
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-pratices of the Well-Architectured-Framework.
+
 
 <details>
 

@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'As Speech Service'
+metadata description = 'This instance deploys the module as a Speech Service.'
+
 // ========== //
 // Parameters //
 // ========== //
