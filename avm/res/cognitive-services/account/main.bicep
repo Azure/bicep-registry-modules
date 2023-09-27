@@ -267,10 +267,8 @@ resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSetti
 module cognitiveService_privateEndpoints '../../network/private-endpoint/main.bicep' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-CognitiveService-PrivateEndpoint-${index}'
   params: {
-    groupIds: contains(privateEndpoint, 'service') ? [
-      privateEndpoint.service
-    ] : [
-      'account'
+    groupIds: [
+      privateEndpoint.?service ?? 'account'
     ]
     name: privateEndpoint.?name ?? 'pe-${last(split(cognitiveService.id, '/'))}-${privateEndpoint.service}-${index}'
     serviceResourceId: cognitiveService.id

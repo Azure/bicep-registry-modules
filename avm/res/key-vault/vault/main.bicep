@@ -245,10 +245,8 @@ module keyVault_keys 'key/main.bicep' = [for (key, index) in (keys ?? []): {
 module keyVault_privateEndpoints '../../network/private-endpoint/main.bicep' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-KeyVault-PrivateEndpoint-${index}'
   params: {
-    groupIds: contains(privateEndpoint, 'service') ? [
-      privateEndpoint.service
-    ] : [
-      'vault'
+    groupIds: [
+      privateEndpoint.?service ?? 'vault'
     ]
     name: privateEndpoint.?name ?? 'pe-${last(split(keyVault.id, '/'))}-${privateEndpoint.service}-${index}'
     serviceResourceId: keyVault.id
