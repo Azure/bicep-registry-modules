@@ -1,0 +1,84 @@
+#########################################################
+## 'Publishing' Composite Action                   ##
+#########################################################
+##
+## This composite action contains the logic to publish a given module to the Public Bicep Registry.
+##
+#########################################################
+##
+##-------------------------------------------##
+## ACTION PARAMETERS                         ##
+##-------------------------------------------##
+##
+##   |==============================================================================================================================================================================================================|
+##   | Parameter                  | Required | Default | Description                                                                                       | Example                                                |
+##   |----------------------------|----------|---------|---------------------------------------------------------------------------------------------------|--------------------------------------------------------|
+##   | templateFilePath           | true     | ''      | The path to the template file to publish                                                          | 'modules/api-management/service/main.bicep'            |
+##   | subscriptionId             | false    | ''      | The ID of the subscription to publish to                                                          | '11111111-1111-1111-1111-111111111111'                 |
+##   |==============================================================================================================================================================================================================|
+##
+##---------------------------------------------##
+name: "Publishing"
+description: "Publishing"
+
+inputs:
+  templateFilePath:
+    description: "The path to the template file to publish"
+    required: true
+  subscriptionId:
+    description: "The ID of the subscription to publish to"
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Log in to Azure
+      uses: azure/login@v1
+      with:
+        client-id: ${{ env.PUBLISH_CLIENT_ID }}
+        tenant-id: ${{ env.PUBLISH_TENANT_ID }}
+        subscription-id: ${{ env.PUBLISH_SUBSCRIPTION_ID }}
+
+    # Adding a step to explicitly install the latest Bicep CLI because there is
+    # always a delay in updating Bicep CLI in the job runner environments.
+    - name: Install the latest Bicep CLI
+      shell: bash
+      run: |
+        curl -Lo bicep https://github.com/Azure/bicep/releases/latest/download/bicep-linux-x64
+        chmod +x ./bicep
+        sudo mv ./bicep /usr/local/bin/bicep
+        bicep --version
+
+    - name: "Publish module to public bicep registry"
+      uses: azure/powershell@v1
+      with:
+        azPSVersion: "latest"
+        inlineScript: |
+          # Grouping task logs
+          Write-Output '::group::Publish module to public bicep registry'
+
+          if (-not [String]::IsNullOrEmpty('${{ inputs.subscriptionId }}')) {
+            Write-Verbose ('Setting context to subscription [{0}]' -f '${{ inputs.subscriptionId }}') -Verbose
+            $null = Set-AzContext -Subscription '${{ inputs.subscriptionId }}'
+          }
+
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'publish' 'Publish-ModuleFromPathToPBR.ps1')
+
+          ################################
+          ##   Get modules to publish   ##
+          ################################
+          $functionInput = @{
+            TemplateFilePath     = Join-Path $env:GITHUB_WORKSPACE "${{ inputs.templateFilePath }}"
+            PublicRegistryServer = ConvertTo-SecureString '${{ env.PUBLISH_REGISTRY_SERVER }}' -AsPlainText -Force
+          }
+
+          Write-Verbose "Invoke function with" -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+          # Get the modified child resources
+          Publish-ModuleFromPathToPBR @functionInput -Verbose
+
+          Write-Output '::endgroup::'
+
+        # TODO Add publish validation (as per PBR pipeline template 'publish-module.yml')
