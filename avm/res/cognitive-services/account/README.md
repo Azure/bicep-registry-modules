@@ -30,14 +30,14 @@ The following module usage examples are retrieved from the content of the files 
 
    >**Note**: To reference the module, please use the following syntax `br/public:avm-res-cognitiveservices-account:1.0.0`.
 
-- [Only defaults](#example-1-only-defaults)
-- [Large parameter set](#example-2-large-parameter-set)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
 - [As Speech Service](#example-3-as-speech-service)
-- [Customer-Managed-Keys with System-Assigned identity](#example-4-customermanagedkeys-with-systemassigned-identity)
-- [Customer-Managed-Keys with User-Assigned identity](#example-5-customermanagedkeys-with-userassigned-identity)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-4-using-customermanagedkeys-with-systemassigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-5-using-customermanagedkeys-with-userassigned-identity)
 - [WAF-aligned](#example-6-wafaligned)
 
-### Example 1: _Only defaults_
+### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -109,7 +109,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 </details>
 <p>
 
-### Example 2: _Large parameter set_
+### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -453,7 +453,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 </details>
 <p>
 
-### Example 4: _Customer-Managed-Keys with System-Assigned identity_
+### Example 4: _Using Customer-Managed-Keys with System-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once to create the System-Assigned Idenity, and one to us it for accessing the Customer-Managed-Key secret.
 
@@ -535,7 +535,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 </details>
 <p>
 
-### Example 5: _Customer-Managed-Keys with User-Assigned identity_
+### Example 5: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 

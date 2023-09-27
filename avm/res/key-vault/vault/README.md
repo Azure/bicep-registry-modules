@@ -33,12 +33,12 @@ The following module usage examples are retrieved from the content of the files 
 
    >**Note**: To reference the module, please use the following syntax `br/public:avm-res-keyvault-vault:1.0.0`.
 
-- [Only defaults](#example-1-only-defaults)
-- [Large parameter set](#example-2-large-parameter-set)
-- [With Private Endpoints](#example-3-with-private-endpoints)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [Using Private Endpoints](#example-3-using-private-endpoints)
 - [WAF-aligned](#example-4-wafaligned)
 
-### Example 1: _Only defaults_
+### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -106,7 +106,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
 </details>
 <p>
 
-### Example 2: _Large parameter set_
+### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -508,7 +508,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
 </details>
 <p>
 
-### Example 3: _With Private Endpoints_
+### Example 3: _Using Private Endpoints_
 
 This instance deploys the module with Private Endpoints.
 
