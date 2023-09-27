@@ -1472,7 +1472,7 @@ function Set-UsageExamplesSection {
     }
 
     foreach ($rawHeader in $usageExampleSectionHeaders) {
-        $navigationHeader = (($rawHeader.header -replace '<\/?.+?>|[^A-Za-z0-9\s]').Trim() -replace '\s+', '-').ToLower() # Remove any html and non-identifer elements
+        $navigationHeader = (($rawHeader.header -replace '<\/?.+?>|[^A-Za-z0-9\s-]').Trim() -replace '\s+', '-').ToLower() # Remove any html and non-identifer elements
         $SectionContent += "- [{0}](#{1})" -f $rawHeader.title, $navigationHeader
     }
     $SectionContent += ''

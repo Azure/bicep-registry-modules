@@ -33,9 +33,9 @@ The following module usage examples are retrieved from the content of the files 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
 - [As Speech Service](#example-3-as-speech-service)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-4-using-customermanagedkeys-with-systemassigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-5-using-customermanagedkeys-with-userassigned-identity)
-- [WAF-aligned](#example-6-wafaligned)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-4-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-5-using-customer-managed-keys-with-user-assigned-identity)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
