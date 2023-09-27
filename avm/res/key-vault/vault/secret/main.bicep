@@ -9,7 +9,7 @@ param keyVaultName string
 param name string
 
 @description('Optional. Resource tags.')
-param tags object = {}
+param tags object?
 
 @description('Optional. Determines whether the object is enabled.')
 param attributesEnabled bool = true

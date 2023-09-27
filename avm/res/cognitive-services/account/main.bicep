@@ -69,7 +69,7 @@ param diagnosticSettings diagnosticSettingType
 param publicNetworkAccess string = ''
 
 @description('Conditional. Subdomain name used for token-based authentication. Required if \'networkAcls\' or \'privateEndpoints\' are set.')
-param customSubDomainName string = ''
+param customSubDomainName string?
 
 @description('Optional. A collection of rules governing the accessibility from specific network locations.')
 param networkAcls object = {}
@@ -84,13 +84,13 @@ param lock lockType
 param roleAssignments roleAssignmentType
 
 @description('Optional. Tags of the resource.')
-param tags object = {}
+param tags object?
 
 @description('Optional. List of allowed FQDN.')
-param allowedFqdnList array = []
+param allowedFqdnList array?
 
 @description('Optional. The API properties for special APIs.')
-param apiProperties object = {}
+param apiProperties object?
 
 @description('Optional. Allow only Azure AD authentication. Should be enabled for security reasons.')
 param disableLocalAuth bool = true
@@ -102,7 +102,7 @@ param customerManagedKey customerManagedKeyType
 param dynamicThrottlingEnabled bool = false
 
 @description('Optional. Resource migration token.')
-param migrationToken string = ''
+param migrationToken string?
 
 @description('Optional. Restore a soft-deleted cognitive service at deployment time. Will fail if no such soft-deleted resource exists.')
 param restore bool = false
@@ -111,7 +111,7 @@ param restore bool = false
 param restrictOutboundNetworkAccess bool = true
 
 @description('Optional. The storage accounts for this resource.')
-param userOwnedStorage array = []
+param userOwnedStorage array?
 
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
@@ -202,7 +202,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
     name: sku
   }
   properties: {
-    customSubDomainName: !empty(customSubDomainName) ? customSubDomainName : null
+    customSubDomainName: customSubDomainName
     networkAcls: !empty(networkAcls) ? {
       defaultAction: contains(networkAcls, 'defaultAction') ? networkAcls.defaultAction : null
       virtualNetworkRules: contains(networkAcls, 'virtualNetworkRules') ? networkAcls.virtualNetworkRules : []
@@ -221,10 +221,10 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
         keyVersion: !empty(customerManagedKey.?keyVersion ?? '') ? customerManagedKey!.keyVersion : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
       }
     } : null
-    migrationToken: !empty(migrationToken) ? migrationToken : null
+    migrationToken: migrationToken
     restore: restore
     restrictOutboundNetworkAccess: restrictOutboundNetworkAccess
-    userOwnedStorage: !empty(userOwnedStorage) ? userOwnedStorage : null
+    userOwnedStorage: userOwnedStorage
     dynamicThrottlingEnabled: dynamicThrottlingEnabled
   }
 }
@@ -268,14 +268,15 @@ module cognitiveService_privateEndpoints '../../network/private-endpoint/main.bi
   name: '${uniqueString(deployment().name, location)}-CognitiveService-PrivateEndpoint-${index}'
   params: {
     groupIds: [
-      privateEndpoint.service
+      privateEndpoint.?service ?? 'account'
     ]
-    name: privateEndpoint.?name ?? 'pe-${last(split(cognitiveService.id, '/'))}-${privateEndpoint.service}-${index}'
+    name: privateEndpoint.?name ?? 'pe-${last(split(cognitiveService.id, '/'))}-${privateEndpoint.?service ?? 'account'}-${index}'
     serviceResourceId: cognitiveService.id
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
+    privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName ?? 'default'
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds ?? []
     roleAssignments: privateEndpoint.?roleAssignments ?? []
     tags: privateEndpoint.?tags ?? {}
@@ -392,11 +393,14 @@ type privateEndpointType = {
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
-  @description('Required. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".')
-  service: string
+  @description('Optional. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".')
+  service: string?
 
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
+
+  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
+  privateDnsZoneGroupName: string?
 
   @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
   privateDnsZoneResourceIds: string[]?
@@ -422,10 +426,10 @@ type privateEndpointType = {
   customNetworkInterfaceName: string?
 
   @description('Optional. Specify the type of lock.')
-  lock: ('CanNotDelete' | 'ReadOnly' | '')?
+  lock: lockType?
 
   @description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleAssignments: roleAssignmentType[]?
+  roleAssignments: roleAssignmentType?
 
   @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
   tags: object?
@@ -433,7 +437,7 @@ type privateEndpointType = {
   @description('Optional. Manual PrivateLink Service Connections.')
   manualPrivateLinkServiceConnections: array?
 
-  @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+  @description('Optional. Enable/Disable usage telemetry for module.')
   enableTelemetry: bool?
 }[]?
 

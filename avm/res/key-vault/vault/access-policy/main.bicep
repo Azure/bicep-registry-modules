@@ -6,9 +6,9 @@ metadata owner = 'Azure/module-maintainers'
 param keyVaultName string
 
 @description('Optional. An array of 0 to 16 identities that have access to the key vault. All identities in the array must use the same tenant ID as the key vault\'s tenant ID.')
-param accessPolicies array = []
+param accessPolicies array?
 
-var formattedAccessPolicies = [for accessPolicy in accessPolicies: {
+var formattedAccessPolicies = [for accessPolicy in (accessPolicies ?? []): {
   applicationId: contains(accessPolicy, 'applicationId') ? accessPolicy.applicationId : ''
   objectId: contains(accessPolicy, 'objectId') ? accessPolicy.objectId : ''
   permissions: accessPolicy.permissions

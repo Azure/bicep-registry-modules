@@ -126,7 +126,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     kind: 'Face'
     name: 'csamax001'
     // Non-required parameters
-    customSubDomainName: 'xdomain'
+    customSubDomainName: 'xcsamax'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -185,7 +185,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
-        service: 'account'
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -232,7 +231,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     },
     // Non-required parameters
     "customSubDomainName": {
-      "value": "xdomain"
+      "value": "xcsamax"
     },
     "diagnosticSettings": {
       "value": [
@@ -303,7 +302,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
-          "service": "account",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
@@ -642,7 +640,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     kind: 'Face'
     name: 'csawaf001'
     // Non-required parameters
-    customSubDomainName: 'xdomain'
+    customSubDomainName: 'xcsawaf'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -748,7 +746,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     },
     // Non-required parameters
     "customSubDomainName": {
-      "value": "xdomain"
+      "value": "xcsawaf"
     },
     "diagnosticSettings": {
       "value": [
@@ -901,14 +899,12 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 List of allowed FQDN.
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `apiProperties`
 
 The API properties for special APIs.
 - Required: No
 - Type: object
-- Default: `{object}`
 
 ### Parameter: `customerManagedKey`
 
@@ -957,7 +953,6 @@ Optional. User assigned identity to use when fetching the customer managed key. 
 Subdomain name used for token-based authentication. Required if 'networkAcls' or 'privateEndpoints' are set.
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `diagnosticSettings`
 
@@ -1167,7 +1162,6 @@ Optional. The resource ID(s) to assign to the resource. Required if a user assig
 Resource migration token.
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `name`
 
@@ -1194,15 +1188,16 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`applicationSecurityGroupResourceIds`](#parameter-privateendpointsapplicationsecuritygroupresourceids) | No | array | Optional. Application security groups in which the private endpoint IP configuration is included. |
 | [`customDnsConfigs`](#parameter-privateendpointscustomdnsconfigs) | No | array | Optional. Custom DNS configurations. |
 | [`customNetworkInterfaceName`](#parameter-privateendpointscustomnetworkinterfacename) | No | string | Optional. The custom name of the network interface attached to the private endpoint. |
-| [`enableTelemetry`](#parameter-privateendpointsenabletelemetry) | No | bool | Optional. Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-privateendpointsenabletelemetry) | No | bool | Optional. Enable/Disable usage telemetry for module. |
 | [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | No | array | Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
 | [`location`](#parameter-privateendpointslocation) | No | string | Optional. The location to deploy the private endpoint to. |
-| [`lock`](#parameter-privateendpointslock) | No | string | Optional. Specify the type of lock. |
+| [`lock`](#parameter-privateendpointslock) | No |  | Optional. Specify the type of lock. |
 | [`manualPrivateLinkServiceConnections`](#parameter-privateendpointsmanualprivatelinkserviceconnections) | No | array | Optional. Manual PrivateLink Service Connections. |
 | [`name`](#parameter-privateendpointsname) | No | string | Optional. The name of the private endpoint. |
+| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | No | string | Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | No | array | Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
-| [`roleAssignments`](#parameter-privateendpointsroleassignments) | No | array | Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| [`service`](#parameter-privateendpointsservice) | Yes | string | Required. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob". |
+| [`roleAssignments`](#parameter-privateendpointsroleassignments) | No |  | Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`service`](#parameter-privateendpointsservice) | No | string | Optional. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob". |
 | [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | Yes | string | Required. Resource ID of the subnet where the endpoint needs to be created. |
 | [`tags`](#parameter-privateendpointstags) | No | object | Optional. Tags to be applied on all resources/resource groups in this deployment. |
 
@@ -1243,7 +1238,7 @@ Optional. The custom name of the network interface attached to the private endpo
 
 ### Parameter: `privateEndpoints.enableTelemetry`
 
-Optional. Enable telemetry via a Globally Unique Identifier (GUID).
+Optional. Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -1291,8 +1286,7 @@ Optional. The location to deploy the private endpoint to.
 Optional. Specify the type of lock.
 
 - Required: No
-- Type: string
-- Allowed: `[, CanNotDelete, ReadOnly]`
+- Type: 
 
 ### Parameter: `privateEndpoints.manualPrivateLinkServiceConnections`
 
@@ -1304,6 +1298,13 @@ Optional. Manual PrivateLink Service Connections.
 ### Parameter: `privateEndpoints.name`
 
 Optional. The name of the private endpoint.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.privateDnsZoneGroupName`
+
+Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
 
 - Required: No
 - Type: string
@@ -1320,13 +1321,13 @@ Optional. The private DNS zone groups to associate the private endpoint with. A 
 Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: No
-- Type: array
+- Type: 
 
 ### Parameter: `privateEndpoints.service`
 
-Required. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".
+Optional. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.subnetResourceId`
@@ -1446,14 +1447,12 @@ SKU of the Cognitive Services resource. Use 'Get-AzCognitiveServicesAccountSku' 
 Tags of the resource.
 - Required: No
 - Type: object
-- Default: `{object}`
 
 ### Parameter: `userOwnedStorage`
 
 The storage accounts for this resource.
 - Required: No
 - Type: array
-- Default: `[]`
 
 
 ## Outputs
@@ -1469,4 +1468,8 @@ The storage accounts for this resource.
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `res/network/private-endpoint` | Local reference |

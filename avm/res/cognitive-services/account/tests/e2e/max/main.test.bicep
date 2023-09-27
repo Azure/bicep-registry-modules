@@ -65,7 +65,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     kind: 'Face'
-    customSubDomainName: '${namePrefix}xdomain'
+    customSubDomainName: '${namePrefix}x${serviceShort}'
     location: location
     diagnosticSettings: [
       {
@@ -132,7 +132,6 @@ module testDeployment '../../../main.bicep' = {
         privateDnsZoneResourceIds: [
           nestedDependencies.outputs.privateDNSZoneResourceId
         ]
-        service: 'account'
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
         tags: {
           'hidden-title': 'This is visible in the resource name'

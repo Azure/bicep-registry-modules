@@ -66,7 +66,7 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}${serviceShort}001'
     kind: 'Face'
     location: location
-    customSubDomainName: '${namePrefix}xdomain'
+    customSubDomainName: '${namePrefix}x${serviceShort}'
     diagnosticSettings: [
       {
         name: 'customSetting'
