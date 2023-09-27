@@ -198,10 +198,47 @@ function Set-ParametersSection {
             }
             else {
                 $type = $parameter.type
-                $defaultValue = ($parameter.defaultValue -is [array]) ? ('[{0}]' -f (($parameter.defaultValue | Sort-Object) -join ', ')) : (($parameter.defaultValue -is [hashtable]) ? '{object}' : (($parameter.defaultValue -is [string]) -and ($parameter.defaultValue -notmatch '\[\w+\(.*\).*\]') ? '''' + $parameter.defaultValue + '''' : $parameter.defaultValue))
-                $required = (-not $defaultValue)
+
+                if ($parameter.defaultValue -is [array]) {
+                    $defaultValue = '[{0}]' -f (($parameter.defaultValue | Sort-Object) -join ', ')
+                }
+                elseif ($parameter.defaultValue -is [hashtable]) {
+                    $defaultValue = '{object}'
+                }
+                elseif ($parameter.defaultValue -is [string] -and ($parameter.defaultValue -notmatch '\[\w+\(.*\).*\]')) {
+                    $defaultValue = '''' + $parameter.defaultValue + ''''
+                }
+                else {
+                    $defaultValue = $parameter.defaultValue
+                }
+
+                # switch ($parameter.defaultValue) {
+                #     { $PSItem -is [array] } {  }
+                #     { $PSItem -is [hashtable] } {  }
+                #     { $PSItem -is [string] -and ($PSItem -notmatch '\[\w+\(.*\).*\]') } {  }
+                #     Default { $defaultValue = $parameter.defaultValue }
+                # }
+
+                # $defaultValue = $isArray
+                #     ? ('[{0}]' -f (($parameter.defaultValue | Sort-Object) -join ', '))
+                #     : ($isObject
+                #         ? '{object}'
+                #         : ($isString -and ($parameter.defaultValue -notmatch '\[\w+\(.*\).*\]')
+                #             ? '''' + $parameter.defaultValue + ''''
+                #             : $parameter.defaultValue))
+                $required = -not $defaultValue -and -not $parameter.nullable
                 $rawAllowedValues = $parameter.allowedValues
             }
+
+
+            # $RequiredParametersList = $TemplateFileContent.parameters.Keys | Where-Object {
+            #     $hasNoDefaultValue = $TemplateFileContent.parameters[$_].Keys -notcontains 'defaultValue'
+            #     $isUserDefinedType = $TemplateFileContent.parameters[$_].Keys -contains '$ref'
+            #     $isNullable = $TemplateFileContent.parameters[$_]['nullable']
+            #     $isNullableInRef = $TemplateFileContent.parameters[$_].Keys -contains '$ref' ? $TemplateFileContent.definitions[(Split-Path $TemplateFileContent.parameters[$_].'$ref' -Leaf)]['nullable'] : $false
+            #     (($hasNoDefaultValue -and -not $isUserDefinedType -and -not $isNullable) -or ($isUserDefinedType -and -not $isNullableInRef))
+            # } | Sort-Object
+
 
             # Prepare the links to local headers
             $paramHeader = '### Parameter: `{0}`' -f $parameter.name
@@ -1065,12 +1102,12 @@ function Set-UsageExamplesSection {
 
     $testFilePaths = Get-ModuleTestFileList -ModulePath $moduleRoot | ForEach-Object { Join-Path $moduleRoot $_ }
 
-    $RequiredParametersList = $TemplateFileContent.parameters.Keys
-    | Where-Object {
+    $RequiredParametersList = $TemplateFileContent.parameters.Keys | Where-Object {
         $hasNoDefaultValue = $TemplateFileContent.parameters[$_].Keys -notcontains 'defaultValue'
         $isUserDefinedType = $TemplateFileContent.parameters[$_].Keys -contains '$ref'
-        $isNullable = $TemplateFileContent.parameters[$_].Keys -contains '$ref' ? $TemplateFileContent.definitions[(Split-Path $TemplateFileContent.parameters[$_].'$ref' -Leaf)]['nullable'] : $false
-        (($hasNoDefaultValue -and -not $isUserDefinedType) -or ($isUserDefinedType -and -not $isNullable))
+        $isNullable = $TemplateFileContent.parameters[$_]['nullable']
+        $isNullableInRef = $TemplateFileContent.parameters[$_].Keys -contains '$ref' ? $TemplateFileContent.definitions[(Split-Path $TemplateFileContent.parameters[$_].'$ref' -Leaf)]['nullable'] : $false
+        (($hasNoDefaultValue -and -not $isUserDefinedType -and -not $isNullable) -or ($isUserDefinedType -and -not $isNullableInRef))
     } | Sort-Object
 
     ############################

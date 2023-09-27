@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "906532672506379950"
+      "templateHash": "17531422081011382057"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -206,14 +206,22 @@
           },
           "service": {
             "type": "string",
+            "nullable": true,
             "metadata": {
-              "description": "Required. The service (sub-) type to deploy the private endpoint for. For example \"vault\" or \"blob\"."
+              "description": "Optional. The service (sub-) type to deploy the private endpoint for. For example \"vault\" or \"blob\"."
             }
           },
           "subnetResourceId": {
             "type": "string",
             "metadata": {
               "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
+            }
+          },
+          "privateDnsZoneGroupName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided."
             }
           },
           "privateDnsZoneResourceIds": {
@@ -1348,11 +1356,7 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "groupIds": {
-            "value": [
-              "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service]"
-            ]
-          },
+          "groupIds": "[if(contains(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), createObject('value', createArray(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service)), createObject('value', createArray('vault')))]",
           "name": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pe-{0}-{1}-{2}', last(split(resourceId('Microsoft.KeyVault/vaults', parameters('name')), '/')), coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].service, copyIndex()))]"
           },
@@ -1370,6 +1374,9 @@
           },
           "lock": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
+          },
+          "privateDnsZoneGroupName": {
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroupName'), 'default')]"
           },
           "privateDnsZoneResourceIds": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneResourceIds'), createArray())]"
@@ -1404,7 +1411,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.21.1.54444",
-              "templateHash": "18008341392159466529"
+              "templateHash": "10397201760229716051"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -1524,21 +1531,21 @@
             },
             "applicationSecurityGroupResourceIds": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
               }
             },
             "customNetworkInterfaceName": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The custom name of the network interface attached to the private endpoint."
               }
             },
             "ipConfigurations": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
               }
@@ -1549,9 +1556,16 @@
                 "description": "Required. Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to."
               }
             },
+            "privateDnsZoneGroupName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided."
+              }
+            },
             "privateDnsZoneResourceIds": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones."
               }
@@ -1577,21 +1591,21 @@
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
               }
             },
             "customDnsConfigs": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Custom DNS configurations."
               }
             },
             "manualPrivateLinkServiceConnections": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Manual PrivateLink Service Connections."
               }
@@ -1650,16 +1664,16 @@
                 "copy": [
                   {
                     "name": "applicationSecurityGroups",
-                    "count": "[length(parameters('applicationSecurityGroupResourceIds'))]",
+                    "count": "[length(coalesce(parameters('applicationSecurityGroupResourceIds'), createArray()))]",
                     "input": {
-                      "id": "[parameters('applicationSecurityGroupResourceIds')[copyIndex('applicationSecurityGroups')]]"
+                      "id": "[coalesce(parameters('applicationSecurityGroupResourceIds'), createArray())[copyIndex('applicationSecurityGroups')]]"
                     }
                   }
                 ],
-                "customDnsConfigs": "[parameters('customDnsConfigs')]",
-                "customNetworkInterfaceName": "[parameters('customNetworkInterfaceName')]",
-                "ipConfigurations": "[parameters('ipConfigurations')]",
-                "manualPrivateLinkServiceConnections": "[parameters('manualPrivateLinkServiceConnections')]",
+                "customDnsConfigs": "[coalesce(parameters('customDnsConfigs'), createArray())]",
+                "customNetworkInterfaceName": "[coalesce(parameters('customNetworkInterfaceName'), '')]",
+                "ipConfigurations": "[coalesce(parameters('ipConfigurations'), createArray())]",
+                "manualPrivateLinkServiceConnections": "[coalesce(parameters('manualPrivateLinkServiceConnections'), createArray())]",
                 "privateLinkServiceConnections": [
                   {
                     "name": "[parameters('name')]",
@@ -1721,8 +1735,11 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "name": {
+                    "value": "[coalesce(parameters('privateDnsZoneGroupName'), 'default')]"
+                  },
                   "privateDNSResourceIds": {
-                    "value": "[parameters('privateDnsZoneResourceIds')]"
+                    "value": "[coalesce(parameters('privateDnsZoneResourceIds'), createArray())]"
                   },
                   "privateEndpointName": {
                     "value": "[parameters('name')]"

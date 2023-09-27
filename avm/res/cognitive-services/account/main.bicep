@@ -267,8 +267,10 @@ resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSetti
 module cognitiveService_privateEndpoints '../../network/private-endpoint/main.bicep' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-CognitiveService-PrivateEndpoint-${index}'
   params: {
-    groupIds: [
+    groupIds: contains(privateEndpoint, 'service') ? [
       privateEndpoint.service
+    ] : [
+      'account'
     ]
     name: privateEndpoint.?name ?? 'pe-${last(split(cognitiveService.id, '/'))}-${privateEndpoint.service}-${index}'
     serviceResourceId: cognitiveService.id
@@ -276,6 +278,7 @@ module cognitiveService_privateEndpoints '../../network/private-endpoint/main.bi
     enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
+    privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName ?? 'default'
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds ?? []
     roleAssignments: privateEndpoint.?roleAssignments ?? []
     tags: privateEndpoint.?tags ?? {}
@@ -392,11 +395,14 @@ type privateEndpointType = {
   @description('Optional. The location to deploy the private endpoint to.')
   location: string?
 
-  @description('Required. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".')
-  service: string
+  @description('Optional. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".')
+  service: string?
 
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
+
+  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
+  privateDnsZoneGroupName: string?
 
   @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
   privateDnsZoneResourceIds: string[]?

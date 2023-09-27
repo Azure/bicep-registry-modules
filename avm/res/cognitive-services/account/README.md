@@ -172,7 +172,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
-        service: 'account'
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -290,7 +289,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
-          "service": "account",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
@@ -1175,9 +1173,10 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`lock`](#parameter-privateendpointslock) | No | string | Optional. Specify the type of lock. |
 | [`manualPrivateLinkServiceConnections`](#parameter-privateendpointsmanualprivatelinkserviceconnections) | No | array | Optional. Manual PrivateLink Service Connections. |
 | [`name`](#parameter-privateendpointsname) | No | string | Optional. The name of the private endpoint. |
+| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | No | string | Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | No | array | Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | No | array | Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| [`service`](#parameter-privateendpointsservice) | Yes | string | Required. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob". |
+| [`service`](#parameter-privateendpointsservice) | No | string | Optional. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob". |
 | [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | Yes | string | Required. Resource ID of the subnet where the endpoint needs to be created. |
 | [`tags`](#parameter-privateendpointstags) | No | object | Optional. Tags to be applied on all resources/resource groups in this deployment. |
 
@@ -1283,6 +1282,13 @@ Optional. The name of the private endpoint.
 - Required: No
 - Type: string
 
+### Parameter: `privateEndpoints.privateDnsZoneGroupName`
+
+Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
+
+- Required: No
+- Type: string
+
 ### Parameter: `privateEndpoints.privateDnsZoneResourceIds`
 
 Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.
@@ -1299,9 +1305,9 @@ Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrN
 
 ### Parameter: `privateEndpoints.service`
 
-Required. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".
+Optional. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.subnetResourceId`
