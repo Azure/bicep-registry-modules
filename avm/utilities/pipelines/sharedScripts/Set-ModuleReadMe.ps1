@@ -212,33 +212,9 @@ function Set-ParametersSection {
                     $defaultValue = $parameter.defaultValue
                 }
 
-                # switch ($parameter.defaultValue) {
-                #     { $PSItem -is [array] } {  }
-                #     { $PSItem -is [hashtable] } {  }
-                #     { $PSItem -is [string] -and ($PSItem -notmatch '\[\w+\(.*\).*\]') } {  }
-                #     Default { $defaultValue = $parameter.defaultValue }
-                # }
-
-                # $defaultValue = $isArray
-                #     ? ('[{0}]' -f (($parameter.defaultValue | Sort-Object) -join ', '))
-                #     : ($isObject
-                #         ? '{object}'
-                #         : ($isString -and ($parameter.defaultValue -notmatch '\[\w+\(.*\).*\]')
-                #             ? '''' + $parameter.defaultValue + ''''
-                #             : $parameter.defaultValue))
                 $required = -not $defaultValue -and -not $parameter.nullable
                 $rawAllowedValues = $parameter.allowedValues
             }
-
-
-            # $RequiredParametersList = $TemplateFileContent.parameters.Keys | Where-Object {
-            #     $hasNoDefaultValue = $TemplateFileContent.parameters[$_].Keys -notcontains 'defaultValue'
-            #     $isUserDefinedType = $TemplateFileContent.parameters[$_].Keys -contains '$ref'
-            #     $isNullable = $TemplateFileContent.parameters[$_]['nullable']
-            #     $isNullableInRef = $TemplateFileContent.parameters[$_].Keys -contains '$ref' ? $TemplateFileContent.definitions[(Split-Path $TemplateFileContent.parameters[$_].'$ref' -Leaf)]['nullable'] : $false
-            #     (($hasNoDefaultValue -and -not $isUserDefinedType -and -not $isNullable) -or ($isUserDefinedType -and -not $isNullableInRef))
-            # } | Sort-Object
-
 
             # Prepare the links to local headers
             $paramHeader = '### Parameter: `{0}`' -f $parameter.name
