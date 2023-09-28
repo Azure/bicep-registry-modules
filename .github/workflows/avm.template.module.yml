@@ -1,52 +1,52 @@
-name: 'avm.template.module'
+name: "avm.template.module"
 
 on:
   workflow_call:
     inputs:
       workflowInput:
         type: string
-        description: 'Input from the workflow caller in JSON format'
+        description: "Input from the workflow caller in JSON format"
         required: true
       moduleTestFilePaths:
         type: string
-        description: 'List of relative path to the module test files in JSON format'
+        description: "List of relative path to the module test files in JSON format"
         required: true
       modulePath:
         type: string
-        description: 'Relative path to the module folder'
+        description: "Relative path to the module folder"
         required: true
 
 env:
-  ARM_SUBSCRIPTION_ID: '${{ secrets.ARM_SUBSCRIPTION_ID }}'
-  ARM_MGMTGROUP_ID: '${{ secrets.ARM_MGMTGROUP_ID }}'
-  ARM_TENANT_ID: '${{ secrets.ARM_TENANT_ID }}'
-  TOKEN_NAMEPREFIX: '${{ secrets.TOKEN_NAMEPREFIX }}'
+  ARM_SUBSCRIPTION_ID: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+  ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
+  ARM_TENANT_ID: "${{ secrets.ARM_TENANT_ID }}"
+  TOKEN_NAMEPREFIX: "${{ secrets.TOKEN_NAMEPREFIX }}"
 
 jobs:
   #########################
   #   Static validation   #
   #########################
   job_module_static_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-    name: 'Static validation'
+    name: "Static validation"
     runs-on: ubuntu-20.04
     if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
     steps:
-      - name: 'Checkout'
+      - name: "Checkout"
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
-      - name: 'Run tests'
+      - name: "Run tests"
         uses: ./.github/actions/templates/avm-validateModulePester
         with:
-          modulePath: '${{ inputs.modulePath }}'
+          modulePath: "${{ inputs.modulePath }}"
 
   #########################
   #   PSRule validation   #
   #########################
   job_psrule_test: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-    name: 'PSRule validation'
+    name: "PSRule validation"
     runs-on: ubuntu-20.04
     if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
     strategy:
@@ -61,16 +61,16 @@ jobs:
       - name: Set PSRule validation
         uses: ./.github/actions/templates/avm-validateModulePSRule
         with:
-          templateFilePath: '${{ inputs.modulePath }}/${{ matrix.moduleTestFilePaths }}'
-          subscriptionId: '${{ secrets.ARM_SUBSCRIPTION_ID }}'
-          managementGroupId: '${{ secrets.ARM_MGMTGROUP_ID }}'
-          psrulePath: 'avm/utilities/pipelines/staticValidation/psrule' #'${{ github.workspace }}/avm'
+          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.moduleTestFilePaths }}"
+          subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+          managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
+          psrulePath: "avm/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
 
   #############################
   #   Deployment validation   #
   #############################
   job_module_deploy_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-    name: 'Deployment validation'
+    name: "Deployment validation"
     runs-on: ubuntu-20.04
     if: |
       !cancelled() &&
@@ -83,22 +83,22 @@ jobs:
       matrix:
         moduleTestFilePaths: ${{ fromJson(inputs.moduleTestFilePaths) }}
     steps:
-      - name: 'Checkout'
+      - name: "Checkout"
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
         with:
-          removeDeployment: '${{ fromJson(inputs.workflowInput).removeDeployment }}'
-      - name: 'Using test file [${{ matrix.moduleTestFilePaths }}]'
+          removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
+      - name: "Using test file [${{ matrix.moduleTestFilePaths }}]"
         uses: ./.github/actions/templates/avm-validateModuleDeployment
         with:
-          templateFilePath: '${{ inputs.modulePath }}/${{ matrix.moduleTestFilePaths }}'
-          location: 'WestEurope'
-          subscriptionId: '${{ secrets.ARM_SUBSCRIPTION_ID }}'
-          managementGroupId: '${{ secrets.ARM_MGMTGROUP_ID }}'
-          removeDeployment: '${{ fromJson(inputs.workflowInput).removeDeployment }}'
+          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.moduleTestFilePaths }}"
+          location: "WestEurope"
+          subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
+          managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
+          removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
@@ -106,25 +106,25 @@ jobs:
   #   Publishing   #
   ##################
   job_publish_module: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-    name: 'Publishing'
+    name: "Publishing"
     runs-on: ubuntu-20.04
     if: github.ref == 'refs/heads/main' && success()
     needs:
       - job_module_deploy_validation
     steps:
-      - name: 'Checkout'
+      - name: "Checkout"
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
-      - name: 'Publishing'
+      - name: "Publishing"
         uses: ./.github/actions/templates/avm-publishModule
         with:
-          templateFilePath: '${{ inputs.modulePath }}/main.bicep'
-          subscriptionId: '${{ secrets.ARM_SUBSCRIPTION_ID }}'
+          templateFilePath: "${{ inputs.modulePath }}/main.bicep"
+          subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
         env:
-          PUBLISH_REGISTRY_SERVER: '${{ secrets.PUBLISH_REGISTRY_SERVER }}'
-          PUBLISH_CLIENT_ID: '${{ secrets.PUBLISH_CLIENT_ID }}'
-          PUBLISH_TENANT_ID: '${{ secrets.PUBLISH_TENANT_ID }}'
-          PUBLISH_SUBSCRIPTION_ID: '${{ secrets.PUBLISH_SUBSCRIPTION_ID }}'
+          PUBLISH_REGISTRY_SERVER: "${{ secrets.PUBLISH_REGISTRY_SERVER }}"
+          PUBLISH_CLIENT_ID: "${{ secrets.PUBLISH_CLIENT_ID }}"
+          PUBLISH_TENANT_ID: "${{ secrets.PUBLISH_TENANT_ID }}"
+          PUBLISH_SUBSCRIPTION_ID: "${{ secrets.PUBLISH_SUBSCRIPTION_ID }}"

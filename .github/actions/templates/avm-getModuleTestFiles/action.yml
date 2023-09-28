@@ -1,5 +1,5 @@
-name: 'Get parameter files'
-description: 'Retrieve the parameter file paths of a given module'
+name: "Get parameter files"
+description: "Retrieve the parameter file paths of a given module"
 
 inputs:
   modulePath:
@@ -8,13 +8,13 @@ inputs:
 
 outputs:
   moduleTestFilePaths:
-    description: 'The module test files to use for template evaluation'
+    description: "The module test files to use for template evaluation"
     value: ${{ steps.get-module-test-file-paths.outputs.moduleTestFilePaths }}
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
-    - name: 'Get parameter file paths'
+    - name: "Get parameter file paths"
       id: get-module-test-file-paths
       shell: pwsh
       run: |
