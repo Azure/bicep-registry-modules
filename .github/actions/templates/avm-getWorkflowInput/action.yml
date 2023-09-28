@@ -35,21 +35,21 @@
 ##
 ##---------------------------------------------##
 
-name: 'Get Workflow Input'
-description: 'Get Workflow Input'
+name: "Get Workflow Input"
+description: "Get Workflow Input"
 
 inputs:
   workflowPath:
-    description: 'The path to the workflow file used to retrieve default workflow input parameters.'
+    description: "The path to the workflow file used to retrieve default workflow input parameters."
     required: true
 
 outputs:
   workflowInput:
-    description: 'A table of all pipeline input parameters and their value in JSON format.'
+    description: "A table of all pipeline input parameters and their value in JSON format."
     value: ${{ steps.get-input-param-action.outputs.workflowInput }}
 
 runs:
-  using: 'composite'
+  using: "composite"
   steps:
     - name: Get workflow input parameters
       id: get-input-param-action

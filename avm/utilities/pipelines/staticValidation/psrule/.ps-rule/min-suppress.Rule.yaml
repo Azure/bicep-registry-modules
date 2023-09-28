@@ -3,15 +3,15 @@
 apiVersion: github.com/microsoft/PSRule/v1
 kind: SuppressionGroup
 metadata:
-  name: 'SuppressMin'
+  name: "SuppressMin"
 spec:
   rule:
-   - Azure.Resource.UseTags
-   - Azure.KeyVault.Logs
-   - Azure.Policy.ExemptionDescriptors
-   - Azure.Policy.Descriptors
-   - Azure.Policy.AssignmentDescriptors
+    - Azure.Resource.UseTags
+    - Azure.KeyVault.Logs
+    - Azure.Policy.ExemptionDescriptors
+    - Azure.Policy.Descriptors
+    - Azure.Policy.AssignmentDescriptors
   if:
-    name: '.'
+    name: "."
     contains:
-      - 'min'
+      - "min"
