@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "13060232317927260302"
+      "templateHash": "9314062037375805184"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service.",
@@ -816,7 +816,7 @@
             ]
           },
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pe-{0}-{1}-{2}', last(split(resourceId('Microsoft.CognitiveServices/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'account'), copyIndex()))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.CognitiveServices/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'account'), copyIndex()))]"
           },
           "serviceResourceId": {
             "value": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('name'))]"
@@ -869,7 +869,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.21.1.54444",
-              "templateHash": "10397201760229716051"
+              "templateHash": "12904145006817075341"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -971,8 +971,9 @@
           "parameters": {
             "name": {
               "type": "string",
+              "defaultValue": "[format('pep-{0}', last(split(parameters('serviceResourceId'), '/')))]",
               "metadata": {
-                "description": "Required. Name of the private endpoint resource to create."
+                "description": "Optional. Name of the private endpoint resource to create."
               }
             },
             "subnetResourceId": {

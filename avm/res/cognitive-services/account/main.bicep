@@ -270,7 +270,7 @@ module cognitiveService_privateEndpoints '../../network/private-endpoint/main.bi
     groupIds: [
       privateEndpoint.?service ?? 'account'
     ]
-    name: privateEndpoint.?name ?? 'pe-${last(split(cognitiveService.id, '/'))}-${privateEndpoint.?service ?? 'account'}-${index}'
+    name: privateEndpoint.?name ?? 'pep-${last(split(cognitiveService.id, '/'))}-${privateEndpoint.?service ?? 'account'}-${index}'
     serviceResourceId: cognitiveService.id
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
