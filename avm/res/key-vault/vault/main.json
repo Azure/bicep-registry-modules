@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "167861790396816165"
+      "templateHash": "13449748758048887231"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -1372,7 +1372,7 @@
             ]
           },
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pe-{0}-{1}-{2}', last(split(resourceId('Microsoft.KeyVault/vaults', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'vault'), copyIndex()))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.KeyVault/vaults', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'vault'), copyIndex()))]"
           },
           "serviceResourceId": {
             "value": "[resourceId('Microsoft.KeyVault/vaults', parameters('name'))]"
@@ -1425,7 +1425,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.21.1.54444",
-              "templateHash": "10397201760229716051"
+              "templateHash": "12904145006817075341"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -1527,8 +1527,9 @@
           "parameters": {
             "name": {
               "type": "string",
+              "defaultValue": "[format('pep-{0}', last(split(parameters('serviceResourceId'), '/')))]",
               "metadata": {
-                "description": "Required. Name of the private endpoint resource to create."
+                "description": "Optional. Name of the private endpoint resource to create."
               }
             },
             "subnetResourceId": {
