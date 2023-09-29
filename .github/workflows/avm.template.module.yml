@@ -32,7 +32,7 @@ jobs:
     if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Set environment
@@ -55,7 +55,7 @@ jobs:
         moduleTestFilePaths: ${{ fromJson(inputs.moduleTestFilePaths) }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
       - name: Set PSRule validation
@@ -84,7 +84,7 @@ jobs:
         moduleTestFilePaths: ${{ fromJson(inputs.moduleTestFilePaths) }}
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Set environment
@@ -113,7 +113,7 @@ jobs:
       - job_module_deploy_validation
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Set environment
