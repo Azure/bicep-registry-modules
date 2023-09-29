@@ -9,7 +9,7 @@ metadata description = 'This instance deploys the module using Customer-Managed-
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'cognitiveservices.accounts-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-cognitiveservices.accounts-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
