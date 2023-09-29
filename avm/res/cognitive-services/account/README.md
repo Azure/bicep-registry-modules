@@ -455,7 +455,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 
 ### Example 4: _Using Customer-Managed-Keys with System-Assigned identity_
 
-This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once to create the System-Assigned Idenity, and one to us it for accessing the Customer-Managed-Key secret.
+This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
 
 <details>
@@ -1286,7 +1286,7 @@ Optional. The location to deploy the private endpoint to.
 Optional. Specify the type of lock.
 
 - Required: No
-- Type: 
+- Type:
 
 ### Parameter: `privateEndpoints.manualPrivateLinkServiceConnections`
 
@@ -1321,7 +1321,7 @@ Optional. The private DNS zone groups to associate the private endpoint with. A 
 Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: No
-- Type: 
+- Type:
 
 ### Parameter: `privateEndpoints.service`
 
