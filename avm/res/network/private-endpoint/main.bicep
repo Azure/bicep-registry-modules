@@ -2,8 +2,8 @@ metadata name = 'Private Endpoints'
 metadata description = 'This module deploys a Private Endpoint.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Optional. Name of the private endpoint resource to create.')
-param name string = 'pep-${last(split(serviceResourceId, '/'))}'
+@description('Required. Name of the private endpoint resource to create.')
+param name string
 
 @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
 param subnetResourceId string
