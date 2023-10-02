@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "5002857972151775476"
+      "templateHash": "17701755746040694442"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -805,7 +805,7 @@
             "value": "[tryGet(variables('secretList')[copyIndex()], 'contentType')]"
           },
           "tags": {
-            "value": "[tryGet(variables('secretList')[copyIndex()], 'tags')]"
+            "value": "[coalesce(tryGet(variables('secretList')[copyIndex()], 'tags'), parameters('tags'))]"
           },
           "roleAssignments": {
             "value": "[tryGet(variables('secretList')[copyIndex()], 'roleAssignments')]"
@@ -1091,7 +1091,7 @@
             "value": "[coalesce(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'kty'), 'EC')]"
           },
           "tags": {
-            "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'tags')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'roleAssignments')]"
