@@ -15,10 +15,10 @@ param tags object?
 param attributesEnabled bool = true
 
 @description('Optional. Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible.')
-param attributesExp int = -1
+param attributesExp int?
 
 @description('Optional. Not before date in seconds since 1970-01-01T00:00:00Z.')
-param attributesNbf int = -1
+param attributesNbf int?
 
 @description('Optional. The content type of the secret.')
 @secure()
@@ -60,8 +60,8 @@ resource secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
     contentType: contentType
     attributes: {
       enabled: attributesEnabled
-      exp: attributesExp != -1 ? attributesExp : null
-      nbf: attributesNbf != -1 ? attributesNbf : null
+      exp: attributesExp
+      nbf: attributesNbf
     }
     value: value
   }
