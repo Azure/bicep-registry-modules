@@ -219,7 +219,7 @@ module keyVault_secrets 'secret/main.bicep' = [for (secret, index) in secretList
     attributesExp: secret.?attributesExp
     attributesNbf: secret.?attributesNbf
     contentType: secret.?contentType
-    tags: secret.?tags
+    tags: secret.?tags ?? tags
     roleAssignments: secret.?roleAssignments
   }
 }]
@@ -236,7 +236,7 @@ module keyVault_keys 'key/main.bicep' = [for (key, index) in (keys ?? []): {
     keyOps: key.?keyOps
     keySize: key.?keySize
     kty: key.?kty ?? 'EC'
-    tags: key.?tags
+    tags: key.?tags ?? tags
     roleAssignments: key.?roleAssignments
     rotationPolicy: key.?rotationPolicy
   }
