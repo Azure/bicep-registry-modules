@@ -64,5 +64,6 @@ module testDeployment '../../../main.bicep' = {
     customDnsConfigs: []
     privateDnsZoneResourceIds: []
     manualPrivateLinkServiceConnections: []
+    tags: {}
   }
 }
