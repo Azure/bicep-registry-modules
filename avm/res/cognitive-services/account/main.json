@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "833341414620723875"
+      "templateHash": "12802387418814400331"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service.",
@@ -299,7 +299,6 @@
           },
           "lock": {
             "$ref": "#/definitions/lockType",
-            "nullable": true,
             "metadata": {
               "description": "Optional. Specify the type of lock."
             }

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "724948966962755436"
+      "templateHash": "6328941340062506764"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -299,14 +299,12 @@
           },
           "lock": {
             "$ref": "#/definitions/lockType",
-            "nullable": true,
             "metadata": {
               "description": "Optional. Specify the type of lock."
             }
           },
           "roleAssignments": {
             "$ref": "#/definitions/roleAssignmentType",
-            "nullable": true,
             "metadata": {
               "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
             }
