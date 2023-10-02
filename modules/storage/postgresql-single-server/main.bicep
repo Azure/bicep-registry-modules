@@ -38,7 +38,7 @@ param administratorLoginPassword string
 param backupRetentionDays int = 35
 
 @description('Optional. The mode to create a new server.')
-@allowed([ 'Default', 'GeoRestore', 'PointInTimeRestore', 'Replica' ])
+@allowed(['Default', 'GeoRestore', 'PointInTimeRestore', 'Replica'])
 param createMode string = 'Default'
 
 @description('Optional. List of databases to create on server.')
@@ -51,28 +51,28 @@ param firewallRules firewallRulesType[] = []
 param virtualNetworkRules virtualNetworkRuleType[] = []
 
 @description('Optional. Status showing whether the server enabled infrastructure encryption.')
-@allowed([ 'Enabled', 'Disabled' ])
+@allowed(['Enabled', 'Disabled'])
 param infrastructureEncryption string = 'Disabled'
 
 @description('Optional. Enforce a minimal Tls version for the server.')
-@allowed([ 'TLS1_0', 'TLS1_1', 'TLS1_2', 'TLSEnforcementDisabled' ])
+@allowed(['TLS1_0', 'TLS1_1', 'TLS1_2', 'TLSEnforcementDisabled'])
 param minimalTlsVersion string = 'TLS1_2'
 
 var sslEnforcement = (minimalTlsVersion == 'TLSEnforcementDisabled') ? 'Disabled' : 'Enabled'
 
 @description('Optional. Whether or not public network access is allowed for this server.')
-@allowed([ 'Enabled', 'Disabled' ])
+@allowed(['Enabled','Disabled'])
 param publicNetworkAccess string = 'Disabled'
 
 @description('Optional. The version of the PostgreSQL server.')
-@allowed([ '9.5', '9.6', '10', '10.0', '10.2', '11' ])
+@allowed(['9.5', '9.6', '10', '10.0', '10.2', '11'])
 param version string = '11'
 
 @description('Optional. List of privateEndpoints to create on postgres server.')
 param privateEndpoints array = []
 
 @description('Optional. Enable or disable geo-redundant backups. It requires at least a GeneralPurpose or MemoryOptimized skuTier.')
-@allowed([ 'Enabled', 'Disabled' ])
+@allowed(['Enabled','Disabled'])
 param geoRedundantBackup string = 'Disabled'
 
 @description('Optional. Restore point creation time (ISO8601 format), specifying the time to restore from.')
@@ -91,7 +91,7 @@ param skuCapacity int = 2
 param SkuSizeMB int = 5120
 
 @description('Optional. Azure database for Postgres pricing tier')
-@allowed([ 'Basic', 'GeneralPurpose', 'MemoryOptimized' ])
+@allowed(['Basic', 'GeneralPurpose', 'MemoryOptimized'])
 param SkuTier string = 'GeneralPurpose'
 
 @description('Optional. Azure database for Postgres sku family')
@@ -120,7 +120,7 @@ var varPrivateEndpoints = [for endpoint in privateEndpoints: {
   ]
   subnetId: endpoint.subnetId
   privateDnsZoneConfigs: endpoint.?privateDnsZoneConfigs ?? []
-  customNetworkInterfaceName: endpoint.?customNetworkInterfaceName
+  customNetworkInterfaceName: endpoint.?customNetworkInterfaceName ?? null
   manualApprovalEnabled: endpoint.?manualApprovalEnabled ?? false
 }]
 
@@ -132,7 +132,7 @@ resource postgresServer 'Microsoft.DBforPostgreSQL/servers@2017-12-01' = {
     name: skuName
     tier: SkuTier
     capacity: skuCapacity
-    size: '${SkuSizeMB}' //a string is expected here but a int for the storageProfile...
+    size: '${SkuSizeMB}'  //a string is expected here but a int for the storageProfile...
     family: skuFamily
   }
   identity: {
@@ -150,7 +150,7 @@ resource postgresServer 'Microsoft.DBforPostgreSQL/servers@2017-12-01' = {
       storageMB: storageSizeGB * 1024
       backupRetentionDays: backupRetentionDays
       geoRedundantBackup: geoRedundantBackup
-      enableStorageAutogrow: validStorageAutogrow
+      enableStorageAutogrow: validStorageAutogrow ?? null
     }
     publicNetworkAccess: publicNetworkAccess
     sourceServerId: createMode != 'Default' ? sourceServerResourceId : null
@@ -232,13 +232,13 @@ module postgresServerPrivateEndpoint 'modules/privateEndpoint.bicep' = {
 param diagnosticSettingsProperties diagnosticSettingsPropertiesType = {}
 
 @description('Enable postgres diagnostic settings resource.')
-var enablePostgresDiagnosticSettings = (empty(diagnosticSettingsProperties.?diagnosticReceivers.?workspaceId) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?eventHub) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?storageAccountId) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?marketplacePartnerId)) ? false : true
+var enablePostgresDiagnosticSettings  = (empty(diagnosticSettingsProperties.?diagnosticReceivers.?workspaceId) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?eventHub) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?storageAccountId) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?marketplacePartnerId)) ? false : true
 
 resource postgresDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enablePostgresDiagnosticSettings) {
   name: '${serverName}-diagnostic-settings'
   properties: {
     eventHubAuthorizationRuleId: diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?EventHubAuthorizationRuleId
-    eventHubName: diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?EventHubName
+    eventHubName:  diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?EventHubName
     logAnalyticsDestinationType: diagnosticSettingsProperties.diagnosticReceivers.?logAnalyticsDestinationType
     logs: diagnosticSettingsProperties.?logs
     marketplacePartnerId: diagnosticSettingsProperties.diagnosticReceivers.?marketplacePartnerId
@@ -258,6 +258,8 @@ output fqdn string = createMode != 'Replica' ? postgresServer.properties.fullyQu
 
 @description('The resource ID of the Postgresql Single Server.')
 output id string = postgresServer.id
+
+
 
 // user-defined types
 @description('The retention policy for this log or metric.')

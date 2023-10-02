@@ -32,7 +32,7 @@ param administratorLoginPassword string
 param backupRetentionDays int = 35
 
 @description('Optional. The mode to create a new server.')
-@allowed([ 'Default', 'GeoRestore', 'PointInTimeRestore', 'Replica' ])
+@allowed(['Default', 'GeoRestore', 'PointInTimeRestore', 'Replica'])
 param createMode string = 'Default'
 
 @description('Optional. List of databases to create on server.')
@@ -42,7 +42,7 @@ param databases databaseType[] = []
 param serverConfigurations serverConfigurationType[] = []
 
 @description('Optional. Status showing whether the server enabled infrastructure encryption..')
-@allowed([ 'Enabled', 'Disabled' ])
+@allowed(['Enabled', 'Disabled'])
 param infrastructureEncryption string = 'Disabled'
 
 @description('Optional. List of firewall rules to create on server.')
@@ -55,11 +55,11 @@ param virtualNetworkRules virtualNetworkRuleType[] = []
 param privateEndpoints array = []
 
 @description('Optional. Enable or disable geo-redundant backups. It requires at least a GeneralPurpose or MemoryOptimized skuTier.')
-@allowed([ 'Enabled', 'Disabled' ])
+@allowed(['Enabled','Disabled'])
 param geoRedundantBackup string = 'Disabled'
 
 @description('Optional. Enforce a minimal Tls version for the server.')
-@allowed([ 'TLS1_0', 'TLS1_1', 'TLS1_2', 'TLSEnforcementDisabled' ])
+@allowed(['TLS1_0', 'TLS1_1', 'TLS1_2', 'TLSEnforcementDisabled'])
 param minimalTlsVersion string = 'TLS1_2'
 
 var sslEnforcement = (minimalTlsVersion == 'TLSEnforcementDisabled') ? 'Disabled' : 'Enabled'
@@ -68,7 +68,7 @@ var sslEnforcement = (minimalTlsVersion == 'TLSEnforcementDisabled') ? 'Disabled
 param restorePointInTime string = ''
 
 @description('Optional. Whether or not public network access is allowed for this server.')
-@allowed([ 'Enabled', 'Disabled' ])
+@allowed(['Enabled','Disabled'])
 param publicNetworkAccess string = 'Disabled'
 
 @description('Optional. The name of the sku, typically, tier + family + cores, e.g. B_Gen4_1, GP_Gen5_8.')
@@ -81,7 +81,7 @@ param skuCapacity int = 2
 param SkuSizeMB int = 5120
 
 @description('Optional. Azure database for MySQL pricing tier')
-@allowed([ 'Basic', 'GeneralPurpose', 'MemoryOptimized' ])
+@allowed(['Basic', 'GeneralPurpose', 'MemoryOptimized'])
 param SkuTier string = 'GeneralPurpose'
 
 @description('Optional. Azure database for MySQL sku family')
@@ -100,7 +100,7 @@ var validStorageAutogrow = createMode == 'Replica' ? '' : (enableStorageAutogrow
 param storageSizeGB int = 32
 
 @description('Optional. The version of the MySQL server.')
-@allowed([ '5.6', '5.7', '8.0' ])
+@allowed(['5.6', '5.7', '8.0'])
 param version string = '8.0'
 
 @description('Optional. Array of role assignment objects that contain the "roleDefinitionIdOrName" and "principalId" to define RBAC role assignments on this resource.')
@@ -128,7 +128,7 @@ resource mysqlServer 'Microsoft.DBforMySQL/servers@2017-12-01' = {
     name: skuName
     tier: SkuTier
     capacity: skuCapacity
-    size: '${SkuSizeMB}' //a string is expected here but a int for the storageProfile...
+    size: '${SkuSizeMB}'  //a string is expected here but a int for the storageProfile...
     family: skuFamily
   }
   identity: {
@@ -146,7 +146,7 @@ resource mysqlServer 'Microsoft.DBforMySQL/servers@2017-12-01' = {
       storageMB: storageSizeGB * 1024
       backupRetentionDays: backupRetentionDays
       geoRedundantBackup: geoRedundantBackup
-      storageAutogrow: validStorageAutogrow
+      storageAutogrow: validStorageAutogrow ?? null
     }
     publicNetworkAccess: publicNetworkAccess
     sourceServerId: createMode != 'Default' ? sourceServerResourceId : null
@@ -226,13 +226,13 @@ module mysqlPrivateEndpoint 'modules/privateEndpoint.bicep' = {
 param diagnosticSettingsProperties diagnosticSettingsPropertiesType = {}
 
 @description('Enable mysql diagnostic settings resource.')
-var enableMysqlDiagnosticSettings = (empty(diagnosticSettingsProperties.?diagnosticReceivers.?workspaceId) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?eventHub) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?storageAccountId) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?marketplacePartnerId)) ? false : true
+var enableMysqlDiagnosticSettings  = (empty(diagnosticSettingsProperties.?diagnosticReceivers.?workspaceId) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?eventHub) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?storageAccountId) && empty(diagnosticSettingsProperties.?diagnosticReceivers.?marketplacePartnerId)) ? false : true
 
 resource mysqlDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (enableMysqlDiagnosticSettings) {
   name: '${serverName}-diagnostic-settings'
   properties: {
     eventHubAuthorizationRuleId: diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?EventHubAuthorizationRuleId
-    eventHubName: diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?EventHubName
+    eventHubName:  diagnosticSettingsProperties.diagnosticReceivers.?eventHub.?EventHubName
     logAnalyticsDestinationType: diagnosticSettingsProperties.diagnosticReceivers.?logAnalyticsDestinationType
     logs: diagnosticSettingsProperties.?logs
     marketplacePartnerId: diagnosticSettingsProperties.diagnosticReceivers.?marketplacePartnerId
@@ -248,6 +248,7 @@ resource mysqlDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-
 output id string = mysqlServer.id
 @description('MySQL Single Server fully Qualified Domain Name')
 output fqdn string = createMode != 'Replica' ? mysqlServer.properties.fullyQualifiedDomainName : ''
+
 
 // user-defined types
 @description('The retention policy for this log or metric.')

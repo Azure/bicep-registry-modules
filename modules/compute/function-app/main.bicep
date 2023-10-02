@@ -39,7 +39,7 @@ param targetWorkerCount int = 0
 @allowed([ 0, 1, 2 ])
 param targetWorkerSizeId int = 0
 
-@allowed([ 'None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned, UserAssigned'
+@allowed(['None', 'SystemAssigned', 'UserAssigned', 'SystemAssigned, UserAssigned'
 ])
 @description('Optional. The type of identity used for the virtual machine. The type \'SystemAssigned, UserAssigned\' includes both an implicitly created identity and a set of user assigned identities. The type \'None\' will remove any identities from the sites ( app or functionapp).')
 param identityType string = 'SystemAssigned'
@@ -64,11 +64,11 @@ param kind string = 'functionapp'
 param functionsExtensionVersion string = '~4'
 
 @description('Dictates whether editing in the Azure portal is enabled.')
-@allowed([ 'readonly', 'readwrite' ])
+@allowed(['readonly', 'readwrite'])
 param functionAppEditMode string = 'readonly'
 
 @description('Optional. Runtime of the function worker. WARNING: NOT ALL OSes SUPPORT ALL RUNTIMES!')
-@allowed([ 'dotnet', 'node', 'python', 'java', 'powershell', '' ])
+@allowed(['dotnet', 'node', 'python', 'java', 'powershell', ''])
 param functionsWorkerRuntime string = ''
 
 @description('Optional. NodeJS version.')
@@ -153,11 +153,11 @@ param extraAppSettings object = {}
 var servicePlanKind = serverOS == 'Linux' ? toLower(serverOS) : ''
 
 @description('The state of FTP / FTPS service.')
-@allowed([ 'Disabled', 'AllAllowed', 'FtpsOnly' ])
+@allowed(['Disabled', 'AllAllowed', 'FtpsOnly'])
 param ftpsState string = 'Disabled'
 
 @description('Configures the minimum version of TLS required for SSL requests.')
-@allowed([ '1.0', '1.1', '1.2' ])
+@allowed(['1.0', '1.1', '1.2'])
 param minTlsVersion string = '1.2'
 
 @description('Linux App Framework and version. e.g. PYTHON|3.9')
@@ -217,7 +217,7 @@ resource sites 'Microsoft.Web/sites@2022-03-01' = {
   }
   properties: {
     siteConfig: {
-      linuxFxVersion: enableDockerContainer ? 'DOCKER|${dockerImage}' : linuxFxVersion
+      linuxFxVersion: enableDockerContainer ? 'DOCKER|${dockerImage}' : linuxFxVersion ?? null
       ftpsState: ftpsState
       minTlsVersion: minTlsVersion
     }
@@ -325,6 +325,7 @@ output functions array = [for function in functions: {
 
 @description('Principal Id of the identity assigned to the function app.')
 output sitePrincipalId string = (sites.identity.type == 'SystemAssigned') ? sites.identity.principalId : ''
+
 
 // user defined types
 type functionType = {
