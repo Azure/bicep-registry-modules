@@ -73,7 +73,7 @@ function Publish-ModuleFromPathToPBR {
   $incorrectLines = @()
   for ($index = 0; $index -lt $templateContent.Count; $index++) {
     if ($templateContent[$index] -match '#_(.+?)_#') {
-      $incorrectLines += ('You have the token [#_{0}_#] in line [{1}] of file [{2}]' -f $matches[1], $index, $moduleJsonFilePath)
+      $incorrectLines += ('You have the token [#_{0}_#] in line [{1}] of file [{2}]' -f $matches[1], $index+1, $moduleJsonFilePath)
     }
   }
   if ($incorrectLines) {
