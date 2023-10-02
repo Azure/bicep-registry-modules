@@ -232,7 +232,7 @@ module keyVault_keys 'key/main.bicep' = [for (key, index) in (keys ?? []): {
     attributesEnabled: key.?attributesEnabled ?? true
     attributesExp: key.?attributesExp
     attributesNbf: key.?attributesNbf
-    curveName: key.?attributesNbf ?? 'P-256'
+    curveName: key.?curveName ?? 'P-256'
     keyOps: key.?keyOps
     keySize: key.?keySize
     kty: key.?kty ?? 'EC'

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "17701755746040694442"
+      "templateHash": "1708858064119811156"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -1079,7 +1079,7 @@
             "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesNbf')]"
           },
           "curveName": {
-            "value": "[coalesce(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesNbf'), 'P-256')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'curveName'), 'P-256')]"
           },
           "keyOps": {
             "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'keyOps')]"
