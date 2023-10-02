@@ -57,7 +57,12 @@ module testDeployment '../../../main.bicep' = {
     serviceResourceId: nestedDependencies.outputs.keyVaultResourceId
     subnetResourceId: nestedDependencies.outputs.subnetResourceId
     // Workaround for PSRule
+    applicationSecurityGroupResourceIds: []
+    ipConfigurations: []
     lock: {}
     roleAssignments: []
+    customDnsConfigs: []
+    privateDnsZoneResourceIds: []
+    manualPrivateLinkServiceConnections: []
   }
 }
