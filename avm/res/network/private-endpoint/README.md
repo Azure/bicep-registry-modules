@@ -53,10 +53,8 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
     serviceResourceId: '<serviceResourceId>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
-    customDnsConfigs: []
     location: '<location>'
     lock: {}
-    privateDnsZoneResourceIds: []
     roleAssignments: []
   }
 }
@@ -90,17 +88,11 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
       "value": "<subnetResourceId>"
     },
     // Non-required parameters
-    "customDnsConfigs": {
-      "value": []
-    },
     "location": {
       "value": "<location>"
     },
     "lock": {
       "value": {}
-    },
-    "privateDnsZoneResourceIds": {
-      "value": []
     },
     "roleAssignments": {
       "value": []
@@ -136,7 +128,6 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
     applicationSecurityGroupResourceIds: [
       '<applicationSecurityGroupResourceId>'
     ]
-    customDnsConfigs: []
     customNetworkInterfaceName: 'npemax001nic'
     ipConfigurations: [
       {
@@ -204,9 +195,6 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
       "value": [
         "<applicationSecurityGroupResourceId>"
       ]
-    },
-    "customDnsConfigs": {
-      "value": []
     },
     "customNetworkInterfaceName": {
       "value": "npemax001nic"
@@ -284,7 +272,6 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
     applicationSecurityGroupResourceIds: [
       '<applicationSecurityGroupResourceId>'
     ]
-    customDnsConfigs: []
     customNetworkInterfaceName: 'npewaf001nic'
     ipConfigurations: [
       {
@@ -352,9 +339,6 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
       "value": [
         "<applicationSecurityGroupResourceId>"
       ]
-    },
-    "customDnsConfigs": {
-      "value": []
     },
     "customNetworkInterfaceName": {
       "value": "npewaf001nic"

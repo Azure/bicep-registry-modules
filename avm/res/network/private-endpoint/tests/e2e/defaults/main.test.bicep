@@ -59,7 +59,5 @@ module testDeployment '../../../main.bicep' = {
     // Workaround for PSRule
     lock: {}
     roleAssignments: []
-    customDnsConfigs: []
-    privateDnsZoneResourceIds: []
   }
 }

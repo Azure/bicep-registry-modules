@@ -91,6 +91,5 @@ module testDeployment '../../../main.bicep' = {
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    customDnsConfigs: []
   }
 }
