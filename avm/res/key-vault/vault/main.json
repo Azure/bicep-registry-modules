@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "13449748758048887231"
+      "templateHash": "12078200064591041743"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -597,7 +597,7 @@
           "name": "[parameters('sku')]",
           "family": "A"
         },
-        "networkAcls": "[if(not(empty(parameters('networkAcls'))), createObject('bypass', if(contains(parameters('networkAcls'), 'bypass'), parameters('networkAcls').bypass, null()), 'defaultAction', if(contains(parameters('networkAcls'), 'defaultAction'), parameters('networkAcls').defaultAction, null()), 'virtualNetworkRules', if(contains(parameters('networkAcls'), 'virtualNetworkRules'), parameters('networkAcls').virtualNetworkRules, createArray()), 'ipRules', if(contains(parameters('networkAcls'), 'ipRules'), parameters('networkAcls').ipRules, createArray())), null())]",
+        "networkAcls": "[if(not(empty(parameters('networkAcls'))), createObject('bypass', tryGet(parameters('networkAcls'), 'bypass'), 'defaultAction', tryGet(parameters('networkAcls'), 'defaultAction'), 'virtualNetworkRules', coalesce(tryGet(parameters('networkAcls'), 'virtualNetworkRules'), createArray()), 'ipRules', coalesce(tryGet(parameters('networkAcls'), 'ipRules'), createArray())), null())]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkAcls'))), 'Disabled', null()))]"
       }
     },
@@ -625,14 +625,14 @@
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
-        "storageAccountId": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId'), null())]",
-        "workspaceId": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId'), null())]",
-        "eventHubAuthorizationRuleId": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId'), null())]",
-        "eventHubName": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName'), null())]",
+        "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
+        "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+        "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
+        "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
         "metrics": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics', 'timeGrain', null(), 'enabled', true())))]",
         "logs": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs', 'enabled', true())))]",
-        "marketplacePartnerId": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId'), null())]",
-        "logAnalyticsDestinationType": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType'), null())]"
+        "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
+        "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
       },
       "dependsOn": [
         "keyVault"
@@ -650,11 +650,11 @@
       "properties": {
         "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
         "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-        "description": "[coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description'), null())]",
-        "principalType": "[coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType'), null())]",
-        "condition": "[coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'), null())]",
+        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
         "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-        "delegatedManagedIdentityResourceId": "[coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId'), null())]"
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
         "keyVault"
@@ -792,12 +792,24 @@
           "keyVaultName": {
             "value": "[parameters('name')]"
           },
-          "attributesEnabled": "[if(contains(variables('secretList')[copyIndex()], 'attributesEnabled'), createObject('value', variables('secretList')[copyIndex()].attributesEnabled), createObject('value', true()))]",
-          "attributesExp": "[if(contains(variables('secretList')[copyIndex()], 'attributesExp'), createObject('value', variables('secretList')[copyIndex()].attributesExp), createObject('value', -1))]",
-          "attributesNbf": "[if(contains(variables('secretList')[copyIndex()], 'attributesNbf'), createObject('value', variables('secretList')[copyIndex()].attributesNbf), createObject('value', -1))]",
-          "contentType": "[if(contains(variables('secretList')[copyIndex()], 'contentType'), createObject('value', variables('secretList')[copyIndex()].contentType), createObject('value', ''))]",
-          "tags": "[if(contains(variables('secretList')[copyIndex()], 'tags'), createObject('value', variables('secretList')[copyIndex()].tags), createObject('value', createObject()))]",
-          "roleAssignments": "[if(contains(variables('secretList')[copyIndex()], 'roleAssignments'), createObject('value', variables('secretList')[copyIndex()].roleAssignments), createObject('value', createArray()))]"
+          "attributesEnabled": {
+            "value": "[coalesce(tryGet(variables('secretList')[copyIndex()], 'attributesEnabled'), true())]"
+          },
+          "attributesExp": {
+            "value": "[tryGet(variables('secretList')[copyIndex()], 'attributesExp')]"
+          },
+          "attributesNbf": {
+            "value": "[tryGet(variables('secretList')[copyIndex()], 'attributesNbf')]"
+          },
+          "contentType": {
+            "value": "[tryGet(variables('secretList')[copyIndex()], 'contentType')]"
+          },
+          "tags": {
+            "value": "[tryGet(variables('secretList')[copyIndex()], 'tags')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(variables('secretList')[copyIndex()], 'roleAssignments')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -807,7 +819,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.21.1.54444",
-              "templateHash": "11602873550277002353"
+              "templateHash": "4766654320608318259"
             },
             "name": "Key Vault Secrets",
             "description": "This module deploys a Key Vault Secret.",
@@ -910,21 +922,21 @@
             },
             "attributesExp": {
               "type": "int",
-              "defaultValue": -1,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible."
               }
             },
             "attributesNbf": {
               "type": "int",
-              "defaultValue": -1,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Not before date in seconds since 1970-01-01T00:00:00Z."
               }
             },
             "contentType": {
               "type": "securestring",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The content type of the secret."
               }
@@ -976,8 +988,8 @@
                 "contentType": "[parameters('contentType')]",
                 "attributes": {
                   "enabled": "[parameters('attributesEnabled')]",
-                  "exp": "[if(not(equals(parameters('attributesExp'), -1)), parameters('attributesExp'), null())]",
-                  "nbf": "[if(not(equals(parameters('attributesNbf'), -1)), parameters('attributesNbf'), null())]"
+                  "exp": "[parameters('attributesExp')]",
+                  "nbf": "[parameters('attributesNbf')]"
                 },
                 "value": "[parameters('value')]"
               },
@@ -997,11 +1009,11 @@
               "properties": {
                 "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
                 "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-                "description": "[coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description'), null())]",
-                "principalType": "[coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType'), null())]",
-                "condition": "[coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'), null())]",
+                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
                 "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                "delegatedManagedIdentityResourceId": "[coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId'), null())]"
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
               },
               "dependsOn": [
                 "secret"
@@ -1057,16 +1069,36 @@
           "keyVaultName": {
             "value": "[parameters('name')]"
           },
-          "attributesEnabled": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesEnabled'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].attributesEnabled), createObject('value', true()))]",
-          "attributesExp": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesExp'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].attributesExp), createObject('value', -1))]",
-          "attributesNbf": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesNbf'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].attributesNbf), createObject('value', -1))]",
-          "curveName": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'curveName'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].curveName), createObject('value', 'P-256'))]",
-          "keyOps": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'keyOps'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].keyOps), createObject('value', createArray()))]",
-          "keySize": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'keySize'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].keySize), createObject('value', -1))]",
-          "kty": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'kty'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].kty), createObject('value', 'EC'))]",
-          "tags": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'tags'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].tags), createObject('value', createObject()))]",
-          "roleAssignments": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'roleAssignments'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-          "rotationPolicy": "[if(contains(coalesce(parameters('keys'), createArray())[copyIndex()], 'rotationPolicy'), createObject('value', coalesce(parameters('keys'), createArray())[copyIndex()].rotationPolicy), createObject('value', createObject()))]"
+          "attributesEnabled": {
+            "value": "[coalesce(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesEnabled'), true())]"
+          },
+          "attributesExp": {
+            "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesExp')]"
+          },
+          "attributesNbf": {
+            "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesNbf')]"
+          },
+          "curveName": {
+            "value": "[coalesce(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'attributesNbf'), 'P-256')]"
+          },
+          "keyOps": {
+            "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'keyOps')]"
+          },
+          "keySize": {
+            "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'keySize')]"
+          },
+          "kty": {
+            "value": "[coalesce(tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'kty'), 'EC')]"
+          },
+          "tags": {
+            "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'tags')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
+          "rotationPolicy": {
+            "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'rotationPolicy')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1076,7 +1108,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.21.1.54444",
-              "templateHash": "2337714221072963213"
+              "templateHash": "10258101990168322506"
             },
             "name": "Key Vault Keys",
             "description": "This module deploys a Key Vault Key.",
@@ -1312,11 +1344,11 @@
               "properties": {
                 "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
                 "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-                "description": "[coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description'), null())]",
-                "principalType": "[coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType'), null())]",
-                "condition": "[coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'), null())]",
+                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
                 "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                "delegatedManagedIdentityResourceId": "[coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId'), null())]"
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
               },
               "dependsOn": [
                 "key"
@@ -1390,31 +1422,31 @@
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
           "privateDnsZoneGroupName": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroupName'), 'default')]"
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroupName')]"
           },
           "privateDnsZoneResourceIds": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneResourceIds'), createArray())]"
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneResourceIds')]"
           },
           "roleAssignments": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'roleAssignments'), createArray())]"
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'roleAssignments')]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'tags'), createObject())]"
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'tags')]"
           },
           "manualPrivateLinkServiceConnections": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections'), createArray())]"
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualPrivateLinkServiceConnections')]"
           },
           "customDnsConfigs": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs'), createArray())]"
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
           },
           "ipConfigurations": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'ipConfigurations'), createArray())]"
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'ipConfigurations')]"
           },
           "applicationSecurityGroupResourceIds": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'applicationSecurityGroupResourceIds'), createArray())]"
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'applicationSecurityGroupResourceIds')]"
           },
           "customNetworkInterfaceName": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customNetworkInterfaceName'), '')]"
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customNetworkInterfaceName')]"
           }
         },
         "template": {
@@ -1425,7 +1457,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.21.1.54444",
-              "templateHash": "12904145006817075341"
+              "templateHash": "3932215689364334869"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -1527,9 +1559,8 @@
           "parameters": {
             "name": {
               "type": "string",
-              "defaultValue": "[format('pep-{0}', last(split(parameters('serviceResourceId'), '/')))]",
               "metadata": {
-                "description": "Optional. Name of the private endpoint resource to create."
+                "description": "Required. Name of the private endpoint resource to create."
               }
             },
             "subnetResourceId": {
@@ -1729,11 +1760,11 @@
               "properties": {
                 "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
                 "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-                "description": "[coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description'), null())]",
-                "principalType": "[coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType'), null())]",
-                "condition": "[coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'), null())]",
+                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
                 "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                "delegatedManagedIdentityResourceId": "[coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId'), null())]"
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
               },
               "dependsOn": [
                 "privateEndpoint"

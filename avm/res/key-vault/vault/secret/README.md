@@ -54,21 +54,18 @@ Determines whether the object is enabled.
 Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible.
 - Required: No
 - Type: int
-- Default: `-1`
 
 ### Parameter: `attributesNbf`
 
 Not before date in seconds since 1970-01-01T00:00:00Z.
 - Required: No
 - Type: int
-- Default: `-1`
 
 ### Parameter: `contentType`
 
 The content type of the secret.
 - Required: No
 - Type: securestring
-- Default: `''`
 
 ### Parameter: `keyVaultName`
 
