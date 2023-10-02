@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.21.1.54444",
-      "templateHash": "16029320630204173564"
+      "version": "0.20.4.51522",
+      "templateHash": "11631462467648575783"
     },
     "name": "Azure Cognitive Search",
     "description": "Bicep module for simplified deployment of Azure Cognitive Search.",
@@ -140,6 +140,9 @@
       }
     }
   },
+  "variables": {
+    "sanitizedSkuName": "[toLower(if(contains(parameters('sku'), 'name'), parameters('sku').name, 'standard'))]"
+  },
   "resources": [
     {
       "type": "Microsoft.Search/searchServices",
@@ -147,9 +150,7 @@
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
-      "identity": {
-        "type": "SystemAssigned"
-      },
+      "identity": "[if(equals(variables('sanitizedSkuName'), 'free'), null(), createObject('type', 'SystemAssigned'))]",
       "properties": {
         "authOptions": "[parameters('authOptions')]",
         "disableLocalAuth": "[parameters('disableLocalAuth')]",
