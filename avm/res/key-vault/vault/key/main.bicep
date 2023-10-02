@@ -132,7 +132,7 @@ type roleAssignmentType = {
   @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
   principalId: string
 
-  @description('The principal type of the assigned principal ID.')
+  @description('Optional. The principal type of the assigned principal ID.')
   principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device' | null)?
 
   @description('Optional. The description of the role assignment.')

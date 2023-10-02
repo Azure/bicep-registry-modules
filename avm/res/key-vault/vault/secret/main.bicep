@@ -29,7 +29,7 @@ param contentType string?
 param value string
 
 @description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-param roleAssignments array
+param roleAssignments roleAssignmentType
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -67,7 +67,7 @@ resource secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
   }
 }
 
-resource secretVault_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
+resource secret_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
   name: guid(secret.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
   properties: {
     roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : roleAssignment.roleDefinitionIdOrName
@@ -101,7 +101,7 @@ type roleAssignmentType = {
   @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
   principalId: string
 
-  @description('The principal type of the assigned principal ID.')
+  @description('Optional. The principal type of the assigned principal ID.')
   principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device' | null)?
 
   @description('Optional. The description of the role assignment.')

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "10258101990168322506"
+      "templateHash": "10926648479875609377"
     },
     "name": "Key Vault Keys",
     "description": "This module deploys a Key Vault Key.",
@@ -41,7 +41,7 @@
             ],
             "nullable": true,
             "metadata": {
-              "description": "The principal type of the assigned principal ID."
+              "description": "Optional. The principal type of the assigned principal ID."
             }
           },
           "description": {

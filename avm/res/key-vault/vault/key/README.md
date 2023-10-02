@@ -119,7 +119,7 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | No | string | Optional. The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | No | string | Optional. The description of the role assignment. |
 | [`principalId`](#parameter-roleassignmentsprincipalid) | Yes | string | Required. The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`principalType`](#parameter-roleassignmentsprincipaltype) | No | string | The principal type of the assigned principal ID. |
+| [`principalType`](#parameter-roleassignmentsprincipaltype) | No | string | Optional. The principal type of the assigned principal ID. |
 | [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead. |
 
 ### Parameter: `roleAssignments.condition`
@@ -160,7 +160,7 @@ Required. The principal ID of the principal (user/group/identity) to assign the 
 
 ### Parameter: `roleAssignments.principalType`
 
-The principal type of the assigned principal ID.
+Optional. The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
