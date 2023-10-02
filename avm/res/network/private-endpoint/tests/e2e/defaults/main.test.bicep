@@ -60,5 +60,6 @@ module testDeployment '../../../main.bicep' = {
     lock: {}
     roleAssignments: []
     customDnsConfigs: []
+    privateDnsZoneResourceIds: []
   }
 }
