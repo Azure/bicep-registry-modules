@@ -58,6 +58,8 @@ module testDeployment '../../../main.bicep' = {
     subnetResourceId: nestedDependencies.outputs.subnetResourceId
     // Workaround for PSRule
     applicationSecurityGroupResourceIds: []
+    customNetworkInterfaceName: ''
+    privateDnsZoneGroupName: ''
     ipConfigurations: []
     lock: {}
     roleAssignments: []

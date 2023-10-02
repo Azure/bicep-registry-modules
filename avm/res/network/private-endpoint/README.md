@@ -55,12 +55,15 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
     // Non-required parameters
     applicationSecurityGroupResourceIds: []
     customDnsConfigs: []
+    customNetworkInterfaceName: ''
     ipConfigurations: []
     location: '<location>'
     lock: {}
     manualPrivateLinkServiceConnections: []
+    privateDnsZoneGroupName: ''
     privateDnsZoneResourceIds: []
     roleAssignments: []
+    tags: {}
   }
 }
 ```
@@ -99,6 +102,9 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
     "customDnsConfigs": {
       "value": []
     },
+    "customNetworkInterfaceName": {
+      "value": ""
+    },
     "ipConfigurations": {
       "value": []
     },
@@ -111,11 +117,17 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
     "manualPrivateLinkServiceConnections": {
       "value": []
     },
+    "privateDnsZoneGroupName": {
+      "value": ""
+    },
     "privateDnsZoneResourceIds": {
       "value": []
     },
     "roleAssignments": {
       "value": []
+    },
+    "tags": {
+      "value": {}
     }
   }
 }
