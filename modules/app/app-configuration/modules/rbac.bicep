@@ -33,7 +33,7 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
     description: description
     roleDefinitionId: roleDefinitionId
     principalId: principalId
-    principalType: principalType ?? null
+    principalType: principalType
   }
   scope: appConfiguration
 }]

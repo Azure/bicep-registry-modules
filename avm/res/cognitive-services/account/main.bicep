@@ -241,10 +241,10 @@ resource cognitiveService_lock 'Microsoft.Authorization/locks@2020-05-01' = if (
 resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
   name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
   properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId ?? null
-    workspaceId: diagnosticSetting.?workspaceResourceId ?? null
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId ?? null
-    eventHubName: diagnosticSetting.?eventHubName ?? null
+    storageAccountId: diagnosticSetting.?storageAccountResourceId
+    workspaceId: diagnosticSetting.?workspaceResourceId
+    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+    eventHubName: diagnosticSetting.?eventHubName
     metrics: diagnosticSetting.?metricCategories ?? [
       {
         category: 'AllMetrics'
@@ -258,8 +258,8 @@ resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSetti
         enabled: true
       }
     ]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId ?? null
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType ?? null
+    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
   }
   scope: cognitiveService
 }]
@@ -293,11 +293,11 @@ resource cognitiveService_roleAssignments 'Microsoft.Authorization/roleAssignmen
   properties: {
     roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : roleAssignment.roleDefinitionIdOrName
     principalId: roleAssignment.principalId
-    description: roleAssignment.?description ?? null
-    principalType: roleAssignment.?principalType ?? null
-    condition: roleAssignment.?condition ?? null
+    description: roleAssignment.?description
+    principalType: roleAssignment.?principalType
+    condition: roleAssignment.?condition
     conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId ?? null
+    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
   }
   scope: cognitiveService
 }]
