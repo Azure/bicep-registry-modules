@@ -22,7 +22,7 @@ param attributesNbf int?
 
 @description('Optional. The content type of the secret.')
 @secure()
-param contentType string = ''
+param contentType string?
 
 @description('Required. The value of the secret. NOTE: "value" will never be returned from the service, as APIs using this model are is intended for internal use in ARM deployments. Users should use the data-plane REST service for interaction with vault secrets.')
 @secure()

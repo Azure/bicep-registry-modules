@@ -215,12 +215,12 @@ module keyVault_secrets 'secret/main.bicep' = [for (secret, index) in secretList
     name: secret.name
     value: secret.value
     keyVaultName: keyVault.name
-    attributesEnabled: contains(secret, 'attributesEnabled') ? secret.attributesEnabled : true
-    attributesExp: contains(secret, 'attributesExp') ? secret.attributesExp : -1
-    attributesNbf: contains(secret, 'attributesNbf') ? secret.attributesNbf : -1
-    contentType: contains(secret, 'contentType') ? secret.contentType : ''
-    tags: contains(secret, 'tags') ? secret.tags : {}
-    roleAssignments: contains(secret, 'roleAssignments') ? secret.roleAssignments : []
+    attributesEnabled: secret.?attributesEnabled ?? true
+    attributesExp: secret.?attributesExp
+    attributesNbf: secret.?attributesNbf
+    contentType: secret.?contentType
+    tags: secret.?tags
+    roleAssignments: secret.?roleAssignments
   }
 }]
 
@@ -229,16 +229,16 @@ module keyVault_keys 'key/main.bicep' = [for (key, index) in (keys ?? []): {
   params: {
     name: key.name
     keyVaultName: keyVault.name
-    attributesEnabled: contains(key, 'attributesEnabled') ? key.attributesEnabled : true
-    attributesExp: contains(key, 'attributesExp') ? key.attributesExp : -1
-    attributesNbf: contains(key, 'attributesNbf') ? key.attributesNbf : -1
-    curveName: contains(key, 'curveName') ? key.curveName : 'P-256'
-    keyOps: contains(key, 'keyOps') ? key.keyOps : []
-    keySize: contains(key, 'keySize') ? key.keySize : -1
-    kty: contains(key, 'kty') ? key.kty : 'EC'
-    tags: contains(key, 'tags') ? key.tags : {}
-    roleAssignments: contains(key, 'roleAssignments') ? key.roleAssignments : []
-    rotationPolicy: contains(key, 'rotationPolicy') ? key.rotationPolicy : {}
+    attributesEnabled: key.?attributesEnabled ?? true
+    attributesExp: key.?attributesExp
+    attributesNbf: key.?attributesNbf
+    curveName: key.?attributesNbf ?? 'P-256'
+    keyOps: key.?keyOps
+    keySize: key.?keySize
+    kty: key.?kty ?? 'EC'
+    tags: key.?tags
+    roleAssignments: key.?roleAssignments
+    rotationPolicy: key.?rotationPolicy
   }
 }]
 
@@ -254,15 +254,15 @@ module keyVault_privateEndpoints '../../network/private-endpoint/main.bicep' = [
     enableTelemetry: enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
-    privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName ?? 'default'
-    privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds ?? []
-    roleAssignments: privateEndpoint.?roleAssignments ?? []
-    tags: privateEndpoint.?tags ?? {}
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections ?? []
-    customDnsConfigs: privateEndpoint.?customDnsConfigs ?? []
-    ipConfigurations: privateEndpoint.?ipConfigurations ?? []
-    applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds ?? []
-    customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName ?? ''
+    privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
+    privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+    roleAssignments: privateEndpoint.?roleAssignments
+    tags: privateEndpoint.?tags
+    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
+    customDnsConfigs: privateEndpoint.?customDnsConfigs
+    ipConfigurations: privateEndpoint.?ipConfigurations
+    applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+    customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
   }
 }]
 
