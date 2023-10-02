@@ -204,9 +204,9 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
   properties: {
     customSubDomainName: customSubDomainName
     networkAcls: !empty(networkAcls) ? {
-      defaultAction: contains(networkAcls, 'defaultAction') ? networkAcls.defaultAction : null
-      virtualNetworkRules: contains(networkAcls, 'virtualNetworkRules') ? networkAcls.virtualNetworkRules : []
-      ipRules: contains(networkAcls, 'ipRules') ? networkAcls.ipRules : []
+      defaultAction: networkAcls.?defaultAction
+      virtualNetworkRules: networkAcls.?defaultAction ?? []
+      ipRules: networkAcls.?ipRules ?? []
     } : null
     publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : (!empty(privateEndpoints) && empty(networkAcls) ? 'Disabled' : null)
     allowedFqdnList: allowedFqdnList
@@ -277,14 +277,14 @@ module cognitiveService_privateEndpoints '../../network/private-endpoint/main.bi
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
     privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName ?? 'default'
-    privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds ?? []
-    roleAssignments: privateEndpoint.?roleAssignments ?? []
-    tags: privateEndpoint.?tags ?? {}
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections ?? []
-    customDnsConfigs: privateEndpoint.?customDnsConfigs ?? []
-    ipConfigurations: privateEndpoint.?ipConfigurations ?? []
-    applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds ?? []
-    customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName ?? ''
+    privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+    roleAssignments: privateEndpoint.?roleAssignments
+    tags: privateEndpoint.?tags
+    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
+    customDnsConfigs: privateEndpoint.?customDnsConfigs
+    ipConfigurations: privateEndpoint.?ipConfigurations
+    applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+    customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
   }
 }]
 
