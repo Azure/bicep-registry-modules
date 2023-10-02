@@ -279,7 +279,7 @@ module cognitiveService_privateEndpoints '../../network/private-endpoint/main.bi
     privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
     roleAssignments: privateEndpoint.?roleAssignments
-    tags: privateEndpoint.?tags
+    tags: privateEndpoint.?tags ?? tags
     manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
     customDnsConfigs: privateEndpoint.?customDnsConfigs
     ipConfigurations: privateEndpoint.?ipConfigurations

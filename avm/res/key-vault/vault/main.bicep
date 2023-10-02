@@ -257,7 +257,7 @@ module keyVault_privateEndpoints '../../network/private-endpoint/main.bicep' = [
     privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
     privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
     roleAssignments: privateEndpoint.?roleAssignments
-    tags: privateEndpoint.?tags
+    tags: privateEndpoint.?tags ?? tags
     manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
     customDnsConfigs: privateEndpoint.?customDnsConfigs
     ipConfigurations: privateEndpoint.?ipConfigurations
