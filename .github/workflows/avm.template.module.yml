@@ -122,7 +122,6 @@ jobs:
         uses: ./.github/actions/templates/avm-publishModule
         with:
           templateFilePath: "${{ inputs.modulePath }}/main.bicep"
-          subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
         env:
           PUBLISH_REGISTRY_SERVER: "${{ secrets.PUBLISH_REGISTRY_SERVER }}"
           PUBLISH_CLIENT_ID: "${{ secrets.PUBLISH_CLIENT_ID }}"
