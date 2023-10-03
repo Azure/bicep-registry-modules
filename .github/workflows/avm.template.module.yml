@@ -16,6 +16,10 @@ on:
         description: "Relative path to the module folder"
         required: true
 
+permissions:
+  id-token: write # For OIDC
+  contents: read # For OIDC
+
 env:
   ARM_SUBSCRIPTION_ID: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
   ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
@@ -122,7 +126,6 @@ jobs:
         uses: ./.github/actions/templates/avm-publishModule
         with:
           templateFilePath: "${{ inputs.modulePath }}/main.bicep"
-          subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
         env:
           PUBLISH_REGISTRY_SERVER: "${{ secrets.PUBLISH_REGISTRY_SERVER }}"
           PUBLISH_CLIENT_ID: "${{ secrets.PUBLISH_CLIENT_ID }}"
