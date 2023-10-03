@@ -157,10 +157,10 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
       family: 'A'
     }
     networkAcls: !empty(networkAcls) ? {
-      bypass: contains(networkAcls, 'bypass') ? networkAcls.bypass : null
-      defaultAction: contains(networkAcls, 'defaultAction') ? networkAcls.defaultAction : null
-      virtualNetworkRules: contains(networkAcls, 'virtualNetworkRules') ? networkAcls.virtualNetworkRules : []
-      ipRules: contains(networkAcls, 'ipRules') ? networkAcls.ipRules : []
+      bypass: networkAcls.?bypass
+      defaultAction: networkAcls.?defaultAction
+      virtualNetworkRules: networkAcls.?virtualNetworkRules ?? []
+      ipRules: networkAcls.?ipRules ?? []
     } : null
     publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : (!empty(privateEndpoints) && empty(networkAcls) ? 'Disabled' : null)
   }
@@ -178,10 +178,10 @@ resource keyVault_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(l
 resource keyVault_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
   name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
   properties: {
-    storageAccountId: diagnosticSetting.?storageAccountResourceId ?? null
-    workspaceId: diagnosticSetting.?workspaceResourceId ?? null
-    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId ?? null
-    eventHubName: diagnosticSetting.?eventHubName ?? null
+    storageAccountId: diagnosticSetting.?storageAccountResourceId
+    workspaceId: diagnosticSetting.?workspaceResourceId
+    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+    eventHubName: diagnosticSetting.?eventHubName
     metrics: diagnosticSetting.?metricCategories ?? [
       {
         category: 'AllMetrics'
@@ -195,8 +195,8 @@ resource keyVault_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021
         enabled: true
       }
     ]
-    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId ?? null
-    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType ?? null
+    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
   }
   scope: keyVault
 }]
@@ -215,12 +215,12 @@ module keyVault_secrets 'secret/main.bicep' = [for (secret, index) in secretList
     name: secret.name
     value: secret.value
     keyVaultName: keyVault.name
-    attributesEnabled: contains(secret, 'attributesEnabled') ? secret.attributesEnabled : true
-    attributesExp: contains(secret, 'attributesExp') ? secret.attributesExp : -1
-    attributesNbf: contains(secret, 'attributesNbf') ? secret.attributesNbf : -1
-    contentType: contains(secret, 'contentType') ? secret.contentType : ''
-    tags: contains(secret, 'tags') ? secret.tags : {}
-    roleAssignments: contains(secret, 'roleAssignments') ? secret.roleAssignments : []
+    attributesEnabled: secret.?attributesEnabled ?? true
+    attributesExp: secret.?attributesExp
+    attributesNbf: secret.?attributesNbf
+    contentType: secret.?contentType
+    tags: secret.?tags ?? tags
+    roleAssignments: secret.?roleAssignments
   }
 }]
 
@@ -229,16 +229,16 @@ module keyVault_keys 'key/main.bicep' = [for (key, index) in (keys ?? []): {
   params: {
     name: key.name
     keyVaultName: keyVault.name
-    attributesEnabled: contains(key, 'attributesEnabled') ? key.attributesEnabled : true
-    attributesExp: contains(key, 'attributesExp') ? key.attributesExp : -1
-    attributesNbf: contains(key, 'attributesNbf') ? key.attributesNbf : -1
-    curveName: contains(key, 'curveName') ? key.curveName : 'P-256'
-    keyOps: contains(key, 'keyOps') ? key.keyOps : []
-    keySize: contains(key, 'keySize') ? key.keySize : -1
-    kty: contains(key, 'kty') ? key.kty : 'EC'
-    tags: contains(key, 'tags') ? key.tags : {}
-    roleAssignments: contains(key, 'roleAssignments') ? key.roleAssignments : []
-    rotationPolicy: contains(key, 'rotationPolicy') ? key.rotationPolicy : {}
+    attributesEnabled: key.?attributesEnabled ?? true
+    attributesExp: key.?attributesExp
+    attributesNbf: key.?attributesNbf
+    curveName: key.?curveName ?? 'P-256'
+    keyOps: key.?keyOps
+    keySize: key.?keySize
+    kty: key.?kty ?? 'EC'
+    tags: key.?tags ?? tags
+    roleAssignments: key.?roleAssignments
+    rotationPolicy: key.?rotationPolicy
   }
 }]
 
@@ -254,15 +254,15 @@ module keyVault_privateEndpoints '../../network/private-endpoint/main.bicep' = [
     enableTelemetry: enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
-    privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName ?? 'default'
-    privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds ?? []
-    roleAssignments: privateEndpoint.?roleAssignments ?? []
-    tags: privateEndpoint.?tags ?? {}
-    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections ?? []
-    customDnsConfigs: privateEndpoint.?customDnsConfigs ?? []
-    ipConfigurations: privateEndpoint.?ipConfigurations ?? []
-    applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds ?? []
-    customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName ?? ''
+    privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
+    privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+    roleAssignments: privateEndpoint.?roleAssignments
+    tags: privateEndpoint.?tags ?? tags
+    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
+    customDnsConfigs: privateEndpoint.?customDnsConfigs
+    ipConfigurations: privateEndpoint.?ipConfigurations
+    applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+    customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
   }
 }]
 
@@ -271,11 +271,11 @@ resource keyVault_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-
   properties: {
     roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : roleAssignment.roleDefinitionIdOrName
     principalId: roleAssignment.principalId
-    description: roleAssignment.?description ?? null
-    principalType: roleAssignment.?principalType ?? null
-    condition: roleAssignment.?condition ?? null
+    description: roleAssignment.?description
+    principalType: roleAssignment.?principalType
+    condition: roleAssignment.?condition
     conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId ?? null
+    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
   }
   scope: keyVault
 }]
@@ -404,10 +404,10 @@ type privateEndpointType = {
   customNetworkInterfaceName: string?
 
   @description('Optional. Specify the type of lock.')
-  lock: lockType?
+  lock: lockType
 
   @description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleAssignments: roleAssignmentType?
+  roleAssignments: roleAssignmentType
 
   @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
   tags: object?

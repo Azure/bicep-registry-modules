@@ -324,8 +324,20 @@ function Set-DefinitionSection {
         $paramIdentifier = '{0}.{1}' -f $ParentName, $parameterName
         $paramIdentifierLink = ('{0}{1}' -f $ParentIdentifierLink, $parameterName).ToLower()
 
+        # definition type (if any)
+        if ($parameterValue.Keys -contains '$ref') {
+            $definition = $TemplateFileContent.definitions[(Split-Path $parameterValue.'$ref' -Leaf)]
+        }
+        else {
+            $definition = $null
+        }
+
+        $isRequired = ($parameterValue.nullable -or $definition.nullable) ? 'No' : 'Yes'
+        $type = ($parameterValue.Keys -contains '$ref') ? $definition.type : $parameterValue['type']
+        $description = $parameterValue.ContainsKey('metadata') ? $parameterValue['metadata']['description'] : $null
+
         # build table for definition properties
-        $tableSectionContent += ('| [`{0}`]({1}) | {2} | {3} | {4} |' -f $parameterName, $paramIdentifierLink, ($parameterValue['nullable'] ? 'No' : 'Yes'), $parameterValue['type'], ($parameterValue.ContainsKey('metadata') ? $parameterValue['metadata']['description'] : $null))
+        $tableSectionContent += ('| [`{0}`]({1}) | {2} | {3} | {4} |' -f $parameterName, $paramIdentifierLink, $isRequired, $type, $description)
         $allowedValues = ($parameterValue.ContainsKey('allowedValues')) ? (($parameterValue['allowedValues'] -is [array]) ? ('[{0}]' -f (($parameterValue['allowedValues'] | Sort-Object) -join ', ')) : (($parameterValue['allowedValues'] -is [hashtable]) ? '{object}' : $parameterValue['allowedValues'])) : $null
 
         #build flat list for definition properties
@@ -335,8 +347,8 @@ function Set-DefinitionSection {
             ($parameterValue.ContainsKey('metadata') ? '' : $null),
             ($parameterValue.ContainsKey('metadata') ? $parameterValue['metadata']['description'] : $null),
             ($parameterValue.ContainsKey('metadata') ? '' : $null),
-            ('- Required: {0}' -f ($parameterValue['nullable'] ? 'No' : 'Yes')),
-            ('- Type: {0}' -f $parameterValue['type']),
+            ('- Required: {0}' -f $isRequired),
+            ('- Type: {0}' -f $type),
             (($null -ne $allowedValues) ? ('- Allowed: `{0}`' -f $allowedValues) : $null)
         ) | Where-Object { $null -ne $_ }
 
