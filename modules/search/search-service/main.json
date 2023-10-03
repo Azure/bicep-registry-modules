@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.20.4.51522",
-      "templateHash": "11631462467648575783"
+      "version": "0.21.1.54444",
+      "templateHash": "13822892006861034208"
     },
     "name": "Azure Cognitive Search",
     "description": "Bicep module for simplified deployment of Azure Cognitive Search.",
