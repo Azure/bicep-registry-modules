@@ -180,7 +180,7 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
       name: 'myCustomLockName'
     }
     manualPrivateLinkServiceConnections: []
-    privateDnsZoneGroupName: ''
+    privateDnsZoneGroupName: 'default'
     privateDnsZoneResourceIds: [
       '<privateDNSZoneResourceId>'
     ]
@@ -264,7 +264,7 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
       "value": []
     },
     "privateDnsZoneGroupName": {
-      "value": ""
+      "value": "default"
     },
     "privateDnsZoneResourceIds": {
       "value": [
@@ -336,7 +336,7 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
       name: 'myCustomLockName'
     }
     manualPrivateLinkServiceConnections: []
-    privateDnsZoneGroupName: ''
+    privateDnsZoneGroupName: 'default'
     privateDnsZoneResourceIds: [
       '<privateDNSZoneResourceId>'
     ]
@@ -420,7 +420,7 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
       "value": []
     },
     "privateDnsZoneGroupName": {
-      "value": ""
+      "value": "default"
     },
     "privateDnsZoneResourceIds": {
       "value": [

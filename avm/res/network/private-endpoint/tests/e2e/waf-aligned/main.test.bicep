@@ -92,7 +92,7 @@ module testDeployment '../../../main.bicep' = {
       Role: 'DeploymentValidation'
     }
     // Workaround for PSRule
-    privateDnsZoneGroupName: ''
+    privateDnsZoneGroupName: 'default'
     customDnsConfigs: []
     manualPrivateLinkServiceConnections: []
   }
