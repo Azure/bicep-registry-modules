@@ -41,6 +41,8 @@ The following module usage examples are retrieved from the content of the files 
 ### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
+> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
+
 
 
 <details>
