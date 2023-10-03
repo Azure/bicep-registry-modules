@@ -51,15 +51,7 @@ This instance deploys the module with the minimum set of required parameters.
 module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-kvvd'
   params: {
-    // Required parameters
-    name: 'kvvd002'
-    // Non-required parameters
-    diagnosticSettings: []
-    enablePurgeProtection: false
-    location: '<location>'
-    lock: {}
-    privateEndpoints: []
-    roleAssignments: []
+
   }
 }
 ```
@@ -76,16 +68,20 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "kvvd002"
     },
-    // Non-required parameters
+    "accessPolicies": {
+      "value": []
+    },
     "diagnosticSettings": {
       "value": []
     },
     "enablePurgeProtection": {
       "value": false
+    },
+    "keys": {
+      "value": []
     },
     "location": {
       "value": "<location>"
@@ -98,6 +94,12 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
     },
     "roleAssignments": {
       "value": []
+    },
+    "secrets": {
+      "value": {}
+    },
+    "tags": {
+      "value": {}
     }
   }
 }

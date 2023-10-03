@@ -48,5 +48,9 @@ module testDeployment '../../../main.bicep' = {
     roleAssignments: []
     diagnosticSettings: []
     privateEndpoints: []
+    accessPolicies: []
+    secrets: {}
+    keys: []
+    tags: {}
   }
 }
