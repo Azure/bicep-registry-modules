@@ -35,6 +35,8 @@ The following module usage examples are retrieved from the content of the files 
 ### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
+> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
+
 
 
 <details>
@@ -53,9 +55,17 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
     serviceResourceId: '<serviceResourceId>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
+    applicationSecurityGroupResourceIds: []
+    customDnsConfigs: []
+    customNetworkInterfaceName: ''
+    ipConfigurations: []
     location: '<location>'
     lock: {}
+    manualPrivateLinkServiceConnections: []
+    privateDnsZoneGroupName: ''
+    privateDnsZoneResourceIds: []
     roleAssignments: []
+    tags: {}
   }
 }
 ```
@@ -88,14 +98,38 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
       "value": "<subnetResourceId>"
     },
     // Non-required parameters
+    "applicationSecurityGroupResourceIds": {
+      "value": []
+    },
+    "customDnsConfigs": {
+      "value": []
+    },
+    "customNetworkInterfaceName": {
+      "value": ""
+    },
+    "ipConfigurations": {
+      "value": []
+    },
     "location": {
       "value": "<location>"
     },
     "lock": {
       "value": {}
     },
+    "manualPrivateLinkServiceConnections": {
+      "value": []
+    },
+    "privateDnsZoneGroupName": {
+      "value": ""
+    },
+    "privateDnsZoneResourceIds": {
+      "value": []
+    },
     "roleAssignments": {
       "value": []
+    },
+    "tags": {
+      "value": {}
     }
   }
 }
@@ -128,6 +162,7 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
     applicationSecurityGroupResourceIds: [
       '<applicationSecurityGroupResourceId>'
     ]
+    customDnsConfigs: []
     customNetworkInterfaceName: 'npemax001nic'
     ipConfigurations: [
       {
@@ -144,6 +179,8 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    manualPrivateLinkServiceConnections: []
+    privateDnsZoneGroupName: 'default'
     privateDnsZoneResourceIds: [
       '<privateDNSZoneResourceId>'
     ]
@@ -196,6 +233,9 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
         "<applicationSecurityGroupResourceId>"
       ]
     },
+    "customDnsConfigs": {
+      "value": []
+    },
     "customNetworkInterfaceName": {
       "value": "npemax001nic"
     },
@@ -219,6 +259,12 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
+    },
+    "manualPrivateLinkServiceConnections": {
+      "value": []
+    },
+    "privateDnsZoneGroupName": {
+      "value": "default"
     },
     "privateDnsZoneResourceIds": {
       "value": [
@@ -272,6 +318,7 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
     applicationSecurityGroupResourceIds: [
       '<applicationSecurityGroupResourceId>'
     ]
+    customDnsConfigs: []
     customNetworkInterfaceName: 'npewaf001nic'
     ipConfigurations: [
       {
@@ -288,6 +335,8 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    manualPrivateLinkServiceConnections: []
+    privateDnsZoneGroupName: 'default'
     privateDnsZoneResourceIds: [
       '<privateDNSZoneResourceId>'
     ]
@@ -340,6 +389,9 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
         "<applicationSecurityGroupResourceId>"
       ]
     },
+    "customDnsConfigs": {
+      "value": []
+    },
     "customNetworkInterfaceName": {
       "value": "npewaf001nic"
     },
@@ -363,6 +415,12 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
+    },
+    "manualPrivateLinkServiceConnections": {
+      "value": []
+    },
+    "privateDnsZoneGroupName": {
+      "value": "default"
     },
     "privateDnsZoneResourceIds": {
       "value": [
