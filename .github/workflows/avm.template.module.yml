@@ -18,7 +18,7 @@ on:
 
 permissions:
   id-token: write # For OIDC
-  contents: read # For OIDC
+  contents: write # For OIDC
 
 env:
   ARM_SUBSCRIPTION_ID: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
