@@ -618,6 +618,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-kvvwaf'
   params: {
     name: 'kvvwaf002'
+    accessPolicies: []
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -677,6 +678,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
         subnetResourceId: '<subnetResourceId>'
       }
     ]
+    roleAssignments: []
     secrets: {
       secureList: [
         {
@@ -712,6 +714,9 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
   "parameters": {
     "name": {
       "value": "kvvwaf002"
+    },
+    "accessPolicies": {
+      "value": []
     },
     "diagnosticSettings": {
       "value": [
@@ -787,6 +792,9 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
+    },
+    "roleAssignments": {
+      "value": []
     },
     "secrets": {
       "value": {
