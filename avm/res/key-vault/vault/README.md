@@ -53,7 +53,19 @@ This instance deploys the module with the minimum set of required parameters.
 module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-kvvd'
   params: {
-
+    // Required parameters
+    name: 'kvvd002'
+    // Non-required parameters
+    accessPolicies: []
+    diagnosticSettings: []
+    enablePurgeProtection: false
+    keys: []
+    location: '<location>'
+    lock: {}
+    privateEndpoints: []
+    roleAssignments: []
+    secrets: {}
+    tags: {}
   }
 }
 ```
@@ -123,7 +135,9 @@ This instance deploys the module with most of its features enabled.
 module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-kvvmax'
   params: {
+    // Required parameters
     name: 'kvvmax002'
+    // Non-required parameters
     accessPolicies: [
       {
         objectId: '<objectId>'
@@ -617,7 +631,9 @@ This instance deploys the module in alignment with the best-pratices of the Well
 module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-kvvwaf'
   params: {
+    // Required parameters
     name: 'kvvwaf002'
+    // Non-required parameters
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1367,4 +1383,8 @@ Resource tags.
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm-res-network-privateendpoint:0.1.0` | Remote reference |
