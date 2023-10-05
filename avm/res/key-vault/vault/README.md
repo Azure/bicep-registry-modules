@@ -634,6 +634,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
     // Required parameters
     name: 'kvvwaf002'
     // Non-required parameters
+    accessPolicies: []
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
