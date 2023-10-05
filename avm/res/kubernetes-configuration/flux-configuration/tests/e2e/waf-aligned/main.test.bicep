@@ -12,7 +12,7 @@ param resourceGroupName string = 'ms.kubernetesconfiguration.fluxconfigurations-
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'kcfccom'
+param serviceShort string = 'kcfcwaf'
 
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
 param enableDefaultTelemetry bool = true
@@ -37,7 +37,8 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     clusterName: 'dep-${namePrefix}-aks-${serviceShort}'
     clusterExtensionName: '${namePrefix}${serviceShort}001'
-    clusterNodeResourceGroupName: 'nodes-${resourceGroupName}'
+    clusterNodeResourceGroupName: 'dep-${namePrefix}-aks-${serviceShort}-rg'
+    location: location
   }
 }
 
@@ -45,7 +46,7 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-module testDeployment '../../main.bicep' = {
+module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
@@ -53,6 +54,7 @@ module testDeployment '../../main.bicep' = {
     name: '${namePrefix}${serviceShort}001'
     clusterName: nestedDependencies.outputs.clusterName
     namespace: 'flux-system'
+    location: location
     scope: 'cluster'
     sourceKind: 'GitRepository'
     gitRepository: {

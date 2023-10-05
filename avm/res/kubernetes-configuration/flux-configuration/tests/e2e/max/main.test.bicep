@@ -12,7 +12,7 @@ param resourceGroupName string = 'ms.kubernetesconfiguration.fluxconfigurations-
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'kcfcmin'
+param serviceShort string = 'kcfcmax'
 
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
 param enableDefaultTelemetry bool = true
@@ -37,7 +37,8 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     clusterName: 'dep-${namePrefix}-aks-${serviceShort}'
     clusterExtensionName: '${namePrefix}${serviceShort}001'
-    clusterNodeResourceGroupName: 'nodes-${resourceGroupName}'
+    clusterNodeResourceGroupName: 'dep-${namePrefix}-aks-${serviceShort}-rg'
+    location: location
   }
 }
 
@@ -45,12 +46,13 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-module testDeployment '../../main.bicep' = {
+module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
     enableDefaultTelemetry: enableDefaultTelemetry
     name: '${namePrefix}${serviceShort}001'
+    location: location
     clusterName: nestedDependencies.outputs.clusterName
     namespace: 'flux-system'
     scope: 'cluster'
@@ -63,6 +65,16 @@ module testDeployment '../../main.bicep' = {
       syncIntervalInSeconds: 300
       timeoutInSeconds: 180
       url: 'https://github.com/mspnp/aks-baseline'
+    }
+    kustomizations: {
+      unified: {
+        dependsOn: []
+        force: false
+        path: './cluster-manifests'
+        prune: true
+        syncIntervalInSeconds: 300
+        timeoutInSeconds: 300
+      }
     }
   }
 }

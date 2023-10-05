@@ -15,17 +15,17 @@ param clusterName string
 param location string = resourceGroup().location
 
 @description('Optional. Parameters to reconcile to the GitRepository source kind type.')
-param bucket object = {}
+param bucket object?
 
 @description('Optional. Key-value pairs of protected configuration settings for the configuration.')
 @secure()
-param configurationProtectedSettings object = {}
+param configurationProtectedSettings object?
 
 @description('Optional. Parameters to reconcile to the GitRepository source kind type.')
-param gitRepository object = {}
+param gitRepository object?
 
 @description('Optional. Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster.')
-param kustomizations object = {}
+param kustomizations object?
 
 @description('Required. The namespace to which this configuration is installed to. Maximum of 253 lower case alphanumeric characters, hyphen and period only.')
 param namespace string
@@ -67,10 +67,10 @@ resource fluxConfiguration 'Microsoft.KubernetesConfiguration/fluxConfigurations
   name: name
   scope: managedCluster
   properties: {
-    bucket: !empty(bucket) ? bucket : null
-    configurationProtectedSettings: !empty(configurationProtectedSettings) ? configurationProtectedSettings : {}
-    gitRepository: !empty(gitRepository) ? gitRepository : null
-    kustomizations: !empty(kustomizations) ? kustomizations : {}
+    bucket: bucket
+    configurationProtectedSettings: configurationProtectedSettings
+    gitRepository: gitRepository
+    kustomizations: kustomizations
     namespace: namespace
     scope: scope
     sourceKind: sourceKind
