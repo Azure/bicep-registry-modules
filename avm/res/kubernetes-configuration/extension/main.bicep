@@ -16,16 +16,16 @@ param location string = resourceGroup().location
 
 @description('Optional. Configuration settings that are sensitive, as name-value pairs for configuring this extension.')
 @secure()
-param configurationProtectedSettings object = {}
+param configurationProtectedSettings object?
 
 @description('Optional. Configuration settings, as name-value pairs for configuring this extension.')
-param configurationSettings object = {}
+param configurationSettings object?
 
 @description('Required. Type of the Extension, of which this resource is an instance of. It must be one of the Extension Types registered with Microsoft.KubernetesConfiguration by the Extension publisher.')
 param extensionType string
 
 @description('Optional. ReleaseTrain this extension participates in for auto-upgrade (e.g. Stable, Preview, etc.) - only if autoUpgradeMinorVersion is "true".')
-param releaseTrain string = 'Stable'
+param releaseTrain string?
 
 @description('Optional. Namespace where the extension Release must be placed, for a Cluster scoped extension. If this namespace does not exist, it will be created.')
 param releaseNamespace string = ''
@@ -34,10 +34,10 @@ param releaseNamespace string = ''
 param targetNamespace string = ''
 
 @description('Optional. Version of the extension for this extension, if it is "pinned" to a specific version.')
-param version string = ''
+param version string?
 
 @description('Optional. A list of flux configuraitons.')
-param fluxConfigurations array = []
+param fluxConfigurations array?
 
 resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
   name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
@@ -60,10 +60,10 @@ resource extension 'Microsoft.KubernetesConfiguration/extensions@2022-03-01' = {
   scope: managedCluster
   properties: {
     autoUpgradeMinorVersion: !empty(version) ? false : true
-    configurationProtectedSettings: !empty(configurationProtectedSettings) ? configurationProtectedSettings : {}
-    configurationSettings: !empty(configurationSettings) ? configurationSettings : {}
+    configurationProtectedSettings: configurationProtectedSettings
+    configurationSettings: configurationSettings
     extensionType: extensionType
-    releaseTrain: !empty(releaseTrain) ? releaseTrain : null
+    releaseTrain: releaseTrain
     scope: {
       cluster: !empty(releaseNamespace) ? {
         releaseNamespace: releaseNamespace
@@ -72,11 +72,11 @@ resource extension 'Microsoft.KubernetesConfiguration/extensions@2022-03-01' = {
         targetNamespace: targetNamespace
       } : null
     }
-    version: !empty(version) ? version : null
+    version: version
   }
 }
 
-module fluxConfiguration '../../kubernetes-configuration/flux-configuration/main.bicep' = [for (fluxConfiguration, index) in fluxConfigurations: {
+module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfiguration:0.1.0' = [for (fluxConfiguration, index) in (fluxConfigurations ?? []): {
   name: '${uniqueString(deployment().name, location)}-ManagedCluster-FluxConfiguration${index}'
   params: {
     enableDefaultTelemetry: enableDefaultTelemetry
@@ -84,12 +84,12 @@ module fluxConfiguration '../../kubernetes-configuration/flux-configuration/main
     scope: fluxConfiguration.scope
     namespace: fluxConfiguration.namespace
     sourceKind: contains(fluxConfiguration, 'gitRepository') ? 'GitRepository' : 'Bucket'
-    name: contains(fluxConfiguration, 'name') ? fluxConfiguration.name : toLower('${managedCluster.name}-fluxconfiguration${index}')
-    bucket: contains(fluxConfiguration, 'bucket') ? fluxConfiguration.bucket : {}
-    configurationProtectedSettings: contains(fluxConfiguration, 'configurationProtectedSettings') ? fluxConfiguration.configurationProtectedSettings : {}
-    gitRepository: contains(fluxConfiguration, 'gitRepository') ? fluxConfiguration.gitRepository : {}
-    kustomizations: contains(fluxConfiguration, 'kustomizations') ? fluxConfiguration.kustomizations : {}
-    suspend: contains(fluxConfiguration, 'suspend') ? fluxConfiguration.suspend : false
+    name: fluxConfiguration.?name
+    bucket: fluxConfiguration.?bucket
+    configurationProtectedSettings: fluxConfiguration.?configurationProtectedSettings
+    gitRepository: fluxConfiguration.?gitRepository
+    kustomizations: fluxConfiguration.?kustomizations
+    suspend: fluxConfiguration.?suspend
   }
   dependsOn: [
     extension
