@@ -1,0 +1,351 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.21.1.54444",
+      "templateHash": "14913275975998013893"
+    },
+    "name": "Kubernetes Configuration Extensions",
+    "description": "This module deploys a Kubernetes Configuration Extension.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Flux Configuration."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    },
+    "clusterName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the AKS cluster that should be configured."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "configurationProtectedSettings": {
+      "type": "secureObject",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Configuration settings that are sensitive, as name-value pairs for configuring this extension."
+      }
+    },
+    "configurationSettings": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Configuration settings, as name-value pairs for configuring this extension."
+      }
+    },
+    "extensionType": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Type of the Extension, of which this resource is an instance of. It must be one of the Extension Types registered with Microsoft.KubernetesConfiguration by the Extension publisher."
+      }
+    },
+    "releaseTrain": {
+      "type": "string",
+      "defaultValue": "Stable",
+      "metadata": {
+        "description": "Optional. ReleaseTrain this extension participates in for auto-upgrade (e.g. Stable, Preview, etc.) - only if autoUpgradeMinorVersion is \"true\"."
+      }
+    },
+    "releaseNamespace": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Namespace where the extension Release must be placed, for a Cluster scoped extension. If this namespace does not exist, it will be created."
+      }
+    },
+    "targetNamespace": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Namespace where the extension will be created for an Namespace scoped extension. If this namespace does not exist, it will be created."
+      }
+    },
+    "version": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Version of the extension for this extension, if it is \"pinned\" to a specific version."
+      }
+    },
+    "fluxConfigurations": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. A list of flux configuraitons."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.KubernetesConfiguration/extensions",
+      "apiVersion": "2022-03-01",
+      "scope": "[format('Microsoft.ContainerService/managedClusters/{0}', parameters('clusterName'))]",
+      "name": "[parameters('name')]",
+      "properties": {
+        "autoUpgradeMinorVersion": "[if(not(empty(parameters('version'))), false(), true())]",
+        "configurationProtectedSettings": "[if(not(empty(parameters('configurationProtectedSettings'))), parameters('configurationProtectedSettings'), createObject())]",
+        "configurationSettings": "[if(not(empty(parameters('configurationSettings'))), parameters('configurationSettings'), createObject())]",
+        "extensionType": "[parameters('extensionType')]",
+        "releaseTrain": "[if(not(empty(parameters('releaseTrain'))), parameters('releaseTrain'), null())]",
+        "scope": {
+          "cluster": "[if(not(empty(parameters('releaseNamespace'))), createObject('releaseNamespace', parameters('releaseNamespace')), null())]",
+          "namespace": "[if(not(empty(parameters('targetNamespace'))), createObject('targetNamespace', parameters('targetNamespace')), null())]"
+        },
+        "version": "[if(not(empty(parameters('version'))), parameters('version'), null())]"
+      }
+    },
+    {
+      "copy": {
+        "name": "fluxConfiguration",
+        "count": "[length(parameters('fluxConfigurations'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-ManagedCluster-FluxConfiguration{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "enableDefaultTelemetry": {
+            "value": "[parameters('enableDefaultTelemetry')]"
+          },
+          "clusterName": {
+            "value": "[parameters('clusterName')]"
+          },
+          "scope": {
+            "value": "[parameters('fluxConfigurations')[copyIndex()].scope]"
+          },
+          "namespace": {
+            "value": "[parameters('fluxConfigurations')[copyIndex()].namespace]"
+          },
+          "sourceKind": "[if(contains(parameters('fluxConfigurations')[copyIndex()], 'gitRepository'), createObject('value', 'GitRepository'), createObject('value', 'Bucket'))]",
+          "name": "[if(contains(parameters('fluxConfigurations')[copyIndex()], 'name'), createObject('value', parameters('fluxConfigurations')[copyIndex()].name), createObject('value', toLower(format('{0}-fluxconfiguration{1}', parameters('clusterName'), copyIndex()))))]",
+          "bucket": "[if(contains(parameters('fluxConfigurations')[copyIndex()], 'bucket'), createObject('value', parameters('fluxConfigurations')[copyIndex()].bucket), createObject('value', createObject()))]",
+          "configurationProtectedSettings": "[if(contains(parameters('fluxConfigurations')[copyIndex()], 'configurationProtectedSettings'), createObject('value', parameters('fluxConfigurations')[copyIndex()].configurationProtectedSettings), createObject('value', createObject()))]",
+          "gitRepository": "[if(contains(parameters('fluxConfigurations')[copyIndex()], 'gitRepository'), createObject('value', parameters('fluxConfigurations')[copyIndex()].gitRepository), createObject('value', createObject()))]",
+          "kustomizations": "[if(contains(parameters('fluxConfigurations')[copyIndex()], 'kustomizations'), createObject('value', parameters('fluxConfigurations')[copyIndex()].kustomizations), createObject('value', createObject()))]",
+          "suspend": "[if(contains(parameters('fluxConfigurations')[copyIndex()], 'suspend'), createObject('value', parameters('fluxConfigurations')[copyIndex()].suspend), createObject('value', false()))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.21.1.54444",
+              "templateHash": "11648869363176032755"
+            },
+            "name": "Kubernetes Configuration Flux Configurations",
+            "description": "This module deploys a Kubernetes Configuration Flux Configuration.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Flux Configuration."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            },
+            "clusterName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the AKS cluster that should be configured."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "bucket": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Parameters to reconcile to the GitRepository source kind type."
+              }
+            },
+            "configurationProtectedSettings": {
+              "type": "secureObject",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Key-value pairs of protected configuration settings for the configuration."
+              }
+            },
+            "gitRepository": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Parameters to reconcile to the GitRepository source kind type."
+              }
+            },
+            "kustomizations": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster."
+              }
+            },
+            "namespace": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The namespace to which this configuration is installed to. Maximum of 253 lower case alphanumeric characters, hyphen and period only."
+              }
+            },
+            "scope": {
+              "type": "string",
+              "allowedValues": [
+                "cluster",
+                "namespace"
+              ],
+              "metadata": {
+                "description": "Required. Scope at which the configuration will be installed."
+              }
+            },
+            "sourceKind": {
+              "type": "string",
+              "allowedValues": [
+                "Bucket",
+                "GitRepository"
+              ],
+              "metadata": {
+                "description": "Required. Source Kind to pull the configuration data from."
+              }
+            },
+            "suspend": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Whether this configuration should suspend its reconciliation of its kustomizations and sources."
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "type": "Microsoft.KubernetesConfiguration/fluxConfigurations",
+              "apiVersion": "2022-03-01",
+              "scope": "[format('Microsoft.ContainerService/managedClusters/{0}', parameters('clusterName'))]",
+              "name": "[parameters('name')]",
+              "properties": {
+                "bucket": "[if(not(empty(parameters('bucket'))), parameters('bucket'), null())]",
+                "configurationProtectedSettings": "[if(not(empty(parameters('configurationProtectedSettings'))), parameters('configurationProtectedSettings'), createObject())]",
+                "gitRepository": "[if(not(empty(parameters('gitRepository'))), parameters('gitRepository'), null())]",
+                "kustomizations": "[if(not(empty(parameters('kustomizations'))), parameters('kustomizations'), createObject())]",
+                "namespace": "[parameters('namespace')]",
+                "scope": "[parameters('scope')]",
+                "sourceKind": "[parameters('sourceKind')]",
+                "suspend": "[parameters('suspend')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the flux configuration."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the flux configuration."
+              },
+              "value": "[extensionResourceId(resourceId('Microsoft.ContainerService/managedClusters', parameters('clusterName')), 'Microsoft.KubernetesConfiguration/fluxConfigurations', parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the flux configuration was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[extensionResourceId(resourceId('Microsoft.ContainerService/managedClusters', parameters('clusterName')), 'Microsoft.KubernetesConfiguration/extensions', parameters('name'))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the extension."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the extension."
+      },
+      "value": "[extensionResourceId(resourceId('Microsoft.ContainerService/managedClusters', parameters('clusterName')), 'Microsoft.KubernetesConfiguration/extensions', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the extension was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
