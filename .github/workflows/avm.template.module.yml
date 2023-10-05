@@ -18,7 +18,7 @@ on:
 
 permissions:
   id-token: write # For OIDC
-  contents: write # For OIDC
+  contents: write # For release tags
 
 env:
   ARM_SUBSCRIPTION_ID: "${{ secrets.ARM_SUBSCRIPTION_ID }}"

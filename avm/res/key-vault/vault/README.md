@@ -634,6 +634,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
     // Required parameters
     name: 'kvvwaf002'
     // Non-required parameters
+    accessPolicies: []
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -693,6 +694,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
         subnetResourceId: '<subnetResourceId>'
       }
     ]
+    roleAssignments: []
     secrets: {
       secureList: [
         {
@@ -728,6 +730,9 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
   "parameters": {
     "name": {
       "value": "kvvwaf002"
+    },
+    "accessPolicies": {
+      "value": []
     },
     "diagnosticSettings": {
       "value": [
@@ -804,6 +809,9 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
         }
       ]
     },
+    "roleAssignments": {
+      "value": []
+    },
     "secrets": {
       "value": {
         "secureList": [
@@ -851,7 +859,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
 | [`createMode`](#parameter-createmode) | string | The vault's create mode to indicate whether the vault need to be recovered or not. - recover or default. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Provide 'true' to enable Key Vault's purge protection feature. |
-| [`enableRbacAuthorization`](#parameter-enablerbacauthorization) | bool | Property that controls how data actions are authorized. When true, the key vault will use Role Based Access Control (RBAC) for authorization of data actions, and the access policies specified in vault properties will be ignored (warning: this is a preview feature). When false, the key vault will use the access policies specified in vault properties, and any policy stored on Azure Resource Manager will be ignored. If null or not specified, the vault is created with the default value of false. Note that management actions are always authorized with RBAC. |
+| [`enableRbacAuthorization`](#parameter-enablerbacauthorization) | bool | Property that controls how data actions are authorized. When true, the key vault will use Role Based Access Control (RBAC) for authorization of data actions, and the access policies specified in vault properties will be ignored. When false, the key vault will use the access policies specified in vault properties, and any policy stored on Azure Resource Manager will be ignored. Note that management actions are always authorized with RBAC. |
 | [`enableSoftDelete`](#parameter-enablesoftdelete) | bool | Switch to enable/disable Key Vault's soft delete feature. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`enableVaultForDeployment`](#parameter-enablevaultfordeployment) | bool | Specifies if the vault is enabled for deployment by script or compute. |
@@ -1006,10 +1014,10 @@ Provide 'true' to enable Key Vault's purge protection feature.
 
 ### Parameter: `enableRbacAuthorization`
 
-Property that controls how data actions are authorized. When true, the key vault will use Role Based Access Control (RBAC) for authorization of data actions, and the access policies specified in vault properties will be ignored (warning: this is a preview feature). When false, the key vault will use the access policies specified in vault properties, and any policy stored on Azure Resource Manager will be ignored. If null or not specified, the vault is created with the default value of false. Note that management actions are always authorized with RBAC.
-- Required: Yes
+Property that controls how data actions are authorized. When true, the key vault will use Role Based Access Control (RBAC) for authorization of data actions, and the access policies specified in vault properties will be ignored. When false, the key vault will use the access policies specified in vault properties, and any policy stored on Azure Resource Manager will be ignored. Note that management actions are always authorized with RBAC.
+- Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `enableSoftDelete`
 
