@@ -5,8 +5,8 @@ metadata owner = 'Azure/module-maintainers'
 @description('Required. The name of the Flux Configuration.')
 param name string
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 @description('Required. The name of the AKS cluster that should be configured.')
 param clusterName string
@@ -47,14 +47,23 @@ param sourceKind string
 @description('Optional. Whether this configuration should suspend its reconciliation of its kustomizations and sources.')
 param suspend bool = false
 
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
+@description('The current released version of the module. Used for telemetry.')
+var moduleVersion = '#_moduleVersion_#' // AUTOMATED, DO NOT CHANGE
+
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.kubernetesconfiguration-extension.${replace(moduleVersion, '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
       contentVersion: '1.0.0.0'
       resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
     }
   }
 }
