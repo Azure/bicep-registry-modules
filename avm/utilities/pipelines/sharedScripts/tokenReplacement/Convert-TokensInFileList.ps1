@@ -44,11 +44,11 @@ function Convert-TokensInFileList {
     )]
     [String[]] $FilePathList,
 
-    [parameter(Mandatory = $true)]
-    [hashtable] $Tokens,
+    [parameter(Mandatory = $false)]
+    [hashtable] $Tokens = @{},
 
     [parameter(Mandatory = $false)]
-    [hashtable] $AbsoluteTokens,
+    [hashtable] $AbsoluteTokens = @{},
 
     [parameter(Mandatory = $false)]
     [string] $TokenPrefix = '#_',
