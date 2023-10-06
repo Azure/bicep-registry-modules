@@ -21,6 +21,8 @@ param sku object = {
   name: 'standard'
 }
 
+var sanitizedSkuName = toLower(contains(sku, 'name') ? sku.name : 'standard')
+
 // @description('aadOrApiKey indicates that either the API key or an access token from Azure Active Directory can be used for authentication. apiKeyOnly Indicates that only the API key needs to be used for authentication.')
 // type authOptionsType = {
 //   aadOrApiKey: aadOrApiKeyType?
@@ -67,22 +69,22 @@ param networkRuleSet object = {
 
 @description('PartitionCount of the Azure Cognitive Search Resource')
 param partitionCount int = 1
+
 @allowed([
   'enabled'
   'disabled'
 ])
-
 @description('PublicNetworkAccess of the Azure Cognitive Search Resource')
 param publicNetworkAccess string = 'enabled'
 
 @description('ReplicaCount of the Azure Cognitive Search Resource')
 param replicaCount int = 1
+
 @allowed([
   'disabled'
   'free'
   'standard'
 ])
-
 @description('SemanticSearch of the Azure Cognitive Search Resource')
 param semanticSearch string = 'disabled'
 
@@ -90,7 +92,7 @@ resource search 'Microsoft.Search/searchServices@2021-04-01-preview' = {
   name: name
   location: location
   tags: tags
-  identity: {
+  identity: sanitizedSkuName == 'free' ? null : {
     type: 'SystemAssigned'
   }
   properties: {

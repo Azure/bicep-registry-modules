@@ -9,10 +9,6 @@ param (
   [Parameter(Mandatory = $false)]
   [string] $repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent.Parent.FullName,
 
-  # Dedicated Tokens configuration hashtable containing the tokens and token prefix and suffix.
-  [Parameter(Mandatory = $false)]
-  [hashtable] $tokenConfiguration = @{},
-
   [Parameter(Mandatory = $false)]
   [bool] $AllowPreviewVersionsInAPITests = $true
 )
@@ -378,7 +374,6 @@ Describe 'Module tests' -Tag 'Module' {
             testFile_AllParameterNames           = $deploymentTestFile_AllParameterNames
             templateFile_AllParameterNames       = $TemplateFile_AllParameterNames
             templateFile_RequiredParametersNames = $TemplateFile_RequiredParametersNames
-            tokenConfiguration                   = $tokenConfiguration
           }
         }
       }

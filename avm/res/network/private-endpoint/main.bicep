@@ -63,11 +63,8 @@ var builtInRoleNames = {
   'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
 }
 
-@description('The current released version of the module. Used for telemetry.')
-var moduleVersion = '#_moduleVersion_#' // AUTOMATED, DO NOT CHANGE
-
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.network-privateendpoint.${replace(moduleVersion, '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.res.network-privateendpoint.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -135,11 +132,11 @@ resource privateEndpoint_roleAssignments 'Microsoft.Authorization/roleAssignment
   properties: {
     roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : roleAssignment.roleDefinitionIdOrName
     principalId: roleAssignment.principalId
-    description: roleAssignment.?description ?? null
-    principalType: roleAssignment.?principalType ?? null
-    condition: roleAssignment.?condition ?? null
+    description: roleAssignment.?description
+    principalType: roleAssignment.?principalType
+    condition: roleAssignment.?condition
     conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId ?? null
+    delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
   }
   scope: privateEndpoint
 }]
