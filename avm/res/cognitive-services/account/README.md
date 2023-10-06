@@ -817,7 +817,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    managedIdentities: '<managedIdentities>'
+    managedIdentities: {
+      systemAssigned: true
+    }
     migrationToken: '<migrationToken>'
     networkAcls: {
       defaultAction: 'Deny'
@@ -911,7 +913,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       }
     },
     "managedIdentities": {
-      "value": "<managedIdentities>"
+      "value": {
+        "systemAssigned": true
+      }
     },
     "migrationToken": {
       "value": "<migrationToken>"

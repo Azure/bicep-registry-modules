@@ -113,6 +113,9 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
+    managedIdentities: {
+      systemAssigned: true
+    }
     // Workaround for PSRule
     roleAssignments: null
     customerManagedKey: null
@@ -120,6 +123,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     apiProperties: null
     migrationToken: null
     userOwnedStorage: null
-    managedIdentities: null
   }
 }]
