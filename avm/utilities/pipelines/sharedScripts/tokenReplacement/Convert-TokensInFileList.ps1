@@ -11,6 +11,9 @@ Mandatory. The list of file paths that contain tokens to be replaced.
 .PARAMETER Tokens
 Mandatory. An object containing the parameter file tokens to set
 
+.PARAMETER AbsoluteTokens
+Optional. Exact tokens to replace. These will not be prefixed or suffixed.
+
 .PARAMETER TokenPrefix
 Mandatory. The prefix used to identify a token in the parameter file (i.e. #_)
 
@@ -43,6 +46,9 @@ function Convert-TokensInFileList {
 
     [parameter(Mandatory = $true)]
     [hashtable] $Tokens,
+
+    [parameter(Mandatory = $true)]
+    [hashtable] $AbsoluteTokens,
 
     [parameter(Mandatory = $false)]
     [string] $TokenPrefix = '#_',
@@ -85,7 +91,7 @@ function Convert-TokensInFileList {
         # Prepare Input to Token Converter Function
         $ConvertTokenListFunctionInput = @{
           FilePath             = $FilePath
-          TokenNameValueObject = $FilteredTokens.Clone()
+          TokenNameValueObject = $FilteredTokens.Clone() + $AbsoluteTokens
           SwapValueWithName    = $SwapValueWithName
         }
         if ($OutputDirectory) {

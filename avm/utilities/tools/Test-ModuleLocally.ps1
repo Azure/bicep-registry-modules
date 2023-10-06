@@ -197,8 +197,11 @@ function Test-ModuleLocally {
 
         # Construct Token Configuration Input
         $tokenConfiguration = @{
-            FilePathList = @($moduleTestFiles)
-            Tokens       = @{}
+            FilePathList   = @($moduleTestFiles)
+            AbsoluteTokens = @{
+                '-..---..-' = '99.99.91'
+            }
+            Tokens         = @{}
         }
 
         # Add any additional file that may contain tokens
@@ -222,14 +225,6 @@ function Test-ModuleLocally {
         if ($PesterTest) {
             Write-Verbose "Pester Testing Module: $ModuleName"
 
-            # Construct Pester Token Configuration Input
-            $PesterTokenConfiguration = @{
-                FilePathList = $moduleTestFiles
-                Tokens       = $enforcedTokenList
-                TokenPrefix  = $GlobalVariablesObject | Select-Object -ExpandProperty tokenPrefix
-                TokenSuffix  = $GlobalVariablesObject | Select-Object -ExpandProperty tokenSuffix
-            }
-
             try {
                 $testFiles = @(
                     (Join-Path $repoRootPath $PesterTestFilePath), # AVM Compliance Tests
@@ -239,9 +234,8 @@ function Test-ModuleLocally {
                 Invoke-Pester -Configuration @{
                     Run    = @{
                         Container = New-PesterContainer -Path $testFiles -Data @{
-                            repoRootPath       = $repoRootPath
-                            moduleFolderPaths  = Split-Path $TemplateFilePath -Parent
-                            tokenConfiguration = $PesterTokenConfiguration
+                            repoRootPath      = $repoRootPath
+                            moduleFolderPaths = Split-Path $TemplateFilePath -Parent
                         }
                     }
                     Output = @{
