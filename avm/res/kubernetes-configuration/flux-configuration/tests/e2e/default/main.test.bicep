@@ -57,14 +57,19 @@ module testDeployment '../../../main.bicep' = {
     namespace: 'flux-system'
     scope: 'cluster'
     sourceKind: 'GitRepository'
-    gitRepository: {
-      repositoryRef: {
-        branch: 'main'
-      }
-      sshKnownHosts: ''
-      syncIntervalInSeconds: 300
-      timeoutInSeconds: 180
-      url: 'https://github.com/mspnp/aks-baseline'
-    }
+    // gitRepository: {
+    //   repositoryRef: {
+    //     branch: 'main'
+    //   }
+    //   sshKnownHosts: ''
+    //   syncIntervalInSeconds: 300
+    //   timeoutInSeconds: 180
+    //   url: 'https://github.com/mspnp/aks-baseline'
+    // }
+    gitRepository: null
+    // Workaround for PSRule
+    bucket: null
+    kustomizations: null
+    configurationProtectedSettings: null
   }
 }

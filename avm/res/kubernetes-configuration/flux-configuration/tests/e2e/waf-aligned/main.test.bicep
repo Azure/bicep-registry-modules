@@ -76,5 +76,8 @@ module testDeployment '../../../main.bicep' = {
         timeoutInSeconds: 300
       }
     }
+    // Workaround for PSRule
+    bucket: null
+    configurationProtectedSettings: null
   }
 }

@@ -362,16 +362,11 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
     namespace: 'flux-system'
     sourceKind: 'GitRepository'
     // Non-required parameters
+    bucket: '<bucket>'
+    configurationProtectedSettings: '<configurationProtectedSettings>'
     enableTelemetry: '<enableTelemetry>'
-    gitRepository: {
-      repositoryRef: {
-        branch: 'main'
-      }
-      sshKnownHosts: ''
-      syncIntervalInSeconds: 300
-      timeoutInSeconds: 180
-      url: 'https://github.com/mspnp/aks-baseline'
-    }
+    gitRepository: '<gitRepository>'
+    kustomizations: '<kustomizations>'
     location: '<location>'
   }
 }
@@ -403,19 +398,20 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
       "value": "GitRepository"
     },
     // Non-required parameters
+    "bucket": {
+      "value": "<bucket>"
+    },
+    "configurationProtectedSettings": {
+      "value": "<configurationProtectedSettings>"
+    },
     "enableTelemetry": {
       "value": "<enableTelemetry>"
     },
     "gitRepository": {
-      "value": {
-        "repositoryRef": {
-          "branch": "main"
-        },
-        "sshKnownHosts": "",
-        "syncIntervalInSeconds": 300,
-        "timeoutInSeconds": 180,
-        "url": "https://github.com/mspnp/aks-baseline"
-      }
+      "value": "<gitRepository>"
+    },
+    "kustomizations": {
+      "value": "<kustomizations>"
     },
     "location": {
       "value": "<location>"
@@ -443,6 +439,8 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
     namespace: 'flux-system'
     sourceKind: 'GitRepository'
     // Non-required parameters
+    bucket: '<bucket>'
+    configurationProtectedSettings: '<configurationProtectedSettings>'
     enableTelemetry: '<enableTelemetry>'
     gitRepository: {
       repositoryRef: {
@@ -494,6 +492,12 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
       "value": "GitRepository"
     },
     // Non-required parameters
+    "bucket": {
+      "value": "<bucket>"
+    },
+    "configurationProtectedSettings": {
+      "value": "<configurationProtectedSettings>"
+    },
     "enableTelemetry": {
       "value": "<enableTelemetry>"
     },
@@ -546,6 +550,8 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
     namespace: 'flux-system'
     sourceKind: 'GitRepository'
     // Non-required parameters
+    bucket: '<bucket>'
+    configurationProtectedSettings: '<configurationProtectedSettings>'
     enableTelemetry: '<enableTelemetry>'
     gitRepository: {
       repositoryRef: {
@@ -597,6 +603,12 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
       "value": "GitRepository"
     },
     // Non-required parameters
+    "bucket": {
+      "value": "<bucket>"
+    },
+    "configurationProtectedSettings": {
+      "value": "<configurationProtectedSettings>"
+    },
     "enableTelemetry": {
       "value": "<enableTelemetry>"
     },
