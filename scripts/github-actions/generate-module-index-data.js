@@ -65,11 +65,6 @@ async function generateModuleIndexData({ require, github, context, core }) {
   const moduleGroupsAvmPtn = await getSubdirNames(fs, "avm/ptn");
   const modulesWithDescriptions = new Map();
 
-  var allModuleGroups = [];
-  allModuleGroups.push(...moduleGroups);
-  allModuleGroups.push(...moduleGroupsAvmRes);
-  allModuleGroups.push(...moduleGroupsAvmPtn);
-
   var moduleIndexData = [];
 
   // BRM Modules
@@ -95,7 +90,7 @@ async function generateModuleIndexData({ require, github, context, core }) {
             core,
             path,
             modulePath,
-            (moduleRoot = "brm"),
+            (moduleRoot = "modules"),
             tag,
             context
           );
@@ -223,7 +218,13 @@ async function generateModuleIndexData({ require, github, context, core }) {
     JSON.stringify(moduleIndexData, null, 2)
   );
 
-  core.info(`Processed ${allModuleGroups.length} modules groups.`);
+  core.info(
+    `Processed ${
+      moduleGroups.length +
+      moduleGroupsAvmRes.length +
+      moduleGroupsAvmPtn.length
+    } modules groups.`
+  );
   core.info(`Processed ${moduleIndexData.length} total modules.`);
   core.info(
     `${
