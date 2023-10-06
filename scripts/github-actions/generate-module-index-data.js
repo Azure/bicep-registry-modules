@@ -16,7 +16,7 @@ async function getModuleDescription(
   tag,
   context
 ) {
-  const allowedModuleRoots = ["brm", "avm/res", "avm/res"];
+  const allowedModuleRoots = ["modules", "avm/res", "avm/res"];
 
   if (!allowedModuleRoots.includes(moduleRoot)) {
     throw new Error(
