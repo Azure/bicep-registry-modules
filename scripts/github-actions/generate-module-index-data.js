@@ -119,11 +119,11 @@ async function generateModuleIndexData({ require, github, context, core }) {
     for (const moduleName of moduleNames) {
       const modulePath = `avm/res/${moduleGroup}/${moduleName}`;
       const moduleBicepRegistryRefSplit = modulePath
-      .split(/[\/\\]avm[\/\\]/)
-      .pop();
+        .split(/[\/\\]avm[\/\\]/)
+        .pop();
       const moduleBicepRegistryRefReplace = moduleBicepRegistryRefSplit
-      .replace(/-/g, "")
-      .replace(/[\/\\]/g, "-");
+        .replace(/-/g, "")
+        .replace(/[\/\\]/g, "-");
       const moduleBicepRegistryRef = moduleBicepRegistryRefReplace;
       const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${moduleBicepRegistryRef}/tags/list`;
 
@@ -168,11 +168,11 @@ async function generateModuleIndexData({ require, github, context, core }) {
   for (const moduleName of moduleGroupsAvmPtn) {
     const modulePath = `avm/ptn/${moduleName}`;
     const moduleBicepRegistryRefSplit = modulePath
-    .split(/[\/\\]avm[\/\\]/)
-    .pop();
+      .split(/[\/\\]avm[\/\\]/)
+      .pop();
     const moduleBicepRegistryRefReplace = moduleBicepRegistryRefSplit
-    .replace(/-/g, "")
-    .replace(/[\/\\]/g, "-");
+      .replace(/-/g, "")
+      .replace(/[\/\\]/g, "-");
     const moduleBicepRegistryRef = moduleBicepRegistryRefReplace;
     const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${moduleBicepRegistryRef}/tags/list`;
 
