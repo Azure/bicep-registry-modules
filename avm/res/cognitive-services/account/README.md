@@ -58,13 +58,13 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     apiProperties: '<apiProperties>'
     customerManagedKey: '<customerManagedKey>'
     customSubDomainName: '<customSubDomainName>'
-    diagnosticSettings: []
+    diagnosticSettings: '<diagnosticSettings>'
     location: '<location>'
-    lock: {}
-    managedIdentities: {}
+    lock: '<lock>'
+    managedIdentities: '<managedIdentities>'
     migrationToken: '<migrationToken>'
-    privateEndpoints: []
-    roleAssignments: []
+    privateEndpoints: '<privateEndpoints>'
+    roleAssignments: '<roleAssignments>'
     tags: '<tags>'
     userOwnedStorage: '<userOwnedStorage>'
   }
@@ -104,25 +104,25 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       "value": "<customSubDomainName>"
     },
     "diagnosticSettings": {
-      "value": []
+      "value": "<diagnosticSettings>"
     },
     "location": {
       "value": "<location>"
     },
     "lock": {
-      "value": {}
+      "value": "<lock>"
     },
     "managedIdentities": {
-      "value": {}
+      "value": "<managedIdentities>"
     },
     "migrationToken": {
       "value": "<migrationToken>"
     },
     "privateEndpoints": {
-      "value": []
+      "value": "<privateEndpoints>"
     },
     "roleAssignments": {
-      "value": []
+      "value": "<roleAssignments>"
     },
     "tags": {
       "value": "<tags>"
@@ -406,9 +406,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     apiProperties: '<apiProperties>'
     customerManagedKey: '<customerManagedKey>'
     customSubDomainName: 'speechdomain'
-    diagnosticSettings: []
+    diagnosticSettings: '<diagnosticSettings>'
     location: '<location>'
-    lock: {}
+    lock: '<lock>'
     managedIdentities: {
       systemAssigned: true
       userAssignedResourcesIds: [
@@ -430,7 +430,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         }
       }
     ]
-    roleAssignments: []
+    roleAssignments: '<roleAssignments>'
     sku: 'S0'
     tags: {
       Environment: 'Non-Prod'
@@ -475,13 +475,13 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       "value": "speechdomain"
     },
     "diagnosticSettings": {
-      "value": []
+      "value": "<diagnosticSettings>"
     },
     "location": {
       "value": "<location>"
     },
     "lock": {
-      "value": {}
+      "value": "<lock>"
     },
     "managedIdentities": {
       "value": {
@@ -511,7 +511,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       ]
     },
     "roleAssignments": {
-      "value": []
+      "value": "<roleAssignments>"
     },
     "sku": {
       "value": "S0"
@@ -557,17 +557,17 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       keyVaultResourceId: '<keyVaultResourceId>'
     }
     customSubDomainName: '<customSubDomainName>'
-    diagnosticSettings: []
+    diagnosticSettings: '<diagnosticSettings>'
     location: '<location>'
-    lock: {}
+    lock: '<lock>'
     managedIdentities: {
       systemAssigned: true
     }
     migrationToken: '<migrationToken>'
-    privateEndpoints: []
+    privateEndpoints: '<privateEndpoints>'
     publicNetworkAccess: 'Enabled'
     restrictOutboundNetworkAccess: false
-    roleAssignments: []
+    roleAssignments: '<roleAssignments>'
     sku: 'S0'
     tags: '<tags>'
     userOwnedStorage: '<userOwnedStorage>'
@@ -611,13 +611,13 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       "value": "<customSubDomainName>"
     },
     "diagnosticSettings": {
-      "value": []
+      "value": "<diagnosticSettings>"
     },
     "location": {
       "value": "<location>"
     },
     "lock": {
-      "value": {}
+      "value": "<lock>"
     },
     "managedIdentities": {
       "value": {
@@ -628,7 +628,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       "value": "<migrationToken>"
     },
     "privateEndpoints": {
-      "value": []
+      "value": "<privateEndpoints>"
     },
     "publicNetworkAccess": {
       "value": "Enabled"
@@ -637,7 +637,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       "value": false
     },
     "roleAssignments": {
-      "value": []
+      "value": "<roleAssignments>"
     },
     "sku": {
       "value": "S0"
@@ -680,19 +680,19 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
     customSubDomainName: '<customSubDomainName>'
-    diagnosticSettings: []
+    diagnosticSettings: '<diagnosticSettings>'
     location: '<location>'
-    lock: {}
+    lock: '<lock>'
     managedIdentities: {
       userAssignedResourcesIds: [
         '<managedIdentityResourceId>'
       ]
     }
     migrationToken: '<migrationToken>'
-    privateEndpoints: []
+    privateEndpoints: '<privateEndpoints>'
     publicNetworkAccess: 'Enabled'
     restrictOutboundNetworkAccess: false
-    roleAssignments: []
+    roleAssignments: '<roleAssignments>'
     sku: 'S0'
     tags: '<tags>'
     userOwnedStorage: '<userOwnedStorage>'
@@ -737,13 +737,13 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       "value": "<customSubDomainName>"
     },
     "diagnosticSettings": {
-      "value": []
+      "value": "<diagnosticSettings>"
     },
     "location": {
       "value": "<location>"
     },
     "lock": {
-      "value": {}
+      "value": "<lock>"
     },
     "managedIdentities": {
       "value": {
@@ -756,7 +756,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       "value": "<migrationToken>"
     },
     "privateEndpoints": {
-      "value": []
+      "value": "<privateEndpoints>"
     },
     "publicNetworkAccess": {
       "value": "Enabled"
@@ -765,7 +765,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       "value": false
     },
     "roleAssignments": {
-      "value": []
+      "value": "<roleAssignments>"
     },
     "sku": {
       "value": "S0"
@@ -846,6 +846,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         }
       }
     ]
+    roleAssignments: '<roleAssignments>'
     sku: 'S0'
     tags: {
       Environment: 'Non-Prod'
@@ -942,6 +943,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
           }
         }
       ]
+    },
+    "roleAssignments": {
+      "value": "<roleAssignments>"
     },
     "sku": {
       "value": "S0"
