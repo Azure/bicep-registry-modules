@@ -114,6 +114,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Role: 'DeploymentValidation'
     }
     // Workaround for PSRule
+    roleAssignments: null
     customerManagedKey: null
     allowedFqdnList: null
     apiProperties: null

@@ -80,9 +80,9 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Role: 'DeploymentValidation'
     }
     // Workaround for PSRule
-    lock: {}
-    roleAssignments: []
-    diagnosticSettings: []
+    lock: null
+    roleAssignments: null
+    diagnosticSettings: null
     customerManagedKey: null
     allowedFqdnList: null
     apiProperties: null

@@ -44,11 +44,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     kind: 'SpeechServices'
     location: location
     // Workaround for PSRule
-    lock: {}
-    roleAssignments: []
-    diagnosticSettings: []
-    managedIdentities: {}
-    privateEndpoints: []
+    lock: null
+    roleAssignments: null
+    diagnosticSettings: null
+    managedIdentities: null
+    privateEndpoints: null
     customerManagedKey: null
     customSubDomainName: null
     tags: null
