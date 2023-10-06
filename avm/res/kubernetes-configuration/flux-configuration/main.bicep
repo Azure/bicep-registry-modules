@@ -47,11 +47,8 @@ param sourceKind string
 @description('Optional. Whether this configuration should suspend its reconciliation of its kustomizations and sources.')
 param suspend bool = false
 
-@description('The current released version of the module. Used for telemetry.')
-var moduleVersion = '#_moduleVersion_#' // AUTOMATED, DO NOT CHANGE
-
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.kubernetesconfiguration-extension.${replace(moduleVersion, '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.res.kubernetesconfiguration-extension.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
