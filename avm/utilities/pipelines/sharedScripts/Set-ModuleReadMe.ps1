@@ -1154,14 +1154,18 @@ function Set-UsageExamplesSection {
             # ------------------------- #
 
             # [1/6] Search for the relevant parameter start & end index
-            $bicepTestStartIndex = ($rawContentArray | Select-String ("^module testDeployment '..\/.*main.bicep' = {$") | ForEach-Object { $_.LineNumber - 1 })[0]
+            $bicepTestStartIndex = ($rawContentArray | Select-String ("^module testDeployment '..\/.*main.bicep' = ") | ForEach-Object { $_.LineNumber - 1 })[0]
 
             $bicepTestEndIndex = $bicepTestStartIndex
             do {
                 $bicepTestEndIndex++
-            } while ($rawContentArray[$bicepTestEndIndex] -ne '}')
+            } while ($rawContentArray[$bicepTestEndIndex] -notin @('}', '}]'))
 
             $rawBicepExample = $rawContentArray[$bicepTestStartIndex..$bicepTestEndIndex]
+
+            if ($rawBicepExample[-1] -eq '}]') {
+                $rawBicepExample[-1] = '}'
+            }
 
             # [2/6] Replace placeholders
             $serviceShort = ([regex]::Match($rawContent, "(?m)^param serviceShort string = '(.+)'\s*$")).Captures.Groups[1].Value
@@ -1170,6 +1174,7 @@ function Set-UsageExamplesSection {
             $rawBicepExampleString = $rawBicepExampleString -replace '\$\{serviceShort\}', $serviceShort
             $rawBicepExampleString = $rawBicepExampleString -replace '\$\{namePrefix\}[-|\.|_]?', '' # Replacing with empty to not expose prefix and avoid potential deployment conflicts
             $rawBicepExampleString = $rawBicepExampleString -replace '(?m):\s*location\s*$', ': ''<location>'''
+            $rawBicepExampleString = $rawBicepExampleString -replace "-\$\{iteration\}", ''
 
             # [3/6] Format header, remove scope property & any empty line
             $rawBicepExample = $rawBicepExampleString -split '\n'
