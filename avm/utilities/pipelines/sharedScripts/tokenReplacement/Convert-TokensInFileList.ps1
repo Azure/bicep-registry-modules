@@ -47,7 +47,7 @@ function Convert-TokensInFileList {
     [parameter(Mandatory = $true)]
     [hashtable] $Tokens,
 
-    [parameter(Mandatory = $true)]
+    [parameter(Mandatory = $false)]
     [hashtable] $AbsoluteTokens,
 
     [parameter(Mandatory = $false)]
