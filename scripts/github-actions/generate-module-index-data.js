@@ -205,7 +205,7 @@ async function generateModuleIndexData({ require, github, context, core }) {
           core,
           path,
           modulePath,
-          (moduleType = "avm-res"),
+          (moduleType = "avm-ptn"),
           tag,
           context
         );
