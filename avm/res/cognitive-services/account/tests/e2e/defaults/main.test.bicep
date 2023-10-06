@@ -48,5 +48,11 @@ module testDeployment '../../../main.bicep' = {
     diagnosticSettings: []
     managedIdentities: {}
     privateEndpoints: []
+    customSubDomainName: null
+    tags: null
+    allowedFqdnList: null
+    apiProperties: null
+    migrationToken: null
+    userOwnedStorage: null
   }
 }
