@@ -197,11 +197,8 @@ function Test-ModuleLocally {
 
         # Construct Token Configuration Input
         $tokenConfiguration = @{
-            FilePathList   = @($moduleTestFiles)
-            AbsoluteTokens = @{
-                '-..---..-' = '99.99.91'
-            }
-            Tokens         = @{}
+            FilePathList = @($moduleTestFiles)
+            Tokens       = @{}
         }
 
         # Add any additional file that may contain tokens
