@@ -49,6 +49,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     diagnosticSettings: []
     managedIdentities: {}
     privateEndpoints: []
+    customerManagedKey: null
     customSubDomainName: null
     tags: null
     allowedFqdnList: null

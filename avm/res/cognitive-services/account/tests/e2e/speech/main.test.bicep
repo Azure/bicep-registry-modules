@@ -83,6 +83,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     lock: {}
     roleAssignments: []
     diagnosticSettings: []
+    customerManagedKey: null
     allowedFqdnList: null
     apiProperties: null
     migrationToken: null
