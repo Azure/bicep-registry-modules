@@ -34,7 +34,7 @@ function Publish-ModuleFromTagToPBR {
   $tokenConfiguration = @{
     FilePathList   = @($moduleJsonFilePath)
     AbsoluteTokens = @{
-      '-..---..-' = $targetVersion
+      '-..--..-' = $targetVersion
     }
   }
   $null = Convert-TokensInFileList @tokenConfiguration
@@ -43,7 +43,7 @@ function Publish-ModuleFromTagToPBR {
   $templateContent = Get-Content -Path $moduleJsonFilePath
   $incorrectLines = @()
   for ($index = 0; $index -lt $templateContent.Count; $index++) {
-    if ($templateContent[$index] -match '-..---..-') {
+    if ($templateContent[$index] -match '-..--..-') {
       $incorrectLines += ('You have the token [{0}] in line [{1}] of file [{2}]. Please seek advice from the AVM team.' -f $matches[0], ($index + 1), $moduleJsonFilePath)
     }
   }
