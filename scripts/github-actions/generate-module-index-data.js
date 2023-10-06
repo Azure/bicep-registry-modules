@@ -89,7 +89,6 @@ async function generateModuleIndexData({ require, github, context, core }) {
       const modulePath = `${moduleGroup}/${moduleName}`;
       const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${modulePath}/tags/list`;
 
-      //repeat for avm/res and avm/ptn - might have to be higher up, outside of the loop l.59
       try {
         core.info(`Processing BRM Module ${modulePath}:...`);
         core.info(`  Retrieving BRM Module ${versionListUrl}`);
@@ -98,21 +97,21 @@ async function generateModuleIndexData({ require, github, context, core }) {
         const tags = versionListResponse.data.tags.sort();
 
         const properties = {};
-        // for (const tag of tags) {
-        //   var description = await getModuleDescription(
-        //     github,
-        //     core,
-        //     path,
-        //     modulePath,
-        //     (moduleType = "brm"),
-        //     tag,
-        //     context
-        //   );
-        //   if (description) {
-        //     properties[tag] = { description };
-        //     modulesWithDescriptions[modulePath] = true;
-        //   }
-        // }
+        for (const tag of tags) {
+          var description = await getModuleDescription(
+            github,
+            core,
+            path,
+            modulePath,
+            (moduleType = "brm"),
+            tag,
+            context
+          );
+          if (description) {
+            properties[tag] = { description };
+            modulesWithDescriptions[modulePath] = true;
+          }
+        }
 
         moduleIndexData.push({
           moduleName: modulePath,
@@ -131,36 +130,44 @@ async function generateModuleIndexData({ require, github, context, core }) {
     const moduleNames = await getSubdirNames(fs, moduleGroupPath);
 
     for (const moduleName of moduleNames) {
-      const modulePath = `${moduleGroup}/${moduleName}`;
+      const modulePath = `avm/res/${moduleGroup}/${moduleName}`;
       const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${modulePath}/tags/list`;
+      const moduleBicepRegistryRefSplit = modulePath
+        .split(/[\/\\]avm[\/\\]/)
+        .pop();
+      const moduleBicepRegistryRefReplace = moduleBicepRegistryRefSplit
+        .replace(/-/g, "")
+        .replace(/[\/\\]/g, "-");
+      const moduleBicepRegistryRef = moduleBicepRegistryRefReplace;
 
-      //repeat for avm/res and avm/ptn - might have to be higher up, outside of the loop l.59
       try {
         core.info(`Processing AVM Resource Module ${modulePath}:...`);
         core.info(`  Retrieving AVM Resource Module ${versionListUrl}`);
+        core.info(`    Git Tag: ${modulePath}`);
+        core.info(`    BRM Ref: ${moduleBicepRegistryRef}`);
 
         const versionListResponse = await axios.get(versionListUrl);
         const tags = versionListResponse.data.tags.sort();
 
         const properties = {};
-        // for (const tag of tags) {
-        //   var description = await getModuleDescription(
-        //     github,
-        //     core,
-        //     path,
-        //     modulePath,
-        //     (moduleType = "avm-res"),
-        //     tag,
-        //     context
-        //   );
-        //   if (description) {
-        //     properties[tag] = { description };
-        //     modulesWithDescriptions[modulePath] = true;
-        //   }
-        // }
+        for (const tag of tags) {
+          var description = await getModuleDescription(
+            github,
+            core,
+            path,
+            modulePath,
+            (moduleType = "avm-res"),
+            tag,
+            context
+          );
+          if (description) {
+            properties[tag] = { description };
+            modulesWithDescriptions[modulePath] = true;
+          }
+        }
 
         moduleIndexData.push({
-          moduleName: modulePath,
+          moduleName: moduleBicepRegistryRef,
           tags,
           properties,
         });
@@ -170,55 +177,53 @@ async function generateModuleIndexData({ require, github, context, core }) {
     }
   }
 
-  // // AVM Pattern Modules
-  // for (const moduleGroup of moduleGroupsAvmPtn) {
-  //   const moduleGroupPath = path.join("avm/ptn", moduleGroup);
-  //   const moduleNames = await getSubdirNames(fs, moduleGroupPath);
+  // AVM Pattern Modules
+  for (const moduleName of moduleGroupsAvmPtn) {
+    const modulePath = `avm/ptn/${moduleName}`;
+    const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${modulePath}/tags/list`;
+    const moduleBicepRegistryRefSplit = modulePath
+      .split(/[\/\\]avm[\/\\]/)
+      .pop();
+    const moduleBicepRegistryRefReplace = moduleBicepRegistryRefSplit
+      .replace(/-/g, "")
+      .replace(/[\/\\]/g, "-");
+    const moduleBicepRegistryRef = moduleBicepRegistryRefReplace;
 
-  //   for (const moduleName of moduleNames) {
-  //     const modulePath = `${moduleGroup}/${moduleName}`;
-  //     const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${modulePath}/tags/list`;
+    try {
+      core.info(`Processing AVM Pattern Module ${modulePath}:...`);
+      core.info(`  Retrieving AVM Pattern Module ${versionListUrl}`);
+      core.info(`    Git Tag: ${modulePath}`);
+      core.info(`    BRM Ref: ${moduleBicepRegistryRef}`);
 
-  //     //repeat for avm/res and avm/ptn - might have to be higher up, outside of the loop l.59
-  //     try {
-  //       core.info(`Processing AVM Pattern Module ${modulePath}:...`);
-  //       core.info(`  Retrieving AVM Pattern Module ${versionListUrl}`);
+      const versionListResponse = await axios.get(versionListUrl);
+      const tags = versionListResponse.data.tags.sort();
 
-  //       const versionListResponse = await axios.get(versionListUrl);
-  //       const tags = versionListResponse.data.tags.sort();
+      const properties = {};
+      for (const tag of tags) {
+        var description = await getModuleDescription(
+          github,
+          core,
+          path,
+          modulePath,
+          (moduleType = "avm-res"),
+          tag,
+          context
+        );
+        if (description) {
+          properties[tag] = { description };
+          modulesWithDescriptions[modulePath] = true;
+        }
+      }
 
-  //       const properties = {};
-  //       // for (const tag of tags) {
-  //       //   var description = await getModuleDescription(
-  //       //     github,
-  //       //     core,
-  //       //     path,
-  //       //     modulePath,
-  //       //     (moduleType = "avm-res"),
-  //       //     tag,
-  //       //     context
-  //       //   );
-  //       //   if (description) {
-  //       //     properties[tag] = { description };
-  //       //     modulesWithDescriptions[modulePath] = true;
-  //       //   }
-  //       // }
-
-  //       moduleIndexData.push({
-  //         moduleName: modulePath,
-  //         tags,
-  //         properties,
-  //       });
-  //     } catch (error) {
-  //       core.setFailed(error);
-  //     }
-  //   }
-  // }
-
-  // Remove this as just for testing
-  // for (const module of moduleIndexData) {
-  //   console.log(JSON.stringify(moduleIndexData, null, 2));
-  // }
+      moduleIndexData.push({
+        moduleName: moduleBicepRegistryRef,
+        tags,
+        properties,
+      });
+    } catch (error) {
+      core.setFailed(error);
+    }
+  }
 
   core.info(`Writing moduleIndex.json`);
   await fs.writeFile(
@@ -240,6 +245,3 @@ async function generateModuleIndexData({ require, github, context, core }) {
 }
 
 module.exports = generateModuleIndexData;
-
-// name in json file output needs to be avm-res-network-xxxxxxxx
-// tag will always be folder path avm/res/network/xxxxxxxx
