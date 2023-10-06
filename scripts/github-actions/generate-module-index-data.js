@@ -12,32 +12,25 @@ async function getModuleDescription(
   core,
   path,
   modulePath,
-  moduleType = "brm",
+  moduleRoot,
   tag,
   context
 ) {
+  const allowedModuleRoots = ["brm", "avm/res", "avm/res"];
+
+  if (!allowedModuleRoots.includes(moduleRoot)) {
+    throw new Error(
+      `Invalid module type provided to getModuleDescription function, permitted type are brm, avm/res, avm/ptn. The module type provided was: ${moduleRoot}`
+    );
+  }
   // Retrieve the main.json file as it existed for the given tag
   const ref = `tags/${modulePath}/${tag}`;
   core.info(`  Retrieving main.json at ref ${ref}`);
 
   let mainJsonPath;
-  if (moduleType === "brm") {
-    mainJsonPath = path
-      .join("modules", modulePath, "main.json")
-      .replace(/\\/g, "/");
-  } else if (moduleType === "avm-res") {
-    mainJsonPath = path
-      .join("avm/res", modulePath, "main.json")
-      .replace(/\\/g, "/");
-  } else if (moduleType === "avm-ptn") {
-    mainJsonPath = path
-      .join("avm/ptn", modulePath, "main.json")
-      .replace(/\\/g, "/");
-  } else {
-    throw new Error(
-      `Invalid module type provided to getModuleDescription function, permitted type are brm, avm-res, avm-ptn. The module type provided was: ${moduleType}`
-    );
-  }
+  mainJsonPath = path
+    .join(moduleRoot, modulePath, "main.json")
+    .replace(/\\/g, "/");
 
   const response = await github.rest.repos.getContent({
     owner: context.repo.owner,
@@ -103,7 +96,7 @@ async function generateModuleIndexData({ require, github, context, core }) {
             core,
             path,
             modulePath,
-            (moduleType = "brm"),
+            (moduleRoot = "brm"),
             tag,
             context
           );
@@ -156,7 +149,7 @@ async function generateModuleIndexData({ require, github, context, core }) {
             core,
             path,
             modulePath,
-            (moduleType = "avm-res"),
+            (moduleRoot = "avm/res"),
             tag,
             context
           );
@@ -205,7 +198,7 @@ async function generateModuleIndexData({ require, github, context, core }) {
           core,
           path,
           modulePath,
-          (moduleType = "avm-ptn"),
+          (moduleRoot = "avm/ptn"),
           tag,
           context
         );
