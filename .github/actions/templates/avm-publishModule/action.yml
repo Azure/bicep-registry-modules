@@ -28,12 +28,17 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Log in to Azure
-      uses: azure/login@v1
+    # - name: Log in to Azure
+    #   uses: azure/login@v1
+    #   with:
+    #     client-id: ${{ env.PUBLISH_CLIENT_ID }}
+    #     tenant-id: ${{ env.PUBLISH_TENANT_ID }}
+    #     subscription-id: ${{ env.PUBLISH_SUBSCRIPTION_ID }}
+    - name: Azure Login
+      uses: Azure/login@v1
       with:
-        client-id: ${{ env.PUBLISH_CLIENT_ID }}
-        tenant-id: ${{ env.PUBLISH_TENANT_ID }}
-        subscription-id: ${{ env.PUBLISH_SUBSCRIPTION_ID }}
+        creds: ${{ env.AZURE_CREDENTIALS }}
+        enable-AzPSSession: true
 
     # Adding a step to explicitly install the latest Bicep CLI because there is
     # always a delay in updating Bicep CLI in the job runner environments.
@@ -55,6 +60,13 @@ runs:
 
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'publish' 'Publish-ModuleFromPathToPBR.ps1')
+
+          # TODO: Remove
+          if (-not [String]::IsNullOrEmpty('${{ inputs.subscriptionId }}')) {
+            Write-Verbose ('Setting context to subscription [{0}]' -f '${{ inputs.subscriptionId }}') -Verbose
+            $null = Set-AzContext -Subscription '${{ inputs.subscriptionId }}'
+          }
+
 
           ################################
           ##   Get modules to publish   ##
