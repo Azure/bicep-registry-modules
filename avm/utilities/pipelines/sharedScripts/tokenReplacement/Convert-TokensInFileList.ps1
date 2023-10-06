@@ -91,7 +91,7 @@ function Convert-TokensInFileList {
         # Prepare Input to Token Converter Function
         $ConvertTokenListFunctionInput = @{
           FilePath             = $FilePath
-          TokenNameValueObject = $FilteredTokens.Clone() + $AbsoluteTokens
+          TokenNameValueObject = ($FilteredTokens ?  $FilteredTokens.Clone() : @{}) + ($AbsoluteTokens ? $AbsoluteTokens : @{})
           SwapValueWithName    = $SwapValueWithName
         }
         if ($OutputDirectory) {
