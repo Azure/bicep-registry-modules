@@ -44,9 +44,9 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-module testDeployment '../../../main.bicep' = {
+module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
     kind: 'SpeechServices'
@@ -87,4 +87,4 @@ module testDeployment '../../../main.bicep' = {
     migrationToken: null
     userOwnedStorage: null
   }
-}
+}]

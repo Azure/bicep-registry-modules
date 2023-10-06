@@ -59,35 +59,15 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // Test Execution //
 // ============== //
 
-module testDeployment '../../../main.bicep' = {
+module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
     kind: 'Face'
     location: location
     customSubDomainName: '${namePrefix}x${serviceShort}'
     diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        logCategoriesAndGroups: [
-          {
-            category: 'RequestResponse'
-          }
-          {
-            category: 'Audit'
-          }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
       {
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
         eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
@@ -113,20 +93,7 @@ module testDeployment '../../../main.bicep' = {
         }
       ]
     }
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Reader'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
     sku: 'S0'
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourcesIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -152,4 +119,4 @@ module testDeployment '../../../main.bicep' = {
     migrationToken: null
     userOwnedStorage: null
   }
-}
+}]
