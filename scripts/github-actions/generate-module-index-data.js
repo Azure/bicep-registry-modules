@@ -12,14 +12,23 @@ async function getModuleDescription(
   core,
   path,
   modulePath,
+  moduleRoot,
   tag,
   context
 ) {
+  const allowedModuleRoots = ["modules", "avm/res", "avm/res"];
+
+  if (!allowedModuleRoots.includes(moduleRoot)) {
+    throw new Error(
+      `Invalid module type provided to getModuleDescription function, permitted type are brm, avm/res, avm/ptn. The module type provided was: ${moduleRoot}`
+    );
+  }
   // Retrieve the main.json file as it existed for the given tag
   const ref = `tags/${modulePath}/${tag}`;
   core.info(`  Retrieving main.json at ref ${ref}`);
+
   const mainJsonPath = path
-    .join("modules", modulePath, "main.json")
+    .join(moduleRoot, modulePath, "main.json")
     .replace(/\\/g, "/");
 
   const response = await github.rest.repos.getContent({
@@ -52,10 +61,13 @@ async function generateModuleIndexData({ require, github, context, core }) {
   const path = require("path");
   const axios = require("axios").default;
   const moduleGroups = await getSubdirNames(fs, "modules");
+  const moduleGroupsAvmRes = await getSubdirNames(fs, "avm/res");
+  const moduleGroupsAvmPtn = await getSubdirNames(fs, "avm/ptn");
   const modulesWithDescriptions = new Map();
 
   var moduleIndexData = [];
 
+  // BRM Modules
   for (const moduleGroup of moduleGroups) {
     const moduleGroupPath = path.join("modules", moduleGroup);
     const moduleNames = await getSubdirNames(fs, moduleGroupPath);
@@ -65,8 +77,8 @@ async function generateModuleIndexData({ require, github, context, core }) {
       const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${modulePath}/tags/list`;
 
       try {
-        core.info(`Processing ${modulePath}:...`);
-        core.info(`  Retrieving  ${versionListUrl}`);
+        core.info(`Processing BRM Module ${modulePath}:...`);
+        core.info(`  Retrieving BRM Module ${versionListUrl}`);
 
         const versionListResponse = await axios.get(versionListUrl);
         const tags = versionListResponse.data.tags.sort();
@@ -78,6 +90,7 @@ async function generateModuleIndexData({ require, github, context, core }) {
             core,
             path,
             modulePath,
+            (moduleRoot = "modules"),
             tag,
             context
           );
@@ -98,13 +111,120 @@ async function generateModuleIndexData({ require, github, context, core }) {
     }
   }
 
+  // AVM Resource Modules
+  for (const moduleGroup of moduleGroupsAvmRes) {
+    const moduleGroupPath = path.join("avm/res", moduleGroup);
+    const moduleNames = await getSubdirNames(fs, moduleGroupPath);
+
+    for (const moduleName of moduleNames) {
+      const modulePath = `avm/res/${moduleGroup}/${moduleName}`;
+      const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${modulePath}/tags/list`;
+      const moduleBicepRegistryRefSplit = modulePath
+        .split(/[\/\\]avm[\/\\]/)
+        .pop();
+      const moduleBicepRegistryRefReplace = moduleBicepRegistryRefSplit
+        .replace(/-/g, "")
+        .replace(/[\/\\]/g, "-");
+      const moduleBicepRegistryRef = moduleBicepRegistryRefReplace;
+
+      try {
+        core.info(`Processing AVM Resource Module ${modulePath}:...`);
+        core.info(`  Retrieving AVM Resource Module ${versionListUrl}`);
+        core.info(`    Git Tag: ${modulePath}`);
+        core.info(`    BRM Ref: ${moduleBicepRegistryRef}`);
+
+        const versionListResponse = await axios.get(versionListUrl);
+        const tags = versionListResponse.data.tags.sort();
+
+        const properties = {};
+        for (const tag of tags) {
+          var description = await getModuleDescription(
+            github,
+            core,
+            path,
+            modulePath,
+            (moduleRoot = "avm/res"),
+            tag,
+            context
+          );
+          if (description) {
+            properties[tag] = { description };
+            modulesWithDescriptions[modulePath] = true;
+          }
+        }
+
+        moduleIndexData.push({
+          moduleName: moduleBicepRegistryRef,
+          tags,
+          properties,
+        });
+      } catch (error) {
+        core.setFailed(error);
+      }
+    }
+  }
+
+  // AVM Pattern Modules
+  for (const moduleName of moduleGroupsAvmPtn) {
+    const modulePath = `avm/ptn/${moduleName}`;
+    const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${modulePath}/tags/list`;
+    const moduleBicepRegistryRefSplit = modulePath
+      .split(/[\/\\]avm[\/\\]/)
+      .pop();
+    const moduleBicepRegistryRefReplace = moduleBicepRegistryRefSplit
+      .replace(/-/g, "")
+      .replace(/[\/\\]/g, "-");
+    const moduleBicepRegistryRef = moduleBicepRegistryRefReplace;
+
+    try {
+      core.info(`Processing AVM Pattern Module ${modulePath}:...`);
+      core.info(`  Retrieving AVM Pattern Module ${versionListUrl}`);
+      core.info(`    Git Tag: ${modulePath}`);
+      core.info(`    BRM Ref: ${moduleBicepRegistryRef}`);
+
+      const versionListResponse = await axios.get(versionListUrl);
+      const tags = versionListResponse.data.tags.sort();
+
+      const properties = {};
+      for (const tag of tags) {
+        var description = await getModuleDescription(
+          github,
+          core,
+          path,
+          modulePath,
+          (moduleRoot = "avm/ptn"),
+          tag,
+          context
+        );
+        if (description) {
+          properties[tag] = { description };
+          modulesWithDescriptions[modulePath] = true;
+        }
+      }
+
+      moduleIndexData.push({
+        moduleName: moduleBicepRegistryRef,
+        tags,
+        properties,
+      });
+    } catch (error) {
+      core.setFailed(error);
+    }
+  }
+
   core.info(`Writing moduleIndex.json`);
   await fs.writeFile(
     "moduleIndex.json",
     JSON.stringify(moduleIndexData, null, 2)
   );
 
-  core.info(`Processed ${moduleGroups.length} modules groups.`);
+  core.info(
+    `Processed ${
+      moduleGroups.length +
+      moduleGroupsAvmRes.length +
+      moduleGroupsAvmPtn.length
+    } modules groups.`
+  );
   core.info(`Processed ${moduleIndexData.length} total modules.`);
   core.info(
     `${

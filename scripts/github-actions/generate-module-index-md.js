@@ -146,6 +146,9 @@ permalink: /
   );
 
   for (const [moduleGroup, modules] of moduleGroups) {
+    if (moduleGroup.includes("avm")) {
+      continue;
+    }
     core.debug(`Generating ${moduleGroup}...`);
 
     const moduleGroupTable = await generateModuleGroupTable(
