@@ -66,7 +66,8 @@ function Convert-TokenInFile {
         try {
             $File = Get-Content -Path $Path
             $FileName = Split-Path -Path $Path -Leaf
-        } catch {
+        }
+        catch {
             throw $PSItem.Exception.Message
         }
         Write-Verbose "Processing Tokens for file: $FileName"
