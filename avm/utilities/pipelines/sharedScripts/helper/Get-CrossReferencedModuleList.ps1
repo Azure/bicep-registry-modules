@@ -82,7 +82,7 @@ function Get-ReferenceObject {
         }
     }
 
-    foreach ($involvedFilePath in $involvedFilePaths) {
+    foreach ($involvedFilePath in (@($ModuleTemplateFilePath) + @($involvedFilePaths))) {
         $moduleContent = Get-Content -Path $involvedFilePath
 
         $resultSet.resourceReferences += @() + $moduleContent | Where-Object { $_ -match "^resource .+ '(.+)' .+$" } | ForEach-Object { $matches[1] }
