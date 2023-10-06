@@ -66,5 +66,16 @@ module testDeployment '../../../main.bicep' = {
       systemAssigned: true
     }
     restrictOutboundNetworkAccess: false
+    // Workaround for PSRule
+    lock: {}
+    roleAssignments: []
+    diagnosticSettings: []
+    privateEndpoints: []
+    customSubDomainName: null
+    tags: null
+    allowedFqdnList: null
+    apiProperties: null
+    migrationToken: null
+    userOwnedStorage: null
   }
 }

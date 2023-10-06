@@ -54,12 +54,18 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     kind: 'SpeechServices'
     name: 'csad001'
     // Non-required parameters
+    allowedFqdnList: '<allowedFqdnList>'
+    apiProperties: '<apiProperties>'
+    customSubDomainName: '<customSubDomainName>'
     diagnosticSettings: []
     location: '<location>'
     lock: {}
     managedIdentities: {}
+    migrationToken: '<migrationToken>'
     privateEndpoints: []
     roleAssignments: []
+    tags: '<tags>'
+    userOwnedStorage: '<userOwnedStorage>'
   }
 }
 ```
@@ -84,6 +90,15 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       "value": "csad001"
     },
     // Non-required parameters
+    "allowedFqdnList": {
+      "value": "<allowedFqdnList>"
+    },
+    "apiProperties": {
+      "value": "<apiProperties>"
+    },
+    "customSubDomainName": {
+      "value": "<customSubDomainName>"
+    },
     "diagnosticSettings": {
       "value": []
     },
@@ -96,11 +111,20 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     "managedIdentities": {
       "value": {}
     },
+    "migrationToken": {
+      "value": "<migrationToken>"
+    },
     "privateEndpoints": {
       "value": []
     },
     "roleAssignments": {
       "value": []
+    },
+    "tags": {
+      "value": "<tags>"
+    },
+    "userOwnedStorage": {
+      "value": "<userOwnedStorage>"
     }
   }
 }
@@ -126,6 +150,8 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     kind: 'Face'
     name: 'csamax001'
     // Non-required parameters
+    allowedFqdnList: '<allowedFqdnList>'
+    apiProperties: '<apiProperties>'
     customSubDomainName: 'xcsamax'
     diagnosticSettings: [
       {
@@ -166,6 +192,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         '<managedIdentityResourceId>'
       ]
     }
+    migrationToken: '<migrationToken>'
     networkAcls: {
       defaultAction: 'Deny'
       ipRules: [
@@ -206,6 +233,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    userOwnedStorage: '<userOwnedStorage>'
   }
 }
 ```
@@ -230,6 +258,12 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       "value": "csamax001"
     },
     // Non-required parameters
+    "allowedFqdnList": {
+      "value": "<allowedFqdnList>"
+    },
+    "apiProperties": {
+      "value": "<apiProperties>"
+    },
     "customSubDomainName": {
       "value": "xcsamax"
     },
@@ -280,6 +314,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         ]
       }
     },
+    "migrationToken": {
+      "value": "<migrationToken>"
+    },
     "networkAcls": {
       "value": {
         "defaultAction": "Deny",
@@ -329,6 +366,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "userOwnedStorage": {
+      "value": "<userOwnedStorage>"
     }
   }
 }
@@ -354,14 +394,19 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     kind: 'SpeechServices'
     name: 'csaspeech001'
     // Non-required parameters
+    allowedFqdnList: '<allowedFqdnList>'
+    apiProperties: '<apiProperties>'
     customSubDomainName: 'speechdomain'
+    diagnosticSettings: []
     location: '<location>'
+    lock: {}
     managedIdentities: {
       systemAssigned: true
       userAssignedResourcesIds: [
         '<managedIdentityResourceId>'
       ]
     }
+    migrationToken: '<migrationToken>'
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -376,12 +421,14 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         }
       }
     ]
+    roleAssignments: []
     sku: 'S0'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    userOwnedStorage: '<userOwnedStorage>'
   }
 }
 ```
@@ -406,11 +453,23 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       "value": "csaspeech001"
     },
     // Non-required parameters
+    "allowedFqdnList": {
+      "value": "<allowedFqdnList>"
+    },
+    "apiProperties": {
+      "value": "<apiProperties>"
+    },
     "customSubDomainName": {
       "value": "speechdomain"
     },
+    "diagnosticSettings": {
+      "value": []
+    },
     "location": {
       "value": "<location>"
+    },
+    "lock": {
+      "value": {}
     },
     "managedIdentities": {
       "value": {
@@ -419,6 +478,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
           "<managedIdentityResourceId>"
         ]
       }
+    },
+    "migrationToken": {
+      "value": "<migrationToken>"
     },
     "privateEndpoints": {
       "value": [
@@ -436,6 +498,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         }
       ]
     },
+    "roleAssignments": {
+      "value": []
+    },
     "sku": {
       "value": "S0"
     },
@@ -445,6 +510,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "userOwnedStorage": {
+      "value": "<userOwnedStorage>"
     }
   }
 }
@@ -470,17 +538,27 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     kind: 'SpeechServices'
     name: '<name>'
     // Non-required parameters
+    allowedFqdnList: '<allowedFqdnList>'
+    apiProperties: '<apiProperties>'
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
     }
+    customSubDomainName: '<customSubDomainName>'
+    diagnosticSettings: []
     location: '<location>'
+    lock: {}
     managedIdentities: {
       systemAssigned: true
     }
+    migrationToken: '<migrationToken>'
+    privateEndpoints: []
     publicNetworkAccess: 'Enabled'
     restrictOutboundNetworkAccess: false
+    roleAssignments: []
     sku: 'S0'
+    tags: '<tags>'
+    userOwnedStorage: '<userOwnedStorage>'
   }
 }
 ```
@@ -505,19 +583,40 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       "value": "<name>"
     },
     // Non-required parameters
+    "allowedFqdnList": {
+      "value": "<allowedFqdnList>"
+    },
+    "apiProperties": {
+      "value": "<apiProperties>"
+    },
     "customerManagedKey": {
       "value": {
         "keyName": "<keyName>",
         "keyVaultResourceId": "<keyVaultResourceId>"
       }
     },
+    "customSubDomainName": {
+      "value": "<customSubDomainName>"
+    },
+    "diagnosticSettings": {
+      "value": []
+    },
     "location": {
       "value": "<location>"
+    },
+    "lock": {
+      "value": {}
     },
     "managedIdentities": {
       "value": {
         "systemAssigned": true
       }
+    },
+    "migrationToken": {
+      "value": "<migrationToken>"
+    },
+    "privateEndpoints": {
+      "value": []
     },
     "publicNetworkAccess": {
       "value": "Enabled"
@@ -525,8 +624,17 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     "restrictOutboundNetworkAccess": {
       "value": false
     },
+    "roleAssignments": {
+      "value": []
+    },
     "sku": {
       "value": "S0"
+    },
+    "tags": {
+      "value": "<tags>"
+    },
+    "userOwnedStorage": {
+      "value": "<userOwnedStorage>"
     }
   }
 }
@@ -552,20 +660,30 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     kind: 'SpeechServices'
     name: 'csaencr001'
     // Non-required parameters
+    allowedFqdnList: '<allowedFqdnList>'
+    apiProperties: '<apiProperties>'
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
+    customSubDomainName: '<customSubDomainName>'
+    diagnosticSettings: []
     location: '<location>'
+    lock: {}
     managedIdentities: {
       userAssignedResourcesIds: [
         '<managedIdentityResourceId>'
       ]
     }
+    migrationToken: '<migrationToken>'
+    privateEndpoints: []
     publicNetworkAccess: 'Enabled'
     restrictOutboundNetworkAccess: false
+    roleAssignments: []
     sku: 'S0'
+    tags: '<tags>'
+    userOwnedStorage: '<userOwnedStorage>'
   }
 }
 ```
@@ -590,6 +708,12 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       "value": "csaencr001"
     },
     // Non-required parameters
+    "allowedFqdnList": {
+      "value": "<allowedFqdnList>"
+    },
+    "apiProperties": {
+      "value": "<apiProperties>"
+    },
     "customerManagedKey": {
       "value": {
         "keyName": "<keyName>",
@@ -597,8 +721,17 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
+    "customSubDomainName": {
+      "value": "<customSubDomainName>"
+    },
+    "diagnosticSettings": {
+      "value": []
+    },
     "location": {
       "value": "<location>"
+    },
+    "lock": {
+      "value": {}
     },
     "managedIdentities": {
       "value": {
@@ -607,14 +740,29 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         ]
       }
     },
+    "migrationToken": {
+      "value": "<migrationToken>"
+    },
+    "privateEndpoints": {
+      "value": []
+    },
     "publicNetworkAccess": {
       "value": "Enabled"
     },
     "restrictOutboundNetworkAccess": {
       "value": false
     },
+    "roleAssignments": {
+      "value": []
+    },
     "sku": {
       "value": "S0"
+    },
+    "tags": {
+      "value": "<tags>"
+    },
+    "userOwnedStorage": {
+      "value": "<userOwnedStorage>"
     }
   }
 }
@@ -640,6 +788,8 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     kind: 'Face'
     name: 'csawaf001'
     // Non-required parameters
+    allowedFqdnList: '<allowedFqdnList>'
+    apiProperties: '<apiProperties>'
     customSubDomainName: 'xcsawaf'
     diagnosticSettings: [
       {
@@ -680,6 +830,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         '<managedIdentityResourceId>'
       ]
     }
+    migrationToken: '<migrationToken>'
     networkAcls: {
       defaultAction: 'Deny'
       ipRules: [
@@ -721,6 +872,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    userOwnedStorage: '<userOwnedStorage>'
   }
 }
 ```
@@ -745,6 +897,12 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       "value": "csawaf001"
     },
     // Non-required parameters
+    "allowedFqdnList": {
+      "value": "<allowedFqdnList>"
+    },
+    "apiProperties": {
+      "value": "<apiProperties>"
+    },
     "customSubDomainName": {
       "value": "xcsawaf"
     },
@@ -795,6 +953,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         ]
       }
     },
+    "migrationToken": {
+      "value": "<migrationToken>"
+    },
     "networkAcls": {
       "value": {
         "defaultAction": "Deny",
@@ -845,6 +1006,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "userOwnedStorage": {
+      "value": "<userOwnedStorage>"
     }
   }
 }

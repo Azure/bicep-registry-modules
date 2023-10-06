@@ -78,5 +78,13 @@ module testDeployment '../../../main.bicep' = {
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
+    // Workaround for PSRule
+    lock: {}
+    roleAssignments: []
+    diagnosticSettings: []
+    allowedFqdnList: null
+    apiProperties: null
+    migrationToken: null
+    userOwnedStorage: null
   }
 }
