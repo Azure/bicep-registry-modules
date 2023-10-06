@@ -42,10 +42,10 @@ function Publish-ModuleFromPathToPBR {
   $moduleJsonFilePath = Join-Path $moduleFolderPath 'main.json'
 
   # 1. Test if module qualifies for publishing
-  # if (-not (Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath)) {
-  #   Write-Verbose "No changes detected. Skipping publishing" -Verbose
-  #   return
-  # }
+  if (-not (Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath)) {
+    Write-Verbose "No changes detected. Skipping publishing" -Verbose
+    return
+  }
 
   # 2. Calculate the version that we would publish with
   $targetVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
@@ -93,10 +93,5 @@ function Publish-ModuleFromPathToPBR {
     '--force'
   )
   # TODO move to its own task to show that as skipped if no file qualifies for new version
-  # bicep publish @publishInput
-
-  Write-Verbose (Get-Content -Path $moduleJsonFilePath -Raw) -Verbose
-
-  $publishingTarget = 'br:{0}.azurecr.io/{1}:{2}' -f 'avmPrivateRegistry', $publishedModuleName, $targetVersion
-  bicep publish $moduleJsonFilePath --target $publishingTarget --force
+  bicep publish @publishInput
 }
