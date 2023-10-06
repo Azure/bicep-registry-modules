@@ -66,6 +66,7 @@ function Publish-ModuleFromPathToPBR {
       '-..---..-' = $targetVersion
     }
   }
+  Write-Verbose "Convert Tokens Input:`n $($tokenConfiguration | ConvertTo-Json -Depth 10)" -Verbose
   $null = Convert-TokensInFileList @tokenConfiguration
 
   # Double-check that tokens are correctly replaced
@@ -93,6 +94,9 @@ function Publish-ModuleFromPathToPBR {
   )
   # TODO move to its own task to show that as skipped if no file qualifies for new version
   # bicep publish @publishInput
+
+  Write-Verbose (Get-Content -Path $moduleJsonFilePath -Raw) -Verbose
+
   $publishingTarget = 'br:{0}.azurecr.io/{1}:{2}' -f 'avmPrivateRegistry', $publishedModuleName, $targetVersion
   bicep publish $moduleJsonFilePath --target $publishingTarget --force
 }
