@@ -63,9 +63,6 @@ var builtInRoleNames = {
   'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
 }
 
-// @description('The current released version of the module. Used for telemetry.')
-// var moduleVersion = '#_moduleVersion_#' // AUTOMATED, DO NOT CHANGE
-
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-privateendpoint.${replace('-..---..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
