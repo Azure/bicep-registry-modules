@@ -32,12 +32,24 @@ function Publish-ModuleFromTagToPBR {
 
   # 4. Replace telemetry version value (in JSON)
   $tokenConfiguration = @{
-    FilePathList = @($moduleJsonFilePath)
-    Tokens       = @{
-      'moduleVersion' = $targetVersion
+    FilePathList   = @($moduleJsonFilePath)
+    AbsoluteTokens = @{
+      '-..---..-' = $targetVersion
     }
   }
   $null = Convert-TokensInFileList @tokenConfiguration
+
+  # Double-check that tokens are correctly replaced
+  $templateContent = Get-Content -Path $moduleJsonFilePath
+  $incorrectLines = @()
+  for ($index = 0; $index -lt $templateContent.Count; $index++) {
+    if ($templateContent[$index] -match '-..---..-') {
+      $incorrectLines += ('You have the token [{0}] in line [{1}] of file [{2}]. Please seek advice from the AVM team.' -f $matches[0], ($index + 1), $moduleJsonFilePath)
+    }
+  }
+  if ($incorrectLines) {
+    throw ($incorrectLines | ConvertTo-Json)
+  }
 
   ###################
   ## 5.  Publish   ##
