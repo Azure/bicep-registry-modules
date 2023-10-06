@@ -56,6 +56,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     // Non-required parameters
     allowedFqdnList: '<allowedFqdnList>'
     apiProperties: '<apiProperties>'
+    customerManagedKey: '<customerManagedKey>'
     customSubDomainName: '<customSubDomainName>'
     diagnosticSettings: []
     location: '<location>'
@@ -95,6 +96,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     },
     "apiProperties": {
       "value": "<apiProperties>"
+    },
+    "customerManagedKey": {
+      "value": "<customerManagedKey>"
     },
     "customSubDomainName": {
       "value": "<customSubDomainName>"
@@ -152,6 +156,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     // Non-required parameters
     allowedFqdnList: '<allowedFqdnList>'
     apiProperties: '<apiProperties>'
+    customerManagedKey: '<customerManagedKey>'
     customSubDomainName: 'xcsamax'
     diagnosticSettings: [
       {
@@ -263,6 +268,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     },
     "apiProperties": {
       "value": "<apiProperties>"
+    },
+    "customerManagedKey": {
+      "value": "<customerManagedKey>"
     },
     "customSubDomainName": {
       "value": "xcsamax"
@@ -396,6 +404,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     // Non-required parameters
     allowedFqdnList: '<allowedFqdnList>'
     apiProperties: '<apiProperties>'
+    customerManagedKey: '<customerManagedKey>'
     customSubDomainName: 'speechdomain'
     diagnosticSettings: []
     location: '<location>'
@@ -458,6 +467,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     },
     "apiProperties": {
       "value": "<apiProperties>"
+    },
+    "customerManagedKey": {
+      "value": "<customerManagedKey>"
     },
     "customSubDomainName": {
       "value": "speechdomain"
@@ -790,6 +802,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     // Non-required parameters
     allowedFqdnList: '<allowedFqdnList>'
     apiProperties: '<apiProperties>'
+    customerManagedKey: '<customerManagedKey>'
     customSubDomainName: 'xcsawaf'
     diagnosticSettings: [
       {
@@ -869,6 +882,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     },
     "apiProperties": {
       "value": "<apiProperties>"
+    },
+    "customerManagedKey": {
+      "value": "<customerManagedKey>"
     },
     "customSubDomainName": {
       "value": "xcsawaf"
