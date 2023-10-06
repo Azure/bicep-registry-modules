@@ -27,8 +27,7 @@ async function getModuleDescription(
   const ref = `tags/${modulePath}/${tag}`;
   core.info(`  Retrieving main.json at ref ${ref}`);
 
-  let mainJsonPath;
-  mainJsonPath = path
+  const mainJsonPath = path
     .join(moduleRoot, modulePath, "main.json")
     .replace(/\\/g, "/");
 
