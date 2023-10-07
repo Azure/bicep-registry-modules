@@ -1,5 +1,25 @@
 metadata name = 'Kubernetes Configuration Extensions'
-metadata description = 'This module deploys a Kubernetes Configuration Extension.'
+metadata description = '''
+This module deploys a Kubernetes Configuration Extension.
+
+## Prerequisites
+
+Registration of your subscription with the AKS-ExtensionManager feature flag. Use the following command:
+
+```powershell
+az feature register --namespace Microsoft.ContainerService --name AKS-ExtensionManager
+```
+
+Registration of the following Azure service providers. (It's OK to re-register an existing provider.)
+
+```powershell
+az provider register --namespace Microsoft.Kubernetes
+az provider register --namespace Microsoft.ContainerService
+az provider register --namespace Microsoft.KubernetesConfiguration
+```
+
+For Details see [Prerequisites](https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/tutorial-use-gitops-flux2)
+'''
 metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Flux Configuration.')
@@ -28,10 +48,10 @@ param extensionType string
 param releaseTrain string?
 
 @description('Optional. Namespace where the extension Release must be placed, for a Cluster scoped extension. If this namespace does not exist, it will be created.')
-param releaseNamespace string = ''
+param releaseNamespace string?
 
 @description('Optional. Namespace where the extension will be created for an Namespace scoped extension. If this namespace does not exist, it will be created.')
-param targetNamespace string = ''
+param targetNamespace string?
 
 @description('Optional. Version of the extension for this extension, if it is "pinned" to a specific version.')
 param version string?
@@ -71,10 +91,10 @@ resource extension 'Microsoft.KubernetesConfiguration/extensions@2022-03-01' = {
     extensionType: extensionType
     releaseTrain: releaseTrain
     scope: {
-      cluster: !empty(releaseNamespace) ? {
+      cluster: !empty(releaseNamespace ?? '') ? {
         releaseNamespace: releaseNamespace
       } : null
-      namespace: !empty(targetNamespace) ? {
+      namespace: !empty(targetNamespace ?? '') ? {
         targetNamespace: targetNamespace
       } : null
     }

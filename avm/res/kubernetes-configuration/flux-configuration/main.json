@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "1794119719848736467"
+      "templateHash": "2761744408936071388"
     },
     "name": "Kubernetes Configuration Flux Configurations",
-    "description": "This module deploys a Kubernetes Configuration Flux Configuration.",
+    "description": "This module deploys a Kubernetes Configuration Flux Configuration.\n\n## Prerequisites\n\nRegistration of your subscription with the AKS-ExtensionManager feature flag. Use the following command:\n\n```powershell\naz feature register --namespace Microsoft.ContainerService --name AKS-ExtensionManager\n```\n\nRegistration of the following Azure service providers. (It's OK to re-register an existing provider.)\n\n```powershell\naz provider register --namespace Microsoft.Kubernetes\naz provider register --namespace Microsoft.ContainerService\naz provider register --namespace Microsoft.KubernetesConfiguration\n```\n\nFor Details see [Prerequisites](https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/tutorial-use-gitops-flux2)\n",
     "owner": "Azure/module-maintainers"
   },
   "parameters": {

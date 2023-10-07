@@ -79,5 +79,8 @@ module testDeployment '../../../main.bicep' = {
         }
       }
     ]
+    // Workaround for PSRule
+    configurationProtectedSettings: null
+    targetNamespace: null
   }
 }

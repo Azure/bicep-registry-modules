@@ -1,14 +1,15 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "14913275975998013893"
+      "templateHash": "4024119365489786420"
     },
     "name": "Kubernetes Configuration Extensions",
-    "description": "This module deploys a Kubernetes Configuration Extension.",
+    "description": "This module deploys a Kubernetes Configuration Extension.\n\n## Prerequisites\n\nRegistration of your subscription with the AKS-ExtensionManager feature flag. Use the following command:\n\n```powershell\naz feature register --namespace Microsoft.ContainerService --name AKS-ExtensionManager\n```\n\nRegistration of the following Azure service providers. (It's OK to re-register an existing provider.)\n\n```powershell\naz provider register --namespace Microsoft.Kubernetes\naz provider register --namespace Microsoft.ContainerService\naz provider register --namespace Microsoft.KubernetesConfiguration\n```\n\nFor Details see [Prerequisites](https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/tutorial-use-gitops-flux2)\n",
     "owner": "Azure/module-maintainers"
   },
   "parameters": {
@@ -18,11 +19,11 @@
         "description": "Required. The name of the Flux Configuration."
       }
     },
-    "enableDefaultTelemetry": {
+    "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "clusterName": {
@@ -40,14 +41,14 @@
     },
     "configurationProtectedSettings": {
       "type": "secureObject",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configuration settings that are sensitive, as name-value pairs for configuring this extension."
       }
     },
     "configurationSettings": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configuration settings, as name-value pairs for configuring this extension."
       }
@@ -60,77 +61,92 @@
     },
     "releaseTrain": {
       "type": "string",
-      "defaultValue": "Stable",
+      "nullable": true,
       "metadata": {
         "description": "Optional. ReleaseTrain this extension participates in for auto-upgrade (e.g. Stable, Preview, etc.) - only if autoUpgradeMinorVersion is \"true\"."
       }
     },
     "releaseNamespace": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Namespace where the extension Release must be placed, for a Cluster scoped extension. If this namespace does not exist, it will be created."
       }
     },
     "targetNamespace": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Namespace where the extension will be created for an Namespace scoped extension. If this namespace does not exist, it will be created."
       }
     },
     "version": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Version of the extension for this extension, if it is \"pinned\" to a specific version."
       }
     },
     "fluxConfigurations": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. A list of flux configuraitons."
       }
     }
   },
-  "resources": [
-    {
-      "condition": "[parameters('enableDefaultTelemetry')]",
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.kubernetesconfiguration-fluxconfig.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
-          "resources": []
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
         }
       }
     },
-    {
+    "managedCluster": {
+      "existing": true,
+      "type": "Microsoft.ContainerService/managedClusters",
+      "apiVersion": "2022-07-01",
+      "name": "[parameters('clusterName')]"
+    },
+    "extension": {
       "type": "Microsoft.KubernetesConfiguration/extensions",
       "apiVersion": "2022-03-01",
       "scope": "[format('Microsoft.ContainerService/managedClusters/{0}', parameters('clusterName'))]",
       "name": "[parameters('name')]",
       "properties": {
         "autoUpgradeMinorVersion": "[if(not(empty(parameters('version'))), false(), true())]",
-        "configurationProtectedSettings": "[if(not(empty(parameters('configurationProtectedSettings'))), parameters('configurationProtectedSettings'), createObject())]",
-        "configurationSettings": "[if(not(empty(parameters('configurationSettings'))), parameters('configurationSettings'), createObject())]",
+        "configurationProtectedSettings": "[parameters('configurationProtectedSettings')]",
+        "configurationSettings": "[parameters('configurationSettings')]",
         "extensionType": "[parameters('extensionType')]",
-        "releaseTrain": "[if(not(empty(parameters('releaseTrain'))), parameters('releaseTrain'), null())]",
+        "releaseTrain": "[parameters('releaseTrain')]",
         "scope": {
-          "cluster": "[if(not(empty(parameters('releaseNamespace'))), createObject('releaseNamespace', parameters('releaseNamespace')), null())]",
-          "namespace": "[if(not(empty(parameters('targetNamespace'))), createObject('targetNamespace', parameters('targetNamespace')), null())]"
+          "cluster": "[if(not(empty(coalesce(parameters('releaseNamespace'), ''))), createObject('releaseNamespace', parameters('releaseNamespace')), null())]",
+          "namespace": "[if(not(empty(coalesce(parameters('targetNamespace'), ''))), createObject('targetNamespace', parameters('targetNamespace')), null())]"
         },
-        "version": "[if(not(empty(parameters('version'))), parameters('version'), null())]"
-      }
+        "version": "[parameters('version')]"
+      },
+      "dependsOn": [
+        "managedCluster"
+      ]
     },
-    {
+    "fluxConfiguration": {
       "copy": {
         "name": "fluxConfiguration",
-        "count": "[length(parameters('fluxConfigurations'))]"
+        "count": "[length(coalesce(parameters('fluxConfigurations'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -141,34 +157,47 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "enableDefaultTelemetry": {
-            "value": "[parameters('enableDefaultTelemetry')]"
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "clusterName": {
             "value": "[parameters('clusterName')]"
           },
           "scope": {
-            "value": "[parameters('fluxConfigurations')[copyIndex()].scope]"
+            "value": "[coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()].scope]"
           },
           "namespace": {
-            "value": "[parameters('fluxConfigurations')[copyIndex()].namespace]"
+            "value": "[coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()].namespace]"
           },
-          "sourceKind": "[if(contains(parameters('fluxConfigurations')[copyIndex()], 'gitRepository'), createObject('value', 'GitRepository'), createObject('value', 'Bucket'))]",
-          "name": "[if(contains(parameters('fluxConfigurations')[copyIndex()], 'name'), createObject('value', parameters('fluxConfigurations')[copyIndex()].name), createObject('value', toLower(format('{0}-fluxconfiguration{1}', parameters('clusterName'), copyIndex()))))]",
-          "bucket": "[if(contains(parameters('fluxConfigurations')[copyIndex()], 'bucket'), createObject('value', parameters('fluxConfigurations')[copyIndex()].bucket), createObject('value', createObject()))]",
-          "configurationProtectedSettings": "[if(contains(parameters('fluxConfigurations')[copyIndex()], 'configurationProtectedSettings'), createObject('value', parameters('fluxConfigurations')[copyIndex()].configurationProtectedSettings), createObject('value', createObject()))]",
-          "gitRepository": "[if(contains(parameters('fluxConfigurations')[copyIndex()], 'gitRepository'), createObject('value', parameters('fluxConfigurations')[copyIndex()].gitRepository), createObject('value', createObject()))]",
-          "kustomizations": "[if(contains(parameters('fluxConfigurations')[copyIndex()], 'kustomizations'), createObject('value', parameters('fluxConfigurations')[copyIndex()].kustomizations), createObject('value', createObject()))]",
-          "suspend": "[if(contains(parameters('fluxConfigurations')[copyIndex()], 'suspend'), createObject('value', parameters('fluxConfigurations')[copyIndex()].suspend), createObject('value', false()))]"
+          "sourceKind": "[if(contains(coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()], 'gitRepository'), createObject('value', 'GitRepository'), createObject('value', 'Bucket'))]",
+          "name": {
+            "value": "[tryGet(coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()], 'name')]"
+          },
+          "bucket": {
+            "value": "[tryGet(coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()], 'bucket')]"
+          },
+          "configurationProtectedSettings": {
+            "value": "[tryGet(coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()], 'configurationProtectedSettings')]"
+          },
+          "gitRepository": {
+            "value": "[tryGet(coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()], 'gitRepository')]"
+          },
+          "kustomizations": {
+            "value": "[tryGet(coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()], 'kustomizations')]"
+          },
+          "suspend": {
+            "value": "[tryGet(coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()], 'suspend')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.21.1.54444",
-              "templateHash": "11648869363176032755"
+              "templateHash": "1794119719848736467"
             },
             "name": "Kubernetes Configuration Flux Configurations",
             "description": "This module deploys a Kubernetes Configuration Flux Configuration.",
@@ -181,11 +210,11 @@
                 "description": "Required. The name of the Flux Configuration."
               }
             },
-            "enableDefaultTelemetry": {
+            "enableTelemetry": {
               "type": "bool",
               "defaultValue": true,
               "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+                "description": "Optional. Enable/Disable usage telemetry for module."
               }
             },
             "clusterName": {
@@ -203,28 +232,28 @@
             },
             "bucket": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
-                "description": "Optional. Parameters to reconcile to the GitRepository source kind type."
+                "description": "Conditional. Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `Bucket`."
               }
             },
             "configurationProtectedSettings": {
               "type": "secureObject",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Key-value pairs of protected configuration settings for the configuration."
               }
             },
             "gitRepository": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
-                "description": "Optional. Parameters to reconcile to the GitRepository source kind type."
+                "description": "Conditional. Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `GitRepository`."
               }
             },
             "kustomizations": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster."
               }
@@ -263,38 +292,53 @@
               }
             }
           },
-          "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+              "apiVersion": "2023-07-01",
+              "name": "[format('46d3xbcp.res.kubernetesconfiguration-extension.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
-                  "resources": []
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
                 }
               }
             },
-            {
+            "managedCluster": {
+              "existing": true,
+              "type": "Microsoft.ContainerService/managedClusters",
+              "apiVersion": "2022-07-01",
+              "name": "[parameters('clusterName')]"
+            },
+            "fluxConfiguration": {
               "type": "Microsoft.KubernetesConfiguration/fluxConfigurations",
               "apiVersion": "2022-03-01",
               "scope": "[format('Microsoft.ContainerService/managedClusters/{0}', parameters('clusterName'))]",
               "name": "[parameters('name')]",
               "properties": {
-                "bucket": "[if(not(empty(parameters('bucket'))), parameters('bucket'), null())]",
-                "configurationProtectedSettings": "[if(not(empty(parameters('configurationProtectedSettings'))), parameters('configurationProtectedSettings'), createObject())]",
-                "gitRepository": "[if(not(empty(parameters('gitRepository'))), parameters('gitRepository'), null())]",
-                "kustomizations": "[if(not(empty(parameters('kustomizations'))), parameters('kustomizations'), createObject())]",
+                "bucket": "[parameters('bucket')]",
+                "configurationProtectedSettings": "[parameters('configurationProtectedSettings')]",
+                "gitRepository": "[parameters('gitRepository')]",
+                "kustomizations": "[parameters('kustomizations')]",
                 "namespace": "[parameters('namespace')]",
                 "scope": "[parameters('scope')]",
                 "sourceKind": "[parameters('sourceKind')]",
                 "suspend": "[parameters('suspend')]"
-              }
+              },
+              "dependsOn": [
+                "managedCluster"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -321,10 +365,11 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(resourceId('Microsoft.ContainerService/managedClusters', parameters('clusterName')), 'Microsoft.KubernetesConfiguration/extensions', parameters('name'))]"
+        "extension",
+        "managedCluster"
       ]
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",
