@@ -53,24 +53,22 @@ runs:
 
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-LocallyReferencedFileList.ps1')
 
           $templateFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
 
-          # Get target files
           $targetFileList = @(
-            $templateFilePath
+            '${{ inputs.templateFilePath }}'
           )
-
-          # Add all module template files as they may contain tokens
-          $targetFileList += (Get-LocallyReferencedFileList -FilePath $templateFilePath)
-          $targetFileList = $targetFileList | Sort-Object -Unique
-
-          # Construct Token Function Input
-          $ConvertTokensInputs = @{
-            FilePathList = $targetFileList
-            Tokens       = @{}
+          # Add all module template files as they contain a version statement
+          $templateFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
+          if($templateFilePath -like '*/tests/*') {
+            # e.g. (...)/cognitive-services/account/tests/e2e/defauts/main.test.bicep
+            $moduleRoot = (Get-Item (Split-Path $templateFilePath)).Parent.Parent.Parent.FullName
+          } else {
+            # e.g. (...)/cognitive-services/account/main.bicep
+            $moduleRoot = Split-Path $templateFilePath
           }
+          $targetFileList += (Get-ChildItem -Path $moduleRoot -Recurse -File).FullName | Where-Object { $_ -match '.+(main.json|main.bicep)$' }
 
           # Add enforced tokens
           $ConvertTokensInputs.Tokens += @{
