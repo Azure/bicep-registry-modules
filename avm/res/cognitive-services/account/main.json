@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "725138716112882014"
+      "templateHash": "10356861355383479278"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service.",
@@ -719,7 +719,7 @@
       "properties": {
         "customSubDomainName": "[parameters('customSubDomainName')]",
         "networkAcls": "[if(not(empty(coalesce(parameters('networkAcls'), createArray()))), createObject('defaultAction', tryGet(parameters('networkAcls'), 'defaultAction'), 'virtualNetworkRules', coalesce(tryGet(parameters('networkAcls'), 'virtualNetworkRules'), createArray()), 'ipRules', coalesce(tryGet(parameters('networkAcls'), 'ipRules'), createArray())), null())]",
-        "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(coalesce(parameters('privateEndpoints'), createArray()))), not(empty(coalesce(parameters('networkAcls'), createArray())))), 'Disabled', null()))]",
+        "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(coalesce(parameters('privateEndpoints'), createArray()))), empty(coalesce(parameters('networkAcls'), createArray()))), 'Disabled', null()))]",
         "allowedFqdnList": "[parameters('allowedFqdnList')]",
         "apiProperties": "[parameters('apiProperties')]",
         "disableLocalAuth": "[parameters('disableLocalAuth')]",
