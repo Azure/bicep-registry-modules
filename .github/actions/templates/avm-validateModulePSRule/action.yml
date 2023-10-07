@@ -110,7 +110,7 @@ runs:
     # [PSRule validation] task(s)
     #-----------------------------
     - name: Run PSRule analysis
-      uses: microsoft/ps-rule@v2.9.0
+      uses: microsoft/ps-rule@v2.4.0
       continue-on-error: true # Setting this whilst PSRule gets bedded in, in this project
       with:
         modules: "PSRule.Rules.Azure"
