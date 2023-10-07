@@ -426,7 +426,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
-        service: 'account'
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -508,7 +507,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
-          "service": "account",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
@@ -843,7 +841,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
-        service: 'account'
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -932,7 +929,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
-          "service": "account",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
