@@ -200,12 +200,12 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
   }
   properties: {
     customSubDomainName: customSubDomainName
-    networkAcls: null != networkAcls ? {
+    networkAcls: !empty(networkAcls ?? []) ? {
       defaultAction: networkAcls.?defaultAction
       virtualNetworkRules: networkAcls.?virtualNetworkRules ?? []
       ipRules: networkAcls.?ipRules ?? []
     } : null
-    publicNetworkAccess: !empty(publicNetworkAccess) ? publicNetworkAccess : ((null != privateEndpoints && null != networkAcls) ? 'Disabled' : null)
+    publicNetworkAccess: !empty(publicNetworkAccess) ? publicNetworkAccess : ((!empty(privateEndpoints ?? []) && !empty(networkAcls ?? [])) ? 'Disabled' : null)
     allowedFqdnList: allowedFqdnList
     apiProperties: apiProperties
     disableLocalAuth: disableLocalAuth
