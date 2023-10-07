@@ -98,5 +98,11 @@ module testDeployment '../../../main.bicep' = {
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
+    // Workaround for PSRule
+    keyVaultReferenceResourceId: null
+    networkProfileAllowedIpRanges: null
+    allowedAuthenticationModes: null
+    roleAssignments: null
+    customerManagedKey: null
   }
 }

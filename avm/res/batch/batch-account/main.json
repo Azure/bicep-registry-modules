@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "2992780342032363512"
+      "templateHash": "10941799914318546286"
     },
     "name": "Batch Accounts",
     "description": "This module deploys a Batch Account.",
@@ -1275,6 +1275,13 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('batchAccount', '2022-06-01', 'full').location]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('batchAccount', '2022-06-01', 'full').identity, 'principalId')), reference('batchAccount', '2022-06-01', 'full').identity.principalId, '')]"
     }
   }
 }

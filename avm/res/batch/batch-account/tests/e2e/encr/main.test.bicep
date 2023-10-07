@@ -70,5 +70,15 @@ module testDeployment '../../../main.bicep' = {
         nestedDependencies.outputs.managedIdentityResourceId
       ]
     }
+    // Workaround for PSRule
+    storageAccessIdentityResourceId: null
+    keyVaultReferenceResourceId: null
+    networkProfileAllowedIpRanges: null
+    tags: null
+    allowedAuthenticationModes: null
+    diagnosticSettings: null
+    roleAssignments: null
+    privateEndpoints: null
+    lock: null
   }
 }
