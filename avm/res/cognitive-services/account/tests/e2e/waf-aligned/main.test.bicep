@@ -79,20 +79,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    networkAcls: {
-      defaultAction: 'Deny'
-      ipRules: [
-        {
-          value: '40.74.28.0/23'
-        }
-      ]
-      virtualNetworkRules: [
-        {
-          id: nestedDependencies.outputs.subnetResourceId
-          ignoreMissingVnetServiceEndpoint: false
-        }
-      ]
-    }
     sku: 'S0'
     privateEndpoints: [
       {

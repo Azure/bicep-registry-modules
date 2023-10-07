@@ -821,20 +821,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       systemAssigned: true
     }
     migrationToken: '<migrationToken>'
-    networkAcls: {
-      defaultAction: 'Deny'
-      ipRules: [
-        {
-          value: '40.74.28.0/23'
-        }
-      ]
-      virtualNetworkRules: [
-        {
-          id: '<id>'
-          ignoreMissingVnetServiceEndpoint: false
-        }
-      ]
-    }
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -919,22 +905,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     },
     "migrationToken": {
       "value": "<migrationToken>"
-    },
-    "networkAcls": {
-      "value": {
-        "defaultAction": "Deny",
-        "ipRules": [
-          {
-            "value": "40.74.28.0/23"
-          }
-        ],
-        "virtualNetworkRules": [
-          {
-            "id": "<id>",
-            "ignoreMissingVnetServiceEndpoint": false
-          }
-        ]
-      }
     },
     "privateEndpoints": {
       "value": [
