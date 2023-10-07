@@ -56,17 +56,7 @@ module testDeployment '../../../main.bicep' = {
     clusterName: nestedDependencies.outputs.clusterName
     namespace: 'flux-system'
     scope: 'cluster'
-    // sourceKind: 'GitRepository'
     sourceKind: 'Bucket'
-    // gitRepository: {
-    //   repositoryRef: {
-    //     branch: 'main'
-    //   }
-    //   sshKnownHosts: ''
-    //   syncIntervalInSeconds: 300
-    //   timeoutInSeconds: 180
-    //   url: 'https://github.com/mspnp/aks-baseline'
-    // }
     gitRepository: null
     // Workaround for PSRule
     bucket: null
