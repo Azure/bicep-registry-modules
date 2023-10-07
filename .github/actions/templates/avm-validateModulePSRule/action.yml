@@ -58,6 +58,7 @@ runs:
           $targetFileList = @(
             '${{ inputs.templateFilePath }}'
           )
+
           # Add all module template files as they contain a version statement
           $templateFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
           if($templateFilePath -like '*/tests/*') {
