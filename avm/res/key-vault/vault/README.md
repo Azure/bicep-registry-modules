@@ -56,16 +56,16 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
     // Required parameters
     name: 'kvvd002'
     // Non-required parameters
-    accessPolicies: []
-    diagnosticSettings: []
+    accessPolicies: '<accessPolicies>'
+    diagnosticSettings: '<diagnosticSettings>'
     enablePurgeProtection: false
-    keys: []
+    keys: '<keys>'
     location: '<location>'
-    lock: {}
-    privateEndpoints: []
-    roleAssignments: []
-    secrets: {}
-    tags: {}
+    lock: '<lock>'
+    privateEndpoints: '<privateEndpoints>'
+    roleAssignments: '<roleAssignments>'
+    secrets: '<secrets>'
+    tags: '<tags>'
   }
 }
 ```
@@ -86,34 +86,34 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
       "value": "kvvd002"
     },
     "accessPolicies": {
-      "value": []
+      "value": "<accessPolicies>"
     },
     "diagnosticSettings": {
-      "value": []
+      "value": "<diagnosticSettings>"
     },
     "enablePurgeProtection": {
       "value": false
     },
     "keys": {
-      "value": []
+      "value": "<keys>"
     },
     "location": {
       "value": "<location>"
     },
     "lock": {
-      "value": {}
+      "value": "<lock>"
     },
     "privateEndpoints": {
-      "value": []
+      "value": "<privateEndpoints>"
     },
     "roleAssignments": {
-      "value": []
+      "value": "<roleAssignments>"
     },
     "secrets": {
-      "value": {}
+      "value": "<secrets>"
     },
     "tags": {
-      "value": {}
+      "value": "<tags>"
     }
   }
 }
@@ -634,7 +634,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
     // Required parameters
     name: 'kvvwaf002'
     // Non-required parameters
-    accessPolicies: []
+    accessPolicies: '<accessPolicies>'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -694,7 +694,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
         subnetResourceId: '<subnetResourceId>'
       }
     ]
-    roleAssignments: []
+    roleAssignments: '<roleAssignments>'
     secrets: {
       secureList: [
         {
@@ -732,7 +732,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
       "value": "kvvwaf002"
     },
     "accessPolicies": {
-      "value": []
+      "value": "<accessPolicies>"
     },
     "diagnosticSettings": {
       "value": [
@@ -810,7 +810,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
       ]
     },
     "roleAssignments": {
-      "value": []
+      "value": "<roleAssignments>"
     },
     "secrets": {
       "value": {
@@ -1395,4 +1395,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm-res-network-privateendpoint:0.1.0` | Remote reference |
+| `br/public:avm-res-network-privateendpoint:0.1.1` | Remote reference |

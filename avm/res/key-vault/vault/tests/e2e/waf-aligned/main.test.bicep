@@ -142,7 +142,7 @@ module testDeployment '../../../main.bicep' = {
       Role: 'DeploymentValidation'
     }
     // Workaround for PSRule
-    roleAssignments: []
-    accessPolicies: []
+    roleAssignments: null
+    accessPolicies: null
   }
 }
