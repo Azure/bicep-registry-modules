@@ -63,6 +63,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     lock: '<lock>'
     managedIdentities: '<managedIdentities>'
     migrationToken: '<migrationToken>'
+    networkAcls: '<networkAcls>'
     privateEndpoints: '<privateEndpoints>'
     roleAssignments: '<roleAssignments>'
     tags: '<tags>'
@@ -117,6 +118,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     },
     "migrationToken": {
       "value": "<migrationToken>"
+    },
+    "networkAcls": {
+      "value": "<networkAcls>"
     },
     "privateEndpoints": {
       "value": "<privateEndpoints>"
@@ -416,6 +420,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       ]
     }
     migrationToken: '<migrationToken>'
+    networkAcls: '<networkAcls>'
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -494,6 +499,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     "migrationToken": {
       "value": "<migrationToken>"
     },
+    "networkAcls": {
+      "value": "<networkAcls>"
+    },
     "privateEndpoints": {
       "value": [
         {
@@ -564,6 +572,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       systemAssigned: true
     }
     migrationToken: '<migrationToken>'
+    networkAcls: '<networkAcls>'
     privateEndpoints: '<privateEndpoints>'
     publicNetworkAccess: 'Enabled'
     restrictOutboundNetworkAccess: false
@@ -627,6 +636,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     "migrationToken": {
       "value": "<migrationToken>"
     },
+    "networkAcls": {
+      "value": "<networkAcls>"
+    },
     "privateEndpoints": {
       "value": "<privateEndpoints>"
     },
@@ -689,6 +701,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       ]
     }
     migrationToken: '<migrationToken>'
+    networkAcls: '<networkAcls>'
     privateEndpoints: '<privateEndpoints>'
     publicNetworkAccess: 'Enabled'
     restrictOutboundNetworkAccess: false
@@ -754,6 +767,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     },
     "migrationToken": {
       "value": "<migrationToken>"
+    },
+    "networkAcls": {
+      "value": "<networkAcls>"
     },
     "privateEndpoints": {
       "value": "<privateEndpoints>"
@@ -821,6 +837,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       systemAssigned: true
     }
     migrationToken: '<migrationToken>'
+    networkAcls: '<networkAcls>'
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -905,6 +922,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     },
     "migrationToken": {
       "value": "<migrationToken>"
+    },
+    "networkAcls": {
+      "value": "<networkAcls>"
     },
     "privateEndpoints": {
       "value": [
