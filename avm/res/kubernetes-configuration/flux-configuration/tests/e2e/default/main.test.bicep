@@ -56,7 +56,8 @@ module testDeployment '../../../main.bicep' = {
     clusterName: nestedDependencies.outputs.clusterName
     namespace: 'flux-system'
     scope: 'cluster'
-    sourceKind: 'GitRepository'
+    // sourceKind: 'GitRepository'
+    sourceKind: 'Bucket'
     // gitRepository: {
     //   repositoryRef: {
     //     branch: 'main'

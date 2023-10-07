@@ -48,6 +48,12 @@ For Details see [Prerequisites](https://learn.microsoft.com/en-us/azure/azure-ar
 | [`scope`](#parameter-scope) | string | Scope at which the configuration will be installed. |
 | [`sourceKind`](#parameter-sourcekind) | string | Source Kind to pull the configuration data from. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`gitRepository`](#parameter-gitrepository) | object | Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `GitRepository`. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -55,7 +61,6 @@ For Details see [Prerequisites](https://learn.microsoft.com/en-us/azure/azure-ar
 | [`bucket`](#parameter-bucket) | object | Parameters to reconcile to the GitRepository source kind type. |
 | [`configurationProtectedSettings`](#parameter-configurationprotectedsettings) | secureObject | Key-value pairs of protected configuration settings for the configuration. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`gitRepository`](#parameter-gitrepository) | object | Parameters to reconcile to the GitRepository source kind type. |
 | [`kustomizations`](#parameter-kustomizations) | object | Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`suspend`](#parameter-suspend) | bool | Whether this configuration should suspend its reconciliation of its kustomizations and sources. |
@@ -87,7 +92,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `gitRepository`
 
-Parameters to reconcile to the GitRepository source kind type.
+Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `GitRepository`.
 - Required: No
 - Type: object
 
@@ -360,7 +365,7 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
     clusterName: '<clusterName>'
     name: 'kcfcdef001'
     namespace: 'flux-system'
-    sourceKind: 'GitRepository'
+    sourceKind: 'Bucket'
     // Non-required parameters
     bucket: '<bucket>'
     configurationProtectedSettings: '<configurationProtectedSettings>'
@@ -395,7 +400,7 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
       "value": "flux-system"
     },
     "sourceKind": {
-      "value": "GitRepository"
+      "value": "Bucket"
     },
     // Non-required parameters
     "bucket": {

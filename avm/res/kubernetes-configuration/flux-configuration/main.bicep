@@ -21,7 +21,7 @@ param bucket object?
 @secure()
 param configurationProtectedSettings object?
 
-@description('Optional. Parameters to reconcile to the GitRepository source kind type.')
+@description('Conditional. Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `GitRepository`.')
 param gitRepository object?
 
 @description('Optional. Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster.')

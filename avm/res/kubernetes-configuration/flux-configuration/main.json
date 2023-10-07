@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "17776905941907287563"
+      "templateHash": "9308054914245607834"
     },
     "name": "Kubernetes Configuration Flux Configurations",
     "description": "This module deploys a Kubernetes Configuration Flux Configuration.",
@@ -57,7 +57,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Parameters to reconcile to the GitRepository source kind type."
+        "description": "Conditional. Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `GitRepository`."
       }
     },
     "kustomizations": {
