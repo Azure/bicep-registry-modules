@@ -1,16 +1,13 @@
 metadata name = 'Kubernetes Configuration Extensions'
-metadata description = '''
-This module deploys a Kubernetes Configuration Extension.
+metadata description = '''This module deploys a Kubernetes Configuration Extension.
 
-## Prerequisites
-
-Registration of your subscription with the AKS-ExtensionManager feature flag. Use the following command:
+To use this module, it is required to register the AKS-ExtensionManager feature in your subscription. To do so, you can use the following command:
 
 ```powershell
 az feature register --namespace Microsoft.ContainerService --name AKS-ExtensionManager
 ```
 
-Registration of the following Azure service providers. (It's OK to re-register an existing provider.)
+Further it is required to register the following Azure service providers. (It's OK to re-register an existing provider.)
 
 ```powershell
 az provider register --namespace Microsoft.Kubernetes
@@ -18,8 +15,7 @@ az provider register --namespace Microsoft.ContainerService
 az provider register --namespace Microsoft.KubernetesConfiguration
 ```
 
-For Details see [Prerequisites](https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/tutorial-use-gitops-flux2)
-'''
+For Details see [Prerequisites](https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/tutorial-use-gitops-flux2)'''
 metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Flux Configuration.')
