@@ -14,7 +14,7 @@ param clusterName string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. Parameters to reconcile to the GitRepository source kind type.')
+@description('Conditional. Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `Bucket`')
 param bucket object?
 
 @description('Optional. Key-value pairs of protected configuration settings for the configuration.')

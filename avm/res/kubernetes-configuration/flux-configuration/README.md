@@ -52,13 +52,13 @@ For Details see [Prerequisites](https://learn.microsoft.com/en-us/azure/azure-ar
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`bucket`](#parameter-bucket) | object | Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `Bucket` |
 | [`gitRepository`](#parameter-gitrepository) | object | Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `GitRepository`. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`bucket`](#parameter-bucket) | object | Parameters to reconcile to the GitRepository source kind type. |
 | [`configurationProtectedSettings`](#parameter-configurationprotectedsettings) | secureObject | Key-value pairs of protected configuration settings for the configuration. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`kustomizations`](#parameter-kustomizations) | object | Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster. |
@@ -67,7 +67,7 @@ For Details see [Prerequisites](https://learn.microsoft.com/en-us/azure/azure-ar
 
 ### Parameter: `bucket`
 
-Parameters to reconcile to the GitRepository source kind type.
+Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `Bucket`
 - Required: No
 - Type: object
 
@@ -365,12 +365,20 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
     clusterName: '<clusterName>'
     name: 'kcfcdef001'
     namespace: 'flux-system'
-    sourceKind: 'Bucket'
+    sourceKind: 'GitRepository'
     // Non-required parameters
     bucket: '<bucket>'
     configurationProtectedSettings: '<configurationProtectedSettings>'
     enableTelemetry: '<enableTelemetry>'
-    gitRepository: '<gitRepository>'
+    gitRepository: {
+      repositoryRef: {
+        branch: 'main'
+      }
+      sshKnownHosts: ''
+      syncIntervalInSeconds: 300
+      timeoutInSeconds: 180
+      url: 'https://github.com/mspnp/aks-baseline'
+    }
     kustomizations: '<kustomizations>'
     location: '<location>'
   }
@@ -400,7 +408,7 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
       "value": "flux-system"
     },
     "sourceKind": {
-      "value": "Bucket"
+      "value": "GitRepository"
     },
     // Non-required parameters
     "bucket": {
@@ -413,7 +421,15 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
       "value": "<enableTelemetry>"
     },
     "gitRepository": {
-      "value": "<gitRepository>"
+      "value": {
+        "repositoryRef": {
+          "branch": "main"
+        },
+        "sshKnownHosts": "",
+        "syncIntervalInSeconds": 300,
+        "timeoutInSeconds": 180,
+        "url": "https://github.com/mspnp/aks-baseline"
+      }
     },
     "kustomizations": {
       "value": "<kustomizations>"
