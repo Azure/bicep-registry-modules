@@ -16,7 +16,7 @@ async function getModuleDescription(
   tag,
   context
 ) {
-  const allowedModuleRoots = ["modules", "avm/res", "avm/res"];
+  const allowedModuleRoots = ["modules", "avm/res", "avm/ptn"];
 
   if (!allowedModuleRoots.includes(moduleRoot)) {
     throw new Error(
@@ -40,6 +40,7 @@ async function getModuleDescription(
   if (mainJsonPath.startsWith("avm/ptn/avm/ptn")) {
     mainJsonPath = mainJsonPath.replace("avm/ptn/", "");
   }
+
   const response = await github.rest.repos.getContent({
     owner: context.repo.owner,
     repo: context.repo.repo,
