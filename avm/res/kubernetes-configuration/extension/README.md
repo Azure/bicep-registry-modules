@@ -167,6 +167,7 @@ module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
           url: 'https://github.com/mspnp/aks-baseline'
         }
         namespace: 'flux-system'
+        suspend: '<suspend>'
       }
     ]
     location: '<location>'
@@ -228,7 +229,8 @@ module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
             "timeoutInSeconds": 180,
             "url": "https://github.com/mspnp/aks-baseline"
           },
-          "namespace": "flux-system"
+          "namespace": "flux-system",
+          "suspend": "<suspend>"
         }
       ]
     },
@@ -290,6 +292,7 @@ module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
           url: 'https://github.com/mspnp/aks-baseline'
         }
         namespace: 'flux-system'
+        suspend: '<suspend>'
       }
     ]
     location: '<location>'
@@ -351,7 +354,8 @@ module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
             "timeoutInSeconds": 180,
             "url": "https://github.com/mspnp/aks-baseline"
           },
-          "namespace": "flux-system"
+          "namespace": "flux-system",
+          "suspend": "<suspend>"
         }
       ]
     },
