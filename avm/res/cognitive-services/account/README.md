@@ -1266,7 +1266,6 @@ The name of Cognitive Services account.
 A collection of rules governing the accessibility from specific network locations.
 - Required: No
 - Type: object
-- Default: `{object}`
 
 ### Parameter: `privateEndpoints`
 
@@ -1441,8 +1440,7 @@ Optional. Tags to be applied on all resources/resource groups in this deployment
 Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set.
 - Required: No
 - Type: string
-- Default: `''`
-- Allowed: `['', Disabled, Enabled]`
+- Allowed: `[Disabled, Enabled]`
 
 ### Parameter: `restore`
 
