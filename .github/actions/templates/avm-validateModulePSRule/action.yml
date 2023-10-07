@@ -54,8 +54,7 @@ runs:
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
 
-          $templateFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
-
+          # Get target files
           $targetFileList = @(
             '${{ inputs.templateFilePath }}'
           )
@@ -69,6 +68,12 @@ runs:
             $moduleRoot = Split-Path $templateFilePath
           }
           $targetFileList += (Get-ChildItem -Path $moduleRoot -Recurse -File).FullName | Where-Object { $_ -match '.+(main.json|main.bicep)$' }
+
+          # Construct Token Function Input
+          $ConvertTokensInputs = @{
+            FilePathList = $targetFileList
+            Tokens       = @{}
+          }
 
           # Add enforced tokens
           $ConvertTokensInputs.Tokens += @{
