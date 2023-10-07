@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "12731504529391404946"
+      "templateHash": "16776077353685384423"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -550,15 +550,14 @@
       "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
-    "secretList": "[coalesce(tryGet(parameters('secrets'), 'secureList'), createArray())]",
-    "moduleVersion": "#_moduleVersion_#"
+    "secretList": "[coalesce(tryGet(parameters('secrets'), 'secureList'), createArray())]"
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
-      "name": "[format('46d3xbcp.res.keyvault-vault.{0}.{1}', replace(variables('moduleVersion'), '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.res.keyvault-vault.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
