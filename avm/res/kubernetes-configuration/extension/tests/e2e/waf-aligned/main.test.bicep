@@ -77,8 +77,7 @@ module testDeployment '../../../main.bicep' = {
           timeoutInSeconds: 180
           url: 'https://github.com/mspnp/aks-baseline'
         }
-        // Workaround for PSRule
-        suspend: null
+        suspend: false
       }
     ]
     // Workaround for PSRule
