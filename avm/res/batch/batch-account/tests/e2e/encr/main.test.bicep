@@ -70,11 +70,13 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         nestedDependencies.outputs.managedIdentityResourceId
       ]
     }
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+    }
     // Workaround for PSRule
     storageAccessIdentityResourceId: null
     keyVaultReferenceResourceId: null
     networkProfileAllowedIpRanges: null
-    tags: null
     allowedAuthenticationModes: null
     diagnosticSettings: null
     roleAssignments: null

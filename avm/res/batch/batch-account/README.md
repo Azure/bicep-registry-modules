@@ -168,7 +168,9 @@ module batchAccount 'br/public:avm-res-batch-batchaccount:1.0.0' = {
     roleAssignments: '<roleAssignments>'
     storageAccessIdentityResourceId: '<storageAccessIdentityResourceId>'
     storageAuthenticationMode: 'BatchAccountManagedIdentity'
-    tags: '<tags>'
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+    }
   }
 }
 ```
@@ -240,7 +242,9 @@ module batchAccount 'br/public:avm-res-batch-batchaccount:1.0.0' = {
       "value": "BatchAccountManagedIdentity"
     },
     "tags": {
-      "value": "<tags>"
+      "value": {
+        "hidden-title": "This is visible in the resource name"
+      }
     }
   }
 }
