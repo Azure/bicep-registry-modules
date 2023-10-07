@@ -55,7 +55,6 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
-
     name: '${namePrefix}${serviceShort}001'
     location: location
     storageAccountId: nestedDependencies.outputs.storageAccountResourceId

@@ -144,7 +144,31 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 module batchAccount 'br/public:avm-res-batch-batchaccount:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-bbaencr'
   params: {
-
+    // Required parameters
+    name: 'bbaencr001'
+    storageAccountId: '<storageAccountId>'
+    // Non-required parameters
+    allowedAuthenticationModes: '<allowedAuthenticationModes>'
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    diagnosticSettings: '<diagnosticSettings>'
+    keyVaultReferenceResourceId: '<keyVaultReferenceResourceId>'
+    location: '<location>'
+    lock: '<lock>'
+    managedIdentities: {
+      userAssignedResourcesIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    networkProfileAllowedIpRanges: '<networkProfileAllowedIpRanges>'
+    poolAllocationMode: 'BatchService'
+    privateEndpoints: '<privateEndpoints>'
+    roleAssignments: '<roleAssignments>'
+    storageAccessIdentityResourceId: '<storageAccessIdentityResourceId>'
+    storageAuthenticationMode: 'BatchAccountManagedIdentity'
+    tags: '<tags>'
   }
 }
 ```
@@ -160,7 +184,65 @@ module batchAccount 'br/public:avm-res-batch-batchaccount:1.0.0' = {
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {}
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "bbaencr001"
+    },
+    "storageAccountId": {
+      "value": "<storageAccountId>"
+    },
+    // Non-required parameters
+    "allowedAuthenticationModes": {
+      "value": "<allowedAuthenticationModes>"
+    },
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    },
+    "diagnosticSettings": {
+      "value": "<diagnosticSettings>"
+    },
+    "keyVaultReferenceResourceId": {
+      "value": "<keyVaultReferenceResourceId>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": "<lock>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourcesIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "networkProfileAllowedIpRanges": {
+      "value": "<networkProfileAllowedIpRanges>"
+    },
+    "poolAllocationMode": {
+      "value": "BatchService"
+    },
+    "privateEndpoints": {
+      "value": "<privateEndpoints>"
+    },
+    "roleAssignments": {
+      "value": "<roleAssignments>"
+    },
+    "storageAccessIdentityResourceId": {
+      "value": "<storageAccessIdentityResourceId>"
+    },
+    "storageAuthenticationMode": {
+      "value": "BatchAccountManagedIdentity"
+    },
+    "tags": {
+      "value": "<tags>"
+    }
+  }
 }
 ```
 
