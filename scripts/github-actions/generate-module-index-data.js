@@ -16,7 +16,7 @@ async function getModuleDescription(
   tag,
   context
 ) {
-  const allowedModuleRoots = ["modules", "avm/res", "avm/res"];
+  const allowedModuleRoots = ["modules", "avm/res", "avm/ptn"];
 
   if (!allowedModuleRoots.includes(moduleRoot)) {
     throw new Error(
@@ -27,9 +27,19 @@ async function getModuleDescription(
   const ref = `tags/${modulePath}/${tag}`;
   core.info(`  Retrieving main.json at ref ${ref}`);
 
-  const mainJsonPath = path
+  let mainJsonPath = path
     .join(moduleRoot, modulePath, "main.json")
     .replace(/\\/g, "/");
+
+  // if mainJsonPath starts with avm/res/avm/res then remove the first avm/res
+  if (mainJsonPath.startsWith("avm/res/avm/res")) {
+    mainJsonPath = mainJsonPath.replace("avm/res/", "");
+  }
+
+  // if mainJsonPath starts with avm/ptn/avm/ptn then remove the first avm/ptn
+  if (mainJsonPath.startsWith("avm/ptn/avm/ptn")) {
+    mainJsonPath = mainJsonPath.replace("avm/ptn/", "");
+  }
 
   const response = await github.rest.repos.getContent({
     owner: context.repo.owner,
@@ -118,7 +128,6 @@ async function generateModuleIndexData({ require, github, context, core }) {
 
     for (const moduleName of moduleNames) {
       const modulePath = `avm/res/${moduleGroup}/${moduleName}`;
-      const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${modulePath}/tags/list`;
       const moduleBicepRegistryRefSplit = modulePath
         .split(/[\/\\]avm[\/\\]/)
         .pop();
@@ -126,6 +135,7 @@ async function generateModuleIndexData({ require, github, context, core }) {
         .replace(/-/g, "")
         .replace(/[\/\\]/g, "-");
       const moduleBicepRegistryRef = moduleBicepRegistryRefReplace;
+      const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${moduleBicepRegistryRef}/tags/list`;
 
       try {
         core.info(`Processing AVM Resource Module ${modulePath}:...`);
@@ -167,7 +177,6 @@ async function generateModuleIndexData({ require, github, context, core }) {
   // AVM Pattern Modules
   for (const moduleName of moduleGroupsAvmPtn) {
     const modulePath = `avm/ptn/${moduleName}`;
-    const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${modulePath}/tags/list`;
     const moduleBicepRegistryRefSplit = modulePath
       .split(/[\/\\]avm[\/\\]/)
       .pop();
@@ -175,6 +184,7 @@ async function generateModuleIndexData({ require, github, context, core }) {
       .replace(/-/g, "")
       .replace(/[\/\\]/g, "-");
     const moduleBicepRegistryRef = moduleBicepRegistryRefReplace;
+    const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${moduleBicepRegistryRef}/tags/list`;
 
     try {
       core.info(`Processing AVM Pattern Module ${modulePath}:...`);
