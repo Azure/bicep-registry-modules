@@ -106,7 +106,7 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
     scope: fluxConfiguration.scope
     namespace: fluxConfiguration.namespace
     sourceKind: contains(fluxConfiguration, 'gitRepository') ? 'GitRepository' : 'Bucket'
-    name: fluxConfiguration.?name
+    name: fluxConfiguration.?name ?? toLower('${managedCluster.name}-fluxconfiguration${index}')
     bucket: fluxConfiguration.?bucket
     configurationProtectedSettings: fluxConfiguration.?configurationProtectedSettings
     gitRepository: fluxConfiguration.?gitRepository
