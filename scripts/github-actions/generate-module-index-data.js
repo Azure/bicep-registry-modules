@@ -27,10 +27,19 @@ async function getModuleDescription(
   const ref = `tags/${modulePath}/${tag}`;
   core.info(`  Retrieving main.json at ref ${ref}`);
 
-  const mainJsonPath = path
+  let mainJsonPath = path
     .join(moduleRoot, modulePath, "main.json")
     .replace(/\\/g, "/");
 
+  // if mainJsonPath starts with avm/res/avm/res then remove the first avm/res
+  if (mainJsonPath.startsWith("avm/res/avm/res")) {
+    mainJsonPath = mainJsonPath.replace("avm/res/", "");
+  }
+
+  // if mainJsonPath starts with avm/ptn/avm/ptn then remove the first avm/ptn
+  if (mainJsonPath.startsWith("avm/ptn/avm/ptn")) {
+    mainJsonPath = mainJsonPath.replace("avm/ptn/", "");
+  }
   const response = await github.rest.repos.getContent({
     owner: context.repo.owner,
     repo: context.repo.repo,
