@@ -52,7 +52,7 @@ For Details see [Prerequisites](https://learn.microsoft.com/en-us/azure/azure-ar
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`bucket`](#parameter-bucket) | object | Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `Bucket` |
+| [`bucket`](#parameter-bucket) | object | Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `Bucket`. |
 | [`gitRepository`](#parameter-gitrepository) | object | Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `GitRepository`. |
 
 **Optional parameters**
@@ -67,7 +67,7 @@ For Details see [Prerequisites](https://learn.microsoft.com/en-us/azure/azure-ar
 
 ### Parameter: `bucket`
 
-Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `Bucket`
+Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `Bucket`.
 - Required: No
 - Type: object
 
