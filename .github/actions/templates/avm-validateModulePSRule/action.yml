@@ -110,7 +110,7 @@ runs:
     # [PSRule validation] task(s)
     #-----------------------------
     - name: Run PSRule analysis
-      uses: microsoft/ps-rule@v2.4.0
+      uses: microsoft/ps-rule@v2.9.0
       continue-on-error: true # Setting this whilst PSRule gets bedded in, in this project
       with:
         modules: "PSRule.Rules.Azure"
@@ -119,7 +119,7 @@ runs:
         outputPath: "${{ inputs.templateFilePath}}-PSRule-output.csv"
         option: "${{ github.workspace }}/${{ inputs.psrulePath}}/ps-rule.yaml" # Path to PSRule configuration options file
         source: "${{ inputs.psrulePath}}/.ps-rule/" # Path to folder containing suppression rules to use for analysis.
-        summary: false # Disabling as taken care in customized task
+        # summary: false # Disabling as taken care in customized task
 
     - name: "Parse CSV content"
       if: always()
