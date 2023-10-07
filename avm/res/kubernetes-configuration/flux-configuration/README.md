@@ -63,7 +63,6 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
     // Non-required parameters
     bucket: '<bucket>'
     configurationProtectedSettings: '<configurationProtectedSettings>'
-    enableTelemetry: '<enableTelemetry>'
     gitRepository: {
       repositoryRef: {
         branch: 'main'
@@ -111,9 +110,6 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
     "configurationProtectedSettings": {
       "value": "<configurationProtectedSettings>"
     },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "gitRepository": {
       "value": {
         "repositoryRef": {
@@ -156,7 +152,6 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
     // Non-required parameters
     bucket: '<bucket>'
     configurationProtectedSettings: '<configurationProtectedSettings>'
-    enableTelemetry: '<enableTelemetry>'
     gitRepository: {
       repositoryRef: {
         branch: 'main'
@@ -213,9 +208,6 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
     "configurationProtectedSettings": {
       "value": "<configurationProtectedSettings>"
     },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "gitRepository": {
       "value": {
         "repositoryRef": {
@@ -267,7 +259,6 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
     // Non-required parameters
     bucket: '<bucket>'
     configurationProtectedSettings: '<configurationProtectedSettings>'
-    enableTelemetry: '<enableTelemetry>'
     gitRepository: {
       repositoryRef: {
         branch: 'main'
@@ -323,9 +314,6 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
     },
     "configurationProtectedSettings": {
       "value": "<configurationProtectedSettings>"
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "gitRepository": {
       "value": {

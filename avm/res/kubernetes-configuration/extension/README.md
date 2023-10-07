@@ -63,7 +63,6 @@ module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
     // Non-required parameters
     configurationProtectedSettings: '<configurationProtectedSettings>'
     configurationSettings: '<configurationSettings>'
-    enableTelemetry: '<enableTelemetry>'
     fluxConfigurations: '<fluxConfigurations>'
     location: '<location>'
     releaseNamespace: 'flux-system'
@@ -102,9 +101,6 @@ module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
     },
     "configurationSettings": {
       "value": "<configurationSettings>"
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "fluxConfigurations": {
       "value": "<fluxConfigurations>"
@@ -154,7 +150,6 @@ module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
       'notification-controller.enabled': 'false'
       'source-controller.enabled': 'true'
     }
-    enableTelemetry: '<enableTelemetry>'
     fluxConfigurations: [
       {
         gitRepository: {
@@ -213,9 +208,6 @@ module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
         "notification-controller.enabled": "false",
         "source-controller.enabled": "true"
       }
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "fluxConfigurations": {
       "value": [
@@ -279,7 +271,6 @@ module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
       'notification-controller.enabled': 'false'
       'source-controller.enabled': 'true'
     }
-    enableTelemetry: '<enableTelemetry>'
     fluxConfigurations: [
       {
         gitRepository: {
@@ -338,9 +329,6 @@ module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
         "notification-controller.enabled": "false",
         "source-controller.enabled": "true"
       }
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "fluxConfigurations": {
       "value": [
