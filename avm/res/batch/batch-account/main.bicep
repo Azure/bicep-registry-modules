@@ -163,7 +163,7 @@ resource batchAccount 'Microsoft.Batch/batchAccounts@2022-06-01' = {
       }
     }
     poolAllocationMode: poolAllocationMode
-    publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : ((!empty(privateEndpoints ?? []) && !empty(networkProfileAllowedIpRanges ?? [])) ? 'Disabled' : null)
+    publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : ((!empty(privateEndpoints ?? []) && empty(networkProfileAllowedIpRanges ?? [])) ? 'Disabled' : null)
   }
 }
 

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.21.1.54444",
-      "templateHash": "10941799914318546286"
+      "version": "0.22.6.54827",
+      "templateHash": "14416997244636139298"
     },
     "name": "Batch Accounts",
     "description": "This module deploys a Batch Account.",
@@ -648,7 +648,7 @@
         "keyVaultReference": "[if(equals(parameters('poolAllocationMode'), 'UserSubscription'), createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('keyVaultReferenceResourceId'), '//'), '/')[2], split(coalesce(parameters('keyVaultReferenceResourceId'), '////'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(coalesce(parameters('keyVaultReferenceResourceId'), 'dummyVault'), '/'))), 'url', reference('batchKeyVaultReference').vaultUri), null())]",
         "networkProfile": "[if(or(equals(parameters('publicNetworkAccess'), 'Disabled'), empty(coalesce(parameters('networkProfileAllowedIpRanges'), createArray()))), null(), createObject('accountAccess', createObject('defaultAction', parameters('networkProfileDefaultAction'), 'ipRules', variables('networkProfileIpRules'))))]",
         "poolAllocationMode": "[parameters('poolAllocationMode')]",
-        "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(coalesce(parameters('privateEndpoints'), createArray()))), not(empty(coalesce(parameters('networkProfileAllowedIpRanges'), createArray())))), 'Disabled', null()))]"
+        "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(coalesce(parameters('privateEndpoints'), createArray()))), empty(coalesce(parameters('networkProfileAllowedIpRanges'), createArray()))), 'Disabled', null()))]"
       },
       "dependsOn": [
         "batchKeyVaultReference",
