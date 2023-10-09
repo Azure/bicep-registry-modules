@@ -47,13 +47,13 @@ module testDeployment '../../../main.bicep' = {
     // Only for testing purposes
     enablePurgeProtection: false
     // Workaround for PSRule
-    lock: null
-    roleAssignments: null
-    diagnosticSettings: null
-    privateEndpoints: null
-    accessPolicies: null
+    lock: {}
+    roleAssignments: []
+    diagnosticSettings: []
+    privateEndpoints: []
+    accessPolicies: []
     secrets: {}
     keys: []
-    tags: null
+    tags: {}
   }
 }

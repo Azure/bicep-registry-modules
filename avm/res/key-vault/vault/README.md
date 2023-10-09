@@ -51,21 +51,21 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-kvvd'
+  name: '${uniqueString(deployment().name, location)}-test-kvvmin'
   params: {
     // Required parameters
-    name: 'kvvd002'
+    name: 'kvvmin002'
     // Non-required parameters
-    accessPolicies: '<accessPolicies>'
-    diagnosticSettings: '<diagnosticSettings>'
+    accessPolicies: []
+    diagnosticSettings: []
     enablePurgeProtection: false
-    keys: '<keys>'
+    keys: []
     location: '<location>'
-    lock: '<lock>'
-    privateEndpoints: '<privateEndpoints>'
-    roleAssignments: '<roleAssignments>'
-    secrets: '<secrets>'
-    tags: '<tags>'
+    lock: {}
+    privateEndpoints: []
+    roleAssignments: []
+    secrets: {}
+    tags: {}
   }
 }
 ```
@@ -83,37 +83,37 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     "name": {
-      "value": "kvvd002"
+      "value": "kvvmin002"
     },
     "accessPolicies": {
-      "value": "<accessPolicies>"
+      "value": []
     },
     "diagnosticSettings": {
-      "value": "<diagnosticSettings>"
+      "value": []
     },
     "enablePurgeProtection": {
       "value": false
     },
     "keys": {
-      "value": "<keys>"
+      "value": []
     },
     "location": {
       "value": "<location>"
     },
     "lock": {
-      "value": "<lock>"
+      "value": {}
     },
     "privateEndpoints": {
-      "value": "<privateEndpoints>"
+      "value": []
     },
     "roleAssignments": {
-      "value": "<roleAssignments>"
+      "value": []
     },
     "secrets": {
-      "value": "<secrets>"
+      "value": {}
     },
     "tags": {
-      "value": "<tags>"
+      "value": {}
     }
   }
 }
@@ -634,7 +634,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
     // Required parameters
     name: 'kvvwaf002'
     // Non-required parameters
-    accessPolicies: '<accessPolicies>'
+    accessPolicies: []
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -694,7 +694,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
         subnetResourceId: '<subnetResourceId>'
       }
     ]
-    roleAssignments: '<roleAssignments>'
+    roleAssignments: []
     secrets: {
       secureList: [
         {
@@ -732,7 +732,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
       "value": "kvvwaf002"
     },
     "accessPolicies": {
-      "value": "<accessPolicies>"
+      "value": []
     },
     "diagnosticSettings": {
       "value": [
@@ -810,7 +810,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
       ]
     },
     "roleAssignments": {
-      "value": "<roleAssignments>"
+      "value": []
     },
     "secrets": {
       "value": {
