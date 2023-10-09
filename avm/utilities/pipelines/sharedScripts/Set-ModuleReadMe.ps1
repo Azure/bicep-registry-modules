@@ -1116,7 +1116,7 @@ function Set-UsageExamplesSection {
             $exampleTitle = $compiledTestFileContent.metadata.name
         }
         else {
-            if ((Split-Path (Split-Path $testFilePath -Parent) -Leaf) -ne '.test') {
+            if ((Split-Path (Split-Path $testFilePath -Parent) -Leaf) -ne 'tests') {
                 $exampleTitle = Split-Path (Split-Path $testFilePath -Parent) -Leaf
             }
             else {
