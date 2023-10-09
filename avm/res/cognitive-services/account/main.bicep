@@ -200,7 +200,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2022-12-01' = {
   }
   properties: {
     customSubDomainName: customSubDomainName
-    networkAcls: !empty(networkAcls ?? []) ? {
+    networkAcls: !empty(networkAcls ?? {}) ? {
       defaultAction: networkAcls.?defaultAction
       virtualNetworkRules: networkAcls.?virtualNetworkRules ?? []
       ipRules: networkAcls.?ipRules ?? []
