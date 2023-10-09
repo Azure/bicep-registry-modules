@@ -650,6 +650,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
       {
         attributesExp: 1725109032
         attributesNbf: 10000
+        keySize: 4096
         name: 'keyName'
         rotationPolicy: {
           attributes: {
@@ -756,6 +757,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
         {
           "attributesExp": 1725109032,
           "attributesNbf": 10000,
+          "keySize": 4096,
           "name": "keyName",
           "rotationPolicy": {
             "attributes": {

@@ -105,6 +105,7 @@ module testDeployment '../../../main.bicep' = {
             }
           ]
         }
+        keySize: 4096
       }
     ]
     lock: {
