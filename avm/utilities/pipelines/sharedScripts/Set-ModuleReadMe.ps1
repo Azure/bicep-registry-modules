@@ -1611,6 +1611,8 @@ function Initialize-ReadMe {
 
     if (-not (Test-Path $ReadMeFilePath) -or ([String]::IsNullOrEmpty((Get-Content $ReadMeFilePath -Raw)))) {
 
+        $hasTests = (Get-ChildItem -Path (Split-Path $ReadMeFilePath) -Recurse -Include 'main.test.*').count -gt 0
+
         $initialContent = @(
             "# $moduleName ``[$formattedResourceType]``",
             '',
@@ -1618,14 +1620,14 @@ function Initialize-ReadMe {
             ''
             '## Resource Types',
             '',
-            '## Usage examples',
-            '',
+            ($hasTests ? '## Usage examples' : $null),
+            ($hasTests ? '' : $null),
             '## Parameters',
             '',
             '## Outputs',
             '',
             '## Cross-referenced modules'
-        )
+        ) | Where-Object { $null -ne $_ } # Filter null values
         $readMeFileContent = $initialContent
     }
     else {
@@ -1799,8 +1801,7 @@ function Set-ModuleReadMe {
         $readMeFileContent = Set-ResourceTypesSection @inputObject
     }
 
-    $testFolderPath = Join-Path $moduleRoot 'tests/e2e'
-    $hasTests = (Test-Path $testFolderPath) ? (Get-ChildItem -Path $testFolderPath -Recurse -Include 'main.test.*').count -gt 0 : $false
+    $hasTests = (Get-ChildItem -Path $moduleRoot -Recurse -Include 'main.test.*').count -gt 0
     if ($SectionsToRefresh -contains 'Usage examples' -and $hasTests) {
         # Handle [Usage examples] section
         # ===================================

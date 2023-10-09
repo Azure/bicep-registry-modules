@@ -130,7 +130,14 @@ function Set-AVMModule {
 
                 # If the template was just build, we can pass the JSON into the readme script to be more efficient
                 $readmeTemplateFilePath = (-not $_.SkipBuild) ? (Join-Path (Split-Path $_.path -Parent) 'main.json') : ($_.path)
+                $readMeFilePath = Join-Path (Split-Path $_.path) 'readme.md'
 
+                # Remove original readme
+                if (Test-Path $readMeFilePath) {
+                    $null = Remove-Item $readMeFilePath -Force
+                }
+
+                # Build new readme
                 Set-ModuleReadMe -TemplateFilePath $readmeTemplateFilePath
             }
         }
