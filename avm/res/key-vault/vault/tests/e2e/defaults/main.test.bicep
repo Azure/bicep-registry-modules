@@ -52,8 +52,8 @@ module testDeployment '../../../main.bicep' = {
     diagnosticSettings: null
     privateEndpoints: null
     accessPolicies: null
-    secrets: null
-    keys: null
+    secrets: {}
+    keys: []
     tags: null
   }
 }
