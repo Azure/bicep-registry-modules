@@ -1542,7 +1542,7 @@ function Set-TableOfContent {
     $newSectionContent = [System.Collections.ArrayList]@()
 
     $contentPointer = 1
-    while ($ReadMeFileContent[$contentPointer] -notlike '## *') {
+    while ($ReadMeFileContent[$contentPointer] -notlike '#*') {
         $contentPointer++
     }
 
@@ -1560,7 +1560,7 @@ function Set-TableOfContent {
     }
 
     # Build result
-    if ($PSCmdlet.ShouldProcess('Original file with new parameters content', 'Merge')) {
+    if ($PSCmdlet.ShouldProcess('Original file with new navigation content', 'Merge')) {
         $updatedFileContent = Merge-FileWithNewContent -oldContent $ReadMeFileContent -newContent $newSectionContent -SectionStartIdentifier $SectionStartIdentifier -contentType 'nextH2'
     }
 
@@ -1660,6 +1660,56 @@ function Initialize-ReadMe {
 
     return $readMeFileContent
 }
+
+<#
+.SYNOPSIS
+Update the 'Notes' section of the given readme file
+
+.DESCRIPTION
+Update the 'Notes' section of the given readme file
+
+.PARAMETER ReadMeFileContent
+Mandatory. The readme file content array to update
+
+.PARAMETER TemplateFileContent
+Mandatory. The template file content object to crawl data from
+
+.PARAMETER SectionStartIdentifier
+Optional. The identifier of the 'notes' section. Defaults to '## Notes'
+
+.EXAMPLE
+Set-NotesSection -TemplateFileContent @{ resource = @{}; ... } -ReadMeFileContent @('# Title', '', '## Section 1', ...)
+
+Update the given readme file's 'Notes' section based on the given template file content
+#>
+function Set-NotesSection {
+
+    [CmdletBinding(SupportsShouldProcess)]
+    param (
+        [Parameter(Mandatory = $true)]
+        [object[]] $ReadMeFileContent,
+
+        [Parameter(Mandatory = $true)]
+        [hashtable] $TemplateFileContent,
+
+        [Parameter(Mandatory = $false)]
+        [string] $SectionStartIdentifier = '## Notes'
+    )
+
+    $newSectionContent = $TemplateFileContent.metadata.notes
+
+    if (-not [String]::IsNullOrEmpty($newSectionContent)) {
+        # Build result
+        if ($PSCmdlet.ShouldProcess('Original file with new notes content', 'Merge')) {
+            $updatedFileContent = Merge-FileWithNewContent -oldContent $ReadMeFileContent -newContent $newSectionContent -SectionStartIdentifier $SectionStartIdentifier -contentType 'nextH2'
+        }
+    }
+    else {
+        $updatedFileContent = $ReadMeFileContent
+    }
+
+    return $updatedFileContent
+}
 #endregion
 
 <#
@@ -1736,6 +1786,7 @@ function Set-ModuleReadMe {
             'Outputs',
             'CrossReferences',
             'Template references',
+            'Notes',
             'Navigation'
         )]
         [string[]] $SectionsToRefresh = @(
@@ -1745,6 +1796,7 @@ function Set-ModuleReadMe {
             'Outputs',
             'CrossReferences',
             'Template references',
+            'Notes',
             'Navigation'
         )
     )
@@ -1845,6 +1897,16 @@ function Set-ModuleReadMe {
             TemplateFileContent  = $templateFileContent
         }
         $readMeFileContent = Set-CrossReferencesSection @inputObject
+    }
+
+    if ($SectionsToRefresh -contains 'Notes') {
+        # Handle [Notes] section
+        # ========================
+        $inputObject = @{
+            ReadMeFileContent   = $readMeFileContent
+            TemplateFileContent = $templateFileContent
+        }
+        $readMeFileContent = Set-NotesSection @inputObject
     }
 
     if ($SectionsToRefresh -contains 'Navigation') {
