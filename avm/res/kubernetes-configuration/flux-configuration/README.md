@@ -2,22 +2,6 @@
 
 This module deploys a Kubernetes Configuration Flux Configuration.
 
-To use this module, it is required to register the AKS-ExtensionManager feature in your subscription. To do so, you can use the following command:
-
-```powershell
-az feature register --namespace Microsoft.ContainerService --name AKS-ExtensionManager
-```
-
-Further it is required to register the following Azure service providers. (It's OK to re-register an existing provider.)
-
-```powershell
-az provider register --namespace Microsoft.Kubernetes
-az provider register --namespace Microsoft.ContainerService
-az provider register --namespace Microsoft.KubernetesConfiguration
-```
-
-For more details see [Prerequisites](https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/tutorial-use-gitops-flux2)
-
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -25,6 +9,7 @@ For more details see [Prerequisites](https://learn.microsoft.com/en-us/azure/azu
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 
 ## Resource Types
 
@@ -467,3 +452,21 @@ Whether this configuration should suspend its reconciliation of its kustomizatio
 ## Cross-referenced modules
 
 _None_
+
+## Notes
+
+To use this module, it is required to register the AKS-ExtensionManager feature in your subscription. To do so, you can use the following command:
+
+```powershell
+az feature register --namespace Microsoft.ContainerService --name AKS-ExtensionManager
+```
+
+Further it is required to register the following Azure service providers. (It's OK to re-register an existing provider.)
+
+```powershell
+az provider register --namespace Microsoft.Kubernetes
+az provider register --namespace Microsoft.ContainerService
+az provider register --namespace Microsoft.KubernetesConfiguration
+```
+
+For more details see [Prerequisites](https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/tutorial-use-gitops-flux2)
