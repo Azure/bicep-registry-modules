@@ -13,7 +13,7 @@ param publicIpPrefixResourceId publicIpPrefixType?
   'Dynamic'
   'Static'
 ])
-param publicIPAllocationMethod string = 'Dynamic'
+param publicIPAllocationMethod string = 'Static'
 
 @description('Optional. A list of availability zones denoting the IP allocated for the resource needs to come from.')
 param zones array?
@@ -207,14 +207,6 @@ type lockType = {
 
   @description('Optional. Specify the type of lock.')
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type skuType = {
-  @description('Optional. The name of the SKU.')
-  name: ('Basic' | 'Standard')
-
-  @description('Optional. The tier of the SKU.')
-  tier: ('Global' | 'Regional')
 }?
 
 type dnsSettingsType = {

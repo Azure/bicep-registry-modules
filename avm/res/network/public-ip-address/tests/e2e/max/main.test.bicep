@@ -77,10 +77,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     skuName: 'Standard'
     skuTier: 'Regional'
     publicIPAddressVersion: 'IPv4'
-    dnsSettings: {
-      domainNameLabel: 'dep-${namePrefix}-dns-${serviceShort}'
-      domainNameLabelScope: 'ResourceGroupReuse'
-    }
     zones: [
       '1'
       '2'
