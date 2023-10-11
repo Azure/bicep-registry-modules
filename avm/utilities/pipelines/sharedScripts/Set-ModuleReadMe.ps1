@@ -1095,7 +1095,7 @@ function Set-UsageExamplesSection {
         $isUserDefinedType = $TemplateFileContent.parameters[$_].Keys -contains '$ref'
         $isNullable = $TemplateFileContent.parameters[$_]['nullable']
         $isNullableInRef = $TemplateFileContent.parameters[$_].Keys -contains '$ref' ? $TemplateFileContent.definitions[(Split-Path $TemplateFileContent.parameters[$_].'$ref' -Leaf)]['nullable'] : $false
-        (($hasNoDefaultValue -and -not $isUserDefinedType -and -not $isNullable) -or ($isUserDefinedType -and -not $isNullableInRef))
+        (($hasNoDefaultValue -and -not $isUserDefinedType -and -not $isNullable) -or ($isUserDefinedType -and -not $isNullableInRef -and -not $isNullable))
     } | Sort-Object
 
     ############################
