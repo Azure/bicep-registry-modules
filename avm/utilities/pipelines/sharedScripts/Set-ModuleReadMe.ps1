@@ -178,7 +178,7 @@ function Set-ParametersSection {
 
     # 2. Create header including optional columns & initiate the parameter list
     $newSectionContent += @(
-            ('**{0} parameters**' -f $category),
+          ('**{0} parameters**' -f $category),
       '',
       '| Parameter | Type | Description |',
       '| :-- | :-- | :-- |'
@@ -238,12 +238,12 @@ function Set-ParametersSection {
           $paramHeader,
           '',
           $description,
-                ('- Required: {0}' -f ($required ? 'Yes' : 'No')),
-                ('- Type: {0}' -f $type),
-                ((-not [String]::IsNullOrEmpty($defaultValue)) ? ('- Default: `{0}`' -f $defaultValue) : $null),
-                ((-not [String]::IsNullOrEmpty($allowedValues)) ? ('- Allowed: `{0}`' -f $allowedValues) : $null),
+              ('- Required: {0}' -f ($required ? 'Yes' : 'No')),
+              ('- Type: {0}' -f $type),
+              ((-not [String]::IsNullOrEmpty($defaultValue)) ? ('- Default: `{0}`' -f $defaultValue) : $null),
+              ((-not [String]::IsNullOrEmpty($allowedValues)) ? ('- Allowed: `{0}`' -f $allowedValues) : $null),
           '',
-                (($parameterUsageContentMap.Keys -contains $parameter.name) ? $parameterUsageContentMap[$parameter.name] : $null)
+              (($parameterUsageContentMap.Keys -contains $parameter.name) ? $parameterUsageContentMap[$parameter.name] : $null)
         ) | Where-Object { $null -ne $_ }
       }
 
@@ -343,13 +343,13 @@ function Set-DefinitionSection {
     #build flat list for definition properties
     $listSectionContent += @(
       '',
-            ('### Parameter: `{0}`' -f $paramIdentifier),
-            ($parameterValue.ContainsKey('metadata') ? '' : $null),
-            ($parameterValue.ContainsKey('metadata') ? $parameterValue['metadata']['description'] : $null),
-            ($parameterValue.ContainsKey('metadata') ? '' : $null),
-            ('- Required: {0}' -f $isRequired),
-            ('- Type: {0}' -f $type),
-            (($null -ne $allowedValues) ? ('- Allowed: `{0}`' -f $allowedValues) : $null)
+          ('### Parameter: `{0}`' -f $paramIdentifier),
+          ($parameterValue.ContainsKey('metadata') ? '' : $null),
+          ($parameterValue.ContainsKey('metadata') ? $parameterValue['metadata']['description'] : $null),
+          ($parameterValue.ContainsKey('metadata') ? '' : $null),
+          ('- Required: {0}' -f $isRequired),
+          ('- Type: {0}' -f $type),
+          (($null -ne $allowedValues) ? ('- Allowed: `{0}`' -f $allowedValues) : $null)
     ) | Where-Object { $null -ne $_ }
 
     #recursive call for children
@@ -540,10 +540,10 @@ Add-BicepParameterTypeComment -AllParametersList @('name', 'lock') -RequiredPara
 Add type comments to given bicep params string, using one required parameter 'name'. Would return:
 
 '
-    // Required parameters
-    name: 'carml'
-    // Non-required parameters
-    lock: 'CanNotDelete'
+  // Required parameters
+  name: 'carml'
+  // Non-required parameters
+  lock: 'CanNotDelete'
 '
 #>
 function Add-BicepParameterTypeComment {
@@ -618,8 +618,8 @@ Get-OrderedParametersJSON -RequiredParametersList @('name') -ParametersJSON '{ "
 Order the given JSON object alphabetically. Would result into:
 
 @{
-    name: 'carml'
-    lock: 'CanNotDelete'
+  name: 'carml'
+  lock: 'CanNotDelete'
 }
 #>
 function Get-OrderedParametersJSON {
@@ -676,18 +676,18 @@ Build-OrderedJSONObject -RequiredParametersList @('name') -ParametersJSON '{ "lo
 Build a formatted Parameter-JSON object with one required parameter. Would result into:
 
 '{
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        // Required parameters
-        "name": {
-            "value": "carml"
-        },
-        // Non-required parameters
-        "lock": {
-            "value": "CanNotDelete"
-        }
-    }
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+      // Required parameters
+      "name": {
+          "value": "carml"
+      },
+      // Non-required parameters
+      "lock": {
+          "value": "CanNotDelete"
+      }
+  }
 }'
 #>
 function Build-OrderedJSONObject {
@@ -763,12 +763,12 @@ ConvertTo-FormattedJSONParameterObject -BicepParamBlock "name: 'carml'\nlock: 'C
 Convert the Bicep string "name: 'carml'\nlock: 'CanNotDelete'" into a parameter JSON object. Would result into:
 
 @{
-    lock = @{
-        value = 'carml'
-    }
-    lock = @{
-        value = 'CanNotDelete'
-    }
+  lock = @{
+      value = 'carml'
+  }
+  lock = @{
+      value = 'CanNotDelete'
+  }
 }
 #>
 function ConvertTo-FormattedJSONParameterObject {
@@ -913,10 +913,10 @@ ConvertTo-FormattedBicep -RequiredParametersList @('name') -JSONParameters @{ lo
 Convert the given JSONParameters object with one required parameter to a formatted Bicep object. Would result into:
 
 '
-    // Required parameters
-    name: 'carml'
-    // Non-required parameters
-    lock: 'CanNotDelete'
+  // Required parameters
+  name: 'carml'
+  // Non-required parameters
+  lock: 'CanNotDelete'
 '
 #>
 function ConvertTo-FormattedBicep {
@@ -1062,7 +1062,7 @@ function Set-UsageExamplesSection {
     '',
     '   >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.',
     '',
-        ('   >**Note**: To reference the module, please use the following syntax `br/public:{0}:1.0.0`.' -f $brLink),
+      ('   >**Note**: To reference the module, please use the following syntax `br/public:{0}:1.0.0`.' -f $brLink),
     ''
   )
 
@@ -1095,7 +1095,7 @@ function Set-UsageExamplesSection {
     $isUserDefinedType = $TemplateFileContent.parameters[$_].Keys -contains '$ref'
     $isNullable = $TemplateFileContent.parameters[$_]['nullable']
     $isNullableInRef = $TemplateFileContent.parameters[$_].Keys -contains '$ref' ? $TemplateFileContent.definitions[(Split-Path $TemplateFileContent.parameters[$_].'$ref' -Leaf)]['nullable'] : $false
-        (($hasNoDefaultValue -and -not $isUserDefinedType -and -not $isNullable) -or ($isUserDefinedType -and -not $isNullableInRef -and -not $isNullable))
+      (($hasNoDefaultValue -and -not $isUserDefinedType -and -not $isNullable) -or ($isUserDefinedType -and -not $isNullableInRef -and -not $isNullable))
   } | Sort-Object
 
   ############################
@@ -1243,7 +1243,7 @@ function Set-UsageExamplesSection {
           '<summary>via Bicep module</summary>'
           ''
           '```bicep',
-                    ($formattedBicepExample | ForEach-Object { "$_" }).TrimEnd(),
+                  ($formattedBicepExample | ForEach-Object { "$_" }).TrimEnd(),
           '```',
           '',
           '</details>',
@@ -1402,8 +1402,8 @@ function Set-UsageExamplesSection {
           $counter++
           $extendedKeyVaultReferences += @(
             "resource kv$counter 'Microsoft.KeyVault/vaults@2019-09-01' existing = {",
-                    ("  name: '{0}'" -f $reference.vaultName),
-                    ("  scope: resourceGroup('{0}','{1}')" -f $reference.subscriptionId, $reference.resourceGroupName),
+                  ("  name: '{0}'" -f $reference.vaultName),
+                  ("  scope: resourceGroup('{0}','{1}')" -f $reference.subscriptionId, $reference.resourceGroupName),
             '}',
             ''
           )
@@ -1620,8 +1620,8 @@ function Initialize-ReadMe {
       ''
       '## Resource Types',
       '',
-            ($hasTests ? '## Usage examples' : $null),
-            ($hasTests ? '' : $null),
+          ($hasTests ? '## Usage examples' : $null),
+          ($hasTests ? '' : $null),
       '## Parameters',
       '',
       '## Outputs',
