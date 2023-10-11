@@ -192,7 +192,7 @@ function Set-ParametersSection {
                 $definition = $TemplateFileContent.definitions[$identifier]
 
                 $type = $definition['type']
-                $required = (-not $definition['nullable'])
+                $isRequired = (-not $definition['nullable'])
                 $defaultValue = $null
                 $rawAllowedValues = $definition['allowedValues']
             }
