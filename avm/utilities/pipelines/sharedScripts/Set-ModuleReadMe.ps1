@@ -212,7 +212,7 @@ function Set-ParametersSection {
                     $defaultValue = $parameter.defaultValue
                 }
 
-                $required = -not $defaultValue -and -not $parameter.nullable
+                $isRequired = Get-IsParameterRequired -TemplateFileContent $TemplateFileContent -Parameter $parameter
                 $rawAllowedValues = $parameter.allowedValues
             }
 
@@ -238,7 +238,7 @@ function Set-ParametersSection {
                     $paramHeader,
                     '',
                     $description,
-                ('- Required: {0}' -f ($required ? 'Yes' : 'No')),
+                ('- Required: {0}' -f ($isRequired ? 'Yes' : 'No')),
                 ('- Type: {0}' -f $type),
                 ((-not [String]::IsNullOrEmpty($defaultValue)) ? ('- Default: `{0}`' -f $defaultValue) : $null),
                 ((-not [String]::IsNullOrEmpty($allowedValues)) ? ('- Allowed: `{0}`' -f $allowedValues) : $null),
@@ -332,7 +332,7 @@ function Set-DefinitionSection {
             $definition = $null
         }
 
-        $isRequired = ($parameterValue.nullable -or $definition.nullable) ? 'No' : 'Yes'
+        $isRequired = (Get-IsParameterRequired -TemplateFileContent $TemplateFileContent -Parameter $parameterValue) ? 'Yes' : 'No'
         $type = ($parameterValue.Keys -contains '$ref') ? $definition.type : $parameterValue['type']
         $description = $parameterValue.ContainsKey('metadata') ? $parameterValue['metadata']['description'] : $null
 
@@ -990,6 +990,31 @@ function ConvertTo-FormattedBicep {
     return $commentedBicepParams
 }
 
+function Get-IsParameterRequired {
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [hashtable] $Parameter,
+
+        [Parameter(Mandatory)]
+        [hashtable] $TemplateFileContent
+    )
+
+    $hasParameterNoDefault = $Parameter.Keys -notcontains 'defaultValue'
+    $isParameterNullable = $Parameter['nullable']
+    # User defined type
+    $isUserDefinedType = $Parameter.Keys -contains '$ref'
+    $isUserDefinedTypeNullable = $Parameter.Keys -contains '$ref' ? $TemplateFileContent.definitions[(Split-Path $Parameter.'$ref' -Leaf)]['nullable'] : $false
+
+    # Evaluation
+    # The parameter is required IF it
+    # - has no default value,
+    # - is not nullable
+    # - has no nullable user-defined type
+    return $hasParameterNoDefault -and -not $isParameterNullable -and -not ($isUserDefinedType -and $isUserDefinedTypeNullable)
+}
+
 <#
 .SYNOPSIS
 Generate 'Usage examples' for the ReadMe out of the parameter files currently used to test the template
@@ -1091,19 +1116,7 @@ function Set-UsageExamplesSection {
     $testFilePaths = Get-ModuleTestFileList -ModulePath $moduleRoot | ForEach-Object { Join-Path $moduleRoot $_ }
 
     $RequiredParametersList = $TemplateFileContent.parameters.Keys | Where-Object {
-        # Parameter
-        $hasParameterNoDefault = $TemplateFileContent.parameters[$_].Keys -notcontains 'defaultValue'
-        $isParameterNullable = $TemplateFileContent.parameters[$_]['nullable']
-        # User defined type
-        $isUserDefinedType = $TemplateFileContent.parameters[$_].Keys -contains '$ref'
-        $isUserDefinedTypeNullable = $TemplateFileContent.parameters[$_].Keys -contains '$ref' ? $TemplateFileContent.definitions[(Split-Path $TemplateFileContent.parameters[$_].'$ref' -Leaf)]['nullable'] : $false
-
-        # Evaluation
-        # The parameter is required IF it
-        # - has no default value,
-        # - is not nullable
-        # - has no nullable user-defined type
-        $hasParameterNoDefault -and -not $isParameterNullable -and -not ($isUserDefinedType -and $isUserDefinedTypeNullable)
+        Get-IsParameterRequired -TemplateFileContent $TemplateFileContent -Parameter $TemplateFileContent.parameters[$_]
     } | Sort-Object
 
     ############################

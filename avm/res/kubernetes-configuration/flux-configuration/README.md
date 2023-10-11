@@ -436,7 +436,7 @@ Source Kind to pull the configuration data from.
 ### Parameter: `suspend`
 
 Whether this configuration should suspend its reconciliation of its kustomizations and sources.
-- Required: Yes
+- Required: No
 - Type: bool
 - Default: `False`
 
