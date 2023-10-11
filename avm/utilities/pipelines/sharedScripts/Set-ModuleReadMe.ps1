@@ -1107,12 +1107,6 @@ function Set-UsageExamplesSection {
         ($isParameterRequired -or $isUserDefinedTypeRequired)
     } | Sort-Object
 
-
-    # 1: param one string = 'test'
-    # 2: param two string?
-    # 3. param three myType?
-    # 4. param three myType ; type myType = string?
-
     ############################
     ##   Process test files   ##
     ############################
