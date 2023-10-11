@@ -1091,11 +1091,18 @@ function Set-UsageExamplesSection {
     $testFilePaths = Get-ModuleTestFileList -ModulePath $moduleRoot | ForEach-Object { Join-Path $moduleRoot $_ }
 
     $RequiredParametersList = $TemplateFileContent.parameters.Keys | Where-Object {
-        $hasNoDefaultValue = $TemplateFileContent.parameters[$_].Keys -notcontains 'defaultValue'
+        # Parameter
+        $hasParameterNoDefault = $TemplateFileContent.parameters[$_].Keys -notcontains 'defaultValue'
+        $isParameterNullable = $TemplateFileContent.parameters[$_]['nullable']
+        # User defined type
         $isUserDefinedType = $TemplateFileContent.parameters[$_].Keys -contains '$ref'
-        $isNullable = $TemplateFileContent.parameters[$_]['nullable']
-        $isNullableInRef = $TemplateFileContent.parameters[$_].Keys -contains '$ref' ? $TemplateFileContent.definitions[(Split-Path $TemplateFileContent.parameters[$_].'$ref' -Leaf)]['nullable'] : $false
-        (($hasNoDefaultValue -and -not $isUserDefinedType -and -not $isNullable) -or ($isUserDefinedType -and -not $isNullableInRef -and -not $isNullable))
+        $isUserDefinedTypeNullable = $TemplateFileContent.parameters[$_].Keys -contains '$ref' ? $TemplateFileContent.definitions[(Split-Path $TemplateFileContent.parameters[$_].'$ref' -Leaf)]['nullable'] : $false
+
+        # Evaluation
+        $isParameterOptional = $hasParameterNoDefault -and -not $isUserDefinedType -and -not $isParameterNullable
+        $isUserDefinedTypeOptional = -not $isParameterNullable -and $isUserDefinedType -and -not $isUserDefinedTypeNullable
+
+        ($isParameterOptional -or $isUserDefinedTypeOptional)
     } | Sort-Object
 
     ############################
