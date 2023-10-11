@@ -990,6 +990,31 @@ function ConvertTo-FormattedBicep {
     return $commentedBicepParams
 }
 
+<#
+.SYNOPSIS
+Based on the provided parameter metadata, determine whether the parameter is required or not
+
+.DESCRIPTION
+Based on the provided parameter metadata, determine whether the parameter is required or not
+
+.PARAMETER Parameter
+The parameter metadata to analyze.
+
+For example: @{
+    type     = 'string'
+    metadata = @{
+        description = 'Required. The name of the Public IP Address.'
+    }
+}
+
+.PARAMETER TemplateFileContent
+Mandatory. The template file content object to crawl data from.
+
+.EXAMPLE
+Get-IsParameterRequired -TemplateFileContent @{ resource = @{}; ... } -Parameter @{ type = 'string'; metadata = @{ description = 'Required. The name of the Public IP Address.' } }
+
+Check the given parameter whether it is required. Would result into true.
+#>
 function Get-IsParameterRequired {
 
     [CmdletBinding()]
