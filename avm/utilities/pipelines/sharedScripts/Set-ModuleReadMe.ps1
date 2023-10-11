@@ -1099,12 +1099,11 @@ function Set-UsageExamplesSection {
         $isUserDefinedTypeNullable = $TemplateFileContent.parameters[$_].Keys -contains '$ref' ? $TemplateFileContent.definitions[(Split-Path $TemplateFileContent.parameters[$_].'$ref' -Leaf)]['nullable'] : $false
 
         # Evaluation
-        # Case 1: The parameter itself is optional (nullable or has default value)
-        $isParameterRequired = -not $isUserDefinedType -and $hasParameterNoDefault -and -not $isParameterNullable
-        # Case 2: The parameter's type is user-defined and is nullable
-        $isUserDefinedTypeRequired = $isUserDefinedType -and -not $isUserDefinedTypeNullable
-
-        ($isParameterRequired -or $isUserDefinedTypeRequired)
+        # The parameter is required IF it
+        # - has no default value,
+        # - is not nullable
+        # - has no nullable user-defined type
+        $hasParameterNoDefault -and -not $isParameterNullable -and -not ($isUserDefinedType -and $isUserDefinedTypeNullable)
     } | Sort-Object
 
     ############################
