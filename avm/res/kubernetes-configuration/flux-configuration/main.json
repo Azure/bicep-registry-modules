@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.21.1.54444",
-      "templateHash": "1794119719848736467"
+      "version": "0.22.6.54827",
+      "templateHash": "8142453295903624237"
     },
     "name": "Kubernetes Configuration Flux Configurations",
     "description": "This module deploys a Kubernetes Configuration Flux Configuration.",

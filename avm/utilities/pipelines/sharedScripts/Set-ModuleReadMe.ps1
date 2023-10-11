@@ -1116,7 +1116,7 @@ function Set-UsageExamplesSection {
             $exampleTitle = $compiledTestFileContent.metadata.name
         }
         else {
-            if ((Split-Path (Split-Path $testFilePath -Parent) -Leaf) -ne '.test') {
+            if ((Split-Path (Split-Path $testFilePath -Parent) -Leaf) -ne 'tests') {
                 $exampleTitle = Split-Path (Split-Path $testFilePath -Parent) -Leaf
             }
             else {
@@ -1560,7 +1560,7 @@ function Set-TableOfContent {
     }
 
     # Build result
-    if ($PSCmdlet.ShouldProcess('Original file with new parameters content', 'Merge')) {
+    if ($PSCmdlet.ShouldProcess('Original file with new navigation content', 'Merge')) {
         $updatedFileContent = Merge-FileWithNewContent -oldContent $ReadMeFileContent -newContent $newSectionContent -SectionStartIdentifier $SectionStartIdentifier -contentType 'nextH2'
     }
 
@@ -1611,6 +1611,8 @@ function Initialize-ReadMe {
 
     if (-not (Test-Path $ReadMeFilePath) -or ([String]::IsNullOrEmpty((Get-Content $ReadMeFilePath -Raw)))) {
 
+        $hasTests = (Get-ChildItem -Path (Split-Path $ReadMeFilePath) -Recurse -Include 'main.test.*').count -gt 0
+
         $initialContent = @(
             "# $moduleName ``[$formattedResourceType]``",
             '',
@@ -1618,14 +1620,14 @@ function Initialize-ReadMe {
             ''
             '## Resource Types',
             '',
-            '## Usage examples',
-            '',
+            ($hasTests ? '## Usage examples' : $null),
+            ($hasTests ? '' : $null),
             '## Parameters',
             '',
             '## Outputs',
             '',
             '## Cross-referenced modules'
-        )
+        ) | Where-Object { $null -ne $_ } # Filter null values
         $readMeFileContent = $initialContent
     }
     else {
@@ -1707,11 +1709,6 @@ $templatePaths = (Get-ChildItem 'C:/network' -Filter 'main.bicep' -Recurse).Full
 $templatePaths | ForEach-Object -Parallel { . '<PathToRepo>/utilities/tools/Set-ModuleReadMe.ps1' ; Set-ModuleReadMe -TemplateFilePath $_ }
 
 Generate the Module ReadMe for any template in a folder path
-
-.NOTES
-The script autopopulates the Parameter Usage section of the ReadMe with the matching content in path './moduleReadMeSource'.
-The content is added in case the given template has a parameter that matches the suffix of one of the files in that path.
-To account for more parameter, just add another markdown file with the naming pattern 'resourceUsage-<parameterName>'
 #>
 function Set-ModuleReadMe {
 
@@ -1799,8 +1796,7 @@ function Set-ModuleReadMe {
         $readMeFileContent = Set-ResourceTypesSection @inputObject
     }
 
-    $testFolderPath = Join-Path $moduleRoot 'tests/e2e'
-    $hasTests = (Test-Path $testFolderPath) ? (Get-ChildItem -Path $testFolderPath -Recurse -Include 'main.test.*').count -gt 0 : $false
+    $hasTests = (Get-ChildItem -Path $moduleRoot -Recurse -Include 'main.test.*').count -gt 0
     if ($SectionsToRefresh -contains 'Usage examples' -and $hasTests) {
         # Handle [Usage examples] section
         # ===================================
