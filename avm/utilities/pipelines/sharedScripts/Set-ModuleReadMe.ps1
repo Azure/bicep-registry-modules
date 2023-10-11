@@ -1660,56 +1660,6 @@ function Initialize-ReadMe {
 
     return $readMeFileContent
 }
-
-<#
-.SYNOPSIS
-Update the 'Notes' section of the given readme file
-
-.DESCRIPTION
-Update the 'Notes' section of the given readme file
-
-.PARAMETER ReadMeFileContent
-Mandatory. The readme file content array to update
-
-.PARAMETER TemplateFileContent
-Mandatory. The template file content object to crawl data from
-
-.PARAMETER SectionStartIdentifier
-Optional. The identifier of the 'notes' section. Defaults to '## Notes'
-
-.EXAMPLE
-Set-NotesSection -TemplateFileContent @{ resource = @{}; ... } -ReadMeFileContent @('# Title', '', '## Section 1', ...)
-
-Update the given readme file's 'Notes' section based on the given template file content
-#>
-function Set-NotesSection {
-
-    [CmdletBinding(SupportsShouldProcess)]
-    param (
-        [Parameter(Mandatory = $true)]
-        [object[]] $ReadMeFileContent,
-
-        [Parameter(Mandatory = $true)]
-        [hashtable] $TemplateFileContent,
-
-        [Parameter(Mandatory = $false)]
-        [string] $SectionStartIdentifier = '## Notes'
-    )
-
-    $newSectionContent = $TemplateFileContent.metadata.notes
-
-    if (-not [String]::IsNullOrEmpty($newSectionContent)) {
-        # Build result
-        if ($PSCmdlet.ShouldProcess('Original file with new notes content', 'Merge')) {
-            $updatedFileContent = Merge-FileWithNewContent -oldContent $ReadMeFileContent -newContent $newSectionContent -SectionStartIdentifier $SectionStartIdentifier -contentType 'nextH2'
-        }
-    }
-    else {
-        $updatedFileContent = $ReadMeFileContent
-    }
-
-    return $updatedFileContent
-}
 #endregion
 
 <#
@@ -1759,11 +1709,6 @@ $templatePaths = (Get-ChildItem 'C:/network' -Filter 'main.bicep' -Recurse).Full
 $templatePaths | ForEach-Object -Parallel { . '<PathToRepo>/utilities/tools/Set-ModuleReadMe.ps1' ; Set-ModuleReadMe -TemplateFilePath $_ }
 
 Generate the Module ReadMe for any template in a folder path
-
-.NOTES
-The script autopopulates the Parameter Usage section of the ReadMe with the matching content in path './moduleReadMeSource'.
-The content is added in case the given template has a parameter that matches the suffix of one of the files in that path.
-To account for more parameter, just add another markdown file with the naming pattern 'resourceUsage-<parameterName>'
 #>
 function Set-ModuleReadMe {
 
@@ -1786,7 +1731,6 @@ function Set-ModuleReadMe {
             'Outputs',
             'CrossReferences',
             'Template references',
-            'Notes',
             'Navigation'
         )]
         [string[]] $SectionsToRefresh = @(
@@ -1796,7 +1740,6 @@ function Set-ModuleReadMe {
             'Outputs',
             'CrossReferences',
             'Template references',
-            'Notes',
             'Navigation'
         )
     )
@@ -1897,16 +1840,6 @@ function Set-ModuleReadMe {
             TemplateFileContent  = $templateFileContent
         }
         $readMeFileContent = Set-CrossReferencesSection @inputObject
-    }
-
-    if ($SectionsToRefresh -contains 'Notes') {
-        # Handle [Notes] section
-        # ========================
-        $inputObject = @{
-            ReadMeFileContent   = $readMeFileContent
-            TemplateFileContent = $templateFileContent
-        }
-        $readMeFileContent = Set-NotesSection @inputObject
     }
 
     if ($SectionsToRefresh -contains 'Navigation') {
