@@ -29,8 +29,8 @@ The following module usage examples are retrieved from the content of the files 
    >**Note**: To reference the module, please use the following syntax `br/public:avm-res-network-publicipaddress:1.0.0`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Max](#example-2-max)
-- [Waf-Aligned](#example-3-waf-aligned)
+- [Using Maximum Parameters](#example-2-using-maximum-parameters)
+- [Using WAF-Aligned](#example-3-using-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -72,7 +72,10 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
 </details>
 <p>
 
-### Example 2: _Max_
+### Example 2: _Using Maximum Parameters_
+
+This instance deploys the module with the maximum set of required parameters.
+
 
 <details>
 
@@ -83,11 +86,8 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-npiamax'
   params: {
     // Required parameters
-    // Non-required parameters
-    dnsSettings: {
-      domainNameLabel: 'dep-dns-npiamax'
-    }
     name: 'npiamax001'
+    // Non-required parameters
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -97,6 +97,9 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    dnsSettings: {
+      domainNameLabel: 'dep-dns-npiamax'
+    }
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -106,9 +109,7 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
     publicIPAllocationMethod: 'Static'
     roleAssignments: [
       {
-        principalIds: [
-          '<managedIdentityPrincipalId>'
-        ]
+        principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Reader'
       }
@@ -142,15 +143,10 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "dnsSettings": {
-      "value": {
-        "domainNameLabel": "dep-dns-npiamax"
-      }
-    },
-    // Non-required parameters
     "name": {
       "value": "npiamax001"
     },
+    // Non-required parameters
     "diagnosticSettings": {
       "value": [
         {
@@ -161,6 +157,11 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "dnsSettings": {
+      "value": {
+        "domainNameLabel": "dep-dns-npiamax"
+      }
     },
     "location": {
       "value": "<location>"
@@ -180,9 +181,7 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
     "roleAssignments": {
       "value": [
         {
-          "principalIds": [
-            "<managedIdentityPrincipalId>"
-          ],
+          "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Reader"
         }
@@ -215,7 +214,10 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
 </details>
 <p>
 
-### Example 3: _Waf-Aligned_
+### Example 3: _Using WAF-Aligned_
+
+This instance deploys the module with the waf-aligned set of required parameters.
+
 
 <details>
 
@@ -226,11 +228,8 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-npiawaf'
   params: {
     // Required parameters
-    // Non-required parameters
-    dnsSettings: {
-      domainNameLabel: 'dep-dns-npiawaf'
-    }
     name: 'npiawaf001'
+    // Non-required parameters
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -240,6 +239,9 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    dnsSettings: {
+      domainNameLabel: 'dep-dns-npiawaf'
+    }
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -249,9 +251,7 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
     publicIPAllocationMethod: 'Static'
     roleAssignments: [
       {
-        principalIds: [
-          '<managedIdentityPrincipalId>'
-        ]
+        principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Reader'
       }
@@ -285,15 +285,10 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "dnsSettings": {
-      "value": {
-        "domainNameLabel": "dep-dns-npiawaf"
-      }
-    },
-    // Non-required parameters
     "name": {
       "value": "npiawaf001"
     },
+    // Non-required parameters
     "diagnosticSettings": {
       "value": [
         {
@@ -304,6 +299,11 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "dnsSettings": {
+      "value": {
+        "domainNameLabel": "dep-dns-npiawaf"
+      }
     },
     "location": {
       "value": "<location>"
@@ -323,9 +323,7 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
     "roleAssignments": {
       "value": [
         {
-          "principalIds": [
-            "<managedIdentityPrincipalId>"
-          ],
+          "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Reader"
         }
