@@ -97,9 +97,6 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    dnsSettings: {
-      domainNameLabel: 'dep-dns-npiamax'
-    }
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -157,11 +154,6 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "dnsSettings": {
-      "value": {
-        "domainNameLabel": "dep-dns-npiamax"
-      }
     },
     "location": {
       "value": "<location>"
@@ -239,9 +231,6 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    dnsSettings: {
-      domainNameLabel: 'dep-dns-npiawaf'
-    }
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -299,11 +288,6 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "dnsSettings": {
-      "value": {
-        "domainNameLabel": "dep-dns-npiawaf"
-      }
     },
     "location": {
       "value": "<location>"
@@ -601,7 +585,7 @@ IP address version.
 The public IP address allocation method.
 - Required: No
 - Type: string
-- Default: `'Dynamic'`
+- Default: `'Static'`
 - Allowed: `[Dynamic, Static]`
 
 ### Parameter: `publicIpPrefixResourceId`

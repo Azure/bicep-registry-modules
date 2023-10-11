@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "6438944614992945615"
+      "templateHash": "16825051624445043558"
     },
     "name": "Public IP Addresses",
     "description": "This module deploys a Public IP Address.",
@@ -99,32 +99,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
-          }
-        }
-      },
-      "nullable": true
-    },
-    "skuType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "allowedValues": [
-            "Basic",
-            "Standard"
-          ],
-          "metadata": {
-            "description": "Optional. The name of the SKU."
-          }
-        },
-        "tier": {
-          "type": "string",
-          "allowedValues": [
-            "Global",
-            "Regional"
-          ],
-          "metadata": {
-            "description": "Optional. The tier of the SKU."
           }
         }
       },
@@ -302,7 +276,7 @@
     },
     "publicIPAllocationMethod": {
       "type": "string",
-      "defaultValue": "Dynamic",
+      "defaultValue": "Static",
       "allowedValues": [
         "Dynamic",
         "Static"
