@@ -76,6 +76,9 @@ function Set-AVMModule {
         [string] $ReadMeScriptFilePath = (Join-Path (Get-Item $PSScriptRoot).Parent.FullName 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
     )
 
+    # Load helper scripts
+    . (Join-Path $PSScriptRoot 'helper' 'Set-ModuleFileAndFolderSetup.ps1')
+
     $resolvedPath = (Resolve-Path $ModuleFolderPath).Path
     # Build up module file & folder structure if not yet existing. Should only run if an actual module path was provided (and not any of their parent paths)
     if (-not $SkipFileAndFolderSetup -and ((($resolvedPath -split '\bavm\b')[1].Trim('\,/') -split '[\/|\\]').Count -gt 2)) {
