@@ -1,4 +1,4 @@
-name: "avm.res.network.ssh-public-key"
+name: "avm.res.compute.ssh-public-key"
 
 on:
   schedule:
@@ -27,14 +27,14 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.network.ssh-public-key.yml"
-      - "avm/res/network/ssh-public-key/**"
+      - ".github/workflows/avm.res.compute.ssh-public-key.yml"
+      - "avm/res/compute/ssh-public-key/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/network/ssh-public-key"
-  workflowPath: ".github/workflows/avm.res.network.ssh-public-key.yml"
+  modulePath: "avm/res/compute/ssh-public-key"
+  workflowPath: ".github/workflows/avm.res.compute.ssh-public-key.yml"
 
 concurrency:
   group: ${{ github.workflow }}
