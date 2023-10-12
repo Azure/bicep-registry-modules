@@ -305,7 +305,13 @@ The following module usage examples are retrieved from the content of the files 
 module sshPublicKey 'br/public:avm-res-compute-sshpublickey:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-cspkdef'
   params: {
+    // Required parameters
     name: 'cspkdef001'
+    // Non-required parameters
+    lock: '<lock>'
+    publicKey: '<publicKey>'
+    roleAssignments: '<roleAssignments>'
+    tags: '<tags>'
   }
 }
 ```
@@ -322,8 +328,22 @@ module sshPublicKey 'br/public:avm-res-compute-sshpublickey:1.0.0' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "cspkdef001"
+    },
+    // Non-required parameters
+    "lock": {
+      "value": "<lock>"
+    },
+    "publicKey": {
+      "value": "<publicKey>"
+    },
+    "roleAssignments": {
+      "value": "<roleAssignments>"
+    },
+    "tags": {
+      "value": "<tags>"
     }
   }
 }
@@ -345,7 +365,25 @@ module sshPublicKey 'br/public:avm-res-compute-sshpublickey:1.0.0' = {
     // Required parameters
     name: 'sshkey-cspkmax001'
     // Non-required parameters
+    enableTelemetry: true
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'lock'
+    }
     publicKey: '<publicKey>'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -367,8 +405,36 @@ module sshPublicKey 'br/public:avm-res-compute-sshpublickey:1.0.0' = {
       "value": "sshkey-cspkmax001"
     },
     // Non-required parameters
+    "enableTelemetry": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "lock"
+      }
+    },
     "publicKey": {
       "value": "<publicKey>"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Reader"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
@@ -390,7 +456,25 @@ module sshPublicKey 'br/public:avm-res-compute-sshpublickey:1.0.0' = {
     // Required parameters
     name: 'sshkey-cspkwaf001'
     // Non-required parameters
+    enableTelemetry: true
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'lock'
+    }
     publicKey: '<publicKey>'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -412,8 +496,36 @@ module sshPublicKey 'br/public:avm-res-compute-sshpublickey:1.0.0' = {
       "value": "sshkey-cspkwaf001"
     },
     // Non-required parameters
+    "enableTelemetry": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "lock"
+      }
+    },
     "publicKey": {
       "value": "<publicKey>"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Reader"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
