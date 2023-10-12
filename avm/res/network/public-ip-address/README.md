@@ -353,6 +353,7 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`ddosSettings`](#parameter-ddossettings) | object | The DDoS protection plan configuration associated with the public IP address. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`dnsSettings`](#parameter-dnssettings) | object | The DNS settings of the public IP address. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -366,6 +367,33 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
 | [`skuTier`](#parameter-skutier) | string | Tier of a public IP address SKU. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`zones`](#parameter-zones) | array | A list of availability zones denoting the IP allocated for the resource needs to come from. |
+
+### Parameter: `ddosSettings`
+
+The DDoS protection plan configuration associated with the public IP address.
+- Required: Yes
+- Type: object
+
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`ddosProtectionPlan`](#parameter-ddossettingsddosprotectionplan) | Yes | object | Required. The DDoS protection plan ID associated with the public IP address. |
+| [`protectionMode`](#parameter-ddossettingsprotectionmode) | Yes | string | Required. The DDoS protection policy customizations. |
+
+### Parameter: `ddosSettings.ddosProtectionPlan`
+
+Required. The DDoS protection plan ID associated with the public IP address.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `ddosSettings.protectionMode`
+
+Required. The DDoS protection policy customizations.
+
+- Required: Yes
+- Type: string
+- Allowed: `[Enabled]`
 
 ### Parameter: `diagnosticSettings`
 

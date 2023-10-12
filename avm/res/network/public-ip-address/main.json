@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "3020301934378070131"
+      "templateHash": "3481809606346556350"
     },
     "name": "Public IP Addresses",
     "description": "This module deploys a Public IP Address.",
@@ -149,6 +149,31 @@
           "type": "string",
           "metadata": {
             "description": "Required. Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix."
+          }
+        }
+      }
+    },
+    "ddosSettingsType": {
+      "type": "object",
+      "properties": {
+        "ddosProtectionPlan": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          },
+          "metadata": {
+            "description": "Required. The DDoS protection plan ID associated with the public IP address."
+          }
+        },
+        "protectionMode": {
+          "type": "string",
+          "allowedValues": [
+            "Enabled"
+          ],
+          "metadata": {
+            "description": "Required. The DDoS protection policy customizations."
           }
         }
       }
@@ -338,6 +363,13 @@
         "description": "Optional. Tier of a public IP address SKU."
       }
     },
+    "ddosSettings": {
+      "$ref": "#/definitions/ddosSettingsType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The DDoS protection plan configuration associated with the public IP address."
+      }
+    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
@@ -421,6 +453,7 @@
       },
       "zones": "[parameters('zones')]",
       "properties": {
+        "ddosSettings": "[parameters('ddosSettings')]",
         "dnsSettings": "[parameters('dnsSettings')]",
         "publicIPAddressVersion": "[parameters('publicIPAddressVersion')]",
         "publicIPAllocationMethod": "[parameters('publicIPAllocationMethod')]",

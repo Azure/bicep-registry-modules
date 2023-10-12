@@ -45,6 +45,9 @@ param skuName string = 'Standard'
 ])
 param skuTier string = 'Regional'
 
+@description('Optional. The DDoS protection plan configuration associated with the public IP address.')
+param ddosSettings ddosSettingsType?
+
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
@@ -101,6 +104,7 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
   }
   zones: zones
   properties: {
+    ddosSettings: ddosSettings
     dnsSettings: dnsSettings
     publicIPAddressVersion: publicIPAddressVersion
     publicIPAllocationMethod: publicIPAllocationMethod
@@ -226,6 +230,15 @@ type dnsSettingsType = {
 type publicIpPrefixType = {
   @description('Required. Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix.')
   id: string
+}
+
+type ddosSettingsType = {
+  @description('Required. The DDoS protection plan ID associated with the public IP address.')
+  ddosProtectionPlan: {
+    id: string
+  }
+  @description('Required. The DDoS protection policy customizations.')
+  protectionMode: 'Enabled'
 }
 
 type diagnosticSettingType = {
