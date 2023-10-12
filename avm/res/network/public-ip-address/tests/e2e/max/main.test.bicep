@@ -68,6 +68,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     }
     dnsSettings: null
     ddosSettings: null
+    publicIpPrefixResourceId: null
     publicIPAllocationMethod: 'Static'
     roleAssignments: [
       {
