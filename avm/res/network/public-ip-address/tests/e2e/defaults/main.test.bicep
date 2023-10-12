@@ -45,5 +45,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     publicIpPrefixResourceId: null
     lock: null
     diagnosticSettings: null
+    roleAssignments: null
+    dnsSettings: null
   }
 }]
