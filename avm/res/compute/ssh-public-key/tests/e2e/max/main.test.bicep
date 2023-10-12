@@ -49,5 +49,23 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}-sshkey-${serviceShort}001'
     publicKey: nestedDependencies.outputs.publicKey
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'lock'
+    }
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Reader'
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
+      }
+    ]
+    location: location
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+    enableTelemetry: true
   }
 }
