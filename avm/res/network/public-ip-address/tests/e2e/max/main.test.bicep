@@ -66,6 +66,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       name: 'myCustomLockName'
       kind: 'CanNotDelete'
     }
+    dnsSettings: null
+    ddosSettings: null
     publicIPAllocationMethod: 'Static'
     roleAssignments: [
       {
