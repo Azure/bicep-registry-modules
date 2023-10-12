@@ -29,7 +29,7 @@ param publicIPAddressVersion string = 'IPv4'
 param dnsSettings dnsSettingsType?
 
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Name of a public IP address SKU.')
 @allowed([
