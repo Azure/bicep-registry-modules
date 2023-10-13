@@ -6,7 +6,7 @@ metadata owner = 'Azure/module-maintainers'
 param name string
 
 @description('Optional. Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix.')
-param publicIpPrefixResourceId publicIpPrefixType?
+param publicIpPrefixResourceId string?
 
 @description('Optional. The public IP address allocation method.')
 @allowed([
@@ -231,9 +231,6 @@ type dnsSettingsType = {
   @description('Optional. The reverse FQDN. A user-visible, fully qualified domain name that resolves to this public IP address. If the reverseFqdn is specified, then a PTR DNS record is created pointing from the IP address in the in-addr.arpa domain to the reverse FQDN.')
   reverseFqdn: string?
 }
-
-@description('Required. Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix.')
-type publicIpPrefixType = string
 
 type ddosSettingsType = {
   @description('Required. The DDoS protection plan ID associated with the public IP address.')

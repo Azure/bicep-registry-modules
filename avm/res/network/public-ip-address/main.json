@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "3481809606346556350"
+      "templateHash": "7770464179137559996"
     },
     "name": "Public IP Addresses",
     "description": "This module deploys a Public IP Address.",
@@ -138,17 +138,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The reverse FQDN. A user-visible, fully qualified domain name that resolves to this public IP address. If the reverseFqdn is specified, then a PTR DNS record is created pointing from the IP address in the in-addr.arpa domain to the reverse FQDN."
-          }
-        }
-      }
-    },
-    "publicIpPrefixType": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix."
           }
         }
       }
@@ -293,7 +282,7 @@
       }
     },
     "publicIpPrefixResourceId": {
-      "$ref": "#/definitions/publicIpPrefixType",
+      "type": "string",
       "nullable": true,
       "metadata": {
         "description": "Optional. Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix."
@@ -379,7 +368,6 @@
     },
     "roleAssignments": {
       "$ref": "#/definitions/roleAssignmentType",
-      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
       }
@@ -391,6 +379,13 @@
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
+    "idleTimeoutInMinutes": {
+      "type": "int",
+      "defaultValue": 4,
+      "metadata": {
+        "description": "Optional. The idle timeout of the public IP address. Default is `4`"
+      }
+    },
     "tags": {
       "type": "object",
       "nullable": true,
@@ -400,7 +395,6 @@
     },
     "diagnosticSettings": {
       "$ref": "#/definitions/diagnosticSettingType",
-      "nullable": true,
       "metadata": {
         "description": "Optional. The diagnostic settings of the service."
       }
@@ -457,8 +451,10 @@
         "dnsSettings": "[parameters('dnsSettings')]",
         "publicIPAddressVersion": "[parameters('publicIPAddressVersion')]",
         "publicIPAllocationMethod": "[parameters('publicIPAllocationMethod')]",
-        "publicIPPrefix": "[parameters('publicIpPrefixResourceId')]",
-        "idleTimeoutInMinutes": 4,
+        "publicIPPrefix": {
+          "id": "[parameters('publicIpPrefixResourceId')]"
+        },
+        "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
         "ipTags": []
       }
     },
@@ -498,9 +494,9 @@
         "publicIpAddress"
       ]
     },
-    "publicIpAddress_DiagnosticSettings": {
+    "publicIpAddress_diagnosticSettings": {
       "copy": {
-        "name": "publicIpAddress_DiagnosticSettings",
+        "name": "publicIpAddress_diagnosticSettings",
         "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
       },
       "type": "Microsoft.Insights/diagnosticSettings",

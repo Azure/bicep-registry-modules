@@ -421,11 +421,12 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`dnsSettings`](#parameter-dnssettings) | object | The DNS settings of the public IP address. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`idleTimeoutInMinutes`](#parameter-idletimeoutinminutes) | int | The idle timeout of the public IP address. Default is `4` |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`publicIPAddressVersion`](#parameter-publicipaddressversion) | string | IP address version. |
 | [`publicIPAllocationMethod`](#parameter-publicipallocationmethod) | string | The public IP address allocation method. |
-| [`publicIpPrefixResourceId`](#parameter-publicipprefixresourceid) | object | Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix. |
+| [`publicIpPrefixResourceId`](#parameter-publicipprefixresourceid) | string | Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 | [`skuName`](#parameter-skuname) | string | Name of a public IP address SKU. |
 | [`skuTier`](#parameter-skutier) | string | Tier of a public IP address SKU. |
@@ -624,6 +625,13 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `idleTimeoutInMinutes`
+
+The idle timeout of the public IP address. Default is `4`
+- Required: No
+- Type: int
+- Default: `4`
+
 ### Parameter: `location`
 
 Location for all resources.
@@ -683,19 +691,7 @@ The public IP address allocation method.
 ### Parameter: `publicIpPrefixResourceId`
 
 Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix.
-- Required: Yes
-- Type: object
-
-
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`id`](#parameter-publicipprefixresourceidid) | Yes | string | Required. Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix. |
-
-### Parameter: `publicIpPrefixResourceId.id`
-
-Required. Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix.
-
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `roleAssignments`
