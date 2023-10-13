@@ -421,7 +421,7 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`dnsSettings`](#parameter-dnssettings) | object | The DNS settings of the public IP address. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`idleTimeoutInMinutes`](#parameter-idletimeoutinminutes) | int | The idle timeout of the public IP address. Default is `4` |
+| [`idleTimeoutInMinutes`](#parameter-idletimeoutinminutes) | int | The idle timeout of the public IP address. Default is `4`. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`publicIPAddressVersion`](#parameter-publicipaddressversion) | string | IP address version. |
@@ -627,7 +627,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `idleTimeoutInMinutes`
 
-The idle timeout of the public IP address. Default is `4`
+The idle timeout of the public IP address. Default is `4`.
 - Required: No
 - Type: int
 - Default: `4`

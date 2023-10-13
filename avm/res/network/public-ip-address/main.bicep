@@ -57,7 +57,7 @@ param roleAssignments roleAssignmentType
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. The idle timeout of the public IP address. Default is `4`')
+@description('Optional. The idle timeout of the public IP address. Default is `4`.')
 param idleTimeoutInMinutes int = 4
 
 @description('Optional. Tags of the resource.')
