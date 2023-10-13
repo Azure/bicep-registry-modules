@@ -43,9 +43,20 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-npiadef'
+  name: '${uniqueString(deployment().name, location)}-test-npiamin'
   params: {
-    name: 'npiadef001'
+    // Required parameters
+    name: 'npiamin001'
+    // Non-required parameters
+    ddosSettings: '<ddosSettings>'
+    diagnosticSettings: '<diagnosticSettings>'
+    dnsSettings: '<dnsSettings>'
+    location: '<location>'
+    lock: '<lock>'
+    publicIpPrefixResourceId: '<publicIpPrefixResourceId>'
+    roleAssignments: '<roleAssignments>'
+    tags: {}
+    zones: []
   }
 }
 ```
@@ -62,8 +73,37 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
-      "value": "npiadef001"
+      "value": "npiamin001"
+    },
+    // Non-required parameters
+    "ddosSettings": {
+      "value": "<ddosSettings>"
+    },
+    "diagnosticSettings": {
+      "value": "<diagnosticSettings>"
+    },
+    "dnsSettings": {
+      "value": "<dnsSettings>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": "<lock>"
+    },
+    "publicIpPrefixResourceId": {
+      "value": "<publicIpPrefixResourceId>"
+    },
+    "roleAssignments": {
+      "value": "<roleAssignments>"
+    },
+    "tags": {
+      "value": {}
+    },
+    "zones": {
+      "value": []
     }
   }
 }
@@ -88,6 +128,7 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
     // Required parameters
     name: 'npiamax001'
     // Non-required parameters
+    ddosSettings: '<ddosSettings>'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -97,6 +138,7 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    dnsSettings: '<dnsSettings>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -104,6 +146,7 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
     }
     publicIPAddressVersion: 'IPv4'
     publicIPAllocationMethod: 'Static'
+    publicIpPrefixResourceId: '<publicIpPrefixResourceId>'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -144,6 +187,9 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
       "value": "npiamax001"
     },
     // Non-required parameters
+    "ddosSettings": {
+      "value": "<ddosSettings>"
+    },
     "diagnosticSettings": {
       "value": [
         {
@@ -154,6 +200,9 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "dnsSettings": {
+      "value": "<dnsSettings>"
     },
     "location": {
       "value": "<location>"
@@ -169,6 +218,9 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
     },
     "publicIPAllocationMethod": {
       "value": "Static"
+    },
+    "publicIpPrefixResourceId": {
+      "value": "<publicIpPrefixResourceId>"
     },
     "roleAssignments": {
       "value": [
@@ -222,6 +274,7 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
     // Required parameters
     name: 'npiawaf001'
     // Non-required parameters
+    ddosSettings: '<ddosSettings>'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -231,6 +284,7 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    dnsSettings: '<dnsSettings>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -238,6 +292,7 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
     }
     publicIPAddressVersion: 'IPv4'
     publicIPAllocationMethod: 'Static'
+    publicIpPrefixResourceId: '<publicIpPrefixResourceId>'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -278,6 +333,9 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
       "value": "npiawaf001"
     },
     // Non-required parameters
+    "ddosSettings": {
+      "value": "<ddosSettings>"
+    },
     "diagnosticSettings": {
       "value": [
         {
@@ -288,6 +346,9 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "dnsSettings": {
+      "value": "<dnsSettings>"
     },
     "location": {
       "value": "<location>"
@@ -303,6 +364,9 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
     },
     "publicIPAllocationMethod": {
       "value": "Static"
+    },
+    "publicIpPrefixResourceId": {
+      "value": "<publicIpPrefixResourceId>"
     },
     "roleAssignments": {
       "value": [
