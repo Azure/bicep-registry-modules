@@ -39,12 +39,12 @@ The following module usage examples are retrieved from the content of the files 
 
 ```bicep
 module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-kcedef'
+  name: '${uniqueString(deployment().name, location)}-test-kcemin'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
     extensionType: 'microsoft.flux'
-    name: 'kcedef001'
+    name: 'kcemin001'
     // Non-required parameters
     configurationProtectedSettings: '<configurationProtectedSettings>'
     configurationSettings: '<configurationSettings>'
@@ -78,7 +78,7 @@ module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
       "value": "microsoft.flux"
     },
     "name": {
-      "value": "kcedef001"
+      "value": "kcemin001"
     },
     // Non-required parameters
     "configurationProtectedSettings": {
