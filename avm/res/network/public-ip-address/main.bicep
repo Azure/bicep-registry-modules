@@ -57,6 +57,9 @@ param roleAssignments roleAssignmentType
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Optional. The idle timeout of the public IP address. Default is `4`')
+param idleTimeoutInMinutes int = 4
+
 @description('Optional. Tags of the resource.')
 param tags object?
 
@@ -108,8 +111,10 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
     dnsSettings: dnsSettings
     publicIPAddressVersion: publicIPAddressVersion
     publicIPAllocationMethod: publicIPAllocationMethod
-    publicIPPrefix: publicIpPrefixResourceId
-    idleTimeoutInMinutes: 4
+    publicIPPrefix: {
+      id: publicIpPrefixResourceId
+    }
+    idleTimeoutInMinutes: idleTimeoutInMinutes
     ipTags: []
   }
 }
@@ -227,10 +232,8 @@ type dnsSettingsType = {
   reverseFqdn: string?
 }
 
-type publicIpPrefixType = {
-  @description('Required. Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix.')
-  id: string
-}
+@description('Required. Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix.')
+type publicIpPrefixType = string
 
 type ddosSettingsType = {
   @description('Required. The DDoS protection plan ID associated with the public IP address.')
