@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "5298535793075587555"
+      "templateHash": "4196164240674285199"
     },
     "name": "Public IP Addresses",
     "description": "This module deploys a Public IP Address.",
@@ -383,7 +383,7 @@
       "type": "int",
       "defaultValue": 4,
       "metadata": {
-        "description": "Optional. The idle timeout of the public IP address. Default is `4`."
+        "description": "Optional. The idle timeout of the public IP address."
       }
     },
     "tags": {
