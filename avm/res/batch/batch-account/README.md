@@ -46,10 +46,10 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module batchAccount 'br/public:avm-res-batch-batchaccount:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-bbadef'
+  name: '${uniqueString(deployment().name, location)}-test-bbamin'
   params: {
     // Required parameters
-    name: 'bbadef001'
+    name: 'bbamin001'
     storageAccountId: '<storageAccountId>'
     // Non-required parameters
     allowedAuthenticationModes: '<allowedAuthenticationModes>'
@@ -82,7 +82,7 @@ module batchAccount 'br/public:avm-res-batch-batchaccount:1.0.0' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "bbadef001"
+      "value": "bbamin001"
     },
     "storageAccountId": {
       "value": "<storageAccountId>"
