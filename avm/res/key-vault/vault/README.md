@@ -62,6 +62,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
     keys: []
     location: '<location>'
     lock: {}
+    networkAcls: {}
     privateEndpoints: []
     roleAssignments: []
     secrets: {}
@@ -101,6 +102,9 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
       "value": "<location>"
     },
     "lock": {
+      "value": {}
+    },
+    "networkAcls": {
       "value": {}
     },
     "privateEndpoints": {

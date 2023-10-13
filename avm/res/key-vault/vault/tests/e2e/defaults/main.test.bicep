@@ -52,6 +52,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     roleAssignments: []
     diagnosticSettings: []
     privateEndpoints: []
+    networkAcls: {}
     accessPolicies: []
     secrets: {}
     keys: []
