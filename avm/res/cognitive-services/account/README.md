@@ -48,11 +48,11 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-csad'
+  name: '${uniqueString(deployment().name, location)}-test-csamin'
   params: {
     // Required parameters
     kind: 'SpeechServices'
-    name: 'csad001'
+    name: 'csamin001'
     // Non-required parameters
     allowedFqdnList: '<allowedFqdnList>'
     apiProperties: '<apiProperties>'
@@ -89,7 +89,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
       "value": "SpeechServices"
     },
     "name": {
-      "value": "csad001"
+      "value": "csamin001"
     },
     // Non-required parameters
     "allowedFqdnList": {
@@ -1187,7 +1187,7 @@ Allow only Azure AD authentication. Should be enabled for security reasons.
 ### Parameter: `dynamicThrottlingEnabled`
 
 The flag to enable dynamic throttling.
-- Required: Yes
+- Required: No
 - Type: bool
 - Default: `False`
 
@@ -1462,7 +1462,7 @@ Whether or not public network access is allowed for this resource. For security 
 ### Parameter: `restore`
 
 Restore a soft-deleted cognitive service at deployment time. Will fail if no such soft-deleted resource exists.
-- Required: Yes
+- Required: No
 - Type: bool
 - Default: `False`
 
