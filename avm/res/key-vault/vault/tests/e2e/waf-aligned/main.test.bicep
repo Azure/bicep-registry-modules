@@ -68,7 +68,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     location: location
     diagnosticSettings: [
       {
-        name: 'enableAll'
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
         eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
         storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId

@@ -639,7 +639,6 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
-        name: 'enableAll'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
       }
@@ -740,7 +739,6 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
-          "name": "enableAll",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
