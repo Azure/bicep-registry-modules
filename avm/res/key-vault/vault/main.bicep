@@ -53,8 +53,8 @@ param enablePurgeProtection bool = true
 ])
 param sku string = 'premium'
 
-@description('Optional. Service endpoint object information. For security reasons, it is recommended to set the DefaultAction Deny.')
-param networkAcls object = {}
+@description('Optional. Rules governing the accessibility of the resouce from specific network locations.')
+param networkAcls object?
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set.')
 @allowed([
@@ -153,13 +153,13 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
       name: sku
       family: 'A'
     }
-    networkAcls: !empty(networkAcls) ? {
+    networkAcls: !empty(networkAcls ?? {}) ? {
       bypass: networkAcls.?bypass
       defaultAction: networkAcls.?defaultAction
       virtualNetworkRules: networkAcls.?virtualNetworkRules ?? []
       ipRules: networkAcls.?ipRules ?? []
     } : null
-    publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : (!empty(privateEndpoints) && empty(networkAcls) ? 'Disabled' : null)
+    publicNetworkAccess: !empty(publicNetworkAccess) ? publicNetworkAccess : ((!empty(privateEndpoints ?? []) && empty(networkAcls ?? {})) ? 'Disabled' : null)
   }
 }
 
