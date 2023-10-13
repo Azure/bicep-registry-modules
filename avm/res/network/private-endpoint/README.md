@@ -296,7 +296,7 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
 
 ### Example 3: _WAF-aligned_
 
-This instance deploys the module in alignment with the best-pratices of the Well-Architectured-Framework.
+This instance deploys the module in alignment with the best-practices of the Well-Architectured-Framework.
 
 
 <details>
