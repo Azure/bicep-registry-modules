@@ -111,9 +111,9 @@ resource publicIpAddress 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
     dnsSettings: dnsSettings
     publicIPAddressVersion: publicIPAddressVersion
     publicIPAllocationMethod: publicIPAllocationMethod
-    publicIPPrefix: {
+    publicIPPrefix: !empty(publicIpPrefixResourceId) ? {
       id: publicIpPrefixResourceId
-    }
+    } : null
     idleTimeoutInMinutes: idleTimeoutInMinutes
     ipTags: []
   }

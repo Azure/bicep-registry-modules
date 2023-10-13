@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "1279461429686975365"
+      "templateHash": "5298535793075587555"
     },
     "name": "Public IP Addresses",
     "description": "This module deploys a Public IP Address.",
@@ -451,9 +451,7 @@
         "dnsSettings": "[parameters('dnsSettings')]",
         "publicIPAddressVersion": "[parameters('publicIPAddressVersion')]",
         "publicIPAllocationMethod": "[parameters('publicIPAllocationMethod')]",
-        "publicIPPrefix": {
-          "id": "[parameters('publicIpPrefixResourceId')]"
-        },
+        "publicIPPrefix": "[if(not(empty(parameters('publicIpPrefixResourceId'))), createObject('id', parameters('publicIpPrefixResourceId')), null())]",
         "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
         "ipTags": []
       }
