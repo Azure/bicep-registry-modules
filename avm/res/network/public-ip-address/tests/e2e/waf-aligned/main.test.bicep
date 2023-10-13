@@ -1,7 +1,6 @@
 targetScope = 'subscription'
-
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Well-Architectured-Framework.'
+metadata name = 'Using WAF-Aligned'
+metadata description = 'This instance deploys the module with the waf-aligned set of required parameters.'
 
 // ========== //
 // Parameters //
@@ -9,15 +8,15 @@ metadata description = 'This instance deploys the module in alignment with the b
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-network.privateendpoints-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-network.publicipaddresses-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'npewaf'
+param serviceShort string = 'npiawaf'
 
-@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
+@description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
 // ============ //
@@ -35,10 +34,20 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    applicationSecurityGroupName: 'dep-${namePrefix}-asg-${serviceShort}'
+  }
+}
+
+// Diagnostics
+// ===========
+module diagnosticDependencies '../../../../../../../avm/utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, location)}-diagnosticDependencies'
+  params: {
+    storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
     location: location
   }
 }
@@ -47,25 +56,20 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-@batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location
-    groupIds: [
-      'vault'
-    ]
-    serviceResourceId: nestedDependencies.outputs.keyVaultResourceId
-    subnetResourceId: nestedDependencies.outputs.subnetResourceId
     lock: {
-      kind: 'CanNotDelete'
       name: 'myCustomLockName'
+      kind: 'CanNotDelete'
     }
-    privateDnsZoneResourceIds: [
-      nestedDependencies.outputs.privateDNSZoneResourceId
-    ]
+    dnsSettings: null
+    ddosSettings: null
+    publicIPAllocationMethod: 'Static'
+    publicIpPrefixResourceId: null
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Reader'
@@ -73,28 +77,27 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         principalType: 'ServicePrincipal'
       }
     ]
-    ipConfigurations: [
-      {
-        name: 'myIPconfig'
-        properties: {
-          groupId: 'vault'
-          memberName: 'default'
-          privateIPAddress: '10.0.0.10'
-        }
-      }
-    ]
-    customNetworkInterfaceName: '${namePrefix}${serviceShort}001nic'
-    applicationSecurityGroupResourceIds: [
-      nestedDependencies.outputs.applicationSecurityGroupResourceId
+    skuName: 'Standard'
+    skuTier: 'Regional'
+    publicIPAddressVersion: 'IPv4'
+    zones: [
+      '1'
+      '2'
+      '3'
     ]
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    // Workaround for PSRule
-    privateDnsZoneGroupName: 'default'
-    customDnsConfigs: []
-    manualPrivateLinkServiceConnections: []
+    diagnosticSettings: [
+      {
+        name: 'customSetting'
+        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+      }
+    ]
   }
 }]
