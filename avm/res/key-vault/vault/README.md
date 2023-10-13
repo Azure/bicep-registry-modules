@@ -870,7 +870,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
 | [`keys`](#parameter-keys) | array | All keys to create. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`networkAcls`](#parameter-networkacls) | object | Service endpoint object information. For security reasons, it is recommended to set the DefaultAction Deny. |
+| [`networkAcls`](#parameter-networkacls) | object | Rules governing the accessibility of the resouce from specific network locations. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
@@ -1104,10 +1104,9 @@ Name of the Key Vault. Must be globally unique.
 
 ### Parameter: `networkAcls`
 
-Service endpoint object information. For security reasons, it is recommended to set the DefaultAction Deny.
+Rules governing the accessibility of the resouce from specific network locations.
 - Required: No
 - Type: object
-- Default: `{object}`
 
 ### Parameter: `privateEndpoints`
 

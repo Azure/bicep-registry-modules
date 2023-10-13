@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "5019409235041208548"
+      "templateHash": "9188769706526490100"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -465,9 +465,9 @@
     },
     "networkAcls": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Service endpoint object information. For security reasons, it is recommended to set the DefaultAction Deny."
+        "description": "Optional. Rules governing the accessibility of the resouce from specific network locations."
       }
     },
     "publicNetworkAccess": {
@@ -594,8 +594,8 @@
           "name": "[parameters('sku')]",
           "family": "A"
         },
-        "networkAcls": "[if(not(empty(parameters('networkAcls'))), createObject('bypass', tryGet(parameters('networkAcls'), 'bypass'), 'defaultAction', tryGet(parameters('networkAcls'), 'defaultAction'), 'virtualNetworkRules', coalesce(tryGet(parameters('networkAcls'), 'virtualNetworkRules'), createArray()), 'ipRules', coalesce(tryGet(parameters('networkAcls'), 'ipRules'), createArray())), null())]",
-        "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkAcls'))), 'Disabled', null()))]"
+        "networkAcls": "[if(not(empty(coalesce(parameters('networkAcls'), createObject()))), createObject('bypass', tryGet(parameters('networkAcls'), 'bypass'), 'defaultAction', tryGet(parameters('networkAcls'), 'defaultAction'), 'virtualNetworkRules', coalesce(tryGet(parameters('networkAcls'), 'virtualNetworkRules'), createArray()), 'ipRules', coalesce(tryGet(parameters('networkAcls'), 'ipRules'), createArray())), null())]",
+        "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(coalesce(parameters('privateEndpoints'), createArray()))), empty(coalesce(parameters('networkAcls'), createObject()))), 'Disabled', null()))]"
       }
     },
     "keyVault_lock": {
