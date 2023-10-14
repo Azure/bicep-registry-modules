@@ -1815,8 +1815,15 @@ function Set-ModuleReadMe {
     }
     # Make sure we preserve any manual notes a user might have added in the corresponding section
     if ($match = $readMeFileContent | Select-String -Pattern '## Notes') {
-        $headerNumber = $match.LineNumber
-        $notes = $readMeFileContent[($headerNumber - 1)..($readMeFileContent.Count - 1)]
+        $startIndex = $match.LineNumber
+
+        $endIndex = $startIndex + 1
+
+        while (-not (($endIndex + 1) -gt $readMeFileContent.count) -and $readMeFileContent[($endIndex + 1)] -notlike '## *') {
+            $endIndex++
+        }
+
+        $notes = $readMeFileContent[($startIndex - 1)..$endIndex]
     }
     else {
         $notes = @()
