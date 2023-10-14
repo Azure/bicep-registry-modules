@@ -479,6 +479,7 @@ function Set-CrossReferencesSection {
         [string] $SectionStartIdentifier = '## Cross-referenced modules'
     )
 
+    # Load helper scripts
     . (Join-Path $PSScriptRoot  'helper' 'Get-CrossReferencedModuleList.ps1')
 
     # Process content
@@ -1220,7 +1221,7 @@ function Set-UsageExamplesSection {
             $rawBicepExampleString = $rawBicepExampleString -replace '\$\{serviceShort\}', $serviceShort
             $rawBicepExampleString = $rawBicepExampleString -replace '\$\{namePrefix\}[-|\.|_]?', '' # Replacing with empty to not expose prefix and avoid potential deployment conflicts
             $rawBicepExampleString = $rawBicepExampleString -replace '(?m):\s*location\s*$', ': ''<location>'''
-            $rawBicepExampleString = $rawBicepExampleString -replace "-\$\{iteration\}", ''
+            $rawBicepExampleString = $rawBicepExampleString -replace '-\$\{iteration\}', ''
 
             # [3/6] Format header, remove scope property & any empty line
             $rawBicepExample = $rawBicepExampleString -split '\n'
@@ -1536,7 +1537,7 @@ function Set-UsageExamplesSection {
 
     foreach ($rawHeader in $usageExampleSectionHeaders) {
         $navigationHeader = (($rawHeader.header -replace '<\/?.+?>|[^A-Za-z0-9\s-]').Trim() -replace '\s+', '-').ToLower() # Remove any html and non-identifer elements
-        $SectionContent += "- [{0}](#{1})" -f $rawHeader.title, $navigationHeader
+        $SectionContent += '- [{0}](#{1})' -f $rawHeader.title, $navigationHeader
     }
     $SectionContent += ''
 
@@ -1618,8 +1619,7 @@ function Set-TableOfContent {
 Initialize the readme file
 
 .DESCRIPTION
-If no readme file exists, the initial content is generated (e.g., the skeleton of the section headers).
-If a readme file does exist, its title and description are updated with whatever is documented as metadata in the template file.
+Create the initial skeleton of the section headers, name & description.
 
 .PARAMETER ReadMeFilePath
 Required. The path to the readme file to initialize.
@@ -1650,59 +1650,39 @@ function Initialize-ReadMe {
     )
 
     . (Join-Path $PSScriptRoot 'helper' 'Get-SpecsAlignedResourceName.ps1')
+    . (Join-Path $PSScriptRoot 'Get-NestedResourceList.ps1')
 
     $moduleName = $TemplateFileContent.metadata.name
     $moduleDescription = $TemplateFileContent.metadata.description
     $formattedResourceType = Get-SpecsAlignedResourceName -ResourceIdentifier $FullModuleIdentifier
 
-    if (-not (Test-Path $ReadMeFilePath) -or ([String]::IsNullOrEmpty((Get-Content $ReadMeFilePath -Raw)))) {
-
-        $hasTests = (Get-ChildItem -Path (Split-Path $ReadMeFilePath) -Recurse -Include 'main.test.*').count -gt 0
-
-        $initialContent = @(
-            "# $moduleName ``[$formattedResourceType]``",
-            '',
-            $moduleDescription,
-            ''
-            '## Resource Types',
-            '',
-            ($hasTests ? '## Usage examples' : $null),
-            ($hasTests ? '' : $null),
-            '## Parameters',
-            '',
-            '## Outputs',
-            '',
-            '## Cross-referenced modules'
-        ) | Where-Object { $null -ne $_ } # Filter null values
-        $readMeFileContent = $initialContent
+    $inTemplateResourceType = (Get-NestedResourceList $TemplateFileContent).type | Select-Object -Unique | Where-Object {
+        $_ -match "^$formattedResourceType$"
     }
-    else {
-        $readMeFileContent = Get-Content -Path $ReadMeFilePath -Encoding 'utf8'
-        $readMeFileContent[0] = "# $moduleName ``[$formattedResourceType]``"
 
-        # We want to inject the description right below the header and before the [Resource Types] section
-
-        # Find start- and end-index of description section
-        $startIndex = 1 # One after the readme header
-        $endIndex = $startIndex
-
-        while (-not ($endIndex -ge $readMeFileContent.Count - 1) -and -not $readMeFileContent[$endIndex].StartsWith('#')) {
-            $endIndex++
-        }
-
-        # Build result
-        $startContent = @(
-            $readMeFileContent[0],
-            ''
-        )
-        $newContent = @(
-            $moduleDescription,
-            ''
-        )
-        $endContent = $readMeFileContent[$endIndex..($readMeFileContent.Count - 1)]
-
-        $readMeFileContent = (($startContent + $newContent + $endContent) | Out-String).TrimEnd().Replace("`r", '').Split("`n")
+    if (-not $inTemplateResourceType) {
+        Write-Warning "No resource type like [$formattedResourceType] found in template. Falling back to it as identifier."
+        $inTemplateResourceType = $formattedResourceType
     }
+
+    $initialContent = @(
+        "# $moduleName ``[$inTemplateResourceType]``",
+        '',
+        $moduleDescription,
+        ''
+        '## Resource Types',
+        ''
+        '## Usage examples'
+        '',
+        '## Parameters',
+        '',
+        '## Outputs',
+        '',
+        '## Cross-referenced modules',
+        '',
+        '## Notes'
+    )
+    $readMeFileContent = $initialContent
 
     return $readMeFileContent
 }
@@ -1823,6 +1803,24 @@ function Set-ModuleReadMe {
         $fullModuleIdentifier = $fullModuleIdentifier.split($customModuleSeparator)[0]
     }
 
+    # ===================== #
+    #   Preparation steps   #
+    # ===================== #
+    # Read original readme, if any. Then delete it to build from scratch
+    if ((Test-Path $ReadMeFilePath) -and -not ([String]::IsNullOrEmpty((Get-Content $ReadMeFilePath -Raw)))) {
+        $readMeFileContent = Get-Content -Path $ReadMeFilePath -Encoding 'utf8'
+        # Delete original readme
+        $null = Remove-Item $ReadMeFilePath -Force
+    }
+    # Make sure we preserve any manual notes a user might have added in the corresponding section
+    if ($match = $readMeFileContent | Select-String -Pattern '## Notes') {
+        $headerNumber = $match.LineNumber
+        $notes = $readMeFileContent[($headerNumber - 1)..($readMeFileContent.Count - 1)]
+    }
+    else {
+        $notes = @()
+    }
+
     # Initialize readme
     $inputObject = @{
         ReadMeFilePath       = $ReadMeFilePath
@@ -1831,6 +1829,9 @@ function Set-ModuleReadMe {
     }
     $readMeFileContent = Initialize-ReadMe @inputObject
 
+    # =============== #
+    #   Set content   #
+    # =============== #
     # Set content
     if ($SectionsToRefresh -contains 'Resource Types') {
         # Handle [Resource Types] section
@@ -1886,6 +1887,13 @@ function Set-ModuleReadMe {
             TemplateFileContent  = $templateFileContent
         }
         $readMeFileContent = Set-CrossReferencesSection @inputObject
+    }
+
+    # Handle [Notes] section
+    # ========================
+    if ($notes) {
+        $readMeFileContent += @( '' )
+        $readMeFileContent += $notes
     }
 
     if ($SectionsToRefresh -contains 'Navigation') {
