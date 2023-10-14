@@ -1811,7 +1811,9 @@ function Set-ModuleReadMe {
     if ((Test-Path $ReadMeFilePath) -and -not ([String]::IsNullOrEmpty((Get-Content $ReadMeFilePath -Raw)))) {
         $readMeFileContent = Get-Content -Path $ReadMeFilePath -Encoding 'utf8'
         # Delete original readme
-        $null = Remove-Item $ReadMeFilePath -Force
+        if ($PSCmdlet.ShouldProcess("File in path [$ReadMeFilePath]", 'Delete')) {
+            $null = Remove-Item $ReadMeFilePath -Force
+        }
     }
     # Make sure we preserve any manual notes a user might have added in the corresponding section
     if ($match = $readMeFileContent | Select-String -Pattern '## Notes') {
