@@ -59,9 +59,98 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // Test Execution //
 // ============== //
 
-module testDeployment '../../../main.bicep' = {
+// module testDeployment '../../../main.bicep' = {
+//   scope: resourceGroup
+//   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
+//   params: {
+//     name: '${namePrefix}${serviceShort}002'
+//     location: location
+//     diagnosticSettings: [
+//       {
+//         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+//         eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+//         storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+//         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+//       }
+//     ]
+//     // Only for testing purposes
+//     enablePurgeProtection: false
+//     enableRbacAuthorization: true
+//     keys: [
+//       {
+//         attributesExp: 1725109032
+//         attributesNbf: 10000
+//         name: 'keyName'
+//         rotationPolicy: {
+//           attributes: {
+//             expiryTime: 'P2Y'
+//           }
+//           lifetimeActions: [
+//             {
+//               trigger: {
+//                 timeBeforeExpiry: 'P2M'
+//               }
+//               action: {
+//                 type: 'Rotate'
+//               }
+//             }
+//             {
+//               trigger: {
+//                 timeBeforeExpiry: 'P30D'
+//               }
+//               action: {
+//                 type: 'Notify'
+//               }
+//             }
+//           ]
+//         }
+//         keySize: 4096
+//       }
+//     ]
+//     lock: {
+//       kind: 'CanNotDelete'
+//       name: 'myCustomLockName'
+//     }
+//     networkAcls: {
+//       bypass: 'AzureServices'
+//       defaultAction: 'Deny'
+//     }
+//     privateEndpoints: [
+//       {
+//         privateDnsZoneResourceIds: [
+//           nestedDependencies.outputs.privateDNSResourceId
+//         ]
+//         service: 'vault'
+//         subnetResourceId: nestedDependencies.outputs.subnetResourceId
+//       }
+//     ]
+//     secrets: {
+//       secureList: [
+//         {
+//           attributesExp: 1702648632
+//           attributesNbf: 10000
+//           contentType: 'Something'
+//           name: 'secretName'
+//           value: 'secretValue'
+//         }
+//       ]
+//     }
+//     softDeleteRetentionInDays: 7
+//     tags: {
+//       'hidden-title': 'This is visible in the resource name'
+//       Environment: 'Non-Prod'
+//       Role: 'DeploymentValidation'
+//     }
+//     // Workaround for PSRule
+//     roleAssignments: []
+//     accessPolicies: []
+//   }
+// }
+
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}002'
     location: location
@@ -145,98 +234,4 @@ module testDeployment '../../../main.bicep' = {
     roleAssignments: []
     accessPolicies: []
   }
-}
-
-// @batchSize(1)
-// module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-//   scope: resourceGroup
-//   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
-//   params: {
-//     name: '${namePrefix}${serviceShort}002'
-//     location: location
-//     diagnosticSettings: [
-//       {
-//         logCategoriesAndGroups: [
-//           {
-//             category: 'allLogs'
-//           }
-//         ]
-//         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-//         eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-//         storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-//         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-//       }
-//     ]
-//     // Only for testing purposes
-//     enablePurgeProtection: false
-//     enableRbacAuthorization: true
-//     keys: [
-//       {
-//         attributesExp: 1725109032
-//         attributesNbf: 10000
-//         name: 'keyName'
-//         rotationPolicy: {
-//           attributes: {
-//             expiryTime: 'P2Y'
-//           }
-//           lifetimeActions: [
-//             {
-//               trigger: {
-//                 timeBeforeExpiry: 'P2M'
-//               }
-//               action: {
-//                 type: 'Rotate'
-//               }
-//             }
-//             {
-//               trigger: {
-//                 timeBeforeExpiry: 'P30D'
-//               }
-//               action: {
-//                 type: 'Notify'
-//               }
-//             }
-//           ]
-//         }
-//         keySize: 4096
-//       }
-//     ]
-//     lock: {
-//       kind: 'CanNotDelete'
-//       name: 'myCustomLockName'
-//     }
-//     networkAcls: {
-//       bypass: 'AzureServices'
-//       defaultAction: 'Deny'
-//     }
-//     privateEndpoints: [
-//       {
-//         privateDnsZoneResourceIds: [
-//           nestedDependencies.outputs.privateDNSResourceId
-//         ]
-//         service: 'vault'
-//         subnetResourceId: nestedDependencies.outputs.subnetResourceId
-//       }
-//     ]
-//     secrets: {
-//       secureList: [
-//         {
-//           attributesExp: 1702648632
-//           attributesNbf: 10000
-//           contentType: 'Something'
-//           name: 'secretName'
-//           value: 'secretValue'
-//         }
-//       ]
-//     }
-//     softDeleteRetentionInDays: 7
-//     tags: {
-//       'hidden-title': 'This is visible in the resource name'
-//       Environment: 'Non-Prod'
-//       Role: 'DeploymentValidation'
-//     }
-//     // Workaround for PSRule
-//     roleAssignments: []
-//     accessPolicies: []
-//   }
-// }]
+}]
