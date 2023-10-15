@@ -52,6 +52,9 @@ This includes local references, online/remote references & resource deployments
 .PARAMETER ModuleTemplateFilePath
 Mandatory. The path to the template to search the references for
 
+.PARAMETER TemplateMap
+Mandatory. The hashtable of templatePath-templateContent to search in
+
 .EXAMPLE
 Get-ReferenceObject -ModuleTemplateFilePath 'C:\dev\key-vault\vault\main.bicep'
 
@@ -62,11 +65,14 @@ function Get-ReferenceObject {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
-        [string] $ModuleTemplateFilePath
+        [string] $ModuleTemplateFilePath,
+
+        [Parameter(Mandatory = $true)]
+        [hashtable] $TemplateMap
     )
 
     . (Join-Path (Get-Item $PSScriptRoot).Parent 'Get-LocallyReferencedFileList.ps1')
-    $involvedFilePaths = Get-LocallyReferencedFileList -FilePath $ModuleTemplateFilePath
+    $involvedFilePaths = Get-LocallyReferencedFileList -FilePath $ModuleTemplateFilePath -TemplateMap $TemplateMap
 
     $resultSet = @{
         resourceReferences  = @()
@@ -83,7 +89,7 @@ function Get-ReferenceObject {
     }
 
     foreach ($involvedFilePath in (@($ModuleTemplateFilePath) + @($involvedFilePaths))) {
-        $moduleContent = Get-Content -Path $involvedFilePath
+        $moduleContent = $TemplateMap[$involvedFilePath]
 
         $resultSet.resourceReferences += @() + $moduleContent | Where-Object { $_ -match "^resource .+ '(.+)' .+$" } | ForEach-Object { $matches[1] }
         $resultSet.remoteReferences += @() + $moduleContent | Where-Object { $_ -match "^module .+ '(.+:.+)' .+$" } | ForEach-Object { $matches[1] }
@@ -147,10 +153,17 @@ function Get-CrossReferencedModuleList {
     $repoRoot = ($Path -split '[\/|\\]{1}avm[\/|\\]{1}')[0]
     $resultSet = [ordered]@{}
 
+    # Collect data
     $moduleTemplatePaths = (Get-ChildItem -Path $path -Recurse -File -Filter 'main.bicep').FullName
+    $templateMap = @{}
+    foreach ($moduleTemplatePath in $moduleTemplatePaths) {
+        $templateMap[$moduleTemplatePath] = Get-Content -Path $moduleTemplatePath
+    }
+
+    # Process data
     foreach ($moduleTemplatePath in $moduleTemplatePaths) {
 
-        $referenceObject = Get-ReferenceObject -ModuleTemplateFilePath $moduleTemplatePath
+        $referenceObject = Get-ReferenceObject -ModuleTemplateFilePath $moduleTemplatePath -TemplateMap $templateMap
 
         # Convert local absolute references to relative references
         $referenceObject.localPathReferences = $referenceObject.localPathReferences | ForEach-Object {
