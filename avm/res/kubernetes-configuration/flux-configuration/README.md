@@ -26,11 +26,11 @@ The following module usage examples are retrieved from the content of the files 
 
    >**Note**: To reference the module, please use the following syntax `br/public:avm-res-kubernetesconfiguration-fluxconfiguration:1.0.0`.
 
-- [Default](#example-1-default)
+- [Defaults](#example-1-defaults)
 - [Max](#example-2-max)
 - [Waf-Aligned](#example-3-waf-aligned)
 
-### Example 1: _Default_
+### Example 1: _Defaults_
 
 <details>
 
@@ -38,11 +38,11 @@ The following module usage examples are retrieved from the content of the files 
 
 ```bicep
 module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfiguration:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-kcfcdef'
+  name: '${uniqueString(deployment().name, location)}-test-kcfcmin'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
-    name: 'kcfcdef001'
+    name: 'kcfcmin001'
     namespace: 'flux-system'
     sourceKind: 'GitRepository'
     // Non-required parameters
@@ -80,7 +80,7 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
       "value": "<clusterName>"
     },
     "name": {
-      "value": "kcfcdef001"
+      "value": "kcfcmin001"
     },
     "namespace": {
       "value": "flux-system"
