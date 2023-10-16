@@ -229,6 +229,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         }
       }
     ]
+    publicNetworkAccess: 'Disabled'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -359,6 +360,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
           }
         }
       ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
     },
     "roleAssignments": {
       "value": [
