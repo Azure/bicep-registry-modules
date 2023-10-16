@@ -103,8 +103,8 @@ function Set-AVMModule {
         # Using threading to speed up the process
         $job = $relevantTemplatePaths | ForEach-Object -ThrottleLimit $ThrottleLimit -AsJob -Parallel {
 
-            $resourceTypeIdentifier = 'avm-{0}' -f ($_ -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] # avm/res/<provider>/<resourceType>
             . $using:ReadMeScriptFilePath
+            $resourceTypeIdentifier = 'avm-{0}' -f ($_ -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] # avm/res/<provider>/<resourceType>
 
             ###############
             ##   Build   ##
@@ -128,12 +128,11 @@ function Set-AVMModule {
         }
 
         do {
-
             # Sleep a bit to allow the threads to run - adjust as desired.
             Start-Sleep -Seconds 0.5
 
             # Determine how many jobs have completed so far.
-            $completedJobsCount = $job.ChildJobs.Where({ $_.State -notin 'NotStarted', 'Running' }).Count
+            $completedJobsCount = ($job.ChildJobs | Where-Object { $_.State -notin @('NotStarted', 'Running') }).Count
 
             # Relay any pending output from the child jobs.
             $job | Receive-Job
