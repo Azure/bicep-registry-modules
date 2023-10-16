@@ -12,6 +12,5 @@
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "editor.formatOnSave": true,
-  "sarif-viewer.connectToGithubCodeScanning": "off"
+  "editor.formatOnSave": true
 }
