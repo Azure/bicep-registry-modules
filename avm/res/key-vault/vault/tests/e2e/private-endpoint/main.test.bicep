@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using large parameter set'
-metadata description = 'This instance deploys the module with most of its features enabled.'
+metadata name = 'Using Private Endpoints'
+metadata description = 'This instance deploys the module with Private Endpoints.'
 
 // ========== //
 // Parameters //
@@ -9,15 +9,15 @@ metadata description = 'This instance deploys the module with most of its featur
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-kubernetesconfiguration.fluxconfigurations-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-keyvault.vaults-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'kcfcmax'
+param serviceShort string = 'kvvpe'
 
-@description('Optional. A token to inject into the name of each resource.')
+@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
 // ============ //
@@ -35,9 +35,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
-    clusterName: 'dep-${namePrefix}-aks-${serviceShort}'
-    clusterExtensionName: '${namePrefix}${serviceShort}001'
-    clusterNodeResourceGroupName: 'dep-${namePrefix}-aks-${serviceShort}-rg'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     location: location
   }
 }
@@ -53,31 +51,25 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location
-    clusterName: nestedDependencies.outputs.clusterName
-    namespace: 'flux-system'
-    scope: 'cluster'
-    sourceKind: 'GitRepository'
-    gitRepository: {
-      repositoryRef: {
-        branch: 'main'
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          nestedDependencies.outputs.privateDNSResourceId
+        ]
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
       }
-      sshKnownHosts: ''
-      syncIntervalInSeconds: 300
-      timeoutInSeconds: 180
-      url: 'https://github.com/mspnp/aks-baseline'
+    ]
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
     }
-    kustomizations: {
-      unified: {
-        dependsOn: []
-        force: false
-        path: './cluster-manifests'
-        prune: true
-        syncIntervalInSeconds: 300
-        timeoutInSeconds: 300
-      }
-    }
-    // Workaround for PSRule
-    bucket: null
-    configurationProtectedSettings: null
+    // Only for testing purposes
+    enablePurgeProtection: false
   }
 }]
