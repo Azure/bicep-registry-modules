@@ -113,6 +113,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         }
       ]
     }
+    publicNetworkAccess: 'Disabled'
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Reader'
