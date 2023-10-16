@@ -100,22 +100,10 @@ function Set-AVMModule {
 
     if ($PSCmdlet.ShouldProcess(('Building & generation of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath), "Execute")) {
 
-        $relevantTemplatePathsObject = @{}
-        $relevantTemplatePaths | ForEach-Object { $relevantTemplatePathsObject.$_ = @{} }
-        $sync = [System.Collections.Hashtable]::Synchronized($relevantTemplatePathsObject)
-
         # Using threading to speed up the process
-        $jobs = $relevantTemplatePaths | ForEach-Object -ThrottleLimit $ThrottleLimit -AsJob -Parallel {
+        $job = $relevantTemplatePaths | ForEach-Object -ThrottleLimit $ThrottleLimit -AsJob -Parallel {
 
             $resourceTypeIdentifier = 'avm-{0}' -f ($_ -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] # avm/res/<provider>/<resourceType>
-
-            $syncCopy = $using:sync
-            $process = $syncCopy.$PSItem
-
-            # $process.Id = $_
-            $process.Activity = "Processing module [$resourceTypeIdentifier]"
-            $process.Status = "Processing"
-
             . $using:ReadMeScriptFilePath
 
             ###############
@@ -137,29 +125,26 @@ function Set-AVMModule {
 
                 Set-ModuleReadMe -TemplateFilePath $readmeTemplateFilePath -CrossReferencedModuleList $using:crossReferencedModuleList
             }
-
-            # Mark process as completed
-            $process.Completed = $true
         }
 
-        while ($jobs.State -eq 'Running') {
-            $sync.Keys | Foreach-Object {
-                # If key is not defined, ignore
-                if (-not [string]::IsNullOrEmpty($sync.$_.Keys)) {
-                    # Create parameter hashtable to splat
-                    $param = $sync.$_
+        do {
 
-                    if (-not ($param.'Activity')) {
-                        throw ($param | ConvertTo-Json -Depth 3 | Out-String)
-                    }
+            # Sleep a bit to allow the threads to run - adjust as desired.
+            Start-Sleep -Seconds 0.5
 
-                    # Execute Write-Progress
-                    Write-Progress @param
-                }
-            }
+            # Determine how many jobs have completed so far.
+            $completedJobsCount = $job.ChildJobs.Where({ $_.State -notin 'NotStarted', 'Running' }).Count
 
-            # Wait to refresh to not overload gui
-            Start-Sleep -Seconds 1
-        }
+            # Relay any pending output from the child jobs.
+            $job | Receive-Job
+
+            # Update the progress display.
+            [int] $percent = ($completedJobsCount / $job.ChildJobs.Count) * 100
+            Write-Progress -Activity ("Processed [{0}] files" -f $relevantTemplatePaths.Count) -Status "$percent% complete" -PercentComplete $percent
+
+        } while ($completedJobsCount -lt $job.ChildJobs.Count)
+
+        # Clean up the job.
+        $job | Remove-Job
     }
 }
