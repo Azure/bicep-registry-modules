@@ -30,7 +30,7 @@ function Get-LocallyReferencedFileList {
 
     $resList = @()
 
-    $fileContent = $TemplateMap.Count -gt 0 ? $TemplateMap[$FilePath] : (Get-Content $FilePath)
+    $fileContent = ($TemplateMap.Count -gt 0 -and $TemplateMap.Keys -contains $FilePath) ? $TemplateMap[$FilePath] : (Get-Content $FilePath)
 
     $resList += $fileContent | Where-Object { $_ -match "^module .+ '(.+.bicep)' .+$" } | ForEach-Object { (Resolve-Path (Join-Path (Split-Path $FilePath) $matches[1])).Path }
 
