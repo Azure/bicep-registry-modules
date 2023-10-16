@@ -145,7 +145,7 @@ function Set-AVMModule {
 
                 # Update the progress display.
                 [int] $percent = ($completedJobsCount / $job.ChildJobs.Count) * 100
-                Write-Progress -Activity ('Processed [{0}] files' -f $relevantTemplatePaths.Count) -Status "$percent% complete" -PercentComplete $percent
+                Write-Progress -Activity ("Processing [$completedJobsCount/{0}] files" -f $relevantTemplatePaths.Count) -Status "$percent% complete" -PercentComplete $percent
 
             } while ($completedJobsCount -lt $job.ChildJobs.Count)
 
