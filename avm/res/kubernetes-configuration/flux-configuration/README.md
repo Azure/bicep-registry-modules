@@ -26,11 +26,16 @@ The following module usage examples are retrieved from the content of the files 
 
    >**Note**: To reference the module, please use the following syntax `br/public:avm-res-kubernetesconfiguration-fluxconfiguration:1.0.0`.
 
-- [Default](#example-1-default)
-- [Max](#example-2-max)
-- [Waf-Aligned](#example-3-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
-### Example 1: _Default_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
+
+
 
 <details>
 
@@ -38,11 +43,11 @@ The following module usage examples are retrieved from the content of the files 
 
 ```bicep
 module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfiguration:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-kcfcdef'
+  name: '${uniqueString(deployment().name, location)}-test-kcfcmin'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
-    name: 'kcfcdef001'
+    name: 'kcfcmin001'
     namespace: 'flux-system'
     sourceKind: 'GitRepository'
     // Non-required parameters
@@ -80,7 +85,7 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
       "value": "<clusterName>"
     },
     "name": {
-      "value": "kcfcdef001"
+      "value": "kcfcmin001"
     },
     "namespace": {
       "value": "flux-system"
@@ -119,7 +124,10 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
 </details>
 <p>
 
-### Example 2: _Max_
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -226,7 +234,10 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
 </details>
 <p>
 
-### Example 3: _Waf-Aligned_
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-pratices of the Azure Well-Architected Framework.
+
 
 <details>
 
