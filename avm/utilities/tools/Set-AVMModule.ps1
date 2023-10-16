@@ -154,7 +154,7 @@ function Set-AVMModule {
         }
         finally {
             # In case the user cancled the process, we need to make sure to stop all running jobs
-            $job | Remove-Job -Force
+            $job | Remove-Job -Force -ErrorAction 'SilentlyContinue'
         }
     }
 }
