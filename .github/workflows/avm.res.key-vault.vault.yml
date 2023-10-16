@@ -1,4 +1,4 @@
-name: "avm.res.kubernetes-configuration.extension"
+name: "avm.res.key-vault.vault"
 
 on:
   schedule:
@@ -27,14 +27,14 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.kubernetes-configuration.extension.yml"
-      - "avm/res/kubernetes-configuration/extension/**"
+      - ".github/workflows/avm.res.key-vault.vault.yml"
+      - "avm/res/key-vault/vault/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/kubernetes-configuration/extension"
-  workflowPath: ".github/workflows/avm.res.kubernetes-configuration.extension.yml"
+  modulePath: "avm/res/key-vault/vault"
+  workflowPath: ".github/workflows/avm.res.key-vault.vault.yml"
 
 concurrency:
   group: ${{ github.workflow }}
