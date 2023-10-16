@@ -1,4 +1,4 @@
-name: 'avm.res.batch.batch-account'
+name: "avm.res.batch.batch-account"
 
 on:
   schedule:
@@ -25,16 +25,16 @@ on:
     branches:
       - main
     paths:
-      - '.github/actions/templates/avm-**'
-      - '.github/workflows/avm.template.module.yml'
-      - '.github/workflows/avm.res.batch.batch-account.yml'
-      - 'avm/res/batch/batch-account/**'
-      - 'avm/utilities/pipelines/**'
-      - '!*/**/README.md'
+      - ".github/actions/templates/avm-**"
+      - ".github/workflows/avm.template.module.yml"
+      - ".github/workflows/avm.res.batch.batch-account.yml"
+      - "avm/res/batch/batch-account/**"
+      - "avm/utilities/pipelines/**"
+      - "!*/**/README.md"
 
 env:
-  modulePath: 'avm/res/batch/batch-account'
-  workflowPath: '.github/workflows/avm.res.batch.batch-account.yml'
+  modulePath: "avm/res/batch/batch-account"
+  workflowPath: ".github/workflows/avm.res.batch.batch-account.yml"
 
 concurrency:
   group: ${{ github.workflow }}
