@@ -1,3 +1,4 @@
-This module is currently in an orphaned state and does not have a module owner assigned.
+⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
 
-No new feature development will be worked on until a new owner is found that can then lead this effort for the module.
+- Only security and bug fixes are being handled by the AVM core team at present.
+- If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
