@@ -1,6 +1,7 @@
 targetScope = 'subscription'
-metadata name = 'Using Maximum Parameters'
-metadata description = 'This instance deploys the module with the maximum set of required parameters.'
+
+metadata name = 'Using large parameter set'
+metadata description = 'This instance deploys the module with most of its features enabled.'
 
 // ========== //
 // Parameters //
@@ -35,6 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    location: location
   }
 }
 
