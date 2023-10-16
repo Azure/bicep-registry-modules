@@ -98,10 +98,23 @@ function Set-AVMModule {
         $ReadMeScriptFilePath = (Join-Path (Get-Item $PSScriptRoot).Parent.FullName 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
     }
 
-    # Using threading to speed up the process
     if ($PSCmdlet.ShouldProcess(('Building & generation of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath), "Execute")) {
-        $relevantTemplatePaths | ForEach-Object -ThrottleLimit $ThrottleLimit -Parallel {
+
+        $relevantTemplatePathsObject = @{}
+        $relevantTemplatePaths | ForEach-Object { $relevantTemplatePathsObject.$_ = @{} }
+        $sync = [System.Collections.Hashtable]::Synchronized($relevantTemplatePathsObject)
+
+        # Using threading to speed up the process
+        $jobs = $relevantTemplatePaths | ForEach-Object -ThrottleLimit $ThrottleLimit -AsJob -Parallel {
+
             $resourceTypeIdentifier = 'avm-{0}' -f ($_ -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] # avm/res/<provider>/<resourceType>
+
+            $syncCopy = $using:sync
+            $process = $syncCopy.$PSItem
+
+            # $process.Id = $_
+            $process.Activity = "Processing module [$resourceTypeIdentifier]"
+            $process.Status = "Processing"
 
             . $using:ReadMeScriptFilePath
 
@@ -124,6 +137,29 @@ function Set-AVMModule {
 
                 Set-ModuleReadMe -TemplateFilePath $readmeTemplateFilePath -CrossReferencedModuleList $using:crossReferencedModuleList
             }
+
+            # Mark process as completed
+            $process.Completed = $true
+        }
+
+        while ($jobs.State -eq 'Running') {
+            $sync.Keys | Foreach-Object {
+                # If key is not defined, ignore
+                if (-not [string]::IsNullOrEmpty($sync.$_.Keys)) {
+                    # Create parameter hashtable to splat
+                    $param = $sync.$_
+
+                    if (-not ($param.'Activity')) {
+                        throw ($param | ConvertTo-Json -Depth 3 | Out-String)
+                    }
+
+                    # Execute Write-Progress
+                    Write-Progress @param
+                }
+            }
+
+            # Wait to refresh to not overload gui
+            Start-Sleep -Seconds 1
         }
     }
 }
