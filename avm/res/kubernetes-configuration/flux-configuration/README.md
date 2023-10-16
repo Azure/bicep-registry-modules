@@ -235,7 +235,7 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
 
 ### Example 3: _WAF-aligned_
 
-This instance deploys the module in alignment with the best-pratices of the Azure Well-Architected Framework.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
