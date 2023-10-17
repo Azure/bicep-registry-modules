@@ -1,3 +1,7 @@
+metadata name = 'DNS Resolver Outbound Endpoint'
+metadata description = 'This module deploys a DNS Resolver Outbound Endpoint.'
+metadata owner = 'Azure/module-maintainers'
+
 @description('Required. Name of the Private DNS Resolver.')
 @minLength(1)
 param dnsResolverName string

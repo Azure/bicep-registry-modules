@@ -1,5 +1,6 @@
-#  `[Microsoft.Network/dnsResolvers/inboundEndpoints]`
+# DNS Resolver Inbound Endpoint `[Microsoft.Network/dnsResolvers/inboundEndpoints]`
 
+This module deploys a DNS Resolver Inbound Endpoint.
 
 ## Navigation
 

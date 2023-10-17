@@ -1,5 +1,6 @@
-#  `[Microsoft.Network/dnsResolvers/outboundEndpoints]`
+# DNS Resolver Outbound Endpoint `[Microsoft.Network/dnsResolvers/outboundEndpoints]`
 
+This module deploys a DNS Resolver Outbound Endpoint.
 
 ## Navigation
 

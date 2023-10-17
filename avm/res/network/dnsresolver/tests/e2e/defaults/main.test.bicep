@@ -60,5 +60,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
+    location: location
+
+    // Non-required parameters - Workaround for PS Rule
+    inboundEndpoints: []
+    outboundEndpoints: []
+    lock: {}
+    roleAssignments: []
   }
 }]
