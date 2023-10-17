@@ -474,7 +474,11 @@ Version of the extension for this extension, if it is "pinned" to a specific ver
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm-res-kubernetesconfiguration-fluxconfiguration:0.1.1` | Remote reference |
 
 ## Notes
 
