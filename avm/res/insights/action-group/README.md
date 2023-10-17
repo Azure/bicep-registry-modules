@@ -38,11 +38,11 @@ The following module usage examples are retrieved from the content of the files 
 
 ```bicep
 module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-iagdef'
+  name: '${uniqueString(deployment().name, location)}-test-iagmin'
   params: {
     // Required parameters
-    groupShortName: 'agiagdef001'
-    name: 'iagdef001'
+    groupShortName: 'agiagmin001'
+    name: 'iagmin001'
   }
 }
 ```
@@ -61,10 +61,10 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
   "parameters": {
     // Required parameters
     "groupShortName": {
-      "value": "agiagdef001"
+      "value": "agiagmin001"
     },
     "name": {
-      "value": "iagdef001"
+      "value": "iagmin001"
     }
   }
 }
@@ -517,9 +517,9 @@ The list of webhook receivers that are part of this action group.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the action group . |
+| `name` | string | The name of the action group. |
 | `resourceGroupName` | string | The resource group the action group was deployed into. |
-| `resourceId` | string | The resource ID of the action group . |
+| `resourceId` | string | The resource ID of the action group. |
 
 ## Cross-referenced modules
 

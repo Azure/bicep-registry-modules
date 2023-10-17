@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "12791412970664235219"
+      "templateHash": "9764314228285619989"
     },
     "name": "Action Groups",
     "description": "This module deploys an Action Group.",
@@ -284,14 +284,14 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the action group ."
+        "description": "The name of the action group."
       },
       "value": "[parameters('name')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the action group ."
+        "description": "The resource ID of the action group."
       },
       "value": "[resourceId('Microsoft.Insights/actionGroups', parameters('name'))]"
     },
