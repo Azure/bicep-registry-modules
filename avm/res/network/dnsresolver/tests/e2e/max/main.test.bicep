@@ -66,13 +66,13 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     inboundEndpoints: [
       {
-        name: '${namePrefix}-az-pdnsin-x-001'
+        name: '${namePrefix}${serviceShort}-az-pdnsin-x-001'
         subnetId: nestedDependencies.outputs.subnetResourceId_dnsIn
       }
     ]
     outboundEndpoints: [
       {
-        name: '${namePrefix}-az-pdnsout-x-001'
+        name: '${namePrefix}${serviceShort}-az-pdnsout-x-001'
         subnetId: nestedDependencies.outputs.subnetResourceId_dnsOut
       }
     ]

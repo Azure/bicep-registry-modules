@@ -134,7 +134,7 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
     // Non-required parameters
     inboundEndpoints: [
       {
-        name: 'az-pdnsin-x-001'
+        name: 'ndrmax-az-pdnsin-x-001'
         subnetId: '<subnetId>'
       }
     ]
@@ -145,7 +145,7 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
     }
     outboundEndpoints: [
       {
-        name: 'az-pdnsout-x-001'
+        name: 'ndrmax-az-pdnsout-x-001'
         subnetId: '<subnetId>'
       }
     ]
@@ -188,7 +188,7 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
     "inboundEndpoints": {
       "value": [
         {
-          "name": "az-pdnsin-x-001",
+          "name": "ndrmax-az-pdnsin-x-001",
           "subnetId": "<subnetId>"
         }
       ]
@@ -205,7 +205,7 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
     "outboundEndpoints": {
       "value": [
         {
-          "name": "az-pdnsout-x-001",
+          "name": "ndrmax-az-pdnsout-x-001",
           "subnetId": "<subnetId>"
         }
       ]
@@ -252,7 +252,7 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
     // Non-required parameters
     inboundEndpoints: [
       {
-        name: 'az-pdnsin-x-001'
+        name: 'ndrwaf-az-pdnsin-x-001'
         subnetId: '<subnetId>'
       }
     ]
@@ -263,7 +263,7 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
     }
     outboundEndpoints: [
       {
-        name: 'az-pdnsout-x-001'
+        name: 'ndrwaf-az-pdnsout-x-001'
         subnetId: '<subnetId>'
       }
     ]
@@ -306,7 +306,7 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
     "inboundEndpoints": {
       "value": [
         {
-          "name": "az-pdnsin-x-001",
+          "name": "ndrwaf-az-pdnsin-x-001",
           "subnetId": "<subnetId>"
         }
       ]
@@ -323,7 +323,7 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
     "outboundEndpoints": {
       "value": [
         {
-          "name": "az-pdnsout-x-001",
+          "name": "ndrwaf-az-pdnsout-x-001",
           "subnetId": "<subnetId>"
         }
       ]
