@@ -1,6 +1,7 @@
 targetScope = 'subscription'
-metadata name = 'Using WAF-Aligned'
-metadata description = 'This instance deploys the module with the waf-aligned set of required parameters.'
+
+metadata name = 'WAF-aligned'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
 
 // ========== //
 // Parameters //
@@ -35,6 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    location: location
   }
 }
 

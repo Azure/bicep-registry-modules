@@ -1,6 +1,8 @@
-# Private Endpoints `[Microsoft.Network/privateEndpoints]`
+# Public SSH Keys `[Microsoft.Compute/sshPublicKeys]`
 
-This module deploys a Private Endpoint.
+This module deploys a Public SSH Key.
+
+> Note: The resource does not auto-generate the key for you.
 
 ## Navigation
 
@@ -16,8 +18,7 @@ This module deploys a Private Endpoint.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Compute/sshPublicKeys` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/sshPublicKeys) |
 
 ## Usage examples
 
@@ -25,7 +26,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm-res-network-privateendpoint:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm-res-compute-sshpublickey:1.0.0`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -43,28 +44,16 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-npemin'
+module sshPublicKey 'br/public:avm-res-compute-sshpublickey:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-cspkmin'
   params: {
     // Required parameters
-    groupIds: [
-      'vault'
-    ]
-    name: 'npemin001'
-    serviceResourceId: '<serviceResourceId>'
-    subnetResourceId: '<subnetResourceId>'
+    name: 'cspkmin001'
     // Non-required parameters
-    applicationSecurityGroupResourceIds: []
-    customDnsConfigs: []
-    customNetworkInterfaceName: ''
-    ipConfigurations: []
-    location: '<location>'
-    lock: {}
-    manualPrivateLinkServiceConnections: []
-    privateDnsZoneGroupName: ''
-    privateDnsZoneResourceIds: []
-    roleAssignments: []
-    tags: {}
+    lock: '<lock>'
+    publicKey: '<publicKey>'
+    roleAssignments: '<roleAssignments>'
+    tags: '<tags>'
   }
 }
 ```
@@ -82,53 +71,21 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "groupIds": {
-      "value": [
-        "vault"
-      ]
-    },
     "name": {
-      "value": "npemin001"
-    },
-    "serviceResourceId": {
-      "value": "<serviceResourceId>"
-    },
-    "subnetResourceId": {
-      "value": "<subnetResourceId>"
+      "value": "cspkmin001"
     },
     // Non-required parameters
-    "applicationSecurityGroupResourceIds": {
-      "value": []
-    },
-    "customDnsConfigs": {
-      "value": []
-    },
-    "customNetworkInterfaceName": {
-      "value": ""
-    },
-    "ipConfigurations": {
-      "value": []
-    },
-    "location": {
-      "value": "<location>"
-    },
     "lock": {
-      "value": {}
+      "value": "<lock>"
     },
-    "manualPrivateLinkServiceConnections": {
-      "value": []
-    },
-    "privateDnsZoneGroupName": {
-      "value": ""
-    },
-    "privateDnsZoneResourceIds": {
-      "value": []
+    "publicKey": {
+      "value": "<publicKey>"
     },
     "roleAssignments": {
-      "value": []
+      "value": "<roleAssignments>"
     },
     "tags": {
-      "value": {}
+      "value": "<tags>"
     }
   }
 }
@@ -147,42 +104,19 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-npemax'
+module sshPublicKey 'br/public:avm-res-compute-sshpublickey:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-cspkmax'
   params: {
     // Required parameters
-    groupIds: [
-      'vault'
-    ]
-    name: 'npemax001'
-    serviceResourceId: '<serviceResourceId>'
-    subnetResourceId: '<subnetResourceId>'
+    name: 'sshkey-cspkmax001'
     // Non-required parameters
-    applicationSecurityGroupResourceIds: [
-      '<applicationSecurityGroupResourceId>'
-    ]
-    customDnsConfigs: []
-    customNetworkInterfaceName: 'npemax001nic'
-    ipConfigurations: [
-      {
-        name: 'myIPconfig'
-        properties: {
-          groupId: 'vault'
-          memberName: 'default'
-          privateIPAddress: '10.0.0.10'
-        }
-      }
-    ]
+    enableTelemetry: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
-      name: 'myCustomLockName'
+      name: 'lock'
     }
-    manualPrivateLinkServiceConnections: []
-    privateDnsZoneGroupName: 'default'
-    privateDnsZoneResourceIds: [
-      '<privateDNSZoneResourceId>'
-    ]
+    publicKey: '<publicKey>'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -212,43 +146,12 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "groupIds": {
-      "value": [
-        "vault"
-      ]
-    },
     "name": {
-      "value": "npemax001"
-    },
-    "serviceResourceId": {
-      "value": "<serviceResourceId>"
-    },
-    "subnetResourceId": {
-      "value": "<subnetResourceId>"
+      "value": "sshkey-cspkmax001"
     },
     // Non-required parameters
-    "applicationSecurityGroupResourceIds": {
-      "value": [
-        "<applicationSecurityGroupResourceId>"
-      ]
-    },
-    "customDnsConfigs": {
-      "value": []
-    },
-    "customNetworkInterfaceName": {
-      "value": "npemax001nic"
-    },
-    "ipConfigurations": {
-      "value": [
-        {
-          "name": "myIPconfig",
-          "properties": {
-            "groupId": "vault",
-            "memberName": "default",
-            "privateIPAddress": "10.0.0.10"
-          }
-        }
-      ]
+    "enableTelemetry": {
+      "value": true
     },
     "location": {
       "value": "<location>"
@@ -256,19 +159,11 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
     "lock": {
       "value": {
         "kind": "CanNotDelete",
-        "name": "myCustomLockName"
+        "name": "lock"
       }
     },
-    "manualPrivateLinkServiceConnections": {
-      "value": []
-    },
-    "privateDnsZoneGroupName": {
-      "value": "default"
-    },
-    "privateDnsZoneResourceIds": {
-      "value": [
-        "<privateDNSZoneResourceId>"
-      ]
+    "publicKey": {
+      "value": "<publicKey>"
     },
     "roleAssignments": {
       "value": [
@@ -295,7 +190,7 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
 
 ### Example 3: _WAF-aligned_
 
-This instance deploys the module in alignment with the best-practices of the Well-Architectured-Framework.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
@@ -303,42 +198,19 @@ This instance deploys the module in alignment with the best-practices of the Wel
 <summary>via Bicep module</summary>
 
 ```bicep
-module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-npewaf'
+module sshPublicKey 'br/public:avm-res-compute-sshpublickey:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-cspkwaf'
   params: {
     // Required parameters
-    groupIds: [
-      'vault'
-    ]
-    name: 'npewaf001'
-    serviceResourceId: '<serviceResourceId>'
-    subnetResourceId: '<subnetResourceId>'
+    name: 'sshkey-cspkwaf001'
     // Non-required parameters
-    applicationSecurityGroupResourceIds: [
-      '<applicationSecurityGroupResourceId>'
-    ]
-    customDnsConfigs: []
-    customNetworkInterfaceName: 'npewaf001nic'
-    ipConfigurations: [
-      {
-        name: 'myIPconfig'
-        properties: {
-          groupId: 'vault'
-          memberName: 'default'
-          privateIPAddress: '10.0.0.10'
-        }
-      }
-    ]
+    enableTelemetry: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
-      name: 'myCustomLockName'
+      name: 'lock'
     }
-    manualPrivateLinkServiceConnections: []
-    privateDnsZoneGroupName: 'default'
-    privateDnsZoneResourceIds: [
-      '<privateDNSZoneResourceId>'
-    ]
+    publicKey: '<publicKey>'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -368,43 +240,12 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "groupIds": {
-      "value": [
-        "vault"
-      ]
-    },
     "name": {
-      "value": "npewaf001"
-    },
-    "serviceResourceId": {
-      "value": "<serviceResourceId>"
-    },
-    "subnetResourceId": {
-      "value": "<subnetResourceId>"
+      "value": "sshkey-cspkwaf001"
     },
     // Non-required parameters
-    "applicationSecurityGroupResourceIds": {
-      "value": [
-        "<applicationSecurityGroupResourceId>"
-      ]
-    },
-    "customDnsConfigs": {
-      "value": []
-    },
-    "customNetworkInterfaceName": {
-      "value": "npewaf001nic"
-    },
-    "ipConfigurations": {
-      "value": [
-        {
-          "name": "myIPconfig",
-          "properties": {
-            "groupId": "vault",
-            "memberName": "default",
-            "privateIPAddress": "10.0.0.10"
-          }
-        }
-      ]
+    "enableTelemetry": {
+      "value": true
     },
     "location": {
       "value": "<location>"
@@ -412,19 +253,11 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
     "lock": {
       "value": {
         "kind": "CanNotDelete",
-        "name": "myCustomLockName"
+        "name": "lock"
       }
     },
-    "manualPrivateLinkServiceConnections": {
-      "value": []
-    },
-    "privateDnsZoneGroupName": {
-      "value": "default"
-    },
-    "privateDnsZoneResourceIds": {
-      "value": [
-        "<privateDNSZoneResourceId>"
-      ]
+    "publicKey": {
+      "value": "<publicKey>"
     },
     "roleAssignments": {
       "value": [
@@ -456,45 +289,18 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`groupIds`](#parameter-groupids) | array | Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to. |
-| [`name`](#parameter-name) | string | Name of the private endpoint resource to create. |
-| [`serviceResourceId`](#parameter-serviceresourceid) | string | Resource ID of the resource that needs to be connected to the network. |
-| [`subnetResourceId`](#parameter-subnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
+| [`name`](#parameter-name) | string | The name of the SSH public Key that is being created. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`applicationSecurityGroupResourceIds`](#parameter-applicationsecuritygroupresourceids) | array | Application security groups in which the private endpoint IP configuration is included. |
-| [`customDnsConfigs`](#parameter-customdnsconfigs) | array | Custom DNS configurations. |
-| [`customNetworkInterfaceName`](#parameter-customnetworkinterfacename) | string | The custom name of the network interface attached to the private endpoint. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`ipConfigurations`](#parameter-ipconfigurations) | array | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
-| [`location`](#parameter-location) | string | Location for all Resources. |
+| [`location`](#parameter-location) | string | Resource location. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`manualPrivateLinkServiceConnections`](#parameter-manualprivatelinkserviceconnections) | array | Manual PrivateLink Service Connections. |
-| [`privateDnsZoneGroupName`](#parameter-privatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
-| [`privateDnsZoneResourceIds`](#parameter-privatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+| [`publicKey`](#parameter-publickey) | string | SSH public key used to authenticate to a virtual machine through SSH. If this property is not initially provided when the resource is created, the publicKey property will be populated when generateKeyPair is called. If the public key is provided upon resource creation, the provided public key needs to be at least 2048-bit and in ssh-rsa format. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| [`tags`](#parameter-tags) | object | Tags to be applied on all resources/resource groups in this deployment. |
-
-### Parameter: `applicationSecurityGroupResourceIds`
-
-Application security groups in which the private endpoint IP configuration is included.
-- Required: No
-- Type: array
-
-### Parameter: `customDnsConfigs`
-
-Custom DNS configurations.
-- Required: No
-- Type: array
-
-### Parameter: `customNetworkInterfaceName`
-
-The custom name of the network interface attached to the private endpoint.
-- Required: No
-- Type: string
+| [`tags`](#parameter-tags) | object | Tags of the availability set resource. |
 
 ### Parameter: `enableTelemetry`
 
@@ -503,21 +309,9 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `groupIds`
-
-Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to.
-- Required: Yes
-- Type: array
-
-### Parameter: `ipConfigurations`
-
-A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.
-- Required: No
-- Type: array
-
 ### Parameter: `location`
 
-Location for all Resources.
+Resource location.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
@@ -549,29 +343,17 @@ Optional. Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `manualPrivateLinkServiceConnections`
-
-Manual PrivateLink Service Connections.
-- Required: No
-- Type: array
-
 ### Parameter: `name`
 
-Name of the private endpoint resource to create.
+The name of the SSH public Key that is being created.
 - Required: Yes
 - Type: string
 
-### Parameter: `privateDnsZoneGroupName`
+### Parameter: `publicKey`
 
-The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
+SSH public key used to authenticate to a virtual machine through SSH. If this property is not initially provided when the resource is created, the publicKey property will be populated when generateKeyPair is called. If the public key is provided upon resource creation, the provided public key needs to be at least 2048-bit and in ssh-rsa format.
 - Required: No
 - Type: string
-
-### Parameter: `privateDnsZoneResourceIds`
-
-The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
-- Required: No
-- Type: array
 
 ### Parameter: `roleAssignments`
 
@@ -641,21 +423,9 @@ Required. The name of the role to assign. If it cannot be found you can specify 
 - Required: Yes
 - Type: string
 
-### Parameter: `serviceResourceId`
-
-Resource ID of the resource that needs to be connected to the network.
-- Required: Yes
-- Type: string
-
-### Parameter: `subnetResourceId`
-
-Resource ID of the subnet where the endpoint needs to be created.
-- Required: Yes
-- Type: string
-
 ### Parameter: `tags`
 
-Tags to be applied on all resources/resource groups in this deployment.
+Tags of the availability set resource.
 - Required: No
 - Type: object
 
@@ -665,9 +435,9 @@ Tags to be applied on all resources/resource groups in this deployment.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the private endpoint. |
-| `resourceGroupName` | string | The resource group the private endpoint was deployed into. |
-| `resourceId` | string | The resource ID of the private endpoint. |
+| `name` | string | The name of the Public SSH Key. |
+| `resourceGroupName` | string | The name of the Resource Group the Public SSH Key was created in. |
+| `resourceId` | string | The resource ID of the Public SSH Key. |
 
 ## Cross-referenced modules
 

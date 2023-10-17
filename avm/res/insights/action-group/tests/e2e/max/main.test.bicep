@@ -1,21 +1,18 @@
 targetScope = 'subscription'
 
-metadata name = 'Using large parameter set'
-metadata description = 'This instance deploys the module with most of its features enabled.'
-
 // ========== //
 // Parameters //
 // ========== //
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-network.publicipaddresses-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-insights.actiongroups-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'npiamax'
+param serviceShort string = 'iagmax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -36,21 +33,6 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: location
-  }
-}
-
-// Diagnostics
-// ===========
-module diagnosticDependencies '../../../../../../../avm/utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-diagnosticDependencies'
-  params: {
-    storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
-    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: location
   }
 }
 
@@ -58,20 +40,25 @@ module diagnosticDependencies '../../../../../../../avm/utilities/e2e-template-a
 // Test Execution //
 // ============== //
 
+@batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: location
-    lock: {
-      name: 'myCustomLockName'
-      kind: 'CanNotDelete'
-    }
-    dnsSettings: null
-    ddosSettings: null
-    publicIpPrefixResourceId: null
-    publicIPAllocationMethod: 'Static'
+    groupShortName: 'ag${serviceShort}001'
+    emailReceivers: [
+      {
+        emailAddress: 'test.user@testcompany.com'
+        name: 'TestUser_-EmailAction-'
+        useCommonAlertSchema: true
+      }
+      {
+        emailAddress: 'test.user2@testcompany.com'
+        name: 'TestUser2'
+        useCommonAlertSchema: true
+      }
+    ]
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Reader'
@@ -79,27 +66,17 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         principalType: 'ServicePrincipal'
       }
     ]
-    skuName: 'Standard'
-    skuTier: 'Regional'
-    publicIPAddressVersion: 'IPv4'
-    zones: [
-      '1'
-      '2'
-      '3'
+    smsReceivers: [
+      {
+        countryCode: '1'
+        name: 'TestUser_-SMSAction-'
+        phoneNumber: '2345678901'
+      }
     ]
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
   }
 }]
