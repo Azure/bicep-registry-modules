@@ -1,21 +1,18 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
-
 // ========== //
 // Parameters //
 // ========== //
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-kubernetesconfiguration.fluxconfigurations-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-insights.actiongroups-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'kcfcwaf'
+param serviceShort string = 'iagmax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -35,10 +32,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
-    clusterName: 'dep-${namePrefix}-aks-${serviceShort}'
-    clusterExtensionName: '${namePrefix}${serviceShort}001'
-    clusterNodeResourceGroupName: 'dep-${namePrefix}-aks-${serviceShort}-rg'
-    location: location
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
 
@@ -52,32 +46,37 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    clusterName: nestedDependencies.outputs.clusterName
-    namespace: 'flux-system'
-    location: location
-    scope: 'cluster'
-    sourceKind: 'GitRepository'
-    gitRepository: {
-      repositoryRef: {
-        branch: 'main'
+    groupShortName: 'ag${serviceShort}001'
+    emailReceivers: [
+      {
+        emailAddress: 'test.user@testcompany.com'
+        name: 'TestUser_-EmailAction-'
+        useCommonAlertSchema: true
       }
-      sshKnownHosts: ''
-      syncIntervalInSeconds: 300
-      timeoutInSeconds: 180
-      url: 'https://github.com/mspnp/aks-baseline'
-    }
-    kustomizations: {
-      unified: {
-        dependsOn: []
-        force: false
-        path: './cluster-manifests'
-        prune: true
-        syncIntervalInSeconds: 300
-        timeoutInSeconds: 300
+      {
+        emailAddress: 'test.user2@testcompany.com'
+        name: 'TestUser2'
+        useCommonAlertSchema: true
       }
+    ]
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Reader'
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
+      }
+    ]
+    smsReceivers: [
+      {
+        countryCode: '1'
+        name: 'TestUser_-SMSAction-'
+        phoneNumber: '2345678901'
+      }
+    ]
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
     }
-    // Workaround for PSRule
-    bucket: null
-    configurationProtectedSettings: null
   }
 }]

@@ -71,7 +71,7 @@ function Get-ReferenceObject {
         [hashtable] $TemplateMap
     )
 
-    . (Join-Path (Get-Item $PSScriptRoot).Parent 'pipelines' 'sharedScripts' 'Get-LocallyReferencedFileList.ps1')
+    . (Join-Path (Get-Item $PSScriptRoot).Parent 'Get-LocallyReferencedFileList.ps1')
     $involvedFilePaths = Get-LocallyReferencedFileList -FilePath $ModuleTemplateFilePath -TemplateMap $TemplateMap
 
     $resultSet = @{
