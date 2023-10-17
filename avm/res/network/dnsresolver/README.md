@@ -46,10 +46,10 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-ndrmax'
+  name: '${uniqueString(deployment().name, location)}-test-ndrmin'
   params: {
     // Required parameters
-    name: 'ndrmax001'
+    name: 'ndrmin001'
     virtualNetworkId: '<virtualNetworkId>'
     // Non-required parameters
     inboundEndpoints: []
@@ -80,7 +80,7 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ndrmax001"
+      "value": "ndrmin001"
     },
     "virtualNetworkId": {
       "value": "<virtualNetworkId>"
