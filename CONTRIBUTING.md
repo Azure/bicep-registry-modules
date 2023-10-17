@@ -4,6 +4,8 @@
 
 The following instructions are created to help with the development of Bicep public registry modules.
 
+> **NOTE:** If you are looking to contribute to an [Azure Verified Module (AVM)](https://aka.ms/avm) then please visit the AVM site for specific [contribution guidance](https://aka.ms/avm/contribute).
+
 ## Prerequisite
 
 - Create a fork of the [Azure/bicep-registry-modules](https://github.com/Azure/bicep-registry-modules) repository and clone the fork to your local machine.
