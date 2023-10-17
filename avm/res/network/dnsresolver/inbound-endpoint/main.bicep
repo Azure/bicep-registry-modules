@@ -19,7 +19,7 @@ param subnetId string
 param privateIpAddress string?
 
 @description('Optional. The private IP allocation method of the inbound endpoint.')
-param privateIpAllocationMethod string?
+param privateIpAllocationMethod string = 'Dynamic'
 
 @description('Required. The name of the inbound endpoint.')
 param name string
@@ -40,7 +40,7 @@ resource dnsResolver_inboundEndpoint 'Microsoft.Network/dnsResolvers/inboundEndp
           id: subnetId
         }
         privateIpAddress: privateIpAddress
-        privateIpAllocationMethod: !empty(privateIpAllocationMethod) ? privateIpAllocationMethod : !empty(privateIpAddress) ? 'Static' : 'Dyanamic'
+        privateIpAllocationMethod: privateIpAllocationMethod
       }
     ]
   }

@@ -64,6 +64,7 @@ The private IP address of the inbound endpoint.
 The private IP allocation method of the inbound endpoint.
 - Required: No
 - Type: string
+- Default: `'Dynamic'`
 
 ### Parameter: `subnetId`
 

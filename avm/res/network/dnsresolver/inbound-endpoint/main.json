@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "13642714730709025831"
+      "templateHash": "14882473398703929554"
     },
     "name": "DNS Resolver Inbound Endpoint",
     "description": "This module deploys a DNS Resolver Inbound Endpoint.",
@@ -49,7 +49,7 @@
     },
     "privateIpAllocationMethod": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "Dynamic",
       "metadata": {
         "description": "Optional. The private IP allocation method of the inbound endpoint."
       }
@@ -81,7 +81,7 @@
               "id": "[parameters('subnetId')]"
             },
             "privateIpAddress": "[parameters('privateIpAddress')]",
-            "privateIpAllocationMethod": "[if(not(empty(parameters('privateIpAllocationMethod'))), parameters('privateIpAllocationMethod'), if(not(empty(parameters('privateIpAddress'))), 'Static', 'Dyanamic'))]"
+            "privateIpAllocationMethod": "[parameters('privateIpAllocationMethod')]"
           }
         ]
       },

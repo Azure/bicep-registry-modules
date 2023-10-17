@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "17258011947916243803"
+      "templateHash": "5100668072271627034"
     },
     "name": "DNS Resolvers",
     "description": "This module deploys a DNS Resolver.",
@@ -277,7 +277,7 @@
             "value": "[parameters('name')]"
           },
           "subnetId": {
-            "value": "[tryGet(coalesce(parameters('inboundEndpoints'), createArray())[copyIndex()], 'subnetId')]"
+            "value": "[coalesce(parameters('inboundEndpoints'), createArray())[copyIndex()].subnetId]"
           },
           "privateIpAddress": {
             "value": "[tryGet(coalesce(parameters('inboundEndpoints'), createArray())[copyIndex()], 'privateIpAddress')]"
@@ -294,7 +294,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.22.6.54827",
-              "templateHash": "13642714730709025831"
+              "templateHash": "14882473398703929554"
             },
             "name": "DNS Resolver Inbound Endpoint",
             "description": "This module deploys a DNS Resolver Inbound Endpoint.",
@@ -337,7 +337,7 @@
             },
             "privateIpAllocationMethod": {
               "type": "string",
-              "nullable": true,
+              "defaultValue": "Dynamic",
               "metadata": {
                 "description": "Optional. The private IP allocation method of the inbound endpoint."
               }
@@ -369,7 +369,7 @@
                       "id": "[parameters('subnetId')]"
                     },
                     "privateIpAddress": "[parameters('privateIpAddress')]",
-                    "privateIpAllocationMethod": "[if(not(empty(parameters('privateIpAllocationMethod'))), parameters('privateIpAllocationMethod'), if(not(empty(parameters('privateIpAddress'))), 'Static', 'Dyanamic'))]"
+                    "privateIpAllocationMethod": "[parameters('privateIpAllocationMethod')]"
                   }
                 ]
               },
@@ -434,7 +434,7 @@
             "value": "[parameters('name')]"
           },
           "subnetId": {
-            "value": "[tryGet(coalesce(parameters('outboundEndpoints'), createArray())[copyIndex()], 'subnetId')]"
+            "value": "[coalesce(parameters('outboundEndpoints'), createArray())[copyIndex()].subnetId]"
           }
         },
         "template": {
