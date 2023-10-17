@@ -323,7 +323,7 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
 | [`azureFunctionReceivers`](#parameter-azurefunctionreceivers) | array | The list of function receivers that are part of this action group. |
 | [`emailReceivers`](#parameter-emailreceivers) | array | The list of email receivers that are part of this action group. |
 | [`enabled`](#parameter-enabled) | bool | Indicates whether this action group is enabled. If an action group is not enabled, then none of its receivers will receive communications. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`itsmReceivers`](#parameter-itsmreceivers) | array | The list of ITSM receivers that are part of this action group. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`logicAppReceivers`](#parameter-logicappreceivers) | array | The list of logic app receivers that are part of this action group. |
@@ -375,9 +375,9 @@ Indicates whether this action group is enabled. If an action group is not enable
 - Type: bool
 - Default: `True`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
