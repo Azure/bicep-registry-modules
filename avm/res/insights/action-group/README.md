@@ -1,8 +1,6 @@
-# Public SSH Keys `[Microsoft.Compute/sshPublicKeys]`
+# Action Groups `[Microsoft.Insights/actionGroups]`
 
-This module deploys a Public SSH Key.
-
-> Note: The resource does not auto-generate the key for you.
+This module deploys an Action Group.
 
 ## Navigation
 
@@ -16,9 +14,8 @@ This module deploys a Public SSH Key.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/sshPublicKeys` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/sshPublicKeys) |
+| `Microsoft.Insights/actionGroups` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-01-01/actionGroups) |
 
 ## Usage examples
 
@@ -26,34 +23,25 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm-res-compute-sshpublickey:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm-res-insights-actiongroup:1.0.0`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Defaults](#example-1-defaults)
+- [Max](#example-2-max)
+- [Waf-Aligned](#example-3-waf-aligned)
 
-### Example 1: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
-
-
+### Example 1: _Defaults_
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module sshPublicKey 'br/public:avm-res-compute-sshpublickey:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-cspkmin'
+module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-iagmin'
   params: {
     // Required parameters
-    name: 'cspkmin001'
-    // Non-required parameters
-    lock: '<lock>'
-    publicKey: '<publicKey>'
-    roleAssignments: '<roleAssignments>'
-    tags: '<tags>'
+    groupShortName: 'agiagmin001'
+    name: 'iagmin001'
   }
 }
 ```
@@ -71,21 +59,11 @@ module sshPublicKey 'br/public:avm-res-compute-sshpublickey:1.0.0' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "groupShortName": {
+      "value": "agiagmin001"
+    },
     "name": {
-      "value": "cspkmin001"
-    },
-    // Non-required parameters
-    "lock": {
-      "value": "<lock>"
-    },
-    "publicKey": {
-      "value": "<publicKey>"
-    },
-    "roleAssignments": {
-      "value": "<roleAssignments>"
-    },
-    "tags": {
-      "value": "<tags>"
+      "value": "iagmin001"
     }
   }
 }
@@ -94,34 +72,44 @@ module sshPublicKey 'br/public:avm-res-compute-sshpublickey:1.0.0' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
-
-This instance deploys the module with most of its features enabled.
-
+### Example 2: _Max_
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module sshPublicKey 'br/public:avm-res-compute-sshpublickey:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-cspkmax'
+module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-iagmax'
   params: {
     // Required parameters
-    name: 'sshkey-cspkmax001'
+    groupShortName: 'agiagmax001'
+    name: 'iagmax001'
     // Non-required parameters
-    enableTelemetry: true
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'lock'
-    }
-    publicKey: '<publicKey>'
+    emailReceivers: [
+      {
+        emailAddress: 'test.user@testcompany.com'
+        name: 'TestUser_-EmailAction-'
+        useCommonAlertSchema: true
+      }
+      {
+        emailAddress: 'test.user2@testcompany.com'
+        name: 'TestUser2'
+        useCommonAlertSchema: true
+      }
+    ]
     roleAssignments: [
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    smsReceivers: [
+      {
+        countryCode: '1'
+        name: 'TestUser_-SMSAction-'
+        phoneNumber: '2345678901'
       }
     ]
     tags: {
@@ -146,24 +134,26 @@ module sshPublicKey 'br/public:avm-res-compute-sshpublickey:1.0.0' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "groupShortName": {
+      "value": "agiagmax001"
+    },
     "name": {
-      "value": "sshkey-cspkmax001"
+      "value": "iagmax001"
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": true
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "lock"
-      }
-    },
-    "publicKey": {
-      "value": "<publicKey>"
+    "emailReceivers": {
+      "value": [
+        {
+          "emailAddress": "test.user@testcompany.com",
+          "name": "TestUser_-EmailAction-",
+          "useCommonAlertSchema": true
+        },
+        {
+          "emailAddress": "test.user2@testcompany.com",
+          "name": "TestUser2",
+          "useCommonAlertSchema": true
+        }
+      ]
     },
     "roleAssignments": {
       "value": [
@@ -171,6 +161,15 @@ module sshPublicKey 'br/public:avm-res-compute-sshpublickey:1.0.0' = {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Reader"
+        }
+      ]
+    },
+    "smsReceivers": {
+      "value": [
+        {
+          "countryCode": "1",
+          "name": "TestUser_-SMSAction-",
+          "phoneNumber": "2345678901"
         }
       ]
     },
@@ -188,34 +187,44 @@ module sshPublicKey 'br/public:avm-res-compute-sshpublickey:1.0.0' = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
+### Example 3: _Waf-Aligned_
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module sshPublicKey 'br/public:avm-res-compute-sshpublickey:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-cspkwaf'
+module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-iagwaf'
   params: {
     // Required parameters
-    name: 'sshkey-cspkwaf001'
+    groupShortName: 'agiagwaf001'
+    name: 'iagwaf001'
     // Non-required parameters
-    enableTelemetry: true
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'lock'
-    }
-    publicKey: '<publicKey>'
+    emailReceivers: [
+      {
+        emailAddress: 'test.user@testcompany.com'
+        name: 'TestUser_-EmailAction-'
+        useCommonAlertSchema: true
+      }
+      {
+        emailAddress: 'test.user2@testcompany.com'
+        name: 'TestUser2'
+        useCommonAlertSchema: true
+      }
+    ]
     roleAssignments: [
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    smsReceivers: [
+      {
+        countryCode: '1'
+        name: 'TestUser_-SMSAction-'
+        phoneNumber: '2345678901'
       }
     ]
     tags: {
@@ -240,24 +249,26 @@ module sshPublicKey 'br/public:avm-res-compute-sshpublickey:1.0.0' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "groupShortName": {
+      "value": "agiagwaf001"
+    },
     "name": {
-      "value": "sshkey-cspkwaf001"
+      "value": "iagwaf001"
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": true
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "lock"
-      }
-    },
-    "publicKey": {
-      "value": "<publicKey>"
+    "emailReceivers": {
+      "value": [
+        {
+          "emailAddress": "test.user@testcompany.com",
+          "name": "TestUser_-EmailAction-",
+          "useCommonAlertSchema": true
+        },
+        {
+          "emailAddress": "test.user2@testcompany.com",
+          "name": "TestUser2",
+          "useCommonAlertSchema": true
+        }
+      ]
     },
     "roleAssignments": {
       "value": [
@@ -265,6 +276,15 @@ module sshPublicKey 'br/public:avm-res-compute-sshpublickey:1.0.0' = {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Reader"
+        }
+      ]
+    },
+    "smsReceivers": {
+      "value": [
+        {
+          "countryCode": "1",
+          "name": "TestUser_-SMSAction-",
+          "phoneNumber": "2345678901"
         }
       ]
     },
@@ -289,18 +309,70 @@ module sshPublicKey 'br/public:avm-res-compute-sshpublickey:1.0.0' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the SSH public Key that is being created. |
+| [`groupShortName`](#parameter-groupshortname) | string | The short name of the action group. |
+| [`name`](#parameter-name) | string | The name of the action group. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`armRoleReceivers`](#parameter-armrolereceivers) | array | The list of ARM role receivers that are part of this action group. Roles are Azure RBAC roles and only built-in roles are supported. |
+| [`automationRunbookReceivers`](#parameter-automationrunbookreceivers) | array | The list of AutomationRunbook receivers that are part of this action group. |
+| [`azureAppPushReceivers`](#parameter-azureapppushreceivers) | array | The list of AzureAppPush receivers that are part of this action group. |
+| [`azureFunctionReceivers`](#parameter-azurefunctionreceivers) | array | The list of function receivers that are part of this action group. |
+| [`emailReceivers`](#parameter-emailreceivers) | array | The list of email receivers that are part of this action group. |
+| [`enabled`](#parameter-enabled) | bool | Indicates whether this action group is enabled. If an action group is not enabled, then none of its receivers will receive communications. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`location`](#parameter-location) | string | Resource location. |
-| [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`publicKey`](#parameter-publickey) | string | SSH public key used to authenticate to a virtual machine through SSH. If this property is not initially provided when the resource is created, the publicKey property will be populated when generateKeyPair is called. If the public key is provided upon resource creation, the provided public key needs to be at least 2048-bit and in ssh-rsa format. |
+| [`itsmReceivers`](#parameter-itsmreceivers) | array | The list of ITSM receivers that are part of this action group. |
+| [`location`](#parameter-location) | string | Location for all resources. |
+| [`logicAppReceivers`](#parameter-logicappreceivers) | array | The list of logic app receivers that are part of this action group. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| [`tags`](#parameter-tags) | object | Tags of the availability set resource. |
+| [`smsReceivers`](#parameter-smsreceivers) | array | The list of SMS receivers that are part of this action group. |
+| [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`voiceReceivers`](#parameter-voicereceivers) | array | The list of voice receivers that are part of this action group. |
+| [`webhookReceivers`](#parameter-webhookreceivers) | array | The list of webhook receivers that are part of this action group. |
+
+### Parameter: `armRoleReceivers`
+
+The list of ARM role receivers that are part of this action group. Roles are Azure RBAC roles and only built-in roles are supported.
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `automationRunbookReceivers`
+
+The list of AutomationRunbook receivers that are part of this action group.
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `azureAppPushReceivers`
+
+The list of AzureAppPush receivers that are part of this action group.
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `azureFunctionReceivers`
+
+The list of function receivers that are part of this action group.
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `emailReceivers`
+
+The list of email receivers that are part of this action group.
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `enabled`
+
+Indicates whether this action group is enabled. If an action group is not enabled, then none of its receivers will receive communications.
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `enableTelemetry`
 
@@ -309,50 +381,37 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `location`
+### Parameter: `groupShortName`
 
-Resource location.
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
-
-### Parameter: `lock`
-
-The lock settings of the service.
-- Required: No
-- Type: object
-
-
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`kind`](#parameter-lockkind) | No | string | Optional. Specify the type of lock. |
-| [`name`](#parameter-lockname) | No | string | Optional. Specify the name of lock. |
-
-### Parameter: `lock.kind`
-
-Optional. Specify the type of lock.
-
-- Required: No
-- Type: string
-- Allowed: `[CanNotDelete, None, ReadOnly]`
-
-### Parameter: `lock.name`
-
-Optional. Specify the name of lock.
-
-- Required: No
-- Type: string
-
-### Parameter: `name`
-
-The name of the SSH public Key that is being created.
+The short name of the action group.
 - Required: Yes
 - Type: string
 
-### Parameter: `publicKey`
+### Parameter: `itsmReceivers`
 
-SSH public key used to authenticate to a virtual machine through SSH. If this property is not initially provided when the resource is created, the publicKey property will be populated when generateKeyPair is called. If the public key is provided upon resource creation, the provided public key needs to be at least 2048-bit and in ssh-rsa format.
+The list of ITSM receivers that are part of this action group.
 - Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `location`
+
+Location for all resources.
+- Required: No
+- Type: string
+- Default: `'global'`
+
+### Parameter: `logicAppReceivers`
+
+The list of logic app receivers that are part of this action group.
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `name`
+
+The name of the action group.
+- Required: Yes
 - Type: string
 
 ### Parameter: `roleAssignments`
@@ -423,11 +482,33 @@ Required. The name of the role to assign. If it cannot be found you can specify 
 - Required: Yes
 - Type: string
 
+### Parameter: `smsReceivers`
+
+The list of SMS receivers that are part of this action group.
+- Required: No
+- Type: array
+- Default: `[]`
+
 ### Parameter: `tags`
 
-Tags of the availability set resource.
+Tags of the resource.
 - Required: No
 - Type: object
+- Default: `{object}`
+
+### Parameter: `voiceReceivers`
+
+The list of voice receivers that are part of this action group.
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `webhookReceivers`
+
+The list of webhook receivers that are part of this action group.
+- Required: No
+- Type: array
+- Default: `[]`
 
 
 ## Outputs
@@ -435,9 +516,9 @@ Tags of the availability set resource.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the Public SSH Key. |
-| `resourceGroupName` | string | The name of the Resource Group the Public SSH Key was created in. |
-| `resourceId` | string | The resource ID of the Public SSH Key. |
+| `name` | string | The name of the action group. |
+| `resourceGroupName` | string | The resource group the action group was deployed into. |
+| `resourceId` | string | The resource ID of the action group. |
 
 ## Cross-referenced modules
 
