@@ -117,10 +117,10 @@ resource actionGroup_roleAssignments 'Microsoft.Authorization/roleAssignments@20
 @description('The resource group the action group was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
-@description('The name of the action group .')
+@description('The name of the action group.')
 output name string = actionGroup.name
 
-@description('The resource ID of the action group .')
+@description('The resource ID of the action group.')
 output resourceId string = actionGroup.id
 
 @description('The location the resource was deployed into.')
