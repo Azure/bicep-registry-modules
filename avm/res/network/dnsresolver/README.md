@@ -40,7 +40,7 @@ The following module usage examples are retrieved from the content of the files 
 <summary>via Bicep module</summary>
 
 ```bicep
-module dnsResolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
+module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-ndrmax'
   params: {
     // Required parameters
@@ -97,7 +97,7 @@ module dnsResolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module dnsResolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
+module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-ndrmax'
   params: {
     // Required parameters
@@ -212,7 +212,7 @@ module dnsResolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module dnsResolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
+module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-ndrwaf'
   params: {
     // Required parameters
