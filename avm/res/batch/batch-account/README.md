@@ -24,11 +24,10 @@ This module deploys a Batch Account.
 ## Usage examples
 
 The following section provides usage examples for the module, which were used to validate and deploy the module successfully. For a full reference, please review the module's test folder in its repository.
-   >**Note**: The name of each example is based on the name of the file from which it is taken.
 
-   >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
+>**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
-   >**Note**: To reference the module, please use the following syntax `br/public:avm-res-batch-batchaccount:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm-res-batch-batchaccount:1.0.0`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using Customer-Managed-Keys with User-Assigned identity](#example-2-using-customer-managed-keys-with-user-assigned-identity)
@@ -443,7 +442,7 @@ module batchAccount 'br/public:avm-res-batch-batchaccount:1.0.0' = {
 
 ### Example 4: _WAF-aligned_
 
-This instance deploys the module in alignment with the best-pratices of the Well-Architectured-Framework.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
