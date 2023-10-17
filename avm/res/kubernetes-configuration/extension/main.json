@@ -56,7 +56,7 @@
     "extensionType": {
       "type": "string",
       "metadata": {
-        "description": "Required. Type of the Extension, of which this resource is an instance of. It must be one of the Extension Types registered with Microsoft.KubernetesConfiguration by the Extension publisher."
+        "description": "Required. Type of the extension, of which this resource is an instance of. It must be one of the Extension Types registered with Microsoft.KubernetesConfiguration by the extension publisher."
       }
     },
     "releaseTrain": {
