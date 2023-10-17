@@ -20,18 +20,23 @@ This module deploys a Kubernetes Configuration Extension.
 
 ## Usage examples
 
-The following module usage examples are retrieved from the content of the files hosted in the module's `tests` folder.
+The following section provides usage examples for the module, which were used to validate and deploy the module successfully. For a full reference, please review the module's test folder in its repository.
    >**Note**: The name of each example is based on the name of the file from which it is taken.
 
    >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
    >**Note**: To reference the module, please use the following syntax `br/public:avm-res-kubernetesconfiguration-extension:1.0.0`.
 
-- [Defaults](#example-1-defaults)
-- [Max](#example-2-max)
-- [Waf-Aligned](#example-3-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
-### Example 1: _Defaults_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
+
+
 
 <details>
 
@@ -112,7 +117,10 @@ module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
 </details>
 <p>
 
-### Example 2: _Max_
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -233,7 +241,10 @@ module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
 </details>
 <p>
 
-### Example 3: _Waf-Aligned_
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
