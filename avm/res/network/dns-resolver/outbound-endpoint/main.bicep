@@ -1,0 +1,40 @@
+@description('Required. Name of the Private DNS Resolver.')
+@minLength(1)
+param dnsResolverName string
+
+@description('Optional. Location for all resources.')
+param location string = resourceGroup().location
+
+@description('Optional. Tags of the resource.')
+param tags object?
+
+@description('Required. The subnet ID of the inbound endpoint.')
+param subnetId string
+
+@description('Required. The name of the inbound endpoint.')
+param name string
+
+resource dnsResolver 'Microsoft.Network/dnsResolvers@2022-07-01' existing = {
+  name: dnsResolverName
+}
+
+resource dnsResolver_outboundEndpoint 'Microsoft.Network/dnsResolvers/outboundEndpoints@2022-07-01' = {
+  name: name
+  parent: dnsResolver
+  location: location
+  tags: tags
+  properties: {
+    subnet: {
+      id: subnetId
+    }
+  }
+}
+
+@description('The name of the resource.')
+output name string = dnsResolver_outboundEndpoint.name
+
+@description('The ID of the resource.')
+output resourceId string = dnsResolver_outboundEndpoint.id
+
+@description('The resource group of the resource.')
+output resourceGroupName string = resourceGroup().name
