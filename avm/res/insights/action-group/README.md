@@ -1,4 +1,4 @@
-# Action Groups `[microsoft.insights/actionGroups]`
+# Action Groups `[Microsoft.Insights/actionGroups]`
 
 This module deploys an Action Group.
 
@@ -19,12 +19,11 @@ This module deploys an Action Group.
 
 ## Usage examples
 
-The following module usage examples are retrieved from the content of the files hosted in the module's `tests` folder.
-   >**Note**: The name of each example is based on the name of the file from which it is taken.
+The following section provides usage examples for the module, which were used to validate and deploy the module successfully. For a full reference, please review the module's test folder in its repository.
 
-   >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
+>**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
-   >**Note**: To reference the module, please use the following syntax `br/public:avm-res-insights-actiongroup:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm-res-insights-actiongroup:1.0.0`.
 
 - [Defaults](#example-1-defaults)
 - [Max](#example-2-max)
