@@ -455,8 +455,11 @@ Mandatory. The readme file content array to update
 .PARAMETER SectionStartIdentifier
 Optional. The identifier of the 'outputs' section. Defaults to '## Cross-referenced modules'
 
+.PARAMETER CrossReferencedModuleList
+Required. The Cross Module References to consider when refreshing the readme.
+
 .EXAMPLE
-Set-CrossReferencesSection -ModuleRoot 'C:/key-vault/vault' -FullModuleIdentifier 'key-vault/vault' -TemplateFileContent @{ resource = @{}; ... } -ReadMeFileContent @('# Title', '', '## Section 1', ...)
+Set-CrossReferencesSection -ModuleRoot 'C:/key-vault/vault' -FullModuleIdentifier 'key-vault/vault' -TemplateFileContent @{ resource = @{}; ... } -ReadMeFileContent @('# Title', '', '## Section 1', ...) -CrossReferencedModuleList @{}
 Update the given readme file's 'Cross-referenced modules' section based on the given template file content
 #>
 function Set-CrossReferencesSection {
@@ -475,11 +478,12 @@ function Set-CrossReferencesSection {
         [Parameter(Mandatory)]
         [object[]] $ReadMeFileContent,
 
+        [Parameter(Mandatory)]
+        [hashtable] $CrossReferencedModuleList,
+
         [Parameter(Mandatory = $false)]
         [string] $SectionStartIdentifier = '## Cross-referenced modules'
     )
-
-    . (Join-Path $PSScriptRoot  'helper' 'Get-CrossReferencedModuleList.ps1')
 
     # Process content
     $SectionContent = [System.Collections.ArrayList]@(
@@ -489,7 +493,7 @@ function Set-CrossReferencesSection {
         '| :-- | :-- |'
     )
 
-    $dependencies = (Get-CrossReferencedModuleList)[$FullModuleIdentifier]
+    $dependencies = $CrossReferencedModuleList[$FullModuleIdentifier]
 
     if ($dependencies.Keys -contains 'localPathReferences' -and $dependencies['localPathReferences']) {
         foreach ($reference in ($dependencies['localPathReferences'] | Sort-Object)) {
@@ -1108,11 +1112,10 @@ function Set-UsageExamplesSection {
     # Process content
     $SectionContent = [System.Collections.ArrayList]@(
         "The following section provides usage examples for the module, which were used to validate and deploy the module successfully. For a full reference, please review the module's test folder in its repository.",
-        '   >**Note**: The name of each example is based on the name of the file from which it is taken.',
         '',
-        '   >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.',
+        '>**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.',
         '',
-        ('   >**Note**: To reference the module, please use the following syntax `br/public:{0}:1.0.0`.' -f $brLink),
+        ('>**Note**: To reference the module, please use the following syntax `br/public:{0}:1.0.0`.' -f $brLink),
         ''
     )
 
@@ -1220,7 +1223,7 @@ function Set-UsageExamplesSection {
             $rawBicepExampleString = $rawBicepExampleString -replace '\$\{serviceShort\}', $serviceShort
             $rawBicepExampleString = $rawBicepExampleString -replace '\$\{namePrefix\}[-|\.|_]?', '' # Replacing with empty to not expose prefix and avoid potential deployment conflicts
             $rawBicepExampleString = $rawBicepExampleString -replace '(?m):\s*location\s*$', ': ''<location>'''
-            $rawBicepExampleString = $rawBicepExampleString -replace "-\$\{iteration\}", ''
+            $rawBicepExampleString = $rawBicepExampleString -replace '-\$\{iteration\}', ''
 
             # [3/6] Format header, remove scope property & any empty line
             $rawBicepExample = $rawBicepExampleString -split '\n'
@@ -1536,7 +1539,7 @@ function Set-UsageExamplesSection {
 
     foreach ($rawHeader in $usageExampleSectionHeaders) {
         $navigationHeader = (($rawHeader.header -replace '<\/?.+?>|[^A-Za-z0-9\s-]').Trim() -replace '\s+', '-').ToLower() # Remove any html and non-identifer elements
-        $SectionContent += "- [{0}](#{1})" -f $rawHeader.title, $navigationHeader
+        $SectionContent += '- [{0}](#{1})' -f $rawHeader.title, $navigationHeader
     }
     $SectionContent += ''
 
@@ -1618,8 +1621,7 @@ function Set-TableOfContent {
 Initialize the readme file
 
 .DESCRIPTION
-If no readme file exists, the initial content is generated (e.g., the skeleton of the section headers).
-If a readme file does exist, its title and description are updated with whatever is documented as metadata in the template file.
+Create the initial skeleton of the section headers, name & description.
 
 .PARAMETER ReadMeFilePath
 Required. The path to the readme file to initialize.
@@ -1650,59 +1652,40 @@ function Initialize-ReadMe {
     )
 
     . (Join-Path $PSScriptRoot 'helper' 'Get-SpecsAlignedResourceName.ps1')
+    . (Join-Path $PSScriptRoot 'Get-NestedResourceList.ps1')
 
     $moduleName = $TemplateFileContent.metadata.name
     $moduleDescription = $TemplateFileContent.metadata.description
     $formattedResourceType = Get-SpecsAlignedResourceName -ResourceIdentifier $FullModuleIdentifier
+    $hasTests = (Get-ChildItem -Path (Split-Path $ReadMeFilePath) -Recurse -Filter 'main.test.bicep' -File -Force).count -gt 0
 
-    if (-not (Test-Path $ReadMeFilePath) -or ([String]::IsNullOrEmpty((Get-Content $ReadMeFilePath -Raw)))) {
-
-        $hasTests = (Get-ChildItem -Path (Split-Path $ReadMeFilePath) -Recurse -Include 'main.test.*').count -gt 0
-
-        $initialContent = @(
-            "# $moduleName ``[$formattedResourceType]``",
-            '',
-            $moduleDescription,
-            ''
-            '## Resource Types',
-            '',
-            ($hasTests ? '## Usage examples' : $null),
-            ($hasTests ? '' : $null),
-            '## Parameters',
-            '',
-            '## Outputs',
-            '',
-            '## Cross-referenced modules'
-        ) | Where-Object { $null -ne $_ } # Filter null values
-        $readMeFileContent = $initialContent
+    $inTemplateResourceType = (Get-NestedResourceList $TemplateFileContent).type | Select-Object -Unique | Where-Object {
+        $_ -match "^$formattedResourceType$"
     }
-    else {
-        $readMeFileContent = Get-Content -Path $ReadMeFilePath -Encoding 'utf8'
-        $readMeFileContent[0] = "# $moduleName ``[$formattedResourceType]``"
 
-        # We want to inject the description right below the header and before the [Resource Types] section
-
-        # Find start- and end-index of description section
-        $startIndex = 1 # One after the readme header
-        $endIndex = $startIndex
-
-        while (-not ($endIndex -ge $readMeFileContent.Count - 1) -and -not $readMeFileContent[$endIndex].StartsWith('#')) {
-            $endIndex++
-        }
-
-        # Build result
-        $startContent = @(
-            $readMeFileContent[0],
-            ''
-        )
-        $newContent = @(
-            $moduleDescription,
-            ''
-        )
-        $endContent = $readMeFileContent[$endIndex..($readMeFileContent.Count - 1)]
-
-        $readMeFileContent = (($startContent + $newContent + $endContent) | Out-String).TrimEnd().Replace("`r", '').Split("`n")
+    if (-not $inTemplateResourceType) {
+        Write-Warning "No resource type like [$formattedResourceType] found in template. Falling back to it as identifier."
+        $inTemplateResourceType = $formattedResourceType
     }
+
+    $initialContent = @(
+        "# $moduleName ``[$inTemplateResourceType]``",
+        '',
+        $moduleDescription,
+        ''
+        '## Resource Types',
+        ''
+        ($hasTests ? '## Usage examples' : $null),
+        ($hasTests ? '' : $null),
+        '## Parameters',
+        '',
+        '## Outputs',
+        '',
+        '## Cross-referenced modules',
+        '',
+        '## Notes'
+    ) | Where-Object { $null -ne $_ } # Filter null values
+    $readMeFileContent = $initialContent
 
     return $readMeFileContent
 }
@@ -1729,6 +1712,9 @@ Optional. The path to the readme to update. If not provided assumes a 'README.md
 .PARAMETER SectionsToRefresh
 Optional. The sections to update. By default it refreshes all that are supported.
 Currently supports: 'Resource Types', 'Parameters', 'Outputs', 'Template references'
+
+.PARAMETER CrossReferencedModuleList
+Optional. Cross Module References to consider when refreshing the readme. Can be provided to speed up the generation. If not provided, is fetched by this script.
 
 .EXAMPLE
 Set-ModuleReadMe -TemplateFilePath 'C:\main.bicep'
@@ -1768,6 +1754,9 @@ function Set-ModuleReadMe {
 
         [Parameter(Mandatory = $false)]
         [string] $ReadMeFilePath = (Join-Path (Split-Path $TemplateFilePath -Parent) 'README.md'),
+
+        [Parameter(Mandatory = $false)]
+        [hashtable] $CrossReferencedModuleList = @{},
 
         [Parameter(Mandatory = $false)]
         [ValidateSet(
@@ -1823,6 +1812,33 @@ function Set-ModuleReadMe {
         $fullModuleIdentifier = $fullModuleIdentifier.split($customModuleSeparator)[0]
     }
 
+    # ===================== #
+    #   Preparation steps   #
+    # ===================== #
+    # Read original readme, if any. Then delete it to build from scratch
+    if ((Test-Path $ReadMeFilePath) -and -not ([String]::IsNullOrEmpty((Get-Content $ReadMeFilePath -Raw)))) {
+        $readMeFileContent = Get-Content -Path $ReadMeFilePath -Encoding 'utf8'
+        # Delete original readme
+        if ($PSCmdlet.ShouldProcess("File in path [$ReadMeFilePath]", 'Delete')) {
+            $null = Remove-Item $ReadMeFilePath -Force
+        }
+    }
+    # Make sure we preserve any manual notes a user might have added in the corresponding section
+    if ($match = $readMeFileContent | Select-String -Pattern '## Notes') {
+        $startIndex = $match.LineNumber
+
+        $endIndex = $startIndex + 1
+
+        while (-not (($endIndex + 1) -gt $readMeFileContent.count) -and $readMeFileContent[($endIndex + 1)] -notlike '## *') {
+            $endIndex++
+        }
+
+        $notes = $readMeFileContent[($startIndex - 1)..$endIndex]
+    }
+    else {
+        $notes = @()
+    }
+
     # Initialize readme
     $inputObject = @{
         ReadMeFilePath       = $ReadMeFilePath
@@ -1831,7 +1847,9 @@ function Set-ModuleReadMe {
     }
     $readMeFileContent = Initialize-ReadMe @inputObject
 
-    # Set content
+    # =============== #
+    #   Set content   #
+    # =============== #
     if ($SectionsToRefresh -contains 'Resource Types') {
         # Handle [Resource Types] section
         # ===============================
@@ -1842,7 +1860,7 @@ function Set-ModuleReadMe {
         $readMeFileContent = Set-ResourceTypesSection @inputObject
     }
 
-    $hasTests = (Get-ChildItem -Path $moduleRoot -Recurse -Include 'main.test.*').count -gt 0
+    $hasTests = (Get-ChildItem -Path $moduleRoot -Recurse -Filter 'main.test.bicep' -File -Force).count -gt 0
     if ($SectionsToRefresh -contains 'Usage examples' -and $hasTests) {
         # Handle [Usage examples] section
         # ===================================
@@ -1879,13 +1897,25 @@ function Set-ModuleReadMe {
     if ($SectionsToRefresh -contains 'CrossReferences') {
         # Handle [CrossReferences] section
         # ========================
+        if ($CrossReferencedModuleList.Count -eq 0) {
+            . (Join-Path $PSScriptRoot  'helper' 'Get-CrossReferencedModuleList.ps1')
+            $CrossReferencedModuleList = Get-CrossReferencedModuleList
+        }
         $inputObject = @{
-            ModuleRoot           = $ModuleRoot
-            FullModuleIdentifier = $fullModuleIdentifier
-            ReadMeFileContent    = $readMeFileContent
-            TemplateFileContent  = $templateFileContent
+            ModuleRoot                = $ModuleRoot
+            FullModuleIdentifier      = $fullModuleIdentifier
+            ReadMeFileContent         = $readMeFileContent
+            TemplateFileContent       = $templateFileContent
+            CrossReferencedModuleList = $CrossReferencedModuleList
         }
         $readMeFileContent = Set-CrossReferencesSection @inputObject
+    }
+
+    # Handle [Notes] section
+    # ========================
+    if ($notes) {
+        $readMeFileContent += @( '' )
+        $readMeFileContent += $notes
     }
 
     if ($SectionsToRefresh -contains 'Navigation') {
