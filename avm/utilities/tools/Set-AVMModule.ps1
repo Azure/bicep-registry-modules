@@ -83,7 +83,7 @@ function Set-AVMModule {
     # Build up module file & folder structure if not yet existing. Should only run if an actual module path was provided (and not any of their parent paths)
     if (-not $SkipFileAndFolderSetup -and ((($resolvedPath -split '\bavm\b')[1].Trim('\,/') -split '[\/|\\]').Count -gt 2)) {
         if ($PSCmdlet.ShouldProcess("File & folder structure for path [$resolvedPath]", "Setup")) {
-            Set-ModuleFileAndFolderSetup -FullresolvedPath $resolvedPath
+            Set-ModuleFileAndFolderSetup -FullModuleFolderPath $resolvedPath
         }
     }
 
