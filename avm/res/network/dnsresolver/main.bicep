@@ -110,7 +110,7 @@ module dnsResolver_inboundEndpoints 'inbound-endpoint/main.bicep' = [for (inboun
 }]
 
 module dnsResolver_outboundEndpoints 'outbound-endpoint/main.bicep' = [for (outboundEndpoint, index) in (outboundEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-dnsResolver-inbound-${index}'
+  name: '${uniqueString(deployment().name, location)}-dnsResolver-outbound-${index}'
   params: {
     name: outboundEndpoint.name
     tags: outboundEndpoint.?tags ?? tags
