@@ -19,7 +19,7 @@ param roleAssignments roleAssignmentType
 param tags object?
 
 @description('Required. ResourceId of the virtual network to attach the Private DNS Resolver to.')
-param virtualNetworkId string
+param virtualNetworkResourceId string
 
 @description('Optional. Outbound Endpoints for Private DNS Resolver.')
 param outboundEndpoints array?
@@ -67,7 +67,7 @@ resource dnsResolver 'Microsoft.Network/dnsResolvers@2022-07-01' = {
   tags: tags
   properties: {
     virtualNetwork: {
-      id: virtualNetworkId
+      id: virtualNetworkResourceId
     }
   }
 }
@@ -102,7 +102,7 @@ module dnsResolver_inboundEndpoints 'inbound-endpoint/main.bicep' = [for (inboun
     tags: inboundEndpoint.?tags ?? tags
     location: inboundEndpoint.?location ?? location
     dnsResolverName: dnsResolver.name
-    subnetId: inboundEndpoint.subnetId
+    subnetResourceId: inboundEndpoint.subnetId
     privateIpAddress: inboundEndpoint.?privateIpAddress
     privateIpAllocationMethod: inboundEndpoint.?privateIpAllocationMethod
 
@@ -116,7 +116,7 @@ module dnsResolver_outboundEndpoints 'outbound-endpoint/main.bicep' = [for (outb
     tags: outboundEndpoint.?tags ?? tags
     location: outboundEndpoint.?location ?? location
     dnsResolverName: dnsResolver.name
-    subnetId: outboundEndpoint.subnetId
+    subnetResourceId: outboundEndpoint.subnetId
   }
 }]
 

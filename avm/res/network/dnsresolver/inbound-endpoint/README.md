@@ -23,7 +23,7 @@ This module deploys a DNS Resolver Inbound Endpoint.
 | :-- | :-- | :-- |
 | [`dnsResolverName`](#parameter-dnsresolvername) | string | Name of the Private DNS Resolver. |
 | [`name`](#parameter-name) | string | The name of the inbound endpoint. |
-| [`subnetId`](#parameter-subnetid) | string | The subnet ID of the inbound endpoint. |
+| [`subnetResourceId`](#parameter-subnetresourceid) | string | The subnet ID of the inbound endpoint. |
 
 **Optional parameters**
 
@@ -66,7 +66,7 @@ The private IP allocation method of the inbound endpoint.
 - Type: string
 - Default: `'Dynamic'`
 
-### Parameter: `subnetId`
+### Parameter: `subnetResourceId`
 
 The subnet ID of the inbound endpoint.
 - Required: Yes
@@ -85,7 +85,7 @@ Tags of the resource.
 | :-- | :-- | :-- |
 | `name` | string | The name of the resource. |
 | `resourceGroupName` | string | The resource group of the resource. |
-| `resourceId` | string | The ID of the resource. |
+| `resourceId` | string | The resource ID of the resource. |
 
 ## Cross-referenced modules
 

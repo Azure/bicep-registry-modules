@@ -54,12 +54,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    virtualNetworkId: nestedDependencies.outputs.virtualNetworkId
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
+    virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkId
     location: location
 
     // Non-required parameters - Workaround for PS Rule
@@ -67,5 +62,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     outboundEndpoints: []
     lock: {}
     roleAssignments: []
+    tags: {}
   }
 }]

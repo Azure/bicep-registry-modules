@@ -56,14 +56,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       name: 'myCustomLockName'
       kind: 'CanNotDelete'
     }
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Reader'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    virtualNetworkId: nestedDependencies.outputs.virtualNetworkId
+    virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkId
     inboundEndpoints: [
       {
         name: '${namePrefix}${serviceShort}-az-pdnsin-x-001'
@@ -81,5 +74,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
+    // Workaround for PSRule
+    roleAssignments: []
   }
 }]

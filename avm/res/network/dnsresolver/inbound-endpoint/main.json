@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "14882473398703929554"
+      "templateHash": "2703848374078282231"
     },
     "name": "DNS Resolver Inbound Endpoint",
     "description": "This module deploys a DNS Resolver Inbound Endpoint.",
@@ -34,7 +34,7 @@
         "description": "Optional. Tags of the resource."
       }
     },
-    "subnetId": {
+    "subnetResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. The subnet ID of the inbound endpoint."
@@ -68,7 +68,7 @@
       "apiVersion": "2022-07-01",
       "name": "[parameters('dnsResolverName')]"
     },
-    "dnsResolver_inboundEndpoint": {
+    "inboundEndpoint": {
       "type": "Microsoft.Network/dnsResolvers/inboundEndpoints",
       "apiVersion": "2022-07-01",
       "name": "[format('{0}/{1}', parameters('dnsResolverName'), parameters('name'))]",
@@ -78,7 +78,7 @@
         "ipConfigurations": [
           {
             "subnet": {
-              "id": "[parameters('subnetId')]"
+              "id": "[parameters('subnetResourceId')]"
             },
             "privateIpAddress": "[parameters('privateIpAddress')]",
             "privateIpAllocationMethod": "[parameters('privateIpAllocationMethod')]"
@@ -101,7 +101,7 @@
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The ID of the resource."
+        "description": "The resource ID of the resource."
       },
       "value": "[resourceId('Microsoft.Network/dnsResolvers/inboundEndpoints', parameters('dnsResolverName'), parameters('name'))]"
     },

@@ -52,7 +52,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location
-    virtualNetworkId: nestedDependencies.outputs.virtualNetworkId
+    virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkId
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'

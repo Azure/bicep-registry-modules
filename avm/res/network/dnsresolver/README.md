@@ -22,12 +22,11 @@ This module deploys a DNS Resolver.
 
 ## Usage examples
 
-The following module usage examples are retrieved from the content of the files hosted in the module's `tests` folder.
-   >**Note**: The name of each example is based on the name of the file from which it is taken.
+The following section provides usage examples for the module, which were used to validate and deploy the module successfully. For a full reference, please review the module's test folder in its repository.
 
-   >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
+>**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
-   >**Note**: To reference the module, please use the following syntax `br/public:avm-res-network-dnsresolver:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm-res-network-dnsresolver:1.0.0`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -50,18 +49,14 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
   params: {
     // Required parameters
     name: 'ndrmin001'
-    virtualNetworkId: '<virtualNetworkId>'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
     inboundEndpoints: []
     location: '<location>'
     lock: {}
     outboundEndpoints: []
     roleAssignments: []
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
+    tags: {}
   }
 }
 ```
@@ -82,8 +77,8 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
     "name": {
       "value": "ndrmin001"
     },
-    "virtualNetworkId": {
-      "value": "<virtualNetworkId>"
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
     },
     // Non-required parameters
     "inboundEndpoints": {
@@ -102,11 +97,7 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
       "value": []
     },
     "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
+      "value": {}
     }
   }
 }
@@ -130,7 +121,7 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
   params: {
     // Required parameters
     name: 'ndrmax001'
-    virtualNetworkId: '<virtualNetworkId>'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
     inboundEndpoints: [
       {
@@ -181,8 +172,8 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
     "name": {
       "value": "ndrmax001"
     },
-    "virtualNetworkId": {
-      "value": "<virtualNetworkId>"
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
     },
     // Non-required parameters
     "inboundEndpoints": {
@@ -248,7 +239,7 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
   params: {
     // Required parameters
     name: 'ndrwaf001'
-    virtualNetworkId: '<virtualNetworkId>'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
     inboundEndpoints: [
       {
@@ -267,13 +258,7 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
         subnetId: '<subnetId>'
       }
     ]
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
+    roleAssignments: []
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -299,8 +284,8 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
     "name": {
       "value": "ndrwaf001"
     },
-    "virtualNetworkId": {
-      "value": "<virtualNetworkId>"
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
     },
     // Non-required parameters
     "inboundEndpoints": {
@@ -329,13 +314,7 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
       ]
     },
     "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
+      "value": []
     },
     "tags": {
       "value": {
@@ -359,7 +338,7 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the Private DNS Resolver. |
-| [`virtualNetworkId`](#parameter-virtualnetworkid) | string | ResourceId of the virtual network to attach the Private DNS Resolver to. |
+| [`virtualNetworkResourceId`](#parameter-virtualnetworkresourceid) | string | ResourceId of the virtual network to attach the Private DNS Resolver to. |
 
 **Optional parameters**
 
@@ -506,7 +485,7 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-### Parameter: `virtualNetworkId`
+### Parameter: `virtualNetworkResourceId`
 
 ResourceId of the virtual network to attach the Private DNS Resolver to.
 - Required: Yes

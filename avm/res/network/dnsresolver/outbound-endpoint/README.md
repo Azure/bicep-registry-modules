@@ -23,7 +23,7 @@ This module deploys a DNS Resolver Outbound Endpoint.
 | :-- | :-- | :-- |
 | [`dnsResolverName`](#parameter-dnsresolvername) | string | Name of the Private DNS Resolver. |
 | [`name`](#parameter-name) | string | The name of the inbound endpoint. |
-| [`subnetId`](#parameter-subnetid) | string | The subnet ID of the inbound endpoint. |
+| [`subnetResourceId`](#parameter-subnetresourceid) | string | The subnet ID of the inbound endpoint. |
 
 **Optional parameters**
 
@@ -51,7 +51,7 @@ The name of the inbound endpoint.
 - Required: Yes
 - Type: string
 
-### Parameter: `subnetId`
+### Parameter: `subnetResourceId`
 
 The subnet ID of the inbound endpoint.
 - Required: Yes
@@ -70,7 +70,7 @@ Tags of the resource.
 | :-- | :-- | :-- |
 | `name` | string | The name of the resource. |
 | `resourceGroupName` | string | The resource group of the resource. |
-| `resourceId` | string | The ID of the resource. |
+| `resourceId` | string | The resource ID of the resource. |
 
 ## Cross-referenced modules
 

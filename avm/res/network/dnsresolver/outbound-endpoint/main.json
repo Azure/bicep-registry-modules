@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "6625651641490227287"
+      "templateHash": "5345486606667278268"
     },
     "name": "DNS Resolver Outbound Endpoint",
     "description": "This module deploys a DNS Resolver Outbound Endpoint.",
@@ -34,7 +34,7 @@
         "description": "Optional. Tags of the resource."
       }
     },
-    "subnetId": {
+    "subnetResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. The subnet ID of the inbound endpoint."
@@ -54,7 +54,7 @@
       "apiVersion": "2022-07-01",
       "name": "[parameters('dnsResolverName')]"
     },
-    "dnsResolver_outboundEndpoint": {
+    "outboundEndpoint": {
       "type": "Microsoft.Network/dnsResolvers/outboundEndpoints",
       "apiVersion": "2022-07-01",
       "name": "[format('{0}/{1}', parameters('dnsResolverName'), parameters('name'))]",
@@ -62,7 +62,7 @@
       "tags": "[parameters('tags')]",
       "properties": {
         "subnet": {
-          "id": "[parameters('subnetId')]"
+          "id": "[parameters('subnetResourceId')]"
         }
       },
       "dependsOn": [
@@ -81,7 +81,7 @@
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The ID of the resource."
+        "description": "The resource ID of the resource."
       },
       "value": "[resourceId('Microsoft.Network/dnsResolvers/outboundEndpoints', parameters('dnsResolverName'), parameters('name'))]"
     },

@@ -13,7 +13,7 @@ param location string = resourceGroup().location
 param tags object?
 
 @description('Required. The subnet ID of the inbound endpoint.')
-param subnetId string
+param subnetResourceId string
 
 @description('Optional. The private IP address of the inbound endpoint.')
 param privateIpAddress string?
@@ -28,7 +28,7 @@ resource dnsResolver 'Microsoft.Network/dnsResolvers@2022-07-01' existing = {
   name: dnsResolverName
 }
 
-resource dnsResolver_inboundEndpoint 'Microsoft.Network/dnsResolvers/inboundEndpoints@2022-07-01' = {
+resource inboundEndpoint 'Microsoft.Network/dnsResolvers/inboundEndpoints@2022-07-01' = {
   parent: dnsResolver
   name: name
   location: location
@@ -37,7 +37,7 @@ resource dnsResolver_inboundEndpoint 'Microsoft.Network/dnsResolvers/inboundEndp
     ipConfigurations: [
       {
         subnet: {
-          id: subnetId
+          id: subnetResourceId
         }
         privateIpAddress: privateIpAddress
         privateIpAllocationMethod: privateIpAllocationMethod
@@ -47,10 +47,10 @@ resource dnsResolver_inboundEndpoint 'Microsoft.Network/dnsResolvers/inboundEndp
 }
 
 @description('The name of the resource.')
-output name string = dnsResolver_inboundEndpoint.name
+output name string = inboundEndpoint.name
 
-@description('The ID of the resource.')
-output resourceId string = dnsResolver_inboundEndpoint.id
+@description('The resource ID of the resource.')
+output resourceId string = inboundEndpoint.id
 
 @description('The resource group of the resource.')
 output resourceGroupName string = resourceGroup().name
