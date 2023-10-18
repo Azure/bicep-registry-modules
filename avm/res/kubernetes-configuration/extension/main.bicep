@@ -21,7 +21,7 @@ param configurationProtectedSettings object?
 @description('Optional. Configuration settings, as name-value pairs for configuring this extension.')
 param configurationSettings object?
 
-@description('Required. Type of the Extension, of which this resource is an instance of. It must be one of the Extension Types registered with Microsoft.KubernetesConfiguration by the Extension publisher.')
+@description('Required. Type of the extension, of which this resource is an instance of. It must be one of the Extension Types registered with Microsoft.KubernetesConfiguration by the extension publisher.')
 param extensionType string
 
 @description('Optional. ReleaseTrain this extension participates in for auto-upgrade (e.g. Stable, Preview, etc.) - only if autoUpgradeMinorVersion is "true".')
