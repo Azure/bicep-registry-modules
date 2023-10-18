@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "18006399309416832373"
+      "templateHash": "7241185525212749408"
     },
     "name": "DNS Resolvers",
     "description": "This module deploys a DNS Resolver.",

@@ -27,14 +27,14 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.network.dnsresolver.yml"
-      - "avm/res/network/dnsresolver/**"
+      - ".github/workflows/avm.res.network.dns-resolver.yml"
+      - "avm/res/network/dns-resolver/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/network/dnsresolver"
-  workflowPath: ".github/workflows/avm.res.network.dnsresolver.yml"
+  modulePath: "avm/res/network/dns-resolver"
+  workflowPath: ".github/workflows/avm.res.network.dns-resolver.yml"
 
 concurrency:
   group: ${{ github.workflow }}
