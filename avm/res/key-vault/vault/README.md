@@ -623,7 +623,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
 
 ### Example 4: _WAF-aligned_
 
-This instance deploys the module in alignment with the best-pratices of the Well-Architectured-Framework.
+This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
 
 <details>
