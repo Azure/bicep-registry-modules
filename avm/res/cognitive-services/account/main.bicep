@@ -383,7 +383,6 @@ type roleAssignmentType = {
 }[]?
 
 type privateEndpointType = {
-
   @description('Optional. The name of the private endpoint.')
   name: string?
 
