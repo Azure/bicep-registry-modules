@@ -1,4 +1,4 @@
-name: "avm.res.network.dnsresolver"
+name: "avm.res.network.dns-resolver"
 
 on:
   schedule:
