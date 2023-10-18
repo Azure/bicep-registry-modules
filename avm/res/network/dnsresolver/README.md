@@ -126,7 +126,7 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
     inboundEndpoints: [
       {
         name: 'ndrmax-az-pdnsin-x-001'
-        subnetId: '<subnetId>'
+        subnetResourceId: '<subnetResourceId>'
       }
     ]
     location: '<location>'
@@ -137,7 +137,7 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
     outboundEndpoints: [
       {
         name: 'ndrmax-az-pdnsout-x-001'
-        subnetId: '<subnetId>'
+        subnetResourceId: '<subnetResourceId>'
       }
     ]
     roleAssignments: [
@@ -180,7 +180,7 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
       "value": [
         {
           "name": "ndrmax-az-pdnsin-x-001",
-          "subnetId": "<subnetId>"
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
@@ -197,7 +197,7 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
       "value": [
         {
           "name": "ndrmax-az-pdnsout-x-001",
-          "subnetId": "<subnetId>"
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
@@ -244,7 +244,7 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
     inboundEndpoints: [
       {
         name: 'ndrwaf-az-pdnsin-x-001'
-        subnetId: '<subnetId>'
+        subnetResourceId: '<subnetResourceId>'
       }
     ]
     location: '<location>'
@@ -255,7 +255,7 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
     outboundEndpoints: [
       {
         name: 'ndrwaf-az-pdnsout-x-001'
-        subnetId: '<subnetId>'
+        subnetResourceId: '<subnetResourceId>'
       }
     ]
     roleAssignments: []
@@ -292,7 +292,7 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
       "value": [
         {
           "name": "ndrwaf-az-pdnsin-x-001",
-          "subnetId": "<subnetId>"
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
@@ -309,7 +309,7 @@ module dnsresolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
       "value": [
         {
           "name": "ndrwaf-az-pdnsout-x-001",
-          "subnetId": "<subnetId>"
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },

@@ -54,7 +54,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkId
+    virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
     location: location
 
     // Non-required parameters - Workaround for PS Rule

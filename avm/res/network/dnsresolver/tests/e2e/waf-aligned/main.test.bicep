@@ -56,17 +56,17 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       name: 'myCustomLockName'
       kind: 'CanNotDelete'
     }
-    virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkId
+    virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
     inboundEndpoints: [
       {
         name: '${namePrefix}${serviceShort}-az-pdnsin-x-001'
-        subnetId: nestedDependencies.outputs.subnetResourceId_dnsIn
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId_dnsIn
       }
     ]
     outboundEndpoints: [
       {
         name: '${namePrefix}${serviceShort}-az-pdnsout-x-001'
-        subnetId: nestedDependencies.outputs.subnetResourceId_dnsOut
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId_dnsOut
       }
     ]
     tags: {

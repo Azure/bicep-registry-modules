@@ -44,7 +44,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
 
 @description('The resource ID of the created Virtual Network.')
-output virtualNetworkId string = virtualNetwork.id
+output virtualNetworkResourceId string = virtualNetwork.id
 
 @description('The resource ID of the created inbound endpoint Virtual Network Subnet.')
 output subnetResourceId_dnsIn string = virtualNetwork.properties.subnets[0].id

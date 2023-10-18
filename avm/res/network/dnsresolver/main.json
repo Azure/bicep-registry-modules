@@ -277,7 +277,7 @@
             "value": "[parameters('name')]"
           },
           "subnetResourceId": {
-            "value": "[coalesce(parameters('inboundEndpoints'), createArray())[copyIndex()].subnetId]"
+            "value": "[coalesce(parameters('inboundEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
           "privateIpAddress": {
             "value": "[tryGet(coalesce(parameters('inboundEndpoints'), createArray())[copyIndex()], 'privateIpAddress')]"
@@ -434,7 +434,7 @@
             "value": "[parameters('name')]"
           },
           "subnetResourceId": {
-            "value": "[coalesce(parameters('outboundEndpoints'), createArray())[copyIndex()].subnetId]"
+            "value": "[coalesce(parameters('outboundEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           }
         },
         "template": {

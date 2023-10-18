@@ -102,7 +102,7 @@ module dnsResolver_inboundEndpoints 'inbound-endpoint/main.bicep' = [for (inboun
     tags: inboundEndpoint.?tags ?? tags
     location: inboundEndpoint.?location ?? location
     dnsResolverName: dnsResolver.name
-    subnetResourceId: inboundEndpoint.subnetId
+    subnetResourceId: inboundEndpoint.subnetResourceId
     privateIpAddress: inboundEndpoint.?privateIpAddress
     privateIpAllocationMethod: inboundEndpoint.?privateIpAllocationMethod
 
@@ -116,7 +116,7 @@ module dnsResolver_outboundEndpoints 'outbound-endpoint/main.bicep' = [for (outb
     tags: outboundEndpoint.?tags ?? tags
     location: outboundEndpoint.?location ?? location
     dnsResolverName: dnsResolver.name
-    subnetResourceId: outboundEndpoint.subnetId
+    subnetResourceId: outboundEndpoint.subnetResourceId
   }
 }]
 
