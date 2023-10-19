@@ -7,7 +7,7 @@
 //
 //   GITHUB_PAT: your github PAT
 //   GITHUB_OWNER:
-//     "bicep" for bicep/bicep-registry-modules
+//     "Azure" for Azure/bicep-registry-modules
 //       sor your github username for a fork of bicep-registry-modules
 
 const path = require("path");
@@ -20,7 +20,7 @@ if (!process.env.GITHUB_PAT) {
 }
 if (!process.env.GITHUB_OWNER) {
   console.error(
-    'Need to set GITHUB_OWNER (e.g. "bicep" for "bicep/bicep-registry-modules"'
+    'Need to set GITHUB_OWNER (e.g. "Azure" for "Azure/bicep-registry-modules"'
   );
   return;
 }
