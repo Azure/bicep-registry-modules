@@ -10,42 +10,19 @@ async function getSubdirNames(fs, dir) {
 async function getModuleDescription(
   github,
   core,
-  path,
-  modulePath,
-  moduleRoot,
-  tag,
+  mainJsonPath,
+  gitTag,
   context
 ) {
-  const allowedModuleRoots = ["modules", "avm/res", "avm/ptn"];
+  const gitTagRef = `tags/${gitTag}`;
 
-  if (!allowedModuleRoots.includes(moduleRoot)) {
-    throw new Error(
-      `Invalid module type provided to getModuleDescription function, permitted type are brm, avm/res, avm/ptn. The module type provided was: ${moduleRoot}`
-    );
-  }
-  // Retrieve the main.json file as it existed for the given tag
-  const ref = `tags/${modulePath}/${tag}`;
-  core.info(`  Retrieving main.json at ref ${ref}`);
-
-  let mainJsonPath = path
-    .join(moduleRoot, modulePath, "main.json")
-    .replace(/\\/g, "/");
-
-  // if mainJsonPath starts with avm/res/avm/res then remove the first avm/res
-  if (mainJsonPath.startsWith("avm/res/avm/res")) {
-    mainJsonPath = mainJsonPath.replace("avm/res/", "");
-  }
-
-  // if mainJsonPath starts with avm/ptn/avm/ptn then remove the first avm/ptn
-  if (mainJsonPath.startsWith("avm/ptn/avm/ptn")) {
-    mainJsonPath = mainJsonPath.replace("avm/ptn/", "");
-  }
+  core.info(`  Retrieving main.json at Git tag ref ${gitTagRef}`);
 
   const response = await github.rest.repos.getContent({
     owner: context.repo.owner,
     repo: context.repo.repo,
     path: mainJsonPath,
-    ref,
+    ref: gitTagRef,
   });
 
   if (response.data.type === "file") {
@@ -68,50 +45,48 @@ async function getModuleDescription(
  */
 async function generateModuleIndexData({ require, github, context, core }) {
   const fs = require("fs").promises;
-  const path = require("path");
   const axios = require("axios").default;
-  const moduleGroups = await getSubdirNames(fs, "modules");
-  const moduleGroupsAvmRes = await getSubdirNames(fs, "avm/res");
-  const moduleGroupsAvmPtn = await getSubdirNames(fs, "avm/ptn");
-  const modulesWithDescriptions = new Map();
+  const moduleIndexData = [];
 
-  var moduleIndexData = [];
+  let numberOfModuleGroupsProcessed = 0;
 
   // BRM Modules
-  for (const moduleGroup of moduleGroups) {
-    const moduleGroupPath = path.join("modules", moduleGroup);
+  for (const moduleGroup of await getSubdirNames(fs, "modules")) {
+    const moduleGroupPath = `modules/${moduleGroup}`;
     const moduleNames = await getSubdirNames(fs, moduleGroupPath);
 
     for (const moduleName of moduleNames) {
-      const modulePath = `${moduleGroup}/${moduleName}`;
-      const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${modulePath}/tags/list`;
+      const modulePath = `${moduleGroupPath}/${moduleName}`;
+      const mainJsonPath = `${modulePath}/main.json`;
+      // BRM module git tags do not include the modules/ prefix.
+      const mcrModulePath = modulePath.slice(8);
+      const tagListUrl = `https://mcr.microsoft.com/v2/bicep/${mcrModulePath}/tags/list`;
 
       try {
-        core.info(`Processing BRM Module ${modulePath}:...`);
-        core.info(`  Retrieving BRM Module ${versionListUrl}`);
+        core.info(`Processing BRM Module "${modulePath}"...`);
+        core.info(`  Getting available tags at "${tagListUrl}"...`);
 
-        const versionListResponse = await axios.get(versionListUrl);
-        const tags = versionListResponse.data.tags.sort();
+        const tagListResponse = await axios.get(tagListUrl);
+        const tags = tagListResponse.data.tags.sort();
 
         const properties = {};
         for (const tag of tags) {
-          var description = await getModuleDescription(
+          // Using mcrModulePath because BRM module git tags do not include the modules/ prefix
+          const gitTag = `${mcrModulePath}/${tag}`;
+          const documentationUri = `https://github.com/Azure/bicep-registry-modules/tree/${gitTag}/${modulePath}/README.md`;
+          const description = await getModuleDescription(
             github,
             core,
-            path,
-            modulePath,
-            (moduleRoot = "modules"),
-            tag,
+            mainJsonPath,
+            gitTag,
             context
           );
-          if (description) {
-            properties[tag] = { description };
-            modulesWithDescriptions[modulePath] = true;
-          }
+
+          properties[tag] = { description, documentationUri };
         }
 
         moduleIndexData.push({
-          moduleName: modulePath,
+          moduleName: mcrModulePath,
           tags,
           properties,
         });
@@ -119,106 +94,63 @@ async function generateModuleIndexData({ require, github, context, core }) {
         core.setFailed(error);
       }
     }
+
+    numberOfModuleGroupsProcessed++;
   }
 
-  // AVM Resource Modules
-  for (const moduleGroup of moduleGroupsAvmRes) {
-    const moduleGroupPath = path.join("avm/res", moduleGroup);
-    const moduleNames = await getSubdirNames(fs, moduleGroupPath);
+  for (const avmModuleRoot of ["avm/res", "avm"]) {
+    // Resource module path pattern: `avm/res/${moduleGroup}/${moduleName}`
+    // Pattern module path pattern: `avm/ptn/${moduleName}` (no nested module group)
+    const avmModuleGroups =
+      avmModuleRoot === "avm/res"
+        ? await getSubdirNames(fs, avmModuleRoot)
+        : ["ptn"];
 
-    for (const moduleName of moduleNames) {
-      const modulePath = `avm/res/${moduleGroup}/${moduleName}`;
-      const moduleBicepRegistryRefSplit = modulePath
-        .split(/[\/\\]avm[\/\\]/)
-        .pop();
-      const moduleBicepRegistryRefReplace = moduleBicepRegistryRefSplit
-        .replace(/-/g, "")
-        .replace(/[\/\\]/g, "-");
-      const moduleBicepRegistryRef = moduleBicepRegistryRefReplace;
-      const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${moduleBicepRegistryRef}/tags/list`;
+    for (const moduleGroup of avmModuleGroups) {
+      const moduleGroupPath = `${avmModuleRoot}/${moduleGroup}`;
+      const moduleNames = await getSubdirNames(fs, moduleGroupPath);
 
-      try {
-        core.info(`Processing AVM Resource Module ${modulePath}:...`);
-        core.info(`  Retrieving AVM Resource Module ${versionListUrl}`);
-        core.info(`    Git Tag: ${modulePath}`);
-        core.info(`    BRM Ref: ${moduleBicepRegistryRef}`);
+      for (const moduleName of moduleNames) {
+        const modulePath = `${moduleGroupPath}/${moduleName}`;
+        const mainJsonPath = `${modulePath}/main.json`;
+        const mcrModulePath = modulePath
+          .replace(/-/g, "")
+          .replace(/[/\\]/g, "-");
+        const tagListUrl = `https://mcr.microsoft.com/v2/bicep/${mcrModulePath}/tags/list`;
 
-        const versionListResponse = await axios.get(versionListUrl);
-        const tags = versionListResponse.data.tags.sort();
+        try {
+          core.info(`Processing AVM Module "${modulePath}"...`);
+          core.info(`  Getting available tags at "${tagListUrl}"...`);
 
-        const properties = {};
-        for (const tag of tags) {
-          var description = await getModuleDescription(
-            github,
-            core,
-            path,
-            modulePath,
-            (moduleRoot = "avm/res"),
-            tag,
-            context
-          );
-          if (description) {
-            properties[tag] = { description };
-            modulesWithDescriptions[modulePath] = true;
+          const tagListResponse = await axios.get(tagListUrl);
+          const tags = tagListResponse.data.tags.sort();
+
+          const properties = {};
+          for (const tag of tags) {
+            const gitTag = `${modulePath}/${tag}`;
+            const documentationUri = `https://github.com/Azure/bicep-registry-modules/tree/${gitTag}/${modulePath}/README.md`;
+            const description = await getModuleDescription(
+              github,
+              core,
+              mainJsonPath,
+              gitTag,
+              context
+            );
+
+            properties[tag] = { description, documentationUri };
           }
-        }
 
-        moduleIndexData.push({
-          moduleName: moduleBicepRegistryRef,
-          tags,
-          properties,
-        });
-      } catch (error) {
-        core.setFailed(error);
-      }
-    }
-  }
-
-  // AVM Pattern Modules
-  for (const moduleName of moduleGroupsAvmPtn) {
-    const modulePath = `avm/ptn/${moduleName}`;
-    const moduleBicepRegistryRefSplit = modulePath
-      .split(/[\/\\]avm[\/\\]/)
-      .pop();
-    const moduleBicepRegistryRefReplace = moduleBicepRegistryRefSplit
-      .replace(/-/g, "")
-      .replace(/[\/\\]/g, "-");
-    const moduleBicepRegistryRef = moduleBicepRegistryRefReplace;
-    const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${moduleBicepRegistryRef}/tags/list`;
-
-    try {
-      core.info(`Processing AVM Pattern Module ${modulePath}:...`);
-      core.info(`  Retrieving AVM Pattern Module ${versionListUrl}`);
-      core.info(`    Git Tag: ${modulePath}`);
-      core.info(`    BRM Ref: ${moduleBicepRegistryRef}`);
-
-      const versionListResponse = await axios.get(versionListUrl);
-      const tags = versionListResponse.data.tags.sort();
-
-      const properties = {};
-      for (const tag of tags) {
-        var description = await getModuleDescription(
-          github,
-          core,
-          path,
-          modulePath,
-          (moduleRoot = "avm/ptn"),
-          tag,
-          context
-        );
-        if (description) {
-          properties[tag] = { description };
-          modulesWithDescriptions[modulePath] = true;
+          moduleIndexData.push({
+            moduleName: mcrModulePath,
+            tags,
+            properties,
+          });
+        } catch (error) {
+          core.setFailed(error);
         }
       }
 
-      moduleIndexData.push({
-        moduleName: moduleBicepRegistryRef,
-        tags,
-        properties,
-      });
-    } catch (error) {
-      core.setFailed(error);
+      numberOfModuleGroupsProcessed++;
     }
   }
 
@@ -228,19 +160,13 @@ async function generateModuleIndexData({ require, github, context, core }) {
     JSON.stringify(moduleIndexData, null, 2)
   );
 
-  core.info(
-    `Processed ${
-      moduleGroups.length +
-      moduleGroupsAvmRes.length +
-      moduleGroupsAvmPtn.length
-    } modules groups.`
-  );
+  core.info(`Processed ${numberOfModuleGroupsProcessed} modules groups.`);
   core.info(`Processed ${moduleIndexData.length} total modules.`);
   core.info(
     `${
       moduleIndexData.filter((m) =>
-        Object.keys(m.properties).some((key) =>
-          m.properties[key].hasOwnProperty("description")
+        Object.keys(m.properties).some(
+          (key) => "description" in m.properties[key]
         )
       ).length
     } modules have a description`
