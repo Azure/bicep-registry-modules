@@ -66,8 +66,8 @@ async function generateModuleIndexData({ require, github, context, core }) {
         core.info(`Processing BRM Module "${modulePath}"...`);
         core.info(`  Getting available tags at "${tagListUrl}"...`);
 
-        const versionListResponse = await axios.get(tagListUrl);
-        const tags = versionListResponse.data.tags.sort();
+        const tagListResponse = await axios.get(tagListUrl);
+        const tags = tagListResponse.data.tags.sort();
 
         const properties = {};
         for (const tag of tags) {
@@ -102,7 +102,7 @@ async function generateModuleIndexData({ require, github, context, core }) {
     const avmModuleGroups = await getSubdirNames(fs, avmModuleRoot);
 
     for (const moduleGroup of avmModuleGroups) {
-      const moduleGroupPath = `avm/res/${moduleGroup}`;
+      const moduleGroupPath = `${avmModuleRoot}/${moduleGroup}`;
       const moduleNames = await getSubdirNames(fs, moduleGroupPath);
 
       for (const moduleName of moduleNames) {
@@ -117,8 +117,8 @@ async function generateModuleIndexData({ require, github, context, core }) {
           core.info(`Processing AVM Module "${modulePath}"...`);
           core.info(`  Getting available tags at "${tagListUrl}"...`);
 
-          const versionListResponse = await axios.get(tagListUrl);
-          const tags = versionListResponse.data.tags.sort();
+          const tagListResponse = await axios.get(tagListUrl);
+          const tags = tagListResponse.data.tags.sort();
 
           const properties = {};
           for (const tag of tags) {
