@@ -98,8 +98,13 @@ async function generateModuleIndexData({ require, github, context, core }) {
     numberOfModuleGroupsProcessed++;
   }
 
-  for (const avmModuleRoot of ["avm/res", "avm/ptn"]) {
-    const avmModuleGroups = await getSubdirNames(fs, avmModuleRoot);
+  for (const avmModuleRoot of ["avm/res", "avm"]) {
+    // Resource module path pattern: `avm/res/${moduleGroup}/${moduleName}`
+    // Pattern module path pattern: `avm/ptn/${moduleName}` (no nested module group)
+    const avmModuleGroups =
+      avmModuleRoot === "avm/res"
+        ? await getSubdirNames(fs, avmModuleRoot)
+        : ["ptn"];
 
     for (const moduleGroup of avmModuleGroups) {
       const moduleGroupPath = `${avmModuleRoot}/${moduleGroup}`;
