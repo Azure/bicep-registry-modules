@@ -86,14 +86,9 @@ module privateDnsZone_A 'a/main.bicep' = [for (aRecord, index) in (a ?? []): {
     privateDnsZoneName: privateDnsZone.name
     name: aRecord.name
     aRecords: aRecord.?aRecords
-    // aRecords: contains(aRecord, 'aRecords') ? aRecord.aRecords : []
     metadata: aRecord.?metadata
-    //metadata: contains(aRecord, 'metadata') ? aRecord.metadata : {}
     ttl: aRecord.?ttl ?? 3600
-    //ttl: contains(aRecord, 'ttl') ? aRecord.ttl : 3600
     roleAssignments: aRecord.?roleAssignments
-    //roleAssignments: contains(aRecord, 'roleAssignments') ? aRecord.roleAssignments : []
-
   }
 }]
 
@@ -102,11 +97,10 @@ module privateDnsZone_AAAA 'aaaa/main.bicep' = [for (aaaaRecord, index) in (aaaa
   params: {
     privateDnsZoneName: privateDnsZone.name
     name: aaaaRecord.name
-    aaaaRecords: contains(aaaaRecord, 'aaaaRecords') ? aaaaRecord.aaaaRecords : []
-    metadata: contains(aaaaRecord, 'metadata') ? aaaaRecord.metadata : {}
-    ttl: contains(aaaaRecord, 'ttl') ? aaaaRecord.ttl : 3600
-    roleAssignments: contains(aaaaRecord, 'roleAssignments') ? aaaaRecord.roleAssignments : []
-
+    aaaaRecords: aaaaRecord.?aaaaRecords
+    metadata: aaaaRecord.?metadata
+    ttl: aaaaRecord.?ttl ?? 3600
+    roleAssignments: aaaaRecord.?roleAssignments
   }
 }]
 
@@ -115,11 +109,10 @@ module privateDnsZone_CNAME 'cname/main.bicep' = [for (cnameRecord, index) in (c
   params: {
     privateDnsZoneName: privateDnsZone.name
     name: cnameRecord.name
-    cnameRecord: contains(cnameRecord, 'cnameRecord') ? cnameRecord.cnameRecord : {}
-    metadata: contains(cnameRecord, 'metadata') ? cnameRecord.metadata : {}
-    ttl: contains(cnameRecord, 'ttl') ? cnameRecord.ttl : 3600
-    roleAssignments: contains(cnameRecord, 'roleAssignments') ? cnameRecord.roleAssignments : []
-
+    cnameRecord: cnameRecord.?cnameRecord
+    metadata: cnameRecord.?metadata
+    ttl: cnameRecord.?ttl ?? 3600
+    roleAssignments: cnameRecord.?roleAssignments
   }
 }]
 
@@ -128,11 +121,10 @@ module privateDnsZone_MX 'mx/main.bicep' = [for (mxRecord, index) in (mx ?? []):
   params: {
     privateDnsZoneName: privateDnsZone.name
     name: mxRecord.name
-    metadata: contains(mxRecord, 'metadata') ? mxRecord.metadata : {}
-    mxRecords: contains(mxRecord, 'mxRecords') ? mxRecord.mxRecords : []
-    ttl: contains(mxRecord, 'ttl') ? mxRecord.ttl : 3600
-    roleAssignments: contains(mxRecord, 'roleAssignments') ? mxRecord.roleAssignments : []
-
+    metadata: mxRecord.?metadata
+    mxRecords: mxRecord.?mxRecords
+    ttl: mxRecord.?ttl ?? 3600
+    roleAssignments: mxRecord.?roleAssignments
   }
 }]
 
@@ -141,11 +133,10 @@ module privateDnsZone_PTR 'ptr/main.bicep' = [for (ptrRecord, index) in (ptr ?? 
   params: {
     privateDnsZoneName: privateDnsZone.name
     name: ptrRecord.name
-    metadata: contains(ptrRecord, 'metadata') ? ptrRecord.metadata : {}
-    ptrRecords: contains(ptrRecord, 'ptrRecords') ? ptrRecord.ptrRecords : []
-    ttl: contains(ptrRecord, 'ttl') ? ptrRecord.ttl : 3600
-    roleAssignments: contains(ptrRecord, 'roleAssignments') ? ptrRecord.roleAssignments : []
-
+    metadata: ptrRecord.?metadata
+    ptrRecords: ptrRecord.?ptrRecords
+    ttl: ptrRecord.?ttl ?? 3600
+    roleAssignments: ptrRecord.?roleAssignments
   }
 }]
 
@@ -154,11 +145,10 @@ module privateDnsZone_SOA 'soa/main.bicep' = [for (soaRecord, index) in (soa ?? 
   params: {
     privateDnsZoneName: privateDnsZone.name
     name: soaRecord.name
-    metadata: contains(soaRecord, 'metadata') ? soaRecord.metadata : {}
-    soaRecord: contains(soaRecord, 'soaRecord') ? soaRecord.soaRecord : {}
-    ttl: contains(soaRecord, 'ttl') ? soaRecord.ttl : 3600
-    roleAssignments: contains(soaRecord, 'roleAssignments') ? soaRecord.roleAssignments : []
-
+    metadata: soaRecord.?metadata
+    soaRecord: soaRecord.?soaRecord
+    ttl: soaRecord.?ttl ?? 3600
+    roleAssignments: soaRecord.?roleAssignments
   }
 }]
 
@@ -167,11 +157,10 @@ module privateDnsZone_SRV 'srv/main.bicep' = [for (srvRecord, index) in (srv ?? 
   params: {
     privateDnsZoneName: privateDnsZone.name
     name: srvRecord.name
-    metadata: contains(srvRecord, 'metadata') ? srvRecord.metadata : {}
-    srvRecords: contains(srvRecord, 'srvRecords') ? srvRecord.srvRecords : []
-    ttl: contains(srvRecord, 'ttl') ? srvRecord.ttl : 3600
-    roleAssignments: contains(srvRecord, 'roleAssignments') ? srvRecord.roleAssignments : []
-
+    metadata: srvRecord.?metadata
+    srvRecords: srvRecord.?srvRecords
+    ttl: srvRecord.?ttl ?? 3600
+    roleAssignments: srvRecord.?roleAssignments
   }
 }]
 
@@ -180,11 +169,10 @@ module privateDnsZone_TXT 'txt/main.bicep' = [for (txtRecord, index) in (txt ?? 
   params: {
     privateDnsZoneName: privateDnsZone.name
     name: txtRecord.name
-    metadata: contains(txtRecord, 'metadata') ? txtRecord.metadata : {}
-    txtRecords: contains(txtRecord, 'txtRecords') ? txtRecord.txtRecords : []
-    ttl: contains(txtRecord, 'ttl') ? txtRecord.ttl : 3600
-    roleAssignments: contains(txtRecord, 'roleAssignments') ? txtRecord.roleAssignments : []
-
+    metadata: txtRecord.?metadata
+    txtRecords: txtRecord.?txtRecords
+    ttl: txtRecord.?ttl ?? 3600
+    roleAssignments: txtRecord.?roleAssignments
   }
 }]
 
@@ -192,12 +180,11 @@ module privateDnsZone_virtualNetworkLinks 'virtual-network-link/main.bicep' = [f
   name: '${uniqueString(deployment().name, location)}-PrivateDnsZone-VirtualNetworkLink-${index}'
   params: {
     privateDnsZoneName: privateDnsZone.name
-    name: contains(virtualNetworkLink, 'name') ? virtualNetworkLink.name : '${last(split(virtualNetworkLink.virtualNetworkResourceId, '/'))}-vnetlink'
+    name: virtualNetworkLink.?name ?? '${last(split(virtualNetworkLink.virtualNetworkResourceId, '/'))}-vnetlink'
     virtualNetworkResourceId: virtualNetworkLink.virtualNetworkResourceId
-    location: contains(virtualNetworkLink, 'location') ? virtualNetworkLink.location : 'global'
-    registrationEnabled: contains(virtualNetworkLink, 'registrationEnabled') ? virtualNetworkLink.registrationEnabled : false
-    tags: contains(virtualNetworkLink, 'tags') ? virtualNetworkLink.tags : {}
-
+    location: virtualNetworkLink.?location ?? 'global'
+    registrationEnabled: virtualNetworkLink.?registrationEnabled ?? false
+    tags: virtualNetworkLink.?tags ?? {}
   }
 }]
 
