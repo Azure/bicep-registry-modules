@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.'
+metadata description = 'This instance deploys the module in alignment with the best-pratices of the Well-Architectured-Framework.'
 
 // ========== //
 // Parameters //
@@ -9,13 +9,13 @@ metadata description = 'This instance deploys the module in alignment with the b
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-keyvault.vaults-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-cognitiveservices.accounts-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'kvvwaf'
+param serviceShort string = 'csawaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: resourceGroupName
   location: location
 }
@@ -47,10 +47,10 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-diagnosticDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
+    storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
-    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
     location: location
   }
 }
@@ -58,14 +58,15 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 // Test Execution //
 // ============== //
-
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
-    name: '${namePrefix}${serviceShort}002'
+    name: '${namePrefix}${serviceShort}001'
+    kind: 'Face'
     location: location
+    customSubDomainName: '${namePrefix}x${serviceShort}'
     diagnosticSettings: [
       {
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
@@ -74,76 +75,39 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
     ]
-    // Only for testing purposes
-    enablePurgeProtection: false
-    enableRbacAuthorization: true
-    keys: [
-      {
-        attributesExp: 1725109032
-        attributesNbf: 10000
-        name: 'keyName'
-        rotationPolicy: {
-          attributes: {
-            expiryTime: 'P2Y'
-          }
-          lifetimeActions: [
-            {
-              trigger: {
-                timeBeforeExpiry: 'P2M'
-              }
-              action: {
-                type: 'Rotate'
-              }
-            }
-            {
-              trigger: {
-                timeBeforeExpiry: 'P30D'
-              }
-              action: {
-                type: 'Notify'
-              }
-            }
-          ]
-        }
-        keySize: 4096
-      }
-    ]
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    networkAcls: {
-      bypass: 'AzureServices'
-      defaultAction: 'Deny'
-    }
+    sku: 'S0'
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSResourceId
+          nestedDependencies.outputs.privateDNSZoneResourceId
         ]
-        service: 'vault'
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
       }
     ]
-    secrets: {
-      secureList: [
-        {
-          attributesExp: 1702648632
-          attributesNbf: 10000
-          contentType: 'Something'
-          name: 'secretName'
-          value: 'secretValue'
-        }
-      ]
-    }
-    softDeleteRetentionInDays: 7
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
+    managedIdentities: {
+      systemAssigned: true
+    }
     // Workaround for PSRule
-    roleAssignments: []
-    accessPolicies: []
+    roleAssignments: null
+    customerManagedKey: null
+    allowedFqdnList: null
+    apiProperties: null
+    migrationToken: null
+    userOwnedStorage: null
+    networkAcls: null
   }
 }]

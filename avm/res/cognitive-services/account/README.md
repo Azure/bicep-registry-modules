@@ -1,6 +1,6 @@
-# Key Vaults `[Microsoft.KeyVault/vaults]`
+# Cognitive Services `[Microsoft.CognitiveServices/accounts]`
 
-This module deploys a Key Vault.
+This module deploys a Cognitive Service.
 
 ## Navigation
 
@@ -16,11 +16,8 @@ This module deploys a Key Vault.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
+| `Microsoft.CognitiveServices/accounts` | [2022-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2022-12-01/accounts) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults) |
-| `Microsoft.KeyVault/vaults/accessPolicies` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/accessPolicies) |
-| `Microsoft.KeyVault/vaults/keys` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/keys) |
-| `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
 
@@ -30,18 +27,18 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm-res-keyvault-vault:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm-res-cognitiveservices-account:1.0.0`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Using Private Endpoints](#example-3-using-private-endpoints)
-- [WAF-aligned](#example-4-waf-aligned)
+- [As Speech Service](#example-3-as-speech-service)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-4-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-5-using-customer-managed-keys-with-user-assigned-identity)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
-> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
-
 
 
 <details>
@@ -49,23 +46,27 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-kvvmin'
+module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-csamin'
   params: {
     // Required parameters
-    name: 'kvvmin002'
+    kind: 'SpeechServices'
+    name: 'csamin001'
     // Non-required parameters
-    accessPolicies: []
-    diagnosticSettings: []
-    enablePurgeProtection: false
-    keys: []
+    allowedFqdnList: '<allowedFqdnList>'
+    apiProperties: '<apiProperties>'
+    customerManagedKey: '<customerManagedKey>'
+    customSubDomainName: '<customSubDomainName>'
+    diagnosticSettings: '<diagnosticSettings>'
     location: '<location>'
-    lock: {}
-    networkAcls: {}
-    privateEndpoints: []
-    roleAssignments: []
-    secrets: {}
-    tags: {}
+    lock: '<lock>'
+    managedIdentities: '<managedIdentities>'
+    migrationToken: '<migrationToken>'
+    networkAcls: '<networkAcls>'
+    privateEndpoints: '<privateEndpoints>'
+    roleAssignments: '<roleAssignments>'
+    tags: '<tags>'
+    userOwnedStorage: '<userOwnedStorage>'
   }
 }
 ```
@@ -82,41 +83,55 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "name": {
-      "value": "kvvmin002"
+    // Required parameters
+    "kind": {
+      "value": "SpeechServices"
     },
-    "accessPolicies": {
-      "value": []
+    "name": {
+      "value": "csamin001"
+    },
+    // Non-required parameters
+    "allowedFqdnList": {
+      "value": "<allowedFqdnList>"
+    },
+    "apiProperties": {
+      "value": "<apiProperties>"
+    },
+    "customerManagedKey": {
+      "value": "<customerManagedKey>"
+    },
+    "customSubDomainName": {
+      "value": "<customSubDomainName>"
     },
     "diagnosticSettings": {
-      "value": []
-    },
-    "enablePurgeProtection": {
-      "value": false
-    },
-    "keys": {
-      "value": []
+      "value": "<diagnosticSettings>"
     },
     "location": {
       "value": "<location>"
     },
     "lock": {
-      "value": {}
+      "value": "<lock>"
+    },
+    "managedIdentities": {
+      "value": "<managedIdentities>"
+    },
+    "migrationToken": {
+      "value": "<migrationToken>"
     },
     "networkAcls": {
-      "value": {}
+      "value": "<networkAcls>"
     },
     "privateEndpoints": {
-      "value": []
+      "value": "<privateEndpoints>"
     },
     "roleAssignments": {
-      "value": []
-    },
-    "secrets": {
-      "value": {}
+      "value": "<roleAssignments>"
     },
     "tags": {
-      "value": {}
+      "value": "<tags>"
+    },
+    "userOwnedStorage": {
+      "value": "<userOwnedStorage>"
     }
   }
 }
@@ -135,51 +150,27 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-kvvmax'
+module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-csamax'
   params: {
     // Required parameters
-    name: 'kvvmax002'
+    kind: 'Face'
+    name: 'csamax001'
     // Non-required parameters
-    accessPolicies: [
-      {
-        objectId: '<objectId>'
-        permissions: {
-          keys: [
-            'get'
-            'list'
-            'update'
-          ]
-          secrets: [
-            'all'
-          ]
-        }
-        tenantId: '<tenantId>'
-      }
-      {
-        objectId: '<objectId>'
-        permissions: {
-          certificates: [
-            'backup'
-            'create'
-            'delete'
-          ]
-          secrets: [
-            'all'
-          ]
-        }
-      }
-    ]
+    allowedFqdnList: '<allowedFqdnList>'
+    apiProperties: '<apiProperties>'
+    customerManagedKey: '<customerManagedKey>'
+    customSubDomainName: 'xcsamax'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
         logCategoriesAndGroups: [
           {
-            category: 'AzurePolicyEvaluationDetails'
+            category: 'RequestResponse'
           }
           {
-            category: 'AuditEvent'
+            category: 'Audit'
           }
         ]
         metricCategories: [
@@ -198,52 +189,19 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enablePurgeProtection: false
-    enableRbacAuthorization: false
-    keys: [
-      {
-        attributesExp: 1725109032
-        attributesNbf: 10000
-        name: 'keyName'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        rotationPolicy: {
-          attributes: {
-            expiryTime: 'P2Y'
-          }
-          lifetimeActions: [
-            {
-              action: {
-                type: 'Rotate'
-              }
-              trigger: {
-                timeBeforeExpiry: 'P2M'
-              }
-            }
-            {
-              action: {
-                type: 'Notify'
-              }
-              trigger: {
-                timeBeforeExpiry: 'P30D'
-              }
-            }
-          ]
-        }
-      }
-    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourcesIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    migrationToken: '<migrationToken>'
     networkAcls: {
-      bypass: 'AzureServices'
       defaultAction: 'Deny'
       ipRules: [
         {
@@ -260,16 +218,8 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
-          '<privateDNSResourceId>'
+          '<privateDNSZoneResourceId>'
         ]
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        service: 'vault'
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -278,6 +228,7 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
         }
       }
     ]
+    publicNetworkAccess: 'Disabled'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -285,30 +236,13 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
         roleDefinitionIdOrName: 'Reader'
       }
     ]
-    secrets: {
-      secureList: [
-        {
-          attributesExp: 1702648632
-          attributesNbf: 10000
-          contentType: 'Something'
-          name: 'secretName'
-          roleAssignments: [
-            {
-              principalId: '<principalId>'
-              principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Reader'
-            }
-          ]
-          value: 'secretValue'
-        }
-      ]
-    }
-    softDeleteRetentionInDays: 7
+    sku: 'S0'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    userOwnedStorage: '<userOwnedStorage>'
   }
 }
 ```
@@ -325,39 +259,25 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "name": {
-      "value": "kvvmax002"
+    // Required parameters
+    "kind": {
+      "value": "Face"
     },
-    "accessPolicies": {
-      "value": [
-        {
-          "objectId": "<objectId>",
-          "permissions": {
-            "keys": [
-              "get",
-              "list",
-              "update"
-            ],
-            "secrets": [
-              "all"
-            ]
-          },
-          "tenantId": "<tenantId>"
-        },
-        {
-          "objectId": "<objectId>",
-          "permissions": {
-            "certificates": [
-              "backup",
-              "create",
-              "delete"
-            ],
-            "secrets": [
-              "all"
-            ]
-          }
-        }
-      ]
+    "name": {
+      "value": "csamax001"
+    },
+    // Non-required parameters
+    "allowedFqdnList": {
+      "value": "<allowedFqdnList>"
+    },
+    "apiProperties": {
+      "value": "<apiProperties>"
+    },
+    "customerManagedKey": {
+      "value": "<customerManagedKey>"
+    },
+    "customSubDomainName": {
+      "value": "xcsamax"
     },
     "diagnosticSettings": {
       "value": [
@@ -366,10 +286,10 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
           "eventHubName": "<eventHubName>",
           "logCategoriesAndGroups": [
             {
-              "category": "AzurePolicyEvaluationDetails"
+              "category": "RequestResponse"
             },
             {
-              "category": "AuditEvent"
+              "category": "Audit"
             }
           ],
           "metricCategories": [
@@ -389,51 +309,6 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
         }
       ]
     },
-    "enablePurgeProtection": {
-      "value": false
-    },
-    "enableRbacAuthorization": {
-      "value": false
-    },
-    "keys": {
-      "value": [
-        {
-          "attributesExp": 1725109032,
-          "attributesNbf": 10000,
-          "name": "keyName",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "rotationPolicy": {
-            "attributes": {
-              "expiryTime": "P2Y"
-            },
-            "lifetimeActions": [
-              {
-                "action": {
-                  "type": "Rotate"
-                },
-                "trigger": {
-                  "timeBeforeExpiry": "P2M"
-                }
-              },
-              {
-                "action": {
-                  "type": "Notify"
-                },
-                "trigger": {
-                  "timeBeforeExpiry": "P30D"
-                }
-              }
-            ]
-          }
-        }
-      ]
-    },
     "location": {
       "value": "<location>"
     },
@@ -443,9 +318,19 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
         "name": "myCustomLockName"
       }
     },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourcesIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "migrationToken": {
+      "value": "<migrationToken>"
+    },
     "networkAcls": {
       "value": {
-        "bypass": "AzureServices",
         "defaultAction": "Deny",
         "ipRules": [
           {
@@ -464,16 +349,8 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
       "value": [
         {
           "privateDnsZoneResourceIds": [
-            "<privateDNSResourceId>"
+            "<privateDNSZoneResourceId>"
           ],
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "service": "vault",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
@@ -482,6 +359,9 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
           }
         }
       ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
     },
     "roleAssignments": {
       "value": [
@@ -492,28 +372,8 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
         }
       ]
     },
-    "secrets": {
-      "value": {
-        "secureList": [
-          {
-            "attributesExp": 1702648632,
-            "attributesNbf": 10000,
-            "contentType": "Something",
-            "name": "secretName",
-            "roleAssignments": [
-              {
-                "principalId": "<principalId>",
-                "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "Reader"
-              }
-            ],
-            "value": "secretValue"
-          }
-        ]
-      }
-    },
-    "softDeleteRetentionInDays": {
-      "value": 7
+    "sku": {
+      "value": "S0"
     },
     "tags": {
       "value": {
@@ -521,6 +381,9 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "userOwnedStorage": {
+      "value": "<userOwnedStorage>"
     }
   }
 }
@@ -529,9 +392,9 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
 </details>
 <p>
 
-### Example 3: _Using Private Endpoints_
+### Example 3: _As Speech Service_
 
-This instance deploys the module with Private Endpoints.
+This instance deploys the module as a Speech Service.
 
 
 <details>
@@ -539,18 +402,32 @@ This instance deploys the module with Private Endpoints.
 <summary>via Bicep module</summary>
 
 ```bicep
-module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-kvvpe'
+module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-csaspeech'
   params: {
     // Required parameters
-    name: 'kvvpe001'
+    kind: 'SpeechServices'
+    name: 'csaspeech001'
     // Non-required parameters
-    enablePurgeProtection: false
+    allowedFqdnList: '<allowedFqdnList>'
+    apiProperties: '<apiProperties>'
+    customerManagedKey: '<customerManagedKey>'
+    customSubDomainName: 'speechdomain'
+    diagnosticSettings: '<diagnosticSettings>'
     location: '<location>'
+    lock: '<lock>'
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourcesIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    migrationToken: '<migrationToken>'
+    networkAcls: '<networkAcls>'
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
-          '<privateDNSResourceId>'
+          '<privateDNSZoneResourceId>'
         ]
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -560,11 +437,14 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
         }
       }
     ]
+    roleAssignments: '<roleAssignments>'
+    sku: 'S0'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    userOwnedStorage: '<userOwnedStorage>'
   }
 }
 ```
@@ -582,21 +462,53 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "kind": {
+      "value": "SpeechServices"
+    },
     "name": {
-      "value": "kvvpe001"
+      "value": "csaspeech001"
     },
     // Non-required parameters
-    "enablePurgeProtection": {
-      "value": false
+    "allowedFqdnList": {
+      "value": "<allowedFqdnList>"
+    },
+    "apiProperties": {
+      "value": "<apiProperties>"
+    },
+    "customerManagedKey": {
+      "value": "<customerManagedKey>"
+    },
+    "customSubDomainName": {
+      "value": "speechdomain"
+    },
+    "diagnosticSettings": {
+      "value": "<diagnosticSettings>"
     },
     "location": {
       "value": "<location>"
+    },
+    "lock": {
+      "value": "<lock>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourcesIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "migrationToken": {
+      "value": "<migrationToken>"
+    },
+    "networkAcls": {
+      "value": "<networkAcls>"
     },
     "privateEndpoints": {
       "value": [
         {
           "privateDnsZoneResourceIds": [
-            "<privateDNSResourceId>"
+            "<privateDNSZoneResourceId>"
           ],
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -607,12 +519,21 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
         }
       ]
     },
+    "roleAssignments": {
+      "value": "<roleAssignments>"
+    },
+    "sku": {
+      "value": "S0"
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "userOwnedStorage": {
+      "value": "<userOwnedStorage>"
     }
   }
 }
@@ -621,9 +542,9 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 4: _Using Customer-Managed-Keys with System-Assigned identity_
 
-This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
+This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
 
 
 <details>
@@ -631,90 +552,35 @@ This instance deploys the module in alignment with the best-practices of the Wel
 <summary>via Bicep module</summary>
 
 ```bicep
-module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-kvvwaf'
+module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-csaecrs'
   params: {
     // Required parameters
-    name: 'kvvwaf002'
+    kind: 'SpeechServices'
+    name: '<name>'
     // Non-required parameters
-    accessPolicies: []
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    enablePurgeProtection: false
-    enableRbacAuthorization: true
-    keys: [
-      {
-        attributesExp: 1725109032
-        attributesNbf: 10000
-        keySize: 4096
-        name: 'keyName'
-        rotationPolicy: {
-          attributes: {
-            expiryTime: 'P2Y'
-          }
-          lifetimeActions: [
-            {
-              action: {
-                type: 'Rotate'
-              }
-              trigger: {
-                timeBeforeExpiry: 'P2M'
-              }
-            }
-            {
-              action: {
-                type: 'Notify'
-              }
-              trigger: {
-                timeBeforeExpiry: 'P30D'
-              }
-            }
-          ]
-        }
-      }
-    ]
+    allowedFqdnList: '<allowedFqdnList>'
+    apiProperties: '<apiProperties>'
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    customSubDomainName: '<customSubDomainName>'
+    diagnosticSettings: '<diagnosticSettings>'
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
+    lock: '<lock>'
+    managedIdentities: {
+      systemAssigned: true
     }
-    networkAcls: {
-      bypass: 'AzureServices'
-      defaultAction: 'Deny'
-    }
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSResourceId>'
-        ]
-        service: 'vault'
-        subnetResourceId: '<subnetResourceId>'
-      }
-    ]
-    roleAssignments: []
-    secrets: {
-      secureList: [
-        {
-          attributesExp: 1702648632
-          attributesNbf: 10000
-          contentType: 'Something'
-          name: 'secretName'
-          value: 'secretValue'
-        }
-      ]
-    }
-    softDeleteRetentionInDays: 7
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
+    migrationToken: '<migrationToken>'
+    networkAcls: '<networkAcls>'
+    privateEndpoints: '<privateEndpoints>'
+    publicNetworkAccess: 'Enabled'
+    restrictOutboundNetworkAccess: false
+    roleAssignments: '<roleAssignments>'
+    sku: 'S0'
+    tags: '<tags>'
+    userOwnedStorage: '<userOwnedStorage>'
   }
 }
 ```
@@ -731,11 +597,304 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "name": {
-      "value": "kvvwaf002"
+    // Required parameters
+    "kind": {
+      "value": "SpeechServices"
     },
-    "accessPolicies": {
-      "value": []
+    "name": {
+      "value": "<name>"
+    },
+    // Non-required parameters
+    "allowedFqdnList": {
+      "value": "<allowedFqdnList>"
+    },
+    "apiProperties": {
+      "value": "<apiProperties>"
+    },
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    },
+    "customSubDomainName": {
+      "value": "<customSubDomainName>"
+    },
+    "diagnosticSettings": {
+      "value": "<diagnosticSettings>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": "<lock>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "migrationToken": {
+      "value": "<migrationToken>"
+    },
+    "networkAcls": {
+      "value": "<networkAcls>"
+    },
+    "privateEndpoints": {
+      "value": "<privateEndpoints>"
+    },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
+    "restrictOutboundNetworkAccess": {
+      "value": false
+    },
+    "roleAssignments": {
+      "value": "<roleAssignments>"
+    },
+    "sku": {
+      "value": "S0"
+    },
+    "tags": {
+      "value": "<tags>"
+    },
+    "userOwnedStorage": {
+      "value": "<userOwnedStorage>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-csaencr'
+  params: {
+    // Required parameters
+    kind: 'SpeechServices'
+    name: 'csaencr001'
+    // Non-required parameters
+    allowedFqdnList: '<allowedFqdnList>'
+    apiProperties: '<apiProperties>'
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    customSubDomainName: '<customSubDomainName>'
+    diagnosticSettings: '<diagnosticSettings>'
+    location: '<location>'
+    lock: '<lock>'
+    managedIdentities: {
+      userAssignedResourcesIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    migrationToken: '<migrationToken>'
+    networkAcls: '<networkAcls>'
+    privateEndpoints: '<privateEndpoints>'
+    publicNetworkAccess: 'Enabled'
+    restrictOutboundNetworkAccess: false
+    roleAssignments: '<roleAssignments>'
+    sku: 'S0'
+    tags: '<tags>'
+    userOwnedStorage: '<userOwnedStorage>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "SpeechServices"
+    },
+    "name": {
+      "value": "csaencr001"
+    },
+    // Non-required parameters
+    "allowedFqdnList": {
+      "value": "<allowedFqdnList>"
+    },
+    "apiProperties": {
+      "value": "<apiProperties>"
+    },
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "customSubDomainName": {
+      "value": "<customSubDomainName>"
+    },
+    "diagnosticSettings": {
+      "value": "<diagnosticSettings>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": "<lock>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourcesIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "migrationToken": {
+      "value": "<migrationToken>"
+    },
+    "networkAcls": {
+      "value": "<networkAcls>"
+    },
+    "privateEndpoints": {
+      "value": "<privateEndpoints>"
+    },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
+    "restrictOutboundNetworkAccess": {
+      "value": false
+    },
+    "roleAssignments": {
+      "value": "<roleAssignments>"
+    },
+    "sku": {
+      "value": "S0"
+    },
+    "tags": {
+      "value": "<tags>"
+    },
+    "userOwnedStorage": {
+      "value": "<userOwnedStorage>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 6: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-pratices of the Well-Architectured-Framework.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-csawaf'
+  params: {
+    // Required parameters
+    kind: 'Face'
+    name: 'csawaf001'
+    // Non-required parameters
+    allowedFqdnList: '<allowedFqdnList>'
+    apiProperties: '<apiProperties>'
+    customerManagedKey: '<customerManagedKey>'
+    customSubDomainName: 'xcsawaf'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+    }
+    migrationToken: '<migrationToken>'
+    networkAcls: '<networkAcls>'
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
+    roleAssignments: '<roleAssignments>'
+    sku: 'S0'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    userOwnedStorage: '<userOwnedStorage>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "Face"
+    },
+    "name": {
+      "value": "csawaf001"
+    },
+    // Non-required parameters
+    "allowedFqdnList": {
+      "value": "<allowedFqdnList>"
+    },
+    "apiProperties": {
+      "value": "<apiProperties>"
+    },
+    "customerManagedKey": {
+      "value": "<customerManagedKey>"
+    },
+    "customSubDomainName": {
+      "value": "xcsawaf"
     },
     "diagnosticSettings": {
       "value": [
@@ -744,45 +903,6 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
           "eventHubName": "<eventHubName>",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
-    "enablePurgeProtection": {
-      "value": false
-    },
-    "enableRbacAuthorization": {
-      "value": true
-    },
-    "keys": {
-      "value": [
-        {
-          "attributesExp": 1725109032,
-          "attributesNbf": 10000,
-          "keySize": 4096,
-          "name": "keyName",
-          "rotationPolicy": {
-            "attributes": {
-              "expiryTime": "P2Y"
-            },
-            "lifetimeActions": [
-              {
-                "action": {
-                  "type": "Rotate"
-                },
-                "trigger": {
-                  "timeBeforeExpiry": "P2M"
-                }
-              },
-              {
-                "action": {
-                  "type": "Notify"
-                },
-                "trigger": {
-                  "timeBeforeExpiry": "P30D"
-                }
-              }
-            ]
-          }
         }
       ]
     },
@@ -795,41 +915,37 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
         "name": "myCustomLockName"
       }
     },
-    "networkAcls": {
+    "managedIdentities": {
       "value": {
-        "bypass": "AzureServices",
-        "defaultAction": "Deny"
+        "systemAssigned": true
       }
+    },
+    "migrationToken": {
+      "value": "<migrationToken>"
+    },
+    "networkAcls": {
+      "value": "<networkAcls>"
     },
     "privateEndpoints": {
       "value": [
         {
           "privateDnsZoneResourceIds": [
-            "<privateDNSResourceId>"
+            "<privateDNSZoneResourceId>"
           ],
-          "service": "vault",
-          "subnetResourceId": "<subnetResourceId>"
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
         }
       ]
     },
     "roleAssignments": {
-      "value": []
+      "value": "<roleAssignments>"
     },
-    "secrets": {
-      "value": {
-        "secureList": [
-          {
-            "attributesExp": 1702648632,
-            "attributesNbf": 10000,
-            "contentType": "Something",
-            "name": "secretName",
-            "value": "secretValue"
-          }
-        ]
-      }
-    },
-    "softDeleteRetentionInDays": {
-      "value": 7
+    "sku": {
+      "value": "S0"
     },
     "tags": {
       "value": {
@@ -837,6 +953,9 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "userOwnedStorage": {
+      "value": "<userOwnedStorage>"
     }
   }
 }
@@ -852,46 +971,99 @@ module vault 'br/public:avm-res-keyvault-vault:1.0.0' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the Key Vault. Must be globally unique. |
+| [`kind`](#parameter-kind) | string | Kind of the Cognitive Services. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
+| [`name`](#parameter-name) | string | The name of Cognitive Services account. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`customSubDomainName`](#parameter-customsubdomainname) | string | Subdomain name used for token-based authentication. Required if 'networkAcls' or 'privateEndpoints' are set. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`accessPolicies`](#parameter-accesspolicies) | array | All access policies to create. |
-| [`createMode`](#parameter-createmode) | string | The vault's create mode to indicate whether the vault need to be recovered or not. - recover or default. |
+| [`allowedFqdnList`](#parameter-allowedfqdnlist) | array | List of allowed FQDN. |
+| [`apiProperties`](#parameter-apiproperties) | object | The API properties for special APIs. |
+| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enablePurgeProtection`](#parameter-enablepurgeprotection) | bool | Provide 'true' to enable Key Vault's purge protection feature. |
-| [`enableRbacAuthorization`](#parameter-enablerbacauthorization) | bool | Property that controls how data actions are authorized. When true, the key vault will use Role Based Access Control (RBAC) for authorization of data actions, and the access policies specified in vault properties will be ignored. When false, the key vault will use the access policies specified in vault properties, and any policy stored on Azure Resource Manager will be ignored. Note that management actions are always authorized with RBAC. |
-| [`enableSoftDelete`](#parameter-enablesoftdelete) | bool | Switch to enable/disable Key Vault's soft delete feature. |
+| [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Allow only Azure AD authentication. Should be enabled for security reasons. |
+| [`dynamicThrottlingEnabled`](#parameter-dynamicthrottlingenabled) | bool | The flag to enable dynamic throttling. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`enableVaultForDeployment`](#parameter-enablevaultfordeployment) | bool | Specifies if the vault is enabled for deployment by script or compute. |
-| [`enableVaultForDiskEncryption`](#parameter-enablevaultfordiskencryption) | bool | Specifies if the azure platform has access to the vault for enabling disk encryption scenarios. |
-| [`enableVaultForTemplateDeployment`](#parameter-enablevaultfortemplatedeployment) | bool | Specifies if the vault is enabled for a template deployment. |
-| [`keys`](#parameter-keys) | array | All keys to create. |
-| [`location`](#parameter-location) | string | Location for all resources. |
+| [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`networkAcls`](#parameter-networkacls) | object | Rules governing the accessibility of the resouce from specific network locations. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`migrationToken`](#parameter-migrationtoken) | string | Resource migration token. |
+| [`networkAcls`](#parameter-networkacls) | object | A collection of rules governing the accessibility from specific network locations. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. |
+| [`restore`](#parameter-restore) | bool | Restore a soft-deleted cognitive service at deployment time. Will fail if no such soft-deleted resource exists. |
+| [`restrictOutboundNetworkAccess`](#parameter-restrictoutboundnetworkaccess) | bool | Restrict outbound network access. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| [`secrets`](#parameter-secrets) | secureObject | All secrets to create. |
-| [`sku`](#parameter-sku) | string | Specifies the SKU for the vault. |
-| [`softDeleteRetentionInDays`](#parameter-softdeleteretentionindays) | int | softDelete data retention days. It accepts >=7 and <=90. |
-| [`tags`](#parameter-tags) | object | Resource tags. |
+| [`sku`](#parameter-sku) | string | SKU of the Cognitive Services resource. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
+| [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`userOwnedStorage`](#parameter-userownedstorage) | array | The storage accounts for this resource. |
 
-### Parameter: `accessPolicies`
+### Parameter: `allowedFqdnList`
 
-All access policies to create.
+List of allowed FQDN.
 - Required: No
 - Type: array
 
-### Parameter: `createMode`
+### Parameter: `apiProperties`
 
-The vault's create mode to indicate whether the vault need to be recovered or not. - recover or default.
+The API properties for special APIs.
+- Required: No
+- Type: object
+
+### Parameter: `customerManagedKey`
+
+The customer managed key definition.
+- Required: No
+- Type: object
+
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`keyName`](#parameter-customermanagedkeykeyname) | Yes | string | Required. The name of the customer managed key to use for encryption. |
+| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | Yes | string | Required. The resource ID of a key vault to reference a customer managed key for encryption from. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | No | string | Optional. The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
+| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | No | string | Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
+
+### Parameter: `customerManagedKey.keyName`
+
+Required. The name of the customer managed key to use for encryption.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.keyVaultResourceId`
+
+Required. The resource ID of a key vault to reference a customer managed key for encryption from.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.keyVersion`
+
+Optional. The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
+
 - Required: No
 - Type: string
-- Default: `'default'`
+
+### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
+
+Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
+
+- Required: No
+- Type: string
+
+### Parameter: `customSubDomainName`
+
+Subdomain name used for token-based authentication. Required if 'networkAcls' or 'privateEndpoints' are set.
+- Required: No
+- Type: string
 
 ### Parameter: `diagnosticSettings`
 
@@ -1008,26 +1180,19 @@ Optional. Resource ID of the diagnostic log analytics workspace. For security re
 - Required: No
 - Type: string
 
-### Parameter: `enablePurgeProtection`
+### Parameter: `disableLocalAuth`
 
-Provide 'true' to enable Key Vault's purge protection feature.
+Allow only Azure AD authentication. Should be enabled for security reasons.
 - Required: No
 - Type: bool
 - Default: `True`
 
-### Parameter: `enableRbacAuthorization`
+### Parameter: `dynamicThrottlingEnabled`
 
-Property that controls how data actions are authorized. When true, the key vault will use Role Based Access Control (RBAC) for authorization of data actions, and the access policies specified in vault properties will be ignored. When false, the key vault will use the access policies specified in vault properties, and any policy stored on Azure Resource Manager will be ignored. Note that management actions are always authorized with RBAC.
+The flag to enable dynamic throttling.
 - Required: No
 - Type: bool
-- Default: `True`
-
-### Parameter: `enableSoftDelete`
-
-Switch to enable/disable Key Vault's soft delete feature.
-- Required: No
-- Type: bool
-- Default: `True`
+- Default: `False`
 
 ### Parameter: `enableTelemetry`
 
@@ -1036,36 +1201,16 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `enableVaultForDeployment`
+### Parameter: `kind`
 
-Specifies if the vault is enabled for deployment by script or compute.
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `enableVaultForDiskEncryption`
-
-Specifies if the azure platform has access to the vault for enabling disk encryption scenarios.
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `enableVaultForTemplateDeployment`
-
-Specifies if the vault is enabled for a template deployment.
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `keys`
-
-All keys to create.
-- Required: No
-- Type: array
+Kind of the Cognitive Services. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region.
+- Required: Yes
+- Type: string
+- Allowed: `[AnomalyDetector, Bing.Autosuggest.v7, Bing.CustomSearch, Bing.EntitySearch, Bing.Search.v7, Bing.SpellCheck.v7, CognitiveServices, ComputerVision, ContentModerator, CustomVision.Prediction, CustomVision.Training, Face, FormRecognizer, ImmersiveReader, Internal.AllInOne, LUIS, LUIS.Authoring, Personalizer, QnAMaker, SpeechServices, TextAnalytics, TextTranslation]`
 
 ### Parameter: `location`
 
-Location for all resources.
+Location for all Resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
@@ -1097,15 +1242,47 @@ Optional. Specify the name of lock.
 - Required: No
 - Type: string
 
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource.
+- Required: No
+- Type: object
+
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | No | bool | Optional. Enables system assigned managed identity on the resource. |
+| [`userAssignedResourcesIds`](#parameter-managedidentitiesuserassignedresourcesids) | No | array | Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `managedIdentities.systemAssigned`
+
+Optional. Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `managedIdentities.userAssignedResourcesIds`
+
+Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
+
+### Parameter: `migrationToken`
+
+Resource migration token.
+- Required: No
+- Type: string
+
 ### Parameter: `name`
 
-Name of the Key Vault. Must be globally unique.
+The name of Cognitive Services account.
 - Required: Yes
 - Type: string
 
 ### Parameter: `networkAcls`
 
-Rules governing the accessibility of the resouce from specific network locations.
+A collection of rules governing the accessibility from specific network locations.
 - Required: No
 - Type: object
 
@@ -1285,6 +1462,20 @@ Whether or not public network access is allowed for this resource. For security 
 - Default: `''`
 - Allowed: `['', Disabled, Enabled]`
 
+### Parameter: `restore`
+
+Restore a soft-deleted cognitive service at deployment time. Will fail if no such soft-deleted resource exists.
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `restrictOutboundNetworkAccess`
+
+Restrict outbound network access.
+- Required: No
+- Type: bool
+- Default: `True`
+
 ### Parameter: `roleAssignments`
 
 Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
@@ -1353,43 +1544,37 @@ Required. The name of the role to assign. If it cannot be found you can specify 
 - Required: Yes
 - Type: string
 
-### Parameter: `secrets`
-
-All secrets to create.
-- Required: No
-- Type: secureObject
-
 ### Parameter: `sku`
 
-Specifies the SKU for the vault.
+SKU of the Cognitive Services resource. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region.
 - Required: No
 - Type: string
-- Default: `'premium'`
-- Allowed: `[premium, standard]`
-
-### Parameter: `softDeleteRetentionInDays`
-
-softDelete data retention days. It accepts >=7 and <=90.
-- Required: No
-- Type: int
-- Default: `90`
+- Default: `'S0'`
+- Allowed: `[C2, C3, C4, F0, F1, S, S0, S1, S10, S2, S3, S4, S5, S6, S7, S8, S9]`
 
 ### Parameter: `tags`
 
-Resource tags.
+Tags of the resource.
 - Required: No
 - Type: object
+
+### Parameter: `userOwnedStorage`
+
+The storage accounts for this resource.
+- Required: No
+- Type: array
 
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `endpoint` | string | The service endpoint of the cognitive services account. |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the key vault. |
-| `resourceGroupName` | string | The name of the resource group the key vault was created in. |
-| `resourceId` | string | The resource ID of the key vault. |
-| `uri` | string | The URI of the key vault. |
+| `name` | string | The name of the cognitive services account. |
+| `resourceGroupName` | string | The resource group the cognitive services account was deployed into. |
+| `resourceId` | string | The resource ID of the cognitive services account. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
 
