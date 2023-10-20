@@ -103,8 +103,6 @@ function Set-AVMModule {
         $relevantTemplatePaths | ForEach-Object -ThrottleLimit $ThrottleLimit -Parallel {
             $resourceTypeIdentifier = 'avm-{0}' -f ($_ -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] # avm/res/<provider>/<resourceType>
 
-            . $using:ReadMeScriptFilePath
-
             ###############
             ##   Build   ##
             ###############
@@ -118,6 +116,7 @@ function Set-AVMModule {
             ################
             if (-not $using:SkipReadMe) {
                 Write-Output "Generating readme for [$resourceTypeIdentifier]"
+                . $using:ReadMeScriptFilePath
 
                 # If the template was just build, we can pass the JSON into the readme script to be more efficient
                 $readmeTemplateFilePath = (-not $using:SkipBuild) ? (Join-Path (Split-Path $_ -Parent) 'main.json') : $_
