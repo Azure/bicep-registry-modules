@@ -1,6 +1,6 @@
-# Private Endpoints `[Microsoft.Network/privateEndpoints]`
+# DNS Resolvers `[Microsoft.Network/dnsResolvers]`
 
-This module deploys a Private Endpoint.
+This module deploys a DNS Resolver.
 
 ## Navigation
 
@@ -16,8 +16,9 @@ This module deploys a Private Endpoint.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/dnsResolvers` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-07-01/dnsResolvers) |
+| `Microsoft.Network/dnsResolvers/inboundEndpoints` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-07-01/dnsResolvers/inboundEndpoints) |
+| `Microsoft.Network/dnsResolvers/outboundEndpoints` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-07-01/dnsResolvers/outboundEndpoints) |
 
 ## Usage examples
 
@@ -25,7 +26,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm-res-network-privateendpoint:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm-res-network-dnsresolver:1.0.0`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -43,26 +44,17 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-npemin'
+module dnsResolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-ndrmin'
   params: {
     // Required parameters
-    groupIds: [
-      'vault'
-    ]
-    name: 'npemin001'
-    serviceResourceId: '<serviceResourceId>'
-    subnetResourceId: '<subnetResourceId>'
+    name: 'ndrmin001'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
-    applicationSecurityGroupResourceIds: []
-    customDnsConfigs: []
-    customNetworkInterfaceName: ''
-    ipConfigurations: []
+    inboundEndpoints: []
     location: '<location>'
     lock: {}
-    manualPrivateLinkServiceConnections: []
-    privateDnsZoneGroupName: ''
-    privateDnsZoneResourceIds: []
+    outboundEndpoints: []
     roleAssignments: []
     tags: {}
   }
@@ -82,31 +74,14 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "groupIds": {
-      "value": [
-        "vault"
-      ]
-    },
     "name": {
-      "value": "npemin001"
+      "value": "ndrmin001"
     },
-    "serviceResourceId": {
-      "value": "<serviceResourceId>"
-    },
-    "subnetResourceId": {
-      "value": "<subnetResourceId>"
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
     },
     // Non-required parameters
-    "applicationSecurityGroupResourceIds": {
-      "value": []
-    },
-    "customDnsConfigs": {
-      "value": []
-    },
-    "customNetworkInterfaceName": {
-      "value": ""
-    },
-    "ipConfigurations": {
+    "inboundEndpoints": {
       "value": []
     },
     "location": {
@@ -115,13 +90,7 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
     "lock": {
       "value": {}
     },
-    "manualPrivateLinkServiceConnections": {
-      "value": []
-    },
-    "privateDnsZoneGroupName": {
-      "value": ""
-    },
-    "privateDnsZoneResourceIds": {
+    "outboundEndpoints": {
       "value": []
     },
     "roleAssignments": {
@@ -147,30 +116,17 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-npemax'
+module dnsResolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-ndrmax'
   params: {
     // Required parameters
-    groupIds: [
-      'vault'
-    ]
-    name: 'npemax001'
-    serviceResourceId: '<serviceResourceId>'
-    subnetResourceId: '<subnetResourceId>'
+    name: 'ndrmax001'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
-    applicationSecurityGroupResourceIds: [
-      '<applicationSecurityGroupResourceId>'
-    ]
-    customDnsConfigs: []
-    customNetworkInterfaceName: 'npemax001nic'
-    ipConfigurations: [
+    inboundEndpoints: [
       {
-        name: 'myIPconfig'
-        properties: {
-          groupId: 'vault'
-          memberName: 'default'
-          privateIPAddress: '10.0.0.10'
-        }
+        name: 'ndrmax-az-pdnsin-x-001'
+        subnetResourceId: '<subnetResourceId>'
       }
     ]
     location: '<location>'
@@ -178,10 +134,11 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    manualPrivateLinkServiceConnections: []
-    privateDnsZoneGroupName: 'default'
-    privateDnsZoneResourceIds: [
-      '<privateDNSZoneResourceId>'
+    outboundEndpoints: [
+      {
+        name: 'ndrmax-az-pdnsout-x-001'
+        subnetResourceId: '<subnetResourceId>'
+      }
     ]
     roleAssignments: [
       {
@@ -212,41 +169,18 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "groupIds": {
-      "value": [
-        "vault"
-      ]
-    },
     "name": {
-      "value": "npemax001"
+      "value": "ndrmax001"
     },
-    "serviceResourceId": {
-      "value": "<serviceResourceId>"
-    },
-    "subnetResourceId": {
-      "value": "<subnetResourceId>"
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
     },
     // Non-required parameters
-    "applicationSecurityGroupResourceIds": {
-      "value": [
-        "<applicationSecurityGroupResourceId>"
-      ]
-    },
-    "customDnsConfigs": {
-      "value": []
-    },
-    "customNetworkInterfaceName": {
-      "value": "npemax001nic"
-    },
-    "ipConfigurations": {
+    "inboundEndpoints": {
       "value": [
         {
-          "name": "myIPconfig",
-          "properties": {
-            "groupId": "vault",
-            "memberName": "default",
-            "privateIPAddress": "10.0.0.10"
-          }
+          "name": "ndrmax-az-pdnsin-x-001",
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
@@ -259,15 +193,12 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
         "name": "myCustomLockName"
       }
     },
-    "manualPrivateLinkServiceConnections": {
-      "value": []
-    },
-    "privateDnsZoneGroupName": {
-      "value": "default"
-    },
-    "privateDnsZoneResourceIds": {
+    "outboundEndpoints": {
       "value": [
-        "<privateDNSZoneResourceId>"
+        {
+          "name": "ndrmax-az-pdnsout-x-001",
+          "subnetResourceId": "<subnetResourceId>"
+        }
       ]
     },
     "roleAssignments": {
@@ -295,7 +226,7 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
 
 ### Example 3: _WAF-aligned_
 
-This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
@@ -303,30 +234,17 @@ This instance deploys the module in alignment with the best-practices of the Wel
 <summary>via Bicep module</summary>
 
 ```bicep
-module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-npewaf'
+module dnsResolver 'br/public:avm-res-network-dnsresolver:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-ndrwaf'
   params: {
     // Required parameters
-    groupIds: [
-      'vault'
-    ]
-    name: 'npewaf001'
-    serviceResourceId: '<serviceResourceId>'
-    subnetResourceId: '<subnetResourceId>'
+    name: 'ndrwaf001'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
-    applicationSecurityGroupResourceIds: [
-      '<applicationSecurityGroupResourceId>'
-    ]
-    customDnsConfigs: []
-    customNetworkInterfaceName: 'npewaf001nic'
-    ipConfigurations: [
+    inboundEndpoints: [
       {
-        name: 'myIPconfig'
-        properties: {
-          groupId: 'vault'
-          memberName: 'default'
-          privateIPAddress: '10.0.0.10'
-        }
+        name: 'ndrwaf-az-pdnsin-x-001'
+        subnetResourceId: '<subnetResourceId>'
       }
     ]
     location: '<location>'
@@ -334,18 +252,13 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    manualPrivateLinkServiceConnections: []
-    privateDnsZoneGroupName: 'default'
-    privateDnsZoneResourceIds: [
-      '<privateDNSZoneResourceId>'
-    ]
-    roleAssignments: [
+    outboundEndpoints: [
       {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        name: 'ndrwaf-az-pdnsout-x-001'
+        subnetResourceId: '<subnetResourceId>'
       }
     ]
+    roleAssignments: []
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -368,41 +281,18 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "groupIds": {
-      "value": [
-        "vault"
-      ]
-    },
     "name": {
-      "value": "npewaf001"
+      "value": "ndrwaf001"
     },
-    "serviceResourceId": {
-      "value": "<serviceResourceId>"
-    },
-    "subnetResourceId": {
-      "value": "<subnetResourceId>"
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
     },
     // Non-required parameters
-    "applicationSecurityGroupResourceIds": {
-      "value": [
-        "<applicationSecurityGroupResourceId>"
-      ]
-    },
-    "customDnsConfigs": {
-      "value": []
-    },
-    "customNetworkInterfaceName": {
-      "value": "npewaf001nic"
-    },
-    "ipConfigurations": {
+    "inboundEndpoints": {
       "value": [
         {
-          "name": "myIPconfig",
-          "properties": {
-            "groupId": "vault",
-            "memberName": "default",
-            "privateIPAddress": "10.0.0.10"
-          }
+          "name": "ndrwaf-az-pdnsin-x-001",
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
@@ -415,25 +305,16 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
         "name": "myCustomLockName"
       }
     },
-    "manualPrivateLinkServiceConnections": {
-      "value": []
-    },
-    "privateDnsZoneGroupName": {
-      "value": "default"
-    },
-    "privateDnsZoneResourceIds": {
+    "outboundEndpoints": {
       "value": [
-        "<privateDNSZoneResourceId>"
+        {
+          "name": "ndrwaf-az-pdnsout-x-001",
+          "subnetResourceId": "<subnetResourceId>"
+        }
       ]
     },
     "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
+      "value": []
     },
     "tags": {
       "value": {
@@ -456,68 +337,37 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`groupIds`](#parameter-groupids) | array | Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to. |
-| [`name`](#parameter-name) | string | Name of the private endpoint resource to create. |
-| [`serviceResourceId`](#parameter-serviceresourceid) | string | Resource ID of the resource that needs to be connected to the network. |
-| [`subnetResourceId`](#parameter-subnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
+| [`name`](#parameter-name) | string | Name of the Private DNS Resolver. |
+| [`virtualNetworkResourceId`](#parameter-virtualnetworkresourceid) | string | ResourceId of the virtual network to attach the Private DNS Resolver to. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`applicationSecurityGroupResourceIds`](#parameter-applicationsecuritygroupresourceids) | array | Application security groups in which the private endpoint IP configuration is included. |
-| [`customDnsConfigs`](#parameter-customdnsconfigs) | array | Custom DNS configurations. |
-| [`customNetworkInterfaceName`](#parameter-customnetworkinterfacename) | string | The custom name of the network interface attached to the private endpoint. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`ipConfigurations`](#parameter-ipconfigurations) | array | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
-| [`location`](#parameter-location) | string | Location for all Resources. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`inboundEndpoints`](#parameter-inboundendpoints) | array | Inbound Endpoints for Private DNS Resolver. |
+| [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`manualPrivateLinkServiceConnections`](#parameter-manualprivatelinkserviceconnections) | array | Manual PrivateLink Service Connections. |
-| [`privateDnsZoneGroupName`](#parameter-privatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
-| [`privateDnsZoneResourceIds`](#parameter-privatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+| [`outboundEndpoints`](#parameter-outboundendpoints) | array | Outbound Endpoints for Private DNS Resolver. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| [`tags`](#parameter-tags) | object | Tags to be applied on all resources/resource groups in this deployment. |
-
-### Parameter: `applicationSecurityGroupResourceIds`
-
-Application security groups in which the private endpoint IP configuration is included.
-- Required: No
-- Type: array
-
-### Parameter: `customDnsConfigs`
-
-Custom DNS configurations.
-- Required: No
-- Type: array
-
-### Parameter: `customNetworkInterfaceName`
-
-The custom name of the network interface attached to the private endpoint.
-- Required: No
-- Type: string
+| [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `enableTelemetry`
 
-Enable/Disable usage telemetry for module.
+Enable telemetry via a Globally Unique Identifier (GUID).
 - Required: No
 - Type: bool
 - Default: `True`
 
-### Parameter: `groupIds`
+### Parameter: `inboundEndpoints`
 
-Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to.
-- Required: Yes
-- Type: array
-
-### Parameter: `ipConfigurations`
-
-A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.
+Inbound Endpoints for Private DNS Resolver.
 - Required: No
 - Type: array
 
 ### Parameter: `location`
 
-Location for all Resources.
+Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
@@ -549,27 +399,15 @@ Optional. Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `manualPrivateLinkServiceConnections`
-
-Manual PrivateLink Service Connections.
-- Required: No
-- Type: array
-
 ### Parameter: `name`
 
-Name of the private endpoint resource to create.
+Name of the Private DNS Resolver.
 - Required: Yes
 - Type: string
 
-### Parameter: `privateDnsZoneGroupName`
+### Parameter: `outboundEndpoints`
 
-The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
-- Required: No
-- Type: string
-
-### Parameter: `privateDnsZoneResourceIds`
-
-The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+Outbound Endpoints for Private DNS Resolver.
 - Required: No
 - Type: array
 
@@ -641,23 +479,17 @@ Required. The name of the role to assign. If it cannot be found you can specify 
 - Required: Yes
 - Type: string
 
-### Parameter: `serviceResourceId`
-
-Resource ID of the resource that needs to be connected to the network.
-- Required: Yes
-- Type: string
-
-### Parameter: `subnetResourceId`
-
-Resource ID of the subnet where the endpoint needs to be created.
-- Required: Yes
-- Type: string
-
 ### Parameter: `tags`
 
-Tags to be applied on all resources/resource groups in this deployment.
+Tags of the resource.
 - Required: No
 - Type: object
+
+### Parameter: `virtualNetworkResourceId`
+
+ResourceId of the virtual network to attach the Private DNS Resolver to.
+- Required: Yes
+- Type: string
 
 
 ## Outputs
@@ -665,9 +497,9 @@ Tags to be applied on all resources/resource groups in this deployment.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the private endpoint. |
-| `resourceGroupName` | string | The resource group the private endpoint was deployed into. |
-| `resourceId` | string | The resource ID of the private endpoint. |
+| `name` | string | The name of the Private DNS Resolver. |
+| `resourceGroupName` | string | The resource group the Private DNS Resolver was deployed into. |
+| `resourceId` | string | The resource ID of the Private DNS Resolver. |
 
 ## Cross-referenced modules
 

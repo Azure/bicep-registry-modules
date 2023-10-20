@@ -372,7 +372,7 @@ module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`clusterName`](#parameter-clustername) | string | The name of the AKS cluster that should be configured. |
-| [`extensionType`](#parameter-extensiontype) | string | Type of the Extension, of which this resource is an instance of. It must be one of the Extension Types registered with Microsoft.KubernetesConfiguration by the Extension publisher. |
+| [`extensionType`](#parameter-extensiontype) | string | Type of the extension, of which this resource is an instance of. It must be one of the Extension Types registered with Microsoft.KubernetesConfiguration by the extension publisher. |
 | [`name`](#parameter-name) | string | The name of the Flux Configuration. |
 
 **Optional parameters**
@@ -416,7 +416,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `extensionType`
 
-Type of the Extension, of which this resource is an instance of. It must be one of the Extension Types registered with Microsoft.KubernetesConfiguration by the Extension publisher.
+Type of the extension, of which this resource is an instance of. It must be one of the Extension Types registered with Microsoft.KubernetesConfiguration by the extension publisher.
 - Required: Yes
 - Type: string
 
