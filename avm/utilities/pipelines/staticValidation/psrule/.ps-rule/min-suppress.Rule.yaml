@@ -7,11 +7,15 @@ metadata:
 spec:
   rule:
     - Azure.Resource.UseTags
-    - Azure.KeyVault.Logs
-    - Azure.KeyVault.Firewall
+      # Policy specific
     - Azure.Policy.ExemptionDescriptors
     - Azure.Policy.Descriptors
     - Azure.Policy.AssignmentDescriptors
+      # Cognitive Services specific
+    - Azure.Cognitive.ManagedIdentity
+      # Key Vault specific
+    - Azure.KeyVault.Logs
+    - Azure.KeyVault.Firewall
   if:
     name: "."
     contains:
