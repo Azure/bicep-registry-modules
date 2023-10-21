@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
 
 // ========== //
 // Parameters //
@@ -9,15 +9,15 @@ metadata description = 'This instance deploys the module in alignment with the b
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-network.privateendpoints-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-network.dnsResolvers-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'npewaf'
+param serviceShort string = 'ndrwaf'
 
-@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
+@description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
 // ============ //
@@ -36,9 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    applicationSecurityGroupName: 'dep-${namePrefix}-asg-${serviceShort}'
     location: location
   }
 }
@@ -54,38 +52,22 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location
-    groupIds: [
-      'vault'
-    ]
-    serviceResourceId: nestedDependencies.outputs.keyVaultResourceId
-    subnetResourceId: nestedDependencies.outputs.subnetResourceId
     lock: {
-      kind: 'CanNotDelete'
       name: 'myCustomLockName'
+      kind: 'CanNotDelete'
     }
-    privateDnsZoneResourceIds: [
-      nestedDependencies.outputs.privateDNSZoneResourceId
-    ]
-    roleAssignments: [
+    virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
+    inboundEndpoints: [
       {
-        roleDefinitionIdOrName: 'Reader'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
+        name: '${namePrefix}${serviceShort}-az-pdnsin-x-001'
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId_dnsIn
       }
     ]
-    ipConfigurations: [
+    outboundEndpoints: [
       {
-        name: 'myIPconfig'
-        properties: {
-          groupId: 'vault'
-          memberName: 'default'
-          privateIPAddress: '10.0.0.10'
-        }
+        name: '${namePrefix}${serviceShort}-az-pdnsout-x-001'
+        subnetResourceId: nestedDependencies.outputs.subnetResourceId_dnsOut
       }
-    ]
-    customNetworkInterfaceName: '${namePrefix}${serviceShort}001nic'
-    applicationSecurityGroupResourceIds: [
-      nestedDependencies.outputs.applicationSecurityGroupResourceId
     ]
     tags: {
       'hidden-title': 'This is visible in the resource name'
@@ -93,8 +75,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Role: 'DeploymentValidation'
     }
     // Workaround for PSRule
-    privateDnsZoneGroupName: 'default'
-    customDnsConfigs: []
-    manualPrivateLinkServiceConnections: []
+    roleAssignments: []
   }
 }]
