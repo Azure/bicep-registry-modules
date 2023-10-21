@@ -60,6 +60,7 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
     a: []
     aaaa: []
     cname: []
+    location: 'global'
     lock: {}
     mx: []
     ptr: []
@@ -97,6 +98,9 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
     },
     "cname": {
       "value": []
+    },
+    "location": {
+      "value": "global"
     },
     "lock": {
       "value": {}
@@ -1043,7 +1047,6 @@ Array of SRV records.
 Tags of the resource.
 - Required: No
 - Type: object
-- Default: `{object}`
 
 ### Parameter: `txt`
 

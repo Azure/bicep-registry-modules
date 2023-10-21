@@ -130,7 +130,6 @@ Required. The name of the role to assign. If it cannot be found you can specify 
 A SOA record.
 - Required: No
 - Type: object
-- Default: `{object}`
 
 ### Parameter: `ttl`
 

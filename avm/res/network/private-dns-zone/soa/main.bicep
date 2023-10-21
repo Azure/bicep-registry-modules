@@ -12,7 +12,7 @@ param name string
 param metadata object?
 
 @description('Optional. A SOA record.')
-param soaRecord object = {}
+param soaRecord object?
 
 @description('Optional. The TTL (time-to-live) of the records in the record set.')
 param ttl int = 3600

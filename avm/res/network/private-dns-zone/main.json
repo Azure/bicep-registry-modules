@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "1979360462294534745"
+      "templateHash": "16185589732703099389"
     },
     "name": "Private DNS Zones",
     "description": "This module deploys a Private DNS zone.",
@@ -190,7 +190,7 @@
     },
     "tags": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Tags of the resource."
       }
@@ -1519,7 +1519,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.22.6.54827",
-              "templateHash": "9442940591268438665"
+              "templateHash": "1730811290085898902"
             },
             "name": "Private DNS Zone SOA record",
             "description": "This module deploys a Private DNS Zone SOA record.",
@@ -1615,7 +1615,7 @@
             },
             "soaRecord": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A SOA record."
               }
@@ -2225,7 +2225,7 @@
             "value": "[coalesce(tryGet(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()], 'registrationEnabled'), false())]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()], 'tags'), createObject())]"
+            "value": "[coalesce(tryGet(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           }
         },
         "template": {

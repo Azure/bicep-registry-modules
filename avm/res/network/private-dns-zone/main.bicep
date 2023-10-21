@@ -39,7 +39,7 @@ param location string = 'global'
 param roleAssignments roleAssignmentType
 
 @description('Optional. Tags of the resource.')
-param tags object = {}
+param tags object?
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -184,7 +184,7 @@ module privateDnsZone_virtualNetworkLinks 'virtual-network-link/main.bicep' = [f
     virtualNetworkResourceId: virtualNetworkLink.virtualNetworkResourceId
     location: virtualNetworkLink.?location ?? 'global'
     registrationEnabled: virtualNetworkLink.?registrationEnabled ?? false
-    tags: virtualNetworkLink.?tags ?? {}
+    tags: virtualNetworkLink.?tags ?? tags
   }
 }]
 

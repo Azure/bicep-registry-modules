@@ -44,6 +44,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001.com'
+    location: 'global'
 
     // Workaround for PSRule
     a: []
@@ -57,5 +58,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     virtualNetworkLinks: []
     lock: {}
     roleAssignments: []
+
   }
 }]
