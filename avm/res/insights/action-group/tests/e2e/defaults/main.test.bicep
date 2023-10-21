@@ -38,6 +38,19 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
+    location: location
     groupShortName: 'ag${serviceShort}001'
+
+    // Workaround for PSRule
+    emailReceivers: null
+    smsReceivers: null
+    webhookReceivers: null
+    itsmReceivers: null
+    azureAppPushReceivers: null
+    automationRunbookReceivers: null
+    voiceReceivers: null
+    logicAppReceivers: null
+    azureFunctionReceivers: null
+    armRoleReceivers: null
   }
 }]
