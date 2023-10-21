@@ -28,7 +28,7 @@ runs:
         $fullModulePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.modulePath }}'
 
         $functionInput = @{
-          FullModulePath = $fullModulePath
+          ModulePath = $fullModulePath
         }
 
         Write-Verbose "Invoke task with" -Verbose
