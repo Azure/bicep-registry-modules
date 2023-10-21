@@ -75,11 +75,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         phoneNumber: '2345678901'
       }
     ]
-    // tags: {
-    //   'hidden-title': 'This is visible in the resource name'
-    //   Environment: 'Non-Prod'
-    //   Role: 'DeploymentValidation'
-    // }
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
 
     // Workaround for PSRule
     webhookReceivers: null
