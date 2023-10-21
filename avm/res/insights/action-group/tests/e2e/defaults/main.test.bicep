@@ -38,7 +38,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: location
+    location: 'global'
     groupShortName: 'ag${serviceShort}001'
 
     // Workaround for PSRule

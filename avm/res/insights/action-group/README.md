@@ -49,7 +49,7 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
     azureFunctionReceivers: '<azureFunctionReceivers>'
     emailReceivers: '<emailReceivers>'
     itsmReceivers: '<itsmReceivers>'
-    location: '<location>'
+    location: 'global'
     logicAppReceivers: '<logicAppReceivers>'
     roleAssignments: '<roleAssignments>'
     smsReceivers: '<smsReceivers>'
@@ -99,7 +99,7 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
       "value": "<itsmReceivers>"
     },
     "location": {
-      "value": "<location>"
+      "value": "global"
     },
     "logicAppReceivers": {
       "value": "<logicAppReceivers>"
@@ -157,7 +157,7 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
       }
     ]
     itsmReceivers: '<itsmReceivers>'
-    location: '<location>'
+    location: 'global'
     logicAppReceivers: '<logicAppReceivers>'
     roleAssignments: [
       {
@@ -234,7 +234,7 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
       "value": "<itsmReceivers>"
     },
     "location": {
-      "value": "<location>"
+      "value": "global"
     },
     "logicAppReceivers": {
       "value": "<logicAppReceivers>"
@@ -297,7 +297,7 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
     azureFunctionReceivers: '<azureFunctionReceivers>'
     emailReceivers: '<emailReceivers>'
     itsmReceivers: '<itsmReceivers>'
-    location: '<location>'
+    location: 'global'
     logicAppReceivers: '<logicAppReceivers>'
     roleAssignments: '<roleAssignments>'
     smsReceivers: '<smsReceivers>'
@@ -351,7 +351,7 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
       "value": "<itsmReceivers>"
     },
     "location": {
-      "value": "<location>"
+      "value": "global"
     },
     "logicAppReceivers": {
       "value": "<logicAppReceivers>"
