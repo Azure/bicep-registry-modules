@@ -588,6 +588,7 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
         ttl: 3600
       }
     ]
+    location: 'global'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -739,6 +740,9 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
           "ttl": 3600
         }
       ]
+    },
+    "location": {
+      "value": "global"
     },
     "lock": {
       "value": {
