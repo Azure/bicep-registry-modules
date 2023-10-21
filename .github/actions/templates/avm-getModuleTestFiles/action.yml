@@ -1,5 +1,5 @@
-name: "Get parameter files"
-description: "Retrieve the parameter file paths of a given module"
+name: "Get test files"
+description: "Retrieve the test file paths of a given module"
 
 inputs:
   modulePath:
@@ -10,11 +10,14 @@ outputs:
   moduleTestFilePaths:
     description: "The module test files to use for template evaluation"
     value: ${{ steps.get-module-test-file-paths.outputs.moduleTestFilePaths }}
+  psRuleModuleTestFilePaths:
+    description: "The PSRule module test files to use for template evaluation"
+    value: ${{ steps.get-module-test-file-paths.outputs.psRulemoduleTestFilePaths }}
 
 runs:
   using: "composite"
   steps:
-    - name: "Get parameter file paths"
+    - name: "Get test file paths"
       id: get-module-test-file-paths
       shell: pwsh
       run: |
@@ -22,9 +25,10 @@ runs:
         Write-Output '::group::Get parameter files'
         # Load used functions
         . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-ModuleTestFileList.ps1')
+        $fullModulePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.modulePath }}'
 
         $functionInput = @{
-          ModulePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.modulePath }}'
+          FullModulePath = $fullModulePath
         }
 
         Write-Verbose "Invoke task with" -Verbose
@@ -33,11 +37,30 @@ runs:
         # Get the list of parameter file paths
         $testFilePaths = Get-ModuleTestFileList @functionInput -Verbose
 
+        Write-Verbose ("Returning test files: `n{0}" -f ($testFilePaths | Foreach-Object { '- {0}' -f ($_ -split '[\\|\/]e2e[\\|\/]')[1] } | Out-String)) -Verbose
+
         # Output values to be accessed by next jobs
-        $compressedOutput = $testFilePaths | ConvertTo-Json -Compress
-        if($compressedOutput -notmatch "\[.*\]") {
-          $compressedOutput = "[$compressedOutput]"
+        $compressedTestFileOutput = $testFilePaths | ConvertTo-Json -Compress
+        if($compressedTestFileOutput -notmatch "\[.*\]") {
+          $compressedTestFileOutput = "[$compressedTestFileOutput]"
         }
-        Write-Verbose "Publishing output: $compressedOutput" -Verbose
-        Write-Output ('{0}={1}' -f 'moduleTestFilePaths', $compressedOutput) >> $env:GITHUB_OUTPUT
+        Write-Verbose "Publishing output: $compressedTestFileOutput" -Verbose
+        Write-Output ('{0}={1}' -f 'moduleTestFilePaths', $compressedTestFileOutput) >> $env:GITHUB_OUTPUT
+        Write-Output '::endgroup::'
+
+        ###############
+        #   PS Rule   #
+        ###############
+        # Extract the PSRule relevant file paths
+        $psRuleTestFilePaths = $testFilePaths | Where-Object { $_ -match "^.+[\\|\/](defaults|waf-aligned)[\\|\/]main\.test\.bicep$" }
+
+        Write-Verbose ("Returning PSRule test files: `n{0}" -f ($psRuleTestFilePaths | Foreach-Object { '- {0}' -f ($_ -split '[\\|\/]e2e[\\|\/]')[1] } | Out-String)) -Verbose
+
+        # Output values to be accessed by next jobs
+        $compressedPSRuleTestFileOutput = $psRuleTestFilePaths | ConvertTo-Json -Compress
+        if($compressedPSRuleTestFileOutput -notmatch "\[.*\]") {
+          $compressedPSRuleTestFileOutput = "[$compressedPSRuleTestFileOutput]"
+        }
+        Write-Verbose "Publishing output: $compressedPSRuleTestFileOutput" -Verbose
+        Write-Output ('{0}={1}' -f 'psRulemoduleTestFilePaths', $compressedPSRuleTestFileOutput) >> $env:GITHUB_OUTPUT
         Write-Output '::endgroup::'
