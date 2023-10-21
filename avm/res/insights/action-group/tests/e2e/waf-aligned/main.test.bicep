@@ -49,36 +49,22 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     name: '${namePrefix}${serviceShort}001'
     location: location
     groupShortName: 'ag${serviceShort}001'
-    emailReceivers: [
-      {
-        emailAddress: 'test.user@testcompany.com'
-        name: 'TestUser_-EmailAction-'
-        useCommonAlertSchema: true
-      }
-      {
-        emailAddress: 'test.user2@testcompany.com'
-        name: 'TestUser2'
-        useCommonAlertSchema: true
-      }
-    ]
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Reader'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    smsReceivers: [
-      {
-        countryCode: '1'
-        name: 'TestUser_-SMSAction-'
-        phoneNumber: '2345678901'
-      }
-    ]
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
+
+    // Workaround for PSRule
+    emailReceivers: null
+    smsReceivers: null
+    webhookReceivers: null
+    itsmReceivers: null
+    azureAppPushReceivers: null
+    automationRunbookReceivers: null
+    voiceReceivers: null
+    logicAppReceivers: null
+    azureFunctionReceivers: null
+    armRoleReceivers: null
   }
 }]

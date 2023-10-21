@@ -42,6 +42,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     groupShortName: 'ag${serviceShort}001'
 
     // Workaround for PSRule
+    tags: null
     emailReceivers: null
     smsReceivers: null
     webhookReceivers: null
