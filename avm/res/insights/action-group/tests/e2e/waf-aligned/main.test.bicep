@@ -66,5 +66,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     logicAppReceivers: null
     azureFunctionReceivers: null
     armRoleReceivers: null
+    roleAssignments: null
   }
 }]

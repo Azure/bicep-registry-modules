@@ -43,6 +43,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
 
     // Workaround for PSRule
     tags: null
+    roleAssignments: null
     emailReceivers: null
     smsReceivers: null
     webhookReceivers: null

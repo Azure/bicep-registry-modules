@@ -51,6 +51,7 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
     itsmReceivers: '<itsmReceivers>'
     location: '<location>'
     logicAppReceivers: '<logicAppReceivers>'
+    roleAssignments: '<roleAssignments>'
     smsReceivers: '<smsReceivers>'
     tags: '<tags>'
     voiceReceivers: '<voiceReceivers>'
@@ -102,6 +103,9 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
     },
     "logicAppReceivers": {
       "value": "<logicAppReceivers>"
+    },
+    "roleAssignments": {
+      "value": "<roleAssignments>"
     },
     "smsReceivers": {
       "value": "<smsReceivers>"
@@ -295,6 +299,7 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
     itsmReceivers: '<itsmReceivers>'
     location: '<location>'
     logicAppReceivers: '<logicAppReceivers>'
+    roleAssignments: '<roleAssignments>'
     smsReceivers: '<smsReceivers>'
     tags: {
       Environment: 'Non-Prod'
@@ -350,6 +355,9 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
     },
     "logicAppReceivers": {
       "value": "<logicAppReceivers>"
+    },
+    "roleAssignments": {
+      "value": "<roleAssignments>"
     },
     "smsReceivers": {
       "value": "<smsReceivers>"
