@@ -21,8 +21,6 @@ runs:
       id: get-module-test-file-paths
       shell: pwsh
       run: |
-        # Grouping task logs
-        Write-Output '::group::Get parameter files'
         # Load used functions
         . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-ModuleTestFileList.ps1')
         $fullModulePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.modulePath }}'
@@ -46,7 +44,6 @@ runs:
         }
         Write-Verbose "Publishing output: $compressedTestFileOutput" -Verbose
         Write-Output ('{0}={1}' -f 'moduleTestFilePaths', $compressedTestFileOutput) >> $env:GITHUB_OUTPUT
-        Write-Output '::endgroup::'
 
         ###############
         #   PS Rule   #
@@ -63,4 +60,3 @@ runs:
         }
         Write-Verbose "Publishing output: $compressedPSRuleTestFileOutput" -Verbose
         Write-Output ('{0}={1}' -f 'psRulemoduleTestFilePaths', $compressedPSRuleTestFileOutput) >> $env:GITHUB_OUTPUT
-        Write-Output '::endgroup::'
