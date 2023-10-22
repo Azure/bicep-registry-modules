@@ -106,11 +106,11 @@ Describe 'File/folder tests' -Tag 'Modules' {
     foreach ($moduleFolderPath in $moduleFolderPaths) {
       $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
       if (($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2) {
-        $topLevelModule += $moduleFolderPath
+        $topLevelModuleFolderPath = $moduleFolderPath
         $moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
       }
     }
-
+    $moduleFolderPath = $topLevelModuleFolderPath
     # $moduleTestFolderTestCases = [System.Collections.ArrayList] @()
 
     It '[<moduleFolderName>] Module should contain a [` version.json `] file.' {
