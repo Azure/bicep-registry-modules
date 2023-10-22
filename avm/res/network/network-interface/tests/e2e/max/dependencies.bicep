@@ -109,5 +109,5 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 @description('The resource ID of the created Application Security Group.')
 output applicationSecurityGroupResourceId string = applicationSecurityGroup.id
 
-@description('The resource ID of the created Load Balancer Backend Pool Name.')
+@description('The resource ID of the created Load Balancer Backend Pool.')
 output loadBalancerBackendPoolResourceId string = loadBalancer::backendPool.id
