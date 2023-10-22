@@ -61,6 +61,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     lock: null
     diagnosticSettings: null
     roleAssignments: null
-    tags: null
   }
 }]
