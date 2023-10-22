@@ -16,7 +16,7 @@ param (
 Write-Verbose ("repoRootPath: $repoRootPath") -Verbose
 Write-Verbose ("moduleFolderPaths: $($moduleFolderPaths.count)") -Verbose
 
-$script:RGdeploymentSchema = 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+$script:RgDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
 $script:SubscriptionDeploymentSchema = 'https://schema.management.azure.com/schemas/2018-05-01/SubscriptionDeploymentSchemaTemplate.json#'
 $script:MgDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#'
 $script:TenantDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/TenantDeploymentSchemaTemplate.json#'
@@ -148,8 +148,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
         [string] $moduleFolderPath
       )
 
-      # $moduleTestFilePaths = Get-ModuleTestFileList -ModulePath $moduleFolderPath | ForEach-Object { Join-Path $moduleFolderPath $_ }
-      # $moduleTestFilePaths.Count | Should -BeGreaterThan 0
       $e2eTestFolderPathList = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e')
       foreach ($e2eTestFolderPath in $e2eTestFolderPathList) {
         $pathExisting = Test-Path (Join-Path -Path $e2eTestFolderPath 'main.test.bicep')
@@ -443,7 +441,7 @@ Describe 'Module tests' -Tag 'Module' {
 
       $Schemaverion = $templateContent.'$schema'
       $SchemaArray = @()
-      if ($Schemaverion -eq $RGdeploymentSchema) {
+      if ($Schemaverion -eq $RgDeploymentSchema) {
         $SchemaOutput = $true
       }
       elseIf ($Schemaverion -eq $SubscriptionDeploymentSchema) {
@@ -650,7 +648,7 @@ Describe 'Module tests' -Tag 'Module' {
       )
       $LocationFlag = $true
       $Schemaverion = $templateContent.'$schema'
-      if ((($Schemaverion.Split('/')[5]).Split('.')[0]) -eq (($RGdeploymentSchema.Split('/')[5]).Split('.')[0])) {
+      if ((($Schemaverion.Split('/')[5]).Split('.')[0]) -eq (($RgDeploymentSchema.Split('/')[5]).Split('.')[0])) {
         $Locationparamoutputvalue = $templateContent.parameters.location.defaultValue
         $Locationparamoutput = $templateContent.parameters.Keys
         if ($Locationparamoutput -contains 'Location') {
