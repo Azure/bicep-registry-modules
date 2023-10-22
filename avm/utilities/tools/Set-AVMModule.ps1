@@ -89,8 +89,7 @@ function Set-AVMModule {
 
     if ($Recurse) {
         $relevantTemplatePaths = (Get-ChildItem -Path $resolvedPath -Recurse -File -Filter 'main.bicep').FullName
-    }
-    else {
+    } else {
         $relevantTemplatePaths = Join-Path $resolvedPath 'main.bicep'
     }
 
@@ -108,7 +107,6 @@ function Set-AVMModule {
     if ($PSCmdlet.ShouldProcess(('Building & generation of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath), 'Execute')) {
         try {
             $job = $relevantTemplatePaths | ForEach-Object -ThrottleLimit $ThrottleLimit -AsJob -Parallel {
-                . $using:ReadMeScriptFilePath
 
                 $resourceTypeIdentifier = 'avm-{0}' -f ($_ -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] # avm/res/<provider>/<resourceType>
 
@@ -129,6 +127,7 @@ function Set-AVMModule {
                     # If the template was just build, we can pass the JSON into the readme script to be more efficient
                     $readmeTemplateFilePath = (-not $using:SkipBuild) ? (Join-Path (Split-Path $_ -Parent) 'main.json') : $_
 
+                    . $using:ReadMeScriptFilePath
                     Set-ModuleReadMe -TemplateFilePath $readmeTemplateFilePath -CrossReferencedModuleList $using:crossReferencedModuleList
                 }
             }
@@ -151,8 +150,7 @@ function Set-AVMModule {
 
             # Clean up the job.
             $job | Remove-Job
-        }
-        finally {
+        } finally {
             # In case the user cancled the process, we need to make sure to stop all running jobs
             $job | Remove-Job -Force -ErrorAction 'SilentlyContinue'
         }
