@@ -155,13 +155,13 @@ Describe 'File/folder tests' -Tag 'Modules' {
       $pathExisting | Should -Be $true
     }
 
-    It '[<moduleFolderName>] Module should contain a [` min `] folder.' -TestCases $topLevelModuleTestCases {
+    It '[<moduleFolderName>] Module should contain a [` tests/e2e/defaults `] folder.' -TestCases $topLevelModuleTestCases {
 
       param(
         [string] $moduleFolderPath
       )
 
-      $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'tests' 'min')
+      $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'tests' 'e2e' 'defaults')
       $pathExisting | Should -Be $true
     }
 
@@ -174,6 +174,26 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
       $moduleTestFilePaths = Get-ModuleTestFileList -ModulePath $moduleFolderPath | ForEach-Object { Join-Path $moduleFolderPath $_ }
       $moduleTestFilePaths.Count | Should -BeGreaterThan 0
+    }
+
+    It '[<moduleFolderName>] Module should contain a [` tests/unit `] folder.' -TestCases $topLevelModuleTestCases {
+
+      param(
+        [string] $moduleFolderPath
+      )
+
+      $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'tests' 'unit')
+      $pathExisting | Should -Be $true
+    }
+
+    It '[<moduleFolderName>] Module should contain a [` tests/unit/custom.tests.ps1 `] file.' -TestCases $topLevelModuleTestCases {
+
+      param (
+        [string] $moduleFolderPath
+      )
+
+      $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'tests' 'unit' 'custom.tests.ps1')
+      $pathExisting | Should -Be $true
     }
   }
 }
