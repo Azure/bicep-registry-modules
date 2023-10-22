@@ -103,18 +103,18 @@ Describe 'File/folder tests' -Tag 'Modules' {
     #   }
     # }
 
+    $topLevelModuleTestCases = [System.Collections.ArrayList]@()
     foreach ($moduleFolderPath in $moduleFolderPaths) {
       $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
       if (($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2) {
-        $topLevelModuleFolderPath = $moduleFolderPath
-        $moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
+        $topLevelModuleTestCases += @{
+          moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
+          moduleFolderPath = $moduleFolderPath
       }
-      return
     }
-    $moduleFolderPath = $topLevelModuleFolderPath
     # $moduleTestFolderTestCases = [System.Collections.ArrayList] @()
 
-    It '[<moduleFolderName>] Module should contain a [` version.json `] file.' {
+    It '[<moduleFolderName>] Module should contain a [` version.json `] file.' -TestCases $topLevelModuleTestCases {
 
       param (
         [string] $moduleFolderPath
@@ -124,7 +124,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
       $pathExisting | Should -Be $true
     }
 
-    It '[<moduleFolderName>] Module should contain a [` tests `] folder.' {
+    It '[<moduleFolderName>] Module should contain a [` tests `] folder.' -TestCases $topLevelModuleTestCases {
 
       param(
         [string] $moduleFolderPath
@@ -134,7 +134,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
       $pathExisting | Should -Be $true
     }
 
-    It '[<moduleFolderName>] Module should contain a [` tests/e2e `] folder.' {
+    It '[<moduleFolderName>] Module should contain a [` tests/e2e `] folder.' -TestCases $topLevelModuleTestCases {
 
       param(
         [string] $moduleFolderPath
@@ -144,7 +144,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
       $pathExisting | Should -Be $true
     }
 
-    It '[<moduleFolderName>] Module should contain a [` tests/e2e/waf-aligned `] folder.' {
+    It '[<moduleFolderName>] Module should contain a [` tests/e2e/waf-aligned `] folder.' -TestCases $topLevelModuleTestCases {
 
       param(
         [string] $moduleFolderPath
@@ -154,7 +154,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
       $pathExisting | Should -Be $true
     }
 
-    It '[<moduleFolderName>] Module should contain a [` min `] folder.' {
+    It '[<moduleFolderName>] Module should contain a [` min `] folder.' -TestCases $topLevelModuleTestCases {
 
       param(
         [string] $moduleFolderPath
@@ -164,7 +164,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
       $pathExisting | Should -Be $true
     }
 
-    It '[<moduleFolderName>] Folder should contain one or more test files.' -TestCases $folderTestCases {
+    It '[<moduleFolderName>] Folder should contain one or more test files.' -TestCases $topLevelModuleTestCases {
 
       param(
         [string] $moduleFolderName,
