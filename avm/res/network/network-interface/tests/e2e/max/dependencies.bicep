@@ -10,7 +10,7 @@ param managedIdentityName string
 @description('Required. The name of the Application Security Group to create.')
 param applicationSecurityGroupName string
 
-@description('Required. The name of the Load Balancer Backend Address Pool to create.')
+@description('Required. The name of the Load Balancer to create.')
 param loadBalancerName string
 
 var addressPrefix = '10.0.0.0/16'

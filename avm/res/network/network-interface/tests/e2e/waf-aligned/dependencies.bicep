@@ -10,7 +10,7 @@ param managedIdentityName string
 @description('Required. The name of the Application Security Group to create.')
 param applicationSecurityGroupName string
 
-@description('Required. The name of the Load Balancer Backend Address Pool to create.')
+@description('Required. The name of the Load Balancer to create.')
 param loadBalancerName string
 
 var addressPrefix = '10.0.0.0/16'
@@ -33,11 +33,6 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
       }
     ]
   }
-}
-
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: managedIdentityName
-  location: location
 }
 
 resource applicationSecurityGroup 'Microsoft.Network/applicationSecurityGroups@2023-04-01' = {
