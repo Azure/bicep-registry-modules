@@ -39,9 +39,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
     $moduleFolderTestCases = [System.Collections.ArrayList] @()
     foreach ($moduleFolderPath in $moduleFolderPaths) {
-
       $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
-
       $moduleFolderTestCases += @{
         moduleFolderName = $resourceTypeIdentifier
         moduleFolderPath = $moduleFolderPath
@@ -78,30 +76,9 @@ Describe 'File/folder tests' -Tag 'Modules' {
       $file = Get-Item -Path $readMeFilePath
       $file.Name | Should -BeExactly 'README.md'
     }
-
-    # It '[<moduleFolderName>] Module should contain a [` version.json `] file.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
-
-    #   param (
-    #     [string] $moduleFolderPath
-    #   )
-
-    #   $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-    #   $pathExisting | Should -Be $true
-    # }
   }
 
   Context 'Top level module folder tests' {
-
-    # $folderTestCases = [System.Collections.ArrayList]@()
-    # foreach ($moduleFolderPath in $moduleFolderPaths) {
-    #   if (Test-Path (Join-Path $moduleFolderPath 'tests')) {
-    #     $folderTestCases += @{
-    #       moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
-    #       moduleFolderPath = $moduleFolderPath
-    #       isTopLevelModule = (($moduleFolderPath -split '[\/|\\]avm[\/|\\]')[1] -split '[\/|\\]').Count -eq 3 # (res|ptn)/<provider>/<resourceType>
-    #     }
-    #   }
-    # }
 
     $topLevelModuleTestCases = [System.Collections.ArrayList]@()
     foreach ($moduleFolderPath in $moduleFolderPaths) {
@@ -113,7 +90,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
         }
       }
     }
-    # $moduleTestFolderTestCases = [System.Collections.ArrayList] @()
 
     It '[<moduleFolderName>] Module should contain a [` version.json `] file.' -TestCases $topLevelModuleTestCases {
 
@@ -145,35 +121,40 @@ Describe 'File/folder tests' -Tag 'Modules' {
       $pathExisting | Should -Be $true
     }
 
-    It '[<moduleFolderName>] Module should contain a [` tests/e2e/waf-aligned `] folder.' -TestCases $topLevelModuleTestCases {
+    It '[<moduleFolderName>] Module should contain a [` tests/e2e/*waf-aligned `] folder.' -TestCases $topLevelModuleTestCases {
 
       param(
         [string] $moduleFolderPath
       )
 
-      $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'tests' 'e2e' 'waf-aligned')
-      $pathExisting | Should -Be $true
+      $wafAlignedFolder = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') -Filter '*waf-aligned'
+      $wafAlignedFolder | Should -Not -BeNullOrEmpty
     }
 
-    It '[<moduleFolderName>] Module should contain a [` tests/e2e/defaults `] folder.' -TestCases $topLevelModuleTestCases {
+    It '[<moduleFolderName>] Module should contain a [` tests/e2e/*defaults `] folder.' -TestCases $topLevelModuleTestCases {
 
       param(
         [string] $moduleFolderPath
       )
 
-      $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'tests' 'e2e' 'defaults')
-      $pathExisting | Should -Be $true
+      $defaultsFolder = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') -Filter '*defaults'
+      $defaultsFolder | Should -Not -BeNullOrEmpty
     }
 
-    It '[<moduleFolderName>] Folder should contain one or more test files.' -TestCases $topLevelModuleTestCases {
+    It '[<moduleFolderName>] Module should contain one [` main.test.bicep `] file in each e2e test folder.' -TestCases $topLevelModuleTestCases {
 
       param(
         [string] $moduleFolderName,
         [string] $moduleFolderPath
       )
 
-      $moduleTestFilePaths = Get-ModuleTestFileList -ModulePath $moduleFolderPath | ForEach-Object { Join-Path $moduleFolderPath $_ }
-      $moduleTestFilePaths.Count | Should -BeGreaterThan 0
+      # $moduleTestFilePaths = Get-ModuleTestFileList -ModulePath $moduleFolderPath | ForEach-Object { Join-Path $moduleFolderPath $_ }
+      # $moduleTestFilePaths.Count | Should -BeGreaterThan 0
+      $e2eTestFolderPathList = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e')
+      foreach ($e2eTestFolderPath in $e2eTestFolderPathList) {
+        $pathExisting = Test-Path (Join-Path -Path $e2eTestFolderPath 'main.test.bicep')
+        $pathExisting | Should -Be $true
+      }
     }
 
     It '[<moduleFolderName>] Module should contain a [` tests/unit `] folder.' -TestCases $topLevelModuleTestCases {
