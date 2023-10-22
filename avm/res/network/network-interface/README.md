@@ -57,6 +57,7 @@ module networkInterface 'br/public:avm-res-network-networkinterface:1.0.0' = {
     location: '<location>'
     lock: '<lock>'
     roleAssignments: '<roleAssignments>'
+    tags: {}
   }
 }
 ```
@@ -97,6 +98,9 @@ module networkInterface 'br/public:avm-res-network-networkinterface:1.0.0' = {
     },
     "roleAssignments": {
       "value": "<roleAssignments>"
+    },
+    "tags": {
+      "value": {}
     }
   }
 }
