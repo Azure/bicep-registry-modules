@@ -79,7 +79,41 @@ Describe 'File/folder tests' -Tag 'Modules' {
       $file.Name | Should -BeExactly 'README.md'
     }
 
-    It '[<moduleFolderName>] Module should contain a [` version.json `] file.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+    # It '[<moduleFolderName>] Module should contain a [` version.json `] file.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+
+    #   param (
+    #     [string] $moduleFolderPath
+    #   )
+
+    #   $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
+    #   $pathExisting | Should -Be $true
+    # }
+  }
+
+  Context 'Top level module folder tests' {
+
+    # $folderTestCases = [System.Collections.ArrayList]@()
+    # foreach ($moduleFolderPath in $moduleFolderPaths) {
+    #   if (Test-Path (Join-Path $moduleFolderPath 'tests')) {
+    #     $folderTestCases += @{
+    #       moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
+    #       moduleFolderPath = $moduleFolderPath
+    #       isTopLevelModule = (($moduleFolderPath -split '[\/|\\]avm[\/|\\]')[1] -split '[\/|\\]').Count -eq 3 # (res|ptn)/<provider>/<resourceType>
+    #     }
+    #   }
+    # }
+
+    foreach ($moduleFolderPath in $moduleFolderPaths) {
+      $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
+      if (($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2) {
+        $topLevelModule += $moduleFolderPath
+        $moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
+      }
+    }
+
+    # $moduleTestFolderTestCases = [System.Collections.ArrayList] @()
+
+    It '[<moduleFolderName>] Module should contain a [` version.json `] file.' {
 
       param (
         [string] $moduleFolderPath
@@ -88,22 +122,8 @@ Describe 'File/folder tests' -Tag 'Modules' {
       $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
       $pathExisting | Should -Be $true
     }
-  }
 
-  Context 'tests folder' {
-
-    $folderTestCases = [System.Collections.ArrayList]@()
-    foreach ($moduleFolderPath in $moduleFolderPaths) {
-      if (Test-Path (Join-Path $moduleFolderPath 'tests')) {
-        $folderTestCases += @{
-          moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
-          moduleFolderPath = $moduleFolderPath
-          isTopLevelModule = (($moduleFolderPath -split '[\/|\\]avm[\/|\\]')[1] -split '[\/|\\]').Count -eq 3 # (res|ptn)/<provider>/<resourceType>
-        }
-      }
-    }
-
-    It '[<moduleFolderName>] Module should contain a [` tests `] folder.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+    It '[<moduleFolderName>] Module should contain a [` tests `] folder.' {
 
       param(
         [string] $moduleFolderPath
@@ -113,17 +133,27 @@ Describe 'File/folder tests' -Tag 'Modules' {
       $pathExisting | Should -Be $true
     }
 
-    It '[<moduleFolderName>] Module should contain a [` tests/waf-aligned `] folder.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+    It '[<moduleFolderName>] Module should contain a [` tests/e2e `] folder.' {
 
       param(
         [string] $moduleFolderPath
       )
 
-      $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'tests' 'waf-aligned')
+      $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'tests')
       $pathExisting | Should -Be $true
     }
 
-    It '[<moduleFolderName>] Module should contain a [` min `] folder.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+    It '[<moduleFolderName>] Module should contain a [` tests/e2e/waf-aligned `] folder.' {
+
+      param(
+        [string] $moduleFolderPath
+      )
+
+      $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'tests' 'e2e' 'waf-aligned')
+      $pathExisting | Should -Be $true
+    }
+
+    It '[<moduleFolderName>] Module should contain a [` min `] folder.' {
 
       param(
         [string] $moduleFolderPath
