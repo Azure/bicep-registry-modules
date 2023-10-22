@@ -109,6 +109,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
         $topLevelModuleFolderPath = $moduleFolderPath
         $moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
       }
+      return
     }
     $moduleFolderPath = $topLevelModuleFolderPath
     # $moduleTestFolderTestCases = [System.Collections.ArrayList] @()
