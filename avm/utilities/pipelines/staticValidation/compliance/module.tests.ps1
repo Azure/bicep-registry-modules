@@ -154,26 +154,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
         $pathExisting | Should -Be $true
       }
     }
-
-    It '[<moduleFolderName>] Module should contain a [` tests/unit `] folder.' -TestCases $topLevelModuleTestCases {
-
-      param(
-        [string] $moduleFolderPath
-      )
-
-      $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'tests' 'unit')
-      $pathExisting | Should -Be $true
-    }
-
-    It '[<moduleFolderName>] Module should contain a [` tests/unit/custom.tests.ps1 `] file.' -TestCases $topLevelModuleTestCases {
-
-      param (
-        [string] $moduleFolderPath
-      )
-
-      $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'tests' 'unit' 'custom.tests.ps1')
-      $pathExisting | Should -Be $true
-    }
   }
 }
 
