@@ -388,7 +388,7 @@ Describe 'Module tests' -Tag 'Module' {
       $testFileTestCases = @()
       $templateFile_Parameters = $templateContent.parameters
       $TemplateFile_AllParameterNames = $templateFile_Parameters.Keys | Sort-Object
-      $TemplateFile_RequiredParametersNames = ($templateFile_Parameters.Keys | Where-Object { -not $templateFile_Parameters[$_].ContainsKey('defaultValue') }) | Sort-Object
+      $TemplateFile_RequiredParametersNames = ($templateFile_Parameters.Keys | Where-Object { Get-IsParameterRequired -TemplateFileContent $templateContent -Parameter $templateFile_Parameters[$_] }) | Sort-Object
 
       if (Test-Path (Join-Path $moduleFolderPath 'tests')) {
 
