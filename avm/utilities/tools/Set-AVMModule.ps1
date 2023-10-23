@@ -76,10 +76,11 @@ function Set-AVMModule {
         [int] $Depth
     )
 
-    # Load helper scripts
+    # # Load helper scripts
     . (Join-Path $PSScriptRoot 'helper' 'Set-ModuleFileAndFolderSetup.ps1')
 
     $resolvedPath = (Resolve-Path $ModuleFolderPath).Path
+
     # Build up module file & folder structure if not yet existing. Should only run if an actual module path was provided (and not any of their parent paths)
     if (-not $SkipFileAndFolderSetup -and ((($resolvedPath -split '\bavm\b')[1].Trim('\,/') -split '[\/|\\]').Count -gt 2)) {
         if ($PSCmdlet.ShouldProcess("File & folder structure for path [$resolvedPath]", "Setup")) {
@@ -88,7 +89,16 @@ function Set-AVMModule {
     }
 
     if ($Recurse) {
-        $relevantTemplatePaths = (Get-ChildItem -Path $resolvedPath -Recurse -File -Filter 'main.bicep').FullName
+        $childInput = @{
+            Path    = $resolvedPath
+            Recurse = $Recurse
+            File    = $true
+            Filter  = 'main.bicep'
+        }
+        if ($Depth) {
+            $childInput.Depth = $Depth
+        }
+        $relevantTemplatePaths = (Get-ChildItem @childInput).FullName
     } else {
         $relevantTemplatePaths = Join-Path $resolvedPath 'main.bicep'
     }
@@ -107,7 +117,6 @@ function Set-AVMModule {
     if ($PSCmdlet.ShouldProcess(('Building & generation of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath), 'Execute')) {
         try {
             $job = $relevantTemplatePaths | ForEach-Object -ThrottleLimit $ThrottleLimit -AsJob -Parallel {
-
                 $resourceTypeIdentifier = 'avm-{0}' -f ($_ -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] # avm/res/<provider>/<resourceType>
 
                 ###############
@@ -151,7 +160,7 @@ function Set-AVMModule {
             # Clean up the job.
             $job | Remove-Job
         } finally {
-            # In case the user cancled the process, we need to make sure to stop all running jobs
+            # In case the user cancelled the process, we need to make sure to stop all running jobs
             $job | Remove-Job -Force -ErrorAction 'SilentlyContinue'
         }
     }
