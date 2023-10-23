@@ -111,6 +111,10 @@ function Set-AVMModule {
 
         # create reference as it must be loaded in the thread to work
         $ReadMeScriptFilePath = (Join-Path (Get-Item $PSScriptRoot).Parent.FullName 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
+    } else {
+        # Instatiate values to enable safe $using usage
+        $crossReferencedModuleList = $null
+        $ReadMeScriptFilePath = $null
     }
 
     # Using threading to speed up the process
