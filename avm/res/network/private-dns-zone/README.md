@@ -555,126 +555,25 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
     // Required parameters
     name: 'npdzwaf001.com'
     // Non-required parameters
-    a: [
-      {
-        aRecords: [
-          {
-            ipv4Address: '10.240.4.4'
-          }
-        ]
-        name: 'A_10.240.4.4'
-        roleAssignments: []
-        ttl: 3600
-      }
-    ]
-    aaaa: [
-      {
-        aaaaRecords: [
-          {
-            ipv6Address: '2001:0db8:85a3:0000:0000:8a2e:0370:7334'
-          }
-        ]
-        name: 'AAAA_2001_0db8_85a3_0000_0000_8a2e_0370_7334'
-        ttl: 3600
-      }
-    ]
-    cname: [
-      {
-        cnameRecord: {
-          cname: 'test'
-        }
-        name: 'CNAME_test'
-        roleAssignments: []
-        ttl: 3600
-      }
-    ]
+    a: []
+    aaaa: []
+    cname: []
     location: 'global'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    mx: [
-      {
-        mxRecords: [
-          {
-            exchange: 'contoso.com'
-            preference: 100
-          }
-        ]
-        name: 'MX_contoso'
-        roleAssignments: []
-        ttl: 3600
-      }
-    ]
-    ptr: [
-      {
-        name: 'PTR_contoso'
-        ptrRecords: [
-          {
-            ptrdname: 'contoso.com'
-          }
-        ]
-        roleAssignments: []
-        ttl: 3600
-      }
-    ]
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
-    soa: [
-      {
-        name: '@'
-        roleAssignments: []
-        soaRecord: {
-          email: 'azureprivatedns-host.microsoft.com'
-          expireTime: 2419200
-          host: 'azureprivatedns.net'
-          minimumTtl: 10
-          refreshTime: 3600
-          retryTime: 300
-          serialNumber: '1'
-        }
-        ttl: 3600
-      }
-    ]
-    srv: [
-      {
-        name: 'SRV_contoso'
-        roleAssignments: []
-        srvRecords: [
-          {
-            port: 9332
-            priority: 0
-            target: 'test.contoso.com'
-            weight: 0
-          }
-        ]
-        ttl: 3600
-      }
-    ]
+    mx: []
+    ptr: []
+    roleAssignments: []
+    soa: []
+    srv: []
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    txt: [
-      {
-        name: 'TXT_test'
-        roleAssignments: []
-        ttl: 3600
-        txtRecords: [
-          {
-            value: [
-              'test'
-            ]
-          }
-        ]
-      }
-    ]
+    txt: []
     virtualNetworkLinks: [
       {
         registrationEnabled: true
@@ -703,43 +602,13 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
     },
     // Non-required parameters
     "a": {
-      "value": [
-        {
-          "aRecords": [
-            {
-              "ipv4Address": "10.240.4.4"
-            }
-          ],
-          "name": "A_10.240.4.4",
-          "roleAssignments": [],
-          "ttl": 3600
-        }
-      ]
+      "value": []
     },
     "aaaa": {
-      "value": [
-        {
-          "aaaaRecords": [
-            {
-              "ipv6Address": "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
-            }
-          ],
-          "name": "AAAA_2001_0db8_85a3_0000_0000_8a2e_0370_7334",
-          "ttl": 3600
-        }
-      ]
+      "value": []
     },
     "cname": {
-      "value": [
-        {
-          "cnameRecord": {
-            "cname": "test"
-          },
-          "name": "CNAME_test",
-          "roleAssignments": [],
-          "ttl": 3600
-        }
-      ]
+      "value": []
     },
     "location": {
       "value": "global"
@@ -751,77 +620,19 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
       }
     },
     "mx": {
-      "value": [
-        {
-          "mxRecords": [
-            {
-              "exchange": "contoso.com",
-              "preference": 100
-            }
-          ],
-          "name": "MX_contoso",
-          "roleAssignments": [],
-          "ttl": 3600
-        }
-      ]
+      "value": []
     },
     "ptr": {
-      "value": [
-        {
-          "name": "PTR_contoso",
-          "ptrRecords": [
-            {
-              "ptrdname": "contoso.com"
-            }
-          ],
-          "roleAssignments": [],
-          "ttl": 3600
-        }
-      ]
+      "value": []
     },
     "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
+      "value": []
     },
     "soa": {
-      "value": [
-        {
-          "name": "@",
-          "roleAssignments": [],
-          "soaRecord": {
-            "email": "azureprivatedns-host.microsoft.com",
-            "expireTime": 2419200,
-            "host": "azureprivatedns.net",
-            "minimumTtl": 10,
-            "refreshTime": 3600,
-            "retryTime": 300,
-            "serialNumber": "1"
-          },
-          "ttl": 3600
-        }
-      ]
+      "value": []
     },
     "srv": {
-      "value": [
-        {
-          "name": "SRV_contoso",
-          "roleAssignments": [],
-          "srvRecords": [
-            {
-              "port": 9332,
-              "priority": 0,
-              "target": "test.contoso.com",
-              "weight": 0
-            }
-          ],
-          "ttl": 3600
-        }
-      ]
+      "value": []
     },
     "tags": {
       "value": {
@@ -831,20 +642,7 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
       }
     },
     "txt": {
-      "value": [
-        {
-          "name": "TXT_test",
-          "roleAssignments": [],
-          "ttl": 3600,
-          "txtRecords": [
-            {
-              "value": [
-                "test"
-              ]
-            }
-          ]
-        }
-      ]
+      "value": []
     },
     "virtualNetworkLinks": {
       "value": [
