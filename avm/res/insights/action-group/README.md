@@ -140,10 +140,6 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
     groupShortName: 'agiagmax001'
     name: 'iagmax001'
     // Non-required parameters
-    armRoleReceivers: '<armRoleReceivers>'
-    automationRunbookReceivers: '<automationRunbookReceivers>'
-    azureAppPushReceivers: '<azureAppPushReceivers>'
-    azureFunctionReceivers: '<azureFunctionReceivers>'
     emailReceivers: [
       {
         emailAddress: 'test.user@testcompany.com'
@@ -156,9 +152,7 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
         useCommonAlertSchema: true
       }
     ]
-    itsmReceivers: '<itsmReceivers>'
     location: 'global'
-    logicAppReceivers: '<logicAppReceivers>'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -178,8 +172,6 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    voiceReceivers: '<voiceReceivers>'
-    webhookReceivers: '<webhookReceivers>'
   }
 }
 ```
@@ -204,18 +196,6 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
       "value": "iagmax001"
     },
     // Non-required parameters
-    "armRoleReceivers": {
-      "value": "<armRoleReceivers>"
-    },
-    "automationRunbookReceivers": {
-      "value": "<automationRunbookReceivers>"
-    },
-    "azureAppPushReceivers": {
-      "value": "<azureAppPushReceivers>"
-    },
-    "azureFunctionReceivers": {
-      "value": "<azureFunctionReceivers>"
-    },
     "emailReceivers": {
       "value": [
         {
@@ -230,14 +210,8 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
         }
       ]
     },
-    "itsmReceivers": {
-      "value": "<itsmReceivers>"
-    },
     "location": {
       "value": "global"
-    },
-    "logicAppReceivers": {
-      "value": "<logicAppReceivers>"
     },
     "roleAssignments": {
       "value": [
@@ -263,12 +237,6 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "voiceReceivers": {
-      "value": "<voiceReceivers>"
-    },
-    "webhookReceivers": {
-      "value": "<webhookReceivers>"
     }
   }
 }
