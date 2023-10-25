@@ -52,5 +52,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       nestedDependencies.outputs.dnsResolverOutboundEndpointsResourceId
     ]
     location: location
+
+    // Workaround for PSRule
+    forwardingRules: []
+    lock: {}
+    roleAssignments: []
+    tags: {}
+    vNetLinks: []
   }
 }]

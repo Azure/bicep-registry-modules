@@ -48,7 +48,12 @@ module dnsForwardingRuleset 'br/public:avm-res-network-dnsforwardingruleset:1.0.
     ]
     name: 'ndfrsmin001'
     // Non-required parameters
+    forwardingRules: []
     location: '<location>'
+    lock: {}
+    roleAssignments: []
+    tags: {}
+    vNetLinks: []
   }
 }
 ```
@@ -75,8 +80,23 @@ module dnsForwardingRuleset 'br/public:avm-res-network-dnsforwardingruleset:1.0.
       "value": "ndfrsmin001"
     },
     // Non-required parameters
+    "forwardingRules": {
+      "value": []
+    },
     "location": {
       "value": "<location>"
+    },
+    "lock": {
+      "value": {}
+    },
+    "roleAssignments": {
+      "value": []
+    },
+    "tags": {
+      "value": {}
+    },
+    "vNetLinks": {
+      "value": []
     }
   }
 }
