@@ -178,9 +178,9 @@ type forwardingRuleType = {
 }[]?
 
 type targetDnsServers = {
-  @description('Required. The IPv4 address of the target DNS server.')
+  @description('Required. The IP address of the target DNS server.')
   ipAddress: string
 
-  @description('Required. The IPv6 address of the target DNS server.')
+  @description('Required. The port of the target DNS server.')
   port: string
 }[]?

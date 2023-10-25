@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "6842570148065735507"
+      "templateHash": "1498476312183248649"
     },
     "name": "Dns Forwarding Rulesets",
     "description": "This template deploys an dns forwarding ruleset.",
@@ -157,13 +157,13 @@
           "ipAddress": {
             "type": "string",
             "metadata": {
-              "description": "Required. The IPv4 address of the target DNS server."
+              "description": "Required. The IP address of the target DNS server."
             }
           },
           "port": {
             "type": "string",
             "metadata": {
-              "description": "Required. The IPv6 address of the target DNS server."
+              "description": "Required. The port of the target DNS server."
             }
           }
         }
