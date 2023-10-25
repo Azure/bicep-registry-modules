@@ -55,8 +55,6 @@ The domain name for the forwarding rule.
 The state of forwarding rule.
 - Required: No
 - Type: string
-- Default: `'Enabled'`
-- Allowed: `[Disabled, Enabled]`
 
 ### Parameter: `metadata`
 

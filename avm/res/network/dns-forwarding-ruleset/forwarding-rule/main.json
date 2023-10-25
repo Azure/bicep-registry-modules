@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "16221016427537719863"
+      "templateHash": "10548868595530009801"
     },
     "name": "Dns Forwarding Rulesets Forwarding Rules",
     "description": "This template deploys Forwarding Rule in a Dns Forwarding Ruleset.",
@@ -34,11 +34,7 @@
     },
     "forwardingRuleState": {
       "type": "string",
-      "defaultValue": "Enabled",
-      "allowedValues": [
-        "Disabled",
-        "Enabled"
-      ],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The state of forwarding rule."
       }

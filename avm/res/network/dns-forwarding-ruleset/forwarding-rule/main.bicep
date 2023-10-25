@@ -13,11 +13,7 @@ param dnsForwardingRulesetName string
 param domainName string
 
 @description('Optional. The state of forwarding rule.')
-@allowed([
-  'Disabled'
-  'Enabled'
-])
-param forwardingRuleState string = 'Enabled'
+param forwardingRuleState string?
 
 @description('Optional. Metadata attached to the forwarding rule.')
 param metadata object?
