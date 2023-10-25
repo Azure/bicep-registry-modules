@@ -22,7 +22,7 @@ param tags object?
 param dnsForwardingRulesetOutboundEndpointResourceIds array
 
 @description('Optional. Array of forwarding rules.')
-param forwardingRules array?
+param forwardingRules forwardingRuleType?
 
 @description('Optional. Array of virtual network links.')
 param vNetLinks array?
@@ -183,4 +183,4 @@ type targetDnsServers = {
 
   @description('Required. The port of the target DNS server.')
   port: string
-}[]?
+}[]

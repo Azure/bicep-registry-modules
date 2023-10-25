@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "1498476312183248649"
+      "templateHash": "16888609331988024284"
     },
     "name": "Dns Forwarding Rulesets",
     "description": "This template deploys an dns forwarding ruleset.",
@@ -167,8 +167,7 @@
             }
           }
         }
-      },
-      "nullable": true
+      }
     }
   },
   "parameters": {
@@ -212,7 +211,7 @@
       }
     },
     "forwardingRules": {
-      "type": "array",
+      "$ref": "#/definitions/forwardingRuleType",
       "nullable": true,
       "metadata": {
         "description": "Optional. Array of forwarding rules."

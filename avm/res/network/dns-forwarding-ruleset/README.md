@@ -371,6 +371,51 @@ Array of forwarding rules.
 - Required: No
 - Type: array
 
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`domainName`](#parameter-forwardingrulesdomainname) | Yes | string | Required. The domain name to forward. |
+| [`forwardingRuleState`](#parameter-forwardingrulesforwardingrulestate) | No | string | Optional. The state of the forwarding rule. |
+| [`metadata`](#parameter-forwardingrulesmetadata) | No | string | Optional. Metadata attached to the forwarding rule. |
+| [`name`](#parameter-forwardingrulesname) | Yes | string | Required. The name of the forwarding rule. |
+| [`targetDnsServers`](#parameter-forwardingrulestargetdnsservers) | Yes | array | Required. The target DNS servers to forward to. |
+
+### Parameter: `forwardingRules.domainName`
+
+Required. The domain name to forward.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `forwardingRules.forwardingRuleState`
+
+Optional. The state of the forwarding rule.
+
+- Required: No
+- Type: string
+- Allowed: `[Disabled, Enabled]`
+
+### Parameter: `forwardingRules.metadata`
+
+Optional. Metadata attached to the forwarding rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `forwardingRules.name`
+
+Required. The name of the forwarding rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `forwardingRules.targetDnsServers`
+
+Required. The target DNS servers to forward to.
+
+- Required: Yes
+- Type: array
+
 ### Parameter: `location`
 
 Location for all resources.
