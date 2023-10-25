@@ -28,11 +28,16 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm-res-network-dnsforwardingruleset:1.0.0`.
 
-- [Defaults](#example-1-defaults)
-- [Max](#example-2-max)
-- [Waf-Aligned](#example-3-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
-### Example 1: _Defaults_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
+
+
 
 <details>
 
@@ -105,7 +110,10 @@ module dnsForwardingRuleset 'br/public:avm-res-network-dnsforwardingruleset:1.0.
 </details>
 <p>
 
-### Example 2: _Max_
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -232,7 +240,10 @@ module dnsForwardingRuleset 'br/public:avm-res-network-dnsforwardingruleset:1.0.
 </details>
 <p>
 
-### Example 3: _Waf-Aligned_
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
