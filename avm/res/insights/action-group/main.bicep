@@ -15,37 +15,37 @@ param enabled bool = true
 param roleAssignments roleAssignmentType
 
 @description('Optional. The list of email receivers that are part of this action group.')
-param emailReceivers array = []
+param emailReceivers array?
 
 @description('Optional. The list of SMS receivers that are part of this action group.')
-param smsReceivers array = []
+param smsReceivers array?
 
 @description('Optional. The list of webhook receivers that are part of this action group.')
-param webhookReceivers array = []
+param webhookReceivers array?
 
 @description('Optional. The list of ITSM receivers that are part of this action group.')
-param itsmReceivers array = []
+param itsmReceivers array?
 
 @description('Optional. The list of AzureAppPush receivers that are part of this action group.')
-param azureAppPushReceivers array = []
+param azureAppPushReceivers array?
 
 @description('Optional. The list of AutomationRunbook receivers that are part of this action group.')
-param automationRunbookReceivers array = []
+param automationRunbookReceivers array?
 
 @description('Optional. The list of voice receivers that are part of this action group.')
-param voiceReceivers array = []
+param voiceReceivers array?
 
 @description('Optional. The list of logic app receivers that are part of this action group.')
-param logicAppReceivers array = []
+param logicAppReceivers array?
 
 @description('Optional. The list of function receivers that are part of this action group.')
-param azureFunctionReceivers array = []
+param azureFunctionReceivers array?
 
 @description('Optional. The list of ARM role receivers that are part of this action group. Roles are Azure RBAC roles and only built-in roles are supported.')
-param armRoleReceivers array = []
+param armRoleReceivers array?
 
 @description('Optional. Tags of the resource.')
-param tags object = {}
+param tags object?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -54,7 +54,6 @@ param enableTelemetry bool = true
 param location string = 'global'
 
 var builtInRoleNames = {
-  'API Management Service Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '312a565d-c81f-4fd8-895a-4e21e48d571c')
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
@@ -87,16 +86,16 @@ resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
   properties: {
     groupShortName: groupShortName
     enabled: enabled
-    emailReceivers: (empty(emailReceivers) ? null : emailReceivers)
-    smsReceivers: (empty(smsReceivers) ? null : smsReceivers)
-    webhookReceivers: (empty(webhookReceivers) ? null : webhookReceivers)
-    itsmReceivers: (empty(itsmReceivers) ? null : itsmReceivers)
-    azureAppPushReceivers: (empty(azureAppPushReceivers) ? null : azureAppPushReceivers)
-    automationRunbookReceivers: (empty(automationRunbookReceivers) ? null : automationRunbookReceivers)
-    voiceReceivers: (empty(voiceReceivers) ? null : voiceReceivers)
-    logicAppReceivers: (empty(logicAppReceivers) ? null : logicAppReceivers)
-    azureFunctionReceivers: (empty(azureFunctionReceivers) ? null : azureFunctionReceivers)
-    armRoleReceivers: (empty(armRoleReceivers) ? null : armRoleReceivers)
+    emailReceivers: emailReceivers
+    smsReceivers: smsReceivers
+    webhookReceivers: webhookReceivers
+    itsmReceivers: itsmReceivers
+    azureAppPushReceivers: azureAppPushReceivers
+    automationRunbookReceivers: automationRunbookReceivers
+    voiceReceivers: voiceReceivers
+    logicAppReceivers: logicAppReceivers
+    azureFunctionReceivers: azureFunctionReceivers
+    armRoleReceivers: armRoleReceivers
   }
 }
 

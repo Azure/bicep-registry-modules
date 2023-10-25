@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.21.1.54444",
-      "templateHash": "9764314228285619989"
+      "version": "0.22.6.54827",
+      "templateHash": "17495477532305810590"
     },
     "name": "Action Groups",
     "description": "This module deploys an Action Group.",
@@ -108,77 +108,77 @@
     },
     "emailReceivers": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The list of email receivers that are part of this action group."
       }
     },
     "smsReceivers": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The list of SMS receivers that are part of this action group."
       }
     },
     "webhookReceivers": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The list of webhook receivers that are part of this action group."
       }
     },
     "itsmReceivers": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The list of ITSM receivers that are part of this action group."
       }
     },
     "azureAppPushReceivers": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The list of AzureAppPush receivers that are part of this action group."
       }
     },
     "automationRunbookReceivers": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The list of AutomationRunbook receivers that are part of this action group."
       }
     },
     "voiceReceivers": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The list of voice receivers that are part of this action group."
       }
     },
     "logicAppReceivers": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The list of logic app receivers that are part of this action group."
       }
     },
     "azureFunctionReceivers": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The list of function receivers that are part of this action group."
       }
     },
     "armRoleReceivers": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The list of ARM role receivers that are part of this action group. Roles are Azure RBAC roles and only built-in roles are supported."
       }
     },
     "tags": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Tags of the resource."
       }
@@ -200,7 +200,6 @@
   },
   "variables": {
     "builtInRoleNames": {
-      "API Management Service Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '312a565d-c81f-4fd8-895a-4e21e48d571c')]",
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
@@ -238,16 +237,16 @@
       "properties": {
         "groupShortName": "[parameters('groupShortName')]",
         "enabled": "[parameters('enabled')]",
-        "emailReceivers": "[if(empty(parameters('emailReceivers')), null(), parameters('emailReceivers'))]",
-        "smsReceivers": "[if(empty(parameters('smsReceivers')), null(), parameters('smsReceivers'))]",
-        "webhookReceivers": "[if(empty(parameters('webhookReceivers')), null(), parameters('webhookReceivers'))]",
-        "itsmReceivers": "[if(empty(parameters('itsmReceivers')), null(), parameters('itsmReceivers'))]",
-        "azureAppPushReceivers": "[if(empty(parameters('azureAppPushReceivers')), null(), parameters('azureAppPushReceivers'))]",
-        "automationRunbookReceivers": "[if(empty(parameters('automationRunbookReceivers')), null(), parameters('automationRunbookReceivers'))]",
-        "voiceReceivers": "[if(empty(parameters('voiceReceivers')), null(), parameters('voiceReceivers'))]",
-        "logicAppReceivers": "[if(empty(parameters('logicAppReceivers')), null(), parameters('logicAppReceivers'))]",
-        "azureFunctionReceivers": "[if(empty(parameters('azureFunctionReceivers')), null(), parameters('azureFunctionReceivers'))]",
-        "armRoleReceivers": "[if(empty(parameters('armRoleReceivers')), null(), parameters('armRoleReceivers'))]"
+        "emailReceivers": "[parameters('emailReceivers')]",
+        "smsReceivers": "[parameters('smsReceivers')]",
+        "webhookReceivers": "[parameters('webhookReceivers')]",
+        "itsmReceivers": "[parameters('itsmReceivers')]",
+        "azureAppPushReceivers": "[parameters('azureAppPushReceivers')]",
+        "automationRunbookReceivers": "[parameters('automationRunbookReceivers')]",
+        "voiceReceivers": "[parameters('voiceReceivers')]",
+        "logicAppReceivers": "[parameters('logicAppReceivers')]",
+        "azureFunctionReceivers": "[parameters('azureFunctionReceivers')]",
+        "armRoleReceivers": "[parameters('armRoleReceivers')]"
       }
     },
     "actionGroup_roleAssignments": {
