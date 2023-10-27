@@ -56,7 +56,20 @@ module dnsZone 'br/public:avm-res-network-dnszone:1.0.0' = {
     // Required parameters
     name: 'ndzmin001.com'
     // Non-required parameters
+    a: []
+    aaaa: []
+    caa: []
+    cname: []
     location: 'global'
+    lock: {}
+    mx: []
+    ns: []
+    ptr: []
+    roleAssignments: []
+    soa: []
+    srv: []
+    tags: {}
+    txt: []
   }
 }
 ```
@@ -78,8 +91,47 @@ module dnsZone 'br/public:avm-res-network-dnszone:1.0.0' = {
       "value": "ndzmin001.com"
     },
     // Non-required parameters
+    "a": {
+      "value": []
+    },
+    "aaaa": {
+      "value": []
+    },
+    "caa": {
+      "value": []
+    },
+    "cname": {
+      "value": []
+    },
     "location": {
       "value": "global"
+    },
+    "lock": {
+      "value": {}
+    },
+    "mx": {
+      "value": []
+    },
+    "ns": {
+      "value": []
+    },
+    "ptr": {
+      "value": []
+    },
+    "roleAssignments": {
+      "value": []
+    },
+    "soa": {
+      "value": []
+    },
+    "srv": {
+      "value": []
+    },
+    "tags": {
+      "value": {}
+    },
+    "txt": {
+      "value": []
     }
   }
 }
