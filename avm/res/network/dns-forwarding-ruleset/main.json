@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "16888609331988024284"
+      "templateHash": "6432207702551473267"
     },
     "name": "Dns Forwarding Rulesets",
     "description": "This template deploys an dns forwarding ruleset.",
@@ -283,7 +283,7 @@
         ]
       }
     },
-    "dnsForwardingRulesets_lock": {
+    "dnsForwardingRuleset_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
@@ -297,9 +297,9 @@
         "dnsForwardingRuleset"
       ]
     },
-    "dnsForwardingRulesets_roleAssignments": {
+    "dnsForwardingRuleset_roleAssignments": {
       "copy": {
-        "name": "dnsForwardingRulesets_roleAssignments",
+        "name": "dnsForwardingRuleset_roleAssignments",
         "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
