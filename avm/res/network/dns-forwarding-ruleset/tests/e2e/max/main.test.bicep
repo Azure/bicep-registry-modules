@@ -1,18 +1,21 @@
 targetScope = 'subscription'
 
+metadata name = 'Using large parameter set'
+metadata description = 'This instance deploys the module with most of its features enabled.'
+
 // ========== //
 // Parameters //
 // ========== //
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-insights.actiongroups-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-network.dnsForwardingRuleset-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'iagmax'
+param serviceShort string = 'ndfrsmax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -32,8 +35,10 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    dnsResolverName: 'dep-${namePrefix}-ndr-${serviceShort}'
     location: location
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
 
@@ -47,18 +52,24 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: 'global'
-    groupShortName: 'ag${serviceShort}001'
-    emailReceivers: [
+    location: location
+    dnsForwardingRulesetOutboundEndpointResourceIds: [
+      nestedDependencies.outputs.dnsResolverOutboundEndpointsId
+    ]
+    vNetLinks: [
+      nestedDependencies.outputs.virtualNetworkResourceId
+    ]
+    forwardingRules: [
       {
-        emailAddress: 'test.user@testcompany.com'
-        name: 'TestUser_-EmailAction-'
-        useCommonAlertSchema: true
-      }
-      {
-        emailAddress: 'test.user2@testcompany.com'
-        name: 'TestUser2'
-        useCommonAlertSchema: true
+        name: 'rule1'
+        forwardingRuleState: 'Enabled'
+        domainName: 'contoso.'
+        targetDnsServers: [
+          {
+            ipAddress: '192.168.0.1'
+            port: '53'
+          }
+        ]
       }
     ]
     roleAssignments: [
@@ -68,13 +79,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         principalType: 'ServicePrincipal'
       }
     ]
-    smsReceivers: [
-      {
-        countryCode: '1'
-        name: 'TestUser_-SMSAction-'
-        phoneNumber: '2345678901'
-      }
-    ]
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'

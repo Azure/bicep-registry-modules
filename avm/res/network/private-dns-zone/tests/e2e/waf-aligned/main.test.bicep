@@ -1,18 +1,21 @@
 targetScope = 'subscription'
 
+metadata name = 'WAF-aligned'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.'
+
 // ========== //
 // Parameters //
 // ========== //
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-insights.actiongroups-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-network.privatednszones-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'iagmax'
+param serviceShort string = 'npdzwaf'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -32,6 +35,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: location
   }
@@ -46,33 +50,25 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
-    name: '${namePrefix}${serviceShort}001'
+    name: '${namePrefix}${serviceShort}001.com'
     location: 'global'
-    groupShortName: 'ag${serviceShort}001'
-    emailReceivers: [
+    a: []
+    aaaa: []
+    cname: []
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    mx: []
+    ptr: []
+    roleAssignments: []
+    soa: []
+    srv: []
+    txt: []
+    virtualNetworkLinks: [
       {
-        emailAddress: 'test.user@testcompany.com'
-        name: 'TestUser_-EmailAction-'
-        useCommonAlertSchema: true
-      }
-      {
-        emailAddress: 'test.user2@testcompany.com'
-        name: 'TestUser2'
-        useCommonAlertSchema: true
-      }
-    ]
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Reader'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    smsReceivers: [
-      {
-        countryCode: '1'
-        name: 'TestUser_-SMSAction-'
-        phoneNumber: '2345678901'
+        registrationEnabled: true
+        virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
       }
     ]
     tags: {

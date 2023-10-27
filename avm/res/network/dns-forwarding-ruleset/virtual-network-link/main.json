@@ -1,0 +1,88 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "16281449356047571788"
+    },
+    "name": "Dns Forwarding Rulesets Virtual Network Links",
+    "description": "This template deploys Virtual Network Link in a Dns Forwarding Ruleset.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "dnsForwardingRulesetName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent DNS Fowarding Rule Set. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The name of the virtual network link."
+      }
+    },
+    "virtualNetworkResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Link to another virtual network resource ID."
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Metadata attached to the forwarding rule."
+      }
+    }
+  },
+  "resources": {
+    "dnsForwardingRuleset": {
+      "existing": true,
+      "type": "Microsoft.Network/dnsForwardingRulesets",
+      "apiVersion": "2022-07-01",
+      "name": "[parameters('dnsForwardingRulesetName')]"
+    },
+    "virtualNetworkLink": {
+      "type": "Microsoft.Network/dnsForwardingRulesets/virtualNetworkLinks",
+      "apiVersion": "2022-07-01",
+      "name": "[format('{0}/{1}', parameters('dnsForwardingRulesetName'), coalesce(parameters('name'), format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/')))))]",
+      "properties": {
+        "virtualNetwork": {
+          "id": "[parameters('virtualNetworkResourceId')]"
+        },
+        "metadata": "[parameters('metadata')]"
+      },
+      "dependsOn": [
+        "dnsForwardingRuleset"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed virtual network link."
+      },
+      "value": "[coalesce(parameters('name'), format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/'))))]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed virtual network link."
+      },
+      "value": "[resourceId('Microsoft.Network/dnsForwardingRulesets/virtualNetworkLinks', parameters('dnsForwardingRulesetName'), coalesce(parameters('name'), format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/')))))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed virtual network link."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
