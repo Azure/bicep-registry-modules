@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "5362715379364876614"
+      "templateHash": "17187072850468210632"
     },
     "name": "Public DNS Zones",
     "description": "This module deploys a Public DNS zone.",
@@ -320,11 +320,21 @@
           "name": {
             "value": "[coalesce(parameters('a'), createArray())[copyIndex()].name]"
           },
-          "aRecords": "[if(contains(coalesce(parameters('a'), createArray())[copyIndex()], 'aRecords'), createObject('value', coalesce(parameters('a'), createArray())[copyIndex()].aRecords), createObject('value', createArray()))]",
-          "metadata": "[if(contains(coalesce(parameters('a'), createArray())[copyIndex()], 'metadata'), createObject('value', coalesce(parameters('a'), createArray())[copyIndex()].metadata), createObject('value', createObject()))]",
-          "ttl": "[if(contains(coalesce(parameters('a'), createArray())[copyIndex()], 'ttl'), createObject('value', coalesce(parameters('a'), createArray())[copyIndex()].ttl), createObject('value', 3600))]",
-          "targetResourceId": "[if(contains(coalesce(parameters('a'), createArray())[copyIndex()], 'targetResourceId'), createObject('value', coalesce(parameters('a'), createArray())[copyIndex()].targetResourceId), createObject('value', ''))]",
-          "roleAssignments": "[if(contains(coalesce(parameters('a'), createArray())[copyIndex()], 'roleAssignments'), createObject('value', coalesce(parameters('a'), createArray())[copyIndex()].roleAssignments), createObject('value', createArray()))]"
+          "aRecords": {
+            "value": "[tryGet(coalesce(parameters('a'), createArray())[copyIndex()], 'aRecords')]"
+          },
+          "metadata": {
+            "value": "[tryGet(coalesce(parameters('a'), createArray())[copyIndex()], 'metadata')]"
+          },
+          "ttl": {
+            "value": "[coalesce(tryGet(coalesce(parameters('a'), createArray())[copyIndex()], 'ttl'), 3600)]"
+          },
+          "targetResourceId": {
+            "value": "[tryGet(coalesce(parameters('a'), createArray())[copyIndex()], 'targetResourceId')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('a'), createArray())[copyIndex()], 'roleAssignments')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -564,11 +574,21 @@
           "name": {
             "value": "[coalesce(parameters('aaaa'), createArray())[copyIndex()].name]"
           },
-          "aaaaRecords": "[if(contains(coalesce(parameters('aaaa'), createArray())[copyIndex()], 'aaaaRecords'), createObject('value', coalesce(parameters('aaaa'), createArray())[copyIndex()].aaaaRecords), createObject('value', createArray()))]",
-          "metadata": "[if(contains(coalesce(parameters('aaaa'), createArray())[copyIndex()], 'metadata'), createObject('value', coalesce(parameters('aaaa'), createArray())[copyIndex()].metadata), createObject('value', createObject()))]",
-          "ttl": "[if(contains(coalesce(parameters('aaaa'), createArray())[copyIndex()], 'ttl'), createObject('value', coalesce(parameters('aaaa'), createArray())[copyIndex()].ttl), createObject('value', 3600))]",
-          "targetResourceId": "[if(contains(coalesce(parameters('aaaa'), createArray())[copyIndex()], 'targetResourceId'), createObject('value', coalesce(parameters('aaaa'), createArray())[copyIndex()].targetResourceId), createObject('value', ''))]",
-          "roleAssignments": "[if(contains(coalesce(parameters('aaaa'), createArray())[copyIndex()], 'roleAssignments'), createObject('value', coalesce(parameters('aaaa'), createArray())[copyIndex()].roleAssignments), createObject('value', createArray()))]"
+          "aaaaRecords": {
+            "value": "[tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()], 'aaaaRecords')]"
+          },
+          "metadata": {
+            "value": "[tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()], 'metadata')]"
+          },
+          "ttl": {
+            "value": "[coalesce(tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()], 'ttl'), 3600)]"
+          },
+          "targetResourceId": {
+            "value": "[tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()], 'targetResourceId')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('aaaa'), createArray())[copyIndex()], 'roleAssignments')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -808,11 +828,21 @@
           "name": {
             "value": "[coalesce(parameters('cname'), createArray())[copyIndex()].name]"
           },
-          "cnameRecord": "[if(contains(coalesce(parameters('cname'), createArray())[copyIndex()], 'cnameRecord'), createObject('value', coalesce(parameters('cname'), createArray())[copyIndex()].cnameRecord), createObject('value', createObject()))]",
-          "metadata": "[if(contains(coalesce(parameters('cname'), createArray())[copyIndex()], 'metadata'), createObject('value', coalesce(parameters('cname'), createArray())[copyIndex()].metadata), createObject('value', createObject()))]",
-          "ttl": "[if(contains(coalesce(parameters('cname'), createArray())[copyIndex()], 'ttl'), createObject('value', coalesce(parameters('cname'), createArray())[copyIndex()].ttl), createObject('value', 3600))]",
-          "targetResourceId": "[if(contains(coalesce(parameters('cname'), createArray())[copyIndex()], 'targetResourceId'), createObject('value', coalesce(parameters('cname'), createArray())[copyIndex()].targetResourceId), createObject('value', ''))]",
-          "roleAssignments": "[if(contains(coalesce(parameters('cname'), createArray())[copyIndex()], 'roleAssignments'), createObject('value', coalesce(parameters('cname'), createArray())[copyIndex()].roleAssignments), createObject('value', createArray()))]"
+          "cnameRecord": {
+            "value": "[tryGet(coalesce(parameters('cname'), createArray())[copyIndex()], 'cnameRecord')]"
+          },
+          "metadata": {
+            "value": "[tryGet(coalesce(parameters('cname'), createArray())[copyIndex()], 'metadata')]"
+          },
+          "ttl": {
+            "value": "[coalesce(tryGet(coalesce(parameters('cname'), createArray())[copyIndex()], 'ttl'), 3600)]"
+          },
+          "targetResourceId": {
+            "value": "[tryGet(coalesce(parameters('cname'), createArray())[copyIndex()], 'targetResourceId')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('cname'), createArray())[copyIndex()], 'roleAssignments')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1052,10 +1082,18 @@
           "name": {
             "value": "[coalesce(parameters('caa'), createArray())[copyIndex()].name]"
           },
-          "metadata": "[if(contains(coalesce(parameters('caa'), createArray())[copyIndex()], 'metadata'), createObject('value', coalesce(parameters('caa'), createArray())[copyIndex()].metadata), createObject('value', createObject()))]",
-          "caaRecords": "[if(contains(coalesce(parameters('caa'), createArray())[copyIndex()], 'caaRecords'), createObject('value', coalesce(parameters('caa'), createArray())[copyIndex()].caaRecords), createObject('value', createArray()))]",
-          "ttl": "[if(contains(coalesce(parameters('caa'), createArray())[copyIndex()], 'ttl'), createObject('value', coalesce(parameters('caa'), createArray())[copyIndex()].ttl), createObject('value', 3600))]",
-          "roleAssignments": "[if(contains(coalesce(parameters('caa'), createArray())[copyIndex()], 'roleAssignments'), createObject('value', coalesce(parameters('caa'), createArray())[copyIndex()].roleAssignments), createObject('value', createArray()))]"
+          "metadata": {
+            "value": "[tryGet(coalesce(parameters('caa'), createArray())[copyIndex()], 'metadata')]"
+          },
+          "caaRecords": {
+            "value": "[tryGet(coalesce(parameters('caa'), createArray())[copyIndex()], 'caaRecords')]"
+          },
+          "ttl": {
+            "value": "[coalesce(tryGet(coalesce(parameters('caa'), createArray())[copyIndex()], 'ttl'), 3600)]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('caa'), createArray())[copyIndex()], 'roleAssignments')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1287,10 +1325,18 @@
           "name": {
             "value": "[coalesce(parameters('mx'), createArray())[copyIndex()].name]"
           },
-          "metadata": "[if(contains(coalesce(parameters('mx'), createArray())[copyIndex()], 'metadata'), createObject('value', coalesce(parameters('mx'), createArray())[copyIndex()].metadata), createObject('value', createObject()))]",
-          "mxRecords": "[if(contains(coalesce(parameters('mx'), createArray())[copyIndex()], 'mxRecords'), createObject('value', coalesce(parameters('mx'), createArray())[copyIndex()].mxRecords), createObject('value', createArray()))]",
-          "ttl": "[if(contains(coalesce(parameters('mx'), createArray())[copyIndex()], 'ttl'), createObject('value', coalesce(parameters('mx'), createArray())[copyIndex()].ttl), createObject('value', 3600))]",
-          "roleAssignments": "[if(contains(coalesce(parameters('mx'), createArray())[copyIndex()], 'roleAssignments'), createObject('value', coalesce(parameters('mx'), createArray())[copyIndex()].roleAssignments), createObject('value', createArray()))]"
+          "metadata": {
+            "value": "[tryGet(coalesce(parameters('mx'), createArray())[copyIndex()], 'metadata')]"
+          },
+          "mxRecords": {
+            "value": "[tryGet(coalesce(parameters('mx'), createArray())[copyIndex()], 'mxRecords')]"
+          },
+          "ttl": {
+            "value": "[coalesce(tryGet(coalesce(parameters('mx'), createArray())[copyIndex()], 'ttl'), 3600)]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('mx'), createArray())[copyIndex()], 'roleAssignments')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1522,10 +1568,18 @@
           "name": {
             "value": "[coalesce(parameters('ns'), createArray())[copyIndex()].name]"
           },
-          "metadata": "[if(contains(coalesce(parameters('ns'), createArray())[copyIndex()], 'metadata'), createObject('value', coalesce(parameters('ns'), createArray())[copyIndex()].metadata), createObject('value', createObject()))]",
-          "nsRecords": "[if(contains(coalesce(parameters('ns'), createArray())[copyIndex()], 'nsRecords'), createObject('value', coalesce(parameters('ns'), createArray())[copyIndex()].nsRecords), createObject('value', createArray()))]",
-          "ttl": "[if(contains(coalesce(parameters('ns'), createArray())[copyIndex()], 'ttl'), createObject('value', coalesce(parameters('ns'), createArray())[copyIndex()].ttl), createObject('value', 3600))]",
-          "roleAssignments": "[if(contains(coalesce(parameters('ns'), createArray())[copyIndex()], 'roleAssignments'), createObject('value', coalesce(parameters('ns'), createArray())[copyIndex()].roleAssignments), createObject('value', createArray()))]"
+          "metadata": {
+            "value": "[tryGet(coalesce(parameters('ns'), createArray())[copyIndex()], 'metadata')]"
+          },
+          "nsRecords": {
+            "value": "[tryGet(coalesce(parameters('ns'), createArray())[copyIndex()], 'nsRecords')]"
+          },
+          "ttl": {
+            "value": "[coalesce(tryGet(coalesce(parameters('ns'), createArray())[copyIndex()], 'ttl'), 3600)]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('ns'), createArray())[copyIndex()], 'roleAssignments')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1757,10 +1811,18 @@
           "name": {
             "value": "[coalesce(parameters('ptr'), createArray())[copyIndex()].name]"
           },
-          "metadata": "[if(contains(coalesce(parameters('ptr'), createArray())[copyIndex()], 'metadata'), createObject('value', coalesce(parameters('ptr'), createArray())[copyIndex()].metadata), createObject('value', createObject()))]",
-          "ptrRecords": "[if(contains(coalesce(parameters('ptr'), createArray())[copyIndex()], 'ptrRecords'), createObject('value', coalesce(parameters('ptr'), createArray())[copyIndex()].ptrRecords), createObject('value', createArray()))]",
-          "ttl": "[if(contains(coalesce(parameters('ptr'), createArray())[copyIndex()], 'ttl'), createObject('value', coalesce(parameters('ptr'), createArray())[copyIndex()].ttl), createObject('value', 3600))]",
-          "roleAssignments": "[if(contains(coalesce(parameters('ptr'), createArray())[copyIndex()], 'roleAssignments'), createObject('value', coalesce(parameters('ptr'), createArray())[copyIndex()].roleAssignments), createObject('value', createArray()))]"
+          "metadata": {
+            "value": "[tryGet(coalesce(parameters('ptr'), createArray())[copyIndex()], 'metadata')]"
+          },
+          "ptrRecords": {
+            "value": "[tryGet(coalesce(parameters('ptr'), createArray())[copyIndex()], 'ptrRecords')]"
+          },
+          "ttl": {
+            "value": "[coalesce(tryGet(coalesce(parameters('ptr'), createArray())[copyIndex()], 'ttl'), 3600)]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('ptr'), createArray())[copyIndex()], 'roleAssignments')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1992,10 +2054,18 @@
           "name": {
             "value": "[coalesce(parameters('soa'), createArray())[copyIndex()].name]"
           },
-          "metadata": "[if(contains(coalesce(parameters('soa'), createArray())[copyIndex()], 'metadata'), createObject('value', coalesce(parameters('soa'), createArray())[copyIndex()].metadata), createObject('value', createObject()))]",
-          "soaRecord": "[if(contains(coalesce(parameters('soa'), createArray())[copyIndex()], 'soaRecord'), createObject('value', coalesce(parameters('soa'), createArray())[copyIndex()].soaRecord), createObject('value', createObject()))]",
-          "ttl": "[if(contains(coalesce(parameters('soa'), createArray())[copyIndex()], 'ttl'), createObject('value', coalesce(parameters('soa'), createArray())[copyIndex()].ttl), createObject('value', 3600))]",
-          "roleAssignments": "[if(contains(coalesce(parameters('soa'), createArray())[copyIndex()], 'roleAssignments'), createObject('value', coalesce(parameters('soa'), createArray())[copyIndex()].roleAssignments), createObject('value', createArray()))]"
+          "metadata": {
+            "value": "[tryGet(coalesce(parameters('soa'), createArray())[copyIndex()], 'metadata')]"
+          },
+          "soaRecord": {
+            "value": "[tryGet(coalesce(parameters('soa'), createArray())[copyIndex()], 'soaRecords')]"
+          },
+          "ttl": {
+            "value": "[coalesce(tryGet(coalesce(parameters('soa'), createArray())[copyIndex()], 'ttl'), 3600)]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('soa'), createArray())[copyIndex()], 'roleAssignments')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2227,10 +2297,18 @@
           "name": {
             "value": "[coalesce(parameters('srv'), createArray())[copyIndex()].name]"
           },
-          "metadata": "[if(contains(coalesce(parameters('srv'), createArray())[copyIndex()], 'metadata'), createObject('value', coalesce(parameters('srv'), createArray())[copyIndex()].metadata), createObject('value', createObject()))]",
-          "srvRecords": "[if(contains(coalesce(parameters('srv'), createArray())[copyIndex()], 'srvRecords'), createObject('value', coalesce(parameters('srv'), createArray())[copyIndex()].srvRecords), createObject('value', createArray()))]",
-          "ttl": "[if(contains(coalesce(parameters('srv'), createArray())[copyIndex()], 'ttl'), createObject('value', coalesce(parameters('srv'), createArray())[copyIndex()].ttl), createObject('value', 3600))]",
-          "roleAssignments": "[if(contains(coalesce(parameters('srv'), createArray())[copyIndex()], 'roleAssignments'), createObject('value', coalesce(parameters('srv'), createArray())[copyIndex()].roleAssignments), createObject('value', createArray()))]"
+          "metadata": {
+            "value": "[tryGet(coalesce(parameters('srv'), createArray())[copyIndex()], 'metadata')]"
+          },
+          "srvRecords": {
+            "value": "[tryGet(coalesce(parameters('srv'), createArray())[copyIndex()], 'srvRecords')]"
+          },
+          "ttl": {
+            "value": "[coalesce(tryGet(coalesce(parameters('srv'), createArray())[copyIndex()], 'ttl'), 3600)]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('srv'), createArray())[copyIndex()], 'roleAssignments')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2462,10 +2540,18 @@
           "name": {
             "value": "[coalesce(parameters('txt'), createArray())[copyIndex()].name]"
           },
-          "metadata": "[if(contains(coalesce(parameters('txt'), createArray())[copyIndex()], 'metadata'), createObject('value', coalesce(parameters('txt'), createArray())[copyIndex()].metadata), createObject('value', createObject()))]",
-          "txtRecords": "[if(contains(coalesce(parameters('txt'), createArray())[copyIndex()], 'txtRecords'), createObject('value', coalesce(parameters('txt'), createArray())[copyIndex()].txtRecords), createObject('value', createArray()))]",
-          "ttl": "[if(contains(coalesce(parameters('txt'), createArray())[copyIndex()], 'ttl'), createObject('value', coalesce(parameters('txt'), createArray())[copyIndex()].ttl), createObject('value', 3600))]",
-          "roleAssignments": "[if(contains(coalesce(parameters('txt'), createArray())[copyIndex()], 'roleAssignments'), createObject('value', coalesce(parameters('txt'), createArray())[copyIndex()].roleAssignments), createObject('value', createArray()))]"
+          "metadata": {
+            "value": "[tryGet(coalesce(parameters('txt'), createArray())[copyIndex()], 'metadata')]"
+          },
+          "txtRecords": {
+            "value": "[tryGet(coalesce(parameters('txt'), createArray())[copyIndex()], 'txtRecords')]"
+          },
+          "ttl": {
+            "value": "[coalesce(tryGet(coalesce(parameters('txt'), createArray())[copyIndex()], 'ttl'), 3600)]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('txt'), createArray())[copyIndex()], 'roleAssignments')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",

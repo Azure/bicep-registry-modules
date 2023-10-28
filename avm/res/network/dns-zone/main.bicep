@@ -98,11 +98,11 @@ module dnsZone_A 'a/main.bicep' = [for (aRecord, index) in (a ?? []): {
   params: {
     dnsZoneName: dnsZone.name
     name: aRecord.name
-    aRecords: contains(aRecord, 'aRecords') ? aRecord.aRecords : []
-    metadata: contains(aRecord, 'metadata') ? aRecord.metadata : {}
-    ttl: contains(aRecord, 'ttl') ? aRecord.ttl : 3600
-    targetResourceId: contains(aRecord, 'targetResourceId') ? aRecord.targetResourceId : ''
-    roleAssignments: contains(aRecord, 'roleAssignments') ? aRecord.roleAssignments : []
+    aRecords: aRecord.?aRecords
+    metadata: aRecord.?metadata
+    ttl: aRecord.?ttl ?? 3600
+    targetResourceId: aRecord.?targetResourceId
+    roleAssignments: aRecord.?roleAssignments
   }
 }]
 
@@ -111,11 +111,11 @@ module dnsZone_AAAA 'aaaa/main.bicep' = [for (aaaaRecord, index) in (aaaa ?? [])
   params: {
     dnsZoneName: dnsZone.name
     name: aaaaRecord.name
-    aaaaRecords: contains(aaaaRecord, 'aaaaRecords') ? aaaaRecord.aaaaRecords : []
-    metadata: contains(aaaaRecord, 'metadata') ? aaaaRecord.metadata : {}
-    ttl: contains(aaaaRecord, 'ttl') ? aaaaRecord.ttl : 3600
-    targetResourceId: contains(aaaaRecord, 'targetResourceId') ? aaaaRecord.targetResourceId : ''
-    roleAssignments: contains(aaaaRecord, 'roleAssignments') ? aaaaRecord.roleAssignments : []
+    aaaaRecords: aaaaRecord.?aaaaRecords
+    metadata: aaaaRecord.?metadata
+    ttl: aaaaRecord.?ttl ?? 3600
+    targetResourceId: aaaaRecord.?targetResourceId
+    roleAssignments: aaaaRecord.?roleAssignments
   }
 }]
 
@@ -124,11 +124,11 @@ module dnsZone_CNAME 'cname/main.bicep' = [for (cnameRecord, index) in (cname ??
   params: {
     dnsZoneName: dnsZone.name
     name: cnameRecord.name
-    cnameRecord: contains(cnameRecord, 'cnameRecord') ? cnameRecord.cnameRecord : {}
-    metadata: contains(cnameRecord, 'metadata') ? cnameRecord.metadata : {}
-    ttl: contains(cnameRecord, 'ttl') ? cnameRecord.ttl : 3600
-    targetResourceId: contains(cnameRecord, 'targetResourceId') ? cnameRecord.targetResourceId : ''
-    roleAssignments: contains(cnameRecord, 'roleAssignments') ? cnameRecord.roleAssignments : []
+    cnameRecord: cnameRecord.?cnameRecord
+    metadata: cnameRecord.?metadata
+    ttl: cnameRecord.?ttl ?? 3600
+    targetResourceId: cnameRecord.?targetResourceId
+    roleAssignments: cnameRecord.?roleAssignments
   }
 }]
 
@@ -137,10 +137,10 @@ module dnsZone_CAA 'caa/main.bicep' = [for (caaRecord, index) in (caa ?? []): {
   params: {
     dnsZoneName: dnsZone.name
     name: caaRecord.name
-    metadata: contains(caaRecord, 'metadata') ? caaRecord.metadata : {}
-    caaRecords: contains(caaRecord, 'caaRecords') ? caaRecord.caaRecords : []
-    ttl: contains(caaRecord, 'ttl') ? caaRecord.ttl : 3600
-    roleAssignments: contains(caaRecord, 'roleAssignments') ? caaRecord.roleAssignments : []
+    metadata: caaRecord.?metadata
+    caaRecords: caaRecord.?caaRecords
+    ttl: caaRecord.?ttl ?? 3600
+    roleAssignments: caaRecord.?roleAssignments
   }
 }]
 
@@ -149,10 +149,10 @@ module dnsZone_MX 'mx/main.bicep' = [for (mxRecord, index) in (mx ?? []): {
   params: {
     dnsZoneName: dnsZone.name
     name: mxRecord.name
-    metadata: contains(mxRecord, 'metadata') ? mxRecord.metadata : {}
-    mxRecords: contains(mxRecord, 'mxRecords') ? mxRecord.mxRecords : []
-    ttl: contains(mxRecord, 'ttl') ? mxRecord.ttl : 3600
-    roleAssignments: contains(mxRecord, 'roleAssignments') ? mxRecord.roleAssignments : []
+    metadata: mxRecord.?metadata
+    mxRecords: mxRecord.?mxRecords
+    ttl:  mxRecord.?ttl ?? 3600
+    roleAssignments:  mxRecord.?roleAssignments
   }
 }]
 
@@ -161,10 +161,10 @@ module dnsZone_NS 'ns/main.bicep' = [for (nsRecord, index) in (ns ?? []): {
   params: {
     dnsZoneName: dnsZone.name
     name: nsRecord.name
-    metadata: contains(nsRecord, 'metadata') ? nsRecord.metadata : {}
-    nsRecords: contains(nsRecord, 'nsRecords') ? nsRecord.nsRecords : []
-    ttl: contains(nsRecord, 'ttl') ? nsRecord.ttl : 3600
-    roleAssignments: contains(nsRecord, 'roleAssignments') ? nsRecord.roleAssignments : []
+    metadata: nsRecord.?metadata
+    nsRecords: nsRecord.?nsRecords
+    ttl: nsRecord.?ttl ?? 3600
+    roleAssignments: nsRecord.?roleAssignments
   }
 }]
 
@@ -173,10 +173,10 @@ module dnsZone_PTR 'ptr/main.bicep' = [for (ptrRecord, index) in (ptr ?? []): {
   params: {
     dnsZoneName: dnsZone.name
     name: ptrRecord.name
-    metadata: contains(ptrRecord, 'metadata') ? ptrRecord.metadata : {}
-    ptrRecords: contains(ptrRecord, 'ptrRecords') ? ptrRecord.ptrRecords : []
-    ttl: contains(ptrRecord, 'ttl') ? ptrRecord.ttl : 3600
-    roleAssignments: contains(ptrRecord, 'roleAssignments') ? ptrRecord.roleAssignments : []
+    metadata: ptrRecord.?metadata
+    ptrRecords: ptrRecord.?ptrRecords
+    ttl:  ptrRecord.?ttl ?? 3600
+    roleAssignments:  ptrRecord.?roleAssignments
   }
 }]
 
@@ -185,10 +185,10 @@ module dnsZone_SOA 'soa/main.bicep' = [for (soaRecord, index) in (soa ?? []): {
   params: {
     dnsZoneName: dnsZone.name
     name: soaRecord.name
-    metadata: contains(soaRecord, 'metadata') ? soaRecord.metadata : {}
-    soaRecord: contains(soaRecord, 'soaRecord') ? soaRecord.soaRecord : {}
-    ttl: contains(soaRecord, 'ttl') ? soaRecord.ttl : 3600
-    roleAssignments: contains(soaRecord, 'roleAssignments') ? soaRecord.roleAssignments : []
+    metadata: soaRecord.?metadata
+    soaRecord: soaRecord.?soaRecords
+    ttl: soaRecord.?ttl ?? 3600
+    roleAssignments: soaRecord.?roleAssignments
   }
 }]
 
@@ -197,10 +197,10 @@ module dnsZone_SRV 'srv/main.bicep' = [for (srvRecord, index) in (srv ?? []): {
   params: {
     dnsZoneName: dnsZone.name
     name: srvRecord.name
-    metadata: contains(srvRecord, 'metadata') ? srvRecord.metadata : {}
-    srvRecords: contains(srvRecord, 'srvRecords') ? srvRecord.srvRecords : []
-    ttl: contains(srvRecord, 'ttl') ? srvRecord.ttl : 3600
-    roleAssignments: contains(srvRecord, 'roleAssignments') ? srvRecord.roleAssignments : []
+    metadata: srvRecord.?metadata
+    srvRecords: srvRecord.?srvRecords
+    ttl: srvRecord.?ttl ?? 3600
+    roleAssignments: srvRecord.?roleAssignments
   }
 }]
 
@@ -209,10 +209,10 @@ module dnsZone_TXT 'txt/main.bicep' = [for (txtRecord, index) in (txt ?? []): {
   params: {
     dnsZoneName: dnsZone.name
     name: txtRecord.name
-    metadata: contains(txtRecord, 'metadata') ? txtRecord.metadata : {}
-    txtRecords: contains(txtRecord, 'txtRecords') ? txtRecord.txtRecords : []
-    ttl: contains(txtRecord, 'ttl') ? txtRecord.ttl : 3600
-    roleAssignments: contains(txtRecord, 'roleAssignments') ? txtRecord.roleAssignments : []
+    metadata: txtRecord.?metadata
+    txtRecords: txtRecord.?txtRecords
+    ttl:  txtRecord.?ttl ?? 3600
+    roleAssignments:  txtRecord.?roleAssignments
   }
 }]
 
