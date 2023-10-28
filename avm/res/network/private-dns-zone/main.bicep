@@ -146,7 +146,7 @@ module privateDnsZone_SOA 'soa/main.bicep' = [for (soaRecord, index) in (soa ?? 
     privateDnsZoneName: privateDnsZone.name
     name: soaRecord.name
     metadata: soaRecord.?metadata
-    soaRecord: soaRecord.?soaRecord
+    soaRecord: soaRecord.?soaRecord ?? {}
     ttl: soaRecord.?ttl ?? 3600
     roleAssignments: soaRecord.?roleAssignments
   }
