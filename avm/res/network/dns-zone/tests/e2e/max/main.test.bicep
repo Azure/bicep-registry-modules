@@ -159,7 +159,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             principalType: 'ServicePrincipal'
           }
         ]
-        soaRecords: {
+        soaRecord: {
           email: 'azuredns-hostmaster.microsoft.com'
           expireTime: 2419200
           host: 'ns1-04.azure-dns.com.'
