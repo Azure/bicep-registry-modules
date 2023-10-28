@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "17187072850468210632"
+      "templateHash": "14472207312303462070"
     },
     "name": "Public DNS Zones",
     "description": "This module deploys a Public DNS zone.",
@@ -2058,7 +2058,7 @@
             "value": "[tryGet(coalesce(parameters('soa'), createArray())[copyIndex()], 'metadata')]"
           },
           "soaRecord": {
-            "value": "[tryGet(coalesce(parameters('soa'), createArray())[copyIndex()], 'soaRecords')]"
+            "value": "[tryGet(coalesce(parameters('soa'), createArray())[copyIndex()], 'soaRecord')]"
           },
           "ttl": {
             "value": "[coalesce(tryGet(coalesce(parameters('soa'), createArray())[copyIndex()], 'ttl'), 3600)]"

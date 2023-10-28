@@ -186,7 +186,7 @@ module dnsZone_SOA 'soa/main.bicep' = [for (soaRecord, index) in (soa ?? []): {
     dnsZoneName: dnsZone.name
     name: soaRecord.name
     metadata: soaRecord.?metadata
-    soaRecord: soaRecord.?soaRecords
+    soaRecord: soaRecord.?soaRecord
     ttl: soaRecord.?ttl ?? 3600
     roleAssignments: soaRecord.?roleAssignments
   }
