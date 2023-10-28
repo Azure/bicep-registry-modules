@@ -264,7 +264,7 @@ module dnsZone 'br/public:avm-res-network-dnszone:1.0.0' = {
             roleDefinitionIdOrName: 'Reader'
           }
         ]
-        soaRecord: {
+        soaRecords: {
           email: 'azuredns-hostmaster.microsoft.com'
           expireTime: 2419200
           host: 'ns1-04.azure-dns.com.'
@@ -468,7 +468,7 @@ module dnsZone 'br/public:avm-res-network-dnszone:1.0.0' = {
               "roleDefinitionIdOrName": "Reader"
             }
           ],
-          "soaRecord": {
+          "soaRecords": {
             "email": "azuredns-hostmaster.microsoft.com",
             "expireTime": 2419200,
             "host": "ns1-04.azure-dns.com.",
