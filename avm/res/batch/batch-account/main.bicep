@@ -45,16 +45,6 @@ param publicNetworkAccess string = ''
 @description('Optional. Network access profile. It is only applicable when publicNetworkAccess is not explicitly disabled.')
 param networkProfile networkProfileType?
 
-// @allowed([
-//   'Allow'
-//   'Deny'
-// ])
-// @description('Optional. The network profile default action for endpoint access. It is only applicable when publicNetworkAccess is not explicitly disabled.')
-// param networkProfileDefaultAction string = 'Deny'
-
-// @description('Optional. Array of IP ranges to filter client IP address. It is only applicable when publicNetworkAccess is not explicitly disabled.')
-// param networkProfileAllowedIpRanges array?
-
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
@@ -89,11 +79,6 @@ var identity = !empty(managedIdentities) ? {
   type: (managedIdentities.?systemAssigned ?? false) ? 'SystemAssigned' : (!empty(managedIdentities.?userAssignedResourcesIds ?? {}) ? 'UserAssigned' : null)
   userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
 } : null
-
-// var networkProfileIpRules = !empty(networkProfile ?? {}) ? ([for ipRule in (networkProfile.ipRules ?? []): {
-//   action: 'Allow'
-//   value: ipRule
-// }]) : null
 
 var accountAccessNetworkProfileIpRules = [for allowedIpRule in networkProfile.?accountAccess.?allowedIpRules ?? []: {
   action: 'Allow'
@@ -169,12 +154,6 @@ resource batchAccount 'Microsoft.Batch/batchAccounts@2022-06-01' = {
       id: batchKeyVaultReference.id
       url: batchKeyVaultReference.properties.vaultUri
     } : null
-    // networkProfile: (publicNetworkAccess == 'Disabled') || empty(networkProfile ?? []) ? null : {
-    //   accountAccess: {
-    //     defaultAction: networkProfile.defaultAction
-    //     ipRules: networkProfileIpRules
-    //   }
-    // }
     networkProfile: !empty(networkProfile ?? {}) ? {
       accountAccess: !empty(accountAccessNetworkProfileIpRules) ? {
         defaultAction: networkProfile.?accountAccess.?defaultAction
@@ -440,13 +419,3 @@ type endpointAccessProfileType = {
   @description('Optional. Array of IP ranges to filter client IP address.')
   allowedIpRules: array?
 }?
-
-// @allowed([
-//   'Allow'
-//   'Deny'
-// ])
-// @description('Optional. The network profile default action for endpoint access. It is only applicable when publicNetworkAccess is not explicitly disabled.')
-// param networkProfileDefaultAction string = 'Deny'
-
-// @description('Optional. Array of IP ranges to filter client IP address. It is only applicable when publicNetworkAccess is not explicitly disabled.')
-// param networkProfileAllowedIpRanges array?
