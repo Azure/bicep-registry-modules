@@ -102,6 +102,14 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         ]
       }
     ]
+    networkProfile: {
+      defaultAction: 'Deny'
+      ipRules: [
+        {
+          value: '40.74.28.0/23'
+        }
+      ]
+    }
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Reader'
@@ -121,7 +129,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     }
     // Workaround for PSRule
     keyVaultReferenceResourceId: null
-    networkProfileAllowedIpRanges: null
     allowedAuthenticationModes: null
     customerManagedKey: null
   }

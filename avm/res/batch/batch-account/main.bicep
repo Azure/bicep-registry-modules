@@ -42,15 +42,18 @@ param privateEndpoints privateEndpointType
 ])
 param publicNetworkAccess string = ''
 
-@allowed([
-  'Allow'
-  'Deny'
-])
-@description('Optional. The network profile default action for endpoint access. It is only applicable when publicNetworkAccess is not explicitly disabled.')
-param networkProfileDefaultAction string = 'Deny'
+@description('Optional. Network access profile for batchAccount endpoint. It is only applicable when publicNetworkAccess is not explicitly disabled.')
+param networkProfile object?
 
-@description('Optional. Array of IP ranges to filter client IP address. It is only applicable when publicNetworkAccess is not explicitly disabled.')
-param networkProfileAllowedIpRanges array?
+// @allowed([
+//   'Allow'
+//   'Deny'
+// ])
+// @description('Optional. The network profile default action for endpoint access. It is only applicable when publicNetworkAccess is not explicitly disabled.')
+// param networkProfileDefaultAction string = 'Deny'
+
+// @description('Optional. Array of IP ranges to filter client IP address. It is only applicable when publicNetworkAccess is not explicitly disabled.')
+// param networkProfileAllowedIpRanges array?
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -87,9 +90,14 @@ var identity = !empty(managedIdentities) ? {
   userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
 } : null
 
-var networkProfileIpRules = [for networkProfileAllowedIpRange in (networkProfileAllowedIpRanges ?? []): {
+// var networkProfileIpRules = !empty(networkProfile ?? {}) ? ([for ipRule in (networkProfile.ipRules ?? []): {
+//   action: 'Allow'
+//   value: ipRule
+// }]) : null
+
+var networkProfileIpRules = [for ipRule in networkProfile.?ipRules ?? []: {
   action: 'Allow'
-  value: networkProfileAllowedIpRange
+  value: ipRule
 }]
 
 var builtInRoleNames = {
@@ -156,14 +164,20 @@ resource batchAccount 'Microsoft.Batch/batchAccounts@2022-06-01' = {
       id: batchKeyVaultReference.id
       url: batchKeyVaultReference.properties.vaultUri
     } : null
-    networkProfile: (publicNetworkAccess == 'Disabled') || empty(networkProfileAllowedIpRanges ?? []) ? null : {
+    // networkProfile: (publicNetworkAccess == 'Disabled') || empty(networkProfile ?? []) ? null : {
+    //   accountAccess: {
+    //     defaultAction: networkProfile.defaultAction
+    //     ipRules: networkProfileIpRules
+    //   }
+    // }
+    networkProfile: !empty(networkProfile ?? {}) ? {
       accountAccess: {
-        defaultAction: networkProfileDefaultAction
-        ipRules: networkProfileIpRules
+        defaultAction: networkProfile.?defaultAction
+        ipRules: networkProfile.?ipRules ?? []
       }
-    }
+    } : null
     poolAllocationMode: poolAllocationMode
-    publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : ((!empty(privateEndpoints ?? []) && empty(networkProfileAllowedIpRanges ?? [])) ? 'Disabled' : null)
+    publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : ((!empty(privateEndpoints ?? []) && empty(networkProfile ?? [])) ? 'Disabled' : null)
   }
 }
 
@@ -401,3 +415,21 @@ type lockType = {
   @description('Optional. Specify the type of lock.')
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
+
+// type networkProfileType = {
+//   @description('Optional. The network profile default action for endpoint access.')
+//   defaultAction: ('Allow' | 'Deny')?
+
+//   @description('Optional. Array of IP ranges to filter client IP address.')
+//   ipRules: array?
+// }?
+
+// @allowed([
+//   'Allow'
+//   'Deny'
+// ])
+// @description('Optional. The network profile default action for endpoint access. It is only applicable when publicNetworkAccess is not explicitly disabled.')
+// param networkProfileDefaultAction string = 'Deny'
+
+// @description('Optional. Array of IP ranges to filter client IP address. It is only applicable when publicNetworkAccess is not explicitly disabled.')
+// param networkProfileAllowedIpRanges array?
