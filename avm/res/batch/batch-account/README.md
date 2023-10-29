@@ -264,6 +264,11 @@ module batchAccount 'br/public:avm-res-batch-batchaccount:1.0.0' = {
         ]
         defaultAction: 'Deny'
       }
+      nodeManagementAccess: {
+        allowedIpRules: [
+          '40.74.28.0/23'
+        ]
+      }
     }
     poolAllocationMode: 'BatchService'
     privateEndpoints: [
@@ -365,6 +370,11 @@ module batchAccount 'br/public:avm-res-batch-batchaccount:1.0.0' = {
             "40.74.28.0/23"
           ],
           "defaultAction": "Deny"
+        },
+        "nodeManagementAccess": {
+          "allowedIpRules": [
+            "40.74.28.0/23"
+          ]
         }
       }
     },
