@@ -156,11 +156,11 @@ resource batchAccount 'Microsoft.Batch/batchAccounts@2022-06-01' = {
     } : null
     networkProfile: !empty(networkProfile ?? {}) ? {
       accountAccess: !empty(accountAccessNetworkProfileIpRules) ? {
-        defaultAction: networkProfile.?accountAccess.?defaultAction
+        defaultAction: networkProfile.?accountAccess.?defaultAction ?? 'Deny'
         ipRules: accountAccessNetworkProfileIpRules
       } : null
       nodeManagementAccess: !empty(nodeManagementAccessNetworkProfileIpRules) ? {
-        defaultAction: networkProfile.?nodeManagementAccess.?defaultAction
+        defaultAction: networkProfile.?nodeManagementAccess.?defaultAction ?? 'Deny'
         ipRules: nodeManagementAccessNetworkProfileIpRules
       } : null
     } : null
@@ -414,7 +414,7 @@ type networkProfileType = {
 
 type endpointAccessProfileType = {
   @description('Optional. Default action for endpoint access.')
-  defaultAction: ('Allow' | 'Deny' | null)?
+  defaultAction: ('Allow' | 'Deny')?
 
   @description('Optional. Array of IP ranges to filter client IP address.')
   allowedIpRules: array?
