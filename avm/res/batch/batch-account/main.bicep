@@ -42,8 +42,8 @@ param privateEndpoints privateEndpointType
 ])
 param publicNetworkAccess string = ''
 
-@description('Optional. Network access profile for batchAccount endpoint. It is only applicable when publicNetworkAccess is not explicitly disabled.')
-param networkProfile object?
+@description('Optional. Network access profile. It is only applicable when publicNetworkAccess is not explicitly disabled.')
+param networkProfile networkProfileType?
 
 // @allowed([
 //   'Allow'
@@ -95,9 +95,14 @@ var identity = !empty(managedIdentities) ? {
 //   value: ipRule
 // }]) : null
 
-var networkProfileIpRules = [for ipRule in networkProfile.?ipRules ?? []: {
+var accountAccessNetworkProfileIpRules = [for allowedIpRule in networkProfile.?accountAccess.?allowedIpRules ?? []: {
   action: 'Allow'
-  value: ipRule
+  value: allowedIpRule
+}]
+
+var nodeManagementAccessNetworkProfileIpRules = [for allowedIpRule in networkProfile.?nodeManagementAccess.?allowedIpRules ?? []: {
+  action: 'Allow'
+  value: allowedIpRule
 }]
 
 var builtInRoleNames = {
@@ -171,11 +176,14 @@ resource batchAccount 'Microsoft.Batch/batchAccounts@2022-06-01' = {
     //   }
     // }
     networkProfile: !empty(networkProfile ?? {}) ? {
-      accountAccess: {
-        defaultAction: networkProfile.?defaultAction
-        // ipRules: networkProfile.?networkProfileIpRules ?? []
-        ipRules: networkProfileIpRules
-      }
+      accountAccess: !empty(accountAccessNetworkProfileIpRules) ? {
+        defaultAction: networkProfile.?accountAccess.?defaultAction
+        ipRules: accountAccessNetworkProfileIpRules
+      } : null
+      nodeManagementAccess: !empty(nodeManagementAccessNetworkProfileIpRules) ? {
+        defaultAction: networkProfile.?nodeManagementAccess.?defaultAction
+        ipRules: nodeManagementAccessNetworkProfileIpRules
+      } : null
     } : null
     poolAllocationMode: poolAllocationMode
     publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : ((!empty(privateEndpoints ?? []) && empty(networkProfile ?? [])) ? 'Disabled' : null)
@@ -417,13 +425,21 @@ type lockType = {
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
 
-// type networkProfileType = {
-//   @description('Optional. The network profile default action for endpoint access.')
-//   defaultAction: ('Allow' | 'Deny')?
+type networkProfileType = {
+  @description('Optional. Network access profile for batchAccount endpoint (Batch account data plane API).')
+  accountAccess: endpointAccessProfileType?
 
-//   @description('Optional. Array of IP ranges to filter client IP address.')
-//   ipRules: array?
-// }?
+  @description('Optional. Network access profile for nodeManagement endpoint (Batch service managing compute nodes for Batch pools).')
+  nodeManagementAccess: endpointAccessProfileType?
+}?
+
+type endpointAccessProfileType = {
+  @description('Optional. Default action for endpoint access.')
+  defaultAction: ('Allow' | 'Deny' | null)?
+
+  @description('Optional. Array of IP ranges to filter client IP address.')
+  allowedIpRules: array?
+}?
 
 // @allowed([
 //   'Allow'

@@ -258,10 +258,12 @@ module batchAccount 'br/public:avm-res-batch-batchaccount:1.0.0' = {
       systemAssigned: true
     }
     networkProfile: {
-      defaultAction: 'Deny'
-      ipRules: [
-        '40.74.28.0/23'
-      ]
+      accountAccess: {
+        allowedIpRules: [
+          '40.74.28.0/23'
+        ]
+        defaultAction: 'Deny'
+      }
     }
     poolAllocationMode: 'BatchService'
     privateEndpoints: [
@@ -358,10 +360,12 @@ module batchAccount 'br/public:avm-res-batch-batchaccount:1.0.0' = {
     },
     "networkProfile": {
       "value": {
-        "defaultAction": "Deny",
-        "ipRules": [
-          "40.74.28.0/23"
-        ]
+        "accountAccess": {
+          "allowedIpRules": [
+            "40.74.28.0/23"
+          ],
+          "defaultAction": "Deny"
+        }
       }
     },
     "poolAllocationMode": {
@@ -595,7 +599,7 @@ module batchAccount 'br/public:avm-res-batch-batchaccount:1.0.0' = {
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`networkProfile`](#parameter-networkprofile) | object | Network access profile for batchAccount endpoint. It is only applicable when publicNetworkAccess is not explicitly disabled. |
+| [`networkProfile`](#parameter-networkprofile) | object | Network access profile. It is only applicable when publicNetworkAccess is not explicitly disabled. |
 | [`poolAllocationMode`](#parameter-poolallocationmode) | string | The allocation mode for creating pools in the Batch account. Determines which quota will be used. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkProfileAllowedIpRanges are not set. |
@@ -841,7 +845,27 @@ Name of the Azure Batch.
 
 ### Parameter: `networkProfile`
 
-Network access profile for batchAccount endpoint. It is only applicable when publicNetworkAccess is not explicitly disabled.
+Network access profile. It is only applicable when publicNetworkAccess is not explicitly disabled.
+- Required: No
+- Type: object
+
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`accountAccess`](#parameter-networkprofileaccountaccess) | No | object | Optional. Network access profile for batchAccount endpoint (Batch account data plane API). |
+| [`nodeManagementAccess`](#parameter-networkprofilenodemanagementaccess) | No | object | Optional. Network access profile for nodeManagement endpoint (Batch service managing compute nodes for Batch pools). |
+
+### Parameter: `networkProfile.accountAccess`
+
+Optional. Network access profile for batchAccount endpoint (Batch account data plane API).
+
+- Required: No
+- Type: object
+
+### Parameter: `networkProfile.nodeManagementAccess`
+
+Optional. Network access profile for nodeManagement endpoint (Batch service managing compute nodes for Batch pools).
+
 - Required: No
 - Type: object
 

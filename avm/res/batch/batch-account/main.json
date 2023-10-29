@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "14858470217786453834"
+      "templateHash": "14700623823580058651"
     },
     "name": "Batch Accounts",
     "description": "This module deploys a Batch Account.",
@@ -407,6 +407,50 @@
         }
       },
       "nullable": true
+    },
+    "networkProfileType": {
+      "type": "object",
+      "properties": {
+        "accountAccess": {
+          "$ref": "#/definitions/endpointAccessProfileType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Network access profile for batchAccount endpoint (Batch account data plane API)."
+          }
+        },
+        "nodeManagementAccess": {
+          "$ref": "#/definitions/endpointAccessProfileType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Network access profile for nodeManagement endpoint (Batch service managing compute nodes for Batch pools)."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "endpointAccessProfileType": {
+      "type": "object",
+      "properties": {
+        "defaultAction": {
+          "type": "string",
+          "allowedValues": [
+            "Allow",
+            "Deny"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default action for endpoint access."
+          }
+        },
+        "allowedIpRules": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of IP ranges to filter client IP address."
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -484,10 +528,10 @@
       }
     },
     "networkProfile": {
-      "type": "object",
+      "$ref": "#/definitions/networkProfileType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Network access profile for batchAccount endpoint. It is only applicable when publicNetworkAccess is not explicitly disabled."
+        "description": "Optional. Network access profile. It is only applicable when publicNetworkAccess is not explicitly disabled."
       }
     },
     "lock": {
@@ -550,11 +594,19 @@
   "variables": {
     "copy": [
       {
-        "name": "networkProfileIpRules",
-        "count": "[length(coalesce(tryGet(parameters('networkProfile'), 'ipRules'), createArray()))]",
+        "name": "accountAccessNetworkProfileIpRules",
+        "count": "[length(coalesce(tryGet(tryGet(parameters('networkProfile'), 'accountAccess'), 'allowedIpRules'), createArray()))]",
         "input": {
           "action": "Allow",
-          "value": "[coalesce(tryGet(parameters('networkProfile'), 'ipRules'), createArray())[copyIndex('networkProfileIpRules')]]"
+          "value": "[coalesce(tryGet(tryGet(parameters('networkProfile'), 'accountAccess'), 'allowedIpRules'), createArray())[copyIndex('accountAccessNetworkProfileIpRules')]]"
+        }
+      },
+      {
+        "name": "nodeManagementAccessNetworkProfileIpRules",
+        "count": "[length(coalesce(tryGet(tryGet(parameters('networkProfile'), 'nodeManagementAccess'), 'allowedIpRules'), createArray()))]",
+        "input": {
+          "action": "Allow",
+          "value": "[coalesce(tryGet(tryGet(parameters('networkProfile'), 'nodeManagementAccess'), 'allowedIpRules'), createArray())[copyIndex('nodeManagementAccessNetworkProfileIpRules')]]"
         }
       }
     ],
@@ -635,7 +687,7 @@
         },
         "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.KeyVault', 'keyVaultProperties', createObject('keyIdentifier', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), reference('cMKKeyVault::cMKKey').keyUriWithVersion))), null())]",
         "keyVaultReference": "[if(equals(parameters('poolAllocationMode'), 'UserSubscription'), createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('keyVaultReferenceResourceId'), '//'), '/')[2], split(coalesce(parameters('keyVaultReferenceResourceId'), '////'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(coalesce(parameters('keyVaultReferenceResourceId'), 'dummyVault'), '/'))), 'url', reference('batchKeyVaultReference').vaultUri), null())]",
-        "networkProfile": "[if(not(empty(coalesce(parameters('networkProfile'), createObject()))), createObject('accountAccess', createObject('defaultAction', tryGet(parameters('networkProfile'), 'defaultAction'), 'ipRules', variables('networkProfileIpRules'))), null())]",
+        "networkProfile": "[if(not(empty(coalesce(parameters('networkProfile'), createObject()))), createObject('accountAccess', if(not(empty(variables('accountAccessNetworkProfileIpRules'))), createObject('defaultAction', tryGet(tryGet(parameters('networkProfile'), 'accountAccess'), 'defaultAction'), 'ipRules', variables('accountAccessNetworkProfileIpRules')), null()), 'nodeManagementAccess', if(not(empty(variables('nodeManagementAccessNetworkProfileIpRules'))), createObject('defaultAction', tryGet(tryGet(parameters('networkProfile'), 'nodeManagementAccess'), 'defaultAction'), 'ipRules', variables('nodeManagementAccessNetworkProfileIpRules')), null())), null())]",
         "poolAllocationMode": "[parameters('poolAllocationMode')]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(coalesce(parameters('privateEndpoints'), createArray()))), empty(coalesce(parameters('networkProfile'), createArray()))), 'Disabled', null()))]"
       },

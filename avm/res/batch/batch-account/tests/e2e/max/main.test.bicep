@@ -103,10 +103,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       }
     ]
     networkProfile: {
-      defaultAction: 'Deny'
-      ipRules: [
-        '40.74.28.0/23'
-      ]
+      accountAccess: {
+        defaultAction: 'Deny'
+        allowedIpRules: [
+          '40.74.28.0/23'
+        ]
+      }
     }
     roleAssignments: [
       {
