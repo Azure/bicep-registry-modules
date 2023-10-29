@@ -109,6 +109,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           '40.74.28.0/23'
         ]
       }
+      nodeManagementAccess: {
+        allowedIpRules: [
+          '40.74.28.0/23'
+        ]
+      }
     }
     roleAssignments: [
       {
