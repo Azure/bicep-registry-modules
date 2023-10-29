@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "14416997244636139298"
+      "templateHash": "7965520440342024618"
     },
     "name": "Batch Accounts",
     "description": "This module deploys a Batch Account.",
@@ -483,22 +483,11 @@
         "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkProfileAllowedIpRanges are not set."
       }
     },
-    "networkProfileDefaultAction": {
-      "type": "string",
-      "defaultValue": "Deny",
-      "allowedValues": [
-        "Allow",
-        "Deny"
-      ],
-      "metadata": {
-        "description": "Optional. The network profile default action for endpoint access. It is only applicable when publicNetworkAccess is not explicitly disabled."
-      }
-    },
-    "networkProfileAllowedIpRanges": {
-      "type": "array",
+    "networkProfile": {
+      "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Array of IP ranges to filter client IP address. It is only applicable when publicNetworkAccess is not explicitly disabled."
+        "description": "Optional. Network access profile for batchAccount endpoint. It is only applicable when publicNetworkAccess is not explicitly disabled."
       }
     },
     "lock": {
@@ -562,10 +551,10 @@
     "copy": [
       {
         "name": "networkProfileIpRules",
-        "count": "[length(coalesce(parameters('networkProfileAllowedIpRanges'), createArray()))]",
+        "count": "[length(coalesce(tryGet(parameters('networkProfile'), 'ipRules'), createArray()))]",
         "input": {
           "action": "Allow",
-          "value": "[coalesce(parameters('networkProfileAllowedIpRanges'), createArray())[copyIndex('networkProfileIpRules')]]"
+          "value": "[coalesce(tryGet(parameters('networkProfile'), 'ipRules'), createArray())[copyIndex('networkProfileIpRules')]]"
         }
       }
     ],
@@ -646,9 +635,9 @@
         },
         "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.KeyVault', 'keyVaultProperties', createObject('keyIdentifier', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), reference('cMKKeyVault::cMKKey').keyUriWithVersion))), null())]",
         "keyVaultReference": "[if(equals(parameters('poolAllocationMode'), 'UserSubscription'), createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('keyVaultReferenceResourceId'), '//'), '/')[2], split(coalesce(parameters('keyVaultReferenceResourceId'), '////'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(coalesce(parameters('keyVaultReferenceResourceId'), 'dummyVault'), '/'))), 'url', reference('batchKeyVaultReference').vaultUri), null())]",
-        "networkProfile": "[if(or(equals(parameters('publicNetworkAccess'), 'Disabled'), empty(coalesce(parameters('networkProfileAllowedIpRanges'), createArray()))), null(), createObject('accountAccess', createObject('defaultAction', parameters('networkProfileDefaultAction'), 'ipRules', variables('networkProfileIpRules'))))]",
+        "networkProfile": "[if(not(empty(coalesce(parameters('networkProfile'), createObject()))), createObject('accountAccess', createObject('defaultAction', tryGet(parameters('networkProfile'), 'defaultAction'), 'ipRules', coalesce(tryGet(parameters('networkProfile'), 'networkProfileIpRules'), createArray()))), null())]",
         "poolAllocationMode": "[parameters('poolAllocationMode')]",
-        "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(coalesce(parameters('privateEndpoints'), createArray()))), empty(coalesce(parameters('networkProfileAllowedIpRanges'), createArray()))), 'Disabled', null()))]"
+        "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(coalesce(parameters('privateEndpoints'), createArray()))), empty(coalesce(parameters('networkProfile'), createArray()))), 'Disabled', null()))]"
       },
       "dependsOn": [
         "batchKeyVaultReference",

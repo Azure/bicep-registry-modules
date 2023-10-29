@@ -173,7 +173,7 @@ resource batchAccount 'Microsoft.Batch/batchAccounts@2022-06-01' = {
     networkProfile: !empty(networkProfile ?? {}) ? {
       accountAccess: {
         defaultAction: networkProfile.?defaultAction
-        ipRules: networkProfile.?ipRules ?? []
+        ipRules: networkProfile.?networkProfileIpRules ?? []
       }
     } : null
     poolAllocationMode: poolAllocationMode
