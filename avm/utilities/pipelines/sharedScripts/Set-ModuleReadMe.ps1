@@ -638,9 +638,6 @@ function Get-OrderedParametersJSON {
         [string[]] $RequiredParametersList = @()
     )
 
-    # Load used function(s)
-    . (Join-Path $PSScriptRoot 'helper' 'ConvertTo-OrderedHashtable.ps1')
-
     # [1/3] Get all parameters from the parameter object and order them recursively
     $orderedContentInJSONFormat = ConvertTo-OrderedHashtable -JSONInputObject $parametersJSON
 
@@ -996,56 +993,6 @@ function ConvertTo-FormattedBicep {
 
 <#
 .SYNOPSIS
-Based on the provided parameter metadata, determine whether the parameter is required or not
-
-.DESCRIPTION
-Based on the provided parameter metadata, determine whether the parameter is required or not
-
-.PARAMETER Parameter
-The parameter metadata to analyze.
-
-For example: @{
-    type     = 'string'
-    metadata = @{
-        description = 'Required. The name of the Public IP Address.'
-    }
-}
-
-.PARAMETER TemplateFileContent
-Mandatory. The template file content object to crawl data from.
-
-.EXAMPLE
-Get-IsParameterRequired -TemplateFileContent @{ resource = @{}; ... } -Parameter @{ type = 'string'; metadata = @{ description = 'Required. The name of the Public IP Address.' } }
-
-Check the given parameter whether it is required. Would result into true.
-#>
-function Get-IsParameterRequired {
-
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory = $true)]
-        [hashtable] $Parameter,
-
-        [Parameter(Mandatory)]
-        [hashtable] $TemplateFileContent
-    )
-
-    $hasParameterNoDefault = $Parameter.Keys -notcontains 'defaultValue'
-    $isParameterNullable = $Parameter['nullable']
-    # User defined type
-    $isUserDefinedType = $Parameter.Keys -contains '$ref'
-    $isUserDefinedTypeNullable = $Parameter.Keys -contains '$ref' ? $TemplateFileContent.definitions[(Split-Path $Parameter.'$ref' -Leaf)]['nullable'] : $false
-
-    # Evaluation
-    # The parameter is required IF it
-    # - has no default value,
-    # - is not nullable
-    # - has no nullable user-defined type
-    return $hasParameterNoDefault -and -not $isParameterNullable -and -not ($isUserDefinedType -and $isUserDefinedTypeNullable)
-}
-
-<#
-.SYNOPSIS
 Generate 'Usage examples' for the ReadMe out of the parameter files currently used to test the template
 
 .DESCRIPTION
@@ -1102,10 +1049,6 @@ function Set-UsageExamplesSection {
         [Parameter(Mandatory = $false)]
         [string] $SectionStartIdentifier = '## Usage examples'
     )
-
-    # Load used function(s)
-    . (Join-Path $PSScriptRoot 'Get-ModuleTestFileList.ps1')
-    . (Join-Path (Split-Path $PSScriptRoot -Parent) 'publish' 'helper' 'Get-BRMRepositoryName.ps1')
 
     $brLink = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
 
@@ -1651,9 +1594,6 @@ function Initialize-ReadMe {
         [hashtable] $TemplateFileContent
     )
 
-    . (Join-Path $PSScriptRoot 'helper' 'Get-SpecsAlignedResourceName.ps1')
-    . (Join-Path $PSScriptRoot 'Get-NestedResourceList.ps1')
-
     $moduleName = $TemplateFileContent.metadata.name
     $moduleDescription = $TemplateFileContent.metadata.description
     $formattedResourceType = Get-SpecsAlignedResourceName -ResourceIdentifier $FullModuleIdentifier
@@ -1780,8 +1720,13 @@ function Set-ModuleReadMe {
     )
 
     # Load external functions
-    . (Join-Path $PSScriptRoot 'helper' 'Merge-FileWithNewContent.ps1')
     . (Join-Path $PSScriptRoot 'Get-NestedResourceList.ps1')
+    . (Join-Path $PSScriptRoot 'Get-ModuleTestFileList.ps1')
+    . (Join-Path $PSScriptRoot 'helper' 'Merge-FileWithNewContent.ps1')
+    . (Join-Path $PSScriptRoot 'helper' 'Get-IsParameterRequired.ps1')
+    . (Join-Path $PSScriptRoot 'helper' 'Get-SpecsAlignedResourceName.ps1')
+    . (Join-Path $PSScriptRoot 'helper' 'ConvertTo-OrderedHashtable.ps1')
+    . (Join-Path (Split-Path $PSScriptRoot -Parent) 'publish' 'helper' 'Get-BRMRepositoryName.ps1')
 
     # Check template & make full path
     $TemplateFilePath = Resolve-Path -Path $TemplateFilePath -ErrorAction Stop
