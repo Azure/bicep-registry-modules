@@ -260,9 +260,7 @@ module batchAccount 'br/public:avm-res-batch-batchaccount:1.0.0' = {
     networkProfile: {
       defaultAction: 'Deny'
       ipRules: [
-        {
-          value: '40.74.28.0/23'
-        }
+        '40.74.28.0/23'
       ]
     }
     poolAllocationMode: 'BatchService'
@@ -362,9 +360,7 @@ module batchAccount 'br/public:avm-res-batch-batchaccount:1.0.0' = {
       "value": {
         "defaultAction": "Deny",
         "ipRules": [
-          {
-            "value": "40.74.28.0/23"
-          }
+          "40.74.28.0/23"
         ]
       }
     },
