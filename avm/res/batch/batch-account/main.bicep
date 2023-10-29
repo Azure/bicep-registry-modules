@@ -413,7 +413,7 @@ type networkProfileType = {
 }?
 
 type endpointAccessProfileType = {
-  @description('Optional. Default action for endpoint access.')
+  @description('Optional. Default action for endpoint access. If not specified, defaults to Deny.')
   defaultAction: ('Allow' | 'Deny')?
 
   @description('Optional. Array of IP ranges to filter client IP address.')

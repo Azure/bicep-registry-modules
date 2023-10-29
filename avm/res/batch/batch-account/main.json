@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "9336540276415768656"
+      "templateHash": "118726938712512298"
     },
     "name": "Batch Accounts",
     "description": "This module deploys a Batch Account.",
@@ -439,7 +439,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. Default action for endpoint access."
+            "description": "Optional. Default action for endpoint access. If not specified, defaults to Deny."
           }
         },
         "allowedIpRules": {
