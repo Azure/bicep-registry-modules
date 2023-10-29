@@ -21,20 +21,21 @@ This module deploys a Public IP Address.
 
 ## Usage examples
 
-The following module usage examples are retrieved from the content of the files hosted in the module's `tests` folder.
-   >**Note**: The name of each example is based on the name of the file from which it is taken.
+The following section provides usage examples for the module, which were used to validate and deploy the module successfully. For a full reference, please review the module's test folder in its repository.
 
-   >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
+>**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
-   >**Note**: To reference the module, please use the following syntax `br/public:avm-res-network-publicipaddress:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm-res-network-publicipaddress:1.0.0`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using Maximum Parameters](#example-2-using-maximum-parameters)
-- [Using WAF-Aligned](#example-3-using-waf-aligned)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
+> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
+
 
 
 <details>
@@ -112,9 +113,9 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
 </details>
 <p>
 
-### Example 2: _Using Maximum Parameters_
+### Example 2: _Using large parameter set_
 
-This instance deploys the module with the maximum set of required parameters.
+This instance deploys the module with most of its features enabled.
 
 
 <details>
@@ -258,9 +259,9 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
 </details>
 <p>
 
-### Example 3: _Using WAF-Aligned_
+### Example 3: _WAF-aligned_
 
-This instance deploys the module with the waf-aligned set of required parameters.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
