@@ -15,6 +15,9 @@ Mandatory. The path to the module folder to generate the content for.
 .PARAMETER Recurse
 Optional. Set this parameter if you not only want to generate the content for one module, but also any nested module in the same path.
 
+.PARAMETER Depth
+Optional. Recursion depth for the module search.
+
 .PARAMETER SkipBuild
 Optional. Set this parameter if you don't want to build/compile the JSON template(s) for the contained `main.bicep` file(s).
 
@@ -67,13 +70,17 @@ function Set-AVMModule {
         [switch] $SkipFileAndFolderSetup,
 
         [Parameter(Mandatory = $false)]
-        [int] $ThrottleLimit = 5
+        [int] $ThrottleLimit = 5,
+
+        [Parameter(Mandatory = $false)]
+        [int] $Depth
     )
 
-    # Load helper scripts
+    # # Load helper scripts
     . (Join-Path $PSScriptRoot 'helper' 'Set-ModuleFileAndFolderSetup.ps1')
 
     $resolvedPath = (Resolve-Path $ModuleFolderPath).Path
+
     # Build up module file & folder structure if not yet existing. Should only run if an actual module path was provided (and not any of their parent paths)
     if (-not $SkipFileAndFolderSetup -and ((($resolvedPath -split '\bavm\b')[1].Trim('\,/') -split '[\/|\\]').Count -gt 2)) {
         if ($PSCmdlet.ShouldProcess("File & folder structure for path [$resolvedPath]", "Setup")) {
@@ -82,9 +89,17 @@ function Set-AVMModule {
     }
 
     if ($Recurse) {
-        $relevantTemplatePaths = (Get-ChildItem -Path $resolvedPath -Recurse -File -Filter 'main.bicep').FullName
-    }
-    else {
+        $childInput = @{
+            Path    = $resolvedPath
+            Recurse = $Recurse
+            File    = $true
+            Filter  = 'main.bicep'
+        }
+        if ($Depth) {
+            $childInput.Depth = $Depth
+        }
+        $relevantTemplatePaths = (Get-ChildItem @childInput).FullName
+    } else {
         $relevantTemplatePaths = Join-Path $resolvedPath 'main.bicep'
     }
 
@@ -96,33 +111,61 @@ function Set-AVMModule {
 
         # create reference as it must be loaded in the thread to work
         $ReadMeScriptFilePath = (Join-Path (Get-Item $PSScriptRoot).Parent.FullName 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
+    } else {
+        # Instatiate values to enable safe $using usage
+        $crossReferencedModuleList = $null
+        $ReadMeScriptFilePath = $null
     }
 
     # Using threading to speed up the process
-    if ($PSCmdlet.ShouldProcess(('Building & generation of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath), "Execute")) {
-        $relevantTemplatePaths | ForEach-Object -ThrottleLimit $ThrottleLimit -Parallel {
-            $resourceTypeIdentifier = 'avm-{0}' -f ($_ -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] # avm/res/<provider>/<resourceType>
+    if ($PSCmdlet.ShouldProcess(('Building & generation of [{0}] modules in path [{1}]' -f $relevantTemplatePaths.Count, $resolvedPath), 'Execute')) {
+        try {
+            $job = $relevantTemplatePaths | ForEach-Object -ThrottleLimit $ThrottleLimit -AsJob -Parallel {
+                $resourceTypeIdentifier = 'avm-{0}' -f ($_ -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] # avm/res/<provider>/<resourceType>
 
-            ###############
-            ##   Build   ##
-            ###############
-            if (-not $using:SkipBuild) {
-                Write-Output "Building [$resourceTypeIdentifier]"
-                bicep build $_
+                ###############
+                ##   Build   ##
+                ###############
+                if (-not $using:SkipBuild) {
+                    Write-Output "Building [$resourceTypeIdentifier]"
+                    bicep build $_
+                }
+
+                ################
+                ##   ReadMe   ##
+                ################
+                if (-not $using:SkipReadMe) {
+                    Write-Output "Generating readme for [$resourceTypeIdentifier]"
+
+                    # If the template was just build, we can pass the JSON into the readme script to be more efficient
+                    $readmeTemplateFilePath = (-not $using:SkipBuild) ? (Join-Path (Split-Path $_ -Parent) 'main.json') : $_
+
+                    . $using:ReadMeScriptFilePath
+                    Set-ModuleReadMe -TemplateFilePath $readmeTemplateFilePath -CrossReferencedModuleList $using:crossReferencedModuleList
+                }
             }
 
-            ################
-            ##   ReadMe   ##
-            ################
-            if (-not $using:SkipReadMe) {
-                Write-Output "Generating readme for [$resourceTypeIdentifier]"
-                . $using:ReadMeScriptFilePath
+            do {
+                # Sleep a bit to allow the threads to run - adjust as desired.
+                Start-Sleep -Seconds 0.5
 
-                # If the template was just build, we can pass the JSON into the readme script to be more efficient
-                $readmeTemplateFilePath = (-not $using:SkipBuild) ? (Join-Path (Split-Path $_ -Parent) 'main.json') : $_
+                # Determine how many jobs have completed so far.
+                $completedJobsCount = ($job.ChildJobs | Where-Object { $_.State -notin @('NotStarted', 'Running') }).Count
 
-                Set-ModuleReadMe -TemplateFilePath $readmeTemplateFilePath -CrossReferencedModuleList $using:crossReferencedModuleList
-            }
+                # Relay any pending output from the child jobs.
+                $job | Receive-Job
+
+                # Update the progress display.
+                [int] $percent = ($completedJobsCount / $job.ChildJobs.Count) * 100
+                Write-Progress -Activity ("Processed [$completedJobsCount/{0}] files" -f $relevantTemplatePaths.Count) -Status "$percent% complete" -PercentComplete $percent
+
+            } while ($completedJobsCount -lt $job.ChildJobs.Count)
+
+            # Clean up the job.
+            $job | Remove-Job
+        } finally {
+            # In case the user cancelled the process, we need to make sure to stop all running jobs
+            $job | Remove-Job -Force -ErrorAction 'SilentlyContinue'
         }
     }
 }

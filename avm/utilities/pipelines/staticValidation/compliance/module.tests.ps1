@@ -16,7 +16,7 @@ param (
 Write-Verbose ("repoRootPath: $repoRootPath") -Verbose
 Write-Verbose ("moduleFolderPaths: $($moduleFolderPaths.count)") -Verbose
 
-$script:RGdeploymentSchema = 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+$script:RgDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
 $script:SubscriptionDeploymentSchema = 'https://schema.management.azure.com/schemas/2018-05-01/SubscriptionDeploymentSchemaTemplate.json#'
 $script:MgDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#'
 $script:TenantDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/TenantDeploymentSchemaTemplate.json#'
@@ -39,9 +39,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
     $moduleFolderTestCases = [System.Collections.ArrayList] @()
     foreach ($moduleFolderPath in $moduleFolderPaths) {
-
       $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
-
       $moduleFolderTestCases += @{
         moduleFolderName = $resourceTypeIdentifier
         moduleFolderPath = $moduleFolderPath
@@ -78,8 +76,22 @@ Describe 'File/folder tests' -Tag 'Modules' {
       $file = Get-Item -Path $readMeFilePath
       $file.Name | Should -BeExactly 'README.md'
     }
+  }
 
-    It '[<moduleFolderName>] Module should contain a [` version.json `] file.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+  Context 'Top level module folder tests' {
+
+    $topLevelModuleTestCases = [System.Collections.ArrayList]@()
+    foreach ($moduleFolderPath in $moduleFolderPaths) {
+      $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
+      if (($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2) {
+        $topLevelModuleTestCases += @{
+          moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
+          moduleFolderPath = $moduleFolderPath
+        }
+      }
+    }
+
+    It '[<moduleFolderName>] Module should contain a [` version.json `] file.' -TestCases $topLevelModuleTestCases {
 
       param (
         [string] $moduleFolderPath
@@ -88,22 +100,8 @@ Describe 'File/folder tests' -Tag 'Modules' {
       $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
       $pathExisting | Should -Be $true
     }
-  }
 
-  Context 'tests folder' {
-
-    $folderTestCases = [System.Collections.ArrayList]@()
-    foreach ($moduleFolderPath in $moduleFolderPaths) {
-      if (Test-Path (Join-Path $moduleFolderPath '.test')) {
-        $folderTestCases += @{
-          moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
-          moduleFolderPath = $moduleFolderPath
-          isTopLevelModule = (($moduleFolderPath -split '[\/|\\]avm[\/|\\]')[1] -split '[\/|\\]').Count -eq 3 # (res|ptn)/<provider>/<resourceType>
-        }
-      }
-    }
-
-    It '[<moduleFolderName>] Module should contain a [` tests `] folder.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+    It '[<moduleFolderName>] Module should contain a [` tests `] folder.' -TestCases $topLevelModuleTestCases {
 
       param(
         [string] $moduleFolderPath
@@ -113,35 +111,48 @@ Describe 'File/folder tests' -Tag 'Modules' {
       $pathExisting | Should -Be $true
     }
 
-    It '[<moduleFolderName>] Module should contain a [` tests/waf-aligned `] folder.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+    It '[<moduleFolderName>] Module should contain a [` tests/e2e `] folder.' -TestCases $topLevelModuleTestCases {
 
       param(
         [string] $moduleFolderPath
       )
 
-      $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'tests' 'waf-aligned')
+      $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'tests')
       $pathExisting | Should -Be $true
     }
 
-    It '[<moduleFolderName>] Module should contain a [` min `] folder.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+    It '[<moduleFolderName>] Module should contain a [` tests/e2e/*waf-aligned `] folder.' -TestCases $topLevelModuleTestCases {
 
       param(
         [string] $moduleFolderPath
       )
 
-      $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'tests' 'min')
-      $pathExisting | Should -Be $true
+      $wafAlignedFolder = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') -Filter '*waf-aligned'
+      $wafAlignedFolder | Should -Not -BeNullOrEmpty
     }
 
-    It '[<moduleFolderName>] Folder should contain one or more test files.' -TestCases $folderTestCases {
+    It '[<moduleFolderName>] Module should contain a [` tests/e2e/*defaults `] folder.' -TestCases $topLevelModuleTestCases {
+
+      param(
+        [string] $moduleFolderPath
+      )
+
+      $defaultsFolder = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') -Filter '*defaults'
+      $defaultsFolder | Should -Not -BeNullOrEmpty
+    }
+
+    It '[<moduleFolderName>] Module should contain one [` main.test.bicep `] file in each e2e test folder.' -TestCases $topLevelModuleTestCases {
 
       param(
         [string] $moduleFolderName,
         [string] $moduleFolderPath
       )
 
-      $moduleTestFilePaths = Get-ModuleTestFileList -ModulePath $moduleFolderPath | ForEach-Object { Join-Path $moduleFolderPath $_ }
-      $moduleTestFilePaths.Count | Should -BeGreaterThan 0
+      $e2eTestFolderPathList = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e')
+      foreach ($e2eTestFolderPath in $e2eTestFolderPathList) {
+        $pathExisting = Test-Path (Join-Path -Path $e2eTestFolderPath 'main.test.bicep')
+        $pathExisting | Should -Be $true
+      }
     }
   }
 }
@@ -357,7 +368,7 @@ Describe 'Module tests' -Tag 'Module' {
       $testFileTestCases = @()
       $templateFile_Parameters = $templateContent.parameters
       $TemplateFile_AllParameterNames = $templateFile_Parameters.Keys | Sort-Object
-      $TemplateFile_RequiredParametersNames = ($templateFile_Parameters.Keys | Where-Object { -not $templateFile_Parameters[$_].ContainsKey('defaultValue') }) | Sort-Object
+      $TemplateFile_RequiredParametersNames = ($templateFile_Parameters.Keys | Where-Object { Get-IsParameterRequired -TemplateFileContent $templateContent -Parameter $templateFile_Parameters[$_] }) | Sort-Object
 
       if (Test-Path (Join-Path $moduleFolderPath 'tests')) {
 
@@ -410,7 +421,7 @@ Describe 'Module tests' -Tag 'Module' {
 
       $Schemaverion = $templateContent.'$schema'
       $SchemaArray = @()
-      if ($Schemaverion -eq $RGdeploymentSchema) {
+      if ($Schemaverion -eq $RgDeploymentSchema) {
         $SchemaOutput = $true
       }
       elseIf ($Schemaverion -eq $SubscriptionDeploymentSchema) {
@@ -617,7 +628,7 @@ Describe 'Module tests' -Tag 'Module' {
       )
       $LocationFlag = $true
       $Schemaverion = $templateContent.'$schema'
-      if ((($Schemaverion.Split('/')[5]).Split('.')[0]) -eq (($RGdeploymentSchema.Split('/')[5]).Split('.')[0])) {
+      if ((($Schemaverion.Split('/')[5]).Split('.')[0]) -eq (($RgDeploymentSchema.Split('/')[5]).Split('.')[0])) {
         $Locationparamoutputvalue = $templateContent.parameters.location.defaultValue
         $Locationparamoutput = $templateContent.parameters.Keys
         if ($Locationparamoutput -contains 'Location') {

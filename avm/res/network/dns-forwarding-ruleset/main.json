@@ -1,0 +1,604 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "6432207702551473267"
+    },
+    "name": "Dns Forwarding Rulesets",
+    "description": "This template deploys an dns forwarding ruleset.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "roleAssignmentType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "roleDefinitionIdOrName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
+            }
+          },
+          "principalId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+            }
+          },
+          "principalType": {
+            "type": "string",
+            "allowedValues": [
+              "Device",
+              "ForeignGroup",
+              "Group",
+              "ServicePrincipal",
+              "User"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The principal type of the assigned principal ID."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The description of the role assignment."
+            }
+          },
+          "condition": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+            }
+          },
+          "conditionVersion": {
+            "type": "string",
+            "allowedValues": [
+              "2.0"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Version of the condition."
+            }
+          },
+          "delegatedManagedIdentityResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The Resource Id of the delegated managed identity resource."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "forwardingRuleType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the forwarding rule."
+            }
+          },
+          "forwardingRuleState": {
+            "type": "string",
+            "allowedValues": [
+              "Disabled",
+              "Enabled"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The state of the forwarding rule."
+            }
+          },
+          "domainName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The domain name to forward."
+            }
+          },
+          "targetDnsServers": {
+            "$ref": "#/definitions/targetDnsServers",
+            "metadata": {
+              "description": "Required. The target DNS servers to forward to."
+            }
+          },
+          "metadata": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Metadata attached to the forwarding rule."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "targetDnsServers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ipAddress": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The IP address of the target DNS server."
+            }
+          },
+          "port": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The port of the target DNS server."
+            }
+          }
+        }
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Required. Name of the DNS Forwarding Ruleset."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "roleAssignments": {
+      "$ref": "#/definitions/roleAssignmentType",
+      "metadata": {
+        "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "dnsForwardingRulesetOutboundEndpointResourceIds": {
+      "type": "array",
+      "metadata": {
+        "description": "Required. The reference to the DNS resolver outbound endpoints that are used to route DNS queries matching the forwarding rules in the ruleset to the target DNS servers."
+      }
+    },
+    "forwardingRules": {
+      "$ref": "#/definitions/forwardingRuleType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Array of forwarding rules."
+      }
+    },
+    "vNetLinks": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Array of virtual network links."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "variables": {
+    "builtInRoleNames": {
+      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+      "DNS Resolver Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d')]",
+      "DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314')]",
+      "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
+      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+      "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
+      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.network-dnsforwardingruleset.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "dnsForwardingRuleset": {
+      "type": "Microsoft.Network/dnsForwardingRulesets",
+      "apiVersion": "2022-07-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "copy": [
+          {
+            "name": "dnsResolverOutboundEndpoints",
+            "count": "[length(parameters('dnsForwardingRulesetOutboundEndpointResourceIds'))]",
+            "input": {
+              "id": "[parameters('dnsForwardingRulesetOutboundEndpointResourceIds')[copyIndex('dnsResolverOutboundEndpoints')]]"
+            }
+          }
+        ]
+      }
+    },
+    "dnsForwardingRuleset_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Network/dnsForwardingRulesets/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "dnsForwardingRuleset"
+      ]
+    },
+    "dnsForwardingRuleset_roleAssignments": {
+      "copy": {
+        "name": "dnsForwardingRuleset_roleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.Network/dnsForwardingRulesets/{0}', parameters('name'))]",
+      "name": "[guid(resourceId('Microsoft.Network/dnsForwardingRulesets', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "properties": {
+        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "dnsForwardingRuleset"
+      ]
+    },
+    "dnsForwardingRuleset_forwardingRule": {
+      "copy": {
+        "name": "dnsForwardingRuleset_forwardingRule",
+        "count": "[length(coalesce(parameters('forwardingRules'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-forwardingRule-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "dnsForwardingRulesetName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[tryGet(coalesce(parameters('forwardingRules'), createArray())[copyIndex()], 'name')]"
+          },
+          "forwardingRuleState": {
+            "value": "[coalesce(tryGet(coalesce(parameters('forwardingRules'), createArray())[copyIndex()], 'forwardingRuleState'), 'Enabled')]"
+          },
+          "domainName": {
+            "value": "[tryGet(coalesce(parameters('forwardingRules'), createArray())[copyIndex()], 'domainName')]"
+          },
+          "targetDnsServers": {
+            "value": "[tryGet(coalesce(parameters('forwardingRules'), createArray())[copyIndex()], 'targetDnsServers')]"
+          },
+          "metadata": {
+            "value": "[tryGet(coalesce(parameters('forwardingRules'), createArray())[copyIndex()], 'metadata')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.22.6.54827",
+              "templateHash": "10548868595530009801"
+            },
+            "name": "Dns Forwarding Rulesets Forwarding Rules",
+            "description": "This template deploys Forwarding Rule in a Dns Forwarding Ruleset.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "metadata": {
+                "description": "Required. Name of the Forwarding Rule."
+              }
+            },
+            "dnsForwardingRulesetName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. Name of the parent DNS Forwarding Ruleset. Required if the template is used in a standalone deployment."
+              }
+            },
+            "domainName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The domain name for the forwarding rule."
+              }
+            },
+            "forwardingRuleState": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The state of forwarding rule."
+              }
+            },
+            "metadata": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Metadata attached to the forwarding rule."
+              }
+            },
+            "targetDnsServers": {
+              "type": "array",
+              "metadata": {
+                "description": "Required. DNS servers to forward the DNS query to."
+              }
+            }
+          },
+          "resources": {
+            "dnsForwardingRuleset": {
+              "existing": true,
+              "type": "Microsoft.Network/dnsForwardingRulesets",
+              "apiVersion": "2022-07-01",
+              "name": "[parameters('dnsForwardingRulesetName')]"
+            },
+            "forwardingRule": {
+              "type": "Microsoft.Network/dnsForwardingRulesets/forwardingRules",
+              "apiVersion": "2022-07-01",
+              "name": "[format('{0}/{1}', parameters('dnsForwardingRulesetName'), parameters('name'))]",
+              "properties": {
+                "domainName": "[parameters('domainName')]",
+                "forwardingRuleState": "[parameters('forwardingRuleState')]",
+                "metadata": "[parameters('metadata')]",
+                "targetDnsServers": "[parameters('targetDnsServers')]"
+              },
+              "dependsOn": [
+                "dnsForwardingRuleset"
+              ]
+            }
+          },
+          "outputs": {
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the Forwarding Rule was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Forwarding Rule."
+              },
+              "value": "[resourceId('Microsoft.Network/dnsForwardingRulesets/forwardingRules', parameters('dnsForwardingRulesetName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Forwarding Rule."
+              },
+              "value": "[parameters('name')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "dnsForwardingRuleset"
+      ]
+    },
+    "dnsForwardingRuleset_virtualNetworkLinks": {
+      "copy": {
+        "name": "dnsForwardingRuleset_virtualNetworkLinks",
+        "count": "[length(coalesce(parameters('vNetLinks'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-virtualNetworkLink-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "dnsForwardingRulesetName": {
+            "value": "[parameters('name')]"
+          },
+          "virtualNetworkResourceId": "[if(not(empty(parameters('vNetLinks'))), createObject('value', coalesce(parameters('vNetLinks'), createArray())[copyIndex()]), createObject('value', null()))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.22.6.54827",
+              "templateHash": "16281449356047571788"
+            },
+            "name": "Dns Forwarding Rulesets Virtual Network Links",
+            "description": "This template deploys Virtual Network Link in a Dns Forwarding Ruleset.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "dnsForwardingRulesetName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent DNS Fowarding Rule Set. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The name of the virtual network link."
+              }
+            },
+            "virtualNetworkResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Link to another virtual network resource ID."
+              }
+            },
+            "metadata": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Metadata attached to the forwarding rule."
+              }
+            }
+          },
+          "resources": {
+            "dnsForwardingRuleset": {
+              "existing": true,
+              "type": "Microsoft.Network/dnsForwardingRulesets",
+              "apiVersion": "2022-07-01",
+              "name": "[parameters('dnsForwardingRulesetName')]"
+            },
+            "virtualNetworkLink": {
+              "type": "Microsoft.Network/dnsForwardingRulesets/virtualNetworkLinks",
+              "apiVersion": "2022-07-01",
+              "name": "[format('{0}/{1}', parameters('dnsForwardingRulesetName'), coalesce(parameters('name'), format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/')))))]",
+              "properties": {
+                "virtualNetwork": {
+                  "id": "[parameters('virtualNetworkResourceId')]"
+                },
+                "metadata": "[parameters('metadata')]"
+              },
+              "dependsOn": [
+                "dnsForwardingRuleset"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed virtual network link."
+              },
+              "value": "[coalesce(parameters('name'), format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/'))))]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed virtual network link."
+              },
+              "value": "[resourceId('Microsoft.Network/dnsForwardingRulesets/virtualNetworkLinks', parameters('dnsForwardingRulesetName'), coalesce(parameters('name'), format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/')))))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed virtual network link."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "dnsForwardingRuleset"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the DNS Forwarding Ruleset was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the DNS Forwarding Ruleset."
+      },
+      "value": "[resourceId('Microsoft.Network/dnsForwardingRulesets', parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the DNS Forwarding Ruleset."
+      },
+      "value": "[parameters('name')]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('dnsForwardingRuleset', '2022-07-01', 'full').location]"
+    }
+  }
+}
