@@ -1,10 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults'
-metadata description = '''
-This instance deploys the module with the minimum set of required parameters.
-> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
-'''
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
@@ -12,13 +9,13 @@ This instance deploys the module with the minimum set of required parameters.
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-network.privatednszones-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-network.dnszones-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'npdzmin'
+param serviceShort string = 'ndzmin'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -45,7 +42,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001.com'
     location: 'global'
-
     // Workaround for PSRule
     a: []
     aaaa: []
@@ -55,8 +51,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     soa: []
     srv: []
     txt: []
-    virtualNetworkLinks: []
     lock: {}
     roleAssignments: []
+    caa: []
+    ns: []
+    tags: {}
   }
 }]
