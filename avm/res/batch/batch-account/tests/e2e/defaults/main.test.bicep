@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module with the minimum set of
 param resourceGroupName string = 'dep-${namePrefix}-batch.batchaccounts-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param location string = deployment().location
+param location string = 'North Europe' // Switched from default to account for Batch Account limitation per subscription & region
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'bbamin'
