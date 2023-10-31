@@ -45,5 +45,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     addressPrefixes: [
       '10.0.0.0/16'
     ]
+    lock: {
+      kind: 'None'
+    }
   }
 }]

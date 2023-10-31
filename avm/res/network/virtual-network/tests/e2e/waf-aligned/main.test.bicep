@@ -150,6 +150,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       {
         addressPrefix: cidrSubnet(addressPrefix, 26, 4)
         name: 'AzureBastionSubnet'
+        networkSecurityGroupId: nestedDependencies.outputs.networkSecurityGroupResourceId
       }
       {
         addressPrefix: cidrSubnet(addressPrefix, 26, 5)

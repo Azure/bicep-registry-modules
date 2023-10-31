@@ -55,6 +55,9 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
     name: 'nvnmin001'
     // Non-required parameters
     location: '<location>'
+    lock: {
+      kind: 'None'
+    }
   }
 }
 ```
@@ -83,6 +86,11 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "None"
+      }
     }
   }
 }
@@ -190,6 +198,7 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
       {
         addressPrefix: '<addressPrefix>'
         name: 'AzureBastionSubnet'
+        networkSecurityGroupId: '<networkSecurityGroupId>'
       }
       {
         addressPrefix: '<addressPrefix>'
@@ -319,7 +328,8 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
         },
         {
           "addressPrefix": "<addressPrefix>",
-          "name": "AzureBastionSubnet"
+          "name": "AzureBastionSubnet",
+          "networkSecurityGroupId": "<networkSecurityGroupId>"
         },
         {
           "addressPrefix": "<addressPrefix>",
@@ -547,6 +557,7 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
       {
         addressPrefix: '<addressPrefix>'
         name: 'AzureBastionSubnet'
+        networkSecurityGroupId: '<networkSecurityGroupId>'
       }
       {
         addressPrefix: '<addressPrefix>'
@@ -676,7 +687,8 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
         },
         {
           "addressPrefix": "<addressPrefix>",
-          "name": "AzureBastionSubnet"
+          "name": "AzureBastionSubnet",
+          "networkSecurityGroupId": "<networkSecurityGroupId>"
         },
         {
           "addressPrefix": "<addressPrefix>",
