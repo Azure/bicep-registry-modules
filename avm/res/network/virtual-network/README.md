@@ -178,12 +178,22 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
           }
         ]
         name: 'az-subnet-x-002'
+        networkSecurityGroupId: '<networkSecurityGroupId>'
       }
       {
         addressPrefix: '<addressPrefix>'
         name: 'az-subnet-x-003'
+        networkSecurityGroupId: '<networkSecurityGroupId>'
         privateEndpointNetworkPolicies: 'Disabled'
         privateLinkServiceNetworkPolicies: 'Enabled'
+      }
+      {
+        addressPrefix: '<addressPrefix>'
+        name: 'AzureBastionSubnet'
+      }
+      {
+        addressPrefix: '<addressPrefix>'
+        name: 'AzureFirewallSubnet'
       }
     ]
     tags: {
@@ -297,13 +307,23 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
               }
             }
           ],
-          "name": "az-subnet-x-002"
+          "name": "az-subnet-x-002",
+          "networkSecurityGroupId": "<networkSecurityGroupId>"
         },
         {
           "addressPrefix": "<addressPrefix>",
           "name": "az-subnet-x-003",
+          "networkSecurityGroupId": "<networkSecurityGroupId>",
           "privateEndpointNetworkPolicies": "Disabled",
           "privateLinkServiceNetworkPolicies": "Enabled"
+        },
+        {
+          "addressPrefix": "<addressPrefix>",
+          "name": "AzureBastionSubnet"
+        },
+        {
+          "addressPrefix": "<addressPrefix>",
+          "name": "AzureFirewallSubnet"
         }
       ]
     },
@@ -515,12 +535,22 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
           }
         ]
         name: 'az-subnet-x-002'
+        networkSecurityGroupId: '<networkSecurityGroupId>'
       }
       {
         addressPrefix: '<addressPrefix>'
         name: 'az-subnet-x-003'
+        networkSecurityGroupId: '<networkSecurityGroupId>'
         privateEndpointNetworkPolicies: 'Disabled'
         privateLinkServiceNetworkPolicies: 'Enabled'
+      }
+      {
+        addressPrefix: '<addressPrefix>'
+        name: 'AzureBastionSubnet'
+      }
+      {
+        addressPrefix: '<addressPrefix>'
+        name: 'AzureFirewallSubnet'
       }
     ]
     tags: {
@@ -634,13 +664,23 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
               }
             }
           ],
-          "name": "az-subnet-x-002"
+          "name": "az-subnet-x-002",
+          "networkSecurityGroupId": "<networkSecurityGroupId>"
         },
         {
           "addressPrefix": "<addressPrefix>",
           "name": "az-subnet-x-003",
+          "networkSecurityGroupId": "<networkSecurityGroupId>",
           "privateEndpointNetworkPolicies": "Disabled",
           "privateLinkServiceNetworkPolicies": "Enabled"
+        },
+        {
+          "addressPrefix": "<addressPrefix>",
+          "name": "AzureBastionSubnet"
+        },
+        {
+          "addressPrefix": "<addressPrefix>",
+          "name": "AzureFirewallSubnet"
         }
       ]
     },
