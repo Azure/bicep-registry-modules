@@ -202,6 +202,25 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
 }
 
 // ================ //
+// Outputs          //
+// ================ //
+
+@description('The resource ID of the deployment script.')
+output resourceId string = deploymentScript.id
+
+@description('The resource group the deployment script was deployed into.')
+output resourceGroupName string = resourceGroup().name
+
+@description('The name of the deployment script.')
+output name string = deploymentScript.name
+
+@description('The location the resource was deployed into.')
+output location string = deploymentScript.location
+
+@description('The output of the deployment script.')
+output outputs object = contains(deploymentScript.properties, 'outputs') ? deploymentScript.properties.outputs : {}
+
+// ================ //
 // Definitions      //
 // ================ //
 
