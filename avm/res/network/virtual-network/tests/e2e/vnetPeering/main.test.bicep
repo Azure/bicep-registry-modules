@@ -34,6 +34,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: location
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    networkSecurityGroupBastionName: 'dep-${namePrefix}-nsg-bastion-${serviceShort}'
   }
 }
 
@@ -55,6 +56,15 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       {
         addressPrefix: '10.1.0.0/26'
         name: 'GatewaySubnet'
+      }
+      {
+        addressPrefix: '10.1.0.64/26'
+        name: 'AzureBastionSubnet'
+        networkSecurityGroupId: nestedDependencies.outputs.networkSecurityGroupBastionResourceId
+      }
+      {
+        addressPrefix: '10.1.2.128/26'
+        name: 'AzureFirewallSubnet'
       }
     ]
     peerings: [

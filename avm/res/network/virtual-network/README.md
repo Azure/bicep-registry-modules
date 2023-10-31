@@ -393,6 +393,15 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
         addressPrefix: '10.1.0.0/26'
         name: 'GatewaySubnet'
       }
+      {
+        addressPrefix: '10.1.0.64/26'
+        name: 'AzureBastionSubnet'
+        networkSecurityGroupId: '<networkSecurityGroupId>'
+      }
+      {
+        addressPrefix: '10.1.2.128/26'
+        name: 'AzureFirewallSubnet'
+      }
     ]
     tags: {
       Environment: 'Non-Prod'
@@ -457,6 +466,15 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
         {
           "addressPrefix": "10.1.0.0/26",
           "name": "GatewaySubnet"
+        },
+        {
+          "addressPrefix": "10.1.0.64/26",
+          "name": "AzureBastionSubnet",
+          "networkSecurityGroupId": "<networkSecurityGroupId>"
+        },
+        {
+          "addressPrefix": "10.1.2.128/26",
+          "name": "AzureFirewallSubnet"
         }
       ]
     },
