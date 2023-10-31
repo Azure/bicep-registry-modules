@@ -24,12 +24,12 @@ resource routeTable 'Microsoft.Network/routeTables@2023-04-01' = {
 }
 
 resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-04-01' = {
-  name: networkSecurityGroupBastionName
+  name: networkSecurityGroupName
   location: location
 }
 
 resource networkSecurityGroupBastion 'Microsoft.Network/networkSecurityGroups@2023-04-01' = {
-  name: networkSecurityGroupName
+  name: networkSecurityGroupBastionName
   location: location
   properties: {
     securityRules: [
@@ -43,7 +43,7 @@ resource networkSecurityGroupBastion 'Microsoft.Network/networkSecurityGroups@20
           sourceAddressPrefix: 'Internet'
           sourcePortRange: '*'
           destinationAddressPrefix: '*'
-          destinationPortRange: '*'
+          destinationPortRange: '443'
         }
       }
       {
@@ -56,7 +56,7 @@ resource networkSecurityGroupBastion 'Microsoft.Network/networkSecurityGroups@20
           sourceAddressPrefix: 'GatewayManager'
           sourcePortRange: '*'
           destinationAddressPrefix: '*'
-          destinationPortRange: '*'
+          destinationPortRange: '443'
         }
       }
       {
@@ -69,7 +69,7 @@ resource networkSecurityGroupBastion 'Microsoft.Network/networkSecurityGroups@20
           sourceAddressPrefix: 'AzureLoadBalancer'
           sourcePortRange: '*'
           destinationAddressPrefix: '*'
-          destinationPortRange: '*'
+          destinationPortRange: '443'
         }
       }
       {
@@ -80,12 +80,12 @@ resource networkSecurityGroupBastion 'Microsoft.Network/networkSecurityGroups@20
           access: 'Allow'
           direction: 'Inbound'
           sourceAddressPrefix: 'VirtualNetwork'
-          sourcePortRanges: [
+          sourcePortRange: '*'
+          destinationAddressPrefix: 'VirtualNetwork'
+          destinationPortRanges: [
             '8080'
             '5701'
           ]
-          destinationAddressPrefix: 'VirtualNetwork'
-          destinationPortRange: '*'
         }
       }
       {
@@ -96,12 +96,12 @@ resource networkSecurityGroupBastion 'Microsoft.Network/networkSecurityGroups@20
           access: 'Allow'
           direction: 'Outbound'
           sourceAddressPrefix: '*'
-          sourcePortRanges: [
+          sourcePortRange: '*'
+          destinationAddressPrefix: 'VirtualNetwork'
+          destinationPortRanges: [
             '22'
             '3389'
           ]
-          destinationAddressPrefix: 'VirtualNetwork'
-          destinationPortRange: '*'
         }
       }
       {
@@ -112,9 +112,9 @@ resource networkSecurityGroupBastion 'Microsoft.Network/networkSecurityGroups@20
           access: 'Allow'
           direction: 'Outbound'
           sourceAddressPrefix: '*'
-          sourcePortRange: '443'
+          sourcePortRange: '*'
           destinationAddressPrefix: 'AzureCloud'
-          destinationPortRange: '*'
+          destinationPortRange: '443'
         }
       }
       {
@@ -125,12 +125,12 @@ resource networkSecurityGroupBastion 'Microsoft.Network/networkSecurityGroups@20
           access: 'Allow'
           direction: 'Outbound'
           sourceAddressPrefix: 'VirtualNetwork'
-          sourcePortRanges: [
+          sourcePortRange: '*'
+          destinationAddressPrefix: 'VirtualNetwork'
+          destinationPortRanges: [
             '8080'
             '5701'
           ]
-          destinationAddressPrefix: 'VirtualNetwork'
-          destinationPortRange: '*'
         }
       }
       {
@@ -141,9 +141,9 @@ resource networkSecurityGroupBastion 'Microsoft.Network/networkSecurityGroups@20
           access: 'Allow'
           direction: 'Outbound'
           sourceAddressPrefix: '*'
-          sourcePortRange: '80'
+          sourcePortRange: '*'
           destinationAddressPrefix: 'Internet'
-          destinationPortRange: '*'
+          destinationPortRange: '80'
         }
       }
     ]
