@@ -54,10 +54,9 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
     ]
     name: 'nvnmin001'
     // Non-required parameters
+    diagnosticSettings: []
     location: '<location>'
-    lock: {
-      kind: 'None'
-    }
+    lock: {}
   }
 }
 ```
@@ -84,13 +83,14 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
       "value": "nvnmin001"
     },
     // Non-required parameters
+    "diagnosticSettings": {
+      "value": []
+    },
     "location": {
       "value": "<location>"
     },
     "lock": {
-      "value": {
-        "kind": "None"
-      }
+      "value": {}
     }
   }
 }

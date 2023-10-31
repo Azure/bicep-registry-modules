@@ -38,6 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
+    networkSecurityGroupBastionName: 'dep-${namePrefix}-nsg-bastion-${serviceShort}'
     location: location
   }
 }
@@ -150,7 +151,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       {
         addressPrefix: cidrSubnet(addressPrefix, 24, 4)
         name: 'AzureBastionSubnet'
-        networkSecurityGroupId: nestedDependencies.outputs.networkSecurityGroupResourceId
+        networkSecurityGroupId: nestedDependencies.outputs.networkSecurityGroupBastionResourceId
       }
       {
         addressPrefix: cidrSubnet(addressPrefix, 24, 5)
