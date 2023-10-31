@@ -399,7 +399,7 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
         networkSecurityGroupId: '<networkSecurityGroupId>'
       }
       {
-        addressPrefix: '10.1.2.128/26'
+        addressPrefix: '10.1.0.128/26'
         name: 'AzureFirewallSubnet'
       }
     ]
@@ -473,7 +473,7 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
           "networkSecurityGroupId": "<networkSecurityGroupId>"
         },
         {
-          "addressPrefix": "10.1.2.128/26",
+          "addressPrefix": "10.1.0.128/26",
           "name": "AzureFirewallSubnet"
         }
       ]

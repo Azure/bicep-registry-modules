@@ -63,7 +63,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         networkSecurityGroupId: nestedDependencies.outputs.networkSecurityGroupBastionResourceId
       }
       {
-        addressPrefix: '10.1.2.128/26'
+        addressPrefix: '10.1.0.128/26'
         name: 'AzureFirewallSubnet'
       }
     ]
