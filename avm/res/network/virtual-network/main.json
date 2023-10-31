@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.22.6.54827",
-      "templateHash": "4487813661219607743"
+      "version": "0.21.1.54444",
+      "templateHash": "2903378995340221604"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet).",
@@ -310,11 +310,11 @@
         "description": "Optional. Tags of the resource."
       }
     },
-    "enableDefaultTelemetry": {
+    "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     }
   },
@@ -325,7 +325,6 @@
     "ddosProtectionPlan": {
       "id": "[parameters('ddosProtectionPlanId')]"
     },
-    "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
@@ -336,17 +335,23 @@
     }
   },
   "resources": {
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.keyvault-vault.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
-          "resources": []
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
         }
       }
     },
@@ -483,10 +488,7 @@
           "roleAssignments": "[if(contains(parameters('subnets')[copyIndex()], 'roleAssignments'), createObject('value', parameters('subnets')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
           "routeTableId": "[if(contains(parameters('subnets')[copyIndex()], 'routeTableId'), createObject('value', parameters('subnets')[copyIndex()].routeTableId), createObject('value', ''))]",
           "serviceEndpointPolicies": "[if(contains(parameters('subnets')[copyIndex()], 'serviceEndpointPolicies'), createObject('value', parameters('subnets')[copyIndex()].serviceEndpointPolicies), createObject('value', createArray()))]",
-          "serviceEndpoints": "[if(contains(parameters('subnets')[copyIndex()], 'serviceEndpoints'), createObject('value', parameters('subnets')[copyIndex()].serviceEndpoints), createObject('value', createArray()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "serviceEndpoints": "[if(contains(parameters('subnets')[copyIndex()], 'serviceEndpoints'), createObject('value', parameters('subnets')[copyIndex()].serviceEndpoints), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -495,8 +497,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "17180599685720534663"
+              "version": "0.21.1.54444",
+              "templateHash": "14689917493883351886"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet.",
@@ -681,13 +683,6 @@
               "metadata": {
                 "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "variables": {
@@ -701,20 +696,6 @@
             }
           },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             "virtualNetwork": {
               "existing": true,
               "type": "Microsoft.Network/virtualNetworks",
@@ -834,10 +815,7 @@
           "allowGatewayTransit": "[if(contains(parameters('peerings')[copyIndex()], 'allowGatewayTransit'), createObject('value', parameters('peerings')[copyIndex()].allowGatewayTransit), createObject('value', false()))]",
           "allowVirtualNetworkAccess": "[if(contains(parameters('peerings')[copyIndex()], 'allowVirtualNetworkAccess'), createObject('value', parameters('peerings')[copyIndex()].allowVirtualNetworkAccess), createObject('value', true()))]",
           "doNotVerifyRemoteGateways": "[if(contains(parameters('peerings')[copyIndex()], 'doNotVerifyRemoteGateways'), createObject('value', parameters('peerings')[copyIndex()].doNotVerifyRemoteGateways), createObject('value', true()))]",
-          "useRemoteGateways": "[if(contains(parameters('peerings')[copyIndex()], 'useRemoteGateways'), createObject('value', parameters('peerings')[copyIndex()].useRemoteGateways), createObject('value', false()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "useRemoteGateways": "[if(contains(parameters('peerings')[copyIndex()], 'useRemoteGateways'), createObject('value', parameters('peerings')[copyIndex()].useRemoteGateways), createObject('value', false()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -845,8 +823,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "18346996432273628410"
+              "version": "0.21.1.54444",
+              "templateHash": "10220824930947117349"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering.",
@@ -906,30 +884,9 @@
               "metadata": {
                 "description": "Optional. If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
               "apiVersion": "2023-04-01",
@@ -1003,10 +960,7 @@
           "allowGatewayTransit": "[if(contains(parameters('peerings')[copyIndex()], 'remotePeeringAllowGatewayTransit'), createObject('value', parameters('peerings')[copyIndex()].remotePeeringAllowGatewayTransit), createObject('value', false()))]",
           "allowVirtualNetworkAccess": "[if(contains(parameters('peerings')[copyIndex()], 'remotePeeringAllowVirtualNetworkAccess'), createObject('value', parameters('peerings')[copyIndex()].remotePeeringAllowVirtualNetworkAccess), createObject('value', true()))]",
           "doNotVerifyRemoteGateways": "[if(contains(parameters('peerings')[copyIndex()], 'remotePeeringDoNotVerifyRemoteGateways'), createObject('value', parameters('peerings')[copyIndex()].remotePeeringDoNotVerifyRemoteGateways), createObject('value', true()))]",
-          "useRemoteGateways": "[if(contains(parameters('peerings')[copyIndex()], 'remotePeeringUseRemoteGateways'), createObject('value', parameters('peerings')[copyIndex()].remotePeeringUseRemoteGateways), createObject('value', false()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "useRemoteGateways": "[if(contains(parameters('peerings')[copyIndex()], 'remotePeeringUseRemoteGateways'), createObject('value', parameters('peerings')[copyIndex()].remotePeeringUseRemoteGateways), createObject('value', false()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1014,8 +968,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "18346996432273628410"
+              "version": "0.21.1.54444",
+              "templateHash": "10220824930947117349"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering.",
@@ -1075,30 +1029,9 @@
               "metadata": {
                 "description": "Optional. If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
               "apiVersion": "2023-04-01",
