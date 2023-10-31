@@ -1,11 +1,6 @@
-# Cognitive Services `[Microsoft.CognitiveServices/accounts]`
+# Batch Accounts `[Microsoft.Batch/batchAccounts]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
-This module deploys a Cognitive Service.
+This module deploys a Batch Account.
 
 ## Navigation
 
@@ -21,7 +16,7 @@ This module deploys a Cognitive Service.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.CognitiveServices/accounts` | [2022-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2022-12-01/accounts) |
+| `Microsoft.Batch/batchAccounts` | [2022-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Batch/2022-06-01/batchAccounts) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
@@ -32,14 +27,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm-res-cognitiveservices-account:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm-res-batch-batchaccount:1.0.0`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [As Speech Service](#example-3-as-speech-service)
-- [Using Customer-Managed-Keys with System-Assigned identity](#example-4-using-customer-managed-keys-with-system-assigned-identity)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-5-using-customer-managed-keys-with-user-assigned-identity)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-2-using-customer-managed-keys-with-user-assigned-identity)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -51,27 +44,25 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-csamin'
+module batchAccount 'br/public:avm-res-batch-batchaccount:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-bbamin'
   params: {
     // Required parameters
-    kind: 'SpeechServices'
-    name: 'csamin001'
+    name: 'bbamin001'
+    storageAccountId: '<storageAccountId>'
     // Non-required parameters
-    allowedFqdnList: '<allowedFqdnList>'
-    apiProperties: '<apiProperties>'
+    allowedAuthenticationModes: '<allowedAuthenticationModes>'
     customerManagedKey: '<customerManagedKey>'
-    customSubDomainName: '<customSubDomainName>'
     diagnosticSettings: '<diagnosticSettings>'
+    keyVaultReferenceResourceId: '<keyVaultReferenceResourceId>'
     location: '<location>'
     lock: '<lock>'
     managedIdentities: '<managedIdentities>'
-    migrationToken: '<migrationToken>'
-    networkAcls: '<networkAcls>'
+    networkProfileAllowedIpRanges: '<networkProfileAllowedIpRanges>'
     privateEndpoints: '<privateEndpoints>'
     roleAssignments: '<roleAssignments>'
+    storageAccessIdentityResourceId: '<storageAccessIdentityResourceId>'
     tags: '<tags>'
-    userOwnedStorage: '<userOwnedStorage>'
   }
 }
 ```
@@ -89,27 +80,24 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "kind": {
-      "value": "SpeechServices"
-    },
     "name": {
-      "value": "csamin001"
+      "value": "bbamin001"
+    },
+    "storageAccountId": {
+      "value": "<storageAccountId>"
     },
     // Non-required parameters
-    "allowedFqdnList": {
-      "value": "<allowedFqdnList>"
-    },
-    "apiProperties": {
-      "value": "<apiProperties>"
+    "allowedAuthenticationModes": {
+      "value": "<allowedAuthenticationModes>"
     },
     "customerManagedKey": {
       "value": "<customerManagedKey>"
     },
-    "customSubDomainName": {
-      "value": "<customSubDomainName>"
-    },
     "diagnosticSettings": {
       "value": "<diagnosticSettings>"
+    },
+    "keyVaultReferenceResourceId": {
+      "value": "<keyVaultReferenceResourceId>"
     },
     "location": {
       "value": "<location>"
@@ -120,11 +108,8 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     "managedIdentities": {
       "value": "<managedIdentities>"
     },
-    "migrationToken": {
-      "value": "<migrationToken>"
-    },
-    "networkAcls": {
-      "value": "<networkAcls>"
+    "networkProfileAllowedIpRanges": {
+      "value": "<networkProfileAllowedIpRanges>"
     },
     "privateEndpoints": {
       "value": "<privateEndpoints>"
@@ -132,11 +117,11 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     "roleAssignments": {
       "value": "<roleAssignments>"
     },
+    "storageAccessIdentityResourceId": {
+      "value": "<storageAccessIdentityResourceId>"
+    },
     "tags": {
       "value": "<tags>"
-    },
-    "userOwnedStorage": {
-      "value": "<userOwnedStorage>"
     }
   }
 }
@@ -145,9 +130,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Using Customer-Managed-Keys with User-Assigned identity_
 
-This instance deploys the module with most of its features enabled.
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
 
 <details>
@@ -155,99 +140,36 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-csamax'
+module batchAccount 'br/public:avm-res-batch-batchaccount:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-bbaencr'
   params: {
     // Required parameters
-    kind: 'Face'
-    name: 'csamax001'
+    name: 'bbaencr001'
+    storageAccountId: '<storageAccountId>'
     // Non-required parameters
-    allowedFqdnList: '<allowedFqdnList>'
-    apiProperties: '<apiProperties>'
-    customerManagedKey: '<customerManagedKey>'
-    customSubDomainName: 'xcsamax'
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        logCategoriesAndGroups: [
-          {
-            category: 'RequestResponse'
-          }
-          {
-            category: 'Audit'
-          }
-        ]
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
+    allowedAuthenticationModes: '<allowedAuthenticationModes>'
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
     }
+    diagnosticSettings: '<diagnosticSettings>'
+    keyVaultReferenceResourceId: '<keyVaultReferenceResourceId>'
+    location: '<location>'
+    lock: '<lock>'
     managedIdentities: {
-      systemAssigned: true
       userAssignedResourcesIds: [
         '<managedIdentityResourceId>'
       ]
     }
-    migrationToken: '<migrationToken>'
-    networkAcls: {
-      defaultAction: 'Deny'
-      ipRules: [
-        {
-          value: '40.74.28.0/23'
-        }
-      ]
-      virtualNetworkRules: [
-        {
-          id: '<id>'
-          ignoreMissingVnetServiceEndpoint: false
-        }
-      ]
-    }
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
-      }
-    ]
-    publicNetworkAccess: 'Disabled'
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
-    sku: 'S0'
+    networkProfileAllowedIpRanges: '<networkProfileAllowedIpRanges>'
+    poolAllocationMode: 'BatchService'
+    privateEndpoints: '<privateEndpoints>'
+    roleAssignments: '<roleAssignments>'
+    storageAccessIdentityResourceId: '<storageAccessIdentityResourceId>'
+    storageAuthenticationMode: 'BatchAccountManagedIdentity'
     tags: {
-      Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
     }
-    userOwnedStorage: '<userOwnedStorage>'
   }
 }
 ```
@@ -265,54 +187,187 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "kind": {
-      "value": "Face"
-    },
     "name": {
-      "value": "csamax001"
+      "value": "bbaencr001"
+    },
+    "storageAccountId": {
+      "value": "<storageAccountId>"
     },
     // Non-required parameters
-    "allowedFqdnList": {
-      "value": "<allowedFqdnList>"
+    "allowedAuthenticationModes": {
+      "value": "<allowedAuthenticationModes>"
     },
-    "apiProperties": {
-      "value": "<apiProperties>"
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    },
+    "diagnosticSettings": {
+      "value": "<diagnosticSettings>"
+    },
+    "keyVaultReferenceResourceId": {
+      "value": "<keyVaultReferenceResourceId>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": "<lock>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourcesIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "networkProfileAllowedIpRanges": {
+      "value": "<networkProfileAllowedIpRanges>"
+    },
+    "poolAllocationMode": {
+      "value": "BatchService"
+    },
+    "privateEndpoints": {
+      "value": "<privateEndpoints>"
+    },
+    "roleAssignments": {
+      "value": "<roleAssignments>"
+    },
+    "storageAccessIdentityResourceId": {
+      "value": "<storageAccessIdentityResourceId>"
+    },
+    "storageAuthenticationMode": {
+      "value": "BatchAccountManagedIdentity"
+    },
+    "tags": {
+      "value": {
+        "hidden-title": "This is visible in the resource name"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module batchAccount 'br/public:avm-res-batch-batchaccount:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-bbamax'
+  params: {
+    // Required parameters
+    name: 'bbamax001'
+    storageAccountId: '<storageAccountId>'
+    // Non-required parameters
+    allowedAuthenticationModes: '<allowedAuthenticationModes>'
+    customerManagedKey: '<customerManagedKey>'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    keyVaultReferenceResourceId: '<keyVaultReferenceResourceId>'
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+    }
+    networkProfileAllowedIpRanges: '<networkProfileAllowedIpRanges>'
+    poolAllocationMode: 'BatchService'
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Reader'
+          }
+        ]
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    storageAccessIdentityResourceId: '<storageAccessIdentityResourceId>'
+    storageAuthenticationMode: 'BatchAccountManagedIdentity'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "bbamax001"
+    },
+    "storageAccountId": {
+      "value": "<storageAccountId>"
+    },
+    // Non-required parameters
+    "allowedAuthenticationModes": {
+      "value": "<allowedAuthenticationModes>"
     },
     "customerManagedKey": {
       "value": "<customerManagedKey>"
-    },
-    "customSubDomainName": {
-      "value": "xcsamax"
     },
     "diagnosticSettings": {
       "value": [
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
-          "logCategoriesAndGroups": [
-            {
-              "category": "RequestResponse"
-            },
-            {
-              "category": "Audit"
-            }
-          ],
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
           "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        },
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "keyVaultReferenceResourceId": {
+      "value": "<keyVaultReferenceResourceId>"
     },
     "location": {
       "value": "<location>"
@@ -325,36 +380,27 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": true,
-        "userAssignedResourcesIds": [
-          "<managedIdentityResourceId>"
-        ]
+        "systemAssigned": true
       }
     },
-    "migrationToken": {
-      "value": "<migrationToken>"
+    "networkProfileAllowedIpRanges": {
+      "value": "<networkProfileAllowedIpRanges>"
     },
-    "networkAcls": {
-      "value": {
-        "defaultAction": "Deny",
-        "ipRules": [
-          {
-            "value": "40.74.28.0/23"
-          }
-        ],
-        "virtualNetworkRules": [
-          {
-            "id": "<id>",
-            "ignoreMissingVnetServiceEndpoint": false
-          }
-        ]
-      }
+    "poolAllocationMode": {
+      "value": "BatchService"
     },
     "privateEndpoints": {
       "value": [
         {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
+          ],
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Reader"
+            }
           ],
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -364,9 +410,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
           }
         }
       ]
-    },
-    "publicNetworkAccess": {
-      "value": "Disabled"
     },
     "roleAssignments": {
       "value": [
@@ -377,8 +420,11 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         }
       ]
     },
-    "sku": {
-      "value": "S0"
+    "storageAccessIdentityResourceId": {
+      "value": "<storageAccessIdentityResourceId>"
+    },
+    "storageAuthenticationMode": {
+      "value": "BatchAccountManagedIdentity"
     },
     "tags": {
       "value": {
@@ -386,9 +432,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "userOwnedStorage": {
-      "value": "<userOwnedStorage>"
     }
   }
 }
@@ -397,9 +440,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 </details>
 <p>
 
-### Example 3: _As Speech Service_
+### Example 4: _WAF-aligned_
 
-This instance deploys the module as a Speech Service.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
@@ -407,425 +450,15 @@ This instance deploys the module as a Speech Service.
 <summary>via Bicep module</summary>
 
 ```bicep
-module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-csaspeech'
+module batchAccount 'br/public:avm-res-batch-batchaccount:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-bbawaf'
   params: {
     // Required parameters
-    kind: 'SpeechServices'
-    name: 'csaspeech001'
+    name: 'bbawaf001'
+    storageAccountId: '<storageAccountId>'
     // Non-required parameters
-    allowedFqdnList: '<allowedFqdnList>'
-    apiProperties: '<apiProperties>'
+    allowedAuthenticationModes: '<allowedAuthenticationModes>'
     customerManagedKey: '<customerManagedKey>'
-    customSubDomainName: 'speechdomain'
-    diagnosticSettings: '<diagnosticSettings>'
-    location: '<location>'
-    lock: '<lock>'
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourcesIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    migrationToken: '<migrationToken>'
-    networkAcls: '<networkAcls>'
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
-      }
-    ]
-    roleAssignments: '<roleAssignments>'
-    sku: 'S0'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-    userOwnedStorage: '<userOwnedStorage>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "kind": {
-      "value": "SpeechServices"
-    },
-    "name": {
-      "value": "csaspeech001"
-    },
-    // Non-required parameters
-    "allowedFqdnList": {
-      "value": "<allowedFqdnList>"
-    },
-    "apiProperties": {
-      "value": "<apiProperties>"
-    },
-    "customerManagedKey": {
-      "value": "<customerManagedKey>"
-    },
-    "customSubDomainName": {
-      "value": "speechdomain"
-    },
-    "diagnosticSettings": {
-      "value": "<diagnosticSettings>"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": "<lock>"
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true,
-        "userAssignedResourcesIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "migrationToken": {
-      "value": "<migrationToken>"
-    },
-    "networkAcls": {
-      "value": "<networkAcls>"
-    },
-    "privateEndpoints": {
-      "value": [
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          }
-        }
-      ]
-    },
-    "roleAssignments": {
-      "value": "<roleAssignments>"
-    },
-    "sku": {
-      "value": "S0"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    },
-    "userOwnedStorage": {
-      "value": "<userOwnedStorage>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 4: _Using Customer-Managed-Keys with System-Assigned identity_
-
-This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-csaecrs'
-  params: {
-    // Required parameters
-    kind: 'SpeechServices'
-    name: '<name>'
-    // Non-required parameters
-    allowedFqdnList: '<allowedFqdnList>'
-    apiProperties: '<apiProperties>'
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-    }
-    customSubDomainName: '<customSubDomainName>'
-    diagnosticSettings: '<diagnosticSettings>'
-    location: '<location>'
-    lock: '<lock>'
-    managedIdentities: {
-      systemAssigned: true
-    }
-    migrationToken: '<migrationToken>'
-    networkAcls: '<networkAcls>'
-    privateEndpoints: '<privateEndpoints>'
-    publicNetworkAccess: 'Enabled'
-    restrictOutboundNetworkAccess: false
-    roleAssignments: '<roleAssignments>'
-    sku: 'S0'
-    tags: '<tags>'
-    userOwnedStorage: '<userOwnedStorage>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "kind": {
-      "value": "SpeechServices"
-    },
-    "name": {
-      "value": "<name>"
-    },
-    // Non-required parameters
-    "allowedFqdnList": {
-      "value": "<allowedFqdnList>"
-    },
-    "apiProperties": {
-      "value": "<apiProperties>"
-    },
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>"
-      }
-    },
-    "customSubDomainName": {
-      "value": "<customSubDomainName>"
-    },
-    "diagnosticSettings": {
-      "value": "<diagnosticSettings>"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": "<lock>"
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
-    },
-    "migrationToken": {
-      "value": "<migrationToken>"
-    },
-    "networkAcls": {
-      "value": "<networkAcls>"
-    },
-    "privateEndpoints": {
-      "value": "<privateEndpoints>"
-    },
-    "publicNetworkAccess": {
-      "value": "Enabled"
-    },
-    "restrictOutboundNetworkAccess": {
-      "value": false
-    },
-    "roleAssignments": {
-      "value": "<roleAssignments>"
-    },
-    "sku": {
-      "value": "S0"
-    },
-    "tags": {
-      "value": "<tags>"
-    },
-    "userOwnedStorage": {
-      "value": "<userOwnedStorage>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 5: _Using Customer-Managed-Keys with User-Assigned identity_
-
-This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-csaencr'
-  params: {
-    // Required parameters
-    kind: 'SpeechServices'
-    name: 'csaencr001'
-    // Non-required parameters
-    allowedFqdnList: '<allowedFqdnList>'
-    apiProperties: '<apiProperties>'
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-    }
-    customSubDomainName: '<customSubDomainName>'
-    diagnosticSettings: '<diagnosticSettings>'
-    location: '<location>'
-    lock: '<lock>'
-    managedIdentities: {
-      userAssignedResourcesIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    migrationToken: '<migrationToken>'
-    networkAcls: '<networkAcls>'
-    privateEndpoints: '<privateEndpoints>'
-    publicNetworkAccess: 'Enabled'
-    restrictOutboundNetworkAccess: false
-    roleAssignments: '<roleAssignments>'
-    sku: 'S0'
-    tags: '<tags>'
-    userOwnedStorage: '<userOwnedStorage>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "kind": {
-      "value": "SpeechServices"
-    },
-    "name": {
-      "value": "csaencr001"
-    },
-    // Non-required parameters
-    "allowedFqdnList": {
-      "value": "<allowedFqdnList>"
-    },
-    "apiProperties": {
-      "value": "<apiProperties>"
-    },
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
-      }
-    },
-    "customSubDomainName": {
-      "value": "<customSubDomainName>"
-    },
-    "diagnosticSettings": {
-      "value": "<diagnosticSettings>"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": "<lock>"
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourcesIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "migrationToken": {
-      "value": "<migrationToken>"
-    },
-    "networkAcls": {
-      "value": "<networkAcls>"
-    },
-    "privateEndpoints": {
-      "value": "<privateEndpoints>"
-    },
-    "publicNetworkAccess": {
-      "value": "Enabled"
-    },
-    "restrictOutboundNetworkAccess": {
-      "value": false
-    },
-    "roleAssignments": {
-      "value": "<roleAssignments>"
-    },
-    "sku": {
-      "value": "S0"
-    },
-    "tags": {
-      "value": "<tags>"
-    },
-    "userOwnedStorage": {
-      "value": "<userOwnedStorage>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 6: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-pratices of the Well-Architectured-Framework.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-csawaf'
-  params: {
-    // Required parameters
-    kind: 'Face'
-    name: 'csawaf001'
-    // Non-required parameters
-    allowedFqdnList: '<allowedFqdnList>'
-    apiProperties: '<apiProperties>'
-    customerManagedKey: '<customerManagedKey>'
-    customSubDomainName: 'xcsawaf'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -834,6 +467,7 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    keyVaultReferenceResourceId: '<keyVaultReferenceResourceId>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -842,29 +476,24 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
     managedIdentities: {
       systemAssigned: true
     }
-    migrationToken: '<migrationToken>'
-    networkAcls: '<networkAcls>'
+    networkProfileAllowedIpRanges: '<networkProfileAllowedIpRanges>'
+    poolAllocationMode: 'BatchService'
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
         subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
       }
     ]
     roleAssignments: '<roleAssignments>'
-    sku: 'S0'
+    storageAccessIdentityResourceId: '<storageAccessIdentityResourceId>'
+    storageAuthenticationMode: 'BatchAccountManagedIdentity'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    userOwnedStorage: '<userOwnedStorage>'
   }
 }
 ```
@@ -882,24 +511,18 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "kind": {
-      "value": "Face"
-    },
     "name": {
-      "value": "csawaf001"
+      "value": "bbawaf001"
+    },
+    "storageAccountId": {
+      "value": "<storageAccountId>"
     },
     // Non-required parameters
-    "allowedFqdnList": {
-      "value": "<allowedFqdnList>"
-    },
-    "apiProperties": {
-      "value": "<apiProperties>"
+    "allowedAuthenticationModes": {
+      "value": "<allowedAuthenticationModes>"
     },
     "customerManagedKey": {
       "value": "<customerManagedKey>"
-    },
-    "customSubDomainName": {
-      "value": "xcsawaf"
     },
     "diagnosticSettings": {
       "value": [
@@ -910,6 +533,9 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "keyVaultReferenceResourceId": {
+      "value": "<keyVaultReferenceResourceId>"
     },
     "location": {
       "value": "<location>"
@@ -925,11 +551,11 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         "systemAssigned": true
       }
     },
-    "migrationToken": {
-      "value": "<migrationToken>"
+    "networkProfileAllowedIpRanges": {
+      "value": "<networkProfileAllowedIpRanges>"
     },
-    "networkAcls": {
-      "value": "<networkAcls>"
+    "poolAllocationMode": {
+      "value": "BatchService"
     },
     "privateEndpoints": {
       "value": [
@@ -937,20 +563,18 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          }
+          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
     "roleAssignments": {
       "value": "<roleAssignments>"
     },
-    "sku": {
-      "value": "S0"
+    "storageAccessIdentityResourceId": {
+      "value": "<storageAccessIdentityResourceId>"
+    },
+    "storageAuthenticationMode": {
+      "value": "BatchAccountManagedIdentity"
     },
     "tags": {
       "value": {
@@ -958,9 +582,6 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "userOwnedStorage": {
-      "value": "<userOwnedStorage>"
     }
   }
 }
@@ -976,51 +597,42 @@ module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`kind`](#parameter-kind) | string | Kind of the Cognitive Services. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
-| [`name`](#parameter-name) | string | The name of Cognitive Services account. |
+| [`name`](#parameter-name) | string | Name of the Azure Batch. |
+| [`storageAccountId`](#parameter-storageaccountid) | string | The resource ID of the storage account to be used for auto-storage account. |
 
 **Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customSubDomainName`](#parameter-customsubdomainname) | string | Subdomain name used for token-based authentication. Required if 'networkAcls' or 'privateEndpoints' are set. |
+| [`keyVaultReferenceResourceId`](#parameter-keyvaultreferenceresourceid) | string | The key vault to associate with the Batch account. Required if the 'poolAllocationMode' is set to 'UserSubscription' and requires the service principal 'Microsoft Azure Batch' to be granted contributor permissions on this key vault. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`allowedFqdnList`](#parameter-allowedfqdnlist) | array | List of allowed FQDN. |
-| [`apiProperties`](#parameter-apiproperties) | object | The API properties for special APIs. |
+| [`allowedAuthenticationModes`](#parameter-allowedauthenticationmodes) | array | List of allowed authentication modes for the Batch account that can be used to authenticate with the data plane. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Allow only Azure AD authentication. Should be enabled for security reasons. |
-| [`dynamicThrottlingEnabled`](#parameter-dynamicthrottlingenabled) | bool | The flag to enable dynamic throttling. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`migrationToken`](#parameter-migrationtoken) | string | Resource migration token. |
-| [`networkAcls`](#parameter-networkacls) | object | A collection of rules governing the accessibility from specific network locations. |
+| [`networkProfileAllowedIpRanges`](#parameter-networkprofileallowedipranges) | array | Array of IP ranges to filter client IP address. It is only applicable when publicNetworkAccess is not explicitly disabled. |
+| [`networkProfileDefaultAction`](#parameter-networkprofiledefaultaction) | string | The network profile default action for endpoint access. It is only applicable when publicNetworkAccess is not explicitly disabled. |
+| [`poolAllocationMode`](#parameter-poolallocationmode) | string | The allocation mode for creating pools in the Batch account. Determines which quota will be used. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
-| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. |
-| [`restore`](#parameter-restore) | bool | Restore a soft-deleted cognitive service at deployment time. Will fail if no such soft-deleted resource exists. |
-| [`restrictOutboundNetworkAccess`](#parameter-restrictoutboundnetworkaccess) | bool | Restrict outbound network access. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkProfileAllowedIpRanges are not set. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| [`sku`](#parameter-sku) | string | SKU of the Cognitive Services resource. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
+| [`storageAccessIdentityResourceId`](#parameter-storageaccessidentityresourceid) | string | The resource ID of a user assigned identity assigned to pools which have compute nodes that need access to auto-storage. |
+| [`storageAuthenticationMode`](#parameter-storageauthenticationmode) | string | The authentication mode which the Batch service will use to manage the auto-storage account. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`userOwnedStorage`](#parameter-userownedstorage) | array | The storage accounts for this resource. |
 
-### Parameter: `allowedFqdnList`
+### Parameter: `allowedAuthenticationModes`
 
-List of allowed FQDN.
+List of allowed authentication modes for the Batch account that can be used to authenticate with the data plane.
 - Required: No
 - Type: array
-
-### Parameter: `apiProperties`
-
-The API properties for special APIs.
-- Required: No
-- Type: object
+- Allowed: `[AAD, SharedKey, TaskAuthenticationToken]`
 
 ### Parameter: `customerManagedKey`
 
@@ -1034,7 +646,6 @@ The customer managed key definition.
 | [`keyName`](#parameter-customermanagedkeykeyname) | Yes | string | Required. The name of the customer managed key to use for encryption. |
 | [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | Yes | string | Required. The resource ID of a key vault to reference a customer managed key for encryption from. |
 | [`keyVersion`](#parameter-customermanagedkeykeyversion) | No | string | Optional. The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
-| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | No | string | Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
 
 ### Parameter: `customerManagedKey.keyName`
 
@@ -1054,19 +665,6 @@ Required. The resource ID of a key vault to reference a customer managed key for
 
 Optional. The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
 
-- Required: No
-- Type: string
-
-### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
-
-Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
-
-- Required: No
-- Type: string
-
-### Parameter: `customSubDomainName`
-
-Subdomain name used for token-based authentication. Required if 'networkAcls' or 'privateEndpoints' are set.
 - Required: No
 - Type: string
 
@@ -1185,20 +783,6 @@ Optional. Resource ID of the diagnostic log analytics workspace. For security re
 - Required: No
 - Type: string
 
-### Parameter: `disableLocalAuth`
-
-Allow only Azure AD authentication. Should be enabled for security reasons.
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `dynamicThrottlingEnabled`
-
-The flag to enable dynamic throttling.
-- Required: No
-- Type: bool
-- Default: `False`
-
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -1206,12 +790,11 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `kind`
+### Parameter: `keyVaultReferenceResourceId`
 
-Kind of the Cognitive Services. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region.
-- Required: Yes
+The key vault to associate with the Batch account. Required if the 'poolAllocationMode' is set to 'UserSubscription' and requires the service principal 'Microsoft Azure Batch' to be granted contributor permissions on this key vault.
+- Required: No
 - Type: string
-- Allowed: `[AnomalyDetector, Bing.Autosuggest.v7, Bing.CustomSearch, Bing.EntitySearch, Bing.Search.v7, Bing.SpellCheck.v7, CognitiveServices, ComputerVision, ContentModerator, CustomVision.Prediction, CustomVision.Training, Face, FormRecognizer, ImmersiveReader, Internal.AllInOne, LUIS, LUIS.Authoring, Personalizer, QnAMaker, SpeechServices, TextAnalytics, TextTranslation]`
 
 ### Parameter: `location`
 
@@ -1273,23 +856,33 @@ Optional. The resource ID(s) to assign to the resource. Required if a user assig
 - Required: No
 - Type: array
 
-### Parameter: `migrationToken`
-
-Resource migration token.
-- Required: No
-- Type: string
-
 ### Parameter: `name`
 
-The name of Cognitive Services account.
+Name of the Azure Batch.
 - Required: Yes
 - Type: string
 
-### Parameter: `networkAcls`
+### Parameter: `networkProfileAllowedIpRanges`
 
-A collection of rules governing the accessibility from specific network locations.
+Array of IP ranges to filter client IP address. It is only applicable when publicNetworkAccess is not explicitly disabled.
 - Required: No
-- Type: object
+- Type: array
+
+### Parameter: `networkProfileDefaultAction`
+
+The network profile default action for endpoint access. It is only applicable when publicNetworkAccess is not explicitly disabled.
+- Required: No
+- Type: string
+- Default: `'Deny'`
+- Allowed: `[Allow, Deny]`
+
+### Parameter: `poolAllocationMode`
+
+The allocation mode for creating pools in the Batch account. Determines which quota will be used.
+- Required: No
+- Type: string
+- Default: `'BatchService'`
+- Allowed: `[BatchService, UserSubscription]`
 
 ### Parameter: `privateEndpoints`
 
@@ -1461,25 +1054,11 @@ Optional. Tags to be applied on all resources/resource groups in this deployment
 
 ### Parameter: `publicNetworkAccess`
 
-Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set.
+Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkProfileAllowedIpRanges are not set.
 - Required: No
 - Type: string
 - Default: `''`
 - Allowed: `['', Disabled, Enabled]`
-
-### Parameter: `restore`
-
-Restore a soft-deleted cognitive service at deployment time. Will fail if no such soft-deleted resource exists.
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `restrictOutboundNetworkAccess`
-
-Restrict outbound network access.
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `roleAssignments`
 
@@ -1549,13 +1128,25 @@ Required. The name of the role to assign. If it cannot be found you can specify 
 - Required: Yes
 - Type: string
 
-### Parameter: `sku`
+### Parameter: `storageAccessIdentityResourceId`
 
-SKU of the Cognitive Services resource. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region.
+The resource ID of a user assigned identity assigned to pools which have compute nodes that need access to auto-storage.
 - Required: No
 - Type: string
-- Default: `'S0'`
-- Allowed: `[C2, C3, C4, F0, F1, S, S0, S1, S10, S2, S3, S4, S5, S6, S7, S8, S9]`
+
+### Parameter: `storageAccountId`
+
+The resource ID of the storage account to be used for auto-storage account.
+- Required: Yes
+- Type: string
+
+### Parameter: `storageAuthenticationMode`
+
+The authentication mode which the Batch service will use to manage the auto-storage account.
+- Required: No
+- Type: string
+- Default: `'StorageKeys'`
+- Allowed: `[BatchAccountManagedIdentity, StorageKeys]`
 
 ### Parameter: `tags`
 
@@ -1563,22 +1154,15 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-### Parameter: `userOwnedStorage`
-
-The storage accounts for this resource.
-- Required: No
-- Type: array
-
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `endpoint` | string | The service endpoint of the cognitive services account. |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the cognitive services account. |
-| `resourceGroupName` | string | The resource group the cognitive services account was deployed into. |
-| `resourceId` | string | The resource ID of the cognitive services account. |
+| `name` | string | The name of the batch account. |
+| `resourceGroupName` | string | The resource group the batch account was deployed into. |
+| `resourceId` | string | The resource ID of the batch account. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules

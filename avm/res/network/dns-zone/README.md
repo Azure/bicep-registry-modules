@@ -1,6 +1,6 @@
-# Private DNS Zones `[Microsoft.Network/privateDnsZones]`
+# Public DNS Zones `[Microsoft.Network/dnsZones]`
 
-This module deploys a Private DNS zone.
+This module deploys a Public DNS zone.
 
 ## Navigation
 
@@ -16,16 +16,17 @@ This module deploys a Private DNS zone.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/privateDnsZones` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones) |
-| `Microsoft.Network/privateDnsZones/A` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/A) |
-| `Microsoft.Network/privateDnsZones/AAAA` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/AAAA) |
-| `Microsoft.Network/privateDnsZones/CNAME` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/CNAME) |
-| `Microsoft.Network/privateDnsZones/MX` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/MX) |
-| `Microsoft.Network/privateDnsZones/PTR` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/PTR) |
-| `Microsoft.Network/privateDnsZones/SOA` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SOA) |
-| `Microsoft.Network/privateDnsZones/SRV` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SRV) |
-| `Microsoft.Network/privateDnsZones/TXT` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT) |
-| `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/virtualNetworkLinks) |
+| `Microsoft.Network/dnsZones` | [2018-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-05-01/dnsZones) |
+| `Microsoft.Network/dnsZones/A` | [2018-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-05-01/dnsZones/A) |
+| `Microsoft.Network/dnsZones/AAAA` | [2018-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-05-01/dnsZones/AAAA) |
+| `Microsoft.Network/dnsZones/CAA` | [2018-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-05-01/dnsZones/CAA) |
+| `Microsoft.Network/dnsZones/CNAME` | [2018-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-05-01/dnsZones/CNAME) |
+| `Microsoft.Network/dnsZones/MX` | [2018-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-05-01/dnsZones/MX) |
+| `Microsoft.Network/dnsZones/NS` | [2018-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-05-01/dnsZones/NS) |
+| `Microsoft.Network/dnsZones/PTR` | [2018-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-05-01/dnsZones/PTR) |
+| `Microsoft.Network/dnsZones/SOA` | [2018-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-05-01/dnsZones/SOA) |
+| `Microsoft.Network/dnsZones/SRV` | [2018-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-05-01/dnsZones/SRV) |
+| `Microsoft.Network/dnsZones/TXT` | [2018-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2018-05-01/dnsZones/TXT) |
 
 ## Usage examples
 
@@ -33,7 +34,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm-res-network-privatednszone:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm-res-network-dnszone:1.0.0`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -42,8 +43,6 @@ The following section provides usage examples for the module, which were used to
 ### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
-> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
-
 
 
 <details>
@@ -51,24 +50,26 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-npdzmin'
+module dnsZone 'br/public:avm-res-network-dnszone:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-ndzmin'
   params: {
     // Required parameters
-    name: 'npdzmin001.com'
+    name: 'ndzmin001.com'
     // Non-required parameters
     a: []
     aaaa: []
+    caa: []
     cname: []
     location: 'global'
     lock: {}
     mx: []
+    ns: []
     ptr: []
     roleAssignments: []
     soa: []
     srv: []
+    tags: {}
     txt: []
-    virtualNetworkLinks: []
   }
 }
 ```
@@ -87,13 +88,16 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "npdzmin001.com"
+      "value": "ndzmin001.com"
     },
     // Non-required parameters
     "a": {
       "value": []
     },
     "aaaa": {
+      "value": []
+    },
+    "caa": {
       "value": []
     },
     "cname": {
@@ -108,6 +112,9 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
     "mx": {
       "value": []
     },
+    "ns": {
+      "value": []
+    },
     "ptr": {
       "value": []
     },
@@ -120,10 +127,10 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
     "srv": {
       "value": []
     },
-    "txt": {
-      "value": []
+    "tags": {
+      "value": {}
     },
-    "virtualNetworkLinks": {
+    "txt": {
       "value": []
     }
   }
@@ -143,11 +150,11 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-npdzmax'
+module dnsZone 'br/public:avm-res-network-dnszone:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-ndzmax'
   params: {
     // Required parameters
-    name: 'npdzmax001.com'
+    name: 'ndzmax001.com'
     // Non-required parameters
     a: [
       {
@@ -192,6 +199,10 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
           }
         ]
         ttl: 3600
+      }
+      {
+        name: 'CNAME_aliasRecordSet'
+        targetResourceId: '<targetResourceId>'
       }
     ]
     location: 'global'
@@ -254,10 +265,10 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
           }
         ]
         soaRecord: {
-          email: 'azureprivatedns-host.microsoft.com'
+          email: 'azuredns-hostmaster.microsoft.com'
           expireTime: 2419200
-          host: 'azureprivatedns.net'
-          minimumTtl: 10
+          host: 'ns1-04.azure-dns.com.'
+          minimumTtl: 300
           refreshTime: 3600
           retryTime: 300
           serialNumber: '1'
@@ -311,12 +322,6 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
         ]
       }
     ]
-    virtualNetworkLinks: [
-      {
-        registrationEnabled: true
-        virtualNetworkResourceId: '<virtualNetworkResourceId>'
-      }
-    ]
   }
 }
 ```
@@ -335,7 +340,7 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "npdzmax001.com"
+      "value": "ndzmax001.com"
     },
     // Non-required parameters
     "a": {
@@ -386,6 +391,10 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
             }
           ],
           "ttl": 3600
+        },
+        {
+          "name": "CNAME_aliasRecordSet",
+          "targetResourceId": "<targetResourceId>"
         }
       ]
     },
@@ -460,10 +469,10 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
             }
           ],
           "soaRecord": {
-            "email": "azureprivatedns-host.microsoft.com",
+            "email": "azuredns-hostmaster.microsoft.com",
             "expireTime": 2419200,
-            "host": "azureprivatedns.net",
-            "minimumTtl": 10,
+            "host": "ns1-04.azure-dns.com.",
+            "minimumTtl": 300,
             "refreshTime": 3600,
             "retryTime": 300,
             "serialNumber": "1"
@@ -523,14 +532,6 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
           ]
         }
       ]
-    },
-    "virtualNetworkLinks": {
-      "value": [
-        {
-          "registrationEnabled": true,
-          "virtualNetworkResourceId": "<virtualNetworkResourceId>"
-        }
-      ]
     }
   }
 }
@@ -549,11 +550,11 @@ This instance deploys the module in alignment with the best-practices of the Wel
 <summary>via Bicep module</summary>
 
 ```bicep
-module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-npdzwaf'
+module dnsZone 'br/public:avm-res-network-dnszone:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-ndzwaf'
   params: {
     // Required parameters
-    name: 'npdzwaf001.com'
+    name: 'ndzwaf001.com'
     // Non-required parameters
     a: []
     aaaa: []
@@ -592,7 +593,7 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "npdzwaf001.com"
+      "value": "ndzwaf001.com"
     },
     // Non-required parameters
     "a": {
@@ -652,7 +653,7 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Private DNS zone name. |
+| [`name`](#parameter-name) | string | DNS zone name. |
 
 **Optional parameters**
 
@@ -660,18 +661,19 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
 | :-- | :-- | :-- |
 | [`a`](#parameter-a) | array | Array of A records. |
 | [`aaaa`](#parameter-aaaa) | array | Array of AAAA records. |
+| [`caa`](#parameter-caa) | array | Array of CAA records. |
 | [`cname`](#parameter-cname) | array | Array of CNAME records. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
-| [`location`](#parameter-location) | string | The location of the PrivateDNSZone. Should be global. |
+| [`location`](#parameter-location) | string | The location of the dnsZone. Should be global. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`mx`](#parameter-mx) | array | Array of MX records. |
+| [`ns`](#parameter-ns) | array | Array of NS records. |
 | [`ptr`](#parameter-ptr) | array | Array of PTR records. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 | [`soa`](#parameter-soa) | array | Array of SOA records. |
 | [`srv`](#parameter-srv) | array | Array of SRV records. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`txt`](#parameter-txt) | array | Array of TXT records. |
-| [`virtualNetworkLinks`](#parameter-virtualnetworklinks) | array | Array of custom objects describing vNet links of the DNS zone. Each object should contain properties 'vnetResourceId' and 'registrationEnabled'. The 'vnetResourceId' is a resource ID of a vNet to link, 'registrationEnabled' (bool) enables automatic DNS registration in the zone for the linked vNet. |
 
 ### Parameter: `a`
 
@@ -682,6 +684,12 @@ Array of A records.
 ### Parameter: `aaaa`
 
 Array of AAAA records.
+- Required: No
+- Type: array
+
+### Parameter: `caa`
+
+Array of CAA records.
 - Required: No
 - Type: array
 
@@ -700,7 +708,7 @@ Enable telemetry via a Globally Unique Identifier (GUID).
 
 ### Parameter: `location`
 
-The location of the PrivateDNSZone. Should be global.
+The location of the dnsZone. Should be global.
 - Required: No
 - Type: string
 - Default: `'global'`
@@ -740,9 +748,15 @@ Array of MX records.
 
 ### Parameter: `name`
 
-Private DNS zone name.
+DNS zone name.
 - Required: Yes
 - Type: string
+
+### Parameter: `ns`
+
+Array of NS records.
+- Required: No
+- Type: array
 
 ### Parameter: `ptr`
 
@@ -842,21 +856,15 @@ Array of TXT records.
 - Required: No
 - Type: array
 
-### Parameter: `virtualNetworkLinks`
-
-Array of custom objects describing vNet links of the DNS zone. Each object should contain properties 'vnetResourceId' and 'registrationEnabled'. The 'vnetResourceId' is a resource ID of a vNet to link, 'registrationEnabled' (bool) enables automatic DNS registration in the zone for the linked vNet.
-- Required: No
-- Type: array
-
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the private DNS zone. |
-| `resourceGroupName` | string | The resource group the private DNS zone was deployed into. |
-| `resourceId` | string | The resource ID of the private DNS zone. |
+| `name` | string | The name of the DNS zone. |
+| `resourceGroupName` | string | The resource group the DNS zone was deployed into. |
+| `resourceId` | string | The resource ID of the DNS zone. |
 
 ## Cross-referenced modules
 

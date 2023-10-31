@@ -1,10 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults'
-metadata description = '''
-This instance deploys the module with the minimum set of required parameters.
-> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
-'''
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
@@ -12,13 +9,13 @@ This instance deploys the module with the minimum set of required parameters.
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-network.privatednszones-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-batch.batchaccounts-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'npdzmin'
+param serviceShort string = 'bbamin'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -34,6 +31,15 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: location
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, location)}-nestedDependencies'
+  params: {
+    storageAccountName: 'dep${namePrefix}st${serviceShort}'
+    location: location
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -43,20 +49,20 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
-    name: '${namePrefix}${serviceShort}001.com'
-    location: 'global'
-
+    name: '${namePrefix}${serviceShort}001'
+    location: location
+    storageAccountId: nestedDependencies.outputs.storageAccountResourceId
     // Workaround for PSRule
-    a: []
-    aaaa: []
-    cname: []
-    mx: []
-    ptr: []
-    soa: []
-    srv: []
-    txt: []
-    virtualNetworkLinks: []
-    lock: {}
-    roleAssignments: []
+    storageAccessIdentityResourceId: null
+    keyVaultReferenceResourceId: null
+    networkProfileAllowedIpRanges: null
+    tags: null
+    allowedAuthenticationModes: null
+    diagnosticSettings: null
+    roleAssignments: null
+    privateEndpoints: null
+    managedIdentities: null
+    customerManagedKey: null
+    lock: null
   }
 }]
