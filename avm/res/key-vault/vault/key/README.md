@@ -70,14 +70,33 @@ The elliptic curve name.
 - Required: No
 - Type: string
 - Default: `'P-256'`
-- Allowed: `[P-256, P-256K, P-384, P-521]`
+- Allowed:
+  ```Bicep
+  [
+    'P-256'
+    'P-256K'
+    'P-384'
+    'P-521'
+  ]
+  ```
 
 ### Parameter: `keyOps`
 
 Array of JsonWebKeyOperation.
 - Required: No
 - Type: array
-- Allowed: `[decrypt, encrypt, import, sign, unwrapKey, verify, wrapKey]`
+- Allowed:
+  ```Bicep
+  [
+    'decrypt'
+    'encrypt'
+    'import'
+    'sign'
+    'unwrapKey'
+    'verify'
+    'wrapKey'
+  ]
+  ```
 
 ### Parameter: `keySize`
 
@@ -97,7 +116,15 @@ The type of the key.
 - Required: No
 - Type: string
 - Default: `'EC'`
-- Allowed: `[EC, EC-HSM, RSA, RSA-HSM]`
+- Allowed:
+  ```Bicep
+  [
+    'EC'
+    'EC-HSM'
+    'RSA'
+    'RSA-HSM'
+  ]
+  ```
 
 ### Parameter: `name`
 

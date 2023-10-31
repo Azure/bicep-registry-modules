@@ -437,7 +437,7 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
 ### Parameter: `ddosSettings`
 
 The DDoS protection plan configuration associated with the public IP address.
-- Required: Yes
+- Required: No
 - Type: object
 
 
@@ -579,7 +579,7 @@ Optional. Resource ID of the diagnostic log analytics workspace. For security re
 ### Parameter: `dnsSettings`
 
 The DNS settings of the public IP address.
-- Required: Yes
+- Required: No
 - Type: object
 
 
@@ -679,7 +679,13 @@ IP address version.
 - Required: No
 - Type: string
 - Default: `'IPv4'`
-- Allowed: `[IPv4, IPv6]`
+- Allowed:
+  ```Bicep
+  [
+    'IPv4'
+    'IPv6'
+  ]
+  ```
 
 ### Parameter: `publicIPAllocationMethod`
 
@@ -687,7 +693,13 @@ The public IP address allocation method.
 - Required: No
 - Type: string
 - Default: `'Static'`
-- Allowed: `[Dynamic, Static]`
+- Allowed:
+  ```Bicep
+  [
+    'Dynamic'
+    'Static'
+  ]
+  ```
 
 ### Parameter: `publicIpPrefixResourceId`
 
@@ -769,7 +781,13 @@ Name of a public IP address SKU.
 - Required: No
 - Type: string
 - Default: `'Standard'`
-- Allowed: `[Basic, Standard]`
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Standard'
+  ]
+  ```
 
 ### Parameter: `skuTier`
 
@@ -777,7 +795,13 @@ Tier of a public IP address SKU.
 - Required: No
 - Type: string
 - Default: `'Regional'`
-- Allowed: `[Global, Regional]`
+- Allowed:
+  ```Bicep
+  [
+    'Global'
+    'Regional'
+  ]
+  ```
 
 ### Parameter: `tags`
 

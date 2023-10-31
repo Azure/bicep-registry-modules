@@ -429,7 +429,14 @@ Auxiliary mode of Network Interface resource. Not all regions are enabled for Au
 - Required: No
 - Type: string
 - Default: `'None'`
-- Allowed: `[Floating, MaxConnections, None]`
+- Allowed:
+  ```Bicep
+  [
+    'Floating'
+    'MaxConnections'
+    'None'
+  ]
+  ```
 
 ### Parameter: `auxiliarySku`
 
@@ -437,7 +444,16 @@ Auxiliary sku of Network Interface resource. Not all regions are enabled for Aux
 - Required: No
 - Type: string
 - Default: `'None'`
-- Allowed: `[A1, A2, A4, A8, None]`
+- Allowed:
+  ```Bicep
+  [
+    'A1'
+    'A2'
+    'A4'
+    'A8'
+    'None'
+  ]
+  ```
 
 ### Parameter: `diagnosticSettings`
 

@@ -1283,7 +1283,14 @@ Whether or not public network access is allowed for this resource. For security 
 - Required: No
 - Type: string
 - Default: `''`
-- Allowed: `['', Disabled, Enabled]`
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 
@@ -1365,7 +1372,13 @@ Specifies the SKU for the vault.
 - Required: No
 - Type: string
 - Default: `'premium'`
-- Allowed: `[premium, standard]`
+- Allowed:
+  ```Bicep
+  [
+    'premium'
+    'standard'
+  ]
+  ```
 
 ### Parameter: `softDeleteRetentionInDays`
 
