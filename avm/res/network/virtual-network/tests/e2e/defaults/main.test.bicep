@@ -48,5 +48,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     lock: {
       kind: 'None'
     }
+    diagnosticSettings: null
   }
 }]
