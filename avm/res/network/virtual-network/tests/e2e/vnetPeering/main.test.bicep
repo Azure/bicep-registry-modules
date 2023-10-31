@@ -32,6 +32,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
+    location: location
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
 }
@@ -46,6 +47,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
+    location: location
     addressPrefixes: [
       '10.1.0.0/24'
     ]
@@ -74,5 +76,4 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Role: 'DeploymentValidation'
     }
   }
-}
-
+}]

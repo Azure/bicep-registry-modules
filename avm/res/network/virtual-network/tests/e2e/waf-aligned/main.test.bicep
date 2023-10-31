@@ -38,6 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
+    location: location
   }
 }
 
@@ -66,6 +67,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
+    location: location
     addressPrefixes: [
       addressPrefix
     ]
@@ -150,6 +152,4 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Role: 'DeploymentValidation'
     }
   }
-}
-
-
+}]
