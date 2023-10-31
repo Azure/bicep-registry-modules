@@ -254,8 +254,7 @@ type roleAssignmentType = {
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
-=======
-param location string = resourceGroup().location
+
 resource akv 'Microsoft.KeyVault/vaults@2023-02-01' = {
   name: 'akv'
   location: location
