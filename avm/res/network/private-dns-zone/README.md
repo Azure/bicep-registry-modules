@@ -574,12 +574,6 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
       Role: 'DeploymentValidation'
     }
     txt: []
-    virtualNetworkLinks: [
-      {
-        registrationEnabled: true
-        virtualNetworkResourceId: '<virtualNetworkResourceId>'
-      }
-    ]
   }
 }
 ```
@@ -643,14 +637,6 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
     },
     "txt": {
       "value": []
-    },
-    "virtualNetworkLinks": {
-      "value": [
-        {
-          "registrationEnabled": true,
-          "virtualNetworkResourceId": "<virtualNetworkResourceId>"
-        }
-      ]
     }
   }
 }
