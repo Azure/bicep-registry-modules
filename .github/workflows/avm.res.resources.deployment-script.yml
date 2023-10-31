@@ -1,5 +1,5 @@
 # >>> UPDATE to for example "avm.res.azure.key-vault.vault"
-name: "avm.res.resources.deploymentscript"
+name: "avm.res.resources.deployment-script"
 
 on:
   schedule:
@@ -28,14 +28,14 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.resources.deploymentscript"
-      - "avm/res/resources/deploymentscript/**"
+      - ".github/workflows/avm.res.resources.deployment-script"
+      - "avm/res/resources/deployment-script/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/resources/deploymentscript"
-  workflowPath: ".github/workflows/avm.res.resources.deploymentscript"
+  modulePath: "avm/res/resources/deployment-script"
+  workflowPath: ".github/workflows/avm.res.resources.deployment-script"
 
 concurrency:
   group: ${{ github.workflow }}
