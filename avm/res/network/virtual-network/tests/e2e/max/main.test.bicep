@@ -148,12 +148,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         privateLinkServiceNetworkPolicies: 'Enabled'
       }
       {
-        addressPrefix: cidrSubnet(addressPrefix, 26, 4)
+        addressPrefix: cidrSubnet(addressPrefix, 24, 4)
         name: 'AzureBastionSubnet'
         networkSecurityGroupId: nestedDependencies.outputs.networkSecurityGroupResourceId
       }
       {
-        addressPrefix: cidrSubnet(addressPrefix, 26, 5)
+        addressPrefix: cidrSubnet(addressPrefix, 24, 5)
         name: 'AzureFirewallSubnet'
       }
     ]
