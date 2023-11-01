@@ -1,10 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = '''
-This instance deploys the module with the minimum set of required parameters.
-> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
-'''
+metadata name = 'WAF-aligned'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.'
 
 // ========== //
 // Parameters //
@@ -12,13 +9,13 @@ This instance deploys the module with the minimum set of required parameters.
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-network.privatednszones-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-network.dnszones-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'npdzmin'
+param serviceShort string = 'ndzwaf'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -34,6 +31,16 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: location
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, location)}-nestedDependencies'
+  params: {
+    trafficManagerProfileName: 'dep-${namePrefix}-tmp-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    location: location
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -45,18 +52,23 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001.com'
     location: 'global'
-
-    // Workaround for PSRule
     a: []
     aaaa: []
     cname: []
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     mx: []
     ptr: []
+    roleAssignments: []
     soa: []
     srv: []
     txt: []
-    virtualNetworkLinks: []
-    lock: {}
-    roleAssignments: []
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
   }
 }]
