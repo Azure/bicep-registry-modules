@@ -446,6 +446,9 @@ function Set-DefinitionSection {
         if ($parameterValue.ContainsKey('items') -and $parameterValue['items'].ContainsKey('properties')) {
             $childProperties = $parameterValue['items']['properties']
             $listSectionContent += Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink
+        } elseif ($parameterValue.type -eq 'object' -and $parameterValue['properties']) {
+            $childProperties = $parameterValue['properties']
+            $listSectionContent += Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink
         }
     }
 

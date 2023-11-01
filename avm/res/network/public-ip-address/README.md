@@ -453,6 +453,15 @@ Required. The DDoS protection plan ID associated with the public IP address.
 - Required: Yes
 - Type: object
 
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`id`](#parameter-ddossettingsddosprotectionplanid) | Yes | string |  |
+
+### Parameter: `ddosSettings.ddosProtectionPlan.id`
+- Required: Yes
+- Type: string
+
+
 ### Parameter: `ddosSettings.protectionMode`
 
 Required. The DDoS protection policy customizations.
