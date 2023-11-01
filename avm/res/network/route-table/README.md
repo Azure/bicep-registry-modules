@@ -24,10 +24,11 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/network.route-table:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm-res-network-routetable:1.0.0`.
 
 - [Using large parameter set](#example-1-using-large-parameter-set)
-- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [Using only defaults](#example-3-using-only-defaults)
 
 ### Example 1: _Using large parameter set_
 
@@ -39,7 +40,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module routeTable 'br:bicep/modules/network.route-table:1.0.0' = {
+module routeTable 'br/public:avm-res-network-routetable:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-nrtcom'
   params: {
     // Required parameters
@@ -137,7 +138,115 @@ module routeTable 'br:bicep/modules/network.route-table:1.0.0' = {
 </details>
 <p>
 
-### Example 2: _Using only defaults_
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module routeTable 'br/public:avm-res-network-routetable:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-nrtcom'
+  params: {
+    // Required parameters
+    name: 'nrtcom001'
+    // Non-required parameters
+    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    routes: [
+      {
+        name: 'default'
+        properties: {
+          addressPrefix: '0.0.0.0/0'
+          nextHopIpAddress: '172.16.0.20'
+          nextHopType: 'VirtualAppliance'
+        }
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "nrtcom001"
+    },
+    // Non-required parameters
+    "enableDefaultTelemetry": {
+      "value": "<enableDefaultTelemetry>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Reader"
+        }
+      ]
+    },
+    "routes": {
+      "value": [
+        {
+          "name": "default",
+          "properties": {
+            "addressPrefix": "0.0.0.0/0",
+            "nextHopIpAddress": "172.16.0.20",
+            "nextHopType": "VirtualAppliance"
+          }
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -147,7 +256,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module routeTable 'br:bicep/modules/network.route-table:1.0.0' = {
+module routeTable 'br/public:avm-res-network-routetable:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-nrtmin'
   params: {
     // Required parameters
