@@ -1,4 +1,4 @@
-name: "avm.res.network.routetable"
+name: "avm.res.network.route-table"
 
 on:
   schedule:
@@ -27,14 +27,14 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.network.routetable.yml"
-      - "avm/res/batch/batch-account/**"
+      - ".github/workflows/avm.res.network.route-table.yml"
+      - "avm/res/network/route-table/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/batch/batch-account"
-  workflowPath: ".github/workflows/avm.res.network.routetable.yml"
+  modulePath: "avm/res/network/route-table"
+  workflowPath: ".github/workflows/avm.res.network.route-table.yml"
 
 concurrency:
   group: ${{ github.workflow }}
