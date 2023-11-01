@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "5834334564189406991"
+      "templateHash": "853371999264896070"
     },
     "name": "Power BI Dedicated Capacities",
     "description": "This module deploys a Power BI Dedicated Capacity.",
@@ -103,6 +103,44 @@
         }
       },
       "nullable": true
+    },
+    "skuTpe": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "A1",
+            "A2",
+            "A3",
+            "A4",
+            "A5",
+            "A6"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the SKU."
+          }
+        },
+        "capacity": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The capacity of the SKU."
+          }
+        },
+        "tier": {
+          "type": "string",
+          "allowedValues": [
+            "AutoPremiumHost",
+            "PBIE_Azure",
+            "Premium"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tier of the SKU."
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -119,7 +157,7 @@
         "description": "Optional. Location for all Resources."
       }
     },
-    "enableDefaultTelemetry": {
+    "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
@@ -133,37 +171,10 @@
         "description": "Optional. Tags of the resource."
       }
     },
-    "skuCapacity": {
-      "type": "int",
+    "sku": {
+      "$ref": "#/definitions/skuTpe",
       "metadata": {
-        "description": "Required. SkuCapacity of the resource."
-      }
-    },
-    "skuName": {
-      "type": "string",
-      "defaultValue": "A1",
-      "allowedValues": [
-        "A1",
-        "A2",
-        "A3",
-        "A4",
-        "A5",
-        "A6"
-      ],
-      "metadata": {
-        "description": "Optional. SkuCapacity of the resource."
-      }
-    },
-    "skuTier": {
-      "type": "string",
-      "defaultValue": "PBIE_Azure",
-      "allowedValues": [
-        "AutoPremiumHost",
-        "PBIE_Azure",
-        "Premium"
-      ],
-      "metadata": {
-        "description": "Optional. SkuCapacity of the resource."
+        "description": "Required. Sku configuration of the resource."
       }
     },
     "members": {
@@ -209,10 +220,10 @@
   },
   "resources": {
     "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('46d3xbcp.res.powerbidedicated-capacity.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -229,9 +240,9 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "sku": {
-        "capacity": "[parameters('skuCapacity')]",
-        "name": "[parameters('skuName')]",
-        "tier": "[parameters('skuTier')]"
+        "name": "[coalesce(tryGet(parameters('sku'), 'name'), 'A1')]",
+        "capacity": "[parameters('sku').capacity]",
+        "tier": "[coalesce(tryGet(parameters('sku'), 'tier'), 'PBIE_Azure')]"
       },
       "properties": {
         "administration": {
