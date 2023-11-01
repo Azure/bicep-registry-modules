@@ -28,12 +28,12 @@ on:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.res.power-bi-dedicated.capacity.yml"
-      - "avm/respower-bi-dedicated/capacity/**"
+      - "avm/res/power-bi-dedicated/capacity/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/respower-bi-dedicated/capacity"
+  modulePath: "avm/res/power-bi-dedicated/capacity"
   workflowPath: ".github/workflows/avm.res.power-bi-dedicated.capacity.yml"
 
 concurrency:
