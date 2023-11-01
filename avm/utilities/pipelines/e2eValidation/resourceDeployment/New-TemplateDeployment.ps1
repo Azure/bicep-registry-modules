@@ -101,6 +101,9 @@ Optional. Maximum retry limit if the deployment fails. Default is 3.
 .PARAMETER doNotThrow
 Optional. Do not throw an exception if it failed. Still returns the error message though
 
+.PARAMETER RepoRoot
+Optional. Path to the root of the repository.
+
 .EXAMPLE
 New-TemplateDeploymentInner -templateFilePath 'C:/key-vault/vault/main.json' -parameterFilePath 'C:/key-vault/vault/.test/parameters.json' -location 'WestEurope' -resourceGroupName 'aLegendaryRg'
 
@@ -148,15 +151,16 @@ function New-TemplateDeploymentInner {
         [switch] $doNotThrow,
 
         [Parameter(Mandatory = $false)]
-        [int]$retryLimit = 3
+        [int]$retryLimit = 3,
+
+        [Parameter(Mandatory = $false)]
+        [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.parent.FullName
     )
 
     begin {
         Write-Debug ('{0} entered' -f $MyInvocation.MyCommand)
 
         # Load helper
-        $repoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.parent.FullName
-        . (Join-Path $repoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-ScopeOfTemplateFile.ps1')
     }
 
     process {
@@ -165,19 +169,20 @@ function New-TemplateDeploymentInner {
             $deploymentNamePrefix = 'templateDeployment-{0}' -f (Split-Path $templateFilePath -LeafBase)
         }
 
-        # Convert, e.g., [C:\myFork\avm\res\kubernetes-configuration\flux-configuration\tests\e2e\defaults\main.test.bicep] to [a-r-kc-fc-defaults]
-        $shortPathElems = ((Split-Path $templateFilePath) -replace ('{0}[\\|\/]' -f [regex]::Escape($repoRoot))) -split '[\\|\/]' | Where-Object { $_ -notin @('tests', 'e2e') }
-        # Shorten all elements but the last
-        $reducedElem = $shortPathElems[0 .. ($shortPathElems.Count - 2)] | ForEach-Object {
-            $shortPathElem = $_
-            if ($shortPathElem -match '-') {
-                ($shortPathElem -split '-' | ForEach-Object { $_[0] }) -join ''
-            } else {
-                $shortPathElem[0]
-            }
+        $modulesRegex = '.+[\\|\/]modules[\\|\/]'
+        if ($templateFilePath -match $modulesRegex) {
+            # If we can assume we're operating in a module structure, we can further fetch the provider namespace & resource type
+            $shortPathElem = (($templateFilePath -split $modulesRegex)[1] -replace '\\', '/') -split '/' # e.g., app-configuration, configuration-store, .test, common, main.test.bicep
+            $providerNamespace = $shortPathElem[0] # e.g., app-configuration
+            $providerNamespaceShort = ($providerNamespace -split '-' | ForEach-Object { $_[0] }) -join '' # e.g., ac
+
+            $resourceType = $shortPathElem[1] # e.g., configuration-store
+            $resourceTypeShort = ($resourceType -split '-' | ForEach-Object { $_[0] }) -join '' # e.g. cs
+
+            $testFolderShort = Split-Path (Split-Path $templateFilePath -Parent) -Leaf  # e.g., common
+
+            $deploymentNamePrefix = "$providerNamespaceShort-$resourceTypeShort-$testFolderShort" # e.g., ac-cs-common
         }
-        # Add the last back and join the elements together
-        $deploymentNamePrefix = ($reducedElem + @($shortPathElems[-1])) -join '-'
 
         $DeploymentInputs = @{
             TemplateFile = $templateFilePath
