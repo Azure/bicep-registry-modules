@@ -18,7 +18,7 @@ param applicationSecurityGroupResourceIds array?
 param customNetworkInterfaceName string?
 
 @description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
-param ipConfigurations array?
+param ipConfigurations ipConfigurationsType?
 
 @description('Required. Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to.')
 param groupIds array
@@ -42,7 +42,7 @@ param roleAssignments roleAssignmentType
 param tags object?
 
 @description('Optional. Custom DNS configurations.')
-param customDnsConfigs array?
+param customDnsConfigs customDnsConfigType?
 
 @description('Optional. Manual PrivateLink Service Connections.')
 param manualPrivateLinkServiceConnections array?
@@ -187,3 +187,28 @@ type lockType = {
   @description('Optional. Specify the type of lock.')
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
+
+type ipConfigurationsType = {
+  @description('Required. The name of the resource that is unique within a resource group.')
+  name: string
+
+  @description('Required. Properties of private endpoint IP configurations.')
+  properties: {
+    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
+    groupId: string
+
+    @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
+    memberName: string
+
+    @description('Required. A private ip address obtained from the private endpoint\'s subnet.')
+    privateIPAddress: string
+  }
+}[]?
+
+type customDnsConfigType = {
+  @description('Required. Fqdn that resolves to private endpoint ip address.')
+  fqdn: string
+
+  @description('Required. A list of private ip addresses of the private endpoint.')
+  ipAddresses: string[]
+}[]?
