@@ -53,6 +53,9 @@ module capacity 'br/public:avm-res-powerbidedicated-capacity:1.0.0' = {
     }
     // Non-required parameters
     location: '<location>'
+    lock: {}
+    roleAssignments: []
+    tags: {}
   }
 }
 ```
@@ -86,6 +89,15 @@ module capacity 'br/public:avm-res-powerbidedicated-capacity:1.0.0' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "lock": {
+      "value": {}
+    },
+    "roleAssignments": {
+      "value": []
+    },
+    "tags": {
+      "value": {}
     }
   }
 }

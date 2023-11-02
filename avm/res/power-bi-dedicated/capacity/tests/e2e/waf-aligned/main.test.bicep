@@ -61,11 +61,13 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     members: [
       nestedDependencies.outputs.managedIdentityPrincipalId
     ]
-    roleAssignments: []
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
+
+    // Workaround for PSRule
+    roleAssignments: []
   }
 }]
