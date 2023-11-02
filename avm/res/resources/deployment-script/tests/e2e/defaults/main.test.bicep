@@ -6,7 +6,7 @@ targetScope = 'subscription'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-resources.deploymentscripts-${serviceShort}-rg'
+param resourceGroupName string = 'avm-${namePrefix}-resources.deploymentscripts-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
@@ -18,7 +18,7 @@ param serviceShort string = 'rdsps'
 param enableTelemetry bool = true
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '[[namePrefix]]'
+param namePrefix string = 'avmds'
 
 // ============ //
 // Dependencies //
@@ -55,10 +55,6 @@ module testDeployment '../../../main.bicep' = {
     azPowerShellVersion: '8.0'
     cleanupPreference: 'Always'
     kind: 'AzurePowerShell'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     retentionInterval: 'P1D'
     runOnce: false
     scriptContent: 'Write-Host \'AVM Deployment Script test!\''
