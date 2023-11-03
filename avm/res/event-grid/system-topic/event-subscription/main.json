@@ -1,0 +1,172 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "10392297144322720436"
+    },
+    "name": "Event Grid System Topic Event Subscriptions",
+    "description": "This module deploys an Event Grid System Topic Event Subscription.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Event Subscription."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all Resources."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    },
+    "systemTopicName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the Event Grid System Topic."
+      }
+    },
+    "deadLetterDestination": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Dead Letter Destination. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterdestination-objects for more information)."
+      }
+    },
+    "deadLetterWithResourceIdentity": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Dead Letter with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterwithresourceidentity-objects for more information)."
+      }
+    },
+    "deliveryWithResourceIdentity": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Delivery with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deliverywithresourceidentity-objects for more information)."
+      }
+    },
+    "destination": {
+      "type": "object",
+      "metadata": {
+        "description": "Required. The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information)."
+      }
+    },
+    "eventDeliverySchema": {
+      "type": "string",
+      "defaultValue": "EventGridSchema",
+      "allowedValues": [
+        "CloudEventSchemaV1_0",
+        "CustomInputSchema",
+        "EventGridSchema",
+        "EventGridEvent"
+      ],
+      "metadata": {
+        "description": "Optional. The event delivery schema for the event subscription."
+      }
+    },
+    "expirationTimeUtc": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ)."
+      }
+    },
+    "filter": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The filter for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptionfilter for more information)."
+      }
+    },
+    "labels": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The list of user defined labels."
+      }
+    },
+    "retryPolicy": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The retry policy for events. This can be used to configure the TTL and maximum number of delivery attempts and time to live for events."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.EventGrid/systemTopics/eventSubscriptions",
+      "apiVersion": "2022-06-15",
+      "name": "[format('{0}/{1}', parameters('systemTopicName'), parameters('name'))]",
+      "properties": {
+        "deadLetterDestination": "[if(not(empty(parameters('deadLetterDestination'))), parameters('deadLetterDestination'), null())]",
+        "deadLetterWithResourceIdentity": "[if(not(empty(parameters('deadLetterWithResourceIdentity'))), parameters('deadLetterWithResourceIdentity'), null())]",
+        "deliveryWithResourceIdentity": "[if(not(empty(parameters('deliveryWithResourceIdentity'))), parameters('deliveryWithResourceIdentity'), null())]",
+        "destination": "[parameters('destination')]",
+        "eventDeliverySchema": "[parameters('eventDeliverySchema')]",
+        "expirationTimeUtc": "[if(not(empty(parameters('expirationTimeUtc'))), parameters('expirationTimeUtc'), '')]",
+        "filter": "[if(not(empty(parameters('filter'))), parameters('filter'), createObject())]",
+        "labels": "[if(not(empty(parameters('labels'))), parameters('labels'), createArray())]",
+        "retryPolicy": "[if(not(empty(parameters('retryPolicy'))), parameters('retryPolicy'), null())]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the event subscription."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the event subscription."
+      },
+      "value": "[resourceId('Microsoft.EventGrid/systemTopics/eventSubscriptions', parameters('systemTopicName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the event subscription was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference(resourceId('Microsoft.EventGrid/systemTopics', parameters('systemTopicName')), '2022-06-15', 'full').location]"
+    }
+  }
+}
