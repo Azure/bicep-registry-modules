@@ -1,0 +1,96 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "4747986299110708591"
+    },
+    "name": "Service Bus Namespace Authorization Rules",
+    "description": "This module deploys a Service Bus Namespace Authorization Rule.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "namespaceName": {
+      "type": "string",
+      "minLength": 6,
+      "maxLength": 50,
+      "metadata": {
+        "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Queue. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the authorization rule."
+      }
+    },
+    "rights": {
+      "type": "array",
+      "defaultValue": [],
+      "allowedValues": [
+        "Listen",
+        "Manage",
+        "Send"
+      ],
+      "metadata": {
+        "description": "Optional. The rights associated with the rule."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.ServiceBus/namespaces/AuthorizationRules",
+      "apiVersion": "2022-10-01-preview",
+      "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
+      "properties": {
+        "rights": "[parameters('rights')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the authorization rule."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the authorization rule."
+      },
+      "value": "[resourceId('Microsoft.ServiceBus/namespaces/AuthorizationRules', parameters('namespaceName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the authorization rule was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

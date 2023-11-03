@@ -1,0 +1,137 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "533952694982260366"
+    },
+    "name": "Service Bus Namespace Network Rule Sets",
+    "description": "This module deploys a ServiceBus Namespace Network Rule Set.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "namespaceName": {
+      "type": "string",
+      "minLength": 6,
+      "maxLength": 50,
+      "metadata": {
+        "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Network Rule Set. Required if the template is used in a standalone deployment."
+      }
+    },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. This determines if traffic is allowed over public network. Default is \"Enabled\". If set to \"Disabled\", traffic to this namespace will be restricted over Private Endpoints only and network rules will not be applied."
+      }
+    },
+    "defaultAction": {
+      "type": "string",
+      "defaultValue": "Allow",
+      "allowedValues": [
+        "Allow",
+        "Deny"
+      ],
+      "metadata": {
+        "description": "Optional. Default Action for Network Rule Set. Default is \"Allow\". It will not be set if publicNetworkAccess is \"Disabled\". Otherwise, it will be set to \"Deny\" if ipRules or virtualNetworkRules are being used."
+      }
+    },
+    "trustedServiceAccessEnabled": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Value that indicates whether Trusted Service Access is enabled or not. Default is \"true\". It will not be set if publicNetworkAccess is \"Disabled\"."
+      }
+    },
+    "virtualNetworkRules": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List virtual network rules. It will not be set if publicNetworkAccess is \"Disabled\". Otherwise, when used, defaultAction will be set to \"Deny\"."
+      }
+    },
+    "ipRules": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of IpRules. It will not be set if publicNetworkAccess is \"Disabled\". Otherwise, when used, defaultAction will be set to \"Deny\"."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "variables": {
+    "copy": [
+      {
+        "name": "networkRules",
+        "count": "[length(parameters('virtualNetworkRules'))]",
+        "input": {
+          "ignoreMissingVnetServiceEndpoint": "[if(contains(parameters('virtualNetworkRules')[copyIndex('networkRules')], 'ignoreMissingVnetServiceEndpoint'), parameters('virtualNetworkRules')[copyIndex('networkRules')].ignoreMissingVnetServiceEndpoint, null())]",
+          "subnet": "[if(contains(parameters('virtualNetworkRules')[copyIndex('networkRules')], 'subnetResourceId'), createObject('id', parameters('virtualNetworkRules')[copyIndex('networkRules')].subnetResourceId), null())]"
+        }
+      }
+    ]
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.ServiceBus/namespaces/networkRuleSets",
+      "apiVersion": "2022-10-01-preview",
+      "name": "[format('{0}/{1}', parameters('namespaceName'), 'default')]",
+      "properties": {
+        "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
+        "defaultAction": "[if(equals(parameters('publicNetworkAccess'), 'Disabled'), null(), if(or(not(empty(parameters('ipRules'))), not(empty(parameters('virtualNetworkRules')))), 'Deny', parameters('defaultAction')))]",
+        "trustedServiceAccessEnabled": "[if(equals(parameters('publicNetworkAccess'), 'Disabled'), null(), parameters('trustedServiceAccessEnabled'))]",
+        "ipRules": "[if(equals(parameters('publicNetworkAccess'), 'Disabled'), null(), parameters('ipRules'))]",
+        "virtualNetworkRules": "[if(equals(parameters('publicNetworkAccess'), 'Disabled'), null(), variables('networkRules'))]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the network rule set."
+      },
+      "value": "default"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the network rule set."
+      },
+      "value": "[resourceId('Microsoft.ServiceBus/namespaces/networkRuleSets', parameters('namespaceName'), 'default')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the network rule set was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

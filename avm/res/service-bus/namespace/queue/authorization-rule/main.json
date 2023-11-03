@@ -1,0 +1,100 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "4578845431207793137"
+    },
+    "name": "Service Bus Namespace Queue Authorization Rules",
+    "description": "This module deploys a Service Bus Namespace Queue Authorization Rule.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the service bus namepace queue."
+      }
+    },
+    "namespaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Service Bus Namespace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "queueName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Service Bus Namespace Queue. Required if the template is used in a standalone deployment."
+      }
+    },
+    "rights": {
+      "type": "array",
+      "defaultValue": [],
+      "allowedValues": [
+        "Listen",
+        "Manage",
+        "Send"
+      ],
+      "metadata": {
+        "description": "Optional. The rights associated with the rule."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.ServiceBus/namespaces/queues/authorizationRules",
+      "apiVersion": "2022-10-01-preview",
+      "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('queueName'), parameters('name'))]",
+      "properties": {
+        "rights": "[parameters('rights')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the authorization rule."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Resource ID of the authorization rule."
+      },
+      "value": "[resourceId('Microsoft.ServiceBus/namespaces/queues/authorizationRules', parameters('namespaceName'), parameters('queueName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the authorization rule was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

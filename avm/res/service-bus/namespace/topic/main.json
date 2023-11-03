@@ -1,0 +1,499 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "14755107204839231715"
+    },
+    "name": "Service Bus Namespace Topic",
+    "description": "This module deploys a Service Bus Namespace Topic.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "roleAssignmentType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "roleDefinitionIdOrName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
+            }
+          },
+          "principalId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+            }
+          },
+          "principalType": {
+            "type": "string",
+            "allowedValues": [
+              "Device",
+              "ForeignGroup",
+              "Group",
+              "ServicePrincipal",
+              "User"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The principal type of the assigned principal ID."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The description of the role assignment."
+            }
+          },
+          "condition": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+            }
+          },
+          "conditionVersion": {
+            "type": "string",
+            "allowedValues": [
+              "2.0"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Version of the condition."
+            }
+          },
+          "delegatedManagedIdentityResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The Resource Id of the delegated managed identity resource."
+            }
+          }
+        }
+      },
+      "nullable": true
+    }
+  },
+  "parameters": {
+    "namespaceName": {
+      "type": "string",
+      "minLength": 6,
+      "maxLength": 50,
+      "metadata": {
+        "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Topic. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "minLength": 6,
+      "maxLength": 50,
+      "metadata": {
+        "description": "Required. Name of the Service Bus Topic."
+      }
+    },
+    "maxSizeInMegabytes": {
+      "type": "int",
+      "defaultValue": 1024,
+      "metadata": {
+        "description": "Optional. The maximum size of the topic in megabytes, which is the size of memory allocated for the topic. Default is 1024."
+      }
+    },
+    "requiresDuplicateDetection": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. A value indicating if this topic requires duplicate detection."
+      }
+    },
+    "defaultMessageTimeToLive": {
+      "type": "string",
+      "defaultValue": "P14D",
+      "metadata": {
+        "description": "Optional. ISO 8601 default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself."
+      }
+    },
+    "enableBatchedOperations": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Value that indicates whether server-side batched operations are enabled."
+      }
+    },
+    "duplicateDetectionHistoryTimeWindow": {
+      "type": "string",
+      "defaultValue": "PT10M",
+      "metadata": {
+        "description": "Optional. ISO 8601 timeSpan structure that defines the duration of the duplicate detection history. The default value is 10 minutes."
+      }
+    },
+    "maxMessageSizeInKilobytes": {
+      "type": "int",
+      "defaultValue": 1024,
+      "metadata": {
+        "description": "Optional. Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024."
+      }
+    },
+    "supportOrdering": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Value that indicates whether the topic supports ordering."
+      }
+    },
+    "autoDeleteOnIdle": {
+      "type": "string",
+      "defaultValue": "PT5M",
+      "metadata": {
+        "description": "Optional. ISO 8601 timespan idle interval after which the topic is automatically deleted. The minimum duration is 5 minutes."
+      }
+    },
+    "status": {
+      "type": "string",
+      "defaultValue": "Active",
+      "allowedValues": [
+        "Active",
+        "Disabled",
+        "Restoring",
+        "SendDisabled",
+        "ReceiveDisabled",
+        "Creating",
+        "Deleting",
+        "Renaming",
+        "Unknown"
+      ],
+      "metadata": {
+        "description": "Optional. Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown."
+      }
+    },
+    "enablePartitioning": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. A value that indicates whether the topic is to be partitioned across multiple message brokers."
+      }
+    },
+    "enableExpress": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. A value that indicates whether Express Entities are enabled. An express topic holds a message in memory temporarily before writing it to persistent storage."
+      }
+    },
+    "authorizationRules": {
+      "type": "array",
+      "defaultValue": [
+        {
+          "name": "RootManageSharedAccessKey",
+          "properties": {
+            "rights": [
+              "Listen",
+              "Manage",
+              "Send"
+            ]
+          }
+        }
+      ],
+      "metadata": {
+        "description": "Optional. Authorization Rules for the Service Bus Topic."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "roleAssignments": {
+      "$ref": "#/definitions/roleAssignmentType",
+      "metadata": {
+        "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "variables": {
+    "enableReferencedModulesTelemetry": false,
+    "builtInRoleNames": {
+      "Azure Service Bus Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '090c5cfd-751d-490a-894a-3ce6f1109419')]",
+      "Azure Service Bus Data Receiver": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')]",
+      "Azure Service Bus Data Sender": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '69a216fc-b8fb-44d8-bc22-1f3c2cd27a39')]",
+      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+    }
+  },
+  "resources": {
+    "defaultTelemetry": {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    "namespace": {
+      "existing": true,
+      "type": "Microsoft.ServiceBus/namespaces",
+      "apiVersion": "2022-10-01-preview",
+      "name": "[parameters('namespaceName')]"
+    },
+    "topic": {
+      "type": "Microsoft.ServiceBus/namespaces/topics",
+      "apiVersion": "2022-10-01-preview",
+      "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
+      "properties": {
+        "autoDeleteOnIdle": "[parameters('autoDeleteOnIdle')]",
+        "defaultMessageTimeToLive": "[parameters('defaultMessageTimeToLive')]",
+        "duplicateDetectionHistoryTimeWindow": "[parameters('duplicateDetectionHistoryTimeWindow')]",
+        "enableBatchedOperations": "[parameters('enableBatchedOperations')]",
+        "enableExpress": "[parameters('enableExpress')]",
+        "enablePartitioning": "[parameters('enablePartitioning')]",
+        "maxMessageSizeInKilobytes": "[parameters('maxMessageSizeInKilobytes')]",
+        "maxSizeInMegabytes": "[parameters('maxSizeInMegabytes')]",
+        "requiresDuplicateDetection": "[parameters('requiresDuplicateDetection')]",
+        "status": "[parameters('status')]",
+        "supportOrdering": "[parameters('supportOrdering')]"
+      },
+      "dependsOn": [
+        "namespace"
+      ]
+    },
+    "topic_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.ServiceBus/namespaces/{0}/topics/{1}', parameters('namespaceName'), parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "topic"
+      ]
+    },
+    "topic_roleAssignments": {
+      "copy": {
+        "name": "topic_roleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.ServiceBus/namespaces/{0}/topics/{1}', parameters('namespaceName'), parameters('name'))]",
+      "name": "[guid(resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaceName'), parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "properties": {
+        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "topic"
+      ]
+    },
+    "topic_authorizationRules": {
+      "copy": {
+        "name": "topic_authorizationRules",
+        "count": "[length(parameters('authorizationRules'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-AuthRule-{1}', deployment().name, copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "namespaceName": {
+            "value": "[parameters('namespaceName')]"
+          },
+          "topicName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('authorizationRules')[copyIndex()].name]"
+          },
+          "rights": "[if(contains(parameters('authorizationRules')[copyIndex()], 'rights'), createObject('value', parameters('authorizationRules')[copyIndex()].rights), createObject('value', createArray()))]",
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.22.6.54827",
+              "templateHash": "3590235297575239025"
+            },
+            "name": "Service Bus Namespace Topic Authorization Rules",
+            "description": "This module deploys a Service Bus Namespace Topic Authorization Rule.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the service bus namespace topic."
+              }
+            },
+            "namespaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Service Bus Namespace. Required if the template is used in a standalone deployment."
+              }
+            },
+            "topicName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Service Bus Namespace Topic. Required if the template is used in a standalone deployment."
+              }
+            },
+            "rights": {
+              "type": "array",
+              "defaultValue": [],
+              "allowedValues": [
+                "Listen",
+                "Manage",
+                "Send"
+              ],
+              "metadata": {
+                "description": "Optional. The rights associated with the rule."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "type": "Microsoft.ServiceBus/namespaces/topics/authorizationRules",
+              "apiVersion": "2022-10-01-preview",
+              "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('topicName'), parameters('name'))]",
+              "properties": {
+                "rights": "[parameters('rights')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the authorization rule."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The Resource ID of the authorization rule."
+              },
+              "value": "[resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('namespaceName'), parameters('topicName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Resource Group the authorization rule was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "topic"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed topic."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed topic."
+      },
+      "value": "[resourceId('Microsoft.ServiceBus/namespaces/topics', parameters('namespaceName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed topic."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

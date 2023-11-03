@@ -1,0 +1,100 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "3706608794197885431"
+    },
+    "name": "Service Bus Namespace Disaster Recovery Configs",
+    "description": "This module deploys a Service Bus Namespace Disaster Recovery Config",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "namespaceName": {
+      "type": "string",
+      "minLength": 6,
+      "maxLength": 50,
+      "metadata": {
+        "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Queue. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "default",
+      "metadata": {
+        "description": "Optional. The name of the disaster recovery config."
+      }
+    },
+    "alternateName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Primary/Secondary eventhub namespace name, which is part of GEO DR pairing."
+      }
+    },
+    "partnerNamespaceResourceID": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Resource ID of the Primary/Secondary event hub namespace name, which is part of GEO DR pairing."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.ServiceBus/namespaces/disasterRecoveryConfigs",
+      "apiVersion": "2022-10-01-preview",
+      "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
+      "properties": {
+        "alternateName": "[parameters('alternateName')]",
+        "partnerNamespace": "[parameters('partnerNamespaceResourceID')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the disaster recovery config."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Resource ID of the disaster recovery config."
+      },
+      "value": "[resourceId('Microsoft.ServiceBus/namespaces/disasterRecoveryConfigs', parameters('namespaceName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the disaster recovery config was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
