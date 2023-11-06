@@ -32,10 +32,11 @@ param managedIdentities managedIdentitiesType
 @description('Optional. Tags of the resource.')
 param tags object?
 
-@description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = true
+@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+param enableDefaultTelemetry bool = true
 
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourcesIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+
 var identity = !empty(managedIdentities) ? {
   type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourcesIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourcesIds ?? {}) ? 'UserAssigned' : null)
   userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
@@ -53,20 +54,14 @@ var builtInRoleNames = {
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.eventgrid-systemtopic.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
+  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
   properties: {
     mode: 'Incremental'
     template: {
       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
       contentVersion: '1.0.0.0'
       resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-        }
-      }
     }
   }
 }
@@ -92,7 +87,7 @@ module systemTopics_eventSubscriptions 'event-subscription/main.bicep' = [for (e
     deadLetterDestination: contains(eventSubscription, 'deadLetterDestination') ? eventSubscription.deadLetterDestination : {}
     deadLetterWithResourceIdentity: contains(eventSubscription, 'deadLetterWithResourceIdentity') ? eventSubscription.deadLetterWithResourceIdentity : {}
     deliveryWithResourceIdentity: contains(eventSubscription, 'deliveryWithResourceIdentity') ? eventSubscription.deliveryWithResourceIdentity : {}
-    enableTelemetry: contains(eventSubscription, 'enableTelemetry') ? eventSubscription.enableTelemetry : true
+    enableDefaultTelemetry: contains(eventSubscription, 'enableDefaultTelemetry') ? eventSubscription.enableDefaultTelemetry : true
     eventDeliverySchema: contains(eventSubscription, 'eventDeliverySchema') ? eventSubscription.eventDeliverySchema : 'EventGridSchema'
     expirationTimeUtc: contains(eventSubscription, 'expirationTimeUtc') ? eventSubscription.expirationTimeUtc : ''
     filter: contains(eventSubscription, 'filter') ? eventSubscription.filter : {}
@@ -161,7 +156,7 @@ output resourceId string = systemTopic.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(systemTopic.identity, 'principalId') ? systemTopic.identity.principalId : ''
+output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(systemTopic.identity, 'principalId') ? systemTopic.identity.principalId : ''
 
 @description('The location the resource was deployed into.')
 output location string = systemTopic.location
@@ -169,6 +164,14 @@ output location string = systemTopic.location
 // =============== //
 //   Definitions   //
 // =============== //
+
+type managedIdentitiesType = {
+  @description('Optional. Enables system assigned managed identity on the resource.')
+  systemAssigned: bool?
+
+  @description('Optional. The resource ID(s) to assign to the resource.')
+  userAssignedResourcesIds: string[]?
+}?
 
 type lockType = {
   @description('Optional. Specify the name of lock.')
@@ -238,11 +241,3 @@ type diagnosticSettingType = {
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
 }[]?
-
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
-
-  @description('Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.')
-  userAssignedResourcesIds: string[]?
-}?
