@@ -34,7 +34,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/dns-zone:0.1.1`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm-res-network-dnszone:1.0.0`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -50,7 +50,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module dnsZone 'br/public:avm/res/network/dns-zone:1.0.0' = {
+module dnsZone 'br/public:avm-res-network-dnszone:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-ndzmin'
   params: {
     // Required parameters
@@ -150,7 +150,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module dnsZone 'br/public:avm/res/network/dns-zone:1.0.0' = {
+module dnsZone 'br/public:avm-res-network-dnszone:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-ndzmax'
   params: {
     // Required parameters
@@ -550,7 +550,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 <summary>via Bicep module</summary>
 
 ```bicep
-module dnsZone 'br/public:avm/res/network/dns-zone:1.0.0' = {
+module dnsZone 'br/public:avm-res-network-dnszone:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-ndzwaf'
   params: {
     // Required parameters
