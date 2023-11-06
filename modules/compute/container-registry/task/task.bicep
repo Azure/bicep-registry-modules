@@ -3,7 +3,7 @@ param location string
 param loginServer string
 param tasks array = []
 
-resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-01-01-preview' existing = {
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' existing = {
   name: acrName
 }
 

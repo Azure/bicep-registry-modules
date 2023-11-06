@@ -175,7 +175,7 @@ var varReplicationLocations = [for replicationLocation in replicationLocations: 
   zoneRedundancy: contains(replicationLocation, 'zoneRedundancy') ? replicationLocation.zoneRedundancy : false
 }]
 
-resource containerRegistry 'Microsoft.ContainerRegistry/registries@2021-09-01' = {
+az biceresource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' = {
   name: name
   location: location
   tags: tags
@@ -218,7 +218,7 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2021-09-01' =
   }
 }
 
-resource replications 'Microsoft.ContainerRegistry/registries/replications@2021-09-01' = [for replicationLocation in varReplicationLocations: if (IS_PREMIUM_SKU) {
+resource replications 'Microsoft.ContainerRegistry/registries/replications@2023-11-01-preview' = [for replicationLocation in varReplicationLocations: if (IS_PREMIUM_SKU) {
   name: replicationLocation.location
   parent: containerRegistry
   location: replicationLocation.location
