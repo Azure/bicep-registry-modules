@@ -35,6 +35,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
+    location: location
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
@@ -49,6 +50,7 @@ module testDeployment '../../../main.bicep' =[for iteration in [ 'init', 'idem' 
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
+    location: location
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'

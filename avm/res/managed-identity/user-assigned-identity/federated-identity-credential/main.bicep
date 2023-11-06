@@ -8,9 +8,6 @@ param userAssignedIdentityName string
 @description('Required. The name of the secret.')
 param name string
 
-@description('Optional. Location for all resources.')
-param location string = resourceGroup().location
-
 @description('Required. The list of audiences that can appear in the issued token. Should be set to api://AzureADTokenExchange for Azure AD. It says what Microsoft identity platform should accept in the aud claim in the incoming token. This value represents Azure AD in your external identity provider and has no fixed value across identity providers - you might need to create a new application registration in your IdP to serve as the audience of this token.')
 param audiences array
 
