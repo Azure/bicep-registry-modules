@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.22.6.54827",
-      "templateHash": "6179842045098785602"
+      "templateHash": "14364682385055473509"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint.",
@@ -109,7 +109,7 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the private endpoint resource to create.."
+        "description": "Required. Name of the private endpoint resource to create."
       }
     },
     "subnetResourceId": {
