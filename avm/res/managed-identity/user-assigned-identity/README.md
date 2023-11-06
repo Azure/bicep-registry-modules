@@ -25,7 +25,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm-res-managedidentity-userassignedidentity:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br:bicep/modules/managed-identity.user-assigned-identity:1.0.0`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -41,39 +41,10 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module userAssignedIdentity 'br/public:avm-res-managedidentity-userassignedidentity:1.0.0' = {
-}
-module userAssignedIdentity 'br/public:avm-res-managedidentity-userassignedidentity:1.0.0' = {
-
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
-
-// ========== //
-// Parameters //
-// ========== //
-
-@description('Optional. The name of the resource group to deploy for testing purposes.')
-@maxLength(90)
-param resourceGroupName string = 'dep-managedidentity.userassignedidentities-miuaimin-rg'
-
-@description('Optional. The location to deploy resources to.')
-param location string = deployment().location
-
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'miuaimin'
-
-@description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '[[namePrefix]]'
-
-// ============ //
-// Dependencies //
-// ============ //
-
-// General resources
-// =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: resourceGroupName
-  location: '<location>'
+module userAssignedIdentity 'br:bicep/modules/managed-identity.user-assigned-identity:1.0.0' = {
+ scope: resourceGroup
+ name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
+ params: {}
 }
 ```
 
@@ -105,39 +76,38 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module userAssignedIdentity 'br/public:avm-res-managedidentity-userassignedidentity:1.0.0' = {
-}
-module userAssignedIdentity 'br/public:avm-res-managedidentity-userassignedidentity:1.0.0' = {
-
-metadata name = 'Using large parameter set'
-metadata description = 'This instance deploys the module with most of its features enabled.'
-
-// ========== //
-// Parameters //
-// ========== //
-
-@description('Optional. The name of the resource group to deploy for testing purposes.')
-@maxLength(90)
-param resourceGroupName string = 'dep-managedidentity.userassignedidentities-miuaimax-rg'
-
-@description('Optional. The location to deploy resources to.')
-param location string = deployment().location
-
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'miuaimax'
-
-@description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '[[namePrefix]]'
-
-// ============ //
-// Dependencies //
-// ============ //
-
-// General resources
-// =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: resourceGroupName
-  location: '<location>'
+module userAssignedIdentity 'br:bicep/modules/managed-identity.user-assigned-identity:1.0.0' = {
+name: '${uniqueString(deployment().name, location)}-test-miauimax'
+  params: {
+    name: 'miuaimax001'
+    enableTelemetry: '<enableTelemetry>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    federatedIdentityCredentials: [
+      {
+        name: 'test-fed-cred-miuaimax-001'
+        audiences: [
+          'api://AzureADTokenExchange'
+        ]
+        issuer: '<issuer>'
+        subject: 'system:serviceaccount:default:workload-identity-sa'
+      }
+    ]
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Reader'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+      }
+    ]
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+  }
 }
 ```
 
@@ -152,7 +122,48 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {}
+  "parameters": {
+    "enableTelemetry": {
+      "value": "<enableDefaultTelemetry>"
+    },
+    "federatedIdentityCredentials": {
+      "value": [
+        {
+          "audiences": [
+            "api://AzureADTokenExchange"
+          ],
+          "issuer": "<issuer>",
+          "name": "test-fed-cred-miuaimax-001",
+          "subject": "system:serviceaccount:default:workload-identity-sa"
+        }
+      ]
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "name": {
+      "value": "miuaimax001"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Reader"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
 }
 ```
 
@@ -169,39 +180,37 @@ This instance deploys the module in alignment with the best-pratices of the Well
 <summary>via Bicep module</summary>
 
 ```bicep
-module userAssignedIdentity 'br/public:avm-res-managedidentity-userassignedidentity:1.0.0' = {
-}
-module userAssignedIdentity 'br/public:avm-res-managedidentity-userassignedidentity:1.0.0' = {
-
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-pratices of the Well-Architectured-Framework.'
-
-// ========== //
-// Parameters //
-// ========== //
-
-@description('Optional. The name of the resource group to deploy for testing purposes.')
-@maxLength(90)
-param resourceGroupName string = 'dep-managedidentity.userassignedidentities-miuaiwaf-rg'
-
-@description('Optional. The location to deploy resources to.')
-param location string = deployment().location
-
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'miuaiwaf'
-
-@description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '[[namePrefix]]'
-
-// ============ //
-// Dependencies //
-// ============ //
-
-// General resources
-// =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: resourceGroupName
-  location: '<location>'
+module userAssignedIdentity 'br:bicep/modules/managed-identity.user-assigned-identity:1.0.0' = {
+name: '${uniqueString(deployment().name, location)}-test-miauiwaf'
+  params: {
+    name: 'miuaiwaf001'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    federatedIdentityCredentials: [
+      {
+        name: 'test-fed-cred-miuaiwaf-001'
+        audiences: [
+          'api://AzureADTokenExchange'
+        ]
+        issuer: '<issuer>'
+        subject: 'system:serviceaccount:default:workload-identity-sa'
+      }
+    ]
+    roleAssignments: [
+      {
+        roleDefinitionIdOrName: 'Reader'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+      }
+    ]
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+  }
 }
 ```
 
@@ -216,7 +225,45 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {}
+  "parameters": {
+    "federatedIdentityCredentials": {
+      "value": [
+        {
+          "audiences": [
+            "api://AzureADTokenExchange"
+          ],
+          "issuer": "<issuer>",
+          "name": "test-fed-cred-miuaiwaf-001",
+          "subject": "system:serviceaccount:default:workload-identity-sa"
+        }
+      ]
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "name": {
+      "value": "miuaiwaf001"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Reader"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
 }
 ```
 
