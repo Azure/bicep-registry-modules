@@ -84,7 +84,6 @@ function Publish-ModuleFromPathToPBR {
   ###################
   ## 7.  Publish   ##
   ###################
-  # TODO move to its own task to show that as skipped if no file qualifies for new version
   $plainPublicRegistryServer = ConvertFrom-SecureString $PublicRegistryServer -AsPlainText
 
   $publishInput = @(
@@ -93,6 +92,7 @@ function Publish-ModuleFromPathToPBR {
     '--documentationUri', $documentationUri
     '--force'
   )
+  # TODO move to its own task to show that as skipped if no file qualifies for new version
   Write-Verbose "Publish Input:`n $($publishInput | ConvertTo-Json -Depth 10)" -Verbose
 
   bicep publish @publishInput
