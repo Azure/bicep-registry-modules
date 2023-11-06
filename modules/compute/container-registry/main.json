@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.20.4.51522",
-      "templateHash": "15501758245983767624"
+      "version": "0.23.1.45101",
+      "templateHash": "3775321444522560168"
     },
     "name": "Container Registry",
     "description": "This module deploys Container Registry (Microsoft.ContainerRegistry/registries) and optionally available integrations.",
@@ -329,7 +329,7 @@
   "resources": [
     {
       "type": "Microsoft.ContainerRegistry/registries",
-      "apiVersion": "2021-09-01",
+      "apiVersion": "2023-11-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -361,7 +361,7 @@
       },
       "condition": "[variables('IS_PREMIUM_SKU')]",
       "type": "Microsoft.ContainerRegistry/registries/replications",
-      "apiVersion": "2021-09-01",
+      "apiVersion": "2023-11-01-preview",
       "name": "[format('{0}/{1}', parameters('name'), variables('varReplicationLocations')[copyIndex()].location)]",
       "location": "[variables('varReplicationLocations')[copyIndex()].location]",
       "tags": "[parameters('tags')]",
@@ -437,8 +437,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.20.4.51522",
-              "templateHash": "11276824333704269750"
+              "version": "0.23.1.45101",
+              "templateHash": "15167578050607254751"
             }
           },
           "parameters": {
@@ -553,8 +553,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.20.4.51522",
-              "templateHash": "1569431369010361825"
+              "version": "0.23.1.45101",
+              "templateHash": "2490277527509123253"
             }
           },
           "parameters": {
@@ -664,7 +664,7 @@
             "value": "[parameters('tasks')]"
           },
           "loginServer": {
-            "value": "[reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('name')), '2021-09-01').loginServer]"
+            "value": "[reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('name')), '2023-11-01-preview').loginServer]"
           }
         },
         "template": {
@@ -673,8 +673,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.20.4.51522",
-              "templateHash": "15495887558517410579"
+              "version": "0.23.1.45101",
+              "templateHash": "12739436930812382482"
             }
           },
           "parameters": {
@@ -754,8 +754,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.20.4.51522",
-                      "templateHash": "11276824333704269750"
+                      "version": "0.23.1.45101",
+                      "templateHash": "15167578050607254751"
                     }
                   },
                   "parameters": {
@@ -890,7 +890,7 @@
       "metadata": {
         "description": "The login server URL of the Azure Container Registry."
       },
-      "value": "[reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('name')), '2021-09-01').loginServer]"
+      "value": "[reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('name')), '2023-11-01-preview').loginServer]"
     }
   }
 }
