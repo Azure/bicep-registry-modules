@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.22.6.54827",
-      "templateHash": "8924691213553754613"
+      "version": "0.23.1.45101",
+      "templateHash": "4947226868705741873"
     },
     "name": "Event Grid System Topics",
     "description": "This module deploys an Event Grid System Topic.",
@@ -297,13 +297,6 @@
       "metadata": {
         "description": "Optional. Tags of the resource."
       }
-    },
-    "enableDefaultTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-      }
     }
   },
   "variables": {
@@ -322,20 +315,6 @@
     }
   },
   "resources": {
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": []
-        }
-      }
-    },
     "systemTopic": {
       "type": "Microsoft.EventGrid/systemTopics",
       "apiVersion": "2021-12-01",
@@ -433,7 +412,6 @@
           "deadLetterDestination": "[if(contains(parameters('eventSubscriptions')[copyIndex()], 'deadLetterDestination'), createObject('value', parameters('eventSubscriptions')[copyIndex()].deadLetterDestination), createObject('value', createObject()))]",
           "deadLetterWithResourceIdentity": "[if(contains(parameters('eventSubscriptions')[copyIndex()], 'deadLetterWithResourceIdentity'), createObject('value', parameters('eventSubscriptions')[copyIndex()].deadLetterWithResourceIdentity), createObject('value', createObject()))]",
           "deliveryWithResourceIdentity": "[if(contains(parameters('eventSubscriptions')[copyIndex()], 'deliveryWithResourceIdentity'), createObject('value', parameters('eventSubscriptions')[copyIndex()].deliveryWithResourceIdentity), createObject('value', createObject()))]",
-          "enableDefaultTelemetry": "[if(contains(parameters('eventSubscriptions')[copyIndex()], 'enableDefaultTelemetry'), createObject('value', parameters('eventSubscriptions')[copyIndex()].enableDefaultTelemetry), createObject('value', true()))]",
           "eventDeliverySchema": "[if(contains(parameters('eventSubscriptions')[copyIndex()], 'eventDeliverySchema'), createObject('value', parameters('eventSubscriptions')[copyIndex()].eventDeliverySchema), createObject('value', 'EventGridSchema'))]",
           "expirationTimeUtc": "[if(contains(parameters('eventSubscriptions')[copyIndex()], 'expirationTimeUtc'), createObject('value', parameters('eventSubscriptions')[copyIndex()].expirationTimeUtc), createObject('value', ''))]",
           "filter": "[if(contains(parameters('eventSubscriptions')[copyIndex()], 'filter'), createObject('value', parameters('eventSubscriptions')[copyIndex()].filter), createObject('value', createObject()))]",
@@ -447,8 +425,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "10392297144322720436"
+              "version": "0.23.1.45101",
+              "templateHash": "15173790856574805238"
             },
             "name": "Event Grid System Topic Event Subscriptions",
             "description": "This module deploys an Event Grid System Topic Event Subscription.",

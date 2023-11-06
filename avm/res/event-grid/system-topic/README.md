@@ -26,10 +26,11 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/event-grid.system-topic:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm-res-eventgrid-systemtopic:1.0.0`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
+- [Using large parameter set](#example-3-using-large-parameter-set)
 
 ### Example 1: _Using only defaults_
 
@@ -41,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module systemTopic 'br:bicep/modules/event-grid.system-topic:1.0.0' = {
+module systemTopic 'br/public:avm-res-eventgrid-systemtopic:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-egstmin'
   params: {
     // Required parameters
@@ -49,7 +50,7 @@ module systemTopic 'br:bicep/modules/event-grid.system-topic:1.0.0' = {
     source: '<source>'
     topicType: 'Microsoft.Storage.StorageAccounts'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -77,8 +78,8 @@ module systemTopic 'br:bicep/modules/event-grid.system-topic:1.0.0' = {
       "value": "Microsoft.Storage.StorageAccounts"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -97,7 +98,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module systemTopic 'br:bicep/modules/event-grid.system-topic:1.0.0' = {
+module systemTopic 'br/public:avm-res-eventgrid-systemtopic:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-egstmax'
   params: {
     // Required parameters
@@ -119,7 +120,6 @@ module systemTopic 'br:bicep/modules/event-grid.system-topic:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     eventSubscriptions: [
       {
         destination: {
@@ -130,7 +130,6 @@ module systemTopic 'br:bicep/modules/event-grid.system-topic:1.0.0' = {
             resourceId: '<resourceId>'
           }
         }
-        enableDefaultTelemetry: '<enableDefaultTelemetry>'
         eventDeliverySchema: 'CloudEventSchemaV1_0'
         expirationTimeUtc: '2099-01-01T11:00:21.715Z'
         filter: {
@@ -144,6 +143,7 @@ module systemTopic 'br:bicep/modules/event-grid.system-topic:1.0.0' = {
         }
       }
     ]
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -206,9 +206,6 @@ module systemTopic 'br:bicep/modules/event-grid.system-topic:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "eventSubscriptions": {
       "value": [
         {
@@ -220,7 +217,6 @@ module systemTopic 'br:bicep/modules/event-grid.system-topic:1.0.0' = {
               "resourceId": "<resourceId>"
             }
           },
-          "enableDefaultTelemetry": "<enableDefaultTelemetry>",
           "eventDeliverySchema": "CloudEventSchemaV1_0",
           "expirationTimeUtc": "2099-01-01T11:00:21.715Z",
           "filter": {
@@ -234,6 +230,189 @@ module systemTopic 'br:bicep/modules/event-grid.system-topic:1.0.0' = {
           }
         }
       ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Reader"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module systemTopic 'br/public:avm-res-eventgrid-systemtopic:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-egstwaf'
+  params: {
+    // Required parameters
+    name: 'egstwaf001'
+    source: '<source>'
+    topicType: 'Microsoft.Storage.StorageAccounts'
+    // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    eventSubscriptions: [
+      {
+        destination: {
+          endpointType: 'StorageQueue'
+          properties: {
+            queueMessageTimeToLiveInSeconds: 86400
+            queueName: '<queueName>'
+            resourceId: '<resourceId>'
+          }
+        }
+        eventDeliverySchema: 'CloudEventSchemaV1_0'
+        expirationTimeUtc: '2099-01-01T11:00:21.715Z'
+        filter: {
+          enableAdvancedFilteringOnArrays: true
+          isSubjectCaseSensitive: false
+        }
+        name: 'egstwaf001'
+        retryPolicy: {
+          eventTimeToLive: '120'
+          maxDeliveryAttempts: 10
+        }
+      }
+    ]
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+    }
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "egstwaf001"
+    },
+    "source": {
+      "value": "<source>"
+    },
+    "topicType": {
+      "value": "Microsoft.Storage.StorageAccounts"
+    },
+    // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "eventSubscriptions": {
+      "value": [
+        {
+          "destination": {
+            "endpointType": "StorageQueue",
+            "properties": {
+              "queueMessageTimeToLiveInSeconds": 86400,
+              "queueName": "<queueName>",
+              "resourceId": "<resourceId>"
+            }
+          },
+          "eventDeliverySchema": "CloudEventSchemaV1_0",
+          "expirationTimeUtc": "2099-01-01T11:00:21.715Z",
+          "filter": {
+            "enableAdvancedFilteringOnArrays": true,
+            "isSubjectCaseSensitive": false
+          },
+          "name": "egstwaf001",
+          "retryPolicy": {
+            "eventTimeToLive": "120",
+            "maxDeliveryAttempts": 10
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -285,7 +464,6 @@ module systemTopic 'br:bicep/modules/event-grid.system-topic:1.0.0' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`eventSubscriptions`](#parameter-eventsubscriptions) | array | Event subscriptions to deploy. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -407,13 +585,6 @@ Optional. Resource ID of the diagnostic log analytics workspace. For security re
 
 - Required: No
 - Type: string
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `eventSubscriptions`
 

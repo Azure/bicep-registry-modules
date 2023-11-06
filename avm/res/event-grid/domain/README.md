@@ -28,11 +28,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/event-grid.domain:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm-res-eventgrid-domain:1.0.0`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
 - [Pe](#example-3-pe)
+- [Using large parameter set](#example-4-using-large-parameter-set)
 
 ### Example 1: _Using only defaults_
 
@@ -44,13 +45,13 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module domain 'br:bicep/modules/event-grid.domain:1.0.0' = {
+module domain 'br/public:avm-res-eventgrid-domain:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-egdmin'
   params: {
     // Required parameters
     name: 'egdmin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -72,8 +73,8 @@ module domain 'br:bicep/modules/event-grid.domain:1.0.0' = {
       "value": "egdmin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -92,7 +93,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module domain 'br:bicep/modules/event-grid.domain:1.0.0' = {
+module domain 'br/public:avm-res-eventgrid-domain:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-egdmax'
   params: {
     // Required parameters
@@ -112,13 +113,13 @@ module domain 'br:bicep/modules/event-grid.domain:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     inboundIpRules: [
       {
         action: 'Allow'
         ipMask: '40.74.28.0/23'
       }
     ]
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -189,9 +190,6 @@ module domain 'br:bicep/modules/event-grid.domain:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "inboundIpRules": {
       "value": [
         {
@@ -199,6 +197,9 @@ module domain 'br:bicep/modules/event-grid.domain:1.0.0' = {
           "ipMask": "40.74.28.0/23"
         }
       ]
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -257,13 +258,13 @@ module domain 'br:bicep/modules/event-grid.domain:1.0.0' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module domain 'br:bicep/modules/event-grid.domain:1.0.0' = {
+module domain 'br/public:avm-res-eventgrid-domain:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-egdpe'
   params: {
     // Required parameters
     name: 'egdpe001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -303,8 +304,8 @@ module domain 'br:bicep/modules/event-grid.domain:1.0.0' = {
       "value": "egdpe001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "privateEndpoints": {
       "value": [
@@ -335,6 +336,174 @@ module domain 'br:bicep/modules/event-grid.domain:1.0.0' = {
 </details>
 <p>
 
+### Example 4: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module domain 'br/public:avm-res-eventgrid-domain:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-egdwaf'
+  params: {
+    // Required parameters
+    name: 'egdwaf001'
+    // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    inboundIpRules: [
+      {
+        action: 'Allow'
+        ipMask: '40.74.28.0/23'
+      }
+    ]
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'domain'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    topics: [
+      'topic-egdwaf001'
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "egdwaf001"
+    },
+    // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "inboundIpRules": {
+      "value": [
+        {
+          "action": "Allow",
+          "ipMask": "40.74.28.0/23"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "domain",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        }
+      ]
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Reader"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "topics": {
+      "value": [
+        "topic-egdwaf001"
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
 
 ## Parameters
 
@@ -351,7 +520,6 @@ module domain 'br:bicep/modules/event-grid.domain:1.0.0' = {
 | [`autoCreateTopicWithFirstSubscription`](#parameter-autocreatetopicwithfirstsubscription) | bool | Location for all Resources. |
 | [`autoDeleteTopicWithLastSubscription`](#parameter-autodeletetopicwithlastsubscription) | bool | Location for all Resources. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`inboundIpRules`](#parameter-inboundiprules) | array | This can be used to restrict traffic from specific IPs instead of all IPs. Note: These are considered only if PublicNetworkAccess is enabled. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -489,13 +657,6 @@ Optional. Resource ID of the diagnostic log analytics workspace. For security re
 
 - Required: No
 - Type: string
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `inboundIpRules`
 
@@ -643,34 +804,6 @@ Required. Properties of private endpoint IP configurations.
 - Required: Yes
 - Type: object
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`groupId`](#parameter-privateendpointsipconfigurationspropertiesgroupid) | Yes | string | Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. |
-| [`memberName`](#parameter-privateendpointsipconfigurationspropertiesmembername) | Yes | string | Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. |
-| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | Yes | string | Required. A private ip address obtained from the private endpoint's subnet. |
-
-### Parameter: `privateEndpoints.ipConfigurations.properties.groupId`
-
-Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
-
-Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
-
-Required. A private ip address obtained from the private endpoint's subnet.
-
-- Required: Yes
-- Type: string
-
-
 
 ### Parameter: `privateEndpoints.location`
 
@@ -748,14 +881,7 @@ Whether or not public network access is allowed for this resource. For security 
 - Required: No
 - Type: string
 - Default: `''`
-- Allowed:
-  ```Bicep
-  [
-    ''
-    'Disabled'
-    'Enabled'
-  ]
-  ```
+- Allowed: `['', Disabled, Enabled]`
 
 ### Parameter: `roleAssignments`
 
@@ -854,4 +980,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `modules/network/private-endpoint` | Local reference |
+| `AVM/bicep-registry-modules/avm/res/network/private-endpoint` | Local reference |

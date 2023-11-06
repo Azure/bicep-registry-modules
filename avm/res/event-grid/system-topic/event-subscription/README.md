@@ -45,21 +45,21 @@ This module deploys an Event Grid System Topic Event Subscription.
 Dead Letter Destination. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterdestination-objects for more information).
 - Required: No
 - Type: object
-- Default: `{}`
+- Default: `{object}`
 
 ### Parameter: `deadLetterWithResourceIdentity`
 
 Dead Letter with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterwithresourceidentity-objects for more information).
 - Required: No
 - Type: object
-- Default: `{}`
+- Default: `{object}`
 
 ### Parameter: `deliveryWithResourceIdentity`
 
 Delivery with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deliverywithresourceidentity-objects for more information).
 - Required: No
 - Type: object
-- Default: `{}`
+- Default: `{object}`
 
 ### Parameter: `destination`
 
@@ -80,15 +80,7 @@ The event delivery schema for the event subscription.
 - Required: No
 - Type: string
 - Default: `'EventGridSchema'`
-- Allowed:
-  ```Bicep
-  [
-    'CloudEventSchemaV1_0'
-    'CustomInputSchema'
-    'EventGridEvent'
-    'EventGridSchema'
-  ]
-  ```
+- Allowed: `[CloudEventSchemaV1_0, CustomInputSchema, EventGridEvent, EventGridSchema]`
 
 ### Parameter: `expirationTimeUtc`
 
@@ -102,7 +94,7 @@ The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTH
 The filter for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptionfilter for more information).
 - Required: No
 - Type: object
-- Default: `{}`
+- Default: `{object}`
 
 ### Parameter: `labels`
 
@@ -129,7 +121,7 @@ The name of the Event Subscription.
 The retry policy for events. This can be used to configure the TTL and maximum number of delivery attempts and time to live for events.
 - Required: No
 - Type: object
-- Default: `{}`
+- Default: `{object}`
 
 ### Parameter: `systemTopicName`
 
