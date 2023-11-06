@@ -44,7 +44,7 @@ var builtInRoleNames = {
 }
 
 resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.batch-batchaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.res.powerbidedicated-capacity.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -150,12 +150,12 @@ type roleAssignmentType = {
 
 type skuTpe = {
   @description('Optional. The name of the SKU.')
-  name: ('A1' | 'A2' | 'A3' | 'A4' | 'A5' | 'A6' | null)?
+  name: ('A1' | 'A2' | 'A3' | 'A4' | 'A5' | 'A6')?
 
   @description('Required. The capacity of the SKU.')
   capacity: int
 
   @description('Optional. The tier of the SKU.')
-  tier: ('PBIE_Azure' | 'Premium' | 'AutoPremiumHost' | null)?
+  tier: ('PBIE_Azure' | 'Premium' | 'AutoPremiumHost')?
 }
 
