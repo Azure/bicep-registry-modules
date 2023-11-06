@@ -22,7 +22,6 @@ This module deploys a User Assigned Identity Federated Identity Credential.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`audiences`](#parameter-audiences) | array | The list of audiences that can appear in the issued token. Should be set to api://AzureADTokenExchange for Azure AD. It says what Microsoft identity platform should accept in the aud claim in the incoming token. This value represents Azure AD in your external identity provider and has no fixed value across identity providers - you might need to create a new application registration in your IdP to serve as the audience of this token. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`issuer`](#parameter-issuer) | string | The URL of the issuer to be trusted. Must match the issuer claim of the external token being exchanged. |
 | [`name`](#parameter-name) | string | The name of the secret. |
 | [`subject`](#parameter-subject) | string | The identifier of the external software workload within the external identity provider. Like the audience value, it has no fixed format, as each IdP uses their own - sometimes a GUID, sometimes a colon delimited identifier, sometimes arbitrary strings. The value here must match the sub claim within the token presented to Azure AD. |
@@ -38,13 +37,6 @@ This module deploys a User Assigned Identity Federated Identity Credential.
 The list of audiences that can appear in the issued token. Should be set to api://AzureADTokenExchange for Azure AD. It says what Microsoft identity platform should accept in the aud claim in the incoming token. This value represents Azure AD in your external identity provider and has no fixed value across identity providers - you might need to create a new application registration in your IdP to serve as the audience of this token.
 - Required: Yes
 - Type: array
-
-### Parameter: `enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `issuer`
 
