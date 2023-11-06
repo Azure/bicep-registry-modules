@@ -141,7 +141,7 @@ param privateDNSZone string = ''
 param primaryAgentPoolProfile array
 
 @description('Optional. Define one or more secondary/additional agent pools.')
-param agentPools array = []
+param agentPools agendPoolType
 
 @description('Optional. Specifies whether the httpApplicationRouting add-on is enabled or not.')
 param httpApplicationRoutingEnabled bool = false
@@ -321,7 +321,7 @@ param omsAgentEnabled bool = true
 param monitoringWorkspaceId string = ''
 
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
+param enableTelemetry bool = true
 
 @description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
 param roleAssignments roleAssignmentType
@@ -335,18 +335,18 @@ param tags object?
 @description('Optional. The resource ID of the disc encryption set to apply to the cluster. For security reasons, this value should be provided.')
 param diskEncryptionSetID string = ''
 
-@description('Optional. Configuration settings that are sensitive, as name-value pairs for configuring this extension.')
-@secure()
-param fluxConfigurationProtectedSettings object = {}
-
 @description('Optional. Settings and configurations for the flux extension.')
-param fluxExtension object = {}
+param fluxExtension fluxExtensionType
 
 @description('Optional. Configurations for provisioning the cluster with HTTP proxy servers.')
 param httpProxyConfig object = {}
 
 @description('Optional. Identities associated with the cluster.')
 param identityProfile object = {}
+
+// =========== //
+// Variables   //
+// =========== //
 
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourcesIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
@@ -397,14 +397,24 @@ var builtInRoleNames = {
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
-resource defaultTelemetry 'Microsoft.Resources/deployments@2022-09-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
+// ============ //
+// Dependencies //
+// ============ //
+
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.containerservice-managedcluster.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
       contentVersion: '1.0.0.0'
       resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
     }
   }
 }
@@ -567,7 +577,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
   }
 }
 
-module managedCluster_agentPools 'agent-pool/main.bicep' = [for (agentPool, index) in agentPools: {
+module managedCluster_agentPools 'agent-pool/main.bicep' = [for (agentPool, index) in (agentPools ?? []): {
   name: '${uniqueString(deployment().name, location)}-ManagedCluster-AgentPool-${index}'
   params: {
     managedClusterName: managedCluster.name
@@ -610,11 +620,11 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [for (agentPool, inde
   }
 }]
 
-module managedCluster_extension 'br/public:avm-res-kubernetesconfiguration-fluxconfiguration:0.1.1' = if (!empty(fluxExtension)) {
+module managedCluster_extension 'br/public:avm-res-kubernetesconfiguration-fluxconfiguration:0.1.1' = if (!empty(fluxExtension ?? {})) {
   name: '${uniqueString(deployment().name, location)}-ManagedCluster-FluxExtension'
   params: {
     clusterName: managedCluster.name
-    name: fluxExtension.?name ?? 'flux'
+    name: fluxExtension.?name ?? 'flux-extension'
     namespace: fluxExtension.?namespace ?? 'flux-system'
     sourceKind: fluxExtension.?sourceKind ?? 'GitRepository'
     bucket: fluxExtension.?bucket
@@ -622,7 +632,7 @@ module managedCluster_extension 'br/public:avm-res-kubernetesconfiguration-fluxc
     gitRepository: fluxExtension.?gitRepository
     kustomizations: fluxExtension.?kustomizations
     location: location
-    scope: fluxExtension.?scope
+    scope: fluxExtension.?scope ?? 'cluster'
   }
 }
 
@@ -729,6 +739,47 @@ output addonProfiles object = contains(managedCluster.properties, 'addonProfiles
 //   Definitions   //
 // =============== //
 
+type agendPoolType = [
+  {
+    @description('Required. The name of the agent pool.')
+    name: string
+
+    @description('Optional. The availability zones of the agent pool.')
+    availabilityZones: string[]?
+
+    @description('Optional. The number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).')
+    count: int?
+
+    @description('Optional. The source resource ID to create the agent pool from.')
+    sourceResourceId: string?
+
+    @description('Optional. Whether to enable auto-scaling for the agent pool.')
+    enableAutoScaling: bool?
+
+    @description('Optional. Whether to enable encryption at host for the agent pool.')
+    enableEncryptionAtHost: bool?
+
+    @description('Optional. Whether to enable FIPS for the agent pool.')
+    enableFIPS: bool?
+
+    @description('Optional. Whether to enable node public IP for the agent pool.')
+    enableNodePublicIP: bool?
+
+    @description('Optional. Whether to enable Ultra SSD for the agent pool.')
+    enableUltraSSD: bool?
+
+    @description('Optional. The GPU instance profile of the agent pool.')
+    gpuInstanceProfile: ('' | 'MIG1g' | 'MIG2g' | 'MIG3g' | 'MIG4g' | 'MIG7g' | null)
+
+    @description('Optional. The kubelet disk type of the agent pool.')
+    kubeletDiskType: string?
+
+    @description('Optional. The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).')
+    maxCount: int?
+
+  }?
+]
+
 type managedIdentitiesType = {
   @description('Optional. Enables system assigned managed identity on the resource.')
   systemAssigned: bool?
@@ -805,3 +856,34 @@ type diagnosticSettingType = {
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
 }[]?
+
+type fluxConfigurationProtectedSettingsType = {
+  @description('Optional. The SSH private key to use for Git authentication.')
+  sshPrivateKey: string?
+}?
+
+type fluxExtensionType = {
+  @description('Required. The name of the extension.')
+  name: string
+
+  @description('Required. The namespace of the extension.')
+  namespace: string
+
+  @description('Required. The source kind of the extension.')
+  sourceKind: ('GitRepository' | 'Bucket' | null)
+
+  @description('Optional. The bucket of the extension.')
+  bucket: object?
+
+  @description('Optional. The configuration protected settings of the extension.')
+  configurationProtectedSettings: fluxConfigurationProtectedSettingsType?
+
+  @description('Optional. The Git repository of the extension.')
+  gitRepository: object?
+
+  @description('Optional. The kustomizations of the extension.')
+  kustomizations: object?
+
+  @description('Required. The scope of the extension.')
+  scope: ('cluster' | 'namespace')?
+}?
