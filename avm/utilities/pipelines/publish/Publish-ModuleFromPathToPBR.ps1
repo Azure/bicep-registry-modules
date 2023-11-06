@@ -92,6 +92,9 @@ function Publish-ModuleFromPathToPBR {
     '--documentationUri', $documentationUri
     '--force'
   )
+
+  Write-Verbose "Publish Input:`n $($publishInput | ConvertTo-Json -Depth 10)" -Verbose
+
   # TODO move to its own task to show that as skipped if no file qualifies for new version
-  bicep publish @publishInput
+  # bicep publish @publishInput
 }

@@ -457,7 +457,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:1.0.0' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`groupIds`](#parameter-groupids) | array | Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to. |
-| [`name`](#parameter-name) | string | Name of the private endpoint resource to create. |
+| [`name`](#parameter-name) | string | Name of the private endpoint resource to create.. |
 | [`serviceResourceId`](#parameter-serviceresourceid) | string | Resource ID of the resource that needs to be connected to the network. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
@@ -557,7 +557,7 @@ Manual PrivateLink Service Connections.
 
 ### Parameter: `name`
 
-Name of the private endpoint resource to create.
+Name of the private endpoint resource to create..
 - Required: Yes
 - Type: string
 
