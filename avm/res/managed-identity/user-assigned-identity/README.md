@@ -25,7 +25,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/managed-identity.user-assigned-identity:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm-res-managedidentity-userassignedidentity:1.0.0`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -41,10 +41,12 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module userAssignedIdentity 'br:bicep/modules/managed-identity.user-assigned-identity:1.0.0' = {
+module userAssignedIdentity 'br/public:avm-res-managedidentity-userassignedidentity:1.0.0' = {
  scope: resourceGroup
  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
- params: {}
+ params: {
+  location: '<location>'
+ }
 }
 ```
 
@@ -59,7 +61,11 @@ module userAssignedIdentity 'br:bicep/modules/managed-identity.user-assigned-ide
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {}
+  "parameters": {
+    "location": {
+        "value": "<location>"
+      },
+  }
 }
 ```
 
@@ -76,11 +82,12 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module userAssignedIdentity 'br:bicep/modules/managed-identity.user-assigned-identity:1.0.0' = {
+module userAssignedIdentity 'br/public:avm-res-managedidentity-userassignedidentity:1.0.0' = {
 name: '${uniqueString(deployment().name, location)}-test-miauimax'
   params: {
     name: 'miuaimax001'
     enableTelemetry: '<enableTelemetry>'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -138,6 +145,9 @@ name: '${uniqueString(deployment().name, location)}-test-miauimax'
         }
       ]
     },
+    "location": {
+        "value": "<location>"
+    },
     "lock": {
       "value": {
         "kind": "CanNotDelete",
@@ -180,10 +190,11 @@ This instance deploys the module in alignment with the best-pratices of the Well
 <summary>via Bicep module</summary>
 
 ```bicep
-module userAssignedIdentity 'br:bicep/modules/managed-identity.user-assigned-identity:1.0.0' = {
+module userAssignedIdentity 'br/public:avm-res-managedidentity-userassignedidentity:1.0.0' = {
 name: '${uniqueString(deployment().name, location)}-test-miauiwaf'
   params: {
     name: 'miuaiwaf001'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -237,6 +248,9 @@ name: '${uniqueString(deployment().name, location)}-test-miauiwaf'
           "subject": "system:serviceaccount:default:workload-identity-sa"
         }
       ]
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
