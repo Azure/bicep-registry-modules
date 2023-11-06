@@ -175,7 +175,7 @@ var varReplicationLocations = [for replicationLocation in replicationLocations: 
   zoneRedundancy: contains(replicationLocation, 'zoneRedundancy') ? replicationLocation.zoneRedundancy : false
 }]
 
-resource containerRegistry 'Microsoft.ContainerRegistry/registries/met'
+resource containerRegistry 'Microsoft.ContainerRegistry/registries@2023-11-01-preview' = {
   name: name
   location: location
   tags: tags
