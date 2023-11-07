@@ -935,67 +935,109 @@ Describe 'Module tests' -Tag 'Module' {
         $templateContent = $convertedTemplates[$moduleFolderPathKey].templateContent
       }
 
-      $udtTestCases += @{
-        moduleFolderName    = $resourceTypeIdentifier
-        templateFileContent = $templateContent
+      # Setting expected URL only for those that doen't have multiple different variants
+      $avmInterfaceSpecsBase = 'https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/main/docs/static/includes/interfaces'
+      $udtCases = @(
+        @{
+          parameterName = 'diagnosticSettings'
+          udtName       = 'diagnosticSettingType'
+        }
+        @{
+          parameterName  = 'roleAssignments'
+          udtName        = 'roleAssignmentType'
+          udtExpectedUrl = "$avmInterfaceSpecsBase/int.rbac.udt.schema.bicep"
+        }
+        @{
+          parameterName  = 'lock'
+          udtName        = 'lockType'
+          udtExpectedUrl = "$avmInterfaceSpecsBase/int.locks.udt.schema.bicep"
+        }
+        @{
+          parameterName = 'managedIdentities'
+          udtName       = 'managedIdentitiesType'
+        }
+        @{
+          parameterName = 'privateEndpoints'
+          udtName       = 'privateEndpointType'
+        }
+        @{
+          parameterName = 'customerManagedKey'
+          udtName       = 'customerManagedKeyType'
+        }
+      )
+
+      foreach ($udtCase in $udtCases) {
+        $udtTestCases += @{
+          moduleFolderName         = $resourceTypeIdentifier
+          templateFileContent      = $templateContent
+          templateFileContentBicep = Get-Content $templateFilePath
+          parameterName            = $udtCase.parameterName
+          udtName                  = $udtCase.udtName
+          expectedUdtUrl           = $udtCase.udtExpectedUrl ? $udtCase.udtExpectedUrl : ''
+        }
       }
     }
 
 
-    It "[<moduleFolderName>] If template has [roleAssignments] parameter, it should implement the expected user-defined-type" -TestCases $udtTestCases {
+    It "[<moduleFolderName>] If template has [<parameterName>] parameter, it should implement the expected user-defined type [<udtName>]" -TestCases $udtTestCases {
 
       param(
-        [object[]] $templateFileContent
+        [hashtable] $templateFileContent,
+        [string[]] $templateFileContentBicep,
+        [string] $parameterName,
+        [string] $udtName,
+        [string] $expectedUdtUrl
       )
-      throw 'Not implemented'
 
+      if ($templateFileContent.parameters.Keys -contains $parameterName) {
+        $templateFileContent.parameters.$parameterName.Keys | Should -Contain '$ref' -Because "the [$parameterName] parameter should use a user-defined type."
+        $templateFileContent.parameters.$parameterName.'$ref' | Should -Be "#/definitions/$udtName" -Because "the [$parameterName] parameter should use a user-defined type [$udtName]."
+
+        if (-not [String]::IsNullOrEmpty($expectedUdtUrl)) {
+          $implementedSchemaStartIndex = $templateFileContentBicep.IndexOf("type $udtName = {")
+          $implementedSchemaEndIndex = $implementedSchemaStartIndex + 1
+          while ($templateFileContentBicep[$implementedSchemaEndIndex] -notmatch '^\}.*' -and $implementedSchemaEndIndex -lt $templateFileContentBicep.Length) {
+            $implementedSchemaEndIndex++
+          }
+          if ($implementedSchemaEndIndex -eq $templateFileContentBicep.Length) {
+            throw "Failed to identify [$udtName] user-defined type in template."
+          }
+          $implementedSchema = $templateFileContentBicep[$implementedSchemaStartIndex..$implementedSchemaEndIndex]
+
+          $expectedSchemaFull = (Invoke-WebRequest -Uri $expectedUdtUrl).Content -split "\n"
+          $expectedSchemaStartIndex = $expectedSchemaFull.IndexOf("type $udtName = {")
+          $expectedSchemaEndIndex = $expectedSchemaStartIndex + 1
+          while ($expectedSchemaFull[$expectedSchemaEndIndex] -notmatch '^\}.*' -and $expectedSchemaEndIndex -lt $expectedSchemaFull.Length) {
+            $expectedSchemaEndIndex++
+          }
+          if ($expectedSchemaEndIndex -eq $expectedSchemaFull.Length) {
+            throw "Failed to identify [$udtName] user-defined type in expected schema at URL [$expectedUdtUrl]."
+          }
+          $expectedSchema = $expectedSchemaFull[$expectedSchemaStartIndex..$expectedSchemaEndIndex]
+
+          $formattedDiff = @()
+          foreach ($finding in (Compare-Object $implementedSchema $expectedSchema)) {
+            if ($finding.SideIndicator -eq '=>') {
+              $formattedDiff += ('+ {0}' -f $finding.InputObject)
+            } elseif ($finding.SideIndicator -eq '<=') {
+              $formattedDiff += ('- {0}' -f $finding.InputObject)
+            }
+          }
+          if ($formattedDiff.Count -gt 0) {
+            Write-Warning ($formattedDiff | Out-String) -Verbose
+            $mdFormattedDiff = ($formattedDiff -join '</br>') -replace '\|', '\|'
+          }
+
+        ($implementedSchema | Out-String) | Should -Be ($expectedSchema | Out-String) -Because ('The implemented user-defined type should be the same as the expected user-defined type of url [{0}] and should not have diff </br><pre>{1}</pre>.' -f $expectedUdtUrl, $mdFormattedDiff)
+        }
+      } else {
+        Set-ItResult -Skipped -Because "the module template has no [$parameterName] parameter."
+      }
     }
 
-    It "[<moduleFolderName>] If template has [privateEndpoints] parameter, it should implement the expected user-defined-type" -TestCases $udtTestCases {
 
-      param(
-        [object[]] $templateFileContent
-      )
-      throw 'Not implemented'
-
-    }
-
-    It "[<moduleFolderName>] If template has [diagnosticSettings] parameter, it should implement the expected user-defined-type" -TestCases $udtTestCases {
-
-      param(
-        [object[]] $templateFileContent
-      )
-      throw 'Not implemented'
-
-    }
-
-    It "[<moduleFolderName>] If template has [lock] parameter, it should implement the expected user-defined-type" -TestCases $udtTestCases {
-
-      param(
-        [object[]] $templateFileContent
-      )
-      throw 'Not implemented'
-
-    }
-
-    It "[<moduleFolderName>] If template has [customerManagedKey] parameter, it should implement the expected user-defined-type" -TestCases $udtTestCases {
-
-      param(
-        [object[]] $templateFileContent
-      )
-      throw 'Not implemented'
-
-    }
-
-    It "[<moduleFolderName>] If template has [diagnosticSettings] parameter, it should implement the expected user-defined-type" -TestCases $udtTestCases {
-
-      param(
-        [object[]] $templateFileContent
-      )
-      throw 'Not implemented'
-
-    }
-
+    # TODO Add test for tags
+    # TODO add tests for msi principal id output
   }
 }
 
@@ -1026,7 +1068,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       param(
         [object[]] $testFileContent
       )
-      throw 'Not implemented'
+      Write-Error 'Not implemented'
 
     }
 
@@ -1037,7 +1079,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
         [object[]] $testFileContent
       )
       #TODO: must consider that the folder name is more than just 'default'
-      throw 'Not implemented'
+      Write-Error 'Not implemented'
 
     }
 
@@ -1048,7 +1090,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
         [object[]] $testFileContent
       )
       #TODO: must consider that the folder name is more than just 'max'
-      throw 'Not implemented'
+      Write-Error 'Not implemented'
 
     }
 
@@ -1059,7 +1101,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
         [object[]] $testFileContent
       )
       #TODO: must consider that the folder name is more than just 'waf'
-      throw 'Not implemented'
+      Write-Error 'Not implemented'
 
     }
 
@@ -1068,7 +1110,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       param(
         [object[]] $testFileContent
       )
-      throw 'Not implemented'
+      Write-Error 'Not implemented'
 
     }
 
@@ -1077,7 +1119,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       param(
         [object[]] $testFileContent
       )
-      throw 'Not implemented'
+      Write-Error 'Not implemented'
 
     }
 
@@ -1086,7 +1128,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       param(
         [object[]] $testFileContent
       )
-      throw 'Not implemented'
+      Write-Error 'Not implemented'
     }
 
     It "[<moduleFolderName>] Bicep test deployment files should invoke test like [`module testDeployment '../.*main.bicep' = {`]" -TestCases $deploymentTestFileTestCases {

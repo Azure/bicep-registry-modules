@@ -353,9 +353,6 @@ type roleAssignmentType = {
   @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"')
   condition: string?
 
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
