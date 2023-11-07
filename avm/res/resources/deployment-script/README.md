@@ -387,6 +387,7 @@ Do not provide a value! This date value is used to make sure the script run ever
 The clean up preference when the script execution gets in a terminal state. Specify the preference on when to delete the deployment script resources. The default value is Always, which means the deployment script resources are deleted despite the terminal state (Succeeded, Failed, canceled).
 - Required: No
 - Type: string
+- Default: `'Always'`
 - Allowed: `[Always, OnExpiration, OnSuccess]`
 
 ### Parameter: `containerGroupName`

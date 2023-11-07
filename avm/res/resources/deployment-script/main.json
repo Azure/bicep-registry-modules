@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "15732316237762435079"
+      "templateHash": "3711109365576598382"
     },
     "name": "Deployment Scripts",
     "description": "This module deploys Deployment Scripts.",
@@ -218,7 +218,7 @@
     },
     "cleanupPreference": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "Always",
       "allowedValues": [
         "Always",
         "OnSuccess",
