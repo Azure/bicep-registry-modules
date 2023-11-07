@@ -50,7 +50,6 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
-    enableTelemetry: enableTelemetry
     name: '${namePrefix}${serviceShort}001'
     location: location
     azPowerShellVersion: '9.7'
