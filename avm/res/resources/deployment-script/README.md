@@ -38,21 +38,22 @@ The following section provides usage examples for the module, which were used to
 
 ```bicep
 module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdsps'
+  name: '${uniqueString(deployment().name, location)}-test-rdsmin'
   params: {
     // Required parameters
     kind: 'AzurePowerShell'
-    name: 'rdsps001'
+    name: 'rdsmin001'
     // Non-required parameters
     azPowerShellVersion: '9.7'
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
+    managedIdentities: {
+      userAssignedResourcesIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     retentionInterval: 'P1D'
     scriptContent: 'Write-Host \'AVM Deployment Script test!\''
     storageAccountResourceId: '<storageAccountResourceId>'
-    userAssignedIdentities: {
-      '<managedIdentityResourceId>': {}
-    }
   }
 }
 ```
@@ -74,17 +75,21 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
       "value": "AzurePowerShell"
     },
     "name": {
-      "value": "rdsps001"
+      "value": "rdsmin001"
     },
     // Non-required parameters
     "azPowerShellVersion": {
       "value": "9.7"
     },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourcesIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
     },
     "retentionInterval": {
       "value": "P1D"
@@ -94,11 +99,6 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
     },
     "storageAccountResourceId": {
       "value": "<storageAccountResourceId>"
-    },
-    "userAssignedIdentities": {
-      "value": {
-        "<managedIdentityResourceId>": {}
-      }
     }
   }
 }
@@ -115,27 +115,49 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
 
 ```bicep
 module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdsps'
+  name: '${uniqueString(deployment().name, location)}-test-rdsmax'
   params: {
     // Required parameters
     kind: 'AzureCLI'
-    name: 'rdsps001'
+    name: 'rdsmax001'
     // Non-required parameters
+    arguments: '-argument1 \\\'test\\\''
     azCliVersion: '2.9.1'
     cleanupPreference: 'Always'
-    enableTelemetry: '<enableTelemetry>'
+    containerGroupName: 'dep-cg-rdsmax'
+    environmentVariables: {
+      secureList: [
+        {
+          name: 'var1'
+          value: 'test'
+        }
+        {
+          name: 'var2'
+          secureValue: '<secureValue>'
+        }
+      ]
+    }
     location: '<location>'
     lock: {
       kind: 'None'
     }
+    managedIdentities: {
+      userAssignedResourcesIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     retentionInterval: 'P1D'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
     runOnce: true
     scriptContent: 'echo \'AVM Deployment Script test!\''
     storageAccountResourceId: '<storageAccountResourceId>'
     timeout: 'PT1H'
-    userAssignedIdentities: {
-      '<managedIdentityResourceId>': {}
-    }
   }
 }
 ```
@@ -157,17 +179,34 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
       "value": "AzureCLI"
     },
     "name": {
-      "value": "rdsps001"
+      "value": "rdsmax001"
     },
     // Non-required parameters
+    "arguments": {
+      "value": "-argument1 \\\"test\\\""
+    },
     "azCliVersion": {
       "value": "2.9.1"
     },
     "cleanupPreference": {
       "value": "Always"
     },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
+    "containerGroupName": {
+      "value": "dep-cg-rdsmax"
+    },
+    "environmentVariables": {
+      "value": {
+        "secureList": [
+          {
+            "name": "var1",
+            "value": "test"
+          },
+          {
+            "name": "var2",
+            "secureValue": "<secureValue>"
+          }
+        ]
+      }
     },
     "location": {
       "value": "<location>"
@@ -177,8 +216,24 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
         "kind": "None"
       }
     },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourcesIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
     "retentionInterval": {
       "value": "P1D"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Reader"
+        }
+      ]
     },
     "runOnce": {
       "value": true
@@ -191,11 +246,6 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
     },
     "timeout": {
       "value": "PT1H"
-    },
-    "userAssignedIdentities": {
-      "value": {
-        "<managedIdentityResourceId>": {}
-      }
     }
   }
 }
@@ -212,11 +262,11 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
 
 ```bicep
 module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdsps'
+  name: '${uniqueString(deployment().name, location)}-test-rdswaf'
   params: {
     // Required parameters
     kind: 'AzureCLI'
-    name: 'rdsps001'
+    name: 'rdswaf001'
     // Non-required parameters
     azCliVersion: '2.9.1'
     cleanupPreference: 'Always'
@@ -224,6 +274,11 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
     location: '<location>'
     lock: {
       kind: 'None'
+    }
+    managedIdentities: {
+      userAssignedResourcesIds: [
+        '<managedIdentityResourceId>'
+      ]
     }
     retentionInterval: 'P1D'
     roleAssignments: []
@@ -236,9 +291,6 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
       Role: 'DeploymentValidation'
     }
     timeout: 'PT1H'
-    userAssignedIdentities: {
-      '<managedIdentityResourceId>': {}
-    }
   }
 }
 ```
@@ -260,7 +312,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
       "value": "AzureCLI"
     },
     "name": {
-      "value": "rdsps001"
+      "value": "rdswaf001"
     },
     // Non-required parameters
     "azCliVersion": {
@@ -278,6 +330,13 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
     "lock": {
       "value": {
         "kind": "None"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourcesIds": [
+          "<managedIdentityResourceId>"
+        ]
       }
     },
     "retentionInterval": {
@@ -304,11 +363,6 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
     },
     "timeout": {
       "value": "PT1H"
-    },
-    "userAssignedIdentities": {
-      "value": {
-        "<managedIdentityResourceId>": {}
-      }
     }
   }
 }
@@ -340,6 +394,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
 | [`environmentVariables`](#parameter-environmentvariables) | secureObject | The environment variables to pass over to the script. The list is passed as an object with a key name "secureList" and the value is the list of environment variables (array). The list must have a 'name' and a 'value' or a 'secretValue' property for each object. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`primaryScriptUri`](#parameter-primaryscripturi) | string | Uri for the external script. This is the entry point for the external script. To run an internal script, use the scriptContent instead. |
 | [`retentionInterval`](#parameter-retentioninterval) | string | Interval for which the service retains the script resource after it reaches a terminal state. Resource will be deleted when this duration expires. Duration is based on ISO 8601 pattern (for example P7D means one week). |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
@@ -349,7 +404,6 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
 | [`supportingScriptUris`](#parameter-supportingscripturis) | array | List of supporting files for the external script (defined in primaryScriptUri). Does not work with internal scripts (code defined in scriptContent). |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 | [`timeout`](#parameter-timeout) | string | Maximum allowed script execution time specified in ISO 8601 format. Default value is PT1H - 1 hour; 'PT30M' - 30 minutes; 'P5D' - 5 days; 'P1Y' 1 year. |
-| [`userAssignedIdentities`](#parameter-userassignedidentities) | object | Specifies the user assigned identities to be assigned to the Deployment Script. |
 
 **Generated parameters**
 
@@ -450,6 +504,24 @@ Optional. Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource.
+- Required: No
+- Type: object
+
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`userAssignedResourcesIds`](#parameter-managedidentitiesuserassignedresourcesids) | Yes | array | Optional. The resource ID(s) to assign to the resource. |
+
+### Parameter: `managedIdentities.userAssignedResourcesIds`
+
+Optional. The resource ID(s) to assign to the resource.
+
+- Required: Yes
+- Type: array
 
 ### Parameter: `name`
 
@@ -574,12 +646,6 @@ Resource tags.
 Maximum allowed script execution time specified in ISO 8601 format. Default value is PT1H - 1 hour; 'PT30M' - 30 minutes; 'P5D' - 5 days; 'P1Y' 1 year.
 - Required: No
 - Type: string
-
-### Parameter: `userAssignedIdentities`
-
-Specifies the user assigned identities to be assigned to the Deployment Script.
-- Required: No
-- Type: object
 
 
 ## Outputs
