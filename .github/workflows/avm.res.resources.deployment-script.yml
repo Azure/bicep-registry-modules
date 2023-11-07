@@ -1,4 +1,3 @@
-# >>> UPDATE to for example "avm.res.azure.key-vault.vault"
 name: "avm.res.resources.deployment-script"
 
 on:
