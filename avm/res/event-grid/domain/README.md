@@ -988,4 +988,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm-res-network-privateendpoint:0.1.1` | Remote reference |
+| `res/network/private-endpoint` | Local reference |
