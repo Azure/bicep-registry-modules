@@ -333,7 +333,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
 | :-- | :-- | :-- |
 | [`arguments`](#parameter-arguments) | string | Command-line arguments to pass to the script. Arguments are separated by spaces. |
 | [`azCliVersion`](#parameter-azcliversion) | string | Azure CLI module version to be used. See a list of supported Azure CLI versions: https://mcr.microsoft.com/v2/azure-cli/tags/list |
-| [`azPowerShellVersion`](#parameter-azpowershellversion) | string | Azure PowerShell module version to be used. See a list of supported Azure PowerShell versions: https://mcr.microsoft.com/v2/azuredeploymentscripts-powershell/tags/list  |
+| [`azPowerShellVersion`](#parameter-azpowershellversion) | string | Azure PowerShell module version to be used. See a list of supported Azure PowerShell versions: https://mcr.microsoft.com/v2/azuredeploymentscripts-powershell/tags/list |
 | [`cleanupPreference`](#parameter-cleanuppreference) | string | The clean up preference when the script execution gets in a terminal state. Specify the preference on when to delete the deployment script resources. The default value is Always, which means the deployment script resources are deleted despite the terminal state (Succeeded, Failed, canceled). |
 | [`containerGroupName`](#parameter-containergroupname) | string | Container group name, if not specified then the name will get auto-generated. Not specifying a 'containerGroupName' indicates the system to generate a unique name which might end up flagging an Azure Policy as non-compliant. Use 'containerGroupName' when you have an Azure Policy that expects a specific naming convention or when you want to fully control the name. 'containerGroupName' property must be between 1 and 63 characters long, must contain only lowercase letters, numbers, and dashes and it cannot start or end with a dash and consecutive dashes are not allowed. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -371,7 +371,7 @@ Azure CLI module version to be used. See a list of supported Azure CLI versions:
 
 ### Parameter: `azPowerShellVersion`
 
-Azure PowerShell module version to be used. See a list of supported Azure PowerShell versions: https://mcr.microsoft.com/v2/azuredeploymentscripts-powershell/tags/list 
+Azure PowerShell module version to be used. See a list of supported Azure PowerShell versions: https://mcr.microsoft.com/v2/azuredeploymentscripts-powershell/tags/list
 - Required: No
 - Type: string
 
