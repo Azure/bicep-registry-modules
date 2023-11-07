@@ -52,21 +52,13 @@ module testDeployment '../../../main.bicep' = {
     enableTelemetry: enableTelemetry
     name: '${namePrefix}${serviceShort}001'
     location: location
-    azPowerShellVersion: '8.0'
-    cleanupPreference: 'Always'
+    azPowerShellVersion: '9.7'
     kind: 'AzurePowerShell'
     retentionInterval: 'P1D'
-    runOnce: false
     scriptContent: 'Write-Host \'AVM Deployment Script test!\''
     storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-    timeout: 'PT30M'
     userAssignedIdentities: {
       '${nestedDependencies.outputs.managedIdentityResourceId}': {}
-    }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
   }
 }

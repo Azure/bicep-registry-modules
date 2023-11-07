@@ -1,102 +1,43 @@
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-@description('Required. The name of the Virtual Network to create.')
-param virtualNetworkName string
+@description('Required. The name of the managed identity to create.')
+param managedIdentityName string
 
-@description('Required. The name of the Application Security Group to create.')
-param applicationSecurityGroupName string
+@description('Required. The name of the Storage Account to create.')
+param storageAccountName string
 
-@description('Required. The name of the Load Balancer to create.')
-param loadBalancerName string
-
-var addressPrefix = '10.0.0.0/16'
-
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
-  name: virtualNetworkName
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+  name: managedIdentityName
   location: location
-  properties: {
-    addressSpace: {
-      addressPrefixes: [
-        addressPrefix
-      ]
-    }
-    subnets: [
-      {
-        name: 'defaultSubnet'
-        properties: {
-          addressPrefix: cidrSubnet(addressPrefix, 16, 0)
-        }
-      }
-    ]
+  tags: {
+    'hidden-title': 'This is visible in the resource name'
+    Environment: 'Non-Prod'
+    Role: 'DeploymentValidation'
   }
 }
 
-resource applicationSecurityGroup 'Microsoft.Network/applicationSecurityGroups@2023-04-01' = {
-  name: applicationSecurityGroupName
-  location: location
-}
-
-resource loadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
-  name: loadBalancerName
+resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
+  name: storageAccountName
   location: location
   sku: {
-    name: 'Standard'
+    name: 'Standard_LRS'
   }
-
+  kind: 'StorageV2'
   properties: {
-    frontendIPConfigurations: [
-      {
-        name: 'privateIPConfig1'
-        properties: {
-          subnet: {
-            id: virtualNetwork.properties.subnets[0].id
-          }
-        }
-      }
-    ]
+    supportsHttpsTrafficOnly: true
+    allowBlobPublicAccess: false
+    minimumTlsVersion: 'TLS1_2'
   }
-
-  resource backendPool 'backendAddressPools@2022-01-01' = {
-    name: 'default'
+  tags: {
+    'hidden-title': 'This is visible in the resource name'
+    Environment: 'Non-Prod'
+    Role: 'DeploymentValidation'
   }
 }
 
-resource inboundNatRule 'Microsoft.Network/loadBalancers/inboundNatRules@2023-04-01' = {
-  name: 'inboundNatRule1'
-  properties: {
-    frontendPort: 443
-    backendPort: 443
-    enableFloatingIP: false
-    enableTcpReset: false
-    frontendIPConfiguration: {
-      id: loadBalancer.properties.frontendIPConfigurations[0].id
-    }
-    idleTimeoutInMinutes: 4
-    protocol: 'Tcp'
-  }
-  parent: loadBalancer
-}
+@description('The resource ID of the created managed identity.')
+output managedIdentityResourceId string = managedIdentity.id
 
-resource inboundNatRule2 'Microsoft.Network/loadBalancers/inboundNatRules@2023-04-01' = {
-  name: 'inboundNatRule2'
-  properties: {
-    frontendPort: 3389
-    backendPort: 3389
-    frontendIPConfiguration: {
-      id: loadBalancer.properties.frontendIPConfigurations[0].id
-    }
-    idleTimeoutInMinutes: 4
-    protocol: 'Tcp'
-  }
-  parent: loadBalancer
-}
-
-@description('The resource ID of the created Virtual Network Subnet.')
-output subnetResourceId string = virtualNetwork.properties.subnets[0].id
-
-@description('The resource ID of the created Application Security Group.')
-output applicationSecurityGroupResourceId string = applicationSecurityGroup.id
-
-@description('The resource ID of the created Load Balancer Backend Pool.')
-output loadBalancerBackendPoolResourceId string = loadBalancer::backendPool.id
+@description('The resource ID of the created storage account.')
+output storageAccountResourceId string = storageAccount.id
