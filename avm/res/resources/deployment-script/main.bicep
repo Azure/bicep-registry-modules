@@ -69,7 +69,7 @@ param userAssignedIdentities object?
 param tags object?
 
 @description('Optional. Azure PowerShell module version to be used. See a list of supported Azure PowerShell versions: https://mcr.microsoft.com/v2/azuredeploymentscripts-powershell/tags/list')
-param azPowerShellVersion string
+param azPowerShellVersion string?
 
 @description('Optional. Azure CLI module version to be used. See a list of supported Azure CLI versions: https://mcr.microsoft.com/v2/azure-cli/tags/list')
 param azCliVersion string?
