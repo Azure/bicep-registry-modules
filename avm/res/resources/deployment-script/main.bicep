@@ -220,8 +220,8 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   identity: identity
   kind: any(kind)
   properties: {
-    azPowerShellVersion: any(kind) == 'AzurePowerShell' ? azPowerShellVersion : null
-    azCliVersion: any(kind) == 'AzureCLI' ? azCliVersion : null
+    azPowerShellVersion: kind == 'AzurePowerShell' ? azPowerShellVersion : null
+    azCliVersion: kind == 'AzureCLI' ? azCliVersion : null
     containerSettings: !empty(containerGroupName) ? containerSettings : null
     storageAccountSettings: !empty(storageAccountResourceId) ? storageAccountSettings : null
     arguments: arguments
