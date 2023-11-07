@@ -520,6 +520,7 @@ module domain 'br/public:avm-res-eventgrid-domain:1.0.0' = {
 | [`autoCreateTopicWithFirstSubscription`](#parameter-autocreatetopicwithfirstsubscription) | bool | Location for all Resources. |
 | [`autoDeleteTopicWithLastSubscription`](#parameter-autodeletetopicwithlastsubscription) | bool | Location for all Resources. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`inboundIpRules`](#parameter-inboundiprules) | array | This can be used to restrict traffic from specific IPs instead of all IPs. Note: These are considered only if PublicNetworkAccess is enabled. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -657,6 +658,13 @@ Optional. Resource ID of the diagnostic log analytics workspace. For security re
 
 - Required: No
 - Type: string
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `inboundIpRules`
 
