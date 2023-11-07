@@ -218,7 +218,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   location: location
   tags: tags
   identity: identity
-  kind: kind
+  kind: any(kind)
   properties: {
     azPowerShellVersion: kind == 'AzurePowerShell' ? azPowerShellVersion : null
     azCliVersion: kind == 'AzureCLI' ? azCliVersion : null
