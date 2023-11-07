@@ -20,7 +20,6 @@ param enableTelemetry bool = true
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -42,7 +41,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}st${serviceShort}${namingGuid}'
+    storageAccountName: 'dep${namePrefix}st${serviceShort}'
     location: location
   }
 }
@@ -69,8 +68,10 @@ module testDeployment '../../../main.bicep' = {
     runOnce: true
     scriptContent: 'echo \'AVM Deployment Script test!\''
     storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-    userAssignedIdentities: {
-      '${nestedDependencies.outputs.managedIdentityResourceId}': {}
+    managedIdentities: {
+      userAssignedResourcesIds: [
+        nestedDependencies.outputs.managedIdentityResourceId
+      ]
     }
     tags: {
       'hidden-title': 'This is visible in the resource name'

@@ -17,10 +17,6 @@ param serviceShort string = 'rdsmin'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@maxLength(5)
-@description('Optional. Random Guid to be using in naming prefix.')
-param namingGuid string = toLower(substring(newGuid(), 0, 4))
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -37,7 +33,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}st${serviceShort}${namingGuid}'
+    storageAccountName: 'dep${namePrefix}st${serviceShort}'
     location: location
   }
 }
@@ -57,8 +53,10 @@ module testDeployment '../../../main.bicep' = {
     retentionInterval: 'P1D'
     scriptContent: 'Write-Host \'AVM Deployment Script test!\''
     storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-    userAssignedIdentities: {
-      '${nestedDependencies.outputs.managedIdentityResourceId}': {}
+    managedIdentities: {
+      userAssignedResourcesIds: [
+        nestedDependencies.outputs.managedIdentityResourceId
+      ]
     }
   }
 }

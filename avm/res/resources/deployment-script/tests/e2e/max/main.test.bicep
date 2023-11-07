@@ -17,7 +17,6 @@ param serviceShort string = 'rdsmax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -34,7 +33,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}st${serviceShort}${namingGuid}'
+    storageAccountName: 'dep${namePrefix}st${serviceShort}'
     location: location
   }
 }
@@ -47,7 +46,6 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
-    enableTelemetry: enableTelemetry
     name: '${namePrefix}${serviceShort}001'
     location: location
     azCliVersion: '2.9.1'
@@ -57,12 +55,35 @@ module testDeployment '../../../main.bicep' = {
     lock: {
       kind: 'None'
     }
+    containerGroupName: 'dep-${namePrefix}-cg-${serviceShort}'
+    arguments: '-argument1 \\"test\\"'
+    environmentVariables: {
+      secureList: [
+        {
+          name: 'var1'
+          value: 'test'
+        }
+        {
+          name: 'var2'
+          secureValue: guid(deployment().name)
+        }
+      ]
+    }
+    managedIdentities: {
+      userAssignedResourcesIds: [
+        nestedDependencies.outputs.managedIdentityResourceId
+      ]
+    }
+    roleAssignments: [
+      {
+        principalId: nestedDependencies.outputs.managedIdentityResourceId
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
     timeout: 'PT1H'
     runOnce: true
     scriptContent: 'echo \'AVM Deployment Script test!\''
     storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-    userAssignedIdentities: {
-      '${nestedDependencies.outputs.managedIdentityResourceId}': {}
-    }
   }
 }
