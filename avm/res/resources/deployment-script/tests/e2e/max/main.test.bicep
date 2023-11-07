@@ -20,9 +20,6 @@ param enableTelemetry bool = true
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = 'avmds'
 
-@maxLength(5)
-@description('Optional. Random Guid to be using in naming prefix.')
-param namingGuid string = toLower(substring(newGuid(), 0, 5))
 
 // ============ //
 // Dependencies //
