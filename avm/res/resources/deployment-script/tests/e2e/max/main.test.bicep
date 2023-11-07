@@ -15,7 +15,7 @@ param location string = deployment().location
 param serviceShort string = 'rdsmax'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = 'avmds'
+param namePrefix string = '#_namePrefix_#'
 
 
 // ============ //
