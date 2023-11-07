@@ -1,2 +1,3 @@
-/.github/ @Azure/bicep-admins
-/scripts/ @Azure/bicep-admins
+/.github/ @Azure/bicep-admins @Azure/avm-core-team-technical
+/scripts/ @Azure/bicep-admins @Azure/avm-core-team-technical
+/avm @Azure/avm-core-team-technical

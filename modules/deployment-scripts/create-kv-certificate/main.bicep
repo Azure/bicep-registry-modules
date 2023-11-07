@@ -1,3 +1,7 @@
+metadata name = 'Key Vault Certificate Creation'
+metadata description = 'Create Key Vault self-signed certificates. Requires Key Vaults to be using RBAC Authorization, not Access Policies.'
+metadata owner = 'Aks-Bicep-Accelerator-Maintainers'
+
 @description('The name of the Azure Key Vault')
 param akvName string
 
@@ -61,10 +65,16 @@ param organizationId string = ''
 @description('Override this parameter if using this in cross tenant scenarios')
 param isCrossTenant bool = false
 
+@description('The default policy might cause errors about CSR being used before, so set this to false if that happens')
+param reuseKey bool = true
+
 @minValue(1)
 @maxValue(1200)
 @description('Optional. Override default validityInMonths 12 value')
 param validity int = 12
+
+@description('Set to false to disable role assignments within this module. Default: true')
+param performRoleAssignment bool = true
 
 resource akv 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: akvName
@@ -84,7 +94,7 @@ resource existingDepScriptId 'Microsoft.ManagedIdentity/userAssignedIdentities@2
 
 var delegatedManagedIdentityResourceId = useExistingManagedIdentity ? existingDepScriptId.id : newDepScriptId.id
 
-resource rbacKv 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+resource rbacKv 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (performRoleAssignment) {
   name: guid(akv.id, rbacRolesNeededOnKV, managedIdentityName, string(useExistingManagedIdentity))
   scope: akv
   properties: {
@@ -120,12 +130,13 @@ resource createImportCerts 'Microsoft.Resources/deploymentScripts@2020-10-01' = 
       { name: 'initialDelay', value: initialScriptDelay }
       { name: 'issuerName', value: issuerName }
       { name: 'issuerProvider', value: issuerProvider }
-      { name: 'disabled', value: disabled }
+      { name: 'disabled', value: toLower(string(disabled)) }
       { name: 'retryMax', value: '10' }
       { name: 'retrySleep', value: '5s' }
       { name: 'accountId', value: accountId }
       { name: 'issuerPassword', secureValue: issuerPassword }
       { name: 'organizationId', value: organizationId }
+      { name: 'reuseKey', value: toLower(string(reuseKey)) }
       { name: 'validity', value: string(validity) }
     ]
     scriptContent: loadTextContent('create-kv-cert.sh')

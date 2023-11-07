@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "1311160354913464789"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "13146146605378120228"
+    },
+    "name": "AKS Run Helm Script",
+    "description": "An Azure CLI Deployment Script that allows you to run a Helm command at a Kubernetes cluster.",
+    "owner": "dciborow"
   },
   "parameters": {
     "aksName": {
@@ -98,7 +101,7 @@
         "count": "[length(parameters('helmApps'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('helmInstall-{0}-{1}', parameters('helmApps')[copyIndex()].helmAppName, copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -334,15 +337,15 @@
   "outputs": {
     "helmOutputs": {
       "type": "array",
+      "metadata": {
+        "description": "Helm Command Output Values"
+      },
       "copy": {
         "count": "[length(parameters('helmApps'))]",
         "input": {
           "appName": "[parameters('helmApps')[copyIndex()].helmAppName]",
-          "outputs": "[reference(resourceId('Microsoft.Resources/deployments', format('helmInstall-{0}-{1}', parameters('helmApps')[copyIndex()].helmAppName, copyIndex())), '2020-10-01').outputs.commandOutput.value]"
+          "outputs": "[reference(resourceId('Microsoft.Resources/deployments', format('helmInstall-{0}-{1}', parameters('helmApps')[copyIndex()].helmAppName, copyIndex())), '2022-09-01').outputs.commandOutput.value]"
         }
-      },
-      "metadata": {
-        "description": "Helm Command Output Values"
       }
     }
   }

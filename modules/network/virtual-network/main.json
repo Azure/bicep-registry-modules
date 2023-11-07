@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.15.31.15270",
-      "templateHash": "17797040699481450122"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "5863768915283283938"
+    },
+    "name": "Virtual Networks",
+    "description": "This module deploys Microsoft.Network Virtual Networks and optionally available children or extensions",
+    "owner": "CARML"
   },
   "parameters": {
     "name": {
@@ -285,7 +288,7 @@
         "count": "[length(parameters('virtualNetworkPeerings'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-virtualNetworkPeering-local-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -312,8 +315,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "3529372638128239101"
+              "version": "0.19.5.34762",
+              "templateHash": "13056097645182872530"
             }
           },
           "parameters": {
@@ -392,24 +395,24 @@
           "outputs": {
             "resourceGroupName": {
               "type": "string",
-              "value": "[resourceGroup().name]",
               "metadata": {
                 "description": "The resource group the virtual network peering was deployed into"
-              }
+              },
+              "value": "[resourceGroup().name]"
             },
             "name": {
               "type": "string",
-              "value": "[parameters('name')]",
               "metadata": {
                 "description": "The name of the virtual network peering"
-              }
+              },
+              "value": "[parameters('name')]"
             },
             "resourceId": {
               "type": "string",
-              "value": "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('localVnetName'), parameters('name'))]",
               "metadata": {
                 "description": "The resource ID of the virtual network peering"
-              }
+              },
+              "value": "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('localVnetName'), parameters('name'))]"
             }
           }
         }
@@ -425,7 +428,7 @@
       },
       "condition": "[if(contains(parameters('virtualNetworkPeerings')[copyIndex()], 'remotePeeringEnabled'), equals(parameters('virtualNetworkPeerings')[copyIndex()].remotePeeringEnabled, true()), false())]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-virtualNetworkPeering-remote-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "subscriptionId": "[split(parameters('virtualNetworkPeerings')[copyIndex()].remoteVirtualNetworkId, '/')[2]]",
       "resourceGroup": "[split(parameters('virtualNetworkPeerings')[copyIndex()].remoteVirtualNetworkId, '/')[4]]",
@@ -454,8 +457,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "3529372638128239101"
+              "version": "0.19.5.34762",
+              "templateHash": "13056097645182872530"
             }
           },
           "parameters": {
@@ -534,24 +537,24 @@
           "outputs": {
             "resourceGroupName": {
               "type": "string",
-              "value": "[resourceGroup().name]",
               "metadata": {
                 "description": "The resource group the virtual network peering was deployed into"
-              }
+              },
+              "value": "[resourceGroup().name]"
             },
             "name": {
               "type": "string",
-              "value": "[parameters('name')]",
               "metadata": {
                 "description": "The name of the virtual network peering"
-              }
+              },
+              "value": "[parameters('name')]"
             },
             "resourceId": {
               "type": "string",
-              "value": "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('localVnetName'), parameters('name'))]",
               "metadata": {
                 "description": "The resource ID of the virtual network peering"
-              }
+              },
+              "value": "[resourceId('Microsoft.Network/virtualNetworks/virtualNetworkPeerings', parameters('localVnetName'), parameters('name'))]"
             }
           }
         }
@@ -566,7 +569,7 @@
         "count": "[length(parameters('roleAssignments'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-VNet-Rbac-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -592,8 +595,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.15.31.15270",
-              "templateHash": "18225818015861435918"
+              "version": "0.19.5.34762",
+              "templateHash": "10606484227610282655"
             }
           },
           "parameters": {
@@ -677,43 +680,43 @@
   "outputs": {
     "resourceGroupName": {
       "type": "string",
-      "value": "[resourceGroup().name]",
       "metadata": {
         "description": "The resource group the virtual network was deployed into"
-      }
+      },
+      "value": "[resourceGroup().name]"
     },
     "resourceId": {
       "type": "string",
-      "value": "[resourceId('Microsoft.Network/virtualNetworks', parameters('name'))]",
       "metadata": {
         "description": "The resource ID of the virtual network"
-      }
+      },
+      "value": "[resourceId('Microsoft.Network/virtualNetworks', parameters('name'))]"
     },
     "name": {
       "type": "string",
-      "value": "[parameters('name')]",
       "metadata": {
         "description": "The name of the virtual network"
-      }
+      },
+      "value": "[parameters('name')]"
     },
     "subnetNames": {
       "type": "array",
+      "metadata": {
+        "description": "The names of the deployed subnets"
+      },
       "copy": {
         "count": "[length(parameters('subnets'))]",
         "input": "[parameters('subnets')[copyIndex()].name]"
-      },
-      "metadata": {
-        "description": "The names of the deployed subnets"
       }
     },
     "subnetResourceIds": {
       "type": "array",
+      "metadata": {
+        "description": "The resource IDs of the deployed subnets"
+      },
       "copy": {
         "count": "[length(parameters('subnets'))]",
         "input": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('name'), parameters('subnets')[copyIndex()].name)]"
-      },
-      "metadata": {
-        "description": "The resource IDs of the deployed subnets"
       }
     }
   }

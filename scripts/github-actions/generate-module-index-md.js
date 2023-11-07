@@ -32,12 +32,18 @@ async function getPublishDate(github, context, tag) {
     repo,
     ref: `tags/${tag}`,
   });
+  if (!reference) {
+    throw `Could not find tag ${tag}`;
+  }
 
   const commit = await github.rest.git.getCommit({
     owner: context.repo.owner,
     repo: context.repo.repo,
     commit_sha: reference.data.object.sha,
   });
+  if (!commit) {
+    throw `Could not find commit for tag ${tag}`;
+  }
 
   return commit.data.committer.date.split("T")[0];
 }
@@ -51,20 +57,31 @@ async function getPublishDate(github, context, tag) {
  */
 async function generateModuleGroupTable(github, context, modules, prettier) {
   const moduleGroupTableData = [
-    ["Module", "Latest version", "Published on", "Source code", "Readme"],
+    [
+      "Module",
+      "Latest version",
+      "Published on",
+      "Source code",
+      "Readme",
+      "Description",
+    ],
   ];
 
   for (const module of modules) {
     const modulePath = `\`${module.moduleName}\``;
 
     // module.tags is an sorted array.
-    const latestVersion = module.tags.slice(-1);
+    const latestVersion = module.tags.slice(-1)[0];
     const versionListUrl = `https://mcr.microsoft.com/v2/bicep/${module.moduleName}/tags/list`;
     const versionBadgeUrl = `https://img.shields.io/badge/mcr-${latestVersion}-blue`;
     const versionBadge = `<a href="${versionListUrl}"><image src="${versionBadgeUrl}"/></a>`;
 
     const tag = `${module.moduleName}/${latestVersion}`;
     const publishDate = await getPublishDate(github, context, tag);
+
+    const description =
+      module.properties &&
+      module.properties[latestVersion]?.description?.replace(/\n|\r/g, " ");
 
     const moduleRootUrl = `https://github.com/Azure/bicep-registry-modules/tree/main/modules/${module.moduleName}`;
     const sourceCodeButton = `[🦾 Source code](${moduleRootUrl}/main.bicep){: .btn}`;
@@ -76,12 +93,13 @@ async function generateModuleGroupTable(github, context, modules, prettier) {
       publishDate,
       sourceCodeButton,
       readmeButton,
+      description,
     ]);
   }
 
   const { markdownTable } = await import("markdown-table");
   const table = markdownTable(moduleGroupTableData, {
-    align: ["l", "r", "r", "r", "r"],
+    align: ["l", "r", "r", "r", "r", "l"],
   });
 
   return prettier.format(table, { parser: "markdown" });
@@ -112,11 +130,25 @@ permalink: /
 
 ---
 
+{: .note-title }
+> Azure Verified Modules (AVM) - Module Indexes
+>
+> The [Azure Verified Modules (AVM)](https://aka.ms/avm) module indexes are located over on the AVM website. You can find them here for:
+>
+> - [Resource Modules](https://aka.ms/avm/index/bicep/res)
+> - [Pattern Modules](https://aka.ms/avm/index/bicep/ptn)
+
+---
+
 `;
 
   const moduleIndexDataContent = await fs.readFile("moduleIndex.json", {
     encoding: "utf-8",
   });
+  if (!moduleIndexDataContent) {
+    throw "Could not read moduleIndex.json";
+  }
+
   const moduleIndexData = JSON.parse(moduleIndexDataContent);
   const moduleGroups = groupBy(
     moduleIndexData,
@@ -124,6 +156,9 @@ permalink: /
   );
 
   for (const [moduleGroup, modules] of moduleGroups) {
+    if (moduleGroup.includes("avm")) {
+      continue;
+    }
     core.debug(`Generating ${moduleGroup}...`);
 
     const moduleGroupTable = await generateModuleGroupTable(

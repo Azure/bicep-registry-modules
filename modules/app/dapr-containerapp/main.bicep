@@ -1,3 +1,7 @@
+metadata name = 'dapr container app'
+metadata description = 'A dapr optimised container app'
+metadata owner = 'gordonby'
+
 
 
 /*

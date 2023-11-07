@@ -4,9 +4,12 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.11.1.770",
-      "templateHash": "8432140579349303037"
-    }
+      "version": "0.19.5.34762",
+      "templateHash": "3660608310979877047"
+    },
+    "name": "ACR Image Import",
+    "description": "An Azure CLI Deployment Script that imports public container images to an Azure Container Registry",
+    "owner": "Aks-Bicep-Accelerator-Maintainers"
   },
   "parameters": {
     "acrName": {
@@ -168,15 +171,15 @@
   "outputs": {
     "importedImages": {
       "type": "array",
+      "metadata": {
+        "description": "An array of the imported images"
+      },
       "copy": {
         "count": "[length(parameters('images'))]",
         "input": {
           "originalImage": "[parameters('images')[copyIndex()]]",
           "acrHostedImage": "[format('{0}{1}', reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName')), '2021-12-01-preview').loginServer, string(skip(parameters('images')[copyIndex()], indexOf(parameters('images')[copyIndex()], '/'))))]"
         }
-      },
-      "metadata": {
-        "description": "An array of the imported images"
       }
     }
   }

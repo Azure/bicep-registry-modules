@@ -1,3 +1,7 @@
+metadata name = 'Virtual Networks'
+metadata description = 'This module deploys Microsoft.Network Virtual Networks and optionally available children or extensions'
+metadata owner = 'CARML'
+
 @description('Required. The Virtual Network (vNet) Name.')
 param name string
 

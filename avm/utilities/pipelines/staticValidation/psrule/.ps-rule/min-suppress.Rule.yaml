@@ -1,0 +1,22 @@
+---
+# Synopsis: Suppress Rules for min tests
+apiVersion: github.com/microsoft/PSRule/v1
+kind: SuppressionGroup
+metadata:
+  name: "SuppressMin"
+spec:
+  rule:
+    - Azure.Resource.UseTags
+      # Policy specific
+    - Azure.Policy.ExemptionDescriptors
+    - Azure.Policy.Descriptors
+    - Azure.Policy.AssignmentDescriptors
+      # Cognitive Services specific
+    - Azure.Cognitive.ManagedIdentity
+      # Key Vault specific
+    - Azure.KeyVault.Logs
+    - Azure.KeyVault.Firewall
+  if:
+    name: "."
+    contains:
+      - "min"

@@ -1,3 +1,7 @@
+metadata name = 'Container Registry'
+metadata description = 'This module deploys Container Registry (Microsoft.ContainerRegistry/registries) and optionally available integrations.'
+metadata owner = 'thomasriley'
+
 @minLength(5)
 @maxLength(50)
 @description('The name of the Azure Container Registry.')
@@ -36,7 +40,7 @@ param networkAllowedIpRanges array = []
 ])
 param networkDefaultAction string = 'Deny'
 
-@description('Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'')
+@description('Array of role assignment objects that contain the \'roleDefinitionIdOrName\'(string) and \'principalIds\'(array of strings) to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'')
 param roleAssignments array = []
 
 @allowed([
@@ -120,6 +124,9 @@ param logsToEnable array = [
 param metricsToEnable array = [
   'AllMetrics'
 ]
+
+@description('Optional. The list of ACR tasks to create.')
+param tasks array = []
 
 var diagnosticsLogs = [for log in logsToEnable: {
   category: log
@@ -262,6 +269,16 @@ module containerRegistry_privateEndpoint '.bicep/nested_privateEndpoint.bicep' =
     privateEndpoints: varPrivateEndpoints
     tags: tags
     manualApprovalEnabled: privateEndpointsApprovalEnabled
+  }
+}
+
+module task 'task/task.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-acr-task'
+  params: {
+    acrName: containerRegistry.name
+    location: location
+    tasks: tasks
+    loginServer: containerRegistry.properties.loginServer
   }
 }
 

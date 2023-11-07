@@ -4,18 +4,21 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.11.1.770",
-      "templateHash": "13165983190383749949"
-    }
+      "version": "0.20.4.51522",
+      "templateHash": "15501758245983767624"
+    },
+    "name": "Container Registry",
+    "description": "This module deploys Container Registry (Microsoft.ContainerRegistry/registries) and optionally available integrations.",
+    "owner": "thomasriley"
   },
   "parameters": {
     "name": {
       "type": "string",
+      "minLength": 5,
+      "maxLength": 50,
       "metadata": {
         "description": "The name of the Azure Container Registry."
-      },
-      "maxLength": 50,
-      "minLength": 5
+      }
     },
     "location": {
       "type": "string",
@@ -86,20 +89,20 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'"
+        "description": "Array of role assignment objects that contain the 'roleDefinitionIdOrName'(string) and 'principalIds'(array of strings) to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'"
       }
     },
     "lock": {
       "type": "string",
       "defaultValue": "NotSpecified",
-      "metadata": {
-        "description": "Specify the type of lock."
-      },
       "allowedValues": [
         "CanNotDelete",
         "NotSpecified",
         "ReadOnly"
-      ]
+      ],
+      "metadata": {
+        "description": "Specify the type of lock."
+      }
     },
     "privateEndpoints": {
       "type": "array",
@@ -195,8 +198,8 @@
     "diagnosticLogsRetentionInDays": {
       "type": "int",
       "defaultValue": 365,
-      "maxValue": 365,
       "minValue": 0,
+      "maxValue": 365,
       "metadata": {
         "description": "Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely."
       }
@@ -253,6 +256,13 @@
       ],
       "metadata": {
         "description": "The name of metrics that will be streamed."
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The list of ACR tasks to create."
       }
     }
   },
@@ -345,11 +355,11 @@
       }
     },
     {
-      "condition": "[variables('IS_PREMIUM_SKU')]",
       "copy": {
         "name": "replications",
         "count": "[length(variables('varReplicationLocations'))]"
       },
+      "condition": "[variables('IS_PREMIUM_SKU')]",
       "type": "Microsoft.ContainerRegistry/registries/replications",
       "apiVersion": "2021-09-01",
       "name": "[format('{0}/{1}', parameters('name'), variables('varReplicationLocations')[copyIndex()].location)]",
@@ -401,7 +411,7 @@
         "count": "[length(parameters('roleAssignments'))]"
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-acr-rbac-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -409,18 +419,14 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "description": {
-            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), parameters('roleAssignments')[copyIndex()].description, '')]"
-          },
+          "description": "[if(contains(parameters('roleAssignments')[copyIndex()], 'description'), createObject('value', parameters('roleAssignments')[copyIndex()].description), createObject('value', ''))]",
           "principalIds": {
             "value": "[parameters('roleAssignments')[copyIndex()].principalIds]"
           },
           "roleDefinitionIdOrName": {
             "value": "[parameters('roleAssignments')[copyIndex()].roleDefinitionIdOrName]"
           },
-          "principalType": {
-            "value": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), parameters('roleAssignments')[copyIndex()].principalType, '')]"
-          },
+          "principalType": "[if(contains(parameters('roleAssignments')[copyIndex()], 'principalType'), createObject('value', parameters('roleAssignments')[copyIndex()].principalType), createObject('value', ''))]",
           "resourceId": {
             "value": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('name'))]"
           }
@@ -431,8 +437,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "17936491673323073022"
+              "version": "0.20.4.51522",
+              "templateHash": "11276824333704269750"
             }
           },
           "parameters": {
@@ -520,7 +526,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-acr-private-endpoints', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -547,8 +553,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.11.1.770",
-              "templateHash": "15991841577347853697"
+              "version": "0.20.4.51522",
+              "templateHash": "1569431369010361825"
             }
           },
           "parameters": {
@@ -637,36 +643,254 @@
       "dependsOn": [
         "[resourceId('Microsoft.ContainerRegistry/registries', parameters('name'))]"
       ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-acr-task', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "acrName": {
+            "value": "[parameters('name')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "tasks": {
+            "value": "[parameters('tasks')]"
+          },
+          "loginServer": {
+            "value": "[reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('name')), '2021-09-01').loginServer]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.20.4.51522",
+              "templateHash": "15495887558517410579"
+            }
+          },
+          "parameters": {
+            "acrName": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "loginServer": {
+              "type": "string"
+            },
+            "tasks": {
+              "type": "array",
+              "defaultValue": []
+            }
+          },
+          "resources": [
+            {
+              "copy": {
+                "name": "task",
+                "count": "[length(parameters('tasks'))]"
+              },
+              "type": "Microsoft.ContainerRegistry/registries/tasks",
+              "apiVersion": "2019-06-01-preview",
+              "name": "[format('{0}/{1}', parameters('acrName'), parameters('tasks')[copyIndex()].taskName)]",
+              "location": "[parameters('location')]",
+              "identity": "[parameters('tasks')[copyIndex()].identity]",
+              "properties": {
+                "status": "[parameters('tasks')[copyIndex()].status]",
+                "platform": "[parameters('tasks')[copyIndex()].platform]",
+                "agentConfiguration": "[parameters('tasks')[copyIndex()].agentConfiguration]",
+                "trigger": "[parameters('tasks')[copyIndex()].trigger]",
+                "step": "[parameters('tasks')[copyIndex()].step]",
+                "credentials": {
+                  "customRegistries": {
+                    "[format('{0}', parameters('loginServer'))]": "[if(equals(parameters('tasks')[copyIndex()].identity.type, 'SystemAssigned'), createObject('identity', '[system]'), createObject())]"
+                  }
+                }
+              }
+            },
+            {
+              "copy": {
+                "name": "containerRegistry_rbac",
+                "count": "[length(parameters('tasks'))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-acr-task-rbac-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "description": {
+                    "value": "[format('role assignment for task {0}', parameters('tasks')[copyIndex()].taskName)]"
+                  },
+                  "roleDefinitionIdOrName": {
+                    "value": "Contributor"
+                  },
+                  "principalIds": {
+                    "value": [
+                      "[reference(resourceId('Microsoft.ContainerRegistry/registries/tasks', parameters('acrName'), parameters('tasks')[copyIndex()].taskName), '2019-06-01-preview', 'full').identity.principalId]"
+                    ]
+                  },
+                  "principalType": {
+                    "value": "ServicePrincipal"
+                  },
+                  "resourceId": {
+                    "value": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName'))]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.20.4.51522",
+                      "templateHash": "11276824333704269750"
+                    }
+                  },
+                  "parameters": {
+                    "description": {
+                      "type": "string",
+                      "defaultValue": ""
+                    },
+                    "principalIds": {
+                      "type": "array"
+                    },
+                    "principalType": {
+                      "type": "string",
+                      "defaultValue": ""
+                    },
+                    "roleDefinitionIdOrName": {
+                      "type": "string"
+                    },
+                    "resourceId": {
+                      "type": "string"
+                    }
+                  },
+                  "variables": {
+                    "builtInRoleNames": {
+                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                      "Avere Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f8fab4f-1852-4a58-a46a-8eaf358af14a')]",
+                      "Avere Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c025889f-8102-4ebf-b32c-fc0c6f0c6bd9')]",
+                      "Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]",
+                      "Backup Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00c29273-979b-4161-815c-10b084fb9324')]",
+                      "Cosmos DB Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '230815da-be43-4aae-9cb4-875f7bd000aa')]",
+                      "DevTest Labs User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '76283e04-6283-4c54-8f91-bcf1374a3c64')]",
+                      "DocumentDB Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5bd9cd88-fe45-4216-938b-f97437e15450')]",
+                      "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+                      "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
+                      "Managed Application Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '641177b8-a67a-45b9-a033-47bc880bb21e')]",
+                      "Managed Application Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c7393b34-138c-406f-901b-d8cf2b17e6ae')]",
+                      "Managed Applications Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b9331d33-8a36-4f8c-b097-4f54124fdb44')]",
+                      "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]",
+                      "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
+                      "Monitoring Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '43d0d8ad-25c7-4714-9337-8ba259a9fe05')]",
+                      "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
+                      "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
+                      "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+                      "Site Recovery Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6670b86e-a3f7-4917-ac9b-5d6ab1be4567')]",
+                      "Site Recovery Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '494ae006-db33-4328-bf46-533a6560a3ca')]",
+                      "SQL Managed Instance Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4939a1f6-9ae0-4e48-a1e0-f2cbe897382d')]",
+                      "SQL Security Manager": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '056cd41c-7e88-42e1-933e-88ba6a50c9c3')]",
+                      "Storage Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '17d1049b-9a84-46fb-8f53-869881c3d3ab')]",
+                      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
+                      "Virtual Machine Administrator Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c0163c0-47e6-4577-8991-ea5c82e286e4')]",
+                      "Virtual Machine Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '9980e02c-c2be-4d73-94e8-173b1dc7cf3c')]",
+                      "Virtual Machine User Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fb879df8-f326-4884-b1cf-06f3ad86be52')]",
+                      "AcrDelete": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c2f4ef07-c644-48eb-af81-4b1b4947fb11')]",
+                      "AcrImageSigner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c2f4ef07-c644-48eb-af81-4b1b4947fb11')]",
+                      "AcrPull": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')]",
+                      "AcrPush": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8311e382-0749-4cb8-b61a-304f252e45ec')]",
+                      "AcrQuarantineReader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'cdda3590-29a3-44f6-95f2-9f980659eb04')]",
+                      "AcrQuarantineWriter": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c8d4ff99-41c3-41a8-9f60-21dfdad59608')]"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "copy": {
+                        "name": "roleAssignment",
+                        "count": "[length(parameters('principalIds'))]"
+                      },
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', last(split(parameters('resourceId'), '/')))]",
+                      "name": "[guid(last(split(parameters('resourceId'), '/')), parameters('principalIds')[copyIndex()], parameters('roleDefinitionIdOrName'))]",
+                      "properties": {
+                        "description": "[parameters('description')]",
+                        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]",
+                        "principalId": "[parameters('principalIds')[copyIndex()]]",
+                        "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]"
+                      }
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.ContainerRegistry/registries/tasks', parameters('acrName'), parameters('tasks')[copyIndex()].taskName)]"
+              ]
+            }
+          ],
+          "outputs": {
+            "tasksRoleAssignments": {
+              "type": "array",
+              "copy": {
+                "count": "[length(parameters('tasks'))]",
+                "input": {
+                  "description": "[format('role assignment for task {0}', parameters('tasks')[copyIndex()].taskName)]",
+                  "roleDefinitionIdOrName": "Contributor",
+                  "principalType": "ServicePrincipal",
+                  "principalIds": "[reference(resourceId('Microsoft.ContainerRegistry/registries/tasks', parameters('acrName'), parameters('tasks')[copyIndex()].taskName), '2019-06-01-preview', 'full').identity.principalId]"
+                }
+              }
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ContainerRegistry/registries', parameters('name'))]"
+      ]
     }
   ],
   "outputs": {
     "resourceGroupName": {
       "type": "string",
-      "value": "[resourceGroup().name]",
       "metadata": {
         "description": "The resource group the Azure Container Registry was deployed into."
-      }
+      },
+      "value": "[resourceGroup().name]"
     },
     "resourceId": {
       "type": "string",
-      "value": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('name'))]",
       "metadata": {
         "description": "The resource ID of the Azure Container Registry."
-      }
+      },
+      "value": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('name'))]"
     },
     "name": {
       "type": "string",
-      "value": "[parameters('name')]",
       "metadata": {
         "description": "The name of the Azure Container Registry."
-      }
+      },
+      "value": "[parameters('name')]"
     },
     "loginServer": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('name'))).loginServer]",
       "metadata": {
         "description": "The login server URL of the Azure Container Registry."
-      }
+      },
+      "value": "[reference(resourceId('Microsoft.ContainerRegistry/registries', parameters('name')), '2021-09-01').loginServer]"
     }
   }
 }
