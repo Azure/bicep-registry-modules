@@ -41,10 +41,10 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-rdsps'
   params: {
     // Required parameters
+    azPowerShellVersion: '9.7'
     kind: 'AzurePowerShell'
     name: 'rdsps001'
     // Non-required parameters
-    azPowerShellVersion: '9.7'
     enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     retentionInterval: 'P1D'
@@ -70,6 +70,9 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "azPowerShellVersion": {
+      "value": "9.7"
+    },
     "kind": {
       "value": "AzurePowerShell"
     },
@@ -77,9 +80,6 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
       "value": "rdsps001"
     },
     // Non-required parameters
-    "azPowerShellVersion": {
-      "value": "9.7"
-    },
     "enableTelemetry": {
       "value": "<enableTelemetry>"
     },
@@ -372,7 +372,7 @@ Azure CLI module version to be used. See a list of supported Azure CLI versions:
 ### Parameter: `azPowerShellVersion`
 
 Azure PowerShell module version to be used. See a list of supported Azure PowerShell versions: https://mcr.microsoft.com/v2/azuredeploymentscripts-powershell/tags/list
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `baseTime`

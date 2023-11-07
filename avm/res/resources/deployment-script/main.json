@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "5624373075219090201"
+      "templateHash": "10778790427647337111"
     },
     "name": "Deployment Scripts",
     "description": "This module deploys Deployment Scripts.",
@@ -147,7 +147,6 @@
     },
     "azPowerShellVersion": {
       "type": "string",
-      "nullable": true,
       "metadata": {
         "description": "Optional. Azure PowerShell module version to be used. See a list of supported Azure PowerShell versions: https://mcr.microsoft.com/v2/azuredeploymentscripts-powershell/tags/list"
       }
