@@ -131,7 +131,7 @@ function Set-PesterGitHubOutput {
 
       $errorTestLine = $failedTest.ErrorRecord.TargetObject.Line
       $errorTestFile = (($failedTest.ErrorRecord.TargetObject.File -split '[\/|\\](avm[\/|\\])')[-2, -1] -join '') -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
-      $errorMessage = $failedTest.ErrorRecord.TargetObject.Message.Trim() -replace '\n', '<br>' # Replace new lines with <br> to enable line breaks in markdown
+      $errorMessage = ($failedTest.ErrorRecord.TargetObject.Message.Trim() -replace '_', '\_') -replace '\n', '<br>' # Replace new lines with <br> to enable line breaks in markdown
 
       $testReference = '{0}:{1}' -f (Split-Path $errorTestFile -Leaf), $errorTestLine
 

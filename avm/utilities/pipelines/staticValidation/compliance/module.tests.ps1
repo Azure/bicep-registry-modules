@@ -1162,7 +1162,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       param(
         [object[]] $testFileContent
       )
-      (($testFileContent | Out-String) -match "metadata name = .+") | Should -Be $true -Because 'Test cases should contain a metadata string [name] in the format `metadata name = ''This is one hell of a test name''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
+      ($testFileContent | Out-String) | Should -Match "metadata name = .+" -Because 'Test cases should contain a metadata string [name] in the format `metadata name = ''This is one hell of a test name''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
     }
 
     It "[<moduleFolderName>] [<testName>] Bicep test deployment files should contain a metadata string [description]" -TestCases $deploymentTestFileTestCases {
@@ -1170,7 +1170,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       param(
         [object[]] $testFileContent
       )
-      (($testFileContent | Out-String) -match "metadata description = .+") | Should -Be $true -Because 'Test cases should contain a metadata string [description] in the format `metadata description = ''This is one hell of a description''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
+      ($testFileContent | Out-String) | Should -Match "metadata description = .+" -Because 'Test cases should contain a metadata string [description] in the format `metadata description = ''This is one hell of a description''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
     }
 
     It "[<moduleFolderName>] [<testName>] Bicep test deployment files should contain a parameter [namePrefix] with value ['#_namePrefix_#']" -TestCases $deploymentTestFileTestCases {
@@ -1179,8 +1179,8 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
         [object[]] $testFileContent
       )
 
-      (($testFileContent | Out-String) -match "@description\('Optional\. A token to inject into the name of each resource\. This value can be automatically injected by the CI\.'\)") | Should -Be $true -Because 'The parameter [namePrefix] should have the expected description.'
-      (($testFileContent | Out-String) -match "param namePrefix string = '#_namePrefix_#'") | Should -Be $true -Because 'The test CI needs this value to ensure that deployed resources have unique names per fork.'
+      ($testFileContent | Out-String) | Should -Match "@description\('Optional\. A token to inject into the name of each resource\. This value can be automatically injected by the CI\.'\)" -Because 'The parameter [namePrefix] should have the expected description.'
+      ($testFileContent | Out-String) | Should -Match  "param namePrefix string = '#_namePrefix_#'" -Because 'The test CI needs this value to ensure that deployed resources have unique names per fork.'
     }
 
     It "[<moduleFolderName>] [<testName>] Bicep test deployment files should invoke test like [`module testDeployment '../.*main.bicep' = {`]" -TestCases $deploymentTestFileTestCases {
