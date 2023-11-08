@@ -1,5 +1,10 @@
 # Deployment Scripts `[Microsoft.Resources/deploymentScripts]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys Deployment Scripts.
 
 ## Navigation
@@ -157,6 +162,11 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
     runOnce: true
     scriptContent: 'echo \'AVM Deployment Script test!\''
     storageAccountResourceId: '<storageAccountResourceId>'
+    subnetIds: [
+      {
+        id: '<id>'
+      }
+    ]
     timeout: 'PT1H'
   }
 }
@@ -243,6 +253,13 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
     },
     "storageAccountResourceId": {
       "value": "<storageAccountResourceId>"
+    },
+    "subnetIds": {
+      "value": [
+        {
+          "id": "<id>"
+        }
+      ]
     },
     "timeout": {
       "value": "PT1H"
@@ -401,6 +418,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
 | [`runOnce`](#parameter-runonce) | bool | When set to false, script will run every time the template is deployed. When set to true, the script will only run once. |
 | [`scriptContent`](#parameter-scriptcontent) | string | Script body. Max length: 32000 characters. To run an external script, use primaryScriptURI instead. |
 | [`storageAccountResourceId`](#parameter-storageaccountresourceid) | string | The resource ID of the storage account to use for this deployment script. If none is provided, the deployment script uses a temporary, managed storage account. |
+| [`subnetIds`](#parameter-subnetids) | array | List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network. |
 | [`supportingScriptUris`](#parameter-supportingscripturis) | array | List of supporting files for the external script (defined in primaryScriptUri). Does not work with internal scripts (code defined in scriptContent). |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 | [`timeout`](#parameter-timeout) | string | Maximum allowed script execution time specified in ISO 8601 format. Default value is PT1H - 1 hour; 'PT30M' - 30 minutes; 'P5D' - 5 days; 'P1Y' 1 year. |
@@ -628,6 +646,12 @@ The resource ID of the storage account to use for this deployment script. If non
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `subnetIds`
+
+List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network.
+- Required: No
+- Type: array
 
 ### Parameter: `supportingScriptUris`
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "4011104275409862667"
+      "templateHash": "7587156233369143856"
     },
     "name": "Deployment Scripts",
     "description": "This module deploys Deployment Scripts.",
@@ -202,6 +202,14 @@
         "description": "Optional. List of supporting files for the external script (defined in primaryScriptUri). Does not work with internal scripts (code defined in scriptContent)."
       }
     },
+    "subnetIds": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "example": "[\n  {\n    id: '/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVnet/subnets/mySubnet'\n  }\n]\n",
+        "description": "Optional. List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network."
+      }
+    },
     "arguments": {
       "type": "string",
       "nullable": true,
@@ -292,7 +300,8 @@
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
     "containerSettings": {
-      "containerGroupName": "[parameters('containerGroupName')]"
+      "containerGroupName": "[parameters('containerGroupName')]",
+      "subnetIds": "[if(not(empty(parameters('subnetIds'))), parameters('subnetIds'), null())]"
     },
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"

@@ -39,6 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     storageAccountName: 'dep${namePrefix}st${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     location: location
   }
 }
@@ -60,6 +61,11 @@ module testDeployment '../../../main.bicep' = {
     lock: {
       kind: 'None'
     }
+    subnetIds: [
+      {
+        id: nestedDependencies.outputs.subnetResourceId
+      }
+    ]
     containerGroupName: 'dep-${namePrefix}-cg-${serviceShort}'
     arguments: '-argument1 \\"test\\"'
     environmentVariables: {
