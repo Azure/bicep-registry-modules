@@ -930,10 +930,12 @@ Describe 'Module tests' -Tag 'Module' {
           throw ($templateNotFoundException -f $moduleFolderPath)
         }
         $convertedTemplates[$moduleFolderPathKey] = @{
-          templateContent = $templateContent
+          templateContent  = $templateContent
+          templateFilePath = $templateFilePath
         }
       } else {
         $templateContent = $convertedTemplates[$moduleFolderPathKey].templateContent
+        $templateFilePath = $convertedTemplates[$moduleFolderPathKey].templateFilePath
       }
 
       $udtSpecificTestCases += @{
