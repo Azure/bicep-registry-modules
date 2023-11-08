@@ -31,11 +31,94 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm-res-resources-deploymentscript:1.0.0`.
 
-- [Defaults](#example-1-defaults)
-- [Max](#example-2-max)
-- [Waf-Aligned](#example-3-waf-aligned)
+- [Using Azure CLI](#example-1-using-azure-cli)
+- [Defaults](#example-2-defaults)
+- [Max](#example-3-max)
+- [Using Private Endpoints](#example-4-using-private-endpoints)
+- [Using Azure PowerShell](#example-5-using-azure-powershell)
+- [Waf-Aligned](#example-6-waf-aligned)
 
-### Example 1: _Defaults_
+### Example 1: _Using Azure CLI_
+
+This instance deploys the module with an Azure CLI script.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-rdsmin'
+  params: {
+    // Required parameters
+    kind: 'AzureCLI'
+    name: 'rdsmin001'
+    // Non-required parameters
+    azPowerShellVersion: '2.9.1'
+    location: '<location>'
+    managedIdentities: {
+      userAssignedResourcesIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    retentionInterval: 'P1D'
+    scriptContent: 'echo \'AVM Deployment Script test!\''
+    storageAccountResourceId: '<storageAccountResourceId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "AzureCLI"
+    },
+    "name": {
+      "value": "rdsmin001"
+    },
+    // Non-required parameters
+    "azPowerShellVersion": {
+      "value": "2.9.1"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourcesIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "retentionInterval": {
+      "value": "P1D"
+    },
+    "scriptContent": {
+      "value": "echo \"AVM Deployment Script test!\""
+    },
+    "storageAccountResourceId": {
+      "value": "<storageAccountResourceId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Defaults_
 
 <details>
 
@@ -112,7 +195,157 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
 </details>
 <p>
 
-### Example 2: _Max_
+### Example 3: _Max_
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-rdsmax'
+  params: {
+    // Required parameters
+    kind: 'AzureCLI'
+    name: 'rdsmax001'
+    // Non-required parameters
+    arguments: '-argument1 \\\'test\\\''
+    azCliVersion: '2.9.1'
+    cleanupPreference: 'Always'
+    containerGroupName: 'dep-cg-rdsmax'
+    environmentVariables: {
+      secureList: [
+        {
+          name: 'var1'
+          value: 'test'
+        }
+        {
+          name: 'var2'
+          secureValue: '<secureValue>'
+        }
+      ]
+    }
+    location: '<location>'
+    lock: {
+      kind: 'None'
+    }
+    managedIdentities: {
+      userAssignedResourcesIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    retentionInterval: 'P1D'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    runOnce: true
+    scriptContent: 'echo \'AVM Deployment Script test!\''
+    storageAccountResourceId: '<storageAccountResourceId>'
+    timeout: 'PT1H'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "AzureCLI"
+    },
+    "name": {
+      "value": "rdsmax001"
+    },
+    // Non-required parameters
+    "arguments": {
+      "value": "-argument1 \\\"test\\\""
+    },
+    "azCliVersion": {
+      "value": "2.9.1"
+    },
+    "cleanupPreference": {
+      "value": "Always"
+    },
+    "containerGroupName": {
+      "value": "dep-cg-rdsmax"
+    },
+    "environmentVariables": {
+      "value": {
+        "secureList": [
+          {
+            "name": "var1",
+            "value": "test"
+          },
+          {
+            "name": "var2",
+            "secureValue": "<secureValue>"
+          }
+        ]
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "None"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourcesIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "retentionInterval": {
+      "value": "P1D"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Reader"
+        }
+      ]
+    },
+    "runOnce": {
+      "value": true
+    },
+    "scriptContent": {
+      "value": "echo \"AVM Deployment Script test!\""
+    },
+    "storageAccountResourceId": {
+      "value": "<storageAccountResourceId>"
+    },
+    "timeout": {
+      "value": "PT1H"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using Private Endpoints_
+
+This instance deploys the module with access to a private network.
+
 
 <details>
 
@@ -271,7 +504,87 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
 </details>
 <p>
 
-### Example 3: _Waf-Aligned_
+### Example 5: _Using Azure PowerShell_
+
+This instance deploys the module with an Azure PowerShell script.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-rdsmin'
+  params: {
+    // Required parameters
+    kind: 'AzurePowerShell'
+    name: 'rdsmin001'
+    // Non-required parameters
+    azPowerShellVersion: '9.7'
+    location: '<location>'
+    managedIdentities: {
+      userAssignedResourcesIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    retentionInterval: 'P1D'
+    scriptContent: 'Write-Host \'AVM Deployment Script test!\''
+    storageAccountResourceId: '<storageAccountResourceId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "kind": {
+      "value": "AzurePowerShell"
+    },
+    "name": {
+      "value": "rdsmin001"
+    },
+    // Non-required parameters
+    "azPowerShellVersion": {
+      "value": "9.7"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourcesIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "retentionInterval": {
+      "value": "P1D"
+    },
+    "scriptContent": {
+      "value": "Write-Host \"AVM Deployment Script test!\""
+    },
+    "storageAccountResourceId": {
+      "value": "<storageAccountResourceId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 6: _Waf-Aligned_
 
 <details>
 

@@ -23,10 +23,8 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
     supportsHttpsTrafficOnly: true
   }
 }
-@description('The principal ID of the created Managed Identity.')
-output managedIdentityPrincipalId string = managedIdentity.properties.principalId
 
-@description('The resource ID of the created Managed Identity.')
+@description('The resource ID of the created managed identity.')
 output managedIdentityResourceId string = managedIdentity.id
 
 @description('The resource ID of the created storage account.')
