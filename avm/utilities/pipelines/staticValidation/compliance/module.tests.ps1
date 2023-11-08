@@ -996,7 +996,7 @@ Describe 'Module tests' -Tag 'Module' {
     }
 
 
-    It "[<moduleFolderName>] If template has [<parameterName>] parameter, it should implement the user-defined type [<udtName>]" -TestCases $udtTestCases {
+    It "[<moduleFolderName>] If template has a parameter [<parameterName>], it should implement the user-defined type [<udtName>]" -TestCases $udtTestCases {
 
       param(
         [hashtable] $templateFileContent,
@@ -1059,7 +1059,7 @@ Describe 'Module tests' -Tag 'Module' {
       }
     }
 
-    It "[<moduleFolderName>] If a [managedIdentitiesType] UDT definition exists and supports system-assigned-identities, the template should have an output for its principal ID." -TestCases $udtSpecificTestCases {
+    It "[<moduleFolderName>] If a UDT definition [managedIdentitiesType] exists and supports system-assigned-identities, the template should have an output for its principal ID." -TestCases $udtSpecificTestCases {
 
       param(
         [hashtable] $templateFileContent
@@ -1072,7 +1072,7 @@ Describe 'Module tests' -Tag 'Module' {
       }
     }
 
-    It "[<moduleFolderName>] If a [tags] parameter exists it should be nullable." -TestCases $udtSpecificTestCases {
+    It "[<moduleFolderName>] If a parameter [tags] exists it should be nullable." -TestCases $udtSpecificTestCases {
 
       param(
         [hashtable] $templateFileContent
@@ -1110,15 +1110,15 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       }
     }
 
-    It "[<moduleFolderName>] [<testName>] Bicep test deployment files should contain serviceShort parameter" -TestCases $deploymentTestFileTestCases {
+    It "[<moduleFolderName>] [<testName>] Bicep test deployment files should contain a parameter [serviceShort]" -TestCases $deploymentTestFileTestCases {
 
       param(
         [object[]] $testFileContent
       )
-      ($testFileContent -match "^param serviceShort string = '(.*)$") | Should -Not -BeNullOrEmpty -Because 'the module test deployment file should contain a service short parameter using the syntax [param serviceShort string = ''*''].'
+      ($testFileContent -match "^param serviceShort string = '(.*)$") | Should -Not -BeNullOrEmpty -Because 'the module test deployment file should contain a parameter [serviceShort] using the syntax [param serviceShort string = ''*''].'
     }
 
-    It "[<moduleFolderName>] [<testName>] Bicep test deployment files in a [default] folder should contain a service short with ending [min]" -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]defaults[\\|\/].*' }) {
+    It "[<moduleFolderName>] [<testName>] Bicep test deployment files in a [waf-aligned] folder should have a parameter [serviceShort] with a value ending with [min]" -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]defaults[\\|\/].*' }) {
 
       param(
         [object[]] $testFileContent
@@ -1127,11 +1127,11 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       if (($testFileContent | Out-String) -match "param serviceShort string = '(.*)'") {
         $Matches[1] | Should -BeLike "*min"
       } else {
-        Set-ItResult -Skipped -Because 'the module test deployment file should contain a service short parameter using the syntax [param serviceShort string = ''*min''] but it doesn''t.'
+        Set-ItResult -Skipped -Because 'the module test deployment file should contain a parameter [serviceShort] using the syntax [param serviceShort string = ''*min''] but it doesn''t.'
       }
     }
 
-    It "[<moduleFolderName>] [<testName>] Bicep test deployment files in a [max] folder should contain a service short with ending [max]" -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]max[\\|\/].*' }) {
+    It "[<moduleFolderName>] [<testName>] Bicep test deployment files in a [waf-aligned] folder should have a [serviceShort] parameter with a value ending with  [max]" -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]max[\\|\/].*' }) {
 
       param(
         [object[]] $testFileContent
@@ -1140,11 +1140,11 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       if (($testFileContent | Out-String) -match "param serviceShort string = '(.*)'") {
         $Matches[1] | Should -BeLike "*max"
       } else {
-        Set-ItResult -Skipped -Because 'the module test deployment file should contain a service short parameter using the syntax [param serviceShort string = ''*max''] but it doesn''t.'
+        Set-ItResult -Skipped -Because 'the module test deployment file should contain a parameter [serviceShort] using the syntax [param serviceShort string = ''*max''] but it doesn''t.'
       }
     }
 
-    It "[<moduleFolderName>] [<testName>] Bicep test deployment files in a [waf-aligned] folder should contain a service short with ending [waf]" -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]waf\-aligned[\\|\/].*' }) {
+    It "[<moduleFolderName>] [<testName>] Bicep test deployment files in a [waf-aligned] folder should have a [serviceShort] parameter with a value ending with [waf]" -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]waf\-aligned[\\|\/].*' }) {
 
       param(
         [object[]] $testFileContent
@@ -1153,34 +1153,34 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       if (($testFileContent | Out-String) -match "param serviceShort string = '(.*)'") {
         $Matches[1] | Should -BeLike "*waf"
       } else {
-        Set-ItResult -Skipped -Because 'the module test deployment file should contain a service short parameter using the syntax [param serviceShort string = ''*waf''] but it doesn''t.'
+        Set-ItResult -Skipped -Because 'the module test deployment file should contain a parameter [serviceShort] using the syntax [param serviceShort string = ''*waf''] but it doesn''t.'
       }
     }
 
-    It "[<moduleFolderName>] [<testName>] Bicep test deployment files should contain a test name" -TestCases $deploymentTestFileTestCases {
+    It "[<moduleFolderName>] [<testName>] Bicep test deployment files should contain a metadata string [name]" -TestCases $deploymentTestFileTestCases {
 
       param(
         [object[]] $testFileContent
       )
-      (($testFileContent | Out-String) -match "metadata name = .+") | Should -Be $true -Because 'Test cases should contain a test name in the format `metadata name = ''This is one hell of a test name''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
+      (($testFileContent | Out-String) -match "metadata name = .+") | Should -Be $true -Because 'Test cases should contain a metadata string [name] in the format `metadata name = ''This is one hell of a test name''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
     }
 
-    It "[<moduleFolderName>] [<testName>] Bicep test deployment files should contain a test description" -TestCases $deploymentTestFileTestCases {
+    It "[<moduleFolderName>] [<testName>] Bicep test deployment files should contain a metadata string [description]" -TestCases $deploymentTestFileTestCases {
 
       param(
         [object[]] $testFileContent
       )
-      (($testFileContent | Out-String) -match "metadata description = .+") | Should -Be $true -Because 'Test cases should contain a test description in the format `metadata description = ''This is one hell of a description''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
+      (($testFileContent | Out-String) -match "metadata description = .+") | Should -Be $true -Because 'Test cases should contain a metadata string [description] in the format `metadata description = ''This is one hell of a description''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
     }
 
-    It "[<moduleFolderName>] [<testName>] Bicep test deployment files should contain namePrefix parameter with value ['#_namePrefix_#']" -TestCases $deploymentTestFileTestCases {
+    It "[<moduleFolderName>] [<testName>] Bicep test deployment files should contain a parameter [namePrefix] with value ['#_namePrefix_#']" -TestCases $deploymentTestFileTestCases {
 
       param(
         [object[]] $testFileContent
       )
 
-      (($testFileContent | Out-String) -match "@description\('Optional\. A token to inject into the name of each resource\. This value can be automatically injected by the CI\.'\)") | Should -Be $true -Because 'The parameter `namePrefix` should have a meaningful description.'
-      (($testFileContent | Out-String) -match "param namePrefix string = '#_namePrefix_#'") | Should -Be $true -Because 'The test CI needs this value to ensure that deployed resources have unique names.'
+      (($testFileContent | Out-String) -match "@description\('Optional\. A token to inject into the name of each resource\. This value can be automatically injected by the CI\.'\)") | Should -Be $true -Because 'The parameter [namePrefix] should have the expected description.'
+      (($testFileContent | Out-String) -match "param namePrefix string = '#_namePrefix_#'") | Should -Be $true -Because 'The test CI needs this value to ensure that deployed resources have unique names per fork.'
     }
 
     It "[<moduleFolderName>] [<testName>] Bicep test deployment files should invoke test like [`module testDeployment '../.*main.bicep' = {`]" -TestCases $deploymentTestFileTestCases {
