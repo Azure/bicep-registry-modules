@@ -63,6 +63,18 @@ param environmentVariables object = {}
 @description('Optional. List of supporting files for the external script (defined in primaryScriptUri). Does not work with internal scripts (code defined in scriptContent).')
 param supportingScriptUris array?
 
+@metadata({
+  example: '''
+[
+  {
+    id: '/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.Network/virtualNetworks/myVnet/subnets/mySubnet'
+  }
+]
+'''
+})
+@description('Optional. List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network.')
+param subnetIds array?
+
 @description('Optional. Command-line arguments to pass to the script. Arguments are separated by spaces.')
 param arguments string?
 
@@ -115,6 +127,7 @@ var builtInRoleNames = {
 
 var containerSettings = {
   containerGroupName: containerGroupName
+  subnetIds: !empty(subnetIds) ? subnetIds : null
 }
 
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourcesIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
