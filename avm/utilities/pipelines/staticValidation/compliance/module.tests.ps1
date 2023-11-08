@@ -990,6 +990,7 @@ Describe 'Module tests' -Tag 'Module' {
           parameterName            = $udtCase.parameterName
           udtName                  = $udtCase.udtName
           expectedUdtUrl           = $udtCase.udtExpectedUrl ? $udtCase.udtExpectedUrl : ''
+          link                     = $udtCase.link
         }
       }
     }
@@ -1042,7 +1043,13 @@ Describe 'Module tests' -Tag 'Module' {
           }
 
           if ($formattedDiff.Count -gt 0) {
-            Write-Warning ("The implemented user-defined type is not the same as the expected [user-defined type]({0}) defined in the [AVM specs]({1}) and should not have diff`n{2}" -f $expectedUdtUrl, $link, ($formattedDiff | Out-String))
+            $warningMessage = "The implemented user-defined type is not the same as the expected [user-defined type]({0}) defined in the [AVM specs]({1}) and should not have diff`n{2}" -f $expectedUdtUrl, $link, ($formattedDiff | Out-String)
+            Write-Warning $warningMessage
+
+            # Adding also to output to show in GitHub CI
+            Write-Output @{
+              Warning = $warningMessage
+            }
           }
         }
       } else {
