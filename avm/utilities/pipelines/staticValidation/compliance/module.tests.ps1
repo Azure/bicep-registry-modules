@@ -910,7 +910,8 @@ Describe 'Module tests' -Tag 'Module' {
 
   Context 'User-defined-types tests' -Tag 'UDT' {
 
-    $udtTestCases = [System.Collections.ArrayList] @()
+    $udtTestCases = [System.Collections.ArrayList] @() # General UDT tests (e.g. param should exist)
+    $udtSpecificTestCases = [System.Collections.ArrayList] @() # Specific UDT test cases for singular UDTs (e.g. tags)
     foreach ($moduleFolderPath in $moduleFolderPaths) {
 
       $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
@@ -935,34 +936,47 @@ Describe 'Module tests' -Tag 'Module' {
         $templateContent = $convertedTemplates[$moduleFolderPathKey].templateContent
       }
 
+      $udtSpecificTestCases += @{
+        moduleFolderName         = $resourceTypeIdentifier
+        templateFileContent      = $templateContent
+        templateFileContentBicep = Get-Content $templateFilePath
+      }
+
       # Setting expected URL only for those that doen't have multiple different variants
-      $avmInterfaceSpecsBase = 'https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/main/docs/static/includes/interfaces'
+      $avmInterfaceSpecsTemplateBase = 'https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/main/docs/static/includes/interfaces'
+      $avmInterfaceSpecsBase = 'https://azure.github.io/Azure-Verified-Modules/specs/shared/interfaces'
       $udtCases = @(
         @{
           parameterName = 'diagnosticSettings'
           udtName       = 'diagnosticSettingType'
+          link          = "$avmInterfaceSpecsBase#diagnostic-settings"
         }
         @{
           parameterName  = 'roleAssignments'
           udtName        = 'roleAssignmentType'
-          udtExpectedUrl = "$avmInterfaceSpecsBase/int.rbac.udt.schema.bicep"
+          udtExpectedUrl = "$avmInterfaceSpecsTemplateBase/int.rbac.udt.schema.bicep"
+          link           = "$avmInterfaceSpecsBase#role-assignments"
         }
         @{
           parameterName  = 'lock'
           udtName        = 'lockType'
-          udtExpectedUrl = "$avmInterfaceSpecsBase/int.locks.udt.schema.bicep"
+          udtExpectedUrl = "$avmInterfaceSpecsTemplateBase/int.locks.udt.schema.bicep"
+          link           = "$avmInterfaceSpecsBase#resource-locks"
         }
         @{
           parameterName = 'managedIdentities'
           udtName       = 'managedIdentitiesType'
+          link          = "$avmInterfaceSpecsBase#managed-identities"
         }
         @{
           parameterName = 'privateEndpoints'
           udtName       = 'privateEndpointType'
+          link          = "$avmInterfaceSpecsBase#private-endpoints"
         }
         @{
           parameterName = 'customerManagedKey'
           udtName       = 'customerManagedKeyType'
+          link          = "$avmInterfaceSpecsBase#customer-managed-keys"
         }
       )
 
@@ -979,19 +993,20 @@ Describe 'Module tests' -Tag 'Module' {
     }
 
 
-    It "[<moduleFolderName>] If template has [<parameterName>] parameter, it should implement the expected user-defined type [<udtName>]" -TestCases $udtTestCases {
+    It "[<moduleFolderName>] If template has [<parameterName>] parameter, it should implement the user-defined type [<udtName>]" -TestCases $udtTestCases {
 
       param(
         [hashtable] $templateFileContent,
         [string[]] $templateFileContentBicep,
         [string] $parameterName,
         [string] $udtName,
-        [string] $expectedUdtUrl
+        [string] $expectedUdtUrl,
+        [string] $link
       )
 
       if ($templateFileContent.parameters.Keys -contains $parameterName) {
-        $templateFileContent.parameters.$parameterName.Keys | Should -Contain '$ref' -Because "the [$parameterName] parameter should use a user-defined type."
-        $templateFileContent.parameters.$parameterName.'$ref' | Should -Be "#/definitions/$udtName" -Because "the [$parameterName] parameter should use a user-defined type [$udtName]."
+        $templateFileContent.parameters.$parameterName.Keys | Should -Contain '$ref' -Because "the [$parameterName] parameter should use a user-defined type. For for information please review the [AVM Specs]($link)."
+        $templateFileContent.parameters.$parameterName.'$ref' | Should -Be "#/definitions/$udtName" -Because "the [$parameterName] parameter should use a user-defined type [$udtName]. For for information please review the [AVM Specs]($link)."
 
         if (-not [String]::IsNullOrEmpty($expectedUdtUrl)) {
           $implementedSchemaStartIndex = $templateFileContentBicep.IndexOf("type $udtName = {")
@@ -1025,7 +1040,7 @@ Describe 'Module tests' -Tag 'Module' {
           }
 
           if ($formattedDiff.Count -gt 0) {
-            Write-Warning ("The implemented user-defined type should be the same as the expected user-defined type of url [{0}] and should not have diff`n{1}" -f $expectedUdtUrl, ($formattedDiff | Out-String))
+            Write-Warning ("The implemented user-defined type is not the same as the expected [user-defined type]({0}) defined in the [AVM specs]({1}) and should not have diff`n{2}" -f $expectedUdtUrl, $link, ($formattedDiff | Out-String))
           }
         }
       } else {
@@ -1033,9 +1048,31 @@ Describe 'Module tests' -Tag 'Module' {
       }
     }
 
+    It "[<moduleFolderName>] If a [managedIdentitiesType] UDT definition exists and supports system-assigned-identities, the template should have an output for its principal ID." -TestCases $udtSpecificTestCases {
 
-    # TODO Add test for tags
-    # TODO add tests for msi principal id output
+      param(
+        [hashtable] $templateFileContent
+      )
+
+      if ($templateFileContent.definitions.Keys -contains 'managedIdentitiesType' -and $templateFileContent.definitions.managedIdentitiesType.properties.keys -contains 'systemAssigned') {
+        $templateFileContent.outputs.Keys | Should -Contain 'systemAssignedMIPrincipalId' -Because 'The AVM specs require a this output. For for information please review the [AVM Specs](https://azure.github.io/Azure-Verified-Modules/specs/shared/interfaces#managed-identities).'
+      } else {
+        Set-ItResult -Skipped -Because "the module template has no [managedIdentitiesType] UDT definition or does not support system-assigned-identities."
+      }
+    }
+
+    It "[<moduleFolderName>] If a [tags] parameter exists it should be nullable." -TestCases $udtTestCases {
+
+      param(
+        [hashtable] $templateFileContent
+      )
+
+      if ($templateFileContent.parameters.Keys -contains 'tags') {
+        $templateFileContent.parameters.tags.nullable | Should -Be $true -Because 'The AVM specs require a specific format. For for information please review the [AVM Specs](https://azure.github.io/Azure-Verified-Modules/specs/shared/interfaces#tags).'
+      } else {
+        Set-ItResult -Skipped -Because "the module template has no [tags] parameter."
+      }
+    }
   }
 }
 
