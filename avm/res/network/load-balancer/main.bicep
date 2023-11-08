@@ -337,7 +337,7 @@ type roleAssignmentType = {
   roleDefinitionIdOrName: string
 
   @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalIds: array
+  principalIds: string
 
   @description('Optional. The principal type of the assigned principal ID.')
   principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device' | null)?

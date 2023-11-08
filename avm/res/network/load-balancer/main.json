@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "16787367676914777992"
+      "templateHash": "5544806378318299167"
     },
     "name": "Load Balancers",
     "description": "This module deploys a Load Balancer.",
@@ -156,7 +156,7 @@
             }
           },
           "principalIds": {
-            "type": "array",
+            "type": "string",
             "metadata": {
               "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
             }
