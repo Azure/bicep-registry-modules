@@ -62,13 +62,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location
-
+    lock: {}
     frontendIPConfigurations: [
       {
         name: 'publicIPConfig1'
         publicIPAddressId: nestedDependencies.outputs.publicIPResourceId
       }
     ]
-    lock: {}
   }
 }]
