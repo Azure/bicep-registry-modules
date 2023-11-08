@@ -52,6 +52,9 @@ module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
       }
     ]
     name: 'nlbdef001'
+    // Non-required parameters
+    location: '<location>'
+    lock: {}
   }
 }
 ```
@@ -79,6 +82,13 @@ module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
     },
     "name": {
       "value": "nlbdef001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {}
     }
   }
 }
@@ -111,10 +121,34 @@ module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
         name: 'servers'
       }
     ]
-    diagnosticEventHubAuthorizationRuleId: '<diagnosticEventHubAuthorizationRuleId>'
-    diagnosticEventHubName: '<diagnosticEventHubName>'
-    diagnosticStorageAccountId: '<diagnosticStorageAccountId>'
-    diagnosticWorkspaceId: '<diagnosticWorkspaceId>'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        logCategoriesAndGroups: [
+          {
+            category: 'AzurePolicyEvaluationDetails'
+          }
+          {
+            category: 'AuditEvent'
+          }
+        ]
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     inboundNatRules: [
       {
         backendPort: 443
@@ -149,6 +183,7 @@ module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
         protocol: 'All'
       }
     ]
+    location: '<location>'
     probes: [
       {
         intervalInSeconds: 5
@@ -209,17 +244,35 @@ module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
         }
       ]
     },
-    "diagnosticEventHubAuthorizationRuleId": {
-      "value": "<diagnosticEventHubAuthorizationRuleId>"
-    },
-    "diagnosticEventHubName": {
-      "value": "<diagnosticEventHubName>"
-    },
-    "diagnosticStorageAccountId": {
-      "value": "<diagnosticStorageAccountId>"
-    },
-    "diagnosticWorkspaceId": {
-      "value": "<diagnosticWorkspaceId>"
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "logCategoriesAndGroups": [
+            {
+              "category": "AzurePolicyEvaluationDetails"
+            },
+            {
+              "category": "AuditEvent"
+            }
+          ],
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        },
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
     },
     "inboundNatRules": {
       "value": [
@@ -258,6 +311,9 @@ module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
           "protocol": "All"
         }
       ]
+    },
+    "location": {
+      "value": "<location>"
     },
     "probes": {
       "value": [
@@ -325,10 +381,20 @@ module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
         name: 'backendAddressPool2'
       }
     ]
-    diagnosticEventHubAuthorizationRuleId: '<diagnosticEventHubAuthorizationRuleId>'
-    diagnosticEventHubName: '<diagnosticEventHubName>'
-    diagnosticStorageAccountId: '<diagnosticStorageAccountId>'
-    diagnosticWorkspaceId: '<diagnosticWorkspaceId>'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     inboundNatRules: [
       {
         backendPort: 443
@@ -372,7 +438,11 @@ module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
         probeName: 'probe2'
       }
     ]
-    lock: 'CanNotDelete'
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     outboundRules: [
       {
         allocatedOutboundPorts: 63984
@@ -449,17 +519,21 @@ module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
         }
       ]
     },
-    "diagnosticEventHubAuthorizationRuleId": {
-      "value": "<diagnosticEventHubAuthorizationRuleId>"
-    },
-    "diagnosticEventHubName": {
-      "value": "<diagnosticEventHubName>"
-    },
-    "diagnosticStorageAccountId": {
-      "value": "<diagnosticStorageAccountId>"
-    },
-    "diagnosticWorkspaceId": {
-      "value": "<diagnosticWorkspaceId>"
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
     },
     "inboundNatRules": {
       "value": [
@@ -508,8 +582,14 @@ module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
         }
       ]
     },
+    "location": {
+      "value": "<location>"
+    },
     "lock": {
-      "value": "CanNotDelete"
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
     },
     "outboundRules": {
       "value": [
@@ -590,10 +670,20 @@ module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
         name: 'backendAddressPool2'
       }
     ]
-    diagnosticEventHubAuthorizationRuleId: '<diagnosticEventHubAuthorizationRuleId>'
-    diagnosticEventHubName: '<diagnosticEventHubName>'
-    diagnosticStorageAccountId: '<diagnosticStorageAccountId>'
-    diagnosticWorkspaceId: '<diagnosticWorkspaceId>'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     inboundNatRules: [
       {
         backendPort: 443
@@ -637,7 +727,11 @@ module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
         probeName: 'probe2'
       }
     ]
-    lock: 'CanNotDelete'
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     outboundRules: [
       {
         allocatedOutboundPorts: 63984
@@ -714,17 +808,21 @@ module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
         }
       ]
     },
-    "diagnosticEventHubAuthorizationRuleId": {
-      "value": "<diagnosticEventHubAuthorizationRuleId>"
-    },
-    "diagnosticEventHubName": {
-      "value": "<diagnosticEventHubName>"
-    },
-    "diagnosticStorageAccountId": {
-      "value": "<diagnosticStorageAccountId>"
-    },
-    "diagnosticWorkspaceId": {
-      "value": "<diagnosticWorkspaceId>"
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
     },
     "inboundNatRules": {
       "value": [
@@ -773,8 +871,14 @@ module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
         }
       ]
     },
+    "location": {
+      "value": "<location>"
+    },
     "lock": {
-      "value": "CanNotDelete"
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
     },
     "outboundRules": {
       "value": [
@@ -844,7 +948,7 @@ module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
 | :-- | :-- | :-- |
 | [`backendAddressPools`](#parameter-backendaddresspools) | array | Collection of backend address pools used by a load balancer. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`inboundNatRules`](#parameter-inboundnatrules) | array | Collection of inbound NAT Rules used by a load balancer. Defining inbound NAT rules on your load balancer is mutually exclusive with defining an inbound NAT pool. Inbound NAT pools are referenced from virtual machine scale sets. NICs that are associated with individual virtual machines cannot reference an Inbound NAT pool. They have to reference individual inbound NAT rules. |
 | [`loadBalancingRules`](#parameter-loadbalancingrules) | array | Array of objects containing all load balancing rules. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -860,7 +964,6 @@ module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
 Collection of backend address pools used by a load balancer.
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `diagnosticSettings`
 
@@ -977,7 +1080,7 @@ Optional. Resource ID of the diagnostic log analytics workspace. For security re
 - Required: No
 - Type: string
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
 Enable telemetry via a Globally Unique Identifier (GUID).
 - Required: No
@@ -1002,7 +1105,6 @@ Collection of inbound NAT Rules used by a load balancer. Defining inbound NAT ru
 Array of objects containing all load balancing rules.
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `location`
 
@@ -1056,14 +1158,12 @@ The outbound rules.
 Array of objects containing all probes, these are references in the load balancing rules.
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `roleAssignments`
 
 Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `skuName`
 
@@ -1078,7 +1178,6 @@ Name of a load balancer SKU.
 Tags of the resource.
 - Required: No
 - Type: object
-- Default: `{object}`
 
 
 ## Outputs

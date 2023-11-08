@@ -34,7 +34,7 @@ This module deploys a Load Balancer Backend Address Pools.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`drainPeriodInSeconds`](#parameter-drainperiodinseconds) | int | Amount of seconds Load Balancer waits for before sending RESET to client and backend address. if value is 0 then this property will be set to null. Subscription must register the feature Microsoft.Network/SLBAllowConnectionDraining before using this property. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`loadBalancerBackendAddresses`](#parameter-loadbalancerbackendaddresses) | array | An array of backend addresses. |
 | [`syncMode`](#parameter-syncmode) | string | Backend address synchronous mode for the backend pool. |
 | [`tunnelInterfaces`](#parameter-tunnelinterfaces) | array | An array of gateway load balancer tunnel interfaces. |
@@ -46,7 +46,7 @@ Amount of seconds Load Balancer waits for before sending RESET to client and bac
 - Type: int
 - Default: `0`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
 Enable telemetry via a Globally Unique Identifier (GUID).
 - Required: No
