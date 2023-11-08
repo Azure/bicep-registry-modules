@@ -19,12 +19,12 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   location: location
 }
 
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  scope: storageAccount
+resource storagePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(storageFileDataPrivilegedContributorRoleId, managedIdentity.id, storageAccount.id)
+  scope: storageAccount
   properties: {
     principalId: managedIdentity.properties.principalId
-    roleDefinitionId: storageFileDataPrivilegedContributorRoleId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', storageFileDataPrivilegedContributorRoleId)
     principalType: 'ServicePrincipal'
   }
 }
