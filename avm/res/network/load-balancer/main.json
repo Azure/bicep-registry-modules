@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "16311835353832295348"
+      "templateHash": "1303572829506475419"
     },
     "name": "Load Balancers",
     "description": "This module deploys a Load Balancer.",
@@ -433,7 +433,7 @@
         "description": "Optional. Tags of the resource."
       }
     },
-    "enableDefaultTelemetry": {
+    "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
@@ -545,17 +545,23 @@
     "enableReferencedModulesTelemetry": false
   },
   "resources": {
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.network.loadbalancer.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
-          "resources": []
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
         }
       }
     },
@@ -658,7 +664,7 @@
           "tunnelInterfaces": "[if(and(contains(coalesce(parameters('backendAddressPools'), createArray())[copyIndex()], 'tunnelInterfaces'), not(empty(coalesce(parameters('backendAddressPools'), createArray())[copyIndex()].tunnelInterfaces))), createObject('value', coalesce(parameters('backendAddressPools'), createArray())[copyIndex()].tunnelInterfaces), createObject('value', createArray()))]",
           "loadBalancerBackendAddresses": "[if(and(contains(coalesce(parameters('backendAddressPools'), createArray())[copyIndex()], 'loadBalancerBackendAddresses'), not(empty(coalesce(parameters('backendAddressPools'), createArray())[copyIndex()].loadBalancerBackendAddresses))), createObject('value', coalesce(parameters('backendAddressPools'), createArray())[copyIndex()].loadBalancerBackendAddresses), createObject('value', createArray()))]",
           "drainPeriodInSeconds": "[if(contains(coalesce(parameters('backendAddressPools'), createArray())[copyIndex()], 'drainPeriodInSeconds'), createObject('value', coalesce(parameters('backendAddressPools'), createArray())[copyIndex()].drainPeriodInSeconds), createObject('value', 0))]",
-          "enableDefaultTelemetry": {
+          "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
@@ -669,7 +675,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "11772165650732157187"
+              "templateHash": "260110941938110942"
             },
             "name": "Load Balancer Backend Address Pools",
             "description": "This module deploys a Load Balancer Backend Address Pools.",
@@ -721,7 +727,7 @@
                 "description": "Optional. Backend address synchronous mode for the backend pool."
               }
             },
-            "enableDefaultTelemetry": {
+            "enableTelemetry": {
               "type": "bool",
               "defaultValue": true,
               "metadata": {
@@ -731,16 +737,22 @@
           },
           "resources": [
             {
-              "condition": "[parameters('enableDefaultTelemetry')]",
+              "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "apiVersion": "2023-07-01",
+              "name": "[format('46d3xbcp.res.network.loadbalancer.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
-                  "resources": []
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
                 }
               }
             },
@@ -819,7 +831,7 @@
           "frontendPortRangeStart": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'frontendPortRangeStart'), createObject('value', parameters('inboundNatRules')[copyIndex()].frontendPortRangeStart), createObject('value', -1))]",
           "idleTimeoutInMinutes": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'idleTimeoutInMinutes'), createObject('value', parameters('inboundNatRules')[copyIndex()].idleTimeoutInMinutes), createObject('value', 4))]",
           "protocol": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'protocol'), createObject('value', parameters('inboundNatRules')[copyIndex()].protocol), createObject('value', 'Tcp'))]",
-          "enableDefaultTelemetry": {
+          "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
@@ -830,7 +842,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "10843150655101094909"
+              "templateHash": "17147206015733244532"
             },
             "name": "Load Balancer Inbound NAT Rules",
             "description": "This module deploys a Load Balancer Inbound NAT Rules.",
@@ -930,7 +942,7 @@
                 "description": "Optional. The transport protocol for the endpoint."
               }
             },
-            "enableDefaultTelemetry": {
+            "enableTelemetry": {
               "type": "bool",
               "defaultValue": true,
               "metadata": {
@@ -940,16 +952,22 @@
           },
           "resources": [
             {
-              "condition": "[parameters('enableDefaultTelemetry')]",
+              "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "apiVersion": "2023-07-01",
+              "name": "[format('46d3xbcp.res.network.loadbalancer.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
-                  "resources": []
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
                 }
               }
             },
