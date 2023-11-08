@@ -228,27 +228,6 @@ resource loadBalancer_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!emp
   scope: loadBalancer
 }
 
-// resource loadBalancer_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock)) {
-//   name: '${loadBalancer.name}-${lock}-lock'
-//   properties: {
-//     level: any(lock)
-//     notes: lock == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot modify the resource or child resources.'
-//   }
-//   scope: loadBalancer
-// }
-
-// resource loadBalancer_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (!empty(diagnosticStorageAccountId) || !empty(diagnosticWorkspaceId) || !empty(diagnosticEventHubAuthorizationRuleId) || !empty(diagnosticEventHubName)) {
-//   name: !empty(diagnosticSettingsName) ? diagnosticSettingsName : '${name}-diagnosticSettings'
-//   properties: {
-//     storageAccountId: !empty(diagnosticStorageAccountId) ? diagnosticStorageAccountId : null
-//     workspaceId: !empty(diagnosticWorkspaceId) ? diagnosticWorkspaceId : null
-//     eventHubAuthorizationRuleId: !empty(diagnosticEventHubAuthorizationRuleId) ? diagnosticEventHubAuthorizationRuleId : null
-//     eventHubName: !empty(diagnosticEventHubName) ? diagnosticEventHubName : null
-//     metrics: diagnosticsMetrics
-//   }
-//   scope: loadBalancer
-// }
-
 resource loadBalancer_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
   name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
   properties: {

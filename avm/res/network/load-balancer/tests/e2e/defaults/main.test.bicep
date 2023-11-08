@@ -69,5 +69,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         publicIPAddressId: nestedDependencies.outputs.publicIPResourceId
       }
     ]
+    lock: {}
   }
 }]
