@@ -22,11 +22,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/operations-management.solution:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm-res-operationsmanagement-solution:1.0.0`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Ms](#example-2-ms)
 - [Nonms](#example-3-nonms)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -38,14 +39,12 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module solution 'br:bicep/modules/operations-management.solution:1.0.0' = {
+module solution 'br/public:avm-res-operationsmanagement-solution:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-omsmin'
   params: {
     // Required parameters
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
     name: 'Updates'
-    // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
   }
 }
 ```
@@ -68,10 +67,6 @@ module solution 'br:bicep/modules/operations-management.solution:1.0.0' = {
     },
     "name": {
       "value": "Updates"
-    },
-    // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
     }
   }
 }
@@ -87,14 +82,13 @@ module solution 'br:bicep/modules/operations-management.solution:1.0.0' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module solution 'br:bicep/modules/operations-management.solution:1.0.0' = {
+module solution 'br/public:avm-res-operationsmanagement-solution:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-omsms'
   params: {
     // Required parameters
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
     name: 'AzureAutomation'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     product: 'OMSGallery'
     publisher: 'Microsoft'
   }
@@ -121,9 +115,6 @@ module solution 'br:bicep/modules/operations-management.solution:1.0.0' = {
       "value": "AzureAutomation"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "product": {
       "value": "OMSGallery"
     },
@@ -144,14 +135,13 @@ module solution 'br:bicep/modules/operations-management.solution:1.0.0' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module solution 'br:bicep/modules/operations-management.solution:1.0.0' = {
+module solution 'br/public:avm-res-operationsmanagement-solution:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-omsnonms'
   params: {
     // Required parameters
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
     name: 'omsnonms001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     product: 'nonmsTestSolutionProduct'
     publisher: 'nonmsTestSolutionPublisher'
   }
@@ -178,14 +168,67 @@ module solution 'br:bicep/modules/operations-management.solution:1.0.0' = {
       "value": "omsnonms001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "product": {
       "value": "nonmsTestSolutionProduct"
     },
     "publisher": {
       "value": "nonmsTestSolutionPublisher"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module solution 'br/public:avm-res-operationsmanagement-solution:1.0.0' = {
+  name: '${uniqueString(deployment().name, location)}-test-omswaf'
+  params: {
+    // Required parameters
+    logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
+    name: 'AzureAutomation'
+    // Non-required parameters
+    product: 'OMSGallery'
+    publisher: 'Microsoft'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "logAnalyticsWorkspaceName": {
+      "value": "<logAnalyticsWorkspaceName>"
+    },
+    "name": {
+      "value": "AzureAutomation"
+    },
+    // Non-required parameters
+    "product": {
+      "value": "OMSGallery"
+    },
+    "publisher": {
+      "value": "Microsoft"
     }
   }
 }
@@ -208,14 +251,14 @@ module solution 'br:bicep/modules/operations-management.solution:1.0.0' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`product`](#parameter-product) | string | The product of the deployed solution. For Microsoft published gallery solution it should be `OMSGallery` and the target solution resource product will be composed as `OMSGallery/{name}`. For third party solution, it can be anything. This is case sensitive. |
 | [`publisher`](#parameter-publisher) | string | The publisher name of the deployed solution. For Microsoft published gallery solution, it is `Microsoft`. |
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
