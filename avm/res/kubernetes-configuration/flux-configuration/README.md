@@ -434,14 +434,26 @@ The namespace to which this configuration is installed to. Maximum of 253 lower 
 Scope at which the configuration will be installed.
 - Required: Yes
 - Type: string
-- Allowed: `[cluster, namespace]`
+- Allowed:
+  ```Bicep
+  [
+    'cluster'
+    'namespace'
+  ]
+  ```
 
 ### Parameter: `sourceKind`
 
 Source Kind to pull the configuration data from.
 - Required: Yes
 - Type: string
-- Allowed: `[Bucket, GitRepository]`
+- Allowed:
+  ```Bicep
+  [
+    'Bucket'
+    'GitRepository'
+  ]
+  ```
 
 ### Parameter: `suspend`
 
