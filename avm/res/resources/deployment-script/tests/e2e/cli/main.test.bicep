@@ -51,7 +51,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location
-    azPowerShellVersion: '2.9.1'
+    azCliVersion: '2.9.1'
     kind: 'AzureCLI'
     retentionInterval: 'P1D'
     environmentVariables: {

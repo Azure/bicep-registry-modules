@@ -26,11 +26,6 @@ param namePrefix string = '#_namePrefix_#'
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
   location: location
-  tags: {
-    'hidden-title': 'This is visible in the resource name'
-    Environment: 'Non-Prod'
-    Role: 'DeploymentValidation'
-  }
 }
 
 module nestedDependencies 'dependencies.bicep' = {
