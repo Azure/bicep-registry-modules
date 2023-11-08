@@ -165,8 +165,6 @@ function Set-PesterGitHubOutput {
 
   if (($passedTests.Count -gt 0)) {
 
-    # TODO: Add support for outputs
-
     $fileContent += [System.Collections.ArrayList]@(
       '| Name | Source |',
       '| :-- | :-- |'
@@ -278,7 +276,7 @@ function Set-PesterGitHubOutput {
           $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/$testFile#L$testLine)"
         }
 
-        $fileContent += '| {0} | {1} | <code>{2}</code> |' -f $testName, (($warning -join '</br>') -replace '\|', '\|'), $testReference
+        $fileContent += ('| {0} | {1} | <code>{2}</code> |' -f $testName, $warning, $testReference)
       }
     }
   } else {

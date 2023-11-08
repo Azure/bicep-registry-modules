@@ -1043,12 +1043,14 @@ Describe 'Module tests' -Tag 'Module' {
           }
 
           if ($formattedDiff.Count -gt 0) {
-            $warningMessage = "The implemented user-defined type is not the same as the expected [user-defined type]({0}) defined in the [AVM specs]({1}) and should not have diff`n{2}" -f $expectedUdtUrl, $link, ($formattedDiff | Out-String)
+            $warningMessage = "The implemented user-defined type is not the same as the expected user-defined type ({0}) defined in the AVM specs ({1}) and should not have diff`n{2}" -f $expectedUdtUrl, $link, ($formattedDiff | Out-String)
             Write-Warning $warningMessage
 
             # Adding also to output to show in GitHub CI
+            $mdFormattedDiff = ($formattedDiff -join '</br>') -replace '\|', '\|'
+            $mdFormattedWarningMessage = "The implemented user-defined type is not the same as the expected [user-defined type]({0}) defined in the [AVM specs]({1}) and should not have diff</br><pre>{2}</pre>" -f $expectedUdtUrl, $link, $mdFormattedDiff
             Write-Output @{
-              Warning = $warningMessage
+              Warning = $mdFormattedWarningMessage
             }
           }
         }
