@@ -1061,7 +1061,7 @@ Describe 'Module tests' -Tag 'Module' {
       }
     }
 
-    It "[<moduleFolderName>] If a [tags] parameter exists it should be nullable." -TestCases $udtTestCases {
+    It "[<moduleFolderName>] If a [tags] parameter exists it should be nullable." -TestCases $udtSpecificTestCases {
 
       param(
         [hashtable] $templateFileContent
@@ -1103,41 +1103,49 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       param(
         [object[]] $testFileContent
       )
-      Write-Error 'Not implemented'
-
+      ($testFileContent -match "^param serviceShort string = '(.*)$") | Should -Not -BeNullOrEmpty -Because 'the module test deployment file should contain a service short parameter using the syntax [param serviceShort string = ''*''].'
     }
 
-    It "[<moduleFolderName>] Bicep test deployment files in a [default] folder should contain a service short with ending [min]" -TestCases $deploymentTestFileTestCases {
+    It "[<moduleFolderName>] Bicep test deployment files in a [default] folder should contain a service short with ending [min]" -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]defaults[\\|\/].*' }) {
 
       param(
-        [string] $testFilePath,
         [object[]] $testFileContent
       )
-      #TODO: must consider that the folder name is more than just 'default'
-      Write-Error 'Not implemented'
 
+      if (($testFileContent | Out-String) -match "param serviceShort string = '(.*)'") {
+        $serviceShort = $Matches[1]
+        $serviceShort | Should -BeLike "*min"
+      } else {
+        Set-ItResult -Skipped -Because 'the module test deployment file should contain a service short parameter using the syntax [param serviceShort string = ''*min''] but it doesn''t.'
+      }
     }
 
-    It "[<moduleFolderName>] Bicep test deployment files in a [max] folder should contain a service short with ending [max]" -TestCases $deploymentTestFileTestCases {
+    It "[<moduleFolderName>] Bicep test deployment files in a [max] folder should contain a service short with ending [max]" -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]max[\\|\/].*' }) {
 
       param(
-        [string] $testFilePath,
         [object[]] $testFileContent
       )
-      #TODO: must consider that the folder name is more than just 'max'
-      Write-Error 'Not implemented'
 
+      if (($testFileContent | Out-String) -match "param serviceShort string = '(.*)'") {
+        $serviceShort = $Matches[1]
+        $serviceShort | Should -BeLike "*max"
+      } else {
+        Set-ItResult -Skipped -Because 'the module test deployment file should contain a service short parameter using the syntax [param serviceShort string = ''*max''] but it doesn''t.'
+      }
     }
 
-    It "[<moduleFolderName>] Bicep test deployment files in a [waf-aligned] folder should contain a service short with ending [waf]" -TestCases $deploymentTestFileTestCases {
+    It "[<moduleFolderName>] Bicep test deployment files in a [waf-aligned] folder should contain a service short with ending [waf]" -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]waf\-aligned[\\|\/].*' }) {
 
       param(
-        [string] $testFilePath,
         [object[]] $testFileContent
       )
-      #TODO: must consider that the folder name is more than just 'waf'
-      Write-Error 'Not implemented'
 
+      if (($testFileContent | Out-String) -match "param serviceShort string = '(.*)'") {
+        $serviceShort = $Matches[1]
+        $serviceShort | Should -BeLike "*waf"
+      } else {
+        Set-ItResult -Skipped -Because 'the module test deployment file should contain a service short parameter using the syntax [param serviceShort string = ''*waf''] but it doesn''t.'
+      }
     }
 
     It "[<moduleFolderName>] Bicep test deployment files should contain a test name" -TestCases $deploymentTestFileTestCases {
