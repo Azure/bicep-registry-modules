@@ -49,11 +49,11 @@ This instance deploys the module with an Azure CLI script.
 
 ```bicep
 module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdsmin'
+  name: '${uniqueString(deployment().name, location)}-test-rdscli'
   params: {
     // Required parameters
     kind: 'AzureCLI'
-    name: 'rdsmin001'
+    name: 'rdscli001'
     // Non-required parameters
     azPowerShellVersion: '2.9.1'
     environmentVariables: {
@@ -90,7 +90,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
       "value": "AzureCLI"
     },
     "name": {
-      "value": "rdsmin001"
+      "value": "rdscli001"
     },
     // Non-required parameters
     "azPowerShellVersion": {
@@ -363,16 +363,16 @@ This instance deploys the module with access to a private network.
 
 ```bicep
 module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdsmax'
+  name: '${uniqueString(deployment().name, location)}-test-rdspvet'
   params: {
     // Required parameters
     kind: 'AzureCLI'
-    name: 'rdsmax001'
+    name: 'rdspvet001'
     // Non-required parameters
     arguments: '-argument1 \\\'test\\\''
     azCliVersion: '2.9.1'
     cleanupPreference: 'Always'
-    containerGroupName: 'dep-cg-rdsmax'
+    containerGroupName: 'dep-cg-rdspvet'
     environmentVariables: {
       secureList: [
         {
@@ -432,7 +432,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
       "value": "AzureCLI"
     },
     "name": {
-      "value": "rdsmax001"
+      "value": "rdspvet001"
     },
     // Non-required parameters
     "arguments": {
@@ -445,7 +445,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
       "value": "Always"
     },
     "containerGroupName": {
-      "value": "dep-cg-rdsmax"
+      "value": "dep-cg-rdspvet"
     },
     "environmentVariables": {
       "value": {
@@ -525,11 +525,11 @@ This instance deploys the module with an Azure PowerShell script.
 
 ```bicep
 module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdsmin'
+  name: '${uniqueString(deployment().name, location)}-test-rdsps'
   params: {
     // Required parameters
     kind: 'AzurePowerShell'
-    name: 'rdsmin001'
+    name: 'rdsps001'
     // Non-required parameters
     arguments: '-var1 \\\'value1\\\''
     azPowerShellVersion: '9.7'
@@ -563,7 +563,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
       "value": "AzurePowerShell"
     },
     "name": {
-      "value": "rdsmin001"
+      "value": "rdsps001"
     },
     // Non-required parameters
     "arguments": {
