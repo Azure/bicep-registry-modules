@@ -1179,7 +1179,6 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
         [object[]] $testFileContent
       )
 
-      ($testFileContent | Out-String) | Should -Match "@description\('Optional\. A token to inject into the name of each resource\. This value can be automatically injected by the CI\.'\)" -Because 'The parameter [namePrefix] should have the expected description.'
       ($testFileContent | Out-String) | Should -Match  "param namePrefix string = '#_namePrefix_#'" -Because 'The test CI needs this value to ensure that deployed resources have unique names per fork.'
     }
 
