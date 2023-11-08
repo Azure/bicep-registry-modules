@@ -56,6 +56,10 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
     name: 'rdsmin001'
     // Non-required parameters
     azPowerShellVersion: '2.9.1'
+    environmentVariables: {
+      name: 'var1'
+      value: 'value1'
+    }
     location: '<location>'
     managedIdentities: {
       userAssignedResourcesIds: [
@@ -63,7 +67,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
       ]
     }
     retentionInterval: 'P1D'
-    scriptContent: 'echo \'AVM Deployment Script test!\''
+    scriptContent: 'echo \'Enviornment variable value is: $var1\''
     storageAccountResourceId: '<storageAccountResourceId>'
   }
 }
@@ -92,6 +96,12 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
     "azPowerShellVersion": {
       "value": "2.9.1"
     },
+    "environmentVariables": {
+      "value": {
+        "name": "var1",
+        "value": "value1"
+      }
+    },
     "location": {
       "value": "<location>"
     },
@@ -106,7 +116,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
       "value": "P1D"
     },
     "scriptContent": {
-      "value": "echo \"AVM Deployment Script test!\""
+      "value": "echo \"Enviornment variable value is: $var1\""
     },
     "storageAccountResourceId": {
       "value": "<storageAccountResourceId>"
@@ -521,6 +531,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
     kind: 'AzurePowerShell'
     name: 'rdsmin001'
     // Non-required parameters
+    arguments: '-var1 \\\'value1\\\''
     azPowerShellVersion: '9.7'
     location: '<location>'
     managedIdentities: {
@@ -529,7 +540,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
       ]
     }
     retentionInterval: 'P1D'
-    scriptContent: 'Write-Host \'AVM Deployment Script test!\''
+    scriptContent: 'Write-Host \'Arguemnt var1 value is: $var1\''
     storageAccountResourceId: '<storageAccountResourceId>'
   }
 }
@@ -555,6 +566,9 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
       "value": "rdsmin001"
     },
     // Non-required parameters
+    "arguments": {
+      "value": "-var1 \\\"value1\\\""
+    },
     "azPowerShellVersion": {
       "value": "9.7"
     },
@@ -572,7 +586,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
       "value": "P1D"
     },
     "scriptContent": {
-      "value": "Write-Host \"AVM Deployment Script test!\""
+      "value": "Write-Host \"Arguemnt var1 value is: $var1\""
     },
     "storageAccountResourceId": {
       "value": "<storageAccountResourceId>"

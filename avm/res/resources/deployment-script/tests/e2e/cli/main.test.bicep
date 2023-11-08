@@ -54,7 +54,11 @@ module testDeployment '../../../main.bicep' = {
     azPowerShellVersion: '2.9.1'
     kind: 'AzureCLI'
     retentionInterval: 'P1D'
-    scriptContent: 'echo \'AVM Deployment Script test!\''
+    environmentVariables: {
+      name: 'var1'
+      value: 'value1'
+    }
+    scriptContent: 'echo \'Enviornment variable value is: $var1\''
     storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
     managedIdentities: {
       userAssignedResourcesIds: [
