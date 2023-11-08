@@ -127,7 +127,7 @@ function Set-PesterGitHubOutput {
 
       $intermediateNameElements = $failedTest.Path
       $intermediateNameElements[-1] = '**{0}**' -f $failedTest.ExpandedName
-      $testName = (($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|').Trim()
+      $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
 
       $errorTestLine = $failedTest.ErrorRecord.TargetObject.Line
       $errorTestFile = (($failedTest.ErrorRecord.TargetObject.File -split '[\/|\\](avm[\/|\\])')[-2, -1] -join '') -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
@@ -173,7 +173,7 @@ function Set-PesterGitHubOutput {
 
       $intermediateNameElements = $passedTest.Path
       $intermediateNameElements[-1] = '**{0}**' -f $passedTest.ExpandedName
-      $testName = (($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|').Trim()
+      $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
 
       $testLine = $passedTest.ScriptBlock.StartPosition.StartLine
       $testFile = (($passedTest.ScriptBlock.File -split '[\/|\\](avm[\/|\\])')[-2, -1] -join '') -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
@@ -218,7 +218,7 @@ function Set-PesterGitHubOutput {
 
       $intermediateNameElements = $skippedTest.Path
       $intermediateNameElements[-1] = '**{0}**' -f $skippedTest.ExpandedName
-      $testName = (($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|').Trim()
+      $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
 
       $reason = ('Test {0}' -f $skippedTest.ErrorRecord.Exception.Message -replace '\|', '\|').Trim()
 
@@ -265,7 +265,7 @@ function Set-PesterGitHubOutput {
       foreach ($warning in $test.StandardOutput.Warning) {
         $intermediateNameElements = $test.Path
         $intermediateNameElements[-1] = '**{0}**' -f $test.ExpandedName
-        $testName = (($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|').Trim()
+        $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
 
         $testLine = $test.ScriptBlock.StartPosition.StartLine
         $testFile = (($test.ScriptBlock.File -split '[\/|\\](avm[\/|\\])')[-2, -1] -join '') -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
