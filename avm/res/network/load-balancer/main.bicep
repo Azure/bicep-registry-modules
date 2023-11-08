@@ -250,10 +250,10 @@ resource loadBalancer_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@
 }]
 
 resource loadBalancer_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(loadBalancer.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  name: guid(loadBalancer.id, roleAssignment.principalIds, roleAssignment.roleDefinitionIdOrName)
   properties: {
     roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : roleAssignment.roleDefinitionIdOrName
-    principalId: roleAssignment.principalId
+    principalId: roleAssignment.principalIds
     description: roleAssignment.?description
     principalType: roleAssignment.?principalType
     condition: roleAssignment.?condition
@@ -337,7 +337,7 @@ type roleAssignmentType = {
   roleDefinitionIdOrName: string
 
   @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
+  principalIds: array
 
   @description('Optional. The principal type of the assigned principal ID.')
   principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device' | null)?
