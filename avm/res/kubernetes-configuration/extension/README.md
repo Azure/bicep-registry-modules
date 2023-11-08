@@ -24,7 +24,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/kubernetes-configuration/extension:0.2.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/kubernetes-configuration/extension:0.1.1`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module extension 'br/public:avm/res/kubernetes-configuration/extension:0.2.0' = {
+module extension 'br/public:avm/res/kubernetes-configuration/extension:0.1.1' = {
   name: '${uniqueString(deployment().name, location)}-test-kcemin'
   params: {
     // Required parameters
@@ -126,7 +126,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module extension 'br/public:avm/res/kubernetes-configuration/extension:0.2.0' = {
+module extension 'br/public:avm/res/kubernetes-configuration/extension:0.1.1' = {
   name: '${uniqueString(deployment().name, location)}-test-kcemax'
   params: {
     // Required parameters
@@ -250,7 +250,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module extension 'br/public:avm/res/kubernetes-configuration/extension:0.2.0' = {
+module extension 'br/public:avm/res/kubernetes-configuration/extension:0.1.1' = {
   name: '${uniqueString(deployment().name, location)}-test-kcewaf'
   params: {
     // Required parameters
@@ -478,7 +478,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/kubernetes-configuration/flux-configuration:0.2.0` | Remote reference |
+| `br/public:avm-res-kubernetesconfiguration-fluxconfiguration:0.1.1` | Remote reference |
 
 ## Notes
 
