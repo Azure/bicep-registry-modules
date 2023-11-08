@@ -134,28 +134,7 @@ var backendAddressPoolNames = [for backendAddressPool in (backendAddressPools ??
   name: backendAddressPool.name
 }]
 
-// @description('Optional. The name of metrics that will be streamed.')
-// @allowed([
-//   'AllMetrics'
-// ])
-// param diagnosticMetricsToEnable array = [
-//   'AllMetrics'
-// ]
-
-// @description('Optional. The name of the diagnostic setting, if deployed. If left empty, it defaults to "<resourceName>-diagnosticSettings".')
-// param diagnosticSettingsName string = ''
-
 var enableReferencedModulesTelemetry = false
-
-// var diagnosticsMetrics = [for metric in diagnosticMetricsToEnable: {
-//   category: metric
-//   timeGrain: null
-//   enabled: true
-// }]
-
-// ============ //
-// Dependencies //
-// ============ //
 
 resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
   name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
@@ -185,7 +164,7 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
   }
 }
 
-module loadBalancer_backendAddressPools 'backend-address-pool/main.bicep' = [for (backendAddressPool, index) in backendAddressPools: {
+module loadBalancer_backendAddressPools 'backend-address-pool/main.bicep' = [for (backendAddressPool, index) in backendAddressPools ?? []: {
   name: '${uniqueString(deployment().name, location)}-loadBalancer-backendAddressPools-${index}'
   params: {
     loadBalancerName: loadBalancer.name
