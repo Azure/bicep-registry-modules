@@ -101,8 +101,8 @@ function Set-PesterGitHubOutput {
   ## Header table
   $fileContent += [System.Collections.ArrayList]@(
     '| Total No. of Processed Tests| Passed Tests :white_check_mark: | Failed Tests :x: | Skipped Tests :paperclip: | Tests with warnings :warning: |',
-    '| :-- | :-- | :-- | :-- |',
-    ('| {0} | {1} | {2} | {3} |' -f $PesterTestResults.TotalCount, $passedTests.count , $failedTests.count, $skippedTests.count, $testsWithWarnings.count),
+    '| :-- | :-- | :-- | :-- | :-- |',
+    ('| {0} | {1} | {2} | {3} | {4} |' -f $PesterTestResults.TotalCount, $passedTests.count , $failedTests.count, $skippedTests.count, $testsWithWarnings.count),
     ''
   )
 
@@ -278,7 +278,7 @@ function Set-PesterGitHubOutput {
           $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/$testFile#L$testLine)"
         }
 
-        $fileContent += '| {0} | {1} | <code>{2}</code> |' -f $testName, ($warning -replace '\|', '\|'), $testReference
+        $fileContent += '| {0} | {1} | <code>{2}</code> |' -f $testName, (($warning -join '</br>') -replace '\|', '\|'), $testReference
       }
     }
   } else {
