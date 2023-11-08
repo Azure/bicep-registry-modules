@@ -55,7 +55,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
     kind: 'AzureCLI'
     name: 'rdscli001'
     // Non-required parameters
-    azPowerShellVersion: '2.9.1'
+    azCliVersion: '2.9.1'
     environmentVariables: {
       name: 'var1'
       value: 'value1'
@@ -93,7 +93,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
       "value": "rdscli001"
     },
     // Non-required parameters
-    "azPowerShellVersion": {
+    "azCliVersion": {
       "value": "2.9.1"
     },
     "environmentVariables": {
