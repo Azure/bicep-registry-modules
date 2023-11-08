@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "312752597234296859"
+      "templateHash": "4011104275409862667"
     },
     "name": "Deployment Scripts",
     "description": "This module deploys Deployment Scripts.",
@@ -356,7 +356,7 @@
     },
     "deploymentScript": {
       "type": "Microsoft.Resources/deploymentScripts",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2023-08-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -406,7 +406,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('deploymentScript', '2020-10-01', 'full').location]"
+      "value": "[reference('deploymentScript', '2023-08-01', 'full').location]"
     },
     "outputs": {
       "type": "object",
