@@ -23,7 +23,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/insights/action-group:0.1.2`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/insights/action-group:0.2.0`.
 
 - [Defaults](#example-1-defaults)
 - [Max](#example-2-max)
@@ -36,7 +36,7 @@ The following section provides usage examples for the module, which were used to
 <summary>via Bicep module</summary>
 
 ```bicep
-module actionGroup 'br/public:avm/res/insights/action-group:0.1.2' = {
+module actionGroup 'br/public:avm/res/insights/action-group:0.2.0' = {
   name: '${uniqueString(deployment().name, location)}-test-iagmin'
   params: {
     // Required parameters
@@ -133,7 +133,7 @@ module actionGroup 'br/public:avm/res/insights/action-group:0.1.2' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module actionGroup 'br/public:avm/res/insights/action-group:0.1.2' = {
+module actionGroup 'br/public:avm/res/insights/action-group:0.2.0' = {
   name: '${uniqueString(deployment().name, location)}-test-iagmax'
   params: {
     // Required parameters
@@ -252,7 +252,7 @@ module actionGroup 'br/public:avm/res/insights/action-group:0.1.2' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module actionGroup 'br/public:avm/res/insights/action-group:0.1.2' = {
+module actionGroup 'br/public:avm/res/insights/action-group:0.2.0' = {
   name: '${uniqueString(deployment().name, location)}-test-iagwaf'
   params: {
     // Required parameters
