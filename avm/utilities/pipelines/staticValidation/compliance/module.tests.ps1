@@ -1113,8 +1113,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       )
 
       if (($testFileContent | Out-String) -match "param serviceShort string = '(.*)'") {
-        $serviceShort = $Matches[1]
-        $serviceShort | Should -BeLike "*min"
+        $Matches[1] | Should -BeLike "*min"
       } else {
         Set-ItResult -Skipped -Because 'the module test deployment file should contain a service short parameter using the syntax [param serviceShort string = ''*min''] but it doesn''t.'
       }
@@ -1127,8 +1126,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       )
 
       if (($testFileContent | Out-String) -match "param serviceShort string = '(.*)'") {
-        $serviceShort = $Matches[1]
-        $serviceShort | Should -BeLike "*max"
+        $Matches[1] | Should -BeLike "*max"
       } else {
         Set-ItResult -Skipped -Because 'the module test deployment file should contain a service short parameter using the syntax [param serviceShort string = ''*max''] but it doesn''t.'
       }
@@ -1141,8 +1139,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       )
 
       if (($testFileContent | Out-String) -match "param serviceShort string = '(.*)'") {
-        $serviceShort = $Matches[1]
-        $serviceShort | Should -BeLike "*waf"
+        $Matches[1] | Should -BeLike "*waf"
       } else {
         Set-ItResult -Skipped -Because 'the module test deployment file should contain a service short parameter using the syntax [param serviceShort string = ''*waf''] but it doesn''t.'
       }
@@ -1153,8 +1150,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       param(
         [object[]] $testFileContent
       )
-      Write-Error 'Not implemented'
-
+      (($testFileContent | Out-String) -match "metadata name = ") | Should -Be $true -Because 'Test cases should contain a test name in the format `metadata name = ''This is one hell of a test name''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
     }
 
     It "[<moduleFolderName>] Bicep test deployment files should contain a test description" -TestCases $deploymentTestFileTestCases {
@@ -1162,8 +1158,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       param(
         [object[]] $testFileContent
       )
-      Write-Error 'Not implemented'
-
+      (($testFileContent | Out-String) -match "metadata description = ") | Should -Be $true -Because 'Test cases should contain a test description in the format `metadata description = ''This is one hell of a description''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
     }
 
     It "[<moduleFolderName>] Bicep test deployment files should contain namePrefix parameter with value ['#_namePrefix_#']" -TestCases $deploymentTestFileTestCases {
