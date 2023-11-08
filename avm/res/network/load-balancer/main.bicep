@@ -136,6 +136,12 @@ var backendAddressPoolNames = [for backendAddressPool in (backendAddressPools ??
 
 var enableReferencedModulesTelemetry = false
 
+var builtInRoleNames = {
+  Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+  Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
+  Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+}
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -216,7 +222,6 @@ resource loadBalancer_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!emp
   }
   scope: loadBalancer
 }
-
 
 resource loadBalancer_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
   name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
