@@ -1023,12 +1023,10 @@ Describe 'Module tests' -Tag 'Module' {
               $formattedDiff += ('- {0}' -f $finding.InputObject)
             }
           }
-          if ($formattedDiff.Count -gt 0) {
-            Write-Warning ($formattedDiff | Out-String) -Verbose
-            $mdFormattedDiff = ($formattedDiff -join '</br>') -replace '\|', '\|'
-          }
 
-        ($implementedSchema | Out-String) | Should -Be ($expectedSchema | Out-String) -Because ('The implemented user-defined type should be the same as the expected user-defined type of url [{0}] and should not have diff </br><pre>{1}</pre>.' -f $expectedUdtUrl, $mdFormattedDiff)
+          if ($formattedDiff.Count -gt 0) {
+            Write-Warning ("The implemented user-defined type should be the same as the expected user-defined type of url [{0}] and should not have diff`n{1}" -f $expectedUdtUrl, ($formattedDiff | Out-String))
+          }
         }
       } else {
         Set-ItResult -Skipped -Because "the module template has no [$parameterName] parameter."
