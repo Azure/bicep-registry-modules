@@ -253,7 +253,7 @@ resource loadBalancer_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@
 }]
 
 resource loadBalancer_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(loadBalancer.id, roleAssignment.principalIds, roleAssignment.roleDefinitionIdOrName)
+  name: guid(loadBalancer.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
   properties: {
     roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : roleAssignment.roleDefinitionIdOrName
     principalId: roleAssignment.principalId
