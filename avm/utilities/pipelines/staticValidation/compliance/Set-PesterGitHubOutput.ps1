@@ -81,12 +81,10 @@ function Set-PesterGitHubOutput {
   $passedTests = $PesterTestResults.Passed
   $failedTests = $PesterTestResults.Failed
   $skippedTests = $PesterTestResults.Skipped
-  $testsWithWarnings = ($passedTests + $failedTests + $skippedTests) | Where-Object { $_.StandardOutput.Keys -eq 'Warning' }
 
   Write-Verbose ('Formatting [{0}] passed tests' -f $passedTests.Count)
   Write-Verbose ('Formatting [{0}] failed tests' -f $failedTests.Count)
   Write-Verbose ('Formatting [{0}] skipped tests' -f $skippedTests.Count)
-  Write-Verbose ('Formatting [{0}] tests with explicit warnings' -f $warnings.Count)
 
   ######################
   # Set output content #
@@ -100,9 +98,9 @@ function Set-PesterGitHubOutput {
 
   ## Header table
   $fileContent += [System.Collections.ArrayList]@(
-    '| Total No. of Processed Tests| Passed Tests :white_check_mark: | Failed Tests :x: | Skipped Tests :paperclip: | Tests with warnings :warning: |',
-    '| :-- | :-- | :-- | :-- | :-- |',
-    ('| {0} | {1} | {2} | {3} | {4} |' -f $PesterTestResults.TotalCount, $passedTests.count , $failedTests.count, $skippedTests.count, $testsWithWarnings.count),
+    '| Total No. of Processed Tests| Passed Tests :white_check_mark: | Failed Tests :x: | Skipped Tests :paperclip: |',
+    '| :-- | :-- | :-- | :-- |'
+            ('| {0} | {1} | {2} | {3} |' -f $PesterTestResults.TotalCount, $passedTests.count , $failedTests.count, $skippedTests.count),
     ''
   )
 
@@ -127,11 +125,11 @@ function Set-PesterGitHubOutput {
 
       $intermediateNameElements = $failedTest.Path
       $intermediateNameElements[-1] = '**{0}**' -f $failedTest.ExpandedName
-      $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
+      $testName = (($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|').Trim()
 
       $errorTestLine = $failedTest.ErrorRecord.TargetObject.Line
       $errorTestFile = (($failedTest.ErrorRecord.TargetObject.File -split '[\/|\\](avm[\/|\\])')[-2, -1] -join '') -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
-      $errorMessage = ($failedTest.ErrorRecord.TargetObject.Message.Trim() -replace '_', '\_') -replace '\n', '<br>' # Replace new lines with <br> to enable line breaks in markdown
+      $errorMessage = $failedTest.ErrorRecord.TargetObject.Message.Trim() -replace '\n', '<br>' # Replace new lines with <br> to enable line breaks in markdown
 
       $testReference = '{0}:{1}' -f (Split-Path $errorTestFile -Leaf), $errorTestLine
 
@@ -173,7 +171,7 @@ function Set-PesterGitHubOutput {
 
       $intermediateNameElements = $passedTest.Path
       $intermediateNameElements[-1] = '**{0}**' -f $passedTest.ExpandedName
-      $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
+      $testName = (($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|').Trim()
 
       $testLine = $passedTest.ScriptBlock.StartPosition.StartLine
       $testFile = (($passedTest.ScriptBlock.File -split '[\/|\\](avm[\/|\\])')[-2, -1] -join '') -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
@@ -218,12 +216,12 @@ function Set-PesterGitHubOutput {
 
       $intermediateNameElements = $skippedTest.Path
       $intermediateNameElements[-1] = '**{0}**' -f $skippedTest.ExpandedName
-      $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
+      $testName = (($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|').Trim()
 
       $reason = ('Test {0}' -f $skippedTest.ErrorRecord.Exception.Message -replace '\|', '\|').Trim()
 
-      $testLine = $skippedTest.ScriptBlock.StartPosition.StartLine
-      $testFile = (($skippedTest.ScriptBlock.File -split '[\/|\\](avm[\/|\\])')[-2, -1] -join '') -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
+      $testLine = $passedTest.ScriptBlock.StartPosition.StartLine
+      $testFile = (($passedTest.ScriptBlock.File -split '[\/|\\](avm[\/|\\])')[-2, -1] -join '') -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
 
       $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
       if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
@@ -242,55 +240,6 @@ function Set-PesterGitHubOutput {
     '</details>',
     ''
   )
-
-  ##################
-  ##   Warnings   ##
-  ##################
-
-  Write-Verbose 'Adding warnings'
-  $fileContent += [System.Collections.ArrayList]@(
-    '',
-    '<details>',
-    '<summary>List of explicit warnings</summary>',
-    ''
-  )
-
-  if ($testsWithWarnings.Count -gt 0) {
-
-    $fileContent += [System.Collections.ArrayList]@(
-      '| Name | Warning | Source |',
-      '| :-- | :-- | :-- |'
-    )
-    foreach ($test in ($testsWithWarnings | Sort-Object -Property { $PSItem.ExpandedName }) ) {
-      foreach ($warning in $test.StandardOutput.Warning) {
-        $intermediateNameElements = $test.Path
-        $intermediateNameElements[-1] = '**{0}**' -f $test.ExpandedName
-        $testName = ((($intermediateNameElements -join ' / ' | Out-String) -replace '\|', '\|') -replace '_', '\_').Trim()
-
-        $testLine = $test.ScriptBlock.StartPosition.StartLine
-        $testFile = (($test.ScriptBlock.File -split '[\/|\\](avm[\/|\\])')[-2, -1] -join '') -replace '\\', '/' # e.g., [avm\res\cognitive-services\account\tests\unit\custom.tests.ps1]
-
-        $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
-        if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
-          # Creating URL to test file to enable users to 'click' on it
-          $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/$testFile#L$testLine)"
-        }
-
-        $fileContent += ('| {0} | {1} | <code>{2}</code> |' -f $testName, $warning, $testReference)
-      }
-    }
-  } else {
-    $fileContent += ('No tests with warnings.')
-  }
-
-  $fileContent += [System.Collections.ArrayList]@(
-    '',
-    '</details>',
-    ''
-  )
-
-
-
 
   if ($PSCmdlet.ShouldProcess("Test results file in path [$OutputFilePath]", 'Create')) {
     $null = New-Item -Path $OutputFilePath -Force -Value ($fileContent | Out-String)
