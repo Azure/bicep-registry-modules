@@ -1118,7 +1118,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       ($testFileContent -match "^param serviceShort string = '(.*)$") | Should -Not -BeNullOrEmpty -Because 'the module test deployment file should contain a parameter [serviceShort] using the syntax [param serviceShort string = ''*''].'
     }
 
-    It "[<moduleFolderName>] [<testName>] Bicep test deployment files in a [waf-aligned] folder should have a parameter [serviceShort] with a value ending with [min]" -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]defaults[\\|\/].*' }) {
+    It "[<moduleFolderName>] [<testName>] Bicep test deployment files in a [defaults] folder should have a parameter [serviceShort] with a value ending with [min]" -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]defaults[\\|\/].*' }) {
 
       param(
         [object[]] $testFileContent
