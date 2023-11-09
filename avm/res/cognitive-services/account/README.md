@@ -32,7 +32,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm-res-cognitiveservices-account:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/cognitive-services/account:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -51,7 +51,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-csamin'
   params: {
     // Required parameters
@@ -155,7 +155,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-csamax'
   params: {
     // Required parameters
@@ -407,7 +407,7 @@ This instance deploys the module as a Speech Service.
 <summary>via Bicep module</summary>
 
 ```bicep
-module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-csaspeech'
   params: {
     // Required parameters
@@ -557,7 +557,7 @@ This instance deploys the module using Customer-Managed-Keys using a System-Assi
 <summary>via Bicep module</summary>
 
 ```bicep
-module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-csaecrs'
   params: {
     // Required parameters
@@ -683,7 +683,7 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 <summary>via Bicep module</summary>
 
 ```bicep
-module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-csaencr'
   params: {
     // Required parameters
@@ -815,7 +815,7 @@ This instance deploys the module in alignment with the best-pratices of the Well
 <summary>via Bicep module</summary>
 
 ```bicep
-module account 'br/public:avm-res-cognitiveservices-account:1.0.0' = {
+module account 'br/public:avm/res/cognitive-services/account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-csawaf'
   params: {
     // Required parameters
@@ -1211,7 +1211,33 @@ Enable/Disable usage telemetry for module.
 Kind of the Cognitive Services. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region.
 - Required: Yes
 - Type: string
-- Allowed: `[AnomalyDetector, Bing.Autosuggest.v7, Bing.CustomSearch, Bing.EntitySearch, Bing.Search.v7, Bing.SpellCheck.v7, CognitiveServices, ComputerVision, ContentModerator, CustomVision.Prediction, CustomVision.Training, Face, FormRecognizer, ImmersiveReader, Internal.AllInOne, LUIS, LUIS.Authoring, Personalizer, QnAMaker, SpeechServices, TextAnalytics, TextTranslation]`
+- Allowed:
+  ```Bicep
+  [
+    'AnomalyDetector'
+    'Bing.Autosuggest.v7'
+    'Bing.CustomSearch'
+    'Bing.EntitySearch'
+    'Bing.Search.v7'
+    'Bing.SpellCheck.v7'
+    'CognitiveServices'
+    'ComputerVision'
+    'ContentModerator'
+    'CustomVision.Prediction'
+    'CustomVision.Training'
+    'Face'
+    'FormRecognizer'
+    'ImmersiveReader'
+    'Internal.AllInOne'
+    'LUIS'
+    'LUIS.Authoring'
+    'Personalizer'
+    'QnAMaker'
+    'SpeechServices'
+    'TextAnalytics'
+    'TextTranslation'
+  ]
+  ```
 
 ### Parameter: `location`
 
@@ -1465,7 +1491,14 @@ Whether or not public network access is allowed for this resource. For security 
 - Required: No
 - Type: string
 - Default: `''`
-- Allowed: `['', Disabled, Enabled]`
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `restore`
 
@@ -1555,7 +1588,28 @@ SKU of the Cognitive Services resource. Use 'Get-AzCognitiveServicesAccountSku' 
 - Required: No
 - Type: string
 - Default: `'S0'`
-- Allowed: `[C2, C3, C4, F0, F1, S, S0, S1, S10, S2, S3, S4, S5, S6, S7, S8, S9]`
+- Allowed:
+  ```Bicep
+  [
+    'C2'
+    'C3'
+    'C4'
+    'F0'
+    'F1'
+    'S'
+    'S0'
+    'S1'
+    'S10'
+    'S2'
+    'S3'
+    'S4'
+    'S5'
+    'S6'
+    'S7'
+    'S8'
+    'S9'
+  ]
+  ```
 
 ### Parameter: `tags`
 
