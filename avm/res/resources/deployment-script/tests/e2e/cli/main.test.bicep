@@ -55,10 +55,12 @@ module testDeployment '../../../main.bicep' = {
     kind: 'AzureCLI'
     retentionInterval: 'P1D'
     environmentVariables: {
-      secureList: {
-        name: 'var1'
-        value: 'value1'
-      }
+      secureList: [
+        {
+          name: 'var1'
+          value: 'AVM Deployment Script test!'
+        }
+      ]
     }
     scriptContent: 'echo \'Enviornment variable value is: \' $var1'
     storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId

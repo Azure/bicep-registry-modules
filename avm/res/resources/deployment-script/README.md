@@ -57,10 +57,12 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
     // Non-required parameters
     azCliVersion: '2.9.1'
     environmentVariables: {
-      secureList: {
-        name: 'var1'
-        value: 'value1'
-      }
+      secureList: [
+        {
+          name: 'var1'
+          value: 'value1'
+        }
+      ]
     }
     location: '<location>'
     managedIdentities: {
@@ -100,10 +102,12 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
     },
     "environmentVariables": {
       "value": {
-        "secureList": {
-          "name": "var1",
-          "value": "value1"
-        }
+        "secureList": [
+          {
+            "name": "var1",
+            "value": "value1"
+          }
+        ]
       }
     },
     "location": {
@@ -544,7 +548,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
       ]
     }
     retentionInterval: 'P1D'
-    scriptContent: 'Write-Host \'Arguemnt var1 value is: \' $var1'
+    scriptContent: 'param([string] $var1);Write-Host \'Arguemnt var1 value is:\' $var1'
     storageAccountResourceId: '<storageAccountResourceId>'
   }
 }
@@ -590,7 +594,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
       "value": "P1D"
     },
     "scriptContent": {
-      "value": "Write-Host \"Arguemnt var1 value is: \" $var1"
+      "value": "param([string] $var1);Write-Host \"Arguemnt var1 value is:\" $var1"
     },
     "storageAccountResourceId": {
       "value": "<storageAccountResourceId>"
