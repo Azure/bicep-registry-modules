@@ -203,24 +203,21 @@ Describe 'Module tests' -Tag 'Module' {
           if (-not $templateContent) {
             throw ($bicepTemplateCompilationFailedException -f $templateFilePath)
           }
-        }
-        elseIf (Test-Path (Join-Path $moduleFolderPath 'main.json')) {
+        } elseIf (Test-Path (Join-Path $moduleFolderPath 'main.json')) {
           $templateFilePath = Join-Path $moduleFolderPath 'main.json'
           $templateContent = Get-Content $templateFilePath -Raw | ConvertFrom-Json -AsHashtable
 
           if (-not $templateContent) {
             throw ($jsonTemplateLoadFailedException -f $templateFilePath)
           }
-        }
-        else {
+        } else {
           throw ($templateNotFoundException -f $moduleFolderPath)
         }
         $convertedTemplates[$moduleFolderPathKey] = @{
           templateFilePath = $templateFilePath
           templateContent  = $templateContent
         }
-      }
-      else {
+      } else {
         $templateContent = $convertedTemplates[$moduleFolderPathKey].templateContent
         $templateFilePath = $convertedTemplates[$moduleFolderPathKey].templateFilePath
       }
@@ -342,24 +339,21 @@ Describe 'Module tests' -Tag 'Module' {
           if (-not $templateContent) {
             throw ($bicepTemplateCompilationFailedException -f $templateFilePath)
           }
-        }
-        elseIf (Test-Path (Join-Path $moduleFolderPath 'main.json')) {
+        } elseIf (Test-Path (Join-Path $moduleFolderPath 'main.json')) {
           $templateFilePath = Join-Path $moduleFolderPath 'main.json'
           $templateContent = Get-Content $templateFilePath -Raw | ConvertFrom-Json -AsHashtable
 
           if (-not $templateContent) {
             throw ($jsonTemplateLoadFailedException -f $templateFilePath)
           }
-        }
-        else {
+        } else {
           throw ($templateNotFoundException -f $moduleFolderPath)
         }
         $convertedTemplates[$moduleFolderPathKey] = @{
           templateFilePath = $templateFilePath
           templateContent  = $templateContent
         }
-      }
-      else {
+      } else {
         $templateContent = $convertedTemplates[$moduleFolderPathKey].templateContent
         $templateFilePath = $convertedTemplates[$moduleFolderPathKey].templateFilePath
       }
@@ -423,17 +417,13 @@ Describe 'Module tests' -Tag 'Module' {
       $SchemaArray = @()
       if ($Schemaverion -eq $RgDeploymentSchema) {
         $SchemaOutput = $true
-      }
-      elseIf ($Schemaverion -eq $SubscriptionDeploymentSchema) {
+      } elseIf ($Schemaverion -eq $SubscriptionDeploymentSchema) {
         $SchemaOutput = $true
-      }
-      elseIf ($Schemaverion -eq $MgDeploymentSchema) {
+      } elseIf ($Schemaverion -eq $MgDeploymentSchema) {
         $SchemaOutput = $true
-      }
-      elseIf ($Schemaverion -eq $TenantDeploymentSchema) {
+      } elseIf ($Schemaverion -eq $TenantDeploymentSchema) {
         $SchemaOutput = $true
-      }
-      else {
+      } else {
         $SchemaOutput = $false
       }
       $SchemaArray += $SchemaOutput
@@ -496,8 +486,7 @@ Describe 'Module tests' -Tag 'Module' {
       foreach ($Param in $Parameter) {
         if ($Param.substring(0, 1) -cnotmatch '[a-z]' -or $Param -match '-' -or $Param -match '_') {
           $CamelCasingFlag += $false
-        }
-        else {
+        } else {
           $CamelCasingFlag += $true
         }
       }
@@ -522,8 +511,7 @@ Describe 'Module tests' -Tag 'Module' {
       foreach ($Variab in $Variable) {
         if ($Variab.substring(0, 1) -cnotmatch '[a-z]' -or $Variab -match '-') {
           $CamelCasingFlag += $false
-        }
-        else {
+        } else {
           $CamelCasingFlag += $true
         }
       }
@@ -542,8 +530,7 @@ Describe 'Module tests' -Tag 'Module' {
       foreach ($Output in $Outputs) {
         if ($Output.substring(0, 1) -cnotmatch '[a-z]' -or $Output -match '-' -or $Output -match '_') {
           $CamelCasingFlag += $false
-        }
-        else {
+        } else {
           $CamelCasingFlag += $true
         }
       }
@@ -560,8 +547,7 @@ Describe 'Module tests' -Tag 'Module' {
       # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
       if ($templateContent.resources.GetType().Name -eq 'Object[]') {
         $templateResources = $templateContent.resources
-      }
-      else {
+      } else {
         $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
       }
 
@@ -579,8 +565,7 @@ Describe 'Module tests' -Tag 'Module' {
       # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
       if ($templateContent.resources.GetType().Name -eq 'Object[]') {
         $templateResources = $templateContent.resources
-      }
-      else {
+      } else {
         $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
       }
 
@@ -604,8 +589,7 @@ Describe 'Module tests' -Tag 'Module' {
       # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
       if ($templateContent.resources.GetType().Name -eq 'Object[]') {
         $templateResources = $templateContent.resources
-      }
-      else {
+      } else {
         $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
       }
 
@@ -634,8 +618,7 @@ Describe 'Module tests' -Tag 'Module' {
         if ($Locationparamoutput -contains 'Location') {
           if ($Locationparamoutputvalue -eq '[resourceGroup().Location]' -or $Locationparamoutputvalue -eq 'global') {
             $LocationFlag = $true
-          }
-          else {
+          } else {
 
             $LocationFlag = $false
           }
@@ -696,8 +679,7 @@ Describe 'Module tests' -Tag 'Module' {
       $readMeFileContentHeader = (Get-Content -Path $readMeFilePath)[0]
       if ($readMeFileContentHeader -match '^.*`\[(.+)\]`.*') {
         $primaryResourceType = $matches[1]
-      }
-      else {
+      } else {
         Write-Error "Cannot identity primary resource type in readme header [$readMeFileContentHeader] and cannot execute the test."
         return
       }
@@ -705,8 +687,7 @@ Describe 'Module tests' -Tag 'Module' {
       # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
       if ($templateContent.resources.GetType().Name -eq 'Object[]') {
         $templateResources = $templateContent.resources
-      }
-      else {
+      } else {
         $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
       }
 
@@ -732,8 +713,7 @@ Describe 'Module tests' -Tag 'Module' {
       $readMeFileContentHeader = (Get-Content -Path $readMeFilePath)[0]
       if ($readMeFileContentHeader -match '^.*`\[(.+)\]`.*') {
         $primaryResourceType = $matches[1]
-      }
-      else {
+      } else {
         Write-Error "Cannot identity primary resource type in readme header [$readMeFileContentHeader] and cannot execute the test."
         return
       }
@@ -741,8 +721,7 @@ Describe 'Module tests' -Tag 'Module' {
       # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
       if ($templateContent.resources.GetType().Name -eq 'Object[]') {
         $templateResources = $templateContent.resources
-      }
-      else {
+      } else {
         $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
       }
 
@@ -895,23 +874,20 @@ Describe 'Module tests' -Tag 'Module' {
           if (-not $templateContent) {
             throw ($bicepTemplateCompilationFailedException -f $templateFilePath)
           }
-        }
-        elseIf (Test-Path (Join-Path $moduleFolderPath 'main.json')) {
+        } elseIf (Test-Path (Join-Path $moduleFolderPath 'main.json')) {
           $templateFilePath = Join-Path $moduleFolderPath 'main.json'
           $templateContent = Get-Content $templateFilePath -Raw | ConvertFrom-Json -AsHashtable
 
           if (-not $templateContent) {
             throw ($jsonTemplateLoadFailedException -f $templateFilePath)
           }
-        }
-        else {
+        } else {
           throw ($templateNotFoundException -f $moduleFolderPath)
         }
         $convertedTemplates[$moduleFolderPathKey] = @{
           templateContent = $templateContent
         }
-      }
-      else {
+      } else {
         $templateContent = $convertedTemplates[$moduleFolderPathKey].templateContent
       }
 
@@ -1021,8 +997,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
   try {
     $apiSpecs = Invoke-WebRequest -Uri $ApiSpecsFileUri
     $ApiVersions = ConvertFrom-Json $apiSpecs.Content -AsHashtable
-  }
-  catch {
+  } catch {
     Write-Warning "Failed to download API specs file from [$ApiSpecsFileUri]. Skipping API tests"
     Set-ItResult -Skipped -Because "Failed to download API specs file from [$ApiSpecsFileUri]. Skipping API tests."
     return
@@ -1042,24 +1017,21 @@ Describe 'API version tests' -Tag 'ApiCheck' {
         if (-not $templateContent) {
           throw ($bicepTemplateCompilationFailedException -f $templateFilePath)
         }
-      }
-      elseIf (Test-Path (Join-Path $moduleFolderPath 'main.json')) {
+      } elseIf (Test-Path (Join-Path $moduleFolderPath 'main.json')) {
         $templateFilePath = Join-Path $moduleFolderPath 'main.json'
         $templateContent = Get-Content $templateFilePath -Raw | ConvertFrom-Json -AsHashtable
 
         if (-not $templateContent) {
           throw ($jsonTemplateLoadFailedException -f $templateFilePath)
         }
-      }
-      else {
+      } else {
         throw ($templateNotFoundException -f $moduleFolderPath)
       }
       $convertedTemplates[$moduleFolderPathKey] = @{
         templateFilePath = $templateFilePath
         templateContent  = $templateContent
       }
-    }
-    else {
+    } else {
       $templateContent = $convertedTemplates[$moduleFolderPathKey].templateContent
       $templateFilePath = $convertedTemplates[$moduleFolderPathKey].templateFilePath
     }
@@ -1165,8 +1137,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
       # We allow the latest 5 including previews (in case somebody wants to use preview), or the latest 3 non-preview
       $approvedApiVersions += $resourceTypeApiVersions | Select-Object -Last 5
       $approvedApiVersions += $resourceTypeApiVersions | Where-Object { $_ -notlike '*-preview' } | Select-Object -Last 5
-    }
-    else {
+    } else {
       # We allow the latest 5 non-preview preview
       $approvedApiVersions += $resourceTypeApiVersions | Where-Object { $_ -notlike '*-preview' } | Select-Object -Last 5
     }
@@ -1179,8 +1150,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
 
       # The original failed test was
       # $approvedApiVersions | Should -Contain $TargetApi
-    }
-    else {
+    } else {
       # Provide a warning if an API version is second to next to expire.
       $indexOfVersion = $approvedApiVersions.IndexOf($TargetApi)
 
