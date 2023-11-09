@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'WAF-aligned'
+metadata description = 'This instance deploys the module in alignment with the best-pratices of the Well-Architectured-Framework.'
+
 // ========== //
 // Parameters //
 // ========== //
