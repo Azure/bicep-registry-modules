@@ -127,7 +127,9 @@ var builtInRoleNames = {
 
 var containerSettings = {
   containerGroupName: containerGroupName
-  subnetIds: !empty(subnetIds) ? subnetIds : null
+  subnetIds: [for resourceId in (subnetResourceIds ?? []): {
+    id: resourceId
+  }]
 }
 
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourcesIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
