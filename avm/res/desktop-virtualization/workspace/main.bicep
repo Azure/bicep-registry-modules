@@ -32,7 +32,7 @@ param diagnosticEventHubAuthorizationRuleId string = ''
 
 @sys.description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category.')
 param diagnosticEventHubName string = ''
-
+/*
 @sys.description('Optional. Whether or not public network access is allowed for this resource.')
 @allowed([
   ''
@@ -41,7 +41,7 @@ param diagnosticEventHubName string = ''
 ])
 param publicNetworkAccess string = ''
 
-/*
+
 @sys.description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointype
 */
@@ -140,7 +140,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource workspace 'Microsoft.DesktopVirtualization/workspaces@2022-10-14-preview' = {
+resource workspace 'Microsoft.DesktopVirtualization/workspaces@2022-09-09' = {
   name: name
   location: location
   tags: tags
@@ -148,7 +148,7 @@ resource workspace 'Microsoft.DesktopVirtualization/workspaces@2022-10-14-previe
     applicationGroupReferences: appGroupResourceIds
     description: description
     friendlyName: friendlyName
-    publicNetworkAccess: publicNetworkAccess
+    //publicNetworkAccess: publicNetworkAccess
   }
 }
 
