@@ -163,6 +163,7 @@ runs:
             SubscriptionId       = $subscriptionId
             ManagementGroupId    = $managementGroupId
             AdditionalParameters = @{}
+            RepoRoot             = $env:GITHUB_WORKSPACE
           }
 
           Write-Verbose 'Invoke task with' -Verbose
@@ -212,6 +213,7 @@ runs:
             SubscriptionId       = $subscriptionId
             ManagementGroupId    = $managementGroupId
             DoNotThrow           = $true
+            RepoRoot             = $env:GITHUB_WORKSPACE
             AdditionalParameters = @{}
           }
 

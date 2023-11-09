@@ -30,6 +30,9 @@ Optional. Name of the management group to deploy into. Mandatory if deploying in
 .PARAMETER additionalParameters
 Optional. Additional parameters you can provide with the deployment. E.g. @{ resourceGroupName = 'myResourceGroup' }
 
+.PARAMETER RepoRoot
+Optional. Path to the root of the repository.
+
 .EXAMPLE
 Test-TemplateDeployment -templateFilePath 'C:/key-vault/vault/main.bicep' -parameterFilePath 'C:/key-vault/vault/.test/parameters.json' -location 'WestEurope' -resourceGroupName 'aLegendaryRg'
 
@@ -68,14 +71,17 @@ function Test-TemplateDeployment {
         [string] $managementGroupId,
 
         [Parameter(Mandatory = $false)]
-        [Hashtable] $additionalParameters
+        [Hashtable] $additionalParameters,
+
+        [Parameter(Mandatory = $false)]
+        [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.parent.FullName
     )
 
     begin {
         Write-Debug ('{0} entered' -f $MyInvocation.MyCommand)
 
         # Load helper
-        . (Join-Path (Get-Item -Path $PSScriptRoot).parent.parent.FullName 'sharedScripts' 'Get-ScopeOfTemplateFile.ps1')
+        . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-ScopeOfTemplateFile.ps1')
     }
 
     process {
@@ -174,8 +180,7 @@ function Test-TemplateDeployment {
             if ($res.Details) { Write-Warning ($res.Details | ConvertTo-Json -Depth 10 | Out-String) }
             if ($res.Message) { Write-Warning $res.Message }
             Write-Error 'Template is not valid.'
-        }
-        else {
+        } else {
             Write-Verbose 'Template is valid' -Verbose
         }
     }

@@ -1,10 +1,5 @@
 # Kubernetes Configuration Extensions `[Microsoft.KubernetesConfiguration/extensions]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a Kubernetes Configuration Extension.
 
 ## Navigation
@@ -29,7 +24,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm-res-kubernetesconfiguration-extension:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/kubernetes-configuration/extension:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -47,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
+module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-kcemin'
   params: {
     // Required parameters
@@ -131,7 +126,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
+module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-kcemax'
   params: {
     // Required parameters
@@ -255,7 +250,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
+module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-kcewaf'
   params: {
     // Required parameters
