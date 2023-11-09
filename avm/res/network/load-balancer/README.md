@@ -53,6 +53,7 @@ module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
     ]
     name: 'nlbdef001'
     // Non-required parameters
+    diagnosticSettings: []
     location: '<location>'
     lock: {}
   }
@@ -84,6 +85,9 @@ module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
       "value": "nlbdef001"
     },
     // Non-required parameters
+    "diagnosticSettings": {
+      "value": []
+    },
     "location": {
       "value": "<location>"
     },
