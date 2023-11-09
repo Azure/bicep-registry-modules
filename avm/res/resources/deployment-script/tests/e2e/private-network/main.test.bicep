@@ -59,10 +59,8 @@ module testDeployment '../../../main.bicep' = {
     lock: {
       kind: 'None'
     }
-    subnetIds: [
-      {
-        id: nestedDependencies.outputs.subnetResourceId
-      }
+    subnetResourceIds: [
+      nestedDependencies.outputs.subnetResourceId
     ]
     containerGroupName: 'dep-${namePrefix}-cg-${serviceShort}'
     arguments: '-argument1 \\"test\\"'

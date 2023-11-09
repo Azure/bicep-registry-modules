@@ -19,14 +19,6 @@ param location string = resourceGroup().location
 ])
 param kind string
 
-@metadata({
-  example: '''
-  {
-    '/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myID': {}
-    '/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/myResourceGroup/providers/Microsoft.ManagedIdentity/userAssignedIdentities/myID2': {}
-  }
-  '''
-})
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
 
@@ -125,11 +117,13 @@ var builtInRoleNames = {
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
+var subnetIds = [for resourceId in (subnetResourceIds ?? []): {
+  id: resourceId
+}]
+
 var containerSettings = {
   containerGroupName: containerGroupName
-  subnetIds: [for resourceId in (subnetResourceIds ?? []): {
-    id: resourceId
-  }]
+  subnetIds: subnetIds
 }
 
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourcesIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }

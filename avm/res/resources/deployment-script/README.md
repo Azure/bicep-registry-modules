@@ -60,7 +60,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
       secureList: [
         {
           name: 'var1'
-          value: 'value1'
+          value: 'AVM Deployment Script test!'
         }
       ]
     }
@@ -105,7 +105,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
         "secureList": [
           {
             "name": "var1",
-            "value": "value1"
+            "value": "AVM Deployment Script test!"
           }
         ]
       }
@@ -413,10 +413,8 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
     runOnce: true
     scriptContent: 'echo \'AVM Deployment Script test!\''
     storageAccountResourceId: '<storageAccountResourceId>'
-    subnetIds: [
-      {
-        id: '<id>'
-      }
+    subnetResourceIds: [
+      '<subnetResourceId>'
     ]
     timeout: 'PT1H'
   }
@@ -505,11 +503,9 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
     "storageAccountResourceId": {
       "value": "<storageAccountResourceId>"
     },
-    "subnetIds": {
+    "subnetResourceIds": {
       "value": [
-        {
-          "id": "<id>"
-        }
+        "<subnetResourceId>"
       ]
     },
     "timeout": {
@@ -539,7 +535,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
     kind: 'AzurePowerShell'
     name: 'rdsps001'
     // Non-required parameters
-    arguments: '-var1 \\\'value1\\\''
+    arguments: '-var1 \\\'AVM Deployment Script test!\\\''
     azPowerShellVersion: '9.7'
     location: '<location>'
     managedIdentities: {
@@ -548,7 +544,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
       ]
     }
     retentionInterval: 'P1D'
-    scriptContent: 'param([string] $var1);Write-Host \'Arguemnt var1 value is:\' $var1'
+    scriptContent: 'param([string] $var1);Write-Host \'Argument var1 value is:\' $var1'
     storageAccountResourceId: '<storageAccountResourceId>'
   }
 }
@@ -575,7 +571,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
     },
     // Non-required parameters
     "arguments": {
-      "value": "-var1 \\\"value1\\\""
+      "value": "-var1 \\\"AVM Deployment Script test!\\\""
     },
     "azPowerShellVersion": {
       "value": "9.7"
@@ -594,7 +590,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
       "value": "P1D"
     },
     "scriptContent": {
-      "value": "param([string] $var1);Write-Host \"Arguemnt var1 value is:\" $var1"
+      "value": "param([string] $var1);Write-Host \"Argument var1 value is:\" $var1"
     },
     "storageAccountResourceId": {
       "value": "<storageAccountResourceId>"
@@ -753,7 +749,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
 | [`runOnce`](#parameter-runonce) | bool | When set to false, script will run every time the template is deployed. When set to true, the script will only run once. |
 | [`scriptContent`](#parameter-scriptcontent) | string | Script body. Max length: 32000 characters. To run an external script, use primaryScriptURI instead. |
 | [`storageAccountResourceId`](#parameter-storageaccountresourceid) | string | The resource ID of the storage account to use for this deployment script. If none is provided, the deployment script uses a temporary, managed storage account. |
-| [`subnetIds`](#parameter-subnetids) | array | List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network. |
+| [`subnetResourceIds`](#parameter-subnetresourceids) | array | List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network. |
 | [`supportingScriptUris`](#parameter-supportingscripturis) | array | List of supporting files for the external script (defined in primaryScriptUri). Does not work with internal scripts (code defined in scriptContent). |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 | [`timeout`](#parameter-timeout) | string | Maximum allowed script execution time specified in ISO 8601 format. Default value is PT1H - 1 hour; 'PT30M' - 30 minutes; 'P5D' - 5 days; 'P1Y' 1 year. |
@@ -982,7 +978,7 @@ The resource ID of the storage account to use for this deployment script. If non
 - Type: string
 - Default: `''`
 
-### Parameter: `subnetIds`
+### Parameter: `subnetResourceIds`
 
 List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network.
 - Required: No
