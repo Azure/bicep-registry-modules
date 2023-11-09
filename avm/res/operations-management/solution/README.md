@@ -22,7 +22,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm-res-operationsmanagement-solution:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/operations-management/solution:0.1.0`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Ms](#example-2-ms)
@@ -39,7 +39,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module solution 'br/public:avm-res-operationsmanagement-solution:1.0.0' = {
+module solution 'br/public:avm/res/operations-management/solution:0.1.0' = {
   name: '${uniqueString(deployment().name, location)}-test-omsmin'
   params: {
     // Required parameters
@@ -82,7 +82,7 @@ module solution 'br/public:avm-res-operationsmanagement-solution:1.0.0' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module solution 'br/public:avm-res-operationsmanagement-solution:1.0.0' = {
+module solution 'br/public:avm/res/operations-management/solution:0.1.0' = {
   name: '${uniqueString(deployment().name, location)}-test-omsms'
   params: {
     // Required parameters
@@ -135,7 +135,7 @@ module solution 'br/public:avm-res-operationsmanagement-solution:1.0.0' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module solution 'br/public:avm-res-operationsmanagement-solution:1.0.0' = {
+module solution 'br/public:avm/res/operations-management/solution:0.1.0' = {
   name: '${uniqueString(deployment().name, location)}-test-omsnonms'
   params: {
     // Required parameters
@@ -191,7 +191,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module solution 'br/public:avm-res-operationsmanagement-solution:1.0.0' = {
+module solution 'br/public:avm/res/operations-management/solution:0.1.0' = {
   name: '${uniqueString(deployment().name, location)}-test-omswaf'
   params: {
     // Required parameters
