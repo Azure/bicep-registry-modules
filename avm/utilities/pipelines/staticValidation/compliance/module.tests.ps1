@@ -1131,7 +1131,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       }
     }
 
-    It "[<moduleFolderName>] [<testName>] Bicep test deployment files in a [waf-aligned] folder should have a [serviceShort] parameter with a value ending with  [max]" -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]max[\\|\/].*' }) {
+    It "[<moduleFolderName>] [<testName>] Bicep test deployment files in a [max] folder should have a [serviceShort] parameter with a value ending with  [max]" -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]max[\\|\/].*' }) {
 
       param(
         [object[]] $testFileContent
