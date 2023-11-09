@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.17.1.54307",
-      "templateHash": "9256001094655897958"
+      "version": "0.20.4.51522",
+      "templateHash": "833542007942248127"
     }
   },
   "parameters": {
@@ -508,8 +508,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "202431137913857937"
+              "version": "0.20.4.51522",
+              "templateHash": "16460597376355798226"
             }
           },
           "parameters": {
@@ -624,8 +624,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "1614201235391929822"
+              "version": "0.20.4.51522",
+              "templateHash": "6007120194379601496"
             }
           },
           "parameters": {
@@ -810,8 +810,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "12127209814794616693"
+              "version": "0.20.4.51522",
+              "templateHash": "4517002612082108976"
             }
           },
           "parameters": {
@@ -1024,8 +1024,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "4479417156640631213"
+                      "version": "0.20.4.51522",
+                      "templateHash": "7245579132120762193"
                     }
                   },
                   "parameters": {
@@ -1257,8 +1257,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "18249196113362453683"
+                      "version": "0.20.4.51522",
+                      "templateHash": "10904550076456244554"
                     }
                   },
                   "parameters": {
@@ -1424,8 +1424,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "18031134609435998803"
+                      "version": "0.20.4.51522",
+                      "templateHash": "1702591846921117923"
                     }
                   },
                   "parameters": {
@@ -1469,13 +1469,13 @@
                     "storageAccountTier": {
                       "type": "string",
                       "defaultValue": "Standard",
-                      "metadata": {
-                        "description": "Storage Account Tier. Standard or Premium."
-                      },
                       "allowedValues": [
                         "Standard",
                         "Premium"
-                      ]
+                      ],
+                      "metadata": {
+                        "description": "Storage Account Tier. Standard or Premium."
+                      }
                     },
                     "storageAccountType": {
                       "type": "string",
@@ -1578,8 +1578,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "17503428422705423640"
+                      "version": "0.20.4.51522",
+                      "templateHash": "9600251812206527204"
                     }
                   },
                   "parameters": {
@@ -1625,13 +1625,13 @@
                     "newOrExisting": {
                       "type": "string",
                       "defaultValue": "new",
-                      "metadata": {
-                        "description": "Create new or use existing resource selection. new/existing"
-                      },
                       "allowedValues": [
                         "new",
                         "existing"
-                      ]
+                      ],
+                      "metadata": {
+                        "description": "Create new or use existing resource selection. new/existing"
+                      }
                     },
                     "publicIpSku": {
                       "type": "object",
@@ -1690,8 +1690,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "6933415234523780727"
+                              "version": "0.20.4.51522",
+                              "templateHash": "10285833394103624009"
                             }
                           },
                           "parameters": {
@@ -1779,8 +1779,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "15457691896165794204"
+                      "version": "0.20.4.51522",
+                      "templateHash": "5940136841444431674"
                     }
                   },
                   "parameters": {
@@ -1850,8 +1850,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "14921151177649558405"
+                      "version": "0.20.4.51522",
+                      "templateHash": "17859563125985691252"
                     }
                   },
                   "parameters": {
@@ -2300,8 +2300,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "14921151177649558405"
+              "version": "0.20.4.51522",
+              "templateHash": "17859563125985691252"
             }
           },
           "parameters": {
@@ -2371,8 +2371,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "7047988714817970266"
+              "version": "0.20.4.51522",
+              "templateHash": "11962635656628054684"
             }
           },
           "parameters": {
@@ -2397,8 +2397,8 @@
             "maxStalenessPrefix": {
               "type": "int",
               "defaultValue": 100000,
-              "maxValue": 2147483647,
               "minValue": 10,
+              "maxValue": 2147483647,
               "metadata": {
                 "description": "Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 2147483647. Multi Region: 100000 to 2147483647."
               }
@@ -2406,8 +2406,8 @@
             "maxIntervalInSeconds": {
               "type": "int",
               "defaultValue": 300,
-              "maxValue": 86400,
               "minValue": 5,
+              "maxValue": 86400,
               "metadata": {
                 "description": "Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400."
               }
@@ -2415,16 +2415,16 @@
             "defaultConsistencyLevel": {
               "type": "string",
               "defaultValue": "Session",
-              "metadata": {
-                "description": "The default consistency level of the Cosmos DB account."
-              },
               "allowedValues": [
                 "Eventual",
                 "ConsistentPrefix",
                 "Session",
                 "BoundedStaleness",
                 "Strong"
-              ]
+              ],
+              "metadata": {
+                "description": "The default consistency level of the Cosmos DB account."
+              }
             },
             "systemManagedFailover": {
               "type": "bool",
@@ -2578,8 +2578,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "14921151177649558405"
+              "version": "0.20.4.51522",
+              "templateHash": "17859563125985691252"
             }
           },
           "parameters": {
@@ -2712,8 +2712,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "16476643639621389885"
+              "version": "0.20.4.51522",
+              "templateHash": "10602011129206476818"
             }
           },
           "parameters": {
@@ -2923,8 +2923,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "8537210623178436890"
+                      "version": "0.20.4.51522",
+                      "templateHash": "360648515260161811"
                     }
                   },
                   "parameters": {
@@ -3260,8 +3260,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.17.1.54307",
-                      "templateHash": "4624203276325441916"
+                      "version": "0.20.4.51522",
+                      "templateHash": "6559244219540224490"
                     }
                   },
                   "parameters": {
@@ -3354,8 +3354,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "6096852621529567618"
+                              "version": "0.20.4.51522",
+                              "templateHash": "126845826961713133"
                             }
                           },
                           "parameters": {
@@ -3401,8 +3401,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "12088186693464622402"
+                              "version": "0.20.4.51522",
+                              "templateHash": "10561926575326750511"
                             }
                           },
                           "parameters": {
@@ -3483,8 +3483,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "2790888798891464386"
+                              "version": "0.20.4.51522",
+                              "templateHash": "214279049349519283"
                             }
                           },
                           "parameters": {
@@ -3571,8 +3571,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "13841886012506053625"
+                              "version": "0.20.4.51522",
+                              "templateHash": "7518064445977878794"
                             }
                           },
                           "variables": {
@@ -3642,8 +3642,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.17.1.54307",
-                              "templateHash": "13053169466513026986"
+                              "version": "0.20.4.51522",
+                              "templateHash": "8878124287371755661"
                             }
                           },
                           "parameters": {
@@ -3697,14 +3697,14 @@
                             "cleanupPreference": {
                               "type": "string",
                               "defaultValue": "OnSuccess",
-                              "metadata": {
-                                "description": "When the script resource is cleaned up"
-                              },
                               "allowedValues": [
                                 "OnSuccess",
                                 "OnExpiration",
                                 "Always"
-                              ]
+                              ],
+                              "metadata": {
+                                "description": "When the script resource is cleaned up"
+                              }
                             },
                             "helmCharts": {
                               "type": "array",
@@ -3780,8 +3780,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.17.1.54307",
-                                      "templateHash": "5467358035052467881"
+                                      "version": "0.20.4.51522",
+                                      "templateHash": "15202707389943465244"
                                     }
                                   },
                                   "parameters": {
@@ -3858,14 +3858,14 @@
                                     "cleanupPreference": {
                                       "type": "string",
                                       "defaultValue": "OnSuccess",
-                                      "metadata": {
-                                        "description": "When the script resource is cleaned up"
-                                      },
                                       "allowedValues": [
                                         "OnSuccess",
                                         "OnExpiration",
                                         "Always"
-                                      ]
+                                      ],
+                                      "metadata": {
+                                        "description": "When the script resource is cleaned up"
+                                      }
                                     },
                                     "isApp": {
                                       "type": "bool",
@@ -4031,8 +4031,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.17.1.54307",
-              "templateHash": "17122869042654732242"
+              "version": "0.20.4.51522",
+              "templateHash": "548997878853567947"
             }
           },
           "parameters": {
