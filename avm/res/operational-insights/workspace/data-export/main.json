@@ -1,0 +1,107 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "7753879701724594327"
+    },
+    "name": "Log Analytics Workspace Data Exports",
+    "description": "This module deploys a Log Analytics Workspace Data Export.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "minLength": 4,
+      "maxLength": 63,
+      "metadata": {
+        "description": "Required. The data export rule name."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent workspaces. Required if the template is used in a standalone deployment."
+      }
+    },
+    "destination": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Destination properties."
+      }
+    },
+    "enable": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Active when enabled."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via the Customer Usage Attribution ID (GUID)."
+      }
+    },
+    "tableNames": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. An array of tables to export, for example: ['Heartbeat', 'SecurityEvent']."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/dataExports",
+      "apiVersion": "2020-08-01",
+      "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
+      "properties": {
+        "destination": "[parameters('destination')]",
+        "enable": "[parameters('enable')]",
+        "tableNames": "[parameters('tableNames')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the data export."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the data export."
+      },
+      "value": "[resourceId('Microsoft.OperationalInsights/workspaces/dataExports', parameters('workspaceName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the data export was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

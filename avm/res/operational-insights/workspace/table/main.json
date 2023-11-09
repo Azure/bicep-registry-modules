@@ -1,0 +1,137 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "9983426146462646968"
+    },
+    "name": "Log Analytics Workspace Tables",
+    "description": "This module deploys a Log Analytics Workspace Table.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the table."
+      }
+    },
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent workspaces. Required if the template is used in a standalone deployment."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via the Customer Usage Attribution ID (GUID)."
+      }
+    },
+    "plan": {
+      "type": "string",
+      "defaultValue": "Analytics",
+      "allowedValues": [
+        "Basic",
+        "Analytics"
+      ],
+      "metadata": {
+        "description": "Optional. Instruct the system how to handle and charge the logs ingested to this table."
+      }
+    },
+    "restoredLogs": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Restore parameters."
+      }
+    },
+    "retentionInDays": {
+      "type": "int",
+      "defaultValue": -1,
+      "minValue": -1,
+      "maxValue": 730,
+      "metadata": {
+        "description": "Optional. The table retention in days, between 4 and 730. Setting this property to -1 will default to the workspace retention."
+      }
+    },
+    "schema": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Table's schema."
+      }
+    },
+    "searchResults": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Parameters of the search job that initiated this table."
+      }
+    },
+    "totalRetentionInDays": {
+      "type": "int",
+      "defaultValue": -1,
+      "minValue": -1,
+      "maxValue": 2555,
+      "metadata": {
+        "description": "Optional. The table total retention in days, between 4 and 2555. Setting this property to -1 will default to table retention."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/tables",
+      "apiVersion": "2022-10-01",
+      "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
+      "properties": {
+        "plan": "[parameters('plan')]",
+        "restoredLogs": "[parameters('restoredLogs')]",
+        "retentionInDays": "[parameters('retentionInDays')]",
+        "schema": "[parameters('schema')]",
+        "searchResults": "[parameters('searchResults')]",
+        "totalRetentionInDays": "[parameters('totalRetentionInDays')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the table."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the table."
+      },
+      "value": "[resourceId('Microsoft.OperationalInsights/workspaces/tables', parameters('workspaceName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the table was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

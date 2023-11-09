@@ -1,0 +1,205 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "13903182753870680383"
+    },
+    "name": "Log Analytics Workspace Datasources",
+    "description": "This module deploys a Log Analytics Workspace Data Source.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "logAnalyticsWorkspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Log Analytics workspace. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the solution."
+      }
+    },
+    "kind": {
+      "type": "string",
+      "defaultValue": "AzureActivityLog",
+      "allowedValues": [
+        "AzureActivityLog",
+        "WindowsEvent",
+        "WindowsPerformanceCounter",
+        "IISLogs",
+        "LinuxSyslog",
+        "LinuxSyslogCollection",
+        "LinuxPerformanceObject",
+        "LinuxPerformanceCollection"
+      ],
+      "metadata": {
+        "description": "Required. The kind of the DataSource."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags to configure in the resource."
+      }
+    },
+    "linkedResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Resource ID of the resource to be linked."
+      }
+    },
+    "eventLogName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Windows event log name to configure when kind is WindowsEvent."
+      }
+    },
+    "eventTypes": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Windows event types to configure when kind is WindowsEvent."
+      }
+    },
+    "objectName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Name of the object to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject."
+      }
+    },
+    "instanceName": {
+      "type": "string",
+      "defaultValue": "*",
+      "metadata": {
+        "description": "Optional. Name of the instance to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject."
+      }
+    },
+    "intervalSeconds": {
+      "type": "int",
+      "defaultValue": 60,
+      "metadata": {
+        "description": "Optional. Interval in seconds to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject."
+      }
+    },
+    "performanceCounters": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of counters to configure when the kind is LinuxPerformanceObject."
+      }
+    },
+    "counterName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Counter name to configure when kind is WindowsPerformanceCounter."
+      }
+    },
+    "state": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. State to configure when kind is IISLogs or LinuxSyslogCollection or LinuxPerformanceCollection."
+      }
+    },
+    "syslogName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. System log to configure when kind is LinuxSyslog."
+      }
+    },
+    "syslogSeverities": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Severities to configure when kind is LinuxSyslog."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "resources": {
+    "defaultTelemetry": {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    "workspace": {
+      "existing": true,
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[parameters('logAnalyticsWorkspaceName')]"
+    },
+    "dataSource": {
+      "type": "Microsoft.OperationalInsights/workspaces/dataSources",
+      "apiVersion": "2020-08-01",
+      "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
+      "kind": "[parameters('kind')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "linkedResourceId": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'AzureActivityLog')), parameters('linkedResourceId'), null())]",
+        "eventLogName": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'WindowsEvent')), parameters('eventLogName'), null())]",
+        "eventTypes": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'WindowsEvent')), parameters('eventTypes'), null())]",
+        "objectName": "[if(and(not(empty(parameters('kind'))), or(equals(parameters('kind'), 'WindowsPerformanceCounter'), equals(parameters('kind'), 'LinuxPerformanceObject'))), parameters('objectName'), null())]",
+        "instanceName": "[if(and(not(empty(parameters('kind'))), or(equals(parameters('kind'), 'WindowsPerformanceCounter'), equals(parameters('kind'), 'LinuxPerformanceObject'))), parameters('instanceName'), null())]",
+        "intervalSeconds": "[if(and(not(empty(parameters('kind'))), or(equals(parameters('kind'), 'WindowsPerformanceCounter'), equals(parameters('kind'), 'LinuxPerformanceObject'))), parameters('intervalSeconds'), null())]",
+        "counterName": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'WindowsPerformanceCounter')), parameters('counterName'), null())]",
+        "state": "[if(and(not(empty(parameters('kind'))), or(or(equals(parameters('kind'), 'IISLogs'), equals(parameters('kind'), 'LinuxSyslogCollection')), equals(parameters('kind'), 'LinuxPerformanceCollection'))), parameters('state'), null())]",
+        "syslogName": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'LinuxSyslog')), parameters('syslogName'), null())]",
+        "syslogSeverities": "[if(and(not(empty(parameters('kind'))), or(equals(parameters('kind'), 'LinuxSyslog'), equals(parameters('kind'), 'LinuxPerformanceObject'))), parameters('syslogSeverities'), null())]",
+        "performanceCounters": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'LinuxPerformanceObject')), parameters('performanceCounters'), null())]"
+      },
+      "dependsOn": [
+        "workspace"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed data source."
+      },
+      "value": "[resourceId('Microsoft.OperationalInsights/workspaces/dataSources', parameters('logAnalyticsWorkspaceName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group where the data source is deployed."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed data source."
+      },
+      "value": "[parameters('name')]"
+    }
+  }
+}
