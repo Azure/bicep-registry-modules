@@ -63,6 +63,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     name: '${namePrefix}${serviceShort}001'
     location: location
     lock: {}
+    diagnosticSettings: []
     frontendIPConfigurations: [
       {
         name: 'publicIPConfig1'
