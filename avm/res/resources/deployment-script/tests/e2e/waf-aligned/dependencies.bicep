@@ -10,11 +10,6 @@ param storageAccountName string
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: managedIdentityName
   location: location
-  tags: {
-    'hidden-title': 'This is visible in the resource name'
-    Environment: 'Non-Prod'
-    Role: 'DeploymentValidation'
-  }
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
