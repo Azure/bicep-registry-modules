@@ -73,7 +73,7 @@ param supportingScriptUris array?
 '''
 })
 @description('Optional. List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network.')
-param subnetIds array?
+param subnetResourceIds array?
 
 @description('Optional. Command-line arguments to pass to the script. Arguments are separated by spaces.')
 param arguments string?
