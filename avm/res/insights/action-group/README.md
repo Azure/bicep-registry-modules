@@ -253,7 +253,7 @@ module actionGroup 'br/public:avm/res/insights/action-group:0.1.2' = {
 
 ### Example 3: _WAF-aligned_
 
-This instance deploys the module in alignment with the best-pratices of the Well-Architectured-Framework.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
