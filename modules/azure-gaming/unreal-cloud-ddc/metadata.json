@@ -2,5 +2,5 @@
   "$schema": "https://aka.ms/bicep-registry-module-metadata-file-schema-v2#",
   "name": "Unreal Cloud DDC",
   "summary": "Unreal Cloud DDC for Unreal Engine game development.",
-  "owner": "dciborow"
+  "owner": "amiedansby"
 }

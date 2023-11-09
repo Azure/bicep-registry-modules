@@ -83,12 +83,23 @@ In Unreal Engine 5 (UE5), ‘Unreal Cloud DDC’ is an optional service which us
 
 ## Examples
 
-### Example 1
+### Example Single KeyVault Certificate
+
+Creates a single self-signed certificate in Azure KeyVault.
 
 ```bicep
-```
+param location string = resourceGroup().location
+param akvName string = 'yourAzureKeyVault'
+param certificateName string = 'myapp'
 
-### Example 2
-
-```bicep
+module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.2.1' = {
+  name: 'akvCertSingle'
+  params: {
+    akvName: akvName
+    location: location
+    certificateName: certificateName
+  }
+}
+output SecretId string = akvCertSingle.outputs.certificateSecretId
+output Thumbprint string = akvCertSingle.outputs.certificateThumbprintHex
 ```
