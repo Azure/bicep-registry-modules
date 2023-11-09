@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
 Parse a Pester output containing checks & results and generate formatted markdown file out of it.
 
@@ -140,7 +140,8 @@ function Set-PesterGitHubOutput {
 
       $fileContent += '| {0} | {1} | <code>{2}</code> |' -f $testName, $errorMessage, $testReference
     }
-  } else {
+  }
+  else {
     $fileContent += ('No tests failed.')
   }
 
@@ -184,7 +185,8 @@ function Set-PesterGitHubOutput {
 
       $fileContent += '| {0} | <code>{1}</code> |' -f $testName, $testReference
     }
-  } else {
+  }
+  else {
     $fileContent += ('No tests passed.')
   }
 
@@ -231,7 +233,8 @@ function Set-PesterGitHubOutput {
 
       $fileContent += '| {0} | {1} | <code>{2}</code> |' -f $testName, $reason, $testReference
     }
-  } else {
+  }
+  else {
     $fileContent += ('No tests were skipped.')
   }
 
