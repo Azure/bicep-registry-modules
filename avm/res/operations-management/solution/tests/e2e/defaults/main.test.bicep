@@ -36,6 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    location: location
   }
 }
 
@@ -48,6 +49,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
     name: 'Updates'
+    location: location
     logAnalyticsWorkspaceName: nestedDependencies.outputs.logAnalyticsWorkspaceName
   }
 }

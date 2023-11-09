@@ -36,6 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    location: location
   }
 }
 
@@ -49,6 +50,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: 'AzureAutomation'
+    location: location
     logAnalyticsWorkspaceName: nestedDependencies.outputs.logAnalyticsWorkspaceName
     product: 'OMSGallery'
     publisher: 'Microsoft'

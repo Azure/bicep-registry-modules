@@ -22,11 +22,11 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/operations-management/solution:0.1.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/operations-management/solution:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Ms](#example-2-ms)
-- [Nonms](#example-3-nonms)
+- [Microsoft solution](#example-2-microsoft-solution)
+- [Non-Microsoft solution](#example-3-non-microsoft-solution)
 - [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
@@ -39,12 +39,14 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module solution 'br/public:avm/res/operations-management/solution:0.1.0' = {
+module solution 'br/public:avm/res/operations-management/solution:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-omsmin'
   params: {
     // Required parameters
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
     name: 'Updates'
+    // Non-required parameters
+    location: '<location>'
   }
 }
 ```
@@ -67,6 +69,10 @@ module solution 'br/public:avm/res/operations-management/solution:0.1.0' = {
     },
     "name": {
       "value": "Updates"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -75,20 +81,24 @@ module solution 'br/public:avm/res/operations-management/solution:0.1.0' = {
 </details>
 <p>
 
-### Example 2: _Ms_
+### Example 2: _Microsoft solution_
+
+This instance deploys the module with a Microsoft solution.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module solution 'br/public:avm/res/operations-management/solution:0.1.0' = {
+module solution 'br/public:avm/res/operations-management/solution:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-omsms'
   params: {
     // Required parameters
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
     name: 'AzureAutomation'
     // Non-required parameters
+    location: '<location>'
     product: 'OMSGallery'
     publisher: 'Microsoft'
   }
@@ -115,6 +125,9 @@ module solution 'br/public:avm/res/operations-management/solution:0.1.0' = {
       "value": "AzureAutomation"
     },
     // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
     "product": {
       "value": "OMSGallery"
     },
@@ -128,20 +141,24 @@ module solution 'br/public:avm/res/operations-management/solution:0.1.0' = {
 </details>
 <p>
 
-### Example 3: _Nonms_
+### Example 3: _Non-Microsoft solution_
+
+This instance deploys the module with a third party (Non-Microsoft) solution.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module solution 'br/public:avm/res/operations-management/solution:0.1.0' = {
+module solution 'br/public:avm/res/operations-management/solution:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-omsnonms'
   params: {
     // Required parameters
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
     name: 'omsnonms001'
     // Non-required parameters
+    location: '<location>'
     product: 'nonmsTestSolutionProduct'
     publisher: 'nonmsTestSolutionPublisher'
   }
@@ -168,6 +185,9 @@ module solution 'br/public:avm/res/operations-management/solution:0.1.0' = {
       "value": "omsnonms001"
     },
     // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
     "product": {
       "value": "nonmsTestSolutionProduct"
     },
@@ -191,13 +211,14 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module solution 'br/public:avm/res/operations-management/solution:0.1.0' = {
+module solution 'br/public:avm/res/operations-management/solution:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-omswaf'
   params: {
     // Required parameters
     logAnalyticsWorkspaceName: '<logAnalyticsWorkspaceName>'
     name: 'AzureAutomation'
     // Non-required parameters
+    location: '<location>'
     product: 'OMSGallery'
     publisher: 'Microsoft'
   }
@@ -224,6 +245,9 @@ module solution 'br/public:avm/res/operations-management/solution:0.1.0' = {
       "value": "AzureAutomation"
     },
     // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
     "product": {
       "value": "OMSGallery"
     },

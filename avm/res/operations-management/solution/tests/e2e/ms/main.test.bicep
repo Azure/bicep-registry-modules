@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Microsoft solution'
+metadata description = 'This instance deploys the module with a Microsoft solution.'
+
 // ========== //
 // Parameters //
 // ========== //
@@ -33,6 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    location: location
   }
 }
 
@@ -45,6 +49,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
     name: 'AzureAutomation'
+    location: location
     logAnalyticsWorkspaceName: nestedDependencies.outputs.logAnalyticsWorkspaceName
     product: 'OMSGallery'
     publisher: 'Microsoft'

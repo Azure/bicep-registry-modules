@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Non-Microsoft solution'
+metadata description = 'This instance deploys the module with a third party (Non-Microsoft) solution.'
+
 // ========== //
 // Parameters //
 // ========== //
@@ -33,6 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    location: location
   }
 }
 
@@ -45,6 +49,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
+    location: location
     logAnalyticsWorkspaceName: nestedDependencies.outputs.logAnalyticsWorkspaceName
     product: 'nonmsTestSolutionProduct'
     publisher: 'nonmsTestSolutionPublisher'
