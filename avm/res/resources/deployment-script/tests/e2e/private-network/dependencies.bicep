@@ -12,7 +12,11 @@ param storageAccountName string
 
 var addressPrefix = '10.0.0.0/16'
 
-var storageFileDataPrivilegedContributorRoleId = '69566ab7-960f-475b-8e7c-b3118f30c6bd'
+// Role required for deployment script to be able to use a storage account via private networking
+resource storageFileDataPrivilegedContributor 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  name: '69566ab7-960f-475b-8e7c-b3118f30c6bd'
+  scope: tenant()
+}
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: managedIdentityName
