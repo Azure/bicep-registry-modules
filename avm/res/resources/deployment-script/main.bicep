@@ -133,10 +133,15 @@ var identity = !empty(managedIdentities) ? {
   userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
 } : null
 
+resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' existing = if (!empty(storageAccountResourceId)) {
+  name: last(split((!empty(storageAccountResourceId) ? storageAccountResourceId : 'dummyAccount'), '/'))!
+  scope: resourceGroup(split((!empty(storageAccountResourceId) ? storageAccountResourceId : '//'), '/')[2], split((!empty(storageAccountResourceId) ? storageAccountResourceId : '////'), '/')[4])
+}
+
 var storageAccountSettings = !empty(storageAccountResourceId) ? {
-  storageAccountKey: listKeys(storageAccountResourceId, '2023-01-01').keys[0].value
+  storageAccountKey: storageAccount.properties.allowSharedKeyAccess ? listKeys(storageAccountResourceId, '2023-01-01').keys[0].value : null
   storageAccountName: last(split(storageAccountResourceId, '/'))
-} : {}
+} : null
 
 // ============ //
 // Dependencies //
