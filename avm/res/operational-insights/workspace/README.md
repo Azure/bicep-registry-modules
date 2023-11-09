@@ -35,12 +35,15 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/operational-insights/workspace:<version>`.
 
-- [Adv](#example-1-adv)
-- [Defaults](#example-2-defaults)
-- [Max](#example-3-max)
-- [Waf-Aligned](#example-4-waf-aligned)
+- [Advanced features](#example-1-advanced-features)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
-### Example 1: _Adv_
+### Example 1: _Advanced features_
+
+This instance deploys the module with advanced features like custom tables and data exports.
+
 
 <details>
 
@@ -184,7 +187,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     gallerySolutions: [
       {
         name: 'AzureAutomation'
@@ -204,6 +206,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         resourceId: '<resourceId>'
       }
     ]
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -452,9 +455,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "gallerySolutions": {
       "value": [
         {
@@ -479,6 +479,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
           "resourceId": "<resourceId>"
         }
       ]
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -593,7 +596,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 </details>
 <p>
 
-### Example 2: _Defaults_
+### Example 2: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -606,7 +612,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     // Required parameters
     name: 'oiwmin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -628,8 +634,8 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       "value": "oiwmin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -638,7 +644,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 </details>
 <p>
 
-### Example 3: _Max_
+### Example 3: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -756,7 +765,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     gallerySolutions: [
       {
         name: 'AzureAutomation'
@@ -776,6 +784,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         resourceId: '<resourceId>'
       }
     ]
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -949,9 +958,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "gallerySolutions": {
       "value": [
         {
@@ -976,6 +982,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
           "resourceId": "<resourceId>"
         }
       ]
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -1043,7 +1052,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 </details>
 <p>
 
-### Example 4: _Waf-Aligned_
+### Example 4: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
@@ -1161,7 +1173,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     gallerySolutions: [
       {
         name: 'AzureAutomation'
@@ -1181,6 +1192,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         resourceId: '<resourceId>'
       }
     ]
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -1354,9 +1366,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "gallerySolutions": {
       "value": [
         {
@@ -1381,6 +1390,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
           "resourceId": "<resourceId>"
         }
       ]
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -1472,7 +1484,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 | [`dataRetention`](#parameter-dataretention) | int | Number of days data will be retained for. |
 | [`dataSources`](#parameter-datasources) | array | LAW data sources to configure. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`forceCmkForQuery`](#parameter-forcecmkforquery) | bool | Indicates whether customer managed storage is mandatory for query management. |
 | [`gallerySolutions`](#parameter-gallerysolutions) | array | List of gallerySolutions to be created in the log analytics workspace. |
 | [`linkedServices`](#parameter-linkedservices) | array | List of services to be linked. |
@@ -1633,9 +1645,9 @@ Optional. Resource ID of the diagnostic log analytics workspace. For security re
 - Required: No
 - Type: string
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
