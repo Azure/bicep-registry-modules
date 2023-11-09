@@ -33,7 +33,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm-res-network-privatednszone:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/private-dns-zone:0.1.1`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -51,7 +51,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
+module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.1.1' = {
   name: '${uniqueString(deployment().name, location)}-test-npdzmin'
   params: {
     // Required parameters
@@ -143,7 +143,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
+module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.1.1' = {
   name: '${uniqueString(deployment().name, location)}-test-npdzmax'
   params: {
     // Required parameters
@@ -549,7 +549,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 <summary>via Bicep module</summary>
 
 ```bicep
-module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
+module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.1.1' = {
   name: '${uniqueString(deployment().name, location)}-test-npdzwaf'
   params: {
     // Required parameters
@@ -574,12 +574,6 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
       Role: 'DeploymentValidation'
     }
     txt: []
-    virtualNetworkLinks: [
-      {
-        registrationEnabled: true
-        virtualNetworkResourceId: '<virtualNetworkResourceId>'
-      }
-    ]
   }
 }
 ```
@@ -643,14 +637,6 @@ module privateDnsZone 'br/public:avm-res-network-privatednszone:1.0.0' = {
     },
     "txt": {
       "value": []
-    },
-    "virtualNetworkLinks": {
-      "value": [
-        {
-          "registrationEnabled": true,
-          "virtualNetworkResourceId": "<virtualNetworkResourceId>"
-        }
-      ]
     }
   }
 }
