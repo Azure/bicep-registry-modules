@@ -1143,7 +1143,7 @@ function Set-UsageExamplesSection {
     )
 
     $brLink = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
-    $targetVersion = Get-ModuleTargetVersion -ModuleFolderPath (Split-Path $TemplateFilePath -Parent)
+    $targetVersion = '<version>'
 
     # Process content
     $SectionContent = [System.Collections.ArrayList]@(
@@ -1620,7 +1620,6 @@ function Set-ModuleReadMe {
     . (Join-Path $PSScriptRoot 'helper' 'Get-SpecsAlignedResourceName.ps1')
     . (Join-Path $PSScriptRoot 'helper' 'ConvertTo-OrderedHashtable.ps1')
     . (Join-Path (Split-Path $PSScriptRoot -Parent) 'publish' 'helper' 'Get-BRMRepositoryName.ps1')
-    . (Join-Path (Split-Path $PSScriptRoot -Parent) 'publish' 'helper' 'Get-ModuleTargetVersion.ps1')
 
     # Check template & make full path
     $TemplateFilePath = Resolve-Path -Path $TemplateFilePath -ErrorAction Stop
