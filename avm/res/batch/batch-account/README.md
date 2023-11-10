@@ -1,7 +1,7 @@
 # Batch Accounts `[Microsoft.Batch/batchAccounts]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
->
+> 
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
@@ -882,15 +882,14 @@ Network access profile. It is only applicable when publicNetworkAccess is not ex
 Optional. Network access profile for batchAccount endpoint (Batch account data plane API).
 
 - Required: No
-- Type: string
-- Default: `'Deny'`
-- Allowed:
-  ```Bicep
-  [
-    'Allow'
-    'Deny'
-  ]
-  ```
+- Type: object
+
+### Parameter: `networkProfile.nodeManagementAccess`
+
+Optional. Network access profile for nodeManagement endpoint (Batch service managing compute nodes for Batch pools).
+
+- Required: No
+- Type: object
 
 ### Parameter: `poolAllocationMode`
 
@@ -1206,4 +1205,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm-res-network-privateendpoint:0.1.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.2.0` | Remote reference |
