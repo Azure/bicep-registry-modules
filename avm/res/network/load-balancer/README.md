@@ -9,6 +9,7 @@ This module deploys a Load Balancer.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 
 ## Resource Types
 
@@ -27,7 +28,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm-res-network-loadbalancer:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/load-balancer:<version>`.
 
 - [Defaults](#example-1-defaults)
 - [Internal](#example-2-internal)
@@ -41,8 +42,8 @@ The following section provides usage examples for the module, which were used to
 <summary>via Bicep module</summary>
 
 ```bicep
-module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
-  name: '${uniqueString(deployment().name, location)}-test-nlbdef'
+module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-nlbmin'
   params: {
     // Required parameters
     frontendIPConfigurations: [
@@ -51,7 +52,7 @@ module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
         publicIPAddressId: '<publicIPAddressId>'
       }
     ]
-    name: 'nlbdef001'
+    name: 'nlbmin001'
     // Non-required parameters
     diagnosticSettings: []
     location: '<location>'
@@ -82,7 +83,7 @@ module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
       ]
     },
     "name": {
-      "value": "nlbdef001"
+      "value": "nlbmin001"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -108,7 +109,7 @@ module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
+module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-nlbint'
   params: {
     // Required parameters
@@ -333,7 +334,7 @@ module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
+module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-nlbmax'
   params: {
     // Required parameters
@@ -618,7 +619,7 @@ module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module loadBalancer 'br/public:avm-res-network-loadbalancer:1.0.0' = {
+module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-nlbwaf'
   params: {
     // Required parameters
@@ -1169,7 +1170,13 @@ Name of a load balancer SKU.
 - Required: No
 - Type: string
 - Default: `'Standard'`
-- Allowed: `[Basic, Standard]`
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Standard'
+  ]
+  ```
 
 ### Parameter: `tags`
 
@@ -1191,3 +1198,82 @@ Tags of the resource.
 ## Cross-referenced modules
 
 _None_
+
+## Notes
+
+### Parameter Usage: `backendAddressPools`
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"backendAddressPools": {
+    "value": [
+        {
+            "name": "p_hub-bfw-server-bepool",
+            "properties": {
+                "loadBalancerBackendAddresses": [
+                    {
+                        "name": "iacs-sh-main-pd-01-euw-rg-network_awefwa01p-nic-int-01ipconfig-internal",
+                        "properties": {
+                            "virtualNetwork": {
+                                "id": "[reference(variables('deploymentVNET')).outputs.vNetResourceId.value]"
+                            },
+                            "ipAddress": "172.22.232.5"
+                        }
+                    },
+                    {
+                        "name": "iacs-sh-main-pd-01-euw-rg-network_awefwa01p-ha-nic-int-01ipconfig-internal",
+                        "properties": {
+                            "virtualNetwork": {
+                                "id": "[reference(variables('deploymentVNET')).outputs.vNetResourceId.value]"
+                            },
+                            "ipAddress": "172.22.232.6"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+backendAddressPools: [
+    {
+        name: 'p_hub-bfw-server-bepool'
+        properties: {
+            loadBalancerBackendAddresses: [
+                {
+                    name: 'iacs-sh-main-pd-01-euw-rg-network_awefwa01p-nic-int-01ipconfig-internal'
+                    properties: {
+                        virtualNetwork: {
+                            id: '[reference(variables('deploymentVNET')).outputs.vNetResourceId.value]'
+                        }
+                        ipAddress: '172.22.232.5'
+                    }
+                }
+                {
+                    name: 'iacs-sh-main-pd-01-euw-rg-network_awefwa01p-ha-nic-int-01ipconfig-internal'
+                    properties: {
+                        virtualNetwork: {
+                            id: '[reference(variables('deploymentVNET')).outputs.vNetResourceId.value]'
+                        }
+                        ipAddress: '172.22.232.6'
+                    }
+                }
+            ]
+        }
+    }
+]
+```
+
+</details>
+<p>

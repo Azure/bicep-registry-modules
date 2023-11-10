@@ -134,8 +134,6 @@ var backendAddressPoolNames = [for backendAddressPool in (backendAddressPools ??
   name: backendAddressPool.name
 }]
 
-var enableReferencedModulesTelemetry = false
-
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   'Network Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')
@@ -150,7 +148,7 @@ var builtInRoleNames = {
 // ============ //
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.network.loadbalancer.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.res.network-loadbalancer.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -191,7 +189,6 @@ module loadBalancer_backendAddressPools 'backend-address-pool/main.bicep' = [for
     tunnelInterfaces: contains(backendAddressPool, 'tunnelInterfaces') && !empty(backendAddressPool.tunnelInterfaces) ? backendAddressPool.tunnelInterfaces : []
     loadBalancerBackendAddresses: contains(backendAddressPool, 'loadBalancerBackendAddresses') && !empty(backendAddressPool.loadBalancerBackendAddresses) ? backendAddressPool.loadBalancerBackendAddresses : []
     drainPeriodInSeconds: contains(backendAddressPool, 'drainPeriodInSeconds') ? backendAddressPool.drainPeriodInSeconds : 0
-    enableTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -210,7 +207,6 @@ module loadBalancer_inboundNATRules 'inbound-nat-rule/main.bicep' = [for (inboun
     frontendPortRangeStart: contains(inboundNATRule, 'frontendPortRangeStart') ? inboundNATRule.frontendPortRangeStart : -1
     idleTimeoutInMinutes: contains(inboundNATRule, 'idleTimeoutInMinutes') ? inboundNATRule.idleTimeoutInMinutes : 4
     protocol: contains(inboundNATRule, 'protocol') ? inboundNATRule.protocol : 'Tcp'
-    enableTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     loadBalancer_backendAddressPools
@@ -294,7 +290,7 @@ type diagnosticSettingType = {
   }[]?
 
   @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics' | null)?
+  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
 
   @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
   workspaceResourceId: string?
@@ -328,7 +324,7 @@ type roleAssignmentType = {
   principalId: string
 
   @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device' | null)?
+  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
 
   @description('Optional. The description of the role assignment.')
   description: string?

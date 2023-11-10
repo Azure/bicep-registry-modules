@@ -39,7 +39,6 @@ This module deploys a Load Balancer Inbound NAT Rules.
 | [`backendPort`](#parameter-backendport) | int | The port used for the internal endpoint. |
 | [`enableFloatingIP`](#parameter-enablefloatingip) | bool | Configures a virtual machine's endpoint for the floating IP capability required to configure a SQL AlwaysOn Availability Group. This setting is required when using the SQL AlwaysOn Availability Groups in SQL server. This setting can't be changed after you create the endpoint. |
 | [`enableTcpReset`](#parameter-enabletcpreset) | bool | Receive bidirectional TCP Reset on TCP flow idle timeout or unexpected connection termination. This element is only used when the protocol is set to TCP. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`frontendPortRangeEnd`](#parameter-frontendportrangeend) | int | The port range end for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeStart. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool. |
 | [`frontendPortRangeStart`](#parameter-frontendportrangestart) | int | The port range start for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeEnd. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool. |
 | [`idleTimeoutInMinutes`](#parameter-idletimeoutinminutes) | int | The timeout for the TCP idle connection. The value can be set between 4 and 30 minutes. The default value is 4 minutes. This element is only used when the protocol is set to TCP. |
@@ -72,13 +71,6 @@ Receive bidirectional TCP Reset on TCP flow idle timeout or unexpected connectio
 - Required: No
 - Type: bool
 - Default: `False`
-
-### Parameter: `enableTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `frontendIPConfigurationName`
 
@@ -131,7 +123,14 @@ The transport protocol for the endpoint.
 - Required: No
 - Type: string
 - Default: `'Tcp'`
-- Allowed: `[All, Tcp, Udp]`
+- Allowed:
+  ```Bicep
+  [
+    'All'
+    'Tcp'
+    'Udp'
+  ]
+  ```
 
 
 ## Outputs

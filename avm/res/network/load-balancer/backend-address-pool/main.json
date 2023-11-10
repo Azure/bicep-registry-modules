@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "260110941938110942"
+      "templateHash": "15675733940369457079"
     },
     "name": "Load Balancer Backend Address Pools",
     "description": "This module deploys a Load Balancer Backend Address Pools.",
@@ -56,36 +56,9 @@
       "metadata": {
         "description": "Optional. Backend address synchronous mode for the backend pool."
       }
-    },
-    "enableTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-      }
     }
   },
   "resources": [
-    {
-      "condition": "[parameters('enableTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
-      "name": "[format('46d3xbcp.res.network.loadbalancer.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": [],
-          "outputs": {
-            "telemetry": {
-              "type": "String",
-              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-            }
-          }
-        }
-      }
-    },
     {
       "type": "Microsoft.Network/loadBalancers/backendAddressPools",
       "apiVersion": "2023-04-01",

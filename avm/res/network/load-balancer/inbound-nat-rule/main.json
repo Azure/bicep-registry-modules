@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "17147206015733244532"
+      "templateHash": "13957788095680953011"
     },
     "name": "Load Balancer Inbound NAT Rules",
     "description": "This module deploys a Load Balancer Inbound NAT Rules.",
@@ -104,36 +104,9 @@
       "metadata": {
         "description": "Optional. The transport protocol for the endpoint."
       }
-    },
-    "enableTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-      }
     }
   },
   "resources": [
-    {
-      "condition": "[parameters('enableTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
-      "name": "[format('46d3xbcp.res.network.loadbalancer.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": [],
-          "outputs": {
-            "telemetry": {
-              "type": "String",
-              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-            }
-          }
-        }
-      }
-    },
     {
       "type": "Microsoft.Network/loadBalancers/inboundNatRules",
       "apiVersion": "2023-04-01",
