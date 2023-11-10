@@ -1008,7 +1008,7 @@ Describe 'Module tests' -Tag 'Module' {
       )
 
       if ($templateFileContent.parameters.Keys -contains $parameterName) {
-        $templateFileContent.parameters.$parameterName.Keys | Should -Contain '$ref' -Because "the [$parameterName] parameter should use a user-defined type. For for information please review the [AVM Specs]($link)."
+        $templateFileContent.parameters.$parameterName.Keys | Should -Contain '$ref' -Because "the [$parameterName] parameter should use a user-defined type. For information please review the [AVM Specs]($link)."
         $templateFileContent.parameters.$parameterName.'$ref' | Should -Be "#/definitions/$udtName" -Because "the [$parameterName] parameter should use a user-defined type [$udtName]. For for information please review the [AVM Specs]($link)."
 
         if (-not [String]::IsNullOrEmpty($expectedUdtUrl)) {
