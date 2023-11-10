@@ -97,8 +97,6 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-var enableReferencedModulesTelemetry = false
-
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourcesIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
 var identity = !empty(managedIdentities) ? {
@@ -195,7 +193,6 @@ module logAnalyticsWorkspace_storageInsightConfigs 'storage-insight-config/main.
     containers: contains(storageInsightsConfig, 'containers') ? storageInsightsConfig.containers : []
     tables: contains(storageInsightsConfig, 'tables') ? storageInsightsConfig.tables : []
     storageAccountResourceId: storageInsightsConfig.storageAccountResourceId
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -206,7 +203,6 @@ module logAnalyticsWorkspace_linkedServices 'linked-service/main.bicep' = [for (
     name: linkedService.name
     resourceId: contains(linkedService, 'resourceId') ? linkedService.resourceId : ''
     writeAccessResourceId: contains(linkedService, 'writeAccessResourceId') ? linkedService.writeAccessResourceId : ''
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -216,7 +212,6 @@ module logAnalyticsWorkspace_linkedStorageAccounts 'linked-storage-account/main.
     logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
     name: linkedStorageAccount.name
     resourceId: linkedStorageAccount.resourceId
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -232,7 +227,6 @@ module logAnalyticsWorkspace_savedSearches 'saved-search/main.bicep' = [for (sav
     functionAlias: contains(savedSearch, 'functionAlias') ? savedSearch.functionAlias : ''
     functionParameters: contains(savedSearch, 'functionParameters') ? savedSearch.functionParameters : ''
     version: contains(savedSearch, 'version') ? savedSearch.version : 2
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     logAnalyticsWorkspace_linkedStorageAccounts
@@ -247,7 +241,6 @@ module logAnalyticsWorkspace_dataExports 'data-export/main.bicep' = [for (dataEx
     destination: contains(dataExport, 'destination') ? dataExport.destination : {}
     enable: contains(dataExport, 'enable') ? dataExport.enable : false
     tableNames: contains(dataExport, 'tableNames') ? dataExport.tableNames : []
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -268,7 +261,6 @@ module logAnalyticsWorkspace_dataSources 'data-source/main.bicep' = [for (dataSo
     syslogName: contains(dataSource, 'syslogName') ? dataSource.syslogName : ''
     syslogSeverities: contains(dataSource, 'syslogSeverities') ? dataSource.syslogSeverities : []
     performanceCounters: contains(dataSource, 'performanceCounters') ? dataSource.performanceCounters : []
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -283,7 +275,6 @@ module logAnalyticsWorkspace_tables 'table/main.bicep' = [for (table, index) in 
     totalRetentionInDays: contains(table, 'totalRetentionInDays') ? table.totalRetentionInDays : -1
     restoredLogs: contains(table, 'restoredLogs') ? table.restoredLogs : {}
     searchResults: contains(table, 'searchResults') ? table.searchResults : {}
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 

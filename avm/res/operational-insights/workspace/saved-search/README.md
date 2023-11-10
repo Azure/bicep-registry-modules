@@ -36,7 +36,6 @@ This module deploys a Log Analytics Workspace Saved Search.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`etag`](#parameter-etag) | string | The ETag of the saved search. To override an existing saved search, use "*" or specify the current Etag. |
 | [`functionAlias`](#parameter-functionalias) | string | The function alias if query serves as a function. |
 | [`functionParameters`](#parameter-functionparameters) | string | The optional function parameters if query serves as a function. Value should be in the following format: "param-name1:type1 = default_value1, param-name2:type2 = default_value2". For more examples and proper syntax please refer to /azure/kusto/query/functions/user-defined-functions. |
@@ -54,13 +53,6 @@ Query category.
 Display name for the search.
 - Required: Yes
 - Type: string
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `etag`
 

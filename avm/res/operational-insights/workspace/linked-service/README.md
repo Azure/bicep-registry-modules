@@ -34,16 +34,8 @@ This module deploys a Log Analytics Workspace Linked Service.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`tags`](#parameter-tags) | object | Tags to configure in the resource. |
 | [`writeAccessResourceId`](#parameter-writeaccessresourceid) | string | The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require write access. |
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `logAnalyticsWorkspaceName`
 

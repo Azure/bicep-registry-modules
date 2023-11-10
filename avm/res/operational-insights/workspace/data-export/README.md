@@ -35,7 +35,6 @@ This module deploys a Log Analytics Workspace Data Export.
 | :-- | :-- | :-- |
 | [`destination`](#parameter-destination) | object | Destination properties. |
 | [`enable`](#parameter-enable) | bool | Active when enabled. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via the Customer Usage Attribution ID (GUID). |
 | [`tableNames`](#parameter-tablenames) | array | An array of tables to export, for example: ['Heartbeat', 'SecurityEvent']. |
 
 ### Parameter: `destination`
@@ -51,13 +50,6 @@ Active when enabled.
 - Required: No
 - Type: bool
 - Default: `False`
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via the Customer Usage Attribution ID (GUID).
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `name`
 

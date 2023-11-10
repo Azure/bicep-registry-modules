@@ -12,9 +12,6 @@ param name string
 @description('Conditional. The name of the parent workspaces. Required if the template is used in a standalone deployment.')
 param workspaceName string
 
-@description('Optional. Enable telemetry via the Customer Usage Attribution ID (GUID).')
-param enableDefaultTelemetry bool = true
-
 @description('Optional. Instruct the system how to handle and charge the logs ingested to this table.')
 @allowed([
   'Basic'
@@ -44,18 +41,6 @@ param totalRetentionInDays int = -1
 // =============== //
 //   Deployments   //
 // =============== //
-
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
-  }
-}
 
 resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
   name: workspaceName

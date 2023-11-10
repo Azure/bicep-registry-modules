@@ -34,7 +34,6 @@ This module deploys a Log Analytics Workspace Storage Insight Config.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`containers`](#parameter-containers) | array | The names of the blob containers that the workspace should read. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`name`](#parameter-name) | string | The name of the storage insights config. |
 | [`tables`](#parameter-tables) | array | The names of the Azure tables that the workspace should read. |
 | [`tags`](#parameter-tags) | object | Tags to configure in the resource. |
@@ -45,13 +44,6 @@ The names of the blob containers that the workspace should read.
 - Required: No
 - Type: array
 - Default: `[]`
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `logAnalyticsWorkspaceName`
 

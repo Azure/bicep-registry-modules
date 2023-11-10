@@ -35,7 +35,6 @@ This module deploys a Log Analytics Workspace Data Source.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`counterName`](#parameter-countername) | string | Counter name to configure when kind is WindowsPerformanceCounter. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`eventLogName`](#parameter-eventlogname) | string | Windows event log name to configure when kind is WindowsEvent. |
 | [`eventTypes`](#parameter-eventtypes) | array | Windows event types to configure when kind is WindowsEvent. |
 | [`instanceName`](#parameter-instancename) | string | Name of the instance to configure when kind is WindowsPerformanceCounter or LinuxPerformanceObject. |
@@ -54,13 +53,6 @@ Counter name to configure when kind is WindowsPerformanceCounter.
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `eventLogName`
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "3503179197192139422"
+      "templateHash": "13250845512272689070"
     },
     "name": "Log Analytics Workspaces",
     "description": "This module deploys a Log Analytics Workspace.",
@@ -423,7 +423,6 @@
     }
   },
   "variables": {
-    "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -566,9 +565,6 @@
           "tables": "[if(contains(parameters('storageInsightsConfigs')[copyIndex()], 'tables'), createObject('value', parameters('storageInsightsConfigs')[copyIndex()].tables), createObject('value', createArray()))]",
           "storageAccountResourceId": {
             "value": "[parameters('storageInsightsConfigs')[copyIndex()].storageAccountResourceId]"
-          },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -579,7 +575,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "9008031661126171508"
+              "templateHash": "6927557037830407278"
             },
             "name": "Log Analytics Workspace Storage Insight Configs",
             "description": "This module deploys a Log Analytics Workspace Storage Insight Config.",
@@ -625,30 +621,9 @@
               "metadata": {
                 "description": "Optional. Tags to configure in the resource."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             "storageAccount": {
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
@@ -730,10 +705,7 @@
             "value": "[parameters('linkedServices')[copyIndex()].name]"
           },
           "resourceId": "[if(contains(parameters('linkedServices')[copyIndex()], 'resourceId'), createObject('value', parameters('linkedServices')[copyIndex()].resourceId), createObject('value', ''))]",
-          "writeAccessResourceId": "[if(contains(parameters('linkedServices')[copyIndex()], 'writeAccessResourceId'), createObject('value', parameters('linkedServices')[copyIndex()].writeAccessResourceId), createObject('value', ''))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "writeAccessResourceId": "[if(contains(parameters('linkedServices')[copyIndex()], 'writeAccessResourceId'), createObject('value', parameters('linkedServices')[copyIndex()].writeAccessResourceId), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -743,7 +715,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "4319942183601642190"
+              "templateHash": "14308828297239499350"
             },
             "name": "Log Analytics Workspace Linked Services",
             "description": "This module deploys a Log Analytics Workspace Linked Service.",
@@ -782,30 +754,9 @@
               "metadata": {
                 "description": "Optional. Tags to configure in the resource."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             "workspace": {
               "existing": true,
               "type": "Microsoft.OperationalInsights/workspaces",
@@ -877,9 +828,6 @@
           },
           "resourceId": {
             "value": "[parameters('linkedStorageAccounts')[copyIndex()].resourceId]"
-          },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -889,7 +837,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "9016006615324724877"
+              "templateHash": "10606325856723183085"
             },
             "name": "Log Analytics Workspace Linked Storage Accounts",
             "description": "This module deploys a Log Analytics Workspace Linked Storage Account.",
@@ -919,30 +867,9 @@
               "metadata": {
                 "description": "Required. The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require read access."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.OperationalInsights/workspaces/linkedStorageAccounts",
               "apiVersion": "2020-08-01",
@@ -1015,10 +942,7 @@
           },
           "functionAlias": "[if(contains(parameters('savedSearches')[copyIndex()], 'functionAlias'), createObject('value', parameters('savedSearches')[copyIndex()].functionAlias), createObject('value', ''))]",
           "functionParameters": "[if(contains(parameters('savedSearches')[copyIndex()], 'functionParameters'), createObject('value', parameters('savedSearches')[copyIndex()].functionParameters), createObject('value', ''))]",
-          "version": "[if(contains(parameters('savedSearches')[copyIndex()], 'version'), createObject('value', parameters('savedSearches')[copyIndex()].version), createObject('value', 2))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "version": "[if(contains(parameters('savedSearches')[copyIndex()], 'version'), createObject('value', parameters('savedSearches')[copyIndex()].version), createObject('value', 2))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1027,7 +951,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "8110791564584546252"
+              "templateHash": "2765164120781162803"
             },
             "name": "Log Analytics Workspace Saved Searches",
             "description": "This module deploys a Log Analytics Workspace Saved Search.",
@@ -1098,30 +1022,9 @@
               "metadata": {
                 "description": "Optional. The ETag of the saved search. To override an existing saved search, use \"*\" or specify the current Etag."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
               "apiVersion": "2020-08-01",
@@ -1190,10 +1093,7 @@
           },
           "destination": "[if(contains(parameters('dataExports')[copyIndex()], 'destination'), createObject('value', parameters('dataExports')[copyIndex()].destination), createObject('value', createObject()))]",
           "enable": "[if(contains(parameters('dataExports')[copyIndex()], 'enable'), createObject('value', parameters('dataExports')[copyIndex()].enable), createObject('value', false()))]",
-          "tableNames": "[if(contains(parameters('dataExports')[copyIndex()], 'tableNames'), createObject('value', parameters('dataExports')[copyIndex()].tableNames), createObject('value', createArray()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "tableNames": "[if(contains(parameters('dataExports')[copyIndex()], 'tableNames'), createObject('value', parameters('dataExports')[copyIndex()].tableNames), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1202,7 +1102,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "17342339934568813477"
+              "templateHash": "10850607616619144958"
             },
             "name": "Log Analytics Workspace Data Exports",
             "description": "This module deploys a Log Analytics Workspace Data Export.",
@@ -1237,13 +1137,6 @@
                 "description": "Optional. Active when enabled."
               }
             },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via the Customer Usage Attribution ID (GUID)."
-              }
-            },
             "tableNames": {
               "type": "array",
               "defaultValue": [],
@@ -1253,20 +1146,6 @@
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.OperationalInsights/workspaces/dataExports",
               "apiVersion": "2020-08-01",
@@ -1340,10 +1219,7 @@
           "state": "[if(contains(parameters('dataSources')[copyIndex()], 'state'), createObject('value', parameters('dataSources')[copyIndex()].state), createObject('value', ''))]",
           "syslogName": "[if(contains(parameters('dataSources')[copyIndex()], 'syslogName'), createObject('value', parameters('dataSources')[copyIndex()].syslogName), createObject('value', ''))]",
           "syslogSeverities": "[if(contains(parameters('dataSources')[copyIndex()], 'syslogSeverities'), createObject('value', parameters('dataSources')[copyIndex()].syslogSeverities), createObject('value', createArray()))]",
-          "performanceCounters": "[if(contains(parameters('dataSources')[copyIndex()], 'performanceCounters'), createObject('value', parameters('dataSources')[copyIndex()].performanceCounters), createObject('value', createArray()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "performanceCounters": "[if(contains(parameters('dataSources')[copyIndex()], 'performanceCounters'), createObject('value', parameters('dataSources')[copyIndex()].performanceCounters), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1353,7 +1229,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "16555972198709151465"
+              "templateHash": "4434233073381873133"
             },
             "name": "Log Analytics Workspace Datasources",
             "description": "This module deploys a Log Analytics Workspace Data Source.",
@@ -1472,30 +1348,9 @@
               "metadata": {
                 "description": "Optional. Severities to configure when kind is LinuxSyslog."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             "workspace": {
               "existing": true,
               "type": "Microsoft.OperationalInsights/workspaces",
@@ -1580,10 +1435,7 @@
           "retentionInDays": "[if(contains(parameters('tables')[copyIndex()], 'retentionInDays'), createObject('value', parameters('tables')[copyIndex()].retentionInDays), createObject('value', -1))]",
           "totalRetentionInDays": "[if(contains(parameters('tables')[copyIndex()], 'totalRetentionInDays'), createObject('value', parameters('tables')[copyIndex()].totalRetentionInDays), createObject('value', -1))]",
           "restoredLogs": "[if(contains(parameters('tables')[copyIndex()], 'restoredLogs'), createObject('value', parameters('tables')[copyIndex()].restoredLogs), createObject('value', createObject()))]",
-          "searchResults": "[if(contains(parameters('tables')[copyIndex()], 'searchResults'), createObject('value', parameters('tables')[copyIndex()].searchResults), createObject('value', createObject()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "searchResults": "[if(contains(parameters('tables')[copyIndex()], 'searchResults'), createObject('value', parameters('tables')[copyIndex()].searchResults), createObject('value', createObject()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1592,7 +1444,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "10977258600449669407"
+              "templateHash": "2244910007498205670"
             },
             "name": "Log Analytics Workspace Tables",
             "description": "This module deploys a Log Analytics Workspace Table.",
@@ -1609,13 +1461,6 @@
               "type": "string",
               "metadata": {
                 "description": "Conditional. The name of the parent workspaces. Required if the template is used in a standalone deployment."
-              }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via the Customer Usage Attribution ID (GUID)."
               }
             },
             "plan": {
@@ -1670,20 +1515,6 @@
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.OperationalInsights/workspaces/tables",
               "apiVersion": "2022-10-01",
