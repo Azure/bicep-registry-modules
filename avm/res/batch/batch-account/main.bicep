@@ -34,7 +34,7 @@ param keyVaultReferenceResourceId string?
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointType
 
-@description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkProfileAllowedIpRanges are not set.')
+@description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkProfile is not set.')
 @allowed([
   ''
   'Enabled'
@@ -42,15 +42,8 @@ param privateEndpoints privateEndpointType
 ])
 param publicNetworkAccess string = ''
 
-@allowed([
-  'Allow'
-  'Deny'
-])
-@description('Optional. The network profile default action for endpoint access. It is only applicable when publicNetworkAccess is not explicitly disabled.')
-param networkProfileDefaultAction string = 'Deny'
-
-@description('Optional. Array of IP ranges to filter client IP address. It is only applicable when publicNetworkAccess is not explicitly disabled.')
-param networkProfileAllowedIpRanges array?
+@description('Optional. Network access profile. It is only applicable when publicNetworkAccess is not explicitly disabled.')
+param networkProfile networkProfileType
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -87,9 +80,14 @@ var identity = !empty(managedIdentities) ? {
   userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
 } : null
 
-var networkProfileIpRules = [for networkProfileAllowedIpRange in (networkProfileAllowedIpRanges ?? []): {
+var accountAccessNetworkProfileIpRules = [for allowedIpRule in networkProfile.?accountAccess.?allowedIpRules ?? []: {
   action: 'Allow'
-  value: networkProfileAllowedIpRange
+  value: allowedIpRule
+}]
+
+var nodeManagementAccessNetworkProfileIpRules = [for allowedIpRule in networkProfile.?nodeManagementAccess.?allowedIpRules ?? []: {
+  action: 'Allow'
+  value: allowedIpRule
 }]
 
 var builtInRoleNames = {
@@ -156,14 +154,18 @@ resource batchAccount 'Microsoft.Batch/batchAccounts@2022-06-01' = {
       id: batchKeyVaultReference.id
       url: batchKeyVaultReference.properties.vaultUri
     } : null
-    networkProfile: (publicNetworkAccess == 'Disabled') || empty(networkProfileAllowedIpRanges ?? []) ? null : {
-      accountAccess: {
-        defaultAction: networkProfileDefaultAction
-        ipRules: networkProfileIpRules
-      }
-    }
+    networkProfile: !empty(networkProfile ?? {}) ? {
+      accountAccess: !empty(accountAccessNetworkProfileIpRules) ? {
+        defaultAction: networkProfile.?accountAccess.?defaultAction ?? 'Deny'
+        ipRules: accountAccessNetworkProfileIpRules
+      } : null
+      nodeManagementAccess: !empty(nodeManagementAccessNetworkProfileIpRules) ? {
+        defaultAction: networkProfile.?nodeManagementAccess.?defaultAction ?? 'Deny'
+        ipRules: nodeManagementAccessNetworkProfileIpRules
+      } : null
+    } : null
     poolAllocationMode: poolAllocationMode
-    publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : ((!empty(privateEndpoints ?? []) && empty(networkProfileAllowedIpRanges ?? [])) ? 'Disabled' : null)
+    publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : ((!empty(privateEndpoints ?? []) && empty(networkProfile ?? [])) ? 'Disabled' : null)
   }
 }
 
@@ -202,7 +204,7 @@ resource batchAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@
   scope: batchAccount
 }]
 
-module batchAccount_privateEndpoints 'br/public:avm-res-network-privateendpoint:0.1.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module batchAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.2.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-BatchAccount-PrivateEndpoint-${index}'
   params: {
     groupIds: [
@@ -279,7 +281,7 @@ type diagnosticSettingType = {
   }[]?
 
   @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics' | null)?
+  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
 
   @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
   workspaceResourceId: string?
@@ -305,7 +307,7 @@ type roleAssignmentType = {
   principalId: string
 
   @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device' | null)?
+  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
 
   @description('Optional. The description of the role assignment.')
   description: string?
@@ -400,4 +402,20 @@ type lockType = {
 
   @description('Optional. Specify the type of lock.')
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
+}?
+
+type networkProfileType = {
+  @description('Optional. Network access profile for batchAccount endpoint (Batch account data plane API).')
+  accountAccess: endpointAccessProfileType?
+
+  @description('Optional. Network access profile for nodeManagement endpoint (Batch service managing compute nodes for Batch pools).')
+  nodeManagementAccess: endpointAccessProfileType?
+}?
+
+type endpointAccessProfileType = {
+  @description('Optional. Default action for endpoint access. If not specified, defaults to Deny.')
+  defaultAction: ('Allow' | 'Deny')?
+
+  @description('Optional. Array of IP ranges to filter client IP address.')
+  allowedIpRules: array?
 }?
