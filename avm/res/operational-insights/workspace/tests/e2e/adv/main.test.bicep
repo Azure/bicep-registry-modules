@@ -37,7 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
     location: location
     storageAccountName: 'dep${namePrefix}sa${serviceShort}'
     automationAccountName: 'dep-${namePrefix}-auto-${serviceShort}'
-    eventHubNamespaceName: 'dep-${namePrefix}-ehw-${serviceShort}'
+    eventHubNamespaceName: 'dep-${namePrefix}-ehn-${serviceShort}'
     eventHubName: 'dep-${namePrefix}-eh-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
