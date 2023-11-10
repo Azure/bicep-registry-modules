@@ -1,3 +1,7 @@
+metadata name = 'Unreal Cloud DDC'
+metadata description = 'Unreal Cloud DDC for Unreal Engine game development.'
+metadata owner = 'amiedansby'
+
 //  Parameters
 @description('Deployment Location')
 param location string
@@ -159,17 +163,17 @@ param existingManagedIdentitySubId string = subscription().subscriptionId
 @description('For an existing Managed Identity, the Resource Group it is located in')
 param existingManagedIdentityResourceGroupName string = resourceGroup().name
 
-@description('Set to false to deploy from as an ARM template for debugging') 
+@description('Set to false to deploy from as an ARM template for debugging')
 param isApp bool = true
 
-@description('Set tags to apply to Key Vault resources') 
+@description('Set tags to apply to Key Vault resources')
 param keyVaultTags object = {}
 
-@description('Array of ddc namespaces to replicate if there are secondary regions') 
+@description('Array of ddc namespaces to replicate if there are secondary regions')
 param namespacesToReplicate array = []
 
-@description('If new or existing, this will enable container insights on the AKS cluster. If new, will create one log analytics workspace per location') 
-@allowed(['new', 'existing', 'none'])
+@description('If new or existing, this will enable container insights on the AKS cluster. If new, will create one log analytics workspace per location')
+@allowed([ 'new', 'existing', 'none' ])
 param newOrExistingWorkspaceForContainerInsights string = 'none'
 
 @description('The name of the log analytics workspace to use for container insights')
@@ -181,7 +185,7 @@ param existingLogAnalyticsWorkspaceResourceGroupName string = ''
 var nodeLabels = 'horde-storage'
 
 var useDnsZone = (dnsZoneName != '') && (dnsZoneResourceGroupName != '')
-var fullHostname =  useDnsZone ? '${shortHostname}.${dnsZoneName}' : hostname
+var fullHostname = useDnsZone ? '${shortHostname}.${dnsZoneName}' : hostname
 
 var newOrExisting = {
   new: 'new'
@@ -232,12 +236,12 @@ module logAnalytics 'modules/insights/logAnalytics.bicep' = if (enableContainerI
 
 var logAnalyticsWorkspaceResourceId = enableContainerInsights ? logAnalytics.outputs.workspaceId : ''
 
-var allLocations = concat([location], secondaryLocations)
+var allLocations = concat([ location ], secondaryLocations)
 
 // Compute "source" locations for replication.
 // Forms a cycle so that a given region replaces from only one other location.
 var lastLocationIndex = length(allLocations) - 1
-var sourceLocations = [for (location, index) in allLocations: (index > 0) ? allLocations[index-1] : allLocations[lastLocationIndex]]
+var sourceLocations = [for (location, index) in allLocations: (index > 0) ? allLocations[index - 1] : allLocations[lastLocationIndex]]
 
 // Prepare a number of properties for each location
 var locationSpecs = [for (location, index) in allLocations: {
@@ -283,7 +287,7 @@ module allRegionalResources 'modules/resources.bicep' = [for (location, index) i
     dnsZoneResourceGroupName: dnsZoneResourceGroupName
     dnsRecordNameSuffix: shortHostname
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
-    }
+  }
 }]
 
 module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.0.1' = [for spec in locationSpecs: if (assignRole && enableCert) {
@@ -294,8 +298,8 @@ module kvCert 'br/public:deployment-scripts/create-kv-certificate:3.0.1' = [for 
   params: {
     akvName: take('${spec.location}-${keyVaultName}', 24)
     location: spec.location
-    certificateNames: [certificateName, spec.locationCertName]
-    certificateCommonNames: [fullHostname, spec.fullLocationHostName]
+    certificateNames: [ certificateName, spec.locationCertName ]
+    certificateCommonNames: [ fullHostname, spec.fullLocationHostName ]
     issuerName: certificateIssuer
     issuerProvider: issuerProvider
     useExistingManagedIdentity: useExistingManagedIdentity
@@ -312,11 +316,11 @@ module buildApp 'modules/keyvault/vaults/secrets.bicep' = [for location in union
   ]
   params: {
     keyVaultName: take('${location}-${keyVaultName}', 24)
-    secrets: [{ secretName: 'build-app-secret', secretValue: workerServicePrincipalSecret }]
+    secrets: [ { secretName: 'build-app-secret', secretValue: workerServicePrincipalSecret } ]
   }
 }]
 
-module cosmosDB 'modules/documentDB/databaseAccounts.bicep' = if(newOrExistingCosmosDB == 'new') {
+module cosmosDB 'modules/documentDB/databaseAccounts.bicep' = if (newOrExistingCosmosDB == 'new') {
   name: 'cosmosDB-${uniqueString(location, resourceGroup().id, deployment().name)}-key'
   dependsOn: [
     allRegionalResources
@@ -337,7 +341,7 @@ module cassandraKeys 'modules/keyvault/vaults/secrets.bicep' = [for location in 
   ]
   params: {
     keyVaultName: take('${location}-${keyVaultName}', 24)
-    secrets: [{ secretName: 'ddc-db-connection-string', secretValue: newOrExistingCosmosDB == 'new' ? cosmosDB.outputs.cassandraConnectionString : cassandraConnectionString }]
+    secrets: [ { secretName: 'ddc-db-connection-string', secretValue: newOrExistingCosmosDB == 'new' ? cosmosDB.outputs.cassandraConnectionString : cassandraConnectionString } ]
   }
 }]
 
@@ -368,7 +372,7 @@ module setuplocations 'modules/ddc-setup-locations.bicep' = if (assignRole && ep
     helmNamespace: helmNamespace
     siteName: siteName
     imageVersion: imageVersion
-    useExistingManagedIdentity: enableCert  // If created, Reuse ID from Cert
+    useExistingManagedIdentity: enableCert // If created, Reuse ID from Cert
     managedIdentityPrefix: managedIdentityPrefix
     existingManagedIdentitySubId: existingManagedIdentitySubId
     existingManagedIdentityResourceGroupName: existingManagedIdentityResourceGroupName
@@ -378,7 +382,7 @@ module setuplocations 'modules/ddc-setup-locations.bicep' = if (assignRole && ep
 }
 
 // Add CNAME record for traffic manager only after all regional resources are created
-module dnsRecords 'modules/network/dnsZoneCnameRecord.bicep' = if(useDnsZone) {
+module dnsRecords 'modules/network/dnsZoneCnameRecord.bicep' = if (useDnsZone) {
   name: 'dns-${uniqueString(dnsZoneName, resourceGroup().id, deployment().name)}'
   scope: resourceGroup(dnsZoneResourceGroupName)
   dependsOn: [

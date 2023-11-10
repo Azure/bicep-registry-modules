@@ -105,7 +105,6 @@ resource federatedId 'Microsoft.ManagedIdentity/userAssignedIdentities/federated
   }
 }
 
-
 @description('This is the built-in Network Contributor role. See https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#contributor')
 resource networkContributorRoleDefinition 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
   scope: subscription()

@@ -12,6 +12,11 @@ In Unreal Engine 5 (UE5), ‘Unreal Cloud DDC’ is an optional service which us
 
 [Learn more about Unreal Cloud DDC on Azure.](https://learn.microsoft.com/en-us/gaming/azure/unreal-cloud-ddc/overview)
 
+
+## Details
+
+{{Add detailed information about the module}}
+
 ## Parameters
 
 | Name                                             | Type           | Required | Description                                                                                                                                                    |
@@ -76,10 +81,10 @@ In Unreal Engine 5 (UE5), ‘Unreal Cloud DDC’ is an optional service which us
 
 ## Outputs
 
-| Name                  | Type   | Description                        |
-| :-------------------- | :----: | :--------------------------------- |
-| cosmosDBName          | string | Name of Cosmos DB resource         |
-| newOrExistingCosmosDB | string | New or Existing Cosmos DB resource |
+| Name                    | Type     | Description                        |
+| :---------------------- | :------: | :--------------------------------- |
+| `cosmosDBName`          | `string` | Name of Cosmos DB resource         |
+| `newOrExistingCosmosDB` | `string` | New or Existing Cosmos DB resource |
 
 ## Examples
 
