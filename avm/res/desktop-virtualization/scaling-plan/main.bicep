@@ -10,85 +10,49 @@ param name string
 param location string = resourceGroup().location
 
 @sys.description('Optional. Friendly Name of the scaling plan.')
-param friendlyName string = name
+param friendlyName string
 
 @sys.description('Optional. Description of the scaling plan.')
-param description string = name
+param description string
 
 @sys.description('Optional. Timezone to be used for the scaling plan.')
-param timeZone string = 'W. Europe Standard Time'
+param timeZone string 
 
 @allowed([
   'Pooled'
 ])
 @sys.description('Optional. The type of hostpool where this scaling plan should be applied.')
-param hostPoolType string = 'Pooled'
+param hostPoolType string
 
 @sys.description('Optional. Provide a tag to be used for hosts that should not be affected by the scaling plan.')
-param exclusionTag string = ''
+param exclusionTag string
 
 @sys.description('Optional. The schedules related to this scaling plan. If no value is provided a default schedule will be provided.')
-param schedules array = [
-  {
-    rampUpStartTime: {
-      hour: 7
-      minute: 0
-    }
-    peakStartTime: {
-      hour: 9
-      minute: 0
-    }
-    rampDownStartTime: {
-      hour: 18
-      minute: 0
-    }
-    offPeakStartTime: {
-      hour: 20
-      minute: 0
-    }
-    name: 'weekdays_schedule'
-    daysOfWeek: [
-      'Monday'
-      'Tuesday'
-      'Wednesday'
-      'Thursday'
-      'Friday'
-    ]
-    rampUpLoadBalancingAlgorithm: 'DepthFirst'
-    rampUpMinimumHostsPct: 20
-    rampUpCapacityThresholdPct: 60
-    peakLoadBalancingAlgorithm: 'DepthFirst'
-    rampDownLoadBalancingAlgorithm: 'DepthFirst'
-    rampDownMinimumHostsPct: 10
-    rampDownCapacityThresholdPct: 90
-    rampDownForceLogoffUsers: true
-    rampDownWaitTimeMinutes: 30
-    rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
-    rampDownStopHostsWhen: 'ZeroSessions'
-    offPeakLoadBalancingAlgorithm: 'DepthFirst'
-  }
-]
+param schedules array 
 
 @sys.description('Optional. An array of references to hostpools.')
-param hostPoolReferences array = []
+param hostPoolReferences array 
 
 @sys.description('Optional. Tags of the resource.')
-param tags object = {}
+param tags object 
 
 @sys.description('Optional. Resource ID of the diagnostic storage account.')
-param diagnosticStorageAccountId string = ''
+param diagnosticStorageAccountId string 
 
 @sys.description('Optional. Resource ID of the diagnostic log analytics workspace.')
-param diagnosticWorkspaceId string = ''
+param diagnosticWorkspaceId string 
 
 @sys.description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-param diagnosticEventHubAuthorizationRuleId string = ''
+param diagnosticEventHubAuthorizationRuleId string 
 
 @sys.description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category.')
-param diagnosticEventHubName string = ''
+param diagnosticEventHubName string 
 
-@sys.description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalIds\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-param roleAssignments array = []
+//@sys.description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalIds\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+//param roleAssignments array = []
+
+@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+param roleAssignments roleAssignmentType
 
 @sys.description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
 param enableDefaultTelemetry bool = true
@@ -135,20 +99,12 @@ var builtInRoleNames = {
 var diagnosticsLogsSpecified = [for category in filter(diagnosticLogCategoriesToEnable, item => item != 'allLogs'): {
   category: category
   enabled: true
-  /*retentionPolicy: {
-      enabled: true
-      days: diagnosticLogsRetentionInDays
-  }*/
 }]
 
 var diagnosticsLogs = contains(diagnosticLogCategoriesToEnable, 'allLogs') ? [
   {
     categoryGroup: 'allLogs'
     enabled: true
-    /*retentionPolicy: {
-      enabled: true
-      days: diagnosticLogsRetentionInDays
-  }*/
   }
 ] : diagnosticsLogsSpecified
 
@@ -216,3 +172,27 @@ output name string = scalingPlan.name
 
 @sys.description('The location the resource was deployed into.')
 output location string = scalingPlan.location
+
+type roleAssignmentType = {
+  @description('Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.')
+  roleDefinitionIdOrName: string
+
+  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
+  principalId: string
+
+  @description('Optional. The principal type of the assigned principal ID.')
+  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device' | null)?
+
+  @description('Optional. The description of the role assignment.')
+  description: string?
+
+  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"')
+  condition: string?
+
+  @description('Optional. Version of the condition.')
+  conditionVersion: '2.0'?
+
+  @description('Optional. The Resource Id of the delegated managed identity resource.')
+  delegatedManagedIdentityResourceId: string?
+}[]?
+}[]?
