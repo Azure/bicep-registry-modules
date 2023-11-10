@@ -6,13 +6,13 @@ metadata owner = 'Azure/module-maintainers'
 param name string
 
 @description('Optional. The access control configuration for workflow actions.')
-param actionsAccessControlConfiguration object = {}
+param actionsAccessControlConfiguration object?
 
 @description('Optional. The endpoints configuration:  Access endpoint and outgoing IP addresses for the connector.')
 param connectorEndpointsConfiguration object = {}
 
 @description('Optional. The access control configuration for accessing workflow run contents.')
-param contentsAccessControlConfiguration object = {}
+param contentsAccessControlConfiguration object?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -26,8 +26,8 @@ param managedIdentities managedIdentitiesType
 @description('Optional. The integration account.')
 param integrationAccount object?
 
-@description('Optional. The integration service environment Id.')
-param integrationServiceEnvironmentResourceId string = ''
+@description('Optional. The integration service environment settings.')
+param integrationServiceEnvironment integrationServiceEnvironmentType?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -56,7 +56,7 @@ param state string = 'Enabled'
 param tags object?
 
 @description('Optional. The access control configuration for invoking workflow triggers.')
-param triggersAccessControlConfiguration object = {}
+param triggersAccessControlConfiguration object?
 
 @description('Optional. The definitions for one or more actions to execute at workflow runtime.')
 param workflowActions object = {}
@@ -65,7 +65,7 @@ param workflowActions object = {}
 param workflowEndpointsConfiguration object = {}
 
 @description('Optional. The access control configuration for workflow management.')
-param workflowManagementAccessControlConfiguration object = {}
+param workflowManagementAccessControlConfiguration object?
 
 @description('Optional. The definitions for the outputs to return from a workflow run.')
 param workflowOutputs object = {}
@@ -126,16 +126,13 @@ resource logicApp 'Microsoft.Logic/workflows@2019-05-01' = {
       connector: connectorEndpointsConfiguration
     }
     accessControl: {
-      triggers: !empty(triggersAccessControlConfiguration) ? triggersAccessControlConfiguration : null
-      contents: !empty(contentsAccessControlConfiguration) ? contentsAccessControlConfiguration : null
-      actions: !empty(actionsAccessControlConfiguration) ? actionsAccessControlConfiguration : null
-      workflowManagement: !empty(workflowManagementAccessControlConfiguration) ? workflowManagementAccessControlConfiguration : null
+      triggers: triggersAccessControlConfiguration
+      contents: contentsAccessControlConfiguration
+      actions: actionsAccessControlConfiguration
+      workflowManagement: workflowManagementAccessControlConfiguration
     }
-    integrationAccount: !empty(integrationAccount) ? integrationAccount : null
-    integrationServiceEnvironment: !empty(integrationServiceEnvironmentResourceId) ? {
-      id: integrationServiceEnvironmentResourceId
-    } : null
-
+    integrationAccount: integrationAccount
+    integrationServiceEnvironment: integrationServiceEnvironment
     definition: {
       '$schema': 'https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#'
       actions: workflowActions
@@ -254,6 +251,11 @@ type diagnosticSettingType = {
   @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
   marketplacePartnerResourceId: string?
 }[]?
+
+type integrationServiceEnvironmentType = {
+  @description('Optional. The integration service environment Id.')
+  id: string?
+}?
 
 type lockType = {
   @description('Optional. Specify the name of lock.')

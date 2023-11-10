@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "2544095933109268626"
+      "templateHash": "12528461393879453976"
     },
     "name": "Logic Apps (Workflows)",
     "description": "This module deploys a Logic App (Workflow).",
@@ -114,6 +114,19 @@
             "metadata": {
               "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
             }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "integrationServiceEnvironmentType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The integration service environment Id."
           }
         }
       },
@@ -243,7 +256,7 @@
     },
     "actionsAccessControlConfiguration": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. The access control configuration for workflow actions."
       }
@@ -257,7 +270,7 @@
     },
     "contentsAccessControlConfiguration": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. The access control configuration for accessing workflow run contents."
       }
@@ -289,11 +302,11 @@
         "description": "Optional. The integration account."
       }
     },
-    "integrationServiceEnvironmentResourceId": {
-      "type": "string",
-      "defaultValue": "",
+    "integrationServiceEnvironment": {
+      "$ref": "#/definitions/integrationServiceEnvironmentType",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. The integration service environment Id."
+        "description": "Optional. The integration service environment settings."
       }
     },
     "location": {
@@ -345,7 +358,7 @@
     },
     "triggersAccessControlConfiguration": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. The access control configuration for invoking workflow triggers."
       }
@@ -366,7 +379,7 @@
     },
     "workflowManagementAccessControlConfiguration": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. The access control configuration for workflow management."
       }
@@ -448,13 +461,13 @@
           "connector": "[parameters('connectorEndpointsConfiguration')]"
         },
         "accessControl": {
-          "triggers": "[if(not(empty(parameters('triggersAccessControlConfiguration'))), parameters('triggersAccessControlConfiguration'), null())]",
-          "contents": "[if(not(empty(parameters('contentsAccessControlConfiguration'))), parameters('contentsAccessControlConfiguration'), null())]",
-          "actions": "[if(not(empty(parameters('actionsAccessControlConfiguration'))), parameters('actionsAccessControlConfiguration'), null())]",
-          "workflowManagement": "[if(not(empty(parameters('workflowManagementAccessControlConfiguration'))), parameters('workflowManagementAccessControlConfiguration'), null())]"
+          "triggers": "[parameters('triggersAccessControlConfiguration')]",
+          "contents": "[parameters('contentsAccessControlConfiguration')]",
+          "actions": "[parameters('actionsAccessControlConfiguration')]",
+          "workflowManagement": "[parameters('workflowManagementAccessControlConfiguration')]"
         },
-        "integrationAccount": "[if(not(empty(parameters('integrationAccount'))), parameters('integrationAccount'), null())]",
-        "integrationServiceEnvironment": "[if(not(empty(parameters('integrationServiceEnvironmentResourceId'))), createObject('id', parameters('integrationServiceEnvironmentResourceId')), null())]",
+        "integrationAccount": "[parameters('integrationAccount')]",
+        "integrationServiceEnvironment": "[parameters('integrationServiceEnvironment')]",
         "definition": {
           "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
           "actions": "[parameters('workflowActions')]",

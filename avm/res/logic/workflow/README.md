@@ -502,7 +502,7 @@ module workflow 'br/public:avm/res/logic/workflow:<version>' = {
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`integrationAccount`](#parameter-integrationaccount) | object | The integration account. |
-| [`integrationServiceEnvironmentResourceId`](#parameter-integrationserviceenvironmentresourceid) | string | The integration service environment Id. |
+| [`integrationServiceEnvironment`](#parameter-integrationserviceenvironment) | object | The integration service environment settings. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both. |
@@ -523,7 +523,6 @@ module workflow 'br/public:avm/res/logic/workflow:<version>' = {
 The access control configuration for workflow actions.
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `connectorEndpointsConfiguration`
 
@@ -537,7 +536,6 @@ The endpoints configuration:  Access endpoint and outgoing IP addresses for the 
 The access control configuration for accessing workflow run contents.
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `definitionParameters`
 
@@ -674,12 +672,23 @@ The integration account.
 - Required: No
 - Type: object
 
-### Parameter: `integrationServiceEnvironmentResourceId`
+### Parameter: `integrationServiceEnvironment`
 
-The integration service environment Id.
+The integration service environment settings.
+- Required: No
+- Type: object
+
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`id`](#parameter-integrationserviceenvironmentid) | No | string | Optional. The integration service environment Id. |
+
+### Parameter: `integrationServiceEnvironment.id`
+
+Optional. The integration service environment Id.
+
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `location`
 
@@ -844,7 +853,6 @@ Tags of the resource.
 The access control configuration for invoking workflow triggers.
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `workflowActions`
 
@@ -865,7 +873,6 @@ The endpoints configuration:  Access endpoint and outgoing IP addresses for the 
 The access control configuration for workflow management.
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `workflowOutputs`
 
