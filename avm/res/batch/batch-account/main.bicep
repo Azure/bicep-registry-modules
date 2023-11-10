@@ -43,7 +43,7 @@ param privateEndpoints privateEndpointType
 param publicNetworkAccess string = ''
 
 @description('Optional. Network access profile. It is only applicable when publicNetworkAccess is not explicitly disabled.')
-param networkProfile networkProfileType?
+param networkProfile networkProfileType
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
