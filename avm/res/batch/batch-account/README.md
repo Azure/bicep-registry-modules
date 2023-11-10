@@ -32,7 +32,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/batch/batch-account:0.1.1`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/batch/batch-account:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using Customer-Managed-Keys with User-Assigned identity](#example-2-using-customer-managed-keys-with-user-assigned-identity)
@@ -49,7 +49,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module batchAccount 'br/public:avm/res/batch/batch-account:0.1.1' = {
+module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-bbamin'
   params: {
     // Required parameters
@@ -145,7 +145,7 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 <summary>via Bicep module</summary>
 
 ```bicep
-module batchAccount 'br/public:avm/res/batch/batch-account:0.1.1' = {
+module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-bbaencr'
   params: {
     // Required parameters
@@ -235,7 +235,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module batchAccount 'br/public:avm/res/batch/batch-account:0.1.1' = {
+module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-bbamax'
   params: {
     // Required parameters
@@ -447,7 +447,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module batchAccount 'br/public:avm/res/batch/batch-account:0.1.1' = {
+module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-bbawaf'
   params: {
     // Required parameters
