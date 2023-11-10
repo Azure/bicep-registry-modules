@@ -328,13 +328,6 @@ module workflow 'br/public:avm/res/logic/workflow:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -423,15 +416,6 @@ module workflow 'br/public:avm/res/logic/workflow:<version>' = {
           "<managedIdentityResourceId>"
         ]
       }
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
     },
     "tags": {
       "value": {
