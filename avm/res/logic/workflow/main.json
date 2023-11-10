@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "14183530757481634462"
+      "templateHash": "10253453795588140681"
     },
     "name": "Logic Apps (Workflows)",
     "description": "This module deploys a Logic App (Workflow).",
@@ -263,7 +263,7 @@
     },
     "connectorEndpointsConfiguration": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. The endpoints configuration:  Access endpoint and outgoing IP addresses for the connector."
       }
@@ -372,7 +372,7 @@
     },
     "workflowEndpointsConfiguration": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. The endpoints configuration:  Access endpoint and outgoing IP addresses for the workflow."
       }
@@ -386,28 +386,28 @@
     },
     "workflowOutputs": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. The definitions for the outputs to return from a workflow run."
       }
     },
     "workflowParameters": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. The definitions for one or more parameters that pass the values to use at your logic app's runtime."
       }
     },
     "workflowStaticResults": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. The definitions for one or more static results returned by actions as mock outputs when static results are enabled on those actions. In each action definition, the runtimeConfiguration.staticResult.name attribute references the corresponding definition inside staticResults."
       }
     },
     "workflowTriggers": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. The definitions for one or more triggers that instantiate your workflow. You can define more than one trigger, but only with the Workflow Definition Language, not visually through the Logic Apps Designer."
       }

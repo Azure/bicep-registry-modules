@@ -529,7 +529,6 @@ The access control configuration for workflow actions.
 The endpoints configuration:  Access endpoint and outgoing IP addresses for the connector.
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `contentsAccessControlConfiguration`
 
@@ -864,7 +863,6 @@ The definitions for one or more actions to execute at workflow runtime.
 The endpoints configuration:  Access endpoint and outgoing IP addresses for the workflow.
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `workflowManagementAccessControlConfiguration`
 
@@ -877,28 +875,24 @@ The access control configuration for workflow management.
 The definitions for the outputs to return from a workflow run.
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `workflowParameters`
 
 The definitions for one or more parameters that pass the values to use at your logic app's runtime.
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `workflowStaticResults`
 
 The definitions for one or more static results returned by actions as mock outputs when static results are enabled on those actions. In each action definition, the runtimeConfiguration.staticResult.name attribute references the corresponding definition inside staticResults.
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `workflowTriggers`
 
 The definitions for one or more triggers that instantiate your workflow. You can define more than one trigger, but only with the Workflow Definition Language, not visually through the Logic Apps Designer.
 - Required: No
 - Type: object
-- Default: `{}`
 
 
 ## Outputs

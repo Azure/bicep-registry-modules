@@ -9,7 +9,7 @@ param name string
 param actionsAccessControlConfiguration object?
 
 @description('Optional. The endpoints configuration:  Access endpoint and outgoing IP addresses for the connector.')
-param connectorEndpointsConfiguration object = {}
+param connectorEndpointsConfiguration object?
 
 @description('Optional. The access control configuration for accessing workflow run contents.')
 param contentsAccessControlConfiguration object?
@@ -62,22 +62,22 @@ param triggersAccessControlConfiguration object?
 param workflowActions object?
 
 @description('Optional. The endpoints configuration:  Access endpoint and outgoing IP addresses for the workflow.')
-param workflowEndpointsConfiguration object = {}
+param workflowEndpointsConfiguration object?
 
 @description('Optional. The access control configuration for workflow management.')
 param workflowManagementAccessControlConfiguration object?
 
 @description('Optional. The definitions for the outputs to return from a workflow run.')
-param workflowOutputs object = {}
+param workflowOutputs object?
 
 @description('Optional. The definitions for one or more parameters that pass the values to use at your logic app\'s runtime.')
-param workflowParameters object = {}
+param workflowParameters object?
 
 @description('Optional. The definitions for one or more static results returned by actions as mock outputs when static results are enabled on those actions. In each action definition, the runtimeConfiguration.staticResult.name attribute references the corresponding definition inside staticResults.')
-param workflowStaticResults object = {}
+param workflowStaticResults object?
 
 @description('Optional. The definitions for one or more triggers that instantiate your workflow. You can define more than one trigger, but only with the Workflow Definition Language, not visually through the Logic Apps Designer.')
-param workflowTriggers object = {}
+param workflowTriggers object?
 
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourcesIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
