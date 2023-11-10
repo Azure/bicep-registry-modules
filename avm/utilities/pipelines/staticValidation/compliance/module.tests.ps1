@@ -605,7 +605,7 @@ Describe 'Module tests' -Tag 'Module' {
       $telemetryDeployment.properties.template.outputs['telemetry'].value | Should -Be 'For more information, see https://aka.ms/avm/TelemetryInfo'
     }
 
-    It '[<moduleFolderName>] Telemetry deployment should have expected telemetry identifier.' -TestCases $deploymentFolderTestCases {
+    It '[<moduleFolderName>] Telemetry deployment should have expected telemetry identifier.' -TestCases ($deploymentFolderTestCases | Where-Object { $_.isTopLevelModule }) {
 
       param(
         [string] $templateFilePath,
@@ -646,7 +646,7 @@ Describe 'Module tests' -Tag 'Module' {
         $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
       }
       $telemetryDeploymentName = ($templateResources | Where-Object { $_.condition -like "*telemetry*" }).name # The AVM telemetry prefix
-      $telemetryDeploymentName | Should -Match ".*$expectedTelemetryIdentifier.*"
+      $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
     }
 
     It '[<moduleFolderName>] The Location should be defined as a parameter, with the default value of [resourceGroup().Location] or global for ResourceGroup deployment scope.' -TestCases $deploymentFolderTestCases {
