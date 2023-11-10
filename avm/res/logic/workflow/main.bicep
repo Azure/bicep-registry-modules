@@ -59,7 +59,7 @@ param tags object?
 param triggersAccessControlConfiguration object?
 
 @description('Optional. The definitions for one or more actions to execute at workflow runtime.')
-param workflowActions object = {}
+param workflowActions object?
 
 @description('Optional. The endpoints configuration:  Access endpoint and outgoing IP addresses for the workflow.')
 param workflowEndpointsConfiguration object = {}

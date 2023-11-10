@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "5920335776343336150"
+      "templateHash": "14183530757481634462"
     },
     "name": "Logic Apps (Workflows)",
     "description": "This module deploys a Logic App (Workflow).",
@@ -365,7 +365,7 @@
     },
     "workflowActions": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. The definitions for one or more actions to execute at workflow runtime."
       }

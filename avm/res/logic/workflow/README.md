@@ -858,7 +858,6 @@ The access control configuration for invoking workflow triggers.
 The definitions for one or more actions to execute at workflow runtime.
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `workflowEndpointsConfiguration`
 
