@@ -542,7 +542,6 @@ The access control configuration for accessing workflow run contents.
 Parameters for the definition template.
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `diagnosticSettings`
 
