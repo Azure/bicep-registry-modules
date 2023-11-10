@@ -25,7 +25,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm-res-network-publicipaddress:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/public-ip-address:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -43,7 +43,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
+module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-npiamin'
   params: {
     // Required parameters
@@ -123,7 +123,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
+module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-npiamax'
   params: {
     // Required parameters
@@ -269,7 +269,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
+module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-npiawaf'
   params: {
     // Required parameters
@@ -437,7 +437,7 @@ module publicIpAddress 'br/public:avm-res-network-publicipaddress:1.0.0' = {
 ### Parameter: `ddosSettings`
 
 The DDoS protection plan configuration associated with the public IP address.
-- Required: Yes
+- Required: No
 - Type: object
 
 
@@ -452,6 +452,15 @@ Required. The DDoS protection plan ID associated with the public IP address.
 
 - Required: Yes
 - Type: object
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`id`](#parameter-ddossettingsddosprotectionplanid) | Yes | string |  |
+
+### Parameter: `ddosSettings.ddosProtectionPlan.id`
+- Required: Yes
+- Type: string
+
 
 ### Parameter: `ddosSettings.protectionMode`
 
@@ -579,7 +588,7 @@ Optional. Resource ID of the diagnostic log analytics workspace. For security re
 ### Parameter: `dnsSettings`
 
 The DNS settings of the public IP address.
-- Required: Yes
+- Required: No
 - Type: object
 
 
@@ -679,7 +688,13 @@ IP address version.
 - Required: No
 - Type: string
 - Default: `'IPv4'`
-- Allowed: `[IPv4, IPv6]`
+- Allowed:
+  ```Bicep
+  [
+    'IPv4'
+    'IPv6'
+  ]
+  ```
 
 ### Parameter: `publicIPAllocationMethod`
 
@@ -687,7 +702,13 @@ The public IP address allocation method.
 - Required: No
 - Type: string
 - Default: `'Static'`
-- Allowed: `[Dynamic, Static]`
+- Allowed:
+  ```Bicep
+  [
+    'Dynamic'
+    'Static'
+  ]
+  ```
 
 ### Parameter: `publicIpPrefixResourceId`
 
@@ -769,7 +790,13 @@ Name of a public IP address SKU.
 - Required: No
 - Type: string
 - Default: `'Standard'`
-- Allowed: `[Basic, Standard]`
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Standard'
+  ]
+  ```
 
 ### Parameter: `skuTier`
 
@@ -777,7 +804,13 @@ Tier of a public IP address SKU.
 - Required: No
 - Type: string
 - Default: `'Regional'`
-- Allowed: `[Global, Regional]`
+- Allowed:
+  ```Bicep
+  [
+    'Global'
+    'Regional'
+  ]
+  ```
 
 ### Parameter: `tags`
 

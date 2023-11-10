@@ -1,7 +1,7 @@
 # Batch Accounts `[Microsoft.Batch/batchAccounts]`
 
 > ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
+>
 > - Only security and bug fixes are being handled by the AVM core team at present.
 > - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
 
@@ -32,7 +32,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm-res-batch-batchaccount:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/batch/batch-account:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using Customer-Managed-Keys with User-Assigned identity](#example-2-using-customer-managed-keys-with-user-assigned-identity)
@@ -49,7 +49,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module batchAccount 'br/public:avm-res-batch-batchaccount:1.0.0' = {
+module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-bbamin'
   params: {
     // Required parameters
@@ -145,7 +145,7 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 <summary>via Bicep module</summary>
 
 ```bicep
-module batchAccount 'br/public:avm-res-batch-batchaccount:1.0.0' = {
+module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-bbaencr'
   params: {
     // Required parameters
@@ -235,7 +235,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module batchAccount 'br/public:avm-res-batch-batchaccount:1.0.0' = {
+module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-bbamax'
   params: {
     // Required parameters
@@ -447,7 +447,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module batchAccount 'br/public:avm-res-batch-batchaccount:1.0.0' = {
+module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-bbawaf'
   params: {
     // Required parameters
@@ -628,7 +628,14 @@ module batchAccount 'br/public:avm-res-batch-batchaccount:1.0.0' = {
 List of allowed authentication modes for the Batch account that can be used to authenticate with the data plane.
 - Required: No
 - Type: array
-- Allowed: `[AAD, SharedKey, TaskAuthenticationToken]`
+- Allowed:
+  ```Bicep
+  [
+    'AAD'
+    'SharedKey'
+    'TaskAuthenticationToken'
+  ]
+  ```
 
 ### Parameter: `customerManagedKey`
 
@@ -875,14 +882,15 @@ Network access profile. It is only applicable when publicNetworkAccess is not ex
 Optional. Network access profile for batchAccount endpoint (Batch account data plane API).
 
 - Required: No
-- Type: object
-
-### Parameter: `networkProfile.nodeManagementAccess`
-
-Optional. Network access profile for nodeManagement endpoint (Batch service managing compute nodes for Batch pools).
-
-- Required: No
-- Type: object
+- Type: string
+- Default: `'Deny'`
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'Deny'
+  ]
+  ```
 
 ### Parameter: `poolAllocationMode`
 
@@ -890,7 +898,13 @@ The allocation mode for creating pools in the Batch account. Determines which qu
 - Required: No
 - Type: string
 - Default: `'BatchService'`
-- Allowed: `[BatchService, UserSubscription]`
+- Allowed:
+  ```Bicep
+  [
+    'BatchService'
+    'UserSubscription'
+  ]
+  ```
 
 ### Parameter: `privateEndpoints`
 
@@ -1066,7 +1080,14 @@ Whether or not public network access is allowed for this resource. For security 
 - Required: No
 - Type: string
 - Default: `''`
-- Allowed: `['', Disabled, Enabled]`
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 
@@ -1154,7 +1175,13 @@ The authentication mode which the Batch service will use to manage the auto-stor
 - Required: No
 - Type: string
 - Default: `'StorageKeys'`
-- Allowed: `[BatchAccountManagedIdentity, StorageKeys]`
+- Allowed:
+  ```Bicep
+  [
+    'BatchAccountManagedIdentity'
+    'StorageKeys'
+  ]
+  ```
 
 ### Parameter: `tags`
 
