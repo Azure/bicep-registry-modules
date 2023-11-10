@@ -289,9 +289,6 @@ function Set-PesterGitHubOutput {
     ''
   )
 
-
-
-
   if ($PSCmdlet.ShouldProcess("Test results file in path [$OutputFilePath]", 'Create')) {
     $null = New-Item -Path $OutputFilePath -Force -Value ($fileContent | Out-String)
   }
