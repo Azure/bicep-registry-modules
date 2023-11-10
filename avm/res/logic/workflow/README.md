@@ -45,10 +45,10 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module workflow 'br/public:avm/res/logic/workflow:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-lwmax'
+  name: '${uniqueString(deployment().name, location)}-test-lwmin'
   params: {
     // Required parameters
-    name: 'lwmax001'
+    name: 'lwmin001'
     // Non-required parameters
     location: '<location>'
     lock: '<lock>'
@@ -72,7 +72,7 @@ module workflow 'br/public:avm/res/logic/workflow:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "lwmax001"
+      "value": "lwmin001"
     },
     // Non-required parameters
     "location": {
