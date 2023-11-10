@@ -7,7 +7,7 @@ param storageAccountName string
 @description('Required. The name of the Automation Account to create.')
 param automationAccountName string
 
-@description('Required. The name of the Event Hub Workspace to create.')
+@description('Required. The name of the Event Hub Namespace to create.')
 param eventHubNamespaceName string
 
 @description('Required. The name of the Event Hub to create.')
