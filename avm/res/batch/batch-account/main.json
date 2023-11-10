@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "6948838030843770659"
+      "templateHash": "5985605470006145752"
     },
     "name": "Batch Accounts",
     "description": "This module deploys a Batch Account.",
@@ -529,7 +529,6 @@
     },
     "networkProfile": {
       "$ref": "#/definitions/networkProfileType",
-      "nullable": true,
       "metadata": {
         "description": "Optional. Network access profile. It is only applicable when publicNetworkAccess is not explicitly disabled."
       }
