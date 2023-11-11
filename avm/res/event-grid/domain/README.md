@@ -51,7 +51,22 @@ module domain 'br/public:avm-res-eventgrid-domain:1.0.0' = {
     // Required parameters
     name: 'egdmin001'
     // Non-required parameters
+    inboundIpRules: []
     location: '<location>'
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'domain'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
   }
 }
 ```
@@ -73,8 +88,27 @@ module domain 'br/public:avm-res-eventgrid-domain:1.0.0' = {
       "value": "egdmin001"
     },
     // Non-required parameters
+    "inboundIpRules": {
+      "value": []
+    },
     "location": {
       "value": "<location>"
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "domain",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        }
+      ]
     }
   }
 }
