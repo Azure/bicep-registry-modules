@@ -51,6 +51,9 @@ module systemTopic 'br/public:avm-res-eventgrid-systemtopic:1.0.0' = {
     topicType: 'Microsoft.Storage.StorageAccounts'
     // Non-required parameters
     location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
   }
 }
 ```
@@ -80,6 +83,11 @@ module systemTopic 'br/public:avm-res-eventgrid-systemtopic:1.0.0' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
     }
   }
 }
