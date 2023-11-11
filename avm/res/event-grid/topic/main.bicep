@@ -133,7 +133,7 @@ resource topic_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05
   scope: topic
 }]
 
-module topic_privateEndpoints '../../network/private-endpoint/main.bicep' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module topic_privateEndpoints 'br/public:avm-res-network-privateendpoint:0.1.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-topic-PrivateEndpoint-${index}'
   params: {
     groupIds: [

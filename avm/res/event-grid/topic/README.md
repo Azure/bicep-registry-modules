@@ -1052,4 +1052,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `AVM/bicep-registry-modules/avm/res/network/private-endpoint` | Local reference |
+| `br/public:avm-res-network-privateendpoint:0.1.1` | Remote reference |

@@ -131,7 +131,7 @@ resource domain_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-0
   scope: domain
 }]
 
-module domain_privateEndpoints '../../network/private-endpoint/main.bicep' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module domain_privateEndpoints 'br/public:avm-res-network-privateendpoint:0.1.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-domain-PrivateEndpoint-${index}'
   params: {
     groupIds: [
