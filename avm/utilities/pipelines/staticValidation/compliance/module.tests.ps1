@@ -1079,7 +1079,7 @@ Describe 'Module tests' -Tag 'Module' {
       )
 
       if ($templateFileContent.parameters.Keys -contains 'tags') {
-        $templateFileContent.parameters.tags.nullable | Should -Be $true -Because 'The AVM specs require a specific format. For for information please review the [AVM Specs](https://azure.github.io/Azure-Verified-Modules/specs/shared/interfaces#tags).'
+        $templateFileContent.parameters.tags.nullable | Should -Be $true -Because 'The AVM specs require a specific format. For information please review the [AVM Specs](https://azure.github.io/Azure-Verified-Modules/specs/shared/interfaces#tags).'
       } else {
         Set-ItResult -Skipped -Because "the module template has no [tags] parameter."
       }
