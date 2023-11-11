@@ -278,7 +278,7 @@ module logAnalyticsWorkspace_tables 'table/main.bicep' = [for (table, index) in 
   }
 }]
 
-module logAnalyticsWorkspace_solutions '../../operations-management/solution/main.bicep' = [for (gallerySolution, index) in gallerySolutions: if (!empty(gallerySolutions)) {
+module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/solution:0.1.0' = [for (gallerySolution, index) in gallerySolutions: if (!empty(gallerySolutions)) {
   name: '${uniqueString(deployment().name, location)}-LAW-Solution-${index}'
   params: {
     name: gallerySolution.name
