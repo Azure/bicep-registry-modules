@@ -53,6 +53,9 @@ module topic 'br/public:avm-res-eventgrid-topic:1.0.0' = {
     // Non-required parameters
     inboundIpRules: []
     location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -93,6 +96,11 @@ module topic 'br/public:avm-res-eventgrid-topic:1.0.0' = {
     },
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
     },
     "privateEndpoints": {
       "value": [
