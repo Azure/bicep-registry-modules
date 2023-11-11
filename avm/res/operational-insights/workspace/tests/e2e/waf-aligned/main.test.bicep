@@ -159,12 +159,6 @@ module testDeployment '../../../main.bicep' = {
     ]
     diagnosticSettings: [
       {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
         eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
         storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
@@ -178,32 +172,8 @@ module testDeployment '../../../main.bicep' = {
         publisher: 'Microsoft'
       }
     ]
-    linkedServices: [
-      {
-        name: 'Automation'
-        resourceId: nestedDependencies.outputs.automationAccountResourceId
-      }
-    ]
-    linkedStorageAccounts: [
-      {
-        name: 'Query'
-        resourceId: nestedDependencies.outputs.storageAccountResourceId
-      }
-    ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     publicNetworkAccessForIngestion: 'Disabled'
     publicNetworkAccessForQuery: 'Disabled'
-    savedSearches: [
-      {
-        category: 'VDC Saved Searches'
-        displayName: 'VMSS Instance Count2'
-        name: 'VMSSQueries'
-        query: 'Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer'
-      }
-    ]
     storageInsightsConfigs: [
       {
         storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
@@ -224,12 +194,5 @@ module testDeployment '../../../main.bicep' = {
     managedIdentities: {
       systemAssigned: true
     }
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Reader'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
   }
 }

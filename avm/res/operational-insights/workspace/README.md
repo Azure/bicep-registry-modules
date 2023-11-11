@@ -1163,12 +1163,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
       }
@@ -1180,43 +1174,12 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         publisher: 'Microsoft'
       }
     ]
-    linkedServices: [
-      {
-        name: 'Automation'
-        resourceId: '<resourceId>'
-      }
-    ]
-    linkedStorageAccounts: [
-      {
-        name: 'Query'
-        resourceId: '<resourceId>'
-      }
-    ]
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     managedIdentities: {
       systemAssigned: true
     }
     publicNetworkAccessForIngestion: 'Disabled'
     publicNetworkAccessForQuery: 'Disabled'
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
-    savedSearches: [
-      {
-        category: 'VDC Saved Searches'
-        displayName: 'VMSS Instance Count2'
-        name: 'VMSSQueries'
-        query: 'Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer'
-      }
-    ]
     storageInsightsConfigs: [
       {
         storageAccountResourceId: '<storageAccountResourceId>'
@@ -1355,12 +1318,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
@@ -1375,30 +1332,8 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         }
       ]
     },
-    "linkedServices": {
-      "value": [
-        {
-          "name": "Automation",
-          "resourceId": "<resourceId>"
-        }
-      ]
-    },
-    "linkedStorageAccounts": {
-      "value": [
-        {
-          "name": "Query",
-          "resourceId": "<resourceId>"
-        }
-      ]
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "managedIdentities": {
       "value": {
@@ -1410,25 +1345,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     },
     "publicNetworkAccessForQuery": {
       "value": "Disabled"
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
-    },
-    "savedSearches": {
-      "value": [
-        {
-          "category": "VDC Saved Searches",
-          "displayName": "VMSS Instance Count2",
-          "name": "VMSSQueries",
-          "query": "Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer"
-        }
-      ]
     },
     "storageInsightsConfigs": {
       "value": [
