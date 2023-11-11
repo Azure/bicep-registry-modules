@@ -1066,7 +1066,7 @@ Describe 'Module tests' -Tag 'Module' {
       )
 
       if ($templateFileContent.definitions.Keys -contains 'managedIdentitiesType' -and $templateFileContent.definitions.managedIdentitiesType.properties.keys -contains 'systemAssigned') {
-        $templateFileContent.outputs.Keys | Should -Contain 'systemAssignedMIPrincipalId' -Because 'The AVM specs require a this output. For for information please review the [AVM Specs](https://azure.github.io/Azure-Verified-Modules/specs/shared/interfaces#managed-identities).'
+        $templateFileContent.outputs.Keys | Should -Contain 'systemAssignedMIPrincipalId' -Because 'The AVM specs require a this output. For information please review the [AVM Specs](https://azure.github.io/Azure-Verified-Modules/specs/shared/interfaces#managed-identities).'
       } else {
         Set-ItResult -Skipped -Because "the module template has no [managedIdentitiesType] UDT definition or does not support system-assigned-identities."
       }
