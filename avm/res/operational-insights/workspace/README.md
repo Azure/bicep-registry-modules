@@ -1174,6 +1174,18 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         publisher: 'Microsoft'
       }
     ]
+    linkedServices: [
+      {
+        name: 'Automation'
+        resourceId: '<resourceId>'
+      }
+    ]
+    linkedStorageAccounts: [
+      {
+        name: 'Query'
+        resourceId: '<resourceId>'
+      }
+    ]
     location: '<location>'
     managedIdentities: {
       systemAssigned: true
@@ -1329,6 +1341,22 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
           "name": "AzureAutomation",
           "product": "OMSGallery",
           "publisher": "Microsoft"
+        }
+      ]
+    },
+    "linkedServices": {
+      "value": [
+        {
+          "name": "Automation",
+          "resourceId": "<resourceId>"
+        }
+      ]
+    },
+    "linkedStorageAccounts": {
+      "value": [
+        {
+          "name": "Query",
+          "resourceId": "<resourceId>"
         }
       ]
     },

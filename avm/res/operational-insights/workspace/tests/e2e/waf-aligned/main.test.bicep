@@ -38,7 +38,6 @@ module nestedDependencies 'dependencies.bicep' = {
     location: location
     storageAccountName: 'dep${namePrefix}sa${serviceShort}'
     automationAccountName: 'dep-${namePrefix}-auto-${serviceShort}'
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
 
@@ -170,6 +169,18 @@ module testDeployment '../../../main.bicep' = {
         name: 'AzureAutomation'
         product: 'OMSGallery'
         publisher: 'Microsoft'
+      }
+    ]
+    linkedServices: [
+      {
+        name: 'Automation'
+        resourceId: nestedDependencies.outputs.automationAccountResourceId
+      }
+    ]
+    linkedStorageAccounts: [
+      {
+        name: 'Query'
+        resourceId: nestedDependencies.outputs.storageAccountResourceId
       }
     ]
     publicNetworkAccessForIngestion: 'Disabled'
