@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "4615034546653799033"
+      "templateHash": "2315763575877738705"
     },
     "name": "Event Grid Topics",
     "description": "This module deploys an Event Grid Topic.",
@@ -479,6 +479,13 @@
         "description": "Optional. The managed identity definition for this resource."
       }
     },
+    "disableLocalAuth": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Allow only Azure AD authentication. Should be enabled for security reasons."
+      }
+    },
     "tags": {
       "type": "object",
       "nullable": true,
@@ -539,7 +546,8 @@
       "tags": "[parameters('tags')]",
       "properties": {
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('inboundIpRules'))), 'Disabled', null()))]",
-        "inboundIpRules": "[if(empty(parameters('inboundIpRules')), null(), parameters('inboundIpRules'))]"
+        "inboundIpRules": "[if(empty(parameters('inboundIpRules')), null(), parameters('inboundIpRules'))]",
+        "disableLocalAuth": "[parameters('disableLocalAuth')]"
       }
     },
     "topic_lock": {
@@ -1340,6 +1348,13 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('topic', '2021-06-01-preview', 'full').location]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('topic', '2021-06-01-preview', 'full').identity, 'principalId')), reference('topic', '2021-06-01-preview', 'full').identity.principalId, '')]"
     }
   }
 }

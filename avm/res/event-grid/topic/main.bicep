@@ -37,6 +37,9 @@ param lock lockType
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
 
+@description('Optional. Allow only Azure AD authentication. Should be enabled for security reasons.')
+param disableLocalAuth bool = true
+
 @description('Optional. Tags of the resource.')
 param tags object?
 
@@ -88,6 +91,7 @@ resource topic 'Microsoft.EventGrid/topics@2021-06-01-preview' = {
   properties: {
     publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : (!empty(privateEndpoints) && empty(inboundIpRules) ? 'Disabled' : null)
     inboundIpRules: (empty(inboundIpRules) ? null : inboundIpRules)
+    disableLocalAuth: disableLocalAuth
   }
 }
 
@@ -192,6 +196,9 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = topic.location
+
+@description('The principal ID of the system assigned identity.')
+output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(topic.identity, 'principalId') ? topic.identity.principalId : ''
 
 // =============== //
 //   Definitions   //

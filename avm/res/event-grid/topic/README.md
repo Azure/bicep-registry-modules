@@ -596,6 +596,7 @@ module topic 'br/public:avm-res-eventgrid-topic:1.0.0' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Allow only Azure AD authentication. Should be enabled for security reasons. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`eventSubscriptions`](#parameter-eventsubscriptions) | array | Event subscriptions to deploy. |
 | [`inboundIpRules`](#parameter-inboundiprules) | array | This can be used to restrict traffic from specific IPs instead of all IPs. Note: These are considered only if PublicNetworkAccess is enabled. |
@@ -721,6 +722,13 @@ Optional. Resource ID of the diagnostic log analytics workspace. For security re
 
 - Required: No
 - Type: string
+
+### Parameter: `disableLocalAuth`
+
+Allow only Azure AD authentication. Should be enabled for security reasons.
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `enableTelemetry`
 
@@ -1070,6 +1078,7 @@ Tags of the resource.
 | `name` | string | The name of the event grid topic. |
 | `resourceGroupName` | string | The name of the resource group the event grid topic was deployed into. |
 | `resourceId` | string | The resource ID of the event grid topic. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
 
