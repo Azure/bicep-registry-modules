@@ -53,6 +53,9 @@ module domain 'br/public:avm-res-eventgrid-domain:1.0.0' = {
     // Non-required parameters
     inboundIpRules: []
     location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -93,6 +96,11 @@ module domain 'br/public:avm-res-eventgrid-domain:1.0.0' = {
     },
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
     },
     "privateEndpoints": {
       "value": [
@@ -1048,6 +1056,7 @@ The topic names which are associated with the domain.
 | `name` | string | The name of the event grid domain. |
 | `resourceGroupName` | string | The name of the resource group the event grid domain was deployed into. |
 | `resourceId` | string | The resource ID of the event grid domain. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
 
