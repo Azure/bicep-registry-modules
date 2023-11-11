@@ -366,12 +366,7 @@ module domain 'br/public:avm-res-eventgrid-domain:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    inboundIpRules: [
-      {
-        action: 'Allow'
-        ipMask: '40.74.28.0/23'
-      }
-    ]
+    inboundIpRules: []
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -444,12 +439,7 @@ module domain 'br/public:avm-res-eventgrid-domain:1.0.0' = {
       ]
     },
     "inboundIpRules": {
-      "value": [
-        {
-          "action": "Allow",
-          "ipMask": "40.74.28.0/23"
-        }
-      ]
+      "value": []
     },
     "location": {
       "value": "<location>"
@@ -988,4 +978,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `res/network/private-endpoint` | Local reference |
+| `AVM/bicep-registry-modules/avm/res/network/private-endpoint` | Local reference |
