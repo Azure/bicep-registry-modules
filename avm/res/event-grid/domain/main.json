@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "17587447265911092410"
+      "templateHash": "4993719169119206722"
     },
     "name": "Event Grid Domains",
     "description": "This module deploys an Event Grid Domain.",
@@ -553,7 +553,7 @@
     },
     "domain": {
       "type": "Microsoft.EventGrid/domains",
-      "apiVersion": "2022-06-15",
+      "apiVersion": "2023-06-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1266,7 +1266,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('domain', '2022-06-15', 'full').location]"
+      "value": "[reference('domain', '2023-06-01-preview', 'full').location]"
     }
   }
 }

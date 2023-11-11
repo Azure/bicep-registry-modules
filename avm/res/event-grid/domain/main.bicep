@@ -89,7 +89,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource domain 'Microsoft.EventGrid/domains@2022-06-15' = {
+resource domain 'Microsoft.EventGrid/domains@2023-06-01-preview' = {
   name: name
   location: location
   tags: tags
