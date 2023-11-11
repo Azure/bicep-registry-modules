@@ -80,10 +80,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       }
     ]
     inboundIpRules: [
-      {
-        action: 'Allow'
-        ipMask: '40.74.28.0/23'
-      }
+      // {
+      //   action: 'Allow'
+      //   ipMask: '40.74.28.0/23'
+      // }
     ]
     lock: {
       kind: 'CanNotDelete'
