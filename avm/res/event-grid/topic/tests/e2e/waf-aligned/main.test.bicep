@@ -103,12 +103,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           }
         }
       } ]
-    inboundIpRules: [
-      {
-        action: 'Allow'
-        ipMask: '40.74.28.0/23'
-      }
-    ]
+    inboundIpRules: []
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -127,6 +122,9 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         }
       }
     ]
+    managedIdentities: {
+      systemAssigned: true
+    }
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Reader'
