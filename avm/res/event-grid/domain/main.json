@@ -6,13 +6,36 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "16585874049271942414"
+      "templateHash": "17587447265911092410"
     },
     "name": "Event Grid Domains",
     "description": "This module deploys an Event Grid Domain.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
+    "managedIdentitiesType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourcesIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource."
+          }
+        }
+      },
+      "nullable": true
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -477,9 +500,24 @@
       "metadata": {
         "description": "Optional. The topic names which are associated with the domain."
       }
+    },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentitiesType",
+      "metadata": {
+        "description": "Optional. The managed identity definition for this resource."
+      }
+    },
+    "disableLocalAuth": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Allow only Azure AD authentication. Should be enabled for security reasons."
+      }
     }
   },
   "variables": {
+    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "EventGrid Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1e241071-0855-49ea-94dc-649edcd759de')]",
@@ -519,11 +557,13 @@
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
+      "identity": "[variables('identity')]",
       "properties": {
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('inboundIpRules'))), 'Disabled', null()))]",
         "inboundIpRules": "[if(not(empty(parameters('inboundIpRules'))), parameters('inboundIpRules'), null())]",
         "autoCreateTopicWithFirstSubscription": "[parameters('autoCreateTopicWithFirstSubscription')]",
-        "autoDeleteTopicWithLastSubscription": "[parameters('autoDeleteTopicWithLastSubscription')]"
+        "autoDeleteTopicWithLastSubscription": "[parameters('autoDeleteTopicWithLastSubscription')]",
+        "disableLocalAuth": "[parameters('disableLocalAuth')]"
       }
     },
     "domain_lock": {

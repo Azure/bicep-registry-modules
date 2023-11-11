@@ -46,6 +46,19 @@ param enableTelemetry bool = true
 @description('Optional. The topic names which are associated with the domain.')
 param topics array = []
 
+@description('Optional. The managed identity definition for this resource.')
+param managedIdentities managedIdentitiesType
+
+@description('Optional. Allow only Azure AD authentication. Should be enabled for security reasons.')
+param disableLocalAuth bool = true
+
+var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourcesIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+
+var identity = !empty(managedIdentities) ? {
+  type: (managedIdentities.?systemAssigned ?? false) ? (!empty(managedIdentities.?userAssignedResourcesIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(managedIdentities.?userAssignedResourcesIds ?? {}) ? 'UserAssigned' : null)
+  userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+} : null
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   'EventGrid Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1e241071-0855-49ea-94dc-649edcd759de')
@@ -80,11 +93,13 @@ resource domain 'Microsoft.EventGrid/domains@2022-06-15' = {
   name: name
   location: location
   tags: tags
+  identity: identity
   properties: {
     publicNetworkAccess: !empty(publicNetworkAccess) ? any(publicNetworkAccess) : (!empty(privateEndpoints) && empty(inboundIpRules) ? 'Disabled' : null)
     inboundIpRules: !empty(inboundIpRules) ? inboundIpRules : null
     autoCreateTopicWithFirstSubscription: autoCreateTopicWithFirstSubscription
     autoDeleteTopicWithLastSubscription: autoDeleteTopicWithLastSubscription
+    disableLocalAuth: disableLocalAuth
   }
 }
 
@@ -184,6 +199,13 @@ output location string = domain.location
 //   Definitions   //
 // =============== //
 
+type managedIdentitiesType = {
+  @description('Optional. Enables system assigned managed identity on the resource.')
+  systemAssigned: bool?
+
+  @description('Optional. The resource ID(s) to assign to the resource.')
+  userAssignedResourcesIds: string[]?
+}?
 
 type lockType = {
   @description('Optional. Specify the name of lock.')

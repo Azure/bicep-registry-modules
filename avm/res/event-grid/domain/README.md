@@ -406,6 +406,9 @@ module domain 'br/public:avm-res-eventgrid-domain:1.0.0' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    managedIdentities: {
+      systemAssigned: true
+    }
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -484,6 +487,11 @@ module domain 'br/public:avm-res-eventgrid-domain:1.0.0' = {
         "name": "myCustomLockName"
       }
     },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
     "privateEndpoints": {
       "value": [
         {
@@ -544,10 +552,12 @@ module domain 'br/public:avm-res-eventgrid-domain:1.0.0' = {
 | [`autoCreateTopicWithFirstSubscription`](#parameter-autocreatetopicwithfirstsubscription) | bool | Location for all Resources. |
 | [`autoDeleteTopicWithLastSubscription`](#parameter-autodeletetopicwithlastsubscription) | bool | Location for all Resources. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Allow only Azure AD authentication. Should be enabled for security reasons. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`inboundIpRules`](#parameter-inboundiprules) | array | This can be used to restrict traffic from specific IPs instead of all IPs. Note: These are considered only if PublicNetworkAccess is enabled. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and inboundIpRules are not set. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
@@ -683,6 +693,13 @@ Optional. Resource ID of the diagnostic log analytics workspace. For security re
 - Required: No
 - Type: string
 
+### Parameter: `disableLocalAuth`
+
+Allow only Azure AD authentication. Should be enabled for security reasons.
+- Required: No
+- Type: bool
+- Default: `True`
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -730,6 +747,32 @@ Optional. Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource.
+- Required: No
+- Type: object
+
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | No | bool | Optional. Enables system assigned managed identity on the resource. |
+| [`userAssignedResourcesIds`](#parameter-managedidentitiesuserassignedresourcesids) | No | array | Optional. The resource ID(s) to assign to the resource. |
+
+### Parameter: `managedIdentities.systemAssigned`
+
+Optional. Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `managedIdentities.userAssignedResourcesIds`
+
+Optional. The resource ID(s) to assign to the resource.
+
+- Required: No
+- Type: array
 
 ### Parameter: `name`
 
