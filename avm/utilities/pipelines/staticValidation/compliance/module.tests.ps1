@@ -1162,7 +1162,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       param(
         [object[]] $testFileContent
       )
-      ($testFileContent | Out-String) | Should -Match "metadata name = .+" -Because 'Test cases should contain a metadata string [name] in the format `metadata name = ''This is one hell of a test name''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
+      ($testFileContent | Out-String) | Should -Match "metadata name = .+" -Because 'Test cases should contain a metadata string [name] in the format `metadata name = ''One cake of a name''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
     }
 
     It "[<moduleFolderName>] [<testName>] Bicep test deployment files should contain a metadata string [description]" -TestCases $deploymentTestFileTestCases {
@@ -1170,7 +1170,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       param(
         [object[]] $testFileContent
       )
-      ($testFileContent | Out-String) | Should -Match "metadata description = .+" -Because 'Test cases should contain a metadata string [description] in the format `metadata description = ''This is one hell of a description''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
+      ($testFileContent | Out-String) | Should -Match "metadata description = .+" -Because 'Test cases should contain a metadata string [description] in the format `metadata description = ''The cake is a lie''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
     }
 
     It "[<moduleFolderName>] [<testName>] Bicep test deployment files should contain a parameter [namePrefix] with value ['#_namePrefix_#']" -TestCases $deploymentTestFileTestCases {
