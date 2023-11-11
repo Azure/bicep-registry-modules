@@ -79,12 +79,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
     ]
-    inboundIpRules: [
-      // {
-      //   action: 'Allow'
-      //   ipMask: '40.74.28.0/23'
-      // }
-    ]
+    inboundIpRules: []
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
