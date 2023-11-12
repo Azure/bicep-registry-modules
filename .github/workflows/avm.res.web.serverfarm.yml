@@ -1,0 +1,81 @@
+name: "avm.res.web.serverfarm"
+
+on:
+  schedule:
+    - cron: "0 12 1/15 * *" # Bi-Weekly Test (on 1st & 15th of month)
+  workflow_dispatch:
+    inputs:
+      staticValidation:
+        type: boolean
+        description: "Execute static validation"
+        required: false
+        default: true
+      deploymentValidation:
+        type: boolean
+        description: "Execute deployment validation"
+        required: false
+        default: true
+      removeDeployment:
+        type: boolean
+        description: "Remove deployed module"
+        required: false
+        default: true
+
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/actions/templates/avm-**"
+      - ".github/workflows/avm.template.module.yml"
+      - ".github/workflows/avm.res.web.serverfarm"
+      - "avm/res/web/serverfarm/**"
+      - "avm/utilities/pipelines/**"
+      - "!*/**/README.md"
+
+env:
+  modulePath: "avm/res/web/serverfarm"
+  workflowPath: ".github/workflows/avm.res.web.serverfarm"
+
+concurrency:
+  group: ${{ github.workflow }}
+
+jobs:
+  ###########################
+  #   Initialize pipeline   #
+  ###########################
+  job_initialize_pipeline:
+    runs-on: ubuntu-20.04
+    name: "Initialize pipeline"
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: "Set input parameters to output variables"
+        id: get-workflow-param
+        uses: ./.github/actions/templates/avm-getWorkflowInput
+        with:
+          workflowPath: "${{ env.workflowPath}}"
+      - name: "Get parameter file paths"
+        id: get-module-test-file-paths
+        uses: ./.github/actions/templates/avm-getModuleTestFiles
+        with:
+          modulePath: "${{ env.modulePath }}"
+    outputs:
+      workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
+      moduleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.moduleTestFilePaths }}
+      modulePath: "${{ env.modulePath }}"
+
+  ##############################
+  #   Call reusable workflow   #
+  ##############################
+  call-workflow-passing-data:
+    name: "Module"
+    needs:
+      - job_initialize_pipeline
+    uses: ./.github/workflows/avm.template.module.yml
+    with:
+      workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
+      moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
+      modulePath: "${{ needs.job_initialize_pipeline.outputs.modulePath}}"
+    secrets: inherit
