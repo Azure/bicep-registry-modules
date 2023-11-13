@@ -24,7 +24,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm-res-powerbidedicated-capacity:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/power-bi-dedicated/capacity:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -40,7 +40,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module capacity 'br/public:avm-res-powerbidedicated-capacity:1.0.0' = {
+module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-pbdcapmin'
   params: {
     // Required parameters
@@ -116,7 +116,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module capacity 'br/public:avm-res-powerbidedicated-capacity:1.0.0' = {
+module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-pbdcapmax'
   params: {
     // Required parameters
@@ -226,7 +226,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 <summary>via Bicep module</summary>
 
 ```bicep
-module capacity 'br/public:avm-res-powerbidedicated-capacity:1.0.0' = {
+module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-pbdcapwaf'
   params: {
     // Required parameters
@@ -381,7 +381,13 @@ Mode of the resource.
 - Required: No
 - Type: string
 - Default: `'Gen2'`
-- Allowed: `[Gen1, Gen2]`
+- Allowed:
+  ```Bicep
+  [
+    'Gen1'
+    'Gen2'
+  ]
+  ```
 
 ### Parameter: `name`
 
