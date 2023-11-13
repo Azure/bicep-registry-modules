@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "12255564723872519506"
+      "templateHash": "6498019527113058850"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service.",
@@ -867,7 +867,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "2788827530274342759"
+              "templateHash": "13477311172998188302"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -964,6 +964,71 @@
                 }
               },
               "nullable": true
+            },
+            "ipConfigurationsType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the resource that is unique within a resource group."
+                    }
+                  },
+                  "properties": {
+                    "type": "object",
+                    "properties": {
+                      "groupId": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                        }
+                      },
+                      "memberName": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
+                        }
+                      },
+                      "privateIPAddress": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. A private ip address obtained from the private endpoint's subnet."
+                        }
+                      }
+                    },
+                    "metadata": {
+                      "description": "Required. Properties of private endpoint IP configurations."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "customDnsConfigType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "fqdn": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Fqdn that resolves to private endpoint ip address."
+                    }
+                  },
+                  "ipAddresses": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "metadata": {
+                      "description": "Required. A list of private ip addresses of the private endpoint."
+                    }
+                  }
+                }
+              },
+              "nullable": true
             }
           },
           "parameters": {
@@ -1000,8 +1065,7 @@
               }
             },
             "ipConfigurations": {
-              "type": "array",
-              "nullable": true,
+              "$ref": "#/definitions/ipConfigurationsType",
               "metadata": {
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
               }
@@ -1053,8 +1117,7 @@
               }
             },
             "customDnsConfigs": {
-              "type": "array",
-              "nullable": true,
+              "$ref": "#/definitions/customDnsConfigType",
               "metadata": {
                 "description": "Optional. Custom DNS configurations."
               }
@@ -1093,7 +1156,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.2.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.2.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {

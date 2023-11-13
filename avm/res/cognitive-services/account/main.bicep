@@ -261,7 +261,7 @@ resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSetti
   scope: cognitiveService
 }]
 
-module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.2.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.2.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-CognitiveService-PrivateEndpoint-${index}'
   params: {
     groupIds: [

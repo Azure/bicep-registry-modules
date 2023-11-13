@@ -239,7 +239,7 @@ module keyVault_keys 'key/main.bicep' = [for (key, index) in (keys ?? []): {
   }
 }]
 
-module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.2.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.2.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-KeyVault-PrivateEndpoint-${index}'
   params: {
     groupIds: [
