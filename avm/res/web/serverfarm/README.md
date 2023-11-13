@@ -24,7 +24,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/web/serverfarm:<version>`.
 
 - [Defaults](#example-1-defaults)
-- [Waf-Aligned](#example-2-waf-aligned)
+- [Max](#example-2-max)
+- [Waf-Aligned](#example-3-waf-aligned)
 
 ### Example 1: _Defaults_
 
@@ -34,27 +35,19 @@ The following section provides usage examples for the module, which were used to
 
 ```bicep
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-wsdef'
+  name: '${uniqueString(deployment().name, location)}-test-wsfdef'
   params: {
-    name: 'wsdef001'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "name": {
-      "value": "wsdef001"
+    // Required parameters
+    name: 'wsfdef001'
+    // Non-required parameters
+    kind: 'App'
+    location: '<location>'
+    sku: {
+      capacity: 1
+      family: 'P'
+      name: 'S1'
+      size: 'S1'
+      tier: 'Standard'
     }
   }
 }
@@ -63,7 +56,43 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 </details>
 <p>
 
-### Example 2: _Waf-Aligned_
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "wsfdef001"
+    },
+    // Non-required parameters
+    "kind": {
+      "value": "App"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "sku": {
+      "value": {
+        "capacity": 1,
+        "family": "P",
+        "name": "S1",
+        "size": "S1",
+        "tier": "Standard"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Max_
 
 <details>
 
@@ -71,9 +100,49 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 
 ```bicep
 module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-wswaf'
+  name: '${uniqueString(deployment().name, location)}-test-wsfmax'
   params: {
-    name: 'wswaf001'
+    // Required parameters
+    name: 'wsfmax001'
+    // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    kind: 'App'
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'lock-validation'
+    }
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    sku: {
+      capacity: 1
+      family: 'P'
+      name: 'S1'
+      size: 'S1'
+      tier: 'Standard'
+    }
+    tags: {
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -90,8 +159,193 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
-      "value": "wswaf001"
+      "value": "wsfmax001"
+    },
+    // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "kind": {
+      "value": "App"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "lock-validation"
+      }
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Reader"
+        }
+      ]
+    },
+    "sku": {
+      "value": {
+        "capacity": 1,
+        "family": "P",
+        "name": "S1",
+        "size": "S1",
+        "tier": "Standard"
+      }
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Waf-Aligned_
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-wsfwaf'
+  params: {
+    // Required parameters
+    name: 'wsfwaf001'
+    // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    kind: 'App'
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'lock-validation'
+    }
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    sku: {
+      capacity: 3
+      family: 'P'
+      name: 'P1v3'
+      size: 'P1v3'
+      tier: 'Premium'
+    }
+    tags: {
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "wsfwaf001"
+    },
+    // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "kind": {
+      "value": "App"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "lock-validation"
+      }
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Reader"
+        }
+      ]
+    },
+    "sku": {
+      "value": {
+        "capacity": 3,
+        "family": "P",
+        "name": "P1v3",
+        "size": "P1v3",
+        "tier": "Premium"
+      }
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
