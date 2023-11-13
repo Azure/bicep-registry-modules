@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "1208381918996235289"
+      "templateHash": "13477311172998188302"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint.",
@@ -205,7 +205,6 @@
     },
     "ipConfigurations": {
       "$ref": "#/definitions/ipConfigurationsType",
-      "nullable": true,
       "metadata": {
         "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
       }
@@ -258,7 +257,6 @@
     },
     "customDnsConfigs": {
       "$ref": "#/definitions/customDnsConfigType",
-      "nullable": true,
       "metadata": {
         "description": "Optional. Custom DNS configurations."
       }
