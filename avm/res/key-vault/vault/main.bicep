@@ -103,6 +103,13 @@ var builtInRoleNames = {
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
+var formattedAccessPolicies = [for accessPolicy in (accessPolicies ?? []): {
+  applicationId: accessPolicy.?applicationId ?? ''
+  objectId: accessPolicy.?objectId ?? ''
+  permissions: accessPolicy.permissions
+  tenantId: accessPolicy.?tenantId ?? tenant().tenantId
+}]
+
 var secretList = secrets.?secureList ?? []
 
 // ============ //
@@ -141,7 +148,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     createMode: createMode
     enablePurgeProtection: enablePurgeProtection ? enablePurgeProtection : null
     tenantId: subscription().tenantId
-    accessPolicies: accessPolicies ?? []
+    accessPolicies: formattedAccessPolicies
     sku: {
       name: sku
       family: 'A'

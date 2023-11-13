@@ -8,6 +8,13 @@ param keyVaultName string
 @description('Optional. An array of 0 to 16 identities that have access to the key vault. All identities in the array must use the same tenant ID as the key vault\'s tenant ID.')
 param accessPolicies accessPoliciesType
 
+var formattedAccessPolicies = [for accessPolicy in (accessPolicies ?? []): {
+  applicationId: accessPolicy.?applicationId ?? ''
+  objectId: accessPolicy.?objectId ?? ''
+  permissions: accessPolicy.permissions
+  tenantId: accessPolicy.?tenantId ?? tenant().tenantId
+}]
+
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: keyVaultName
 }
@@ -16,7 +23,7 @@ resource policies 'Microsoft.KeyVault/vaults/accessPolicies@2022-07-01' = {
   name: 'add'
   parent: keyVault
   properties: {
-    accessPolicies: accessPolicies ?? []
+    accessPolicies: formattedAccessPolicies
   }
 }
 
