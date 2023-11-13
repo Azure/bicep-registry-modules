@@ -12,10 +12,10 @@ param resourceGroupName string = 'dep-${namePrefix}-web.serverfarms-${serviceSho
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'wsfwaf'
+param serviceShort string = 'wsfmax'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = 'cnt'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -61,11 +61,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     name: '${namePrefix}${serviceShort}001'
     location: location
     sku: {
-      name: 'P1v3'
-      tier: 'Premium'
-      size: 'P1v3'
+      name: 'S1'
+      tier: 'Standard'
+      size: 'S1'
       family: 'P'
-      capacity: 3
+      capacity: 1
     }
     kind: 'App'
     lock: {
