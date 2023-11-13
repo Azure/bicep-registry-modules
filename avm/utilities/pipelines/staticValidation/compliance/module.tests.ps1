@@ -945,40 +945,39 @@ Describe 'Module tests' -Tag 'Module' {
       }
 
       # Setting expected URL only for those that doen't have multiple different variants
-      $avmInterfaceSpecsTemplateBase = 'https://raw.githubusercontent.com/Azure/Azure-Verified-Modules/main/docs/static/includes/interfaces'
-      $avmInterfaceSpecsBase = 'https://azure.github.io/Azure-Verified-Modules/specs/shared/interfaces'
+      $interfaceBase = 'https://aka.ms/avm/interfaces'
       $udtCases = @(
         @{
           parameterName = 'diagnosticSettings'
           udtName       = 'diagnosticSettingType'
-          link          = "$avmInterfaceSpecsBase#diagnostic-settings"
+          link          = "$interfaceBase/diagnostic-settings"
         }
         @{
           parameterName  = 'roleAssignments'
           udtName        = 'roleAssignmentType'
-          udtExpectedUrl = "$avmInterfaceSpecsTemplateBase/int.rbac.udt.schema.bicep"
-          link           = "$avmInterfaceSpecsBase#role-assignments"
+          udtExpectedUrl = "$interfaceBase/diagnostic-settings/udt-schema"
+          link           = "$interfaceBase/role-assignments"
         }
         @{
           parameterName  = 'lock'
           udtName        = 'lockType'
-          udtExpectedUrl = "$avmInterfaceSpecsTemplateBase/int.locks.udt.schema.bicep"
-          link           = "$avmInterfaceSpecsBase#resource-locks"
+          udtExpectedUrl = "$interfaceBase/resource-locks/udt-schema"
+          link           = "$interfaceBase/resource-locks"
         }
         @{
           parameterName = 'managedIdentities'
           udtName       = 'managedIdentitiesType'
-          link          = "$avmInterfaceSpecsBase#managed-identities"
+          link          = "$interfaceBase/managed-identities"
         }
         @{
           parameterName = 'privateEndpoints'
           udtName       = 'privateEndpointType'
-          link          = "$avmInterfaceSpecsBase#private-endpoints"
+          link          = "$interfaceBase/private-endpoints"
         }
         @{
           parameterName = 'customerManagedKey'
           udtName       = 'customerManagedKeyType'
-          link          = "$avmInterfaceSpecsBase#customer-managed-keys"
+          link          = "$interfaceBase/customer-managed-keys"
         }
       )
 
@@ -1066,7 +1065,7 @@ Describe 'Module tests' -Tag 'Module' {
       )
 
       if ($templateFileContent.definitions.Keys -contains 'managedIdentitiesType' -and $templateFileContent.definitions.managedIdentitiesType.properties.keys -contains 'systemAssigned') {
-        $templateFileContent.outputs.Keys | Should -Contain 'systemAssignedMIPrincipalId' -Because 'The AVM specs require a this output. For information please review the [AVM Specs](https://azure.github.io/Azure-Verified-Modules/specs/shared/interfaces#managed-identities).'
+        $templateFileContent.outputs.Keys | Should -Contain 'systemAssignedMIPrincipalId' -Because 'The AVM specs require a this output. For information please review the [AVM Specs](https://aka.ms/avm/interfaces/managed-identities).'
       } else {
         Set-ItResult -Skipped -Because "the module template has no [managedIdentitiesType] UDT definition or does not support system-assigned-identities."
       }
@@ -1079,7 +1078,7 @@ Describe 'Module tests' -Tag 'Module' {
       )
 
       if ($templateFileContent.parameters.Keys -contains 'tags') {
-        $templateFileContent.parameters.tags.nullable | Should -Be $true -Because 'The AVM specs require a specific format. For information please review the [AVM Specs](https://azure.github.io/Azure-Verified-Modules/specs/shared/interfaces#tags).'
+        $templateFileContent.parameters.tags.nullable | Should -Be $true -Because 'The AVM specs require a specific format. For information please review the [AVM Specs](https://aka.ms/avm/interfaces/tags).'
       } else {
         Set-ItResult -Skipped -Because "the module template has no [tags] parameter."
       }
