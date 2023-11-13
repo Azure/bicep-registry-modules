@@ -67,6 +67,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       family: 'P'
       capacity: 3
     }
+    targetWorkerCount: 2
     kind: 'App'
     tags: {
       Environment: 'Non-Prod'
