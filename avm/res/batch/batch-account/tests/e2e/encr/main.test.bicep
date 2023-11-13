@@ -73,14 +73,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     tags: {
       'hidden-title': 'This is visible in the resource name'
     }
-    // Workaround for PSRule
-    storageAccessIdentityResourceId: null
-    keyVaultReferenceResourceId: null
-    networkProfileAllowedIpRanges: null
-    allowedAuthenticationModes: null
-    diagnosticSettings: null
-    roleAssignments: null
-    privateEndpoints: null
-    lock: null
   }
 }]
