@@ -151,8 +151,8 @@ module dnsZone_MX 'mx/main.bicep' = [for (mxRecord, index) in (mx ?? []): {
     name: mxRecord.name
     metadata: mxRecord.?metadata
     mxRecords: mxRecord.?mxRecords
-    ttl:  mxRecord.?ttl ?? 3600
-    roleAssignments:  mxRecord.?roleAssignments
+    ttl: mxRecord.?ttl ?? 3600
+    roleAssignments: mxRecord.?roleAssignments
   }
 }]
 
@@ -175,8 +175,8 @@ module dnsZone_PTR 'ptr/main.bicep' = [for (ptrRecord, index) in (ptr ?? []): {
     name: ptrRecord.name
     metadata: ptrRecord.?metadata
     ptrRecords: ptrRecord.?ptrRecords
-    ttl:  ptrRecord.?ttl ?? 3600
-    roleAssignments:  ptrRecord.?roleAssignments
+    ttl: ptrRecord.?ttl ?? 3600
+    roleAssignments: ptrRecord.?roleAssignments
   }
 }]
 
@@ -211,8 +211,8 @@ module dnsZone_TXT 'txt/main.bicep' = [for (txtRecord, index) in (txt ?? []): {
     name: txtRecord.name
     metadata: txtRecord.?metadata
     txtRecords: txtRecord.?txtRecords
-    ttl:  txtRecord.?ttl ?? 3600
-    roleAssignments:  txtRecord.?roleAssignments
+    ttl: txtRecord.?ttl ?? 3600
+    roleAssignments: txtRecord.?roleAssignments
   }
 }]
 
@@ -271,7 +271,7 @@ type roleAssignmentType = {
   principalId: string
 
   @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device' | null)?
+  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
 
   @description('Optional. The description of the role assignment.')
   description: string?

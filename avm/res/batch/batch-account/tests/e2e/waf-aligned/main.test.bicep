@@ -101,7 +101,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     }
     // Workaround for PSRule
     keyVaultReferenceResourceId: null
-    networkProfileAllowedIpRanges: null
+    networkProfile: null
     allowedAuthenticationModes: null
     roleAssignments: null
     customerManagedKey: null

@@ -44,7 +44,7 @@ This module deploys a Private DNS Zone CNAME record.
 A CNAME record.
 - Required: No
 - Type: object
-- Default: `{object}`
+- Default: `{}`
 
 ### Parameter: `metadata`
 
