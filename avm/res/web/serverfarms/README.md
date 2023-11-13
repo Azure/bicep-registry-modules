@@ -21,7 +21,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/web/serverfarm:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/web/serverfarms:<version>`.
 
 - [Defaults](#example-1-defaults)
 - [Max](#example-2-max)
@@ -34,7 +34,7 @@ The following section provides usage examples for the module, which were used to
 <summary>via Bicep module</summary>
 
 ```bicep
-module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
+module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-wsfdef'
   params: {
     // Required parameters
@@ -99,7 +99,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
+module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-wsfmax'
   params: {
     // Required parameters
@@ -230,7 +230,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
+module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-wsfwaf'
   params: {
     // Required parameters
