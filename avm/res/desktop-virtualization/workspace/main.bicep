@@ -1,17 +1,43 @@
-param name string = 'myWorkspace'
+metadata name = 'Workspace'
+metadata description = 'This module deploys an Azure Virtual Desktop Workspace.'
+metadata owner = 'Azure/module-maintainers'
+
+// ================ //
+// Parameters       //
+// ================ //
+
+@sys.description('Required. Name of the workspace.')
+param name string
+
+@sys.description('Optional. Location for all resources.')
 param location string = 'eastus'
+
+@sys.description('Optional. Tags to be applied on all resourcesin this deployment.')
 param tags object?
 
-param applicationGroupReferences array = []
+@sys.description('Optional. Array of application group references.')
+param applicationGroupReferences array
+
+@sys.description('Optional. Description of the workspace.')
 param description string = 'description'
+
+@sys.description('Optional. Friendly name of the workspace.')
 param friendlyName string = 'friendlyName'
+
+@sys.description('Optional. Public network access for the workspace.')
 param publicNetworkAccess string = 'Enabled'
+
+@sys.description('Optional. Configuration details for private endpoints.')
 param privateEndpoints privateEndpointType
 
 param lock lockType
-param roleAssignments array = []
+param roleAssignments roleAssignmentType
 param diagnosticSettings diagnosticSettingType
 param enableTelemetry bool = true
+
+// =========== //
+// Variables   //
+// =========== //
 
 var builtInRoleNames = {
   'Application Group Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ca6382a4-1721-4bcf-a114-ff0c70227b6b')
@@ -48,7 +74,7 @@ var builtInRoleNames = {
 // ============ //
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.keyvault-vault.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}' //edit
+  name: '46d3xbcp.res.desktopvirtualization-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}' //edit
   properties: {
     mode: 'Incremental'
     template: {
