@@ -1,4 +1,4 @@
-name: "avm.res.web.serverfarm"
+name: "avm.res.web.serverfarms"
 
 on:
   schedule:
@@ -27,14 +27,14 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.web.serverfarm"
-      - "avm/res/web/serverfarm/**"
+      - ".github/workflows/avm.res.web.serverfarms"
+      - "avm/res/web/serverfarms/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/web/serverfarm"
-  workflowPath: ".github/workflows/avm.res.web.serverfarm"
+  modulePath: "avm/res/web/serverfarms"
+  workflowPath: ".github/workflows/avm.res.web.serverfarms"
 
 concurrency:
   group: ${{ github.workflow }}
