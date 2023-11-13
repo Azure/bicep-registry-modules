@@ -68,10 +68,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       capacity: 3
     }
     kind: 'App'
-    lock: {
-      name: 'lock-validation'
-      kind: 'CanNotDelete'
-    }
     tags: {
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
