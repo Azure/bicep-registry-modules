@@ -13,7 +13,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. All access policies to create.')
-param accessPolicies array?
+param accessPolicies accessPoliciesType
 
 @description('Optional. All secrets to create.')
 @secure()
@@ -103,13 +103,6 @@ var builtInRoleNames = {
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
-var formattedAccessPolicies = [for accessPolicy in (accessPolicies ?? []): {
-  applicationId: contains(accessPolicy, 'applicationId') ? accessPolicy.applicationId : ''
-  objectId: contains(accessPolicy, 'objectId') ? accessPolicy.objectId : ''
-  permissions: accessPolicy.permissions
-  tenantId: contains(accessPolicy, 'tenantId') ? accessPolicy.tenantId : tenant().tenantId
-}]
-
 var secretList = secrets.?secureList ?? []
 
 // ============ //
@@ -148,7 +141,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
     createMode: createMode
     enablePurgeProtection: enablePurgeProtection ? enablePurgeProtection : null
     tenantId: subscription().tenantId
-    accessPolicies: formattedAccessPolicies
+    accessPolicies: accessPolicies ?? []
     sku: {
       name: sku
       family: 'A'
@@ -202,7 +195,7 @@ module keyVault_accessPolicies 'access-policy/main.bicep' = if (!empty(accessPol
   name: '${uniqueString(deployment().name, location)}-KeyVault-AccessPolicies'
   params: {
     keyVaultName: keyVault.name
-    accessPolicies: formattedAccessPolicies
+    accessPolicies: accessPolicies
   }
 }
 
@@ -423,3 +416,28 @@ type lockType = {
   @description('Optional. Specify the type of lock.')
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
+
+type accessPoliciesType = {
+  @description('Required. The tenant ID that is used for authenticating requests to the key vault.')
+  tenantId: string
+
+  @description('Required. The object ID of a user, service principal or security group in the tenant for the vault.')
+  objectId: string
+
+  @description('Optional. Application ID of the client making request on behalf of a principal.')
+  applicationId: string?
+
+  permissions: {
+    @description('Optional. Permissions to keys.')
+    keys: ('all' | 'backup' | 'create' | 'decrypt' | 'delete' | 'encrypt' | 'get' | 'getrotationpolicy' | 'import' | 'list' | 'purge' | 'recover' | 'release' | 'restore' | 'rotate' | 'setrotationpolicy' | 'sign' | 'unwrapKey' | 'update' | 'verify' | 'wrapKey')[]?
+
+    @description('Optional. Permissions to secrets.')
+    secrets: ('all' | 'backup' | 'delete' | 'get' | 'list' | 'purge' | 'recover' | 'restore' | 'set')[]?
+
+    @description('Optional. Permissions to certificates.')
+    certificates: ('all' | 'backup' | 'create' | 'delete' | 'deleteissuers' | 'get' | 'getissuers' | 'import' | 'list' | 'listissuers' | 'managecontacts' | 'manageissuers' | 'purge' | 'recover' | 'restore' | 'setissuers' | 'update')[]?
+
+    @description('Optional. Permissions to storage accounts.')
+    storage: ('all' | 'backup' | 'delete' | 'deletesas' | 'get' | 'getsas' | 'list' | 'listsas' | 'purge' | 'recover' | 'regeneratekey' | 'restore' | 'set' | 'setsas' | 'update')[]?
+  }
+}[]?
