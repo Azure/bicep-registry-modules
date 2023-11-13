@@ -18,7 +18,7 @@ param applicationSecurityGroupResourceIds array?
 param customNetworkInterfaceName string?
 
 @description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
-param ipConfigurations ipConfigurationsType?
+param ipConfigurations ipConfigurationsType
 
 @description('Required. Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to.')
 param groupIds array
@@ -42,7 +42,7 @@ param roleAssignments roleAssignmentType
 param tags object?
 
 @description('Optional. Custom DNS configurations.')
-param customDnsConfigs customDnsConfigType?
+param customDnsConfigs customDnsConfigType
 
 @description('Optional. Manual PrivateLink Service Connections.')
 param manualPrivateLinkServiceConnections array?
