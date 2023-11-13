@@ -6,8 +6,9 @@ param applicationGroupReferences array = []
 param description string = 'description'
 param friendlyName string = 'friendlyName'
 param publicNetworkAccess string = 'Enabled'
+param privateEndpoints privateEndpointType
 
-param lock string = ''
+param lock lockType
 param roleAssignments array = []
 param diagnosticSettings diagnosticSettingType
 param enableTelemetry bool = true
@@ -75,6 +76,30 @@ resource workspace 'Microsoft.DesktopVirtualization/workspaces@2022-10-14-previe
     publicNetworkAccess: publicNetworkAccess
   }
 }
+
+module workspace_privateEndpoints 'br/public:avm-res-network-privateendpoint:0.1.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+  name: '${uniqueString(deployment().name, location)}-Workspace-PrivateEndpoint-${index}'
+  params: {
+    groupIds: [
+      privateEndpoint.?service ?? 'workspace'
+    ]
+    name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.?service ?? 'workspace'}-${index}'
+    serviceResourceId: workspace.id
+    subnetResourceId: privateEndpoint.subnetResourceId
+    enableTelemetry: enableTelemetry
+    location: privateEndpoint.location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
+    lock: privateEndpoint.?lock ?? lock
+    privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
+    privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+    roleAssignments: privateEndpoint.?roleAssignments
+    tags: privateEndpoint.?tags ?? tags
+    manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections
+    customDnsConfigs: privateEndpoint.?customDnsConfigs
+    ipConfigurations: privateEndpoint.?ipConfigurations
+    applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+    customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+  }
+}]
 
 resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock)) {
   name: '${workspace.name}-${lock}-lock'
