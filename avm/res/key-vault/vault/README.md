@@ -259,6 +259,22 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     }
     privateEndpoints: [
       {
+        customDnsConfigs: [
+          {
+            fqdn: 'abc.keyvault.com'
+            ipAddresses: [
+              '10.0.0.10'
+            ]
+          }
+        ]
+        ipConfigurations: [
+          {
+            groupId: 'vault'
+            memberName: 'default'
+            name: 'myIPconfig'
+            privateIpAddress: '10.0.0.10'
+          }
+        ]
         privateDnsZoneResourceIds: [
           '<privateDNSResourceId>'
         ]
@@ -463,6 +479,22 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     "privateEndpoints": {
       "value": [
         {
+          "customDnsConfigs": [
+            {
+              "fqdn": "abc.keyvault.com",
+              "ipAddresses": [
+                "10.0.0.10"
+              ]
+            }
+          ],
+          "ipConfigurations": [
+            {
+              "groupId": "vault",
+              "memberName": "default",
+              "name": "myIPconfig",
+              "privateIpAddress": "10.0.0.10"
+            }
+          ],
           "privateDnsZoneResourceIds": [
             "<privateDNSResourceId>"
           ],

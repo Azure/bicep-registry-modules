@@ -278,6 +278,22 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     poolAllocationMode: 'BatchService'
     privateEndpoints: [
       {
+        customDnsConfigs: [
+          {
+            fqdn: 'abc.batch.com'
+            ipAddresses: [
+              '10.0.0.10'
+            ]
+          }
+        ]
+        ipConfigurations: [
+          {
+            groupId: 'batchAccount'
+            memberName: 'default'
+            name: 'myIPconfig'
+            privateIpAddress: '10.0.0.10'
+          }
+        ]
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
@@ -389,6 +405,22 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     "privateEndpoints": {
       "value": [
         {
+          "customDnsConfigs": [
+            {
+              "fqdn": "abc.batch.com",
+              "ipAddresses": [
+                "10.0.0.10"
+              ]
+            }
+          ],
+          "ipConfigurations": [
+            {
+              "groupId": "batchAccount",
+              "memberName": "default",
+              "name": "myIPconfig",
+              "privateIpAddress": "10.0.0.10"
+            }
+          ],
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],

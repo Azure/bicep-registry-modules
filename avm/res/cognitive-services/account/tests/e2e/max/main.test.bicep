@@ -139,6 +139,22 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
         }
+        ipConfigurations: [
+          {
+            name: 'myIPconfig'
+            groupId: 'account'
+            memberName: 'default'
+            privateIpAddress: '10.0.0.10'
+          }
+        ]
+        customDnsConfigs: [
+          {
+            fqdn: 'abc.account.com'
+            ipAddresses: [
+              '10.0.0.10'
+            ]
+          }
+        ]
       }
     ]
     tags: {

@@ -201,6 +201,22 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             principalType: 'ServicePrincipal'
           }
         ]
+        ipConfigurations: [
+          {
+            name: 'myIPconfig'
+            groupId: 'vault'
+            memberName: 'default'
+            privateIpAddress: '10.0.0.10'
+          }
+        ]
+        customDnsConfigs: [
+          {
+            fqdn: 'abc.keyvault.com'
+            ipAddresses: [
+              '10.0.0.10'
+            ]
+          }
+        ]
       }
     ]
     roleAssignments: [
