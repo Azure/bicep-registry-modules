@@ -45,7 +45,7 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
     name: 'wsfdef001'
     sku: {
       capacity: 1
-      family: 'P'
+      family: 'S'
       name: 'S1'
       size: 'S1'
       tier: 'Standard'
@@ -76,7 +76,7 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
     "sku": {
       "value": {
         "capacity": 1,
-        "family": "P",
+        "family": "S",
         "name": "S1",
         "size": "S1",
         "tier": "Standard"
@@ -110,7 +110,7 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
     name: 'wsfmax001'
     sku: {
       capacity: 1
-      family: 'P'
+      family: 'S'
       name: 'S1'
       size: 'S1'
       tier: 'Standard'
@@ -132,10 +132,6 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
     ]
     kind: 'App'
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'lock-validation'
-    }
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -170,7 +166,7 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
     "sku": {
       "value": {
         "capacity": 1,
-        "family": "P",
+        "family": "S",
         "name": "S1",
         "size": "S1",
         "tier": "Standard"
@@ -198,12 +194,6 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "lock-validation"
-      }
     },
     "roleAssignments": {
       "value": [
@@ -263,10 +253,6 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
     ]
     kind: 'App'
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'lock-validation'
-    }
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -329,12 +315,6 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "lock-validation"
-      }
     },
     "roleAssignments": {
       "value": [

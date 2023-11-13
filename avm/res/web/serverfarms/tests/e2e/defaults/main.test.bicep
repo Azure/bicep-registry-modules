@@ -43,7 +43,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       name: 'S1'
       tier: 'Standard'
       size: 'S1'
-      family: 'P'
+      family: 'S'
       capacity: 1
     }
     kind: 'App'
