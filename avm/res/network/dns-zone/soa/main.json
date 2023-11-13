@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.22.6.54827",
-      "templateHash": "2525485228193651958"
+      "version": "0.23.1.45101",
+      "templateHash": "6819223668967518740"
     },
     "name": "Public DNS Zone SOA record",
     "description": "This module deploys a Public DNS Zone SOA record.",
