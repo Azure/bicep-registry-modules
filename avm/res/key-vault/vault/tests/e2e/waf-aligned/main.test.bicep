@@ -74,8 +74,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
     ]
-    // Only for testing purposes
-    enablePurgeProtection: false
     enableRbacAuthorization: true
     keys: [
       {
@@ -145,5 +143,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     // Workaround for PSRule
     roleAssignments: []
     accessPolicies: []
+    // Only for testing purposes
+    enablePurgeProtection: false
   }
 }]

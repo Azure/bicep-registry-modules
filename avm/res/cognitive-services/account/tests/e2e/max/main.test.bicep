@@ -142,9 +142,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         ipConfigurations: [
           {
             name: 'myIPconfig'
-            groupId: 'account'
-            memberName: 'default'
-            privateIpAddress: '10.0.0.10'
+            properties: {
+              groupId: 'account'
+              memberName: 'default'
+              privateIPAddress: '10.0.0.10'
+            }
           }
         ]
         customDnsConfigs: [

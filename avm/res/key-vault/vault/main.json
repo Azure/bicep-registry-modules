@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "2727738248625328177"
+      "templateHash": "12007492494685795081"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -241,12 +241,18 @@
               "properties": {
                 "fqdn": {
                   "type": "string",
-                  "nullable": true
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Required. Fqdn that resolves to private endpoint IP address."
+                  }
                 },
                 "ipAddresses": {
                   "type": "array",
                   "items": {
                     "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. A list of private IP addresses of the private endpoint."
                   }
                 }
               }
@@ -262,16 +268,36 @@
               "type": "object",
               "properties": {
                 "name": {
-                  "type": "string"
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the resource that is unique within a resource group."
+                  }
                 },
-                "groupId": {
-                  "type": "string"
-                },
-                "memberName": {
-                  "type": "string"
-                },
-                "privateIpAddress": {
-                  "type": "string"
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "groupId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                      }
+                    },
+                    "memberName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
+                      }
+                    },
+                    "privateIPAddress": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. A private IP address obtained from the private endpoint's subnet."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Properties of private endpoint IP configurations."
+                  }
                 }
               }
             },

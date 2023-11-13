@@ -123,8 +123,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
     ]
-    // Only for testing purposes
-    enablePurgeProtection: false
     enableRbacAuthorization: false
     keys: [
       {
@@ -204,9 +202,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         ipConfigurations: [
           {
             name: 'myIPconfig'
-            groupId: 'vault'
-            memberName: 'default'
-            privateIpAddress: '10.0.0.10'
+            properties: {
+              groupId: 'vault'
+              memberName: 'default'
+              privateIPAddress: '10.0.0.10'
+            }
           }
         ]
         customDnsConfigs: [
@@ -250,5 +250,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
+    // Only for testing purposes
+    enablePurgeProtection: false
   }
 }]
