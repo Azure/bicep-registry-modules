@@ -49,7 +49,9 @@ var addonProfiles = workspaceResourceId == '' ? {
   }
 }
 
-resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-07-02-preview' = if (newOrExisting == 'new') {
+@description('AKS Managed Cluster')
+resource aksCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-preview' = if (newOrExisting == 'new') {
+
   name: take(name, 80)
   location: location
   identity: {

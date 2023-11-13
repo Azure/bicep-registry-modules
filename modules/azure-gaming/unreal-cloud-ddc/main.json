@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "9136865717914173658"
+      "templateHash": "11736312342705517313"
     },
     "name": "Unreal Cloud DDC",
     "description": "Unreal Cloud DDC for Unreal Engine game development.",
@@ -814,7 +814,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "12855576856205736261"
+              "templateHash": "1303706838638407783"
             }
           },
           "parameters": {
@@ -1028,7 +1028,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.23.1.45101",
-                      "templateHash": "7483394261759610384"
+                      "templateHash": "13923451823694559743"
                     }
                   },
                   "parameters": {
@@ -1126,7 +1126,7 @@
                     {
                       "condition": "[equals(parameters('newOrExisting'), 'new')]",
                       "type": "Microsoft.ContainerService/managedClusters",
-                      "apiVersion": "2022-07-02-preview",
+                      "apiVersion": "2023-07-02-preview",
                       "name": "[take(parameters('name'), 80)]",
                       "location": "[parameters('location')]",
                       "identity": {
@@ -1171,7 +1171,10 @@
                       },
                       "dependsOn": [
                         "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('clusterUserName'))]"
-                      ]
+                      ],
+                      "metadata": {
+                        "description": "AKS Managed Cluster"
+                      }
                     },
                     {
                       "condition": "[and(equals(parameters('newOrExisting'), 'new'), not(equals(parameters('subject'), '')))]",
@@ -1182,7 +1185,7 @@
                         "audiences": [
                           "api://AzureADTokenExchange"
                         ],
-                        "issuer": "[reference(resourceId('Microsoft.ContainerService/managedClusters', take(parameters('name'), 80)), '2022-07-02-preview').oidcIssuerProfile.issuerURL]",
+                        "issuer": "[reference(resourceId('Microsoft.ContainerService/managedClusters', take(parameters('name'), 80)), '2023-07-02-preview').oidcIssuerProfile.issuerURL]",
                         "subject": "[parameters('subject')]"
                       },
                       "dependsOn": [
@@ -1208,7 +1211,7 @@
                   "outputs": {
                     "nodeResourceGroup": {
                       "type": "string",
-                      "value": "[if(equals(parameters('newOrExisting'), 'new'), reference(resourceId('Microsoft.ContainerService/managedClusters', take(parameters('name'), 80)), '2022-07-02-preview').nodeResourceGroup, reference(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), '2021-03-01').nodeResourceGroup)]"
+                      "value": "[if(equals(parameters('newOrExisting'), 'new'), reference(resourceId('Microsoft.ContainerService/managedClusters', take(parameters('name'), 80)), '2023-07-02-preview').nodeResourceGroup, reference(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), '2021-03-01').nodeResourceGroup)]"
                     },
                     "clusterUserObjectId": {
                       "type": "string",
@@ -1216,7 +1219,7 @@
                     },
                     "clusterUrl": {
                       "type": "string",
-                      "value": "[if(equals(parameters('newOrExisting'), 'new'), reference(resourceId('Microsoft.ContainerService/managedClusters', take(parameters('name'), 80)), '2022-07-02-preview').fqdn, reference(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), '2021-03-01').fqdn)]"
+                      "value": "[if(equals(parameters('newOrExisting'), 'new'), reference(resourceId('Microsoft.ContainerService/managedClusters', take(parameters('name'), 80)), '2023-07-02-preview').fqdn, reference(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), '2021-03-01').fqdn)]"
                     }
                   }
                 }

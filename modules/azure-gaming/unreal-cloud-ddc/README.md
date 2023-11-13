@@ -2,20 +2,13 @@
 
 Unreal Cloud DDC for Unreal Engine game development.
 
-## Description
+## Details
 
-Unreal Cloud DDC is a centralized cloud-based cache designed to be used in conjunction with Epic Game's Unreal Cloud DDC to reduce build times and improve overall build performance. Unreal Cloud DDC enables you and your entire development team to connect and use Epic Game's Unreal Cloud DDC service.
+Unreal Cloud DDC(derived data cach) is a centralized cloud-based cache designed to be used in conjunction with Epic Game's Unreal Cloud DDC to reduce build times and improve overall build performance. Unreal Cloud DDC enables you and your entire development team to connect and use Epic Game's Unreal Cloud DDC service.
 
 This technology implements horizontally scalable, cloud-ready services to provide distributed compute and storage functionality for medium size and larger teams (>10 devs). The compute service manages agents and schedules work to execute on them. The storage service provides content-addressable storage backed by cloud object stores. Integrating storage and compute services allows caching, de-duplication, and locating data close to agents.
 
 In Unreal Engine 5 (UE5), ‘Unreal Cloud DDC’ is an optional service which users can enable and connect to cloud storage. Simplify provide the Unreal Cloud DDC URL and complete the authentication prompts to connect to your Unreal Cloud DDC deployment. By leveraging the ability to store smaller pre-computed elements, Unreal Cloud DDC makes it more efficient for sharing assets between developers.
-
-[Learn more about Unreal Cloud DDC on Azure.](https://learn.microsoft.com/en-us/gaming/azure/unreal-cloud-ddc/overview)
-
-
-## Details
-
-{{Add detailed information about the module}}
 
 ## Parameters
 
