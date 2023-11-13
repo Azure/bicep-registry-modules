@@ -21,7 +21,8 @@ $script:SubscriptionDeploymentSchema = 'https://schema.management.azure.com/sche
 $script:MgDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#'
 $script:TenantDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/TenantDeploymentSchemaTemplate.json#'
 $script:moduleFolderPaths = $moduleFolderPaths
-$script:telemetryCsvLink = 'https://azure.github.io/Azure-Verified-Modules/module-indexes/BicepResourceModules.csv'
+$script:telemetryResCsvLink = 'https://aka.ms/avm/index/bicep/res/csv'
+$script:telemetryPtnCsvLink = 'https://aka.ms/avm/index/bicep/ptn/csv'
 
 # For runtime purposes, we cache the compiled template in a hashtable that uses a formatted relative module path as a key
 $script:convertedTemplates = @{}
@@ -611,6 +612,9 @@ Describe 'Module tests' -Tag 'Module' {
         [string] $templateFilePath,
         [hashtable] $templateContent
       )
+
+      # Use correct telemetry link based on file path
+      $telemetryCsvLink = $templateFilePath -match '[\\|\/]res[\\|\/]' ? $telemetryResCsvLink : $telemetryPtnCsvLink
 
       # Fetch CSV
       # =========
