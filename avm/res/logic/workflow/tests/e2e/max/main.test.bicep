@@ -9,15 +9,15 @@ metadata description = 'This instance deploys the module with most of its featur
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-cognitiveservices.accounts-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-logic.workflows-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'csamax'
+param serviceShort string = 'lwmax'
 
-@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
+@description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
 // ============ //
@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
   location: location
 }
@@ -35,7 +35,6 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: location
   }
@@ -49,8 +48,8 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
   params: {
     storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
-    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
     location: location
   }
 }
@@ -58,14 +57,13 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 // Test Execution //
 // ============== //
+
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    kind: 'Face'
-    customSubDomainName: '${namePrefix}x${serviceShort}'
     location: location
     diagnosticSettings: [
       {
@@ -75,20 +73,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             category: 'AllMetrics'
           }
         ]
-        logCategoriesAndGroups: [
-          {
-            category: 'RequestResponse'
-          }
-          {
-            category: 'Audit'
-          }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-      {
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
         eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
         storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
@@ -99,21 +83,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    networkAcls: {
-      defaultAction: 'Deny'
-      ipRules: [
-        {
-          value: '40.74.28.0/23'
-        }
-      ]
-      virtualNetworkRules: [
-        {
-          id: nestedDependencies.outputs.subnetResourceId
-          ignoreMissingVnetServiceEndpoint: false
-        }
-      ]
-    }
-    publicNetworkAccess: 'Disabled'
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Reader'
@@ -121,36 +90,46 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         principalType: 'ServicePrincipal'
       }
     ]
-    sku: 'S0'
     managedIdentities: {
-      systemAssigned: true
       userAssignedResourceIds: [
         nestedDependencies.outputs.managedIdentityResourceId
       ]
     }
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
-      }
-    ]
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    // Workaround for PSRule
-    customerManagedKey: null
-    allowedFqdnList: null
-    apiProperties: null
-    migrationToken: null
-    userOwnedStorage: null
+    workflowActions: {
+      HTTP: {
+        inputs: {
+          body: {
+            BeginPeakTime: '<BeginPeakTime>'
+            EndPeakTime: '<EndPeakTime>'
+            HostPoolName: '<HostPoolName>'
+            LAWorkspaceName: '<LAWorkspaceName>'
+            LimitSecondsToForceLogOffUser: '<LimitSecondsToForceLogOffUser>'
+            LogOffMessageBody: '<LogOffMessageBody>'
+            LogOffMessageTitle: '<LogOffMessageTitle>'
+            MinimumNumberOfRDSH: 1
+            ResourceGroupName: '<ResourceGroupName>'
+            SessionThresholdPerCPU: 1
+            UtcOffset: '<UtcOffset>'
+          }
+          method: 'POST'
+          uri: 'https://testStringForValidation.com'
+        }
+        type: 'Http'
+      }
+    }
+    workflowTriggers: {
+      Recurrence: {
+        recurrence: {
+          frequency: 'Minute'
+          interval: 15
+        }
+        type: 'Recurrence'
+      }
+    }
   }
 }]
