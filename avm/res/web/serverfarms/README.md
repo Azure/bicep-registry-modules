@@ -132,6 +132,10 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
     ]
     kind: 'App'
     location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'lock'
+    }
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -195,6 +199,12 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
     "location": {
       "value": "<location>"
     },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "lock"
+      }
+    },
     "roleAssignments": {
       "value": [
         {
@@ -253,6 +263,10 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
     ]
     kind: 'App'
     location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'lock'
+    }
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -315,6 +329,12 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
     },
     "location": {
       "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "lock"
+      }
     },
     "roleAssignments": {
       "value": [
