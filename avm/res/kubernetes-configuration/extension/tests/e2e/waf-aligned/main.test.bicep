@@ -78,6 +78,16 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           url: 'https://github.com/mspnp/aks-baseline'
         }
         suspend: false
+        kustomizations: {
+          unified: {
+            dependsOn: []
+            force: false
+            path: './cluster-manifests'
+            prune: false
+            syncIntervalInSeconds: 300
+            timeoutInSeconds: 300
+          }
+        }
       }
     ]
     // Workaround for PSRule

@@ -15,7 +15,7 @@ This module deploys a Kubernetes Configuration Flux Configuration.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.KubernetesConfiguration/fluxConfigurations` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2022-11-01/fluxConfigurations) |
+| `Microsoft.KubernetesConfiguration/fluxConfigurations` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/fluxConfigurations) |
 
 ## Usage examples
 
@@ -61,7 +61,11 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
       timeoutInSeconds: 180
       url: 'https://github.com/mspnp/aks-baseline'
     }
-    kustomizations: '<kustomizations>'
+    kustomizations: {
+      unified: {
+        path: './cluster-manifests'
+      }
+    }
     location: '<location>'
   }
 }
@@ -111,7 +115,11 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
       }
     },
     "kustomizations": {
-      "value": "<kustomizations>"
+      "value": {
+        "unified": {
+          "path": "./cluster-manifests"
+        }
+      }
     },
     "location": {
       "value": "<location>"
@@ -363,6 +371,7 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`clusterName`](#parameter-clustername) | string | The name of the AKS cluster that should be configured. |
+| [`kustomizations`](#parameter-kustomizations) | object | Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster. |
 | [`name`](#parameter-name) | string | The name of the Flux Configuration. |
 | [`namespace`](#parameter-namespace) | string | The namespace to which this configuration is installed to. Maximum of 253 lower case alphanumeric characters, hyphen and period only. |
 | [`scope`](#parameter-scope) | string | Scope at which the configuration will be installed. |
@@ -381,7 +390,6 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
 | :-- | :-- | :-- |
 | [`configurationProtectedSettings`](#parameter-configurationprotectedsettings) | secureObject | Key-value pairs of protected configuration settings for the configuration. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`kustomizations`](#parameter-kustomizations) | object | Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`suspend`](#parameter-suspend) | bool | Whether this configuration should suspend its reconciliation of its kustomizations and sources. |
 
