@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "5811439731830528596"
+      "templateHash": "474198188697109867"
     },
     "name": "Log Analytics Workspaces",
     "description": "This module deploys a Log Analytics Workspace.",
@@ -946,13 +946,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "8636142080009364318"
+              "templateHash": "2765164120781162803"
             },
             "name": "Log Analytics Workspace Saved Searches",
             "description": "This module deploys a Log Analytics Workspace Saved Search.",
@@ -990,8 +989,8 @@
               }
             },
             "tags": {
-              "type": "object",
-              "nullable": true,
+              "type": "array",
+              "defaultValue": [],
               "metadata": {
                 "description": "Optional. Tags to configure in the resource."
               }
@@ -1025,14 +1024,8 @@
               }
             }
           },
-          "resources": {
-            "workspace": {
-              "existing": true,
-              "type": "Microsoft.OperationalInsights/workspaces",
-              "apiVersion": "2022-10-01",
-              "name": "[parameters('logAnalyticsWorkspaceName')]"
-            },
-            "savedSearch": {
+          "resources": [
+            {
               "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
               "apiVersion": "2020-08-01",
               "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
@@ -1045,12 +1038,9 @@
                 "functionAlias": "[parameters('functionAlias')]",
                 "functionParameters": "[parameters('functionParameters')]",
                 "version": "[parameters('version')]"
-              },
-              "dependsOn": [
-                "workspace"
-              ]
+              }
             }
-          },
+          ],
           "outputs": {
             "resourceId": {
               "type": "string",

@@ -39,7 +39,7 @@ This module deploys a Log Analytics Workspace Saved Search.
 | [`etag`](#parameter-etag) | string | The ETag of the saved search. To override an existing saved search, use "*" or specify the current Etag. |
 | [`functionAlias`](#parameter-functionalias) | string | The function alias if query serves as a function. |
 | [`functionParameters`](#parameter-functionparameters) | string | The optional function parameters if query serves as a function. Value should be in the following format: "param-name1:type1 = default_value1, param-name2:type2 = default_value2". For more examples and proper syntax please refer to /azure/kusto/query/functions/user-defined-functions. |
-| [`tags`](#parameter-tags) | object | Tags to configure in the resource. |
+| [`tags`](#parameter-tags) | array | Tags to configure in the resource. |
 | [`version`](#parameter-version) | int | The version number of the query language. |
 
 ### Parameter: `category`
@@ -97,7 +97,8 @@ Kusto Query to be stored.
 
 Tags to configure in the resource.
 - Required: No
-- Type: object
+- Type: array
+- Default: `[]`
 
 ### Parameter: `version`
 
