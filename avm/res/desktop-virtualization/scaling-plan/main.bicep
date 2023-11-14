@@ -45,6 +45,9 @@ param lock lockType
 @sys.description('Optional. Enable telemetry.')
 param enableTelemetry bool = true
 
+@sys.description('Optional. The diagnostic settings of the service.')
+param diagnosticSettings diagnosticSettingType
+
 // =========== //
 // Variables   //
 // =========== //
@@ -134,6 +137,32 @@ resource scalingPlan_roleAssignments 'Microsoft.Authorization/roleAssignments@20
     condition: roleAssignment.?condition
     conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
     delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+  }
+  scope: scalingPlan
+}]
+
+resource scalingPlan_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+  name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+  properties: {
+    storageAccountId: diagnosticSetting.?storageAccountResourceId
+    workspaceId: diagnosticSetting.?workspaceResourceId
+    eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+    eventHubName: diagnosticSetting.?eventHubName
+    metrics: diagnosticSetting.?metricCategories ?? [
+      {
+        category: 'AllMetrics'
+        timeGrain: null
+        enabled: true
+      }
+    ]
+    logs: diagnosticSetting.?logCategoriesAndGroups ?? [
+      {
+        categoryGroup: 'allLogs'
+        enabled: true
+      }
+    ]
+    marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+    logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
   }
   scope: scalingPlan
 }]
