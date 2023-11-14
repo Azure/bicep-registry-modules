@@ -27,14 +27,14 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.web.serverfarms"
+      - ".github/workflows/avm.res.web.serverfarms.yml"
       - "avm/res/web/serverfarms/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
   modulePath: "avm/res/web/serverfarms"
-  workflowPath: ".github/workflows/avm.res.web.serverfarms"
+  workflowPath: ".github/workflows/avm.res.web.serverfarms.yml"
 
 concurrency:
   group: ${{ github.workflow }}
