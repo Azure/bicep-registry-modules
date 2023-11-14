@@ -40,8 +40,8 @@ output resourceId string = policies.id
 // Definitions      //
 // ================ //
 type accessPoliciesType = {
-  @description('Required. The tenant ID that is used for authenticating requests to the key vault.')
-  tenantId: string
+  @description('Optional. The tenant ID that is used for authenticating requests to the key vault.')
+  tenantId: string?
 
   @description('Required. The object ID of a user, service principal or security group in the tenant for the vault.')
   objectId: string
