@@ -30,7 +30,7 @@ jobs:
         run: npm ci
 
       - name: Generate moduleIndex.json
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const script = require("./scripts/github-actions/generate-module-index-data.js")
@@ -71,7 +71,7 @@ jobs:
           name: moduleIndex.json
 
       - name: Generate index.md
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
             const script = require("./scripts/github-actions/generate-module-index-md.js")
