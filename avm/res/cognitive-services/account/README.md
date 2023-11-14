@@ -807,7 +807,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 
 ### Example 6: _WAF-aligned_
 
-This instance deploys the module in alignment with the best-pratices of the Well-Architectured-Framework.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
