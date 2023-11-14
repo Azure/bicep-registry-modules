@@ -94,7 +94,7 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
     bucket: fluxConfiguration.?bucket
     configurationProtectedSettings: fluxConfiguration.?configurationProtectedSettings
     gitRepository: fluxConfiguration.?gitRepository
-    kustomizations: fluxConfiguration.kustomizations
+    kustomizations: fluxConfiguration.?kustomizations
     suspend: fluxConfiguration.?suspend
   }
   dependsOn: [

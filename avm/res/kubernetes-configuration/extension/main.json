@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "3542872290576608608"
+      "templateHash": "12293754418506359991"
     },
     "name": "Kubernetes Configuration Extensions",
     "description": "This module deploys a Kubernetes Configuration Extension.",
@@ -183,7 +183,7 @@
             "value": "[tryGet(coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()], 'gitRepository')]"
           },
           "kustomizations": {
-            "value": "[coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()].kustomizations]"
+            "value": "[tryGet(coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()], 'kustomizations')]"
           },
           "suspend": {
             "value": "[tryGet(coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()], 'suspend')]"

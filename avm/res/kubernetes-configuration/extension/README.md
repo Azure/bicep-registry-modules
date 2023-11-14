@@ -153,16 +153,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
           timeoutInSeconds: 180
           url: 'https://github.com/mspnp/aks-baseline'
         }
-        kustomizations: {
-          unified: {
-            dependsOn: []
-            force: false
-            path: './cluster-manifests'
-            prune: false
-            syncIntervalInSeconds: 300
-            timeoutInSeconds: 300
-          }
-        }
         namespace: 'flux-system'
         suspend: false
       }
@@ -222,16 +212,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
             "syncIntervalInSeconds": 300,
             "timeoutInSeconds": 180,
             "url": "https://github.com/mspnp/aks-baseline"
-          },
-          "kustomizations": {
-            "unified": {
-              "dependsOn": [],
-              "force": false,
-              "path": "./cluster-manifests",
-              "prune": false,
-              "syncIntervalInSeconds": 300,
-              "timeoutInSeconds": 300
-            }
           },
           "namespace": "flux-system",
           "suspend": false
@@ -297,16 +277,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
           timeoutInSeconds: 180
           url: 'https://github.com/mspnp/aks-baseline'
         }
-        kustomizations: {
-          unified: {
-            dependsOn: []
-            force: false
-            path: './cluster-manifests'
-            prune: false
-            syncIntervalInSeconds: 300
-            timeoutInSeconds: 300
-          }
-        }
         namespace: 'flux-system'
         suspend: false
       }
@@ -366,16 +336,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
             "syncIntervalInSeconds": 300,
             "timeoutInSeconds": 180,
             "url": "https://github.com/mspnp/aks-baseline"
-          },
-          "kustomizations": {
-            "unified": {
-              "dependsOn": [],
-              "force": false,
-              "path": "./cluster-manifests",
-              "prune": false,
-              "syncIntervalInSeconds": 300,
-              "timeoutInSeconds": 300
-            }
           },
           "namespace": "flux-system",
           "suspend": false
