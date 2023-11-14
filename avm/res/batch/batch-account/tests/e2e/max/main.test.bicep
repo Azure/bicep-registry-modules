@@ -105,7 +105,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             name: 'myIPconfig'
             properties: {
               groupId: 'batchAccount'
-              memberName: 'default'
+              memberName: 'batchAccount'
               privateIPAddress: '10.0.0.10'
             }
           }

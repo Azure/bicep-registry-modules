@@ -291,7 +291,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
             name: 'myIPconfig'
             properties: {
               groupId: 'batchAccount'
-              memberName: 'default'
+              memberName: 'batchAccount'
               privateIPAddress: '10.0.0.10'
             }
           }
@@ -420,7 +420,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
               "name": "myIPconfig",
               "properties": {
                 "groupId": "batchAccount",
-                "memberName": "default",
+                "memberName": "batchAccount",
                 "privateIPAddress": "10.0.0.10"
               }
             }
