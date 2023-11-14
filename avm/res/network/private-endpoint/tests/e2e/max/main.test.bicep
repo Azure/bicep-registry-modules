@@ -83,6 +83,14 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         }
       }
     ]
+    customDnsConfigs: [
+      {
+        fqdn: 'abc.keyvault.com'
+        ipAddresses: [
+          '10.0.0.10'
+        ]
+      }
+    ]
     customNetworkInterfaceName: '${namePrefix}${serviceShort}001nic'
     applicationSecurityGroupResourceIds: [
       nestedDependencies.outputs.applicationSecurityGroupResourceId
@@ -94,7 +102,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     }
     // Workaround for PSRule
     privateDnsZoneGroupName: 'default'
-    customDnsConfigs: []
     manualPrivateLinkServiceConnections: []
   }
 }]
