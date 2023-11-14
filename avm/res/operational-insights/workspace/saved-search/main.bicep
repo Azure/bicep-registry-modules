@@ -18,7 +18,7 @@ param category string
 param query string
 
 @description('Optional. Tags to configure in the resource.')
-param tags array = []
+param tags object?
 
 @description('Optional. The function alias if query serves as a function.')
 param functionAlias string = ''
@@ -42,7 +42,7 @@ resource savedSearch 'Microsoft.OperationalInsights/workspaces/savedSearches@202
   //etag: etag // According to API, the variable should be here, but it doesn't work here.
   properties: {
     etag: etag
-    tags: tags
+    tags: any(tags)
     displayName: displayName
     category: category
     query: query
