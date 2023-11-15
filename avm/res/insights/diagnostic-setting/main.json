@@ -1,0 +1,201 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "18398206698301331030"
+    },
+    "name": "Diagnostic Settings (Activity Logs) for Azure Subscriptions",
+    "description": "This module deploys a Subscription wide export of the Activity Log.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "logCategoriesAndGroupsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+            }
+          },
+          "categoryGroup": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs."
+            }
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+      }
+    },
+    "metricCategoriesType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics."
+            }
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "defaultValue": "[format('{0}-diagnosticSettings', uniqueString(subscription().id))]",
+      "minLength": 1,
+      "maxLength": 260,
+      "metadata": {
+        "description": "Optional. Name of the Diagnostic settings."
+      }
+    },
+    "storageAccountResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Resource ID of the diagnostic storage account."
+      }
+    },
+    "workspaceResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Resource ID of the diagnostic log analytics workspace."
+      }
+    },
+    "eventHubAuthorizationRuleResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+      }
+    },
+    "eventHubName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category."
+      }
+    },
+    "logCategoriesAndGroups": {
+      "$ref": "#/definitions/logCategoriesAndGroupsType",
+      "metadata": {
+        "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+      }
+    },
+    "metricCategories": {
+      "$ref": "#/definitions/metricCategoriesType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+      }
+    },
+    "logAnalyticsDestinationType": {
+      "type": "string",
+      "defaultValue": "",
+      "allowedValues": [
+        "",
+        "Dedicated",
+        "AzureDiagnostics"
+      ],
+      "metadata": {
+        "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+      }
+    },
+    "marketplacePartnerResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[deployment().location]",
+      "metadata": {
+        "description": "Optional. Location deployment metadata."
+      }
+    }
+  },
+  "resources": {
+    "defaultTelemetry": {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    "diagnosticSetting": {
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "name": "[parameters('name')]",
+      "properties": {
+        "storageAccountId": "[parameters('storageAccountResourceId')]",
+        "workspaceId": "[parameters('workspaceResourceId')]",
+        "eventHubAuthorizationRuleId": "[parameters('eventHubAuthorizationRuleResourceId')]",
+        "eventHubName": "[parameters('eventHubName')]",
+        "logAnalyticsDestinationType": "[if(not(empty(parameters('logAnalyticsDestinationType'))), parameters('logAnalyticsDestinationType'), null())]",
+        "marketplacePartnerId": "[parameters('marketplacePartnerResourceId')]",
+        "logs": "[coalesce(parameters('logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'AllLogs', 'enabled', true())))]",
+        "metrics": "[coalesce(parameters('metricCategories'), createArray(createObject('category', 'AllMetrics', 'timeGrain', null(), 'enabled', true())))]"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the diagnostic settings."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the diagnostic settings."
+      },
+      "value": "[subscriptionResourceId('Microsoft.Insights/diagnosticSettings', parameters('name'))]"
+    },
+    "subscriptionName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the subscription to deploy into."
+      },
+      "value": "[subscription().displayName]"
+    }
+  }
+}
