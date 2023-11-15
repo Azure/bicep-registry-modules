@@ -24,7 +24,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/insights.component:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/insights/component:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -40,14 +40,14 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module component 'br:bicep/modules/insights.component:1.0.0' = {
+module component 'br/public:avm/res/insights/component:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-icmin'
   params: {
     // Required parameters
     name: 'icmin001'
     workspaceResourceId: '<workspaceResourceId>'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -72,8 +72,8 @@ module component 'br:bicep/modules/insights.component:1.0.0' = {
       "value": "<workspaceResourceId>"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -92,7 +92,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module component 'br:bicep/modules/insights.component:1.0.0' = {
+module component 'br/public:avm/res/insights/component:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-icmax'
   params: {
     // Required parameters
@@ -113,7 +113,7 @@ module component 'br:bicep/modules/insights.component:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -166,8 +166,8 @@ module component 'br:bicep/modules/insights.component:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "roleAssignments": {
       "value": [
@@ -202,7 +202,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module component 'br:bicep/modules/insights.component:1.0.0' = {
+module component 'br/public:avm/res/insights/component:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-icwaf'
   params: {
     // Required parameters
@@ -223,7 +223,7 @@ module component 'br:bicep/modules/insights.component:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -276,8 +276,8 @@ module component 'br:bicep/modules/insights.component:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "roleAssignments": {
       "value": [
@@ -318,7 +318,7 @@ module component 'br:bicep/modules/insights.component:1.0.0' = {
 | :-- | :-- | :-- |
 | [`applicationType`](#parameter-applicationtype) | string | Application type. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`kind`](#parameter-kind) | string | The kind of application that this component refers to, used to customize UI. This value is a freeform string, values should typically be one of the following: web, ios, other, store, java, phone. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`publicNetworkAccessForIngestion`](#parameter-publicnetworkaccessforingestion) | string | The network access type for accessing Application Insights ingestion. - Enabled or Disabled. |
@@ -457,9 +457,9 @@ Optional. Resource ID of the diagnostic log analytics workspace. For security re
 - Required: No
 - Type: string
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
