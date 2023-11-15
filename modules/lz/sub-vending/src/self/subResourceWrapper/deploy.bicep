@@ -79,6 +79,9 @@ param virtualNetworkVwanPropagatedRouteTablesResourceIds array = []
 @sys.description('An array of virtual hub route table labels to propogate routes to. If left blank/empty default label will be propogated to only.')
 param virtualNetworkVwanPropagatedLabels array = []
 
+@sys.description('Indicates whether routing intent is enabled on the Virtual HUB within the virtual WAN.')
+param vHubRoutingIntentEnabled bool = false
+
 @sys.description('Whether to create role assignments or not. If true, supply the array of role assignment objects in the parameter called `roleAssignments`.')
 param roleAssignmentEnabled bool = false
 
@@ -379,7 +382,7 @@ module createLzVirtualWanConnection '../../carml/v0.6.0/Microsoft.Network/virtua
     virtualHubName: virtualWanHubName
     remoteVirtualNetworkId: '/subscriptions/${subscriptionId}/resourceGroups/${virtualNetworkResourceGroupName}/providers/Microsoft.Network/virtualNetworks/${virtualNetworkName}'
     enableInternetSecurity: virtualNetworkVwanEnableInternetSecurity
-    routingConfiguration: {
+    routingConfiguration: !vHubRoutingIntentEnabled ? {
       associatedRouteTable: {
         id: virtualWanHubConnectionAssociatedRouteTable
       }
@@ -387,7 +390,7 @@ module createLzVirtualWanConnection '../../carml/v0.6.0/Microsoft.Network/virtua
         ids: virtualWanHubConnectionPropogatedRouteTables
         labels: virtualWanHubConnectionPropogatedLabels
       }
-    }
+    } : {}
     enableDefaultTelemetry: enableTelemetryForCarml
   }
 }
