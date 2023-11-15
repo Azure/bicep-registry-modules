@@ -28,7 +28,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/search.search-service:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/search/search-service:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -45,13 +45,13 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module searchService 'br:bicep/modules/search.search-service:1.0.0' = {
+module searchService 'br/public:avm/res/search/search-service:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-sssmin'
   params: {
     // Required parameters
     name: 'sssmin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -73,8 +73,8 @@ module searchService 'br:bicep/modules/search.search-service:1.0.0' = {
       "value": "sssmin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -93,7 +93,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module searchService 'br:bicep/modules/search.search-service:1.0.0' = {
+module searchService 'br/public:avm/res/search/search-service:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-sssmax'
   params: {
     // Required parameters
@@ -120,8 +120,8 @@ module searchService 'br:bicep/modules/search.search-service:1.0.0' = {
       }
     ]
     disableLocalAuth: false
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     hostingMode: 'highDensity'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -209,11 +209,11 @@ module searchService 'br:bicep/modules/search.search-service:1.0.0' = {
     "disableLocalAuth": {
       "value": false
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "hostingMode": {
       "value": "highDensity"
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -282,13 +282,13 @@ module searchService 'br:bicep/modules/search.search-service:1.0.0' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module searchService 'br:bicep/modules/search.search-service:1.0.0' = {
+module searchService 'br/public:avm/res/search/search-service:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-ssspe'
   params: {
     // Required parameters
     name: 'ssspe001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     privateEndpoints: [
       {
         applicationSecurityGroupResourceIds: [
@@ -344,8 +344,8 @@ module searchService 'br:bicep/modules/search.search-service:1.0.0' = {
       "value": "ssspe001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "privateEndpoints": {
       "value": [
@@ -406,7 +406,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module searchService 'br:bicep/modules/search.search-service:1.0.0' = {
+module searchService 'br/public:avm/res/search/search-service:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-ssswaf'
   params: {
     // Required parameters
@@ -433,8 +433,8 @@ module searchService 'br:bicep/modules/search.search-service:1.0.0' = {
       }
     ]
     disableLocalAuth: false
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     hostingMode: 'highDensity'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -522,11 +522,11 @@ module searchService 'br:bicep/modules/search.search-service:1.0.0' = {
     "disableLocalAuth": {
       "value": false
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "hostingMode": {
       "value": "highDensity"
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -605,7 +605,7 @@ module searchService 'br:bicep/modules/search.search-service:1.0.0' = {
 | [`cmkEnforcement`](#parameter-cmkenforcement) | string | Describes a policy that determines how resources within the search service are to be encrypted with Customer Managed Keys. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | When set to true, calls to the search service will not be permitted to utilize API keys for authentication. This cannot be set to true if 'authOptions' are defined. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via the Customer Usage Attribution ID (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`hostingMode`](#parameter-hostingmode) | string | Applicable only for the standard3 SKU. You can set this property to enable up to 3 high density partitions that allow up to 1000 indexes, which is much higher than the maximum indexes allowed for any other SKU. For the standard3 SKU, the value is either 'default' or 'highDensity'. For all other SKUs, this value must be 'default'. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -764,9 +764,9 @@ When set to true, calls to the search service will not be permitted to utilize A
 - Type: bool
 - Default: `True`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via the Customer Usage Attribution ID (GUID).
+Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
@@ -1193,4 +1193,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `modules/network/private-endpoint` | Local reference |
+| `br/public:avm/res/network/private-endpoint:0.2.1` | Remote reference |
