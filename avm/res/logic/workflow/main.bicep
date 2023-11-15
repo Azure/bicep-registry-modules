@@ -79,10 +79,10 @@ param workflowStaticResults object?
 @description('Optional. The definitions for one or more triggers that instantiate your workflow. You can define more than one trigger, but only with the Workflow Definition Language, not visually through the Logic Apps Designer.')
 param workflowTriggers object?
 
-var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourcesIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
 var identity = !empty(managedIdentities) ? {
-  type: (managedIdentities.?systemAssigned ?? false) ? 'SystemAssigned' : (!empty(managedIdentities.?userAssignedResourcesIds ?? {}) ? 'UserAssigned' : null)
+  type: (managedIdentities.?systemAssigned ?? false) ? 'SystemAssigned' : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
   userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
 } : null
 
@@ -270,7 +270,7 @@ type managedIdentitiesType = {
   systemAssigned: bool?
 
   @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourcesIds: string[]?
+  userAssignedResourceIds: string[]?
 }?
 
 type roleAssignmentType = {
