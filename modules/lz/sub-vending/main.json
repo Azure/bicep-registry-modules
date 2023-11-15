@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "3061438998164033827"
+      "templateHash": "17363916505825279120"
     },
     "owner": "jtracey93",
     "name": "Bicep Landing Zone (Subscription) Vending Module",
@@ -270,6 +270,14 @@
           "anotherLabel"
         ],
         "description": "An array of virtual hub route table labels to propagate routes to. If left blank/empty the default label will be propagated to only.\n\n- Default value: `[]` *(empty array)*\n"
+      }
+    },
+    "vHubRoutingIntentEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "example": false,
+        "description": "Indicates whether routing intent is enabled on the Virtual Hub within the Virtual WAN.\n- Type: Boolean\n"
       }
     },
     "roleAssignmentEnabled": {
@@ -640,6 +648,9 @@
           "virtualNetworkVwanPropagatedLabels": {
             "value": "[parameters('virtualNetworkVwanPropagatedLabels')]"
           },
+          "vHubRoutingIntentEnabled": {
+            "value": "[parameters('vHubRoutingIntentEnabled')]"
+          },
           "roleAssignmentEnabled": {
             "value": "[parameters('roleAssignmentEnabled')]"
           },
@@ -669,7 +680,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "485020301888912200"
+              "templateHash": "15514953388536898208"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -820,6 +831,13 @@
               "defaultValue": [],
               "metadata": {
                 "description": "An array of virtual hub route table labels to propogate routes to. If left blank/empty default label will be propogated to only."
+              }
+            },
+            "vHubRoutingIntentEnabled": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Indicates whether routing intent is enabled on the Virtual HUB within the virtual WAN."
               }
             },
             "roleAssignmentEnabled": {
@@ -3745,17 +3763,7 @@
                   "enableInternetSecurity": {
                     "value": "[parameters('virtualNetworkVwanEnableInternetSecurity')]"
                   },
-                  "routingConfiguration": {
-                    "value": {
-                      "associatedRouteTable": {
-                        "id": "[variables('virtualWanHubConnectionAssociatedRouteTable')]"
-                      },
-                      "propagatedRouteTables": {
-                        "ids": "[variables('virtualWanHubConnectionPropogatedRouteTables')]",
-                        "labels": "[variables('virtualWanHubConnectionPropogatedLabels')]"
-                      }
-                    }
-                  },
+                  "routingConfiguration": "[if(not(parameters('vHubRoutingIntentEnabled')), createObject('value', createObject('associatedRouteTable', createObject('id', variables('virtualWanHubConnectionAssociatedRouteTable')), 'propagatedRouteTables', createObject('ids', variables('virtualWanHubConnectionPropogatedRouteTables'), 'labels', variables('virtualWanHubConnectionPropogatedLabels')))), createObject('value', createObject()))]",
                   "enableDefaultTelemetry": {
                     "value": "[variables('enableTelemetryForCarml')]"
                   }
