@@ -226,30 +226,56 @@ function Set-ParametersSection {
 
         # 3. Add individual parameters
         foreach ($parameter in $categoryParameters) {
+
+            $isRequired = Get-IsParameterRequired -TemplateFileContent $TemplateFileContent -Parameter $parameter
+
+            # Default values
+            if ($parameter.defaultValue -is [array]) {
+                if ($parameter.defaultValue.count -eq 0) {
+                    $defaultValue = '[]'
+                } else {
+                    $bicepJSONDefaultParameterObject = @{ $parameter.name = ($parameter.defaultValue ?? @()) } # Wrapping on object to work with formatted Bicep script
+                    $bicepRawformattedDefault = ConvertTo-FormattedBicep -JSONParameters $bicepJSONDefaultParameterObject
+                    $leadingSpacesToTrim = ($bicepRawformattedDefault -match '^(\s+).+') ? $matches[1].Length : 0
+                    $bicepCleanedFormattedDefault = $bicepRawformattedDefault -replace ('{0}: ' -f $parameter.name) # Unwrapping the object
+                    $defaultValue = $bicepCleanedFormattedDefault -split '\n' | ForEach-Object { $_ -replace "^\s{$leadingSpacesToTrim}" }  # Removing excess leading spaces
+                }
+            } elseif ($parameter.defaultValue -is [hashtable]) {
+                if ($parameter.defaultValue.count -eq 0) {
+                    $defaultValue = '{}'
+                } else {
+                    $bicepDefaultValue = ConvertTo-FormattedBicep -JSONParameters $parameter.defaultValue
+                    $defaultValue = "{`n$bicepDefaultValue`n}"
+                }
+            } elseif ($parameter.defaultValue -is [string] -and ($parameter.defaultValue -notmatch '\[\w+\(.*\).*\]')) {
+                $defaultValue = '''' + $parameter.defaultValue + ''''
+            } else {
+                $defaultValue = $parameter.defaultValue
+            }
+
             # User defined type
             if ($null -eq $parameter.type -and $parameter.ContainsKey('$ref')) {
                 $identifier = Split-Path $parameter.'$ref' -Leaf
                 $definition = $TemplateFileContent.definitions[$identifier]
-
                 $type = $definition['type']
-                $isRequired = (-not $definition['nullable'])
-                $defaultValue = $null
                 $rawAllowedValues = $definition['allowedValues']
             } else {
                 $type = $parameter.type
-
-                if ($parameter.defaultValue -is [array]) {
-                    $defaultValue = '[{0}]' -f (($parameter.defaultValue | Sort-Object) -join ', ')
-                } elseif ($parameter.defaultValue -is [hashtable]) {
-                    $defaultValue = '{object}'
-                } elseif ($parameter.defaultValue -is [string] -and ($parameter.defaultValue -notmatch '\[\w+\(.*\).*\]')) {
-                    $defaultValue = '''' + $parameter.defaultValue + ''''
-                } else {
-                    $defaultValue = $parameter.defaultValue
-                }
-
-                $isRequired = Get-IsParameterRequired -TemplateFileContent $TemplateFileContent -Parameter $parameter
                 $rawAllowedValues = $parameter.allowedValues
+            }
+
+            # Allowed values
+            if ($rawAllowedValues -is [array]) {
+                $bicepJSONAllowedParameterObject = @{ $parameter.name = ($rawAllowedValues ?? @()) } # Wrapping on object to work with formatted Bicep script
+                $bicepRawformattedAllowed = ConvertTo-FormattedBicep -JSONParameters $bicepJSONAllowedParameterObject
+                $leadingSpacesToTrim = ($bicepRawformattedAllowed -match '^(\s+).+') ? $matches[1].Length : 0
+                $bicepCleanedFormattedAllowed = $bicepRawformattedAllowed -replace ('{0}: ' -f $parameter.name) # Unwrapping the object
+                $allowedValues = $bicepCleanedFormattedAllowed -split '\n' | ForEach-Object { $_ -replace "^\s{$leadingSpacesToTrim}" }  # Removing excess leading spaces
+            } elseif ($rawAllowedValues -is [hashtable]) {
+                $bicepAllowedValues = ConvertTo-FormattedBicep -JSONParameters $rawAllowedValues
+                $allowedValues = "{`n$bicepAllowedValues`n}"
+            } else {
+                $allowedValues = $rawAllowedValues
             }
 
             # Prepare the links to local headers
@@ -258,7 +284,6 @@ function Set-ParametersSection {
 
             # Add external single quotes to all default values of type string except for those using functions
             $description = $parameter.metadata.description.Replace("`r`n", '<p>').Replace("`n", '<p>')
-            $allowedValues = ($rawAllowedValues -is [array]) ? ('[{0}]' -f (($rawAllowedValues | Sort-Object) -join ', ')) : (($rawAllowedValues -is [hashtable]) ? '{object}' : $rawAllowedValues)
             # Further, replace all "empty string" default values with actual visible quotes
             if ([regex]::Match($allowedValues, '^(\[\s*,.+)|(\[.+,\s*,)|(.+,\s*\])$').Captures.Count -gt 0) {
                 $allowedValues = $allowedValues -replace '\[\s*,', "[''," -replace ',\s*,', ", ''," -replace ',\s*\]', ", '']"
@@ -269,6 +294,36 @@ function Set-ParametersSection {
             $description = $description.substring("$category. ".Length)
             $newSectionContent += ('| [`{0}`]({1}) | {2} | {3} |' -f $parameter.name, $paramIdentifier, $type, $description)
 
+            if (-not [String]::IsNullOrEmpty($defaultValue)) {
+                if (($defaultValue -split '\n').count -eq 1) {
+                    $formattedDefaultValue = '- Default: `{0}`' -f $defaultValue
+                } else {
+                    $formattedDefaultValue = @(
+                        '- Default:',
+                        '  ```Bicep',
+                    ($defaultValue -split '\n' | ForEach-Object { "  $_" } | Out-String).TrimEnd(),
+                        '  ```'
+                    )
+                }
+            } else {
+                $formattedDefaultValue = $null
+            }
+
+            if (-not [String]::IsNullOrEmpty($allowedValues)) {
+                if (($allowedValues -split '\n').count -eq 1) {
+                    $formattedAllowedValues = '- Default: `{0}`' -f $allowedValues
+                } else {
+                    $formattedAllowedValues = @(
+                        '- Allowed:',
+                        '  ```Bicep',
+                    ($allowedValues -split '\n' | Where-Object { -not [String]::IsNullOrEmpty($_) } | ForEach-Object { "  $_" } | Out-String).TrimEnd(),
+                        '  ```'
+                    )
+                }
+            } else {
+                $formattedAllowedValues = $null
+            }
+
             $parameterList += @{
                 $paramIdentifier = @(
                     $paramHeader,
@@ -276,8 +331,8 @@ function Set-ParametersSection {
                     $description,
                 ('- Required: {0}' -f ($isRequired ? 'Yes' : 'No')),
                 ('- Type: {0}' -f $type),
-                ((-not [String]::IsNullOrEmpty($defaultValue)) ? ('- Default: `{0}`' -f $defaultValue) : $null),
-                ((-not [String]::IsNullOrEmpty($allowedValues)) ? ('- Allowed: `{0}`' -f $allowedValues) : $null),
+                ((-not [String]::IsNullOrEmpty($formattedDefaultValue)) ? $formattedDefaultValue : $null),
+                ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null),
                     '',
                 (($parameterUsageContentMap.Keys -contains $parameter.name) ? $parameterUsageContentMap[$parameter.name] : $null)
                 ) | Where-Object { $null -ne $_ }
@@ -390,6 +445,9 @@ function Set-DefinitionSection {
         #recursive call for children
         if ($parameterValue.ContainsKey('items') -and $parameterValue['items'].ContainsKey('properties')) {
             $childProperties = $parameterValue['items']['properties']
+            $listSectionContent += Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink
+        } elseif ($parameterValue.type -eq 'object' -and $parameterValue['properties']) {
+            $childProperties = $parameterValue['properties']
             $listSectionContent += Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink
         }
     }
@@ -1085,6 +1143,7 @@ function Set-UsageExamplesSection {
     )
 
     $brLink = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
+    $targetVersion = '<version>'
 
     # Process content
     $SectionContent = [System.Collections.ArrayList]@(
@@ -1092,7 +1151,7 @@ function Set-UsageExamplesSection {
         '',
         '>**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.',
         '',
-        ('>**Note**: To reference the module, please use the following syntax `br/public:{0}:1.0.0`.' -f $brLink),
+        ('>**Note**: To reference the module, please use the following syntax `br/public:{0}:{1}`.' -f $brLink, $targetVersion),
         ''
     )
 
@@ -1193,7 +1252,7 @@ function Set-UsageExamplesSection {
 
         # [3/6] Format header, remove scope property & any empty line
         $rawBicepExample = $rawBicepExampleString -split '\n'
-        $rawBicepExample[0] = "module $moduleNameCamelCase 'br/public:$($brLink):1.0.0' = {"
+        $rawBicepExample[0] = "module $moduleNameCamelCase 'br/public:$($brLink):$($targetVersion)' = {"
         $rawBicepExample = $rawBicepExample | Where-Object { $_ -notmatch 'scope: *' } | Where-Object { -not [String]::IsNullOrEmpty($_) }
         # [4/6] Extract param block
         $rawBicepExampleArray = $rawBicepExample -split '\n'
@@ -1710,7 +1769,7 @@ function Set-ModuleReadMe {
         Write-Verbose "File [$ReadMeFilePath] updated" -Verbose
     } else {
         if ($PSCmdlet.ShouldProcess("File in path [$ReadMeFilePath]", 'Create')) {
-            $null = New-Item -Path $ReadMeFilePath -Value $readMeFileContent -Force
+            $null = New-Item -Path $ReadMeFilePath -Value ($readMeFileContent | Out-String) -Force
         }
         Write-Verbose "File [$ReadMeFilePath] created" -Verbose
     }

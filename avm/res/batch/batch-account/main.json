@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.22.6.54827",
-      "templateHash": "14416997244636139298"
+      "version": "0.23.1.45101",
+      "templateHash": "11850231744835953417"
     },
     "name": "Batch Accounts",
     "description": "This module deploys a Batch Account.",
@@ -345,7 +345,7 @@
             "description": "Optional. Enables system assigned managed identity on the resource."
           }
         },
-        "userAssignedResourcesIds": {
+        "userAssignedResourceIds": {
           "type": "array",
           "items": {
             "type": "string"
@@ -403,6 +403,50 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "networkProfileType": {
+      "type": "object",
+      "properties": {
+        "accountAccess": {
+          "$ref": "#/definitions/endpointAccessProfileType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Network access profile for batchAccount endpoint (Batch account data plane API)."
+          }
+        },
+        "nodeManagementAccess": {
+          "$ref": "#/definitions/endpointAccessProfileType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Network access profile for nodeManagement endpoint (Batch service managing compute nodes for Batch pools)."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "endpointAccessProfileType": {
+      "type": "object",
+      "properties": {
+        "defaultAction": {
+          "type": "string",
+          "allowedValues": [
+            "Allow",
+            "Deny"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default action for endpoint access. If not specified, defaults to Deny."
+          }
+        },
+        "allowedIpRules": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of IP ranges to filter client IP address."
           }
         }
       },
@@ -480,25 +524,13 @@
         "Disabled"
       ],
       "metadata": {
-        "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkProfileAllowedIpRanges are not set."
+        "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkProfile is not set."
       }
     },
-    "networkProfileDefaultAction": {
-      "type": "string",
-      "defaultValue": "Deny",
-      "allowedValues": [
-        "Allow",
-        "Deny"
-      ],
+    "networkProfile": {
+      "$ref": "#/definitions/networkProfileType",
       "metadata": {
-        "description": "Optional. The network profile default action for endpoint access. It is only applicable when publicNetworkAccess is not explicitly disabled."
-      }
-    },
-    "networkProfileAllowedIpRanges": {
-      "type": "array",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Array of IP ranges to filter client IP address. It is only applicable when publicNetworkAccess is not explicitly disabled."
+        "description": "Optional. Network access profile. It is only applicable when publicNetworkAccess is not explicitly disabled."
       }
     },
     "lock": {
@@ -561,16 +593,24 @@
   "variables": {
     "copy": [
       {
-        "name": "networkProfileIpRules",
-        "count": "[length(coalesce(parameters('networkProfileAllowedIpRanges'), createArray()))]",
+        "name": "accountAccessNetworkProfileIpRules",
+        "count": "[length(coalesce(tryGet(tryGet(parameters('networkProfile'), 'accountAccess'), 'allowedIpRules'), createArray()))]",
         "input": {
           "action": "Allow",
-          "value": "[coalesce(parameters('networkProfileAllowedIpRanges'), createArray())[copyIndex('networkProfileIpRules')]]"
+          "value": "[coalesce(tryGet(tryGet(parameters('networkProfile'), 'accountAccess'), 'allowedIpRules'), createArray())[copyIndex('accountAccessNetworkProfileIpRules')]]"
+        }
+      },
+      {
+        "name": "nodeManagementAccessNetworkProfileIpRules",
+        "count": "[length(coalesce(tryGet(tryGet(parameters('networkProfile'), 'nodeManagementAccess'), 'allowedIpRules'), createArray()))]",
+        "input": {
+          "action": "Allow",
+          "value": "[coalesce(tryGet(tryGet(parameters('networkProfile'), 'nodeManagementAccess'), 'allowedIpRules'), createArray())[copyIndex('nodeManagementAccessNetworkProfileIpRules')]]"
         }
       }
     ],
-    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -646,9 +686,9 @@
         },
         "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.KeyVault', 'keyVaultProperties', createObject('keyIdentifier', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), reference('cMKKeyVault::cMKKey').keyUriWithVersion))), null())]",
         "keyVaultReference": "[if(equals(parameters('poolAllocationMode'), 'UserSubscription'), createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('keyVaultReferenceResourceId'), '//'), '/')[2], split(coalesce(parameters('keyVaultReferenceResourceId'), '////'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(coalesce(parameters('keyVaultReferenceResourceId'), 'dummyVault'), '/'))), 'url', reference('batchKeyVaultReference').vaultUri), null())]",
-        "networkProfile": "[if(or(equals(parameters('publicNetworkAccess'), 'Disabled'), empty(coalesce(parameters('networkProfileAllowedIpRanges'), createArray()))), null(), createObject('accountAccess', createObject('defaultAction', parameters('networkProfileDefaultAction'), 'ipRules', variables('networkProfileIpRules'))))]",
+        "networkProfile": "[if(not(empty(coalesce(parameters('networkProfile'), createObject()))), createObject('accountAccess', if(not(empty(variables('accountAccessNetworkProfileIpRules'))), createObject('defaultAction', coalesce(tryGet(tryGet(parameters('networkProfile'), 'accountAccess'), 'defaultAction'), 'Deny'), 'ipRules', variables('accountAccessNetworkProfileIpRules')), null()), 'nodeManagementAccess', if(not(empty(variables('nodeManagementAccessNetworkProfileIpRules'))), createObject('defaultAction', coalesce(tryGet(tryGet(parameters('networkProfile'), 'nodeManagementAccess'), 'defaultAction'), 'Deny'), 'ipRules', variables('nodeManagementAccessNetworkProfileIpRules')), null())), null())]",
         "poolAllocationMode": "[parameters('poolAllocationMode')]",
-        "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(coalesce(parameters('privateEndpoints'), createArray()))), empty(coalesce(parameters('networkProfileAllowedIpRanges'), createArray()))), 'Disabled', null()))]"
+        "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(coalesce(parameters('privateEndpoints'), createArray()))), empty(coalesce(parameters('networkProfile'), createArray()))), 'Disabled', null()))]"
       },
       "dependsOn": [
         "batchKeyVaultReference",
@@ -786,8 +826,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.21.1.54444",
-              "templateHash": "13152465847704433697"
+              "version": "0.23.1.45101",
+              "templateHash": "2788827530274342759"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -1013,7 +1053,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.1.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.2.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1126,8 +1166,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.21.1.54444",
-                      "templateHash": "1698104586574073002"
+                      "version": "0.23.1.45101",
+                      "templateHash": "18168683629401652671"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",

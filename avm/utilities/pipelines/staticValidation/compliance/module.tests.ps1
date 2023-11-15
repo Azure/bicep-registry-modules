@@ -3,7 +3,7 @@
 param (
   [Parameter(Mandatory = $false)]
   [array] $moduleFolderPaths = ((Get-ChildItem $repoRootPath -Recurse -Directory -Force).FullName | Where-Object {
-            (Get-ChildItem $_ -File -Depth 0 -Include @('main.json', 'main.bicep') -Force).Count -gt 0
+            (Get-ChildItem $_ -File -Depth 0 -Include @('main.bicep') -Force).Count -gt 0
     }),
 
   [Parameter(Mandatory = $false)]
@@ -27,7 +27,6 @@ $script:convertedTemplates = @{}
 
 # Shared exception messages
 $script:bicepTemplateCompilationFailedException = "Unable to compile the main.bicep template's content. This can happen if there is an error in the template. Please check if you can run the command ``bicep build {0} --stdout | ConvertFrom-Json -AsHashtable``." # -f $templateFilePath
-$script:jsonTemplateLoadFailedException = "Unable to load the main.json template's content. This can happen if there is an error in the template. Please check if you can run the command `Get-Content {0} -Raw | ConvertFrom-Json -AsHashtable`." # -f $templateFilePath
 $script:templateNotFoundException = 'No template file found in folder [{0}]' # -f $moduleFolderPath
 
 # Import any helper function used in this test script
@@ -203,24 +202,14 @@ Describe 'Module tests' -Tag 'Module' {
           if (-not $templateContent) {
             throw ($bicepTemplateCompilationFailedException -f $templateFilePath)
           }
-        }
-        elseIf (Test-Path (Join-Path $moduleFolderPath 'main.json')) {
-          $templateFilePath = Join-Path $moduleFolderPath 'main.json'
-          $templateContent = Get-Content $templateFilePath -Raw | ConvertFrom-Json -AsHashtable
-
-          if (-not $templateContent) {
-            throw ($jsonTemplateLoadFailedException -f $templateFilePath)
-          }
-        }
-        else {
+        } else {
           throw ($templateNotFoundException -f $moduleFolderPath)
         }
         $convertedTemplates[$moduleFolderPathKey] = @{
           templateFilePath = $templateFilePath
           templateContent  = $templateContent
         }
-      }
-      else {
+      } else {
         $templateContent = $convertedTemplates[$moduleFolderPathKey].templateContent
         $templateFilePath = $convertedTemplates[$moduleFolderPathKey].templateFilePath
       }
@@ -342,24 +331,14 @@ Describe 'Module tests' -Tag 'Module' {
           if (-not $templateContent) {
             throw ($bicepTemplateCompilationFailedException -f $templateFilePath)
           }
-        }
-        elseIf (Test-Path (Join-Path $moduleFolderPath 'main.json')) {
-          $templateFilePath = Join-Path $moduleFolderPath 'main.json'
-          $templateContent = Get-Content $templateFilePath -Raw | ConvertFrom-Json -AsHashtable
-
-          if (-not $templateContent) {
-            throw ($jsonTemplateLoadFailedException -f $templateFilePath)
-          }
-        }
-        else {
+        } else {
           throw ($templateNotFoundException -f $moduleFolderPath)
         }
         $convertedTemplates[$moduleFolderPathKey] = @{
           templateFilePath = $templateFilePath
           templateContent  = $templateContent
         }
-      }
-      else {
+      } else {
         $templateContent = $convertedTemplates[$moduleFolderPathKey].templateContent
         $templateFilePath = $convertedTemplates[$moduleFolderPathKey].templateFilePath
       }
@@ -423,17 +402,13 @@ Describe 'Module tests' -Tag 'Module' {
       $SchemaArray = @()
       if ($Schemaverion -eq $RgDeploymentSchema) {
         $SchemaOutput = $true
-      }
-      elseIf ($Schemaverion -eq $SubscriptionDeploymentSchema) {
+      } elseIf ($Schemaverion -eq $SubscriptionDeploymentSchema) {
         $SchemaOutput = $true
-      }
-      elseIf ($Schemaverion -eq $MgDeploymentSchema) {
+      } elseIf ($Schemaverion -eq $MgDeploymentSchema) {
         $SchemaOutput = $true
-      }
-      elseIf ($Schemaverion -eq $TenantDeploymentSchema) {
+      } elseIf ($Schemaverion -eq $TenantDeploymentSchema) {
         $SchemaOutput = $true
-      }
-      else {
+      } else {
         $SchemaOutput = $false
       }
       $SchemaArray += $SchemaOutput
@@ -496,8 +471,7 @@ Describe 'Module tests' -Tag 'Module' {
       foreach ($Param in $Parameter) {
         if ($Param.substring(0, 1) -cnotmatch '[a-z]' -or $Param -match '-' -or $Param -match '_') {
           $CamelCasingFlag += $false
-        }
-        else {
+        } else {
           $CamelCasingFlag += $true
         }
       }
@@ -522,8 +496,7 @@ Describe 'Module tests' -Tag 'Module' {
       foreach ($Variab in $Variable) {
         if ($Variab.substring(0, 1) -cnotmatch '[a-z]' -or $Variab -match '-') {
           $CamelCasingFlag += $false
-        }
-        else {
+        } else {
           $CamelCasingFlag += $true
         }
       }
@@ -542,8 +515,7 @@ Describe 'Module tests' -Tag 'Module' {
       foreach ($Output in $Outputs) {
         if ($Output.substring(0, 1) -cnotmatch '[a-z]' -or $Output -match '-' -or $Output -match '_') {
           $CamelCasingFlag += $false
-        }
-        else {
+        } else {
           $CamelCasingFlag += $true
         }
       }
@@ -560,8 +532,7 @@ Describe 'Module tests' -Tag 'Module' {
       # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
       if ($templateContent.resources.GetType().Name -eq 'Object[]') {
         $templateResources = $templateContent.resources
-      }
-      else {
+      } else {
         $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
       }
 
@@ -579,8 +550,7 @@ Describe 'Module tests' -Tag 'Module' {
       # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
       if ($templateContent.resources.GetType().Name -eq 'Object[]') {
         $templateResources = $templateContent.resources
-      }
-      else {
+      } else {
         $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
       }
 
@@ -604,8 +574,7 @@ Describe 'Module tests' -Tag 'Module' {
       # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
       if ($templateContent.resources.GetType().Name -eq 'Object[]') {
         $templateResources = $templateContent.resources
-      }
-      else {
+      } else {
         $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
       }
 
@@ -634,8 +603,7 @@ Describe 'Module tests' -Tag 'Module' {
         if ($Locationparamoutput -contains 'Location') {
           if ($Locationparamoutputvalue -eq '[resourceGroup().Location]' -or $Locationparamoutputvalue -eq 'global') {
             $LocationFlag = $true
-          }
-          else {
+          } else {
 
             $LocationFlag = $false
           }
@@ -696,8 +664,7 @@ Describe 'Module tests' -Tag 'Module' {
       $readMeFileContentHeader = (Get-Content -Path $readMeFilePath)[0]
       if ($readMeFileContentHeader -match '^.*`\[(.+)\]`.*') {
         $primaryResourceType = $matches[1]
-      }
-      else {
+      } else {
         Write-Error "Cannot identity primary resource type in readme header [$readMeFileContentHeader] and cannot execute the test."
         return
       }
@@ -705,8 +672,7 @@ Describe 'Module tests' -Tag 'Module' {
       # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
       if ($templateContent.resources.GetType().Name -eq 'Object[]') {
         $templateResources = $templateContent.resources
-      }
-      else {
+      } else {
         $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
       }
 
@@ -732,8 +698,7 @@ Describe 'Module tests' -Tag 'Module' {
       $readMeFileContentHeader = (Get-Content -Path $readMeFilePath)[0]
       if ($readMeFileContentHeader -match '^.*`\[(.+)\]`.*') {
         $primaryResourceType = $matches[1]
-      }
-      else {
+      } else {
         Write-Error "Cannot identity primary resource type in readme header [$readMeFileContentHeader] and cannot execute the test."
         return
       }
@@ -741,8 +706,7 @@ Describe 'Module tests' -Tag 'Module' {
       # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
       if ($templateContent.resources.GetType().Name -eq 'Object[]') {
         $templateResources = $templateContent.resources
-      }
-      else {
+      } else {
         $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
       }
 
@@ -856,7 +820,6 @@ Describe 'Module tests' -Tag 'Module' {
       $incorrectOutputs | Should -BeNullOrEmpty
     }
 
-    # Update to work with nullable parameters
     It '[<moduleFolderName>] All non-required parameters in template file should not have description that start with "Required.".' -TestCases $deploymentFolderTestCases {
       param (
         [hashtable[]] $testFileTestCases,
@@ -895,23 +858,13 @@ Describe 'Module tests' -Tag 'Module' {
           if (-not $templateContent) {
             throw ($bicepTemplateCompilationFailedException -f $templateFilePath)
           }
-        }
-        elseIf (Test-Path (Join-Path $moduleFolderPath 'main.json')) {
-          $templateFilePath = Join-Path $moduleFolderPath 'main.json'
-          $templateContent = Get-Content $templateFilePath -Raw | ConvertFrom-Json -AsHashtable
-
-          if (-not $templateContent) {
-            throw ($jsonTemplateLoadFailedException -f $templateFilePath)
-          }
-        }
-        else {
+        } else {
           throw ($templateNotFoundException -f $moduleFolderPath)
         }
         $convertedTemplates[$moduleFolderPathKey] = @{
           templateContent = $templateContent
         }
-      }
-      else {
+      } else {
         $templateContent = $convertedTemplates[$moduleFolderPathKey].templateContent
       }
 
@@ -954,6 +907,183 @@ Describe 'Module tests' -Tag 'Module' {
       $templateFileContent.metadata.owner | Should -Not -BeNullOrEmpty
     }
   }
+
+  Context 'User-defined-types tests' -Tag 'UDT' {
+
+    $udtTestCases = [System.Collections.ArrayList] @() # General UDT tests (e.g. param should exist)
+    $udtSpecificTestCases = [System.Collections.ArrayList] @() # Specific UDT test cases for singular UDTs (e.g. tags)
+    foreach ($moduleFolderPath in $moduleFolderPaths) {
+
+      $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
+
+      # For runtime purposes, we cache the compiled template in a hashtable that uses a formatted relative module path as a key
+      $moduleFolderPathKey = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1].Trim('/').Replace('/', '-')
+      if (-not ($convertedTemplates.Keys -contains $moduleFolderPathKey)) {
+        if (Test-Path (Join-Path $moduleFolderPath 'main.bicep')) {
+          $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
+          $templateContent = bicep build $templateFilePath --stdout | ConvertFrom-Json -AsHashtable
+
+          if (-not $templateContent) {
+            throw ($bicepTemplateCompilationFailedException -f $templateFilePath)
+          }
+        } else {
+          throw ($templateNotFoundException -f $moduleFolderPath)
+        }
+        $convertedTemplates[$moduleFolderPathKey] = @{
+          templateContent  = $templateContent
+          templateFilePath = $templateFilePath
+        }
+      } else {
+        $templateContent = $convertedTemplates[$moduleFolderPathKey].templateContent
+        $templateFilePath = $convertedTemplates[$moduleFolderPathKey].templateFilePath
+      }
+
+      $udtSpecificTestCases += @{
+        moduleFolderName         = $resourceTypeIdentifier
+        templateFileContent      = $templateContent
+        templateFileContentBicep = Get-Content $templateFilePath
+      }
+
+      # Setting expected URL only for those that doen't have multiple different variants
+      $interfaceBase = 'https://aka.ms/avm/interfaces'
+      $udtCases = @(
+        @{
+          parameterName = 'diagnosticSettings'
+          udtName       = 'diagnosticSettingType'
+          link          = "$interfaceBase/diagnostic-settings"
+        }
+        @{
+          parameterName  = 'roleAssignments'
+          udtName        = 'roleAssignmentType'
+          udtExpectedUrl = "$interfaceBase/diagnostic-settings/udt-schema"
+          link           = "$interfaceBase/role-assignments"
+        }
+        @{
+          parameterName  = 'lock'
+          udtName        = 'lockType'
+          udtExpectedUrl = "$interfaceBase/resource-locks/udt-schema"
+          link           = "$interfaceBase/resource-locks"
+        }
+        @{
+          parameterName = 'managedIdentities'
+          udtName       = 'managedIdentitiesType'
+          link          = "$interfaceBase/managed-identities"
+        }
+        @{
+          parameterName = 'privateEndpoints'
+          udtName       = 'privateEndpointType'
+          link          = "$interfaceBase/private-endpoints"
+        }
+        @{
+          parameterName = 'customerManagedKey'
+          udtName       = 'customerManagedKeyType'
+          link          = "$interfaceBase/customer-managed-keys"
+        }
+      )
+
+      foreach ($udtCase in $udtCases) {
+        $udtTestCases += @{
+          moduleFolderName         = $resourceTypeIdentifier
+          templateFileContent      = $templateContent
+          templateFileContentBicep = Get-Content $templateFilePath
+          parameterName            = $udtCase.parameterName
+          udtName                  = $udtCase.udtName
+          expectedUdtUrl           = $udtCase.udtExpectedUrl ? $udtCase.udtExpectedUrl : ''
+          link                     = $udtCase.link
+        }
+      }
+    }
+
+
+    It "[<moduleFolderName>] If template has a parameter [<parameterName>], it should implement the user-defined type [<udtName>]" -TestCases $udtTestCases {
+
+      param(
+        [hashtable] $templateFileContent,
+        [string[]] $templateFileContentBicep,
+        [string] $parameterName,
+        [string] $udtName,
+        [string] $expectedUdtUrl,
+        [string] $link
+      )
+
+      if ($templateFileContent.parameters.Keys -contains $parameterName) {
+        $templateFileContent.parameters.$parameterName.Keys | Should -Contain '$ref' -Because "the [$parameterName] parameter should use a user-defined type. For information please review the [AVM Specs]($link)."
+        $templateFileContent.parameters.$parameterName.'$ref' | Should -Be "#/definitions/$udtName" -Because "the [$parameterName] parameter should use a user-defined type [$udtName]. For information please review the [AVM Specs]($link)."
+
+        if (-not [String]::IsNullOrEmpty($expectedUdtUrl)) {
+          $implementedSchemaStartIndex = $templateFileContentBicep.IndexOf("type $udtName = {")
+          $implementedSchemaEndIndex = $implementedSchemaStartIndex + 1
+          while ($templateFileContentBicep[$implementedSchemaEndIndex] -notmatch '^\}.*' -and $implementedSchemaEndIndex -lt $templateFileContentBicep.Length) {
+            $implementedSchemaEndIndex++
+          }
+          if ($implementedSchemaEndIndex -eq $templateFileContentBicep.Length) {
+            throw "Failed to identify [$udtName] user-defined type in template."
+          }
+          $implementedSchema = $templateFileContentBicep[$implementedSchemaStartIndex..$implementedSchemaEndIndex]
+
+          $expectedSchemaFull = (Invoke-WebRequest -Uri $expectedUdtUrl).Content -split "\n"
+          $expectedSchemaStartIndex = $expectedSchemaFull.IndexOf("type $udtName = {")
+          $expectedSchemaEndIndex = $expectedSchemaStartIndex + 1
+          while ($expectedSchemaFull[$expectedSchemaEndIndex] -notmatch '^\}.*' -and $expectedSchemaEndIndex -lt $expectedSchemaFull.Length) {
+            $expectedSchemaEndIndex++
+          }
+          if ($expectedSchemaEndIndex -eq $expectedSchemaFull.Length) {
+            throw "Failed to identify [$udtName] user-defined type in expected schema at URL [$expectedUdtUrl]."
+          }
+          $expectedSchema = $expectedSchemaFull[$expectedSchemaStartIndex..$expectedSchemaEndIndex]
+
+          $formattedDiff = @()
+          foreach ($finding in (Compare-Object $implementedSchema $expectedSchema)) {
+            if ($finding.SideIndicator -eq '=>') {
+              $formattedDiff += ('+ {0}' -f $finding.InputObject)
+            } elseif ($finding.SideIndicator -eq '<=') {
+              $formattedDiff += ('- {0}' -f $finding.InputObject)
+            }
+          }
+
+          if ($formattedDiff.Count -gt 0) {
+            $warningMessage = "The implemented user-defined type is not the same as the expected user-defined type ({0}) defined in the AVM specs ({1}) and should not have diff`n{2}" -f $expectedUdtUrl, $link, ($formattedDiff | Out-String)
+            Write-Warning $warningMessage
+
+            # Adding also to output to show in GitHub CI
+            $mdFormattedDiff = ($formattedDiff -join '</br>') -replace '\|', '\|'
+            $mdFormattedWarningMessage = "The implemented user-defined type is not the same as the expected [user-defined type]({0}) defined in the [AVM specs]({1}) and should not have diff</br><pre>{2}</pre>" -f $expectedUdtUrl, $link, $mdFormattedDiff
+            Write-Output @{
+              Warning = $mdFormattedWarningMessage
+            }
+          }
+        }
+      } else {
+        Set-ItResult -Skipped -Because "the module template has no [$parameterName] parameter."
+      }
+    }
+
+    It "[<moduleFolderName>] If a UDT definition [managedIdentitiesType] exists and supports system-assigned-identities, the template should have an output for its principal ID." -TestCases $udtSpecificTestCases {
+
+      param(
+        [hashtable] $templateFileContent
+      )
+
+      if ($templateFileContent.definitions.Keys -contains 'managedIdentitiesType' -and $templateFileContent.definitions.managedIdentitiesType.properties.keys -contains 'systemAssigned') {
+        $templateFileContent.outputs.Keys | Should -Contain 'systemAssignedMIPrincipalId' -Because 'The AVM specs require a this output. For information please review the [AVM Specs](https://aka.ms/avm/interfaces/managed-identities).'
+      } else {
+        Set-ItResult -Skipped -Because "the module template has no [managedIdentitiesType] UDT definition or does not support system-assigned-identities."
+      }
+    }
+
+    It "[<moduleFolderName>] If a parameter [tags] exists it should be nullable." -TestCases $udtSpecificTestCases {
+
+      param(
+        [hashtable] $templateFileContent
+      )
+
+      if ($templateFileContent.parameters.Keys -contains 'tags') {
+        $templateFileContent.parameters.tags.nullable | Should -Be $true -Because 'The AVM specs require a specific format. For information please review the [AVM Specs](https://aka.ms/avm/interfaces/tags).'
+      } else {
+        Set-ItResult -Skipped -Because "the module template has no [tags] parameter."
+      }
+    }
+  }
 }
 
 Describe 'Test file tests' -Tag 'TestTemplate' {
@@ -970,6 +1100,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
           $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
 
           $deploymentTestFileTestCases += @{
+            testName         = Split-Path (Split-Path $testFilePath) -Leaf
             testFilePath     = $testFilePath
             testFileContent  = $testFileContent
             moduleFolderName = $resourceTypeIdentifier
@@ -978,7 +1109,79 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       }
     }
 
-    It "[<moduleFolderName>] Bicep test deployment files should invoke test like [`module testDeployment '../.*main.bicep' = {`]" -TestCases $deploymentTestFileTestCases {
+    It "[<moduleFolderName>] [<testName>] Bicep test deployment files should contain a parameter [serviceShort]" -TestCases $deploymentTestFileTestCases {
+
+      param(
+        [object[]] $testFileContent
+      )
+      ($testFileContent -match "^param serviceShort string = '(.*)$") | Should -Not -BeNullOrEmpty -Because 'the module test deployment file should contain a parameter [serviceShort] using the syntax [param serviceShort string = ''*''].'
+    }
+
+    It "[<moduleFolderName>] [<testName>] Bicep test deployment files in a [defaults] folder should have a parameter [serviceShort] with a value ending with [min]" -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]defaults[\\|\/].*' }) {
+
+      param(
+        [object[]] $testFileContent
+      )
+
+      if (($testFileContent | Out-String) -match "param serviceShort string = '(.*)'") {
+        $Matches[1] | Should -BeLike "*min"
+      } else {
+        Set-ItResult -Skipped -Because 'the module test deployment file should contain a parameter [serviceShort] using the syntax [param serviceShort string = ''*min''] but it doesn''t.'
+      }
+    }
+
+    It "[<moduleFolderName>] [<testName>] Bicep test deployment files in a [max] folder should have a [serviceShort] parameter with a value ending with  [max]" -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]max[\\|\/].*' }) {
+
+      param(
+        [object[]] $testFileContent
+      )
+
+      if (($testFileContent | Out-String) -match "param serviceShort string = '(.*)'") {
+        $Matches[1] | Should -BeLike "*max"
+      } else {
+        Set-ItResult -Skipped -Because 'the module test deployment file should contain a parameter [serviceShort] using the syntax [param serviceShort string = ''*max''] but it doesn''t.'
+      }
+    }
+
+    It "[<moduleFolderName>] [<testName>] Bicep test deployment files in a [waf-aligned] folder should have a [serviceShort] parameter with a value ending with [waf]" -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]waf\-aligned[\\|\/].*' }) {
+
+      param(
+        [object[]] $testFileContent
+      )
+
+      if (($testFileContent | Out-String) -match "param serviceShort string = '(.*)'") {
+        $Matches[1] | Should -BeLike "*waf"
+      } else {
+        Set-ItResult -Skipped -Because 'the module test deployment file should contain a parameter [serviceShort] using the syntax [param serviceShort string = ''*waf''] but it doesn''t.'
+      }
+    }
+
+    It "[<moduleFolderName>] [<testName>] Bicep test deployment files should contain a metadata string [name]" -TestCases $deploymentTestFileTestCases {
+
+      param(
+        [object[]] $testFileContent
+      )
+      ($testFileContent | Out-String) | Should -Match "metadata name = .+" -Because 'Test cases should contain a metadata string [name] in the format `metadata name = ''One cake of a name''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
+    }
+
+    It "[<moduleFolderName>] [<testName>] Bicep test deployment files should contain a metadata string [description]" -TestCases $deploymentTestFileTestCases {
+
+      param(
+        [object[]] $testFileContent
+      )
+      ($testFileContent | Out-String) | Should -Match "metadata description = .+" -Because 'Test cases should contain a metadata string [description] in the format `metadata description = ''The cake is a lie''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
+    }
+
+    It "[<moduleFolderName>] [<testName>] Bicep test deployment files should contain a parameter [namePrefix] with value ['#_namePrefix_#']" -TestCases $deploymentTestFileTestCases {
+
+      param(
+        [object[]] $testFileContent
+      )
+
+      ($testFileContent | Out-String) | Should -Match  "param namePrefix string = '#_namePrefix_#'" -Because 'The test CI needs this value to ensure that deployed resources have unique names per fork.'
+    }
+
+    It "[<moduleFolderName>] [<testName>] Bicep test deployment files should invoke test like [`module testDeployment '../.*main.bicep' = {`]" -TestCases $deploymentTestFileTestCases {
 
       param(
         [object[]] $testFileContent
@@ -989,7 +1192,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       $testIndex -ne -1 | Should -Be $true -Because 'the module test invocation should be in the expected format to allow identification.'
     }
 
-    It '[<moduleFolderName>] Bicep test deployment name should contain [`-test-`].' -TestCases $deploymentTestFileTestCases {
+    It '[<moduleFolderName>] [<testName>] Bicep test deployment name should contain [`-test-`].' -TestCases $deploymentTestFileTestCases {
 
       param(
         [object[]] $testFileContent
@@ -1000,7 +1203,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       $expectedNameFormat | Should -Be $true -Because 'the handle ''-test-'' should be part of the module test invocation''s resource name to allow identification.'
     }
 
-    It '[<moduleFolderName>] Bicep test deployment should have parameter [`serviceShort`].' -TestCases $deploymentTestFileTestCases {
+    It '[<moduleFolderName>] [<testName>] Bicep test deployment should have parameter [`serviceShort`].' -TestCases $deploymentTestFileTestCases {
 
       param(
         [object[]] $testFileContent
@@ -1021,8 +1224,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
   try {
     $apiSpecs = Invoke-WebRequest -Uri $ApiSpecsFileUri
     $ApiVersions = ConvertFrom-Json $apiSpecs.Content -AsHashtable
-  }
-  catch {
+  } catch {
     Write-Warning "Failed to download API specs file from [$ApiSpecsFileUri]. Skipping API tests"
     Set-ItResult -Skipped -Because "Failed to download API specs file from [$ApiSpecsFileUri]. Skipping API tests."
     return
@@ -1042,24 +1244,14 @@ Describe 'API version tests' -Tag 'ApiCheck' {
         if (-not $templateContent) {
           throw ($bicepTemplateCompilationFailedException -f $templateFilePath)
         }
-      }
-      elseIf (Test-Path (Join-Path $moduleFolderPath 'main.json')) {
-        $templateFilePath = Join-Path $moduleFolderPath 'main.json'
-        $templateContent = Get-Content $templateFilePath -Raw | ConvertFrom-Json -AsHashtable
-
-        if (-not $templateContent) {
-          throw ($jsonTemplateLoadFailedException -f $templateFilePath)
-        }
-      }
-      else {
+      } else {
         throw ($templateNotFoundException -f $moduleFolderPath)
       }
       $convertedTemplates[$moduleFolderPathKey] = @{
         templateFilePath = $templateFilePath
         templateContent  = $templateContent
       }
-    }
-    else {
+    } else {
       $templateContent = $convertedTemplates[$moduleFolderPathKey].templateContent
       $templateFilePath = $convertedTemplates[$moduleFolderPathKey].templateFilePath
     }
@@ -1165,8 +1357,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
       # We allow the latest 5 including previews (in case somebody wants to use preview), or the latest 3 non-preview
       $approvedApiVersions += $resourceTypeApiVersions | Select-Object -Last 5
       $approvedApiVersions += $resourceTypeApiVersions | Where-Object { $_ -notlike '*-preview' } | Select-Object -Last 5
-    }
-    else {
+    } else {
       # We allow the latest 5 non-preview preview
       $approvedApiVersions += $resourceTypeApiVersions | Where-Object { $_ -notlike '*-preview' } | Select-Object -Last 5
     }
@@ -1179,8 +1370,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
 
       # The original failed test was
       # $approvedApiVersions | Should -Contain $TargetApi
-    }
-    else {
+    } else {
       # Provide a warning if an API version is second to next to expire.
       $indexOfVersion = $approvedApiVersions.IndexOf($TargetApi)
 

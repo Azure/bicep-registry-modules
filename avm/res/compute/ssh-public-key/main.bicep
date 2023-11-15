@@ -96,7 +96,6 @@ output name string = sshPublicKey.name
 @description('The location the resource was deployed into.')
 output location string = sshPublicKey.location
 
-
 // ================ //
 // Definitions      //
 // ================ //
@@ -109,7 +108,7 @@ type roleAssignmentType = {
   principalId: string
 
   @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device' | null)?
+  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
 
   @description('Optional. The description of the role assignment.')
   description: string?

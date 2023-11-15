@@ -98,13 +98,10 @@ async function generateModuleIndexData({ require, github, context, core }) {
     numberOfModuleGroupsProcessed++;
   }
 
-  for (const avmModuleRoot of ["avm/res", "avm"]) {
+  for (const avmModuleRoot of ["avm/res", "avm/ptn"]) {
     // Resource module path pattern: `avm/res/${moduleGroup}/${moduleName}`
-    // Pattern module path pattern: `avm/ptn/${moduleName}` (no nested module group)
-    const avmModuleGroups =
-      avmModuleRoot === "avm/res"
-        ? await getSubdirNames(fs, avmModuleRoot)
-        : ["ptn"];
+    // Pattern module path pattern: `avm/ptn/${moduleGroup}/${moduleName}`
+    const avmModuleGroups = await getSubdirNames(fs, avmModuleRoot);
 
     for (const moduleGroup of avmModuleGroups) {
       const moduleGroupPath = `${avmModuleRoot}/${moduleGroup}`;
@@ -113,10 +110,7 @@ async function generateModuleIndexData({ require, github, context, core }) {
       for (const moduleName of moduleNames) {
         const modulePath = `${moduleGroupPath}/${moduleName}`;
         const mainJsonPath = `${modulePath}/main.json`;
-        const mcrModulePath = modulePath
-          .replace(/-/g, "")
-          .replace(/[/\\]/g, "-");
-        const tagListUrl = `https://mcr.microsoft.com/v2/bicep/${mcrModulePath}/tags/list`;
+        const tagListUrl = `https://mcr.microsoft.com/v2/bicep/${modulePath}/tags/list`;
 
         try {
           core.info(`Processing AVM Module "${modulePath}"...`);
@@ -141,7 +135,7 @@ async function generateModuleIndexData({ require, github, context, core }) {
           }
 
           moduleIndexData.push({
-            moduleName: mcrModulePath,
+            moduleName: modulePath,
             tags,
             properties,
           });
