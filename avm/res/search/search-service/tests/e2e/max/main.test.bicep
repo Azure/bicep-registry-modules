@@ -64,7 +64,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location
-    sku: 'standard3'
+    sku: 'standard'
     cmkEnforcement: 'Enabled'
     disableLocalAuth: false
     authOptions: {

@@ -153,7 +153,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
         roleDefinitionIdOrName: 'Search Service Contributor'
       }
     ]
-    sku: 'standard3'
+    sku: 'standard'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -259,7 +259,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
       ]
     },
     "sku": {
-      "value": "standard3"
+      "value": "standard"
     },
     "tags": {
       "value": {
@@ -469,7 +469,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
         roleDefinitionIdOrName: 'Search Service Contributor'
       }
     ]
-    sku: 'standard3'
+    sku: 'standard'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -575,7 +575,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
       ]
     },
     "sku": {
-      "value": "standard3"
+      "value": "standard"
     },
     "tags": {
       "value": {
