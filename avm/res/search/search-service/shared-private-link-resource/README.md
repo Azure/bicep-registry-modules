@@ -36,15 +36,7 @@ This module deploys a Search Service Private Link Resource.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via the Customer Usage Attribution ID (GUID). |
 | [`resourceRegion`](#parameter-resourceregion) | string | Can be used to specify the Azure Resource Manager location of the resource to which a shared private link is to be created. This is only required for those resources whose DNS configuration are regional (such as Azure Kubernetes Service). |
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via the Customer Usage Attribution ID (GUID).
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `groupId`
 
