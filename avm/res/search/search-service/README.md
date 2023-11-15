@@ -32,7 +32,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Pe](#example-3-pe)
+- [Private endpoint-enabled deployment](#example-3-private-endpoint-enabled-deployment)
 - [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
@@ -275,7 +275,10 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 </details>
 <p>
 
-### Example 3: _Pe_
+### Example 3: _Private endpoint-enabled deployment_
+
+This instance deploys the module with private endpoints.
+
 
 <details>
 
