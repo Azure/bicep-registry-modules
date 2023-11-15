@@ -411,43 +411,75 @@ function Set-DefinitionSection {
     $listSectionContent = [System.Collections.ArrayList]@()
 
     foreach ($parameterName in $Properties.Keys | Sort-Object) {
-        $parameterValue = $Properties[$parameterName]
+        $parameter = $Properties[$parameterName]
         $paramIdentifier = '{0}.{1}' -f $ParentName, $parameterName
         $paramIdentifierLink = ('{0}{1}' -f $ParentIdentifierLink, $parameterName).ToLower()
 
         # definition type (if any)
-        if ($parameterValue.Keys -contains '$ref') {
-            $definition = $TemplateFileContent.definitions[(Split-Path $parameterValue.'$ref' -Leaf)]
+        if ($parameter.Keys -contains '$ref') {
+            $identifier = Split-Path $parameter.'$ref' -Leaf
+            $definition = $TemplateFileContent1.definitions[$identifier]
+            $type = $definition['type']
+            $rawAllowedValues = $definition['allowedValues']
         } else {
             $definition = $null
+            $type = $parameter.type
+            $rawAllowedValues = $parameter.allowedValues
         }
 
-        $isRequired = (Get-IsParameterRequired -TemplateFileContent $TemplateFileContent -Parameter $parameterValue) ? 'Yes' : 'No'
-        $type = ($parameterValue.Keys -contains '$ref') ? $definition.type : $parameterValue['type']
-        $description = $parameterValue.ContainsKey('metadata') ? $parameterValue['metadata']['description'] : $null
+        $isRequired = (Get-IsParameterRequired -TemplateFileContent $TemplateFileContent -Parameter $parameter) ? 'Yes' : 'No'
+        $type = ($parameter.Keys -contains '$ref') ? $definition.type : $parameter['type']
+        $description = $parameter.ContainsKey('metadata') ? $parameter['metadata']['description'] : $null
 
         # build table for definition properties
         $tableSectionContent += ('| [`{0}`]({1}) | {2} | {3} | {4} |' -f $parameterName, $paramIdentifierLink, $isRequired, $type, $description)
-        $allowedValues = ($parameterValue.ContainsKey('allowedValues')) ? (($parameterValue['allowedValues'] -is [array]) ? ('[{0}]' -f (($parameterValue['allowedValues'] | Sort-Object) -join ', ')) : (($parameterValue['allowedValues'] -is [hashtable]) ? '{object}' : $parameterValue['allowedValues'])) : $null
+
+        if ($rawAllowedValues -is [array]) {
+            $bicepJSONAllowedParameterObject = @{ $parameterName = ($rawAllowedValues ?? @()) } # Wrapping on object to work with formatted Bicep script
+            $bicepRawformattedAllowed = ConvertTo-FormattedBicep -JSONParameters $bicepJSONAllowedParameterObject
+            $leadingSpacesToTrim = ($bicepRawformattedAllowed -match '^(\s+).+') ? $matches[1].Length : 0
+            $bicepCleanedFormattedAllowed = $bicepRawformattedAllowed -replace ('{0}: ' -f $parameterName) # Unwrapping the object
+            $allowedValues = $bicepCleanedFormattedAllowed -split '\n' | ForEach-Object { $_ -replace "^\s{$leadingSpacesToTrim}" }  # Removing excess leading spaces
+        } elseif ($rawAllowedValues -is [hashtable]) {
+            $bicepAllowedValues = ConvertTo-FormattedBicep -JSONParameters $rawAllowedValues
+            $allowedValues = "{`n$bicepAllowedValues`n}"
+        } else {
+            $allowedValues = $rawAllowedValues
+        }
+
+        if (-not [String]::IsNullOrEmpty($allowedValues)) {
+            if (($allowedValues -split '\n').count -eq 1) {
+                $formattedAllowedValues = '- Default: `{0}`' -f $allowedValues
+            } else {
+                $formattedAllowedValues = @(
+                    '- Allowed:',
+                    '  ```Bicep',
+                ($allowedValues -split '\n' | Where-Object { -not [String]::IsNullOrEmpty($_) } | ForEach-Object { "  $_" } | Out-String).TrimEnd(),
+                    '  ```'
+                )
+            }
+        } else {
+            $formattedAllowedValues = $null
+        }
 
         #build flat list for definition properties
         $listSectionContent += @(
             '',
             ('### Parameter: `{0}`' -f $paramIdentifier),
-            ($parameterValue.ContainsKey('metadata') ? '' : $null),
-            ($parameterValue.ContainsKey('metadata') ? $parameterValue['metadata']['description'] : $null),
-            ($parameterValue.ContainsKey('metadata') ? '' : $null),
+            ($parameter.ContainsKey('metadata') ? '' : $null),
+            ($parameter.ContainsKey('metadata') ? $parameter['metadata']['description'] : $null),
+            ($parameter.ContainsKey('metadata') ? '' : $null),
             ('- Required: {0}' -f $isRequired),
             ('- Type: {0}' -f $type),
-            (($null -ne $allowedValues) ? ('- Allowed: `{0}`' -f $allowedValues) : $null)
+            ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null)
         ) | Where-Object { $null -ne $_ }
 
         #recursive call for children
-        if ($parameterValue.ContainsKey('items') -and $parameterValue['items'].ContainsKey('properties')) {
-            $childProperties = $parameterValue['items']['properties']
+        if ($parameter.ContainsKey('items') -and $parameter['items'].ContainsKey('properties')) {
+            $childProperties = $parameter['items']['properties']
             $listSectionContent += Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink
-        } elseif ($parameterValue.type -eq 'object' -and $parameterValue['properties']) {
-            $childProperties = $parameterValue['properties']
+        } elseif ($parameter.type -eq 'object' -and $parameter['properties']) {
+            $childProperties = $parameter['properties']
             $listSectionContent += Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink
         }
     }
