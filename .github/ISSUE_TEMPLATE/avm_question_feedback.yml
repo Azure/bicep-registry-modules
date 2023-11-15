@@ -1,7 +1,12 @@
 name: AVM - General Question/Feedback ❔
 description: Just got a question or some general feedback? Let us know
 title: "[AVM Question/Feedback]: "
-labels: ["Type: AVM :a: :v: :m:", "Type: Question/Feedback :raising_hand:", "Needs: Triage :mag:"]
+labels:
+  [
+    "Type: AVM :a: :v: :m:",
+    "Type: Question/Feedback :raising_hand:",
+    "Needs: Triage :mag:",
+  ]
 projects: ["Azure/538"]
 body:
   - type: markdown

@@ -26,10 +26,10 @@ body:
       label: Issue Type?
       description: How would you best describe this issue? Is this a...
       options:
-        - 'Feature Request'
-        - 'Bug'
-        - 'Security Bug'
-        - 'I''m not sure'
+        - "Feature Request"
+        - "Bug"
+        - "Security Bug"
+        - "I'm not sure"
     validations:
       required: true
   - type: input
