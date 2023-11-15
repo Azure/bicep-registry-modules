@@ -88,6 +88,158 @@ param roleAssignments array = []
 @sys.description('Disable telemetry collection by this module. For more information on the telemetry collected by this module, that is controlled by this parameter, see this page in the wiki: [Telemetry Tracking Using Customer Usage Attribution (PID)](https://github.com/Azure/bicep-lz-vending/wiki/Telemetry)')
 param disableTelemetry bool = false
 
+@maxLength(90)
+@sys.description('The name of the resource group to create the deployment script for resource providers registration.')
+param deploymentScriptResourceGroupName string
+
+@sys.description('The location of the deployment script. Use region shortnames e.g. uksouth, eastus, etc.')
+param deploymentScriptLocation string = deployment().location
+
+@sys.description('The name of the deployment script to register resource providers')
+param deploymentScriptName string
+
+@sys.description('''
+An object of resource providers and resource providers features to register. If left blank/empty, a list of most common resource providers will be registered.
+- Type: `{}` Object
+- Default value: `{
+  'Microsoft.ApiManagement'             : []
+    'Microsoft.AppPlatform'             : []
+    'Microsoft.Authorization'           : []
+    'Microsoft.Automation'              : []
+    'Microsoft.AVS'                     : []
+    'Microsoft.Blueprint'               : []
+    'Microsoft.BotService'              : []
+    'Microsoft.Cache'                   : []
+    'Microsoft.Cdn'                     : []
+    'Microsoft.CognitiveServices'       : []
+    'Microsoft.Compute'                 : []
+    'Microsoft.ContainerInstance'       : []
+    'Microsoft.ContainerRegistry'       : []
+    'Microsoft.ContainerService'        : []
+    'Microsoft.CostManagement'          : []
+    'Microsoft.CustomProviders'         : []
+    'Microsoft.Databricks'              : []
+    'Microsoft.DataLakeAnalytics'       : []
+    'Microsoft.DataLakeStore'           : []
+    'Microsoft.DataMigration'           : []
+    'Microsoft.DataProtection'          : []
+    'Microsoft.DBforMariaDB'            : []
+    'Microsoft.DBforMySQL'              : []
+    'Microsoft.DBforPostgreSQL'         : []
+    'Microsoft.DesktopVirtualization'   : []
+    'Microsoft.Devices'                 : []
+    'Microsoft.DevTestLab'              : []
+    'Microsoft.DocumentDB'              : []
+    'Microsoft.EventGrid'               : []
+    'Microsoft.EventHub'                : []
+    'Microsoft.HDInsight'               : []
+    'Microsoft.HealthcareApis'          : []
+    'Microsoft.GuestConfiguration'      : []
+    'Microsoft.KeyVault'                : []
+    'Microsoft.Kusto'                   : []
+    'microsoft.insights'                : []
+    'Microsoft.Logic'                   : []
+    'Microsoft.MachineLearningServices' : []
+    'Microsoft.Maintenance'             : []
+    'Microsoft.ManagedIdentity'         : []
+    'Microsoft.ManagedServices'         : []
+    'Microsoft.Management'              : []
+    'Microsoft.Maps'                    : []
+    'Microsoft.MarketplaceOrdering'     : []
+    'Microsoft.Media'                   : []
+    'Microsoft.MixedReality'            : []
+    'Microsoft.Network'                 : []
+    'Microsoft.NotificationHubs'        : []
+    'Microsoft.OperationalInsights'     : []
+    'Microsoft.OperationsManagement'    : []
+    'Microsoft.PolicyInsights'          : []
+    'Microsoft.PowerBIDedicated'        : []
+    'Microsoft.Relay'                   : []
+    'Microsoft.RecoveryServices'        : []
+    'Microsoft.Resources'               : []
+    'Microsoft.Search'                  : []
+    'Microsoft.Security'                : []
+    'Microsoft.SecurityInsights'        : []
+    'Microsoft.ServiceBus'              : []
+    'Microsoft.ServiceFabric'           : []
+    'Microsoft.Sql'                     : []
+    'Microsoft.Storage'                 : []
+    'Microsoft.StreamAnalytics'         : []
+    'Microsoft.TimeSeriesInsights'      : []
+    'Microsoft.Web'                     : []
+}`
+''')
+param resourceProviders object = {
+  'Microsoft.ApiManagement': []
+  'Microsoft.AppPlatform': []
+  'Microsoft.Authorization': []
+  'Microsoft.Automation': []
+  'Microsoft.AVS': []
+  'Microsoft.Blueprint': []
+  'Microsoft.BotService': []
+  'Microsoft.Cache': []
+  'Microsoft.Cdn': []
+  'Microsoft.CognitiveServices': []
+  'Microsoft.Compute': []
+  'Microsoft.ContainerInstance': []
+  'Microsoft.ContainerRegistry': []
+  'Microsoft.ContainerService': []
+  'Microsoft.CostManagement': []
+  'Microsoft.CustomProviders': []
+  'Microsoft.Databricks': []
+  'Microsoft.DataLakeAnalytics': []
+  'Microsoft.DataLakeStore': []
+  'Microsoft.DataMigration': []
+  'Microsoft.DataProtection': []
+  'Microsoft.DBforMariaDB': []
+  'Microsoft.DBforMySQL': []
+  'Microsoft.DBforPostgreSQL': []
+  'Microsoft.DesktopVirtualization': []
+  'Microsoft.Devices': []
+  'Microsoft.DevTestLab': []
+  'Microsoft.DocumentDB': []
+  'Microsoft.EventGrid': []
+  'Microsoft.EventHub': []
+  'Microsoft.HDInsight': []
+  'Microsoft.HealthcareApis': []
+  'Microsoft.GuestConfiguration': []
+  'Microsoft.KeyVault': []
+  'Microsoft.Kusto': []
+  'microsoft.insights': []
+  'Microsoft.Logic': []
+  'Microsoft.MachineLearningServices': []
+  'Microsoft.Maintenance': []
+  'Microsoft.ManagedIdentity': []
+  'Microsoft.ManagedServices': []
+  'Microsoft.Management': []
+  'Microsoft.Maps': []
+  'Microsoft.MarketplaceOrdering': []
+  'Microsoft.Media': []
+  'Microsoft.MixedReality': []
+  'Microsoft.Network': []
+  'Microsoft.NotificationHubs': []
+  'Microsoft.OperationalInsights': []
+  'Microsoft.OperationsManagement': []
+  'Microsoft.PolicyInsights': []
+  'Microsoft.PowerBIDedicated': []
+  'Microsoft.Relay': []
+  'Microsoft.RecoveryServices': []
+  'Microsoft.Resources': []
+  'Microsoft.Search': []
+  'Microsoft.Security': []
+  'Microsoft.SecurityInsights': []
+  'Microsoft.ServiceBus': []
+  'Microsoft.ServiceFabric': []
+  'Microsoft.Sql': []
+  'Microsoft.Storage': []
+  'Microsoft.StreamAnalytics': []
+  'Microsoft.TimeSeriesInsights': []
+  'Microsoft.Web': []
+}
+
+@sys.description('The name of the user managed identity for the resource providers registration deployment script.')
+param deploymentScriptManagedIdentityName string
+
 // VARIABLES
 
 // Deployment name variables
@@ -102,6 +254,10 @@ var deploymentNames = {
   createLzRoleAssignmentsSub: take('lz-vend-rbac-sub-create-${uniqueString(subscriptionId, deployment().name)}', 64)
   createLzRoleAssignmentsRsgsSelf: take('lz-vend-rbac-rsg-self-create-${uniqueString(subscriptionId, deployment().name)}', 64)
   createLzRoleAssignmentsRsgsNotSelf: take('lz-vend-rbac-rsg-nself-create-${uniqueString(subscriptionId, deployment().name)}', 64)
+  createResourceGroupForDeploymentScript: take('lz-vend-rsg-ds-create-${uniqueString(subscriptionId, deploymentScriptResourceGroupName, deploymentScriptLocation, deployment().name)}', 64)
+  registerResourceProviders: take('lz-vend-ds-create-${uniqueString(subscriptionId, deployment().name)}', 64)
+  createDeploymentScriptManagedIdentity: take('lz-vend-ds-msi-create-${uniqueString(subscriptionId, deploymentScriptResourceGroupName, deployment().name)}', 64)
+  createRoleAssignmentsDeploymentScript: take('lz-vend-ds-rbac-create-${uniqueString(subscriptionId, deploymentScriptResourceGroupName, deploymentScriptManagedIdentityName, deployment().name)}', 64)
 }
 
 // Role Assignments filtering and splitting
@@ -128,6 +284,8 @@ var virtualWanHubConnectionPropogatedLabels = !empty(virtualNetworkVwanPropagate
 
 // Telemetry for CARML flip
 var enableTelemetryForCarml = !disableTelemetry
+
+var resourceProvidersFormatted = replace(string(resourceProviders), '"', '\\"')
 
 // RESOURCES & MODULES
 
@@ -212,6 +370,7 @@ module createLzVnet '../../carml/v0.6.0/Microsoft.Network/virtualNetworks/deploy
 module createLzVirtualWanConnection '../../carml/v0.6.0/Microsoft.Network/virtualHubs/hubVirtualNetworkConnections/deploy.bicep' = if (virtualNetworkEnabled && virtualNetworkPeeringEnabled && !empty(virtualHubResourceIdChecked) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName) && !empty(virtualWanHubResourceGroupName) && !empty(virtualWanHubSubscriptionId)) {
   dependsOn: [
     createResourceGroupForLzNetworking
+    createLzVnet
   ]
   scope: resourceGroup(virtualWanHubSubscriptionId, virtualWanHubResourceGroupName)
   name: deploymentNames.createLzVirtualWanConnection
@@ -271,4 +430,63 @@ module createLzRoleAssignmentsRsgsNotSelf '../../carml/v0.6.0/Microsoft.Authoriz
   }
 }]
 
+module createResourceGroupForDeploymentScript '../../carml/v0.6.0/Microsoft.Resources/resourceGroups/deploy.bicep' = if (!empty(resourceProviders)) {
+  scope: subscription(subscriptionId)
+  name: deploymentNames.createResourceGroupForDeploymentScript
+  params: {
+    name: deploymentScriptResourceGroupName
+    location: deploymentScriptLocation
+    enableDefaultTelemetry: enableTelemetryForCarml
+  }
+}
+
+module createManagedIdentityForDeploymentScript '../../carml/v0.6.0/Microsoft.ManagedIdentity/userAssignedIdentity/deploy.bicep' = if (!empty(resourceProviders)) {
+  scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
+  name: deploymentNames.createDeploymentScriptManagedIdentity
+  dependsOn: [
+    createResourceGroupForDeploymentScript
+  ]
+  params: {
+    location: deploymentScriptLocation
+    name: deploymentScriptManagedIdentityName
+    enableDefaultTelemetry: enableTelemetryForCarml
+  }
+}
+
+module createRoleAssignmentsDeploymentScript '../../carml/v0.6.0/Microsoft.Authorization/roleAssignments/deploy.bicep' = if (!empty(resourceProviders)) {
+  dependsOn: [
+    createManagedIdentityForDeploymentScript
+  ]
+  name: take('${deploymentNames.createRoleAssignmentsDeploymentScript}', 64)
+  params: {
+    location: deploymentScriptLocation
+    principalId: !empty(resourceProviders) ? createManagedIdentityForDeploymentScript.outputs.principalId : ''
+    roleDefinitionIdOrName: 'Contributor'
+    subscriptionId: subscriptionId
+    enableDefaultTelemetry: enableTelemetryForCarml
+  }
+}
+
+module registerResourceProviders '../../carml/v0.6.0/Microsoft.Resources/deploymentScripts/deploy.bicep' = if (!empty(resourceProviders)) {
+  scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
+  name: deploymentNames.registerResourceProviders
+  params: {
+    name: deploymentScriptName
+    kind: 'AzurePowerShell'
+    azPowerShellVersion: '3.0'
+    cleanupPreference: 'Always'
+    enableDefaultTelemetry: enableTelemetryForCarml
+    location: deploymentScriptLocation
+    retentionInterval: 'P1D'
+    timeout: 'PT1H'
+    runOnce: true
+    userAssignedIdentities: !(empty(resourceProviders)) ? { '${createManagedIdentityForDeploymentScript.outputs.resourceId}': {} } : {}
+    arguments: '-resourceProviders \'${resourceProvidersFormatted}\' -resourceProvidersFeatures -subscriptionId ${subscriptionId}'
+    scriptContent: loadTextContent('../../scripts/Invoke-RegisterSubscriptionResourceProviders.ps1')
+  }
+}
+
 // OUTPUTS
+
+output failedProviders string = !empty(resourceProviders) ? registerResourceProviders.outputs.outputs['failedProvidersRegistrations'] : ''
+output failedFeatures string = !empty(resourceProviders) ? registerResourceProviders.outputs.outputs['failedFeaturesRegistrations'] : ''
