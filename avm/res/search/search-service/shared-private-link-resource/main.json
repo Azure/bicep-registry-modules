@@ -1,0 +1,110 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "13590696020139320386"
+    },
+    "name": "Search Services Private Link Resources",
+    "description": "This module deploys a Search Service Private Link Resource.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "searchServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent searchServices. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the shared private link resource managed by the Azure Cognitive Search service within the specified resource group."
+      }
+    },
+    "privateLinkResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The resource ID of the resource the shared private link resource is for."
+      }
+    },
+    "groupId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The group ID from the provider of resource the shared private link resource is for."
+      }
+    },
+    "requestMessage": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The request message for requesting approval of the shared private link resource."
+      }
+    },
+    "resourceRegion": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Can be used to specify the Azure Resource Manager location of the resource to which a shared private link is to be created. This is only required for those resources whose DNS configuration are regional (such as Azure Kubernetes Service)."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via the Customer Usage Attribution ID (GUID)."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Search/searchServices/sharedPrivateLinkResources",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}/{1}', parameters('searchServiceName'), parameters('name'))]",
+      "properties": {
+        "privateLinkResourceId": "[parameters('privateLinkResourceId')]",
+        "groupId": "[if(not(empty(parameters('groupId'))), parameters('groupId'), null())]",
+        "requestMessage": "[if(not(empty(parameters('requestMessage'))), parameters('requestMessage'), null())]",
+        "resourceRegion": "[if(not(empty(parameters('resourceRegion'))), parameters('resourceRegion'), null())]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the shared private link resource."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the shared private link resource."
+      },
+      "value": "[resourceId('Microsoft.Search/searchServices/sharedPrivateLinkResources', parameters('searchServiceName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the shared private link resource was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
