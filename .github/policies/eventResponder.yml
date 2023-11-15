@@ -1,0 +1,183 @@
+id: avmEventResponder
+name: AVM Event Responder
+description: AVM Event Responder
+resource: repository
+disabled: false
+
+configuration:
+  resourceManagementConfiguration:
+    eventResponderTasks:
+      - description: 'ITA06 - If a new issue or PR is opened add the "Needs: Triage :mag:" label'
+        if:
+          - or:
+            - payloadType: Issues
+            - payloadType: Pull_Request
+          - isAction:
+              action: Opened
+        then:
+          - addLabel:
+              label: 'Needs: Triage :mag:'
+
+      - description: 'ITA08BCP - If "AVM" or "Azure Verified Modules" is mentioned in a new issue, add label of "Type: AVM :a: :v: :m:" on the issue'
+        if:
+          - or:
+            - payloadType: Issues
+            - payloadType: Pull_Request
+            - payloadType: Issue_Comment
+            - payloadType: Pull_Request_Review_Comment
+          - and:
+            - or:
+              - isAction:
+                  action: Opened
+              - isAction:
+                  action: Created
+              - isAction:
+                  action: Edited
+            - or:
+              - bodyContains:
+                  pattern: 'AVM'
+              - bodyContains:
+                  pattern: 'avm'
+              - bodyContains:
+                  pattern: 'Azure Verified Modules'
+              - bodyContains:
+                  pattern: 'azure verified modules'
+              - commentContains:
+                  pattern: 'AVM'
+              - commentContains:
+                  pattern: 'avm'
+              - commentContains:
+                  pattern: 'AVM'
+              - commentContains:
+                  pattern: 'azure verified modules'
+        then:
+          - addLabel:
+              label: 'Type: AVM :a: :v: :m:'
+
+      - description: 'ITA09 - When #RR is used in an issue, add the "Needs: Author Feedback :ear:" label'
+        if:
+          - or:
+              - payloadType: Pull_Request_Review_Comment
+              - payloadType: Issue_Comment
+          - commentContains:
+              pattern: '#RR'
+        then:
+          - addLabel:
+              label: 'Needs: Author Feedback :ear:'
+
+      - description: 'ITA10 - When #wontfix is used in an issue, mark it by using the label of "Status: Won''t Fix :broken_heart:"'
+        if:
+          - or:
+              - payloadType: Pull_Request_Review_Comment
+              - payloadType: Issue_Comment
+          - commentContains:
+              pattern: '#wontfix'
+        then:
+          - addLabel:
+              label: 'Status: Won''t Fix :broken_heart:'
+          - closeIssue
+
+      - description: 'ITA11 - When a reply from anyone to an issue occurs, remove the "Needs: Author Feedback :ear:" label and label with "Needs: Attention :wave:"'
+        if:
+          - or:
+              - payloadType: Pull_Request_Review_Comment
+              - payloadType: Issue_Comment
+          - not:
+              isAction:
+                action: Closed
+          - hasLabel:
+              label: 'Needs: Author Feedback :ear:'
+        then:
+          - removeLabel:
+              label: 'Needs: Author Feedback :ear:'
+          - addLabel:
+              label: 'Needs: Attention :wave:'
+
+      - description: 'ITA12 - Clean email replies on every comment'
+        if:
+          - payloadType: Issue_Comment
+        then:
+          - cleanEmailReply
+
+      - description: 'ITA15 - remove the "Needs: Triage" label from a PR, if it already has a "Type: XYZ" label assigned at the time of creating it.'
+        if:
+          - payloadType: Pull_Request
+          - or:
+            - hasLabel:
+                label: 'Type: Bug :bug:'
+            - hasLabel:
+                label: 'Type: Documentation :page_facing_up:'
+            - hasLabel:
+                label: 'Type: Duplicate :palms_up_together:'
+            - hasLabel:
+                label: 'Type: Feature Request :heavy_plus_sign:'
+            - hasLabel:
+                label: 'Type: Hygiene :broom:'
+            - hasLabel:
+                label: 'Type: New Module Proposal :bulb:'
+            - hasLabel:
+                label: 'Type: Question/Feedback :raising_hand:'
+            - hasLabel:
+                label: 'Type: Security Bug :lock:'
+            - hasLabel:
+                label: 'Type: AVM :a: :v: :m:'
+          - isAction:
+              action: Opened
+        then:
+          - removeLabel:
+              label: 'Needs: Triage :mag:'
+
+      - description: 'ITA16 - Add the "Status: Owners Identified :metal:" label when someone is assigned to a Module Proposal'
+        if:
+          - payloadType: Issues
+          - not:
+              isAction:
+                action: Closed
+          - hasLabel:
+              label: 'Type: New Module Proposal :bulb:'
+          - isAssignedToSomeone
+        then:
+          - addLabel:
+              label: 'Status: Owners Identified :metal:'
+
+      - description: 'ITA20 - If the type is feature request, assign the "Type: Feature Request :heavy_plus_sign:" label on the issue'
+        if:
+          - payloadType: Issues
+          - isAction:
+              action: Opened
+          - bodyContains:
+              pattern: |
+                ### Issue Type?
+
+                Feature Request
+        then:
+          - addLabel:
+              label: 'Type: Feature Request :heavy_plus_sign:'
+
+      - description: 'ITA21 - If the type is bug, assign the "Type: Bug :bug:" label on the issue'
+        if:
+          - payloadType: Issues
+          - isAction:
+              action: Opened
+          - bodyContains:
+              pattern: |
+                ### Issue Type?
+
+                Bug
+        then:
+          - addLabel:
+              label: 'Type: Bug :bug:'
+
+      - description: 'ITA22 - If the type is security bug, assign the "Type: Security Bug :lock:" label on the issue'
+        if:
+          - payloadType: Issues
+          - isAction:
+              action: Opened
+          - bodyContains:
+              pattern: |
+                ### Issue Type?
+
+                Security Bug
+        then:
+          - addLabel:
+              label: 'Type: Security Bug :lock:'
