@@ -804,8 +804,13 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     // Required parameters
     name: 'sqlswaf'
     // Non-required parameters
-    administratorLogin: 'adminUserName'
-    administratorLoginPassword: '<administratorLoginPassword>'
+    administrators: {
+      azureADOnlyAuthentication: true
+      login: 'myspn'
+      principalType: 'Application'
+      sid: '<sid>'
+      tenantId: '<tenantId>'
+    }
     databases: [
       {
         backupLongTermRetentionPolicy: {
@@ -846,13 +851,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         skuTier: 'GeneralPurpose'
       }
     ]
-    firewallRules: [
-      {
-        endIpAddress: '0.0.0.0'
-        name: 'AllowAllWindowsAzureIps'
-        startIpAddress: '0.0.0.0'
-      }
-    ]
     keys: [
       {
         name: '<name>'
@@ -861,10 +859,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       }
     ]
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -887,13 +881,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       }
     ]
     restrictOutboundNetworkAccess: 'Disabled'
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
     securityAlertPolicies: [
       {
         emailAccountAdmins: true
@@ -942,11 +929,14 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "name": {
       "value": "sqlswaf"
     },
-    "administratorLogin": {
-      "value": "adminUserName"
-    },
-    "administratorLoginPassword": {
-      "value": "<administratorLoginPassword>"
+    "administrators": {
+      "value": {
+        "azureADOnlyAuthentication": true,
+        "login": "myspn",
+        "principalType": "Application",
+        "sid": "<sid>",
+        "tenantId": "<tenantId>"
+      }
     },
     "databases": {
       "value": [
@@ -992,15 +982,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         }
       ]
     },
-    "firewallRules": {
-      "value": [
-        {
-          "endIpAddress": "0.0.0.0",
-          "name": "AllowAllWindowsAzureIps",
-          "startIpAddress": "0.0.0.0"
-        }
-      ]
-    },
     "keys": {
       "value": [
         {
@@ -1012,12 +993,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "managedIdentities": {
       "value": {
@@ -1048,15 +1023,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     },
     "restrictOutboundNetworkAccess": {
       "value": "Disabled"
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
     },
     "securityAlertPolicies": {
       "value": [

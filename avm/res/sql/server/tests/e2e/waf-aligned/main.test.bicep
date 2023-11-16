@@ -17,10 +17,6 @@ param location string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'sqlswaf'
 
-@description('Optional. The password to leverage for the login.')
-@secure()
-param password string = newGuid()
-
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
@@ -69,21 +65,15 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}-${serviceShort}'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     primaryUserAssignedIdentityId: nestedDependencies.outputs.managedIdentityResourceId
-    administratorLogin: 'adminUserName'
-    administratorLoginPassword: password
+    administrators: {
+      azureADOnlyAuthentication: true
+      login: 'myspn'
+      sid: nestedDependencies.outputs.managedIdentityPrincipalId
+      principalType: 'Application'
+      tenantId: tenant().tenantId
+    }
     location: location
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Reader'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
     vulnerabilityAssessmentsObj: {
       name: 'default'
       emailSubscriptionAdmins: true
@@ -133,13 +123,6 @@ module testDeployment '../../../main.bicep' = {
         backupLongTermRetentionPolicy: {
           monthlyRetention: 'P6M'
         }
-      }
-    ]
-    firewallRules: [
-      {
-        name: 'AllowAllWindowsAzureIps'
-        endIpAddress: '0.0.0.0'
-        startIpAddress: '0.0.0.0'
       }
     ]
     securityAlertPolicies: [
