@@ -50,6 +50,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}-${serviceShort}'
+    location: location
     administratorLogin: 'adminUserName'
     administratorLoginPassword: password
     privateEndpoints: [
