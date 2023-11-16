@@ -271,13 +271,6 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
     skuFamily: 'MeteredData'
     skuTier: 'Standard'
     tags: {
@@ -343,15 +336,6 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
         "name": "myCustomLockName"
       }
     },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
-    },
     "skuFamily": {
       "value": "MeteredData"
     },
@@ -397,7 +381,6 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`peerASN`](#parameter-peerasn) | int | The autonomous system number of the customer/connectivity provider. |
-| [`peering`](#parameter-peering) | bool | Enabled BGP peering type for the Circuit. |
 | [`peeringType`](#parameter-peeringtype) | string | BGP peering type for the Circuit. Choose from AzurePrivatePeering, AzurePublicPeering or MicrosoftPeering. |
 | [`primaryPeerAddressPrefix`](#parameter-primarypeeraddressprefix) | string | A /30 subnet used to configure IP addresses for interfaces on Link1. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
@@ -610,13 +593,6 @@ The autonomous system number of the customer/connectivity provider.
 - Required: No
 - Type: int
 - Default: `0`
-
-### Parameter: `peering`
-
-Enabled BGP peering type for the Circuit.
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `peeringLocation`
 

@@ -29,9 +29,6 @@ param skuTier string = 'Standard'
 ])
 param skuFamily string = 'MeteredData'
 
-@description('Optional. Enabled BGP peering type for the Circuit.')
-param peering bool = false
-
 @description('Optional. BGP peering type for the Circuit. Choose from AzurePrivatePeering, AzurePublicPeering or MicrosoftPeering.')
 @allowed([
   'AzurePrivatePeering'
@@ -85,19 +82,6 @@ param tags object?
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
 param enableTelemetry bool = true
 
-var peeringConfiguration = [
-  {
-    name: peeringType
-    properties: {
-      peeringType: peeringType
-      sharedKey: sharedKey
-      peerASN: peerASN
-      primaryPeerAddressPrefix: primaryPeerAddressPrefix
-      secondaryPeerAddressPrefix: secondaryPeerAddressPrefix
-      vlanId: vlanId
-    }
-  }
-]
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -147,7 +131,19 @@ resource expressRouteCircuits 'Microsoft.Network/expressRouteCircuits@2023-04-01
       peeringLocation: peeringLocation
       bandwidthInMbps: bandwidthInMbps
     }
-    peerings: peering ? peeringConfiguration : null
+    peerings: [
+      {
+        name: peeringType
+        properties: {
+          peeringType: peeringType
+          sharedKey: sharedKey
+          peerASN: peerASN
+          primaryPeerAddressPrefix: primaryPeerAddressPrefix
+          secondaryPeerAddressPrefix: secondaryPeerAddressPrefix
+          vlanId: vlanId
+        }
+      }
+    ]
   }
 }
 
@@ -210,7 +206,7 @@ output resourceGroupName string = resourceGroup().name
 output name string = expressRouteCircuits.name
 
 @description('The service key of the express route circuit.')
-output serviceKey string = reference(expressRouteCircuits.id, '2021-02-01').serviceKey
+output serviceKey string = expressRouteCircuits.properties.serviceKey
 
 @description('The location the resource was deployed into.')
 output location string = expressRouteCircuits.location

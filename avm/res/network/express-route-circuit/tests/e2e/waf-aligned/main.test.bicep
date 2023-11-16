@@ -85,13 +85,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Reader'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
     skuFamily: 'MeteredData'
     skuTier: 'Standard'
     allowClassicOperations: true
