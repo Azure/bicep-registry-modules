@@ -226,7 +226,7 @@ module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoin
 }]
 
 // The Shared Private Link Resources must be deployed sequentially
-// othersie the deployment may fail.
+// otherwise the deployment may fail.
 // Using batchSize(1) to deploy them one by one
 @batchSize(1)
 module searchService_sharedPrivateLinkResources 'shared-private-link-resource/main.bicep' = [for (sharedPrivateLinkResource, index) in sharedPrivateLinkResources: {
