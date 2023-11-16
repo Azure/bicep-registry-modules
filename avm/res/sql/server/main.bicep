@@ -30,8 +30,8 @@ param roleAssignments roleAssignmentType
 @description('Optional. Tags of the resource.')
 param tags object?
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 @description('Optional. The databases to create in the server.')
 param databases array = []
@@ -88,8 +88,6 @@ var identity = !empty(managedIdentities) ? {
   userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
 } : null
 
-var enableReferencedModulesTelemetry = false
-
 @description('Optional. The encryption protection configuration.')
 param encryptionProtectorObj object = {}
 
@@ -111,14 +109,20 @@ var builtInRoleNames = {
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.sql-server.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
       contentVersion: '1.0.0.0'
       resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
     }
   }
 }
@@ -196,7 +200,6 @@ module server_databases 'database/main.bicep' = [for (database, index) in databa
     tags: database.?tags ?? tags
     zoneRedundant: contains(database, 'zoneRedundant') ? database.zoneRedundant : false
     elasticPoolId: contains(database, 'elasticPoolId') ? database.elasticPoolId : ''
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
     backupShortTermRetentionPolicy: contains(database, 'backupShortTermRetentionPolicy') ? database.backupShortTermRetentionPolicy : {}
     backupLongTermRetentionPolicy: contains(database, 'backupLongTermRetentionPolicy') ? database.backupLongTermRetentionPolicy : {}
     createMode: contains(database, 'createMode') ? database.createMode : 'Default'
@@ -226,13 +229,12 @@ module server_elasticPools 'elastic-pool/main.bicep' = [for (elasticPool, index)
     skuName: contains(elasticPool, 'skuName') ? elasticPool.skuName : 'GP_Gen5'
     skuTier: contains(elasticPool, 'skuTier') ? elasticPool.skuTier : 'GeneralPurpose'
     zoneRedundant: contains(elasticPool, 'zoneRedundant') ? elasticPool.zoneRedundant : false
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
     location: location
     tags: elasticPool.?tags ?? tags
   }
 }]
 
-module server_privateEndpoints '../../network/private-endpoint/main.bicep' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.2.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-server-PrivateEndpoint-${index}'
   params: {
     groupIds: [
@@ -241,7 +243,6 @@ module server_privateEndpoints '../../network/private-endpoint/main.bicep' = [fo
     name: privateEndpoint.?name ?? 'pep-${last(split(server.id, '/'))}-${privateEndpoint.?service ?? 'sqlServer'}-${index}'
     serviceResourceId: server.id
     subnetResourceId: privateEndpoint.subnetResourceId
-    enableDefaultTelemetry: privateEndpoint.?enableDefaultTelemetry ?? enableReferencedModulesTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
     privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
@@ -253,6 +254,7 @@ module server_privateEndpoints '../../network/private-endpoint/main.bicep' = [fo
     ipConfigurations: privateEndpoint.?ipConfigurations
     applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
     customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    enableTelemetry: enableTelemetry
   }
 }]
 
@@ -263,7 +265,6 @@ module server_firewallRules 'firewall-rule/main.bicep' = [for (firewallRule, ind
     serverName: server.name
     endIpAddress: contains(firewallRule, 'endIpAddress') ? firewallRule.endIpAddress : '0.0.0.0'
     startIpAddress: contains(firewallRule, 'startIpAddress') ? firewallRule.startIpAddress : '0.0.0.0'
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -274,7 +275,6 @@ module server_virtualNetworkRules 'virtual-network-rule/main.bicep' = [for (virt
     serverName: server.name
     ignoreMissingVnetServiceEndpoint: contains(virtualNetworkRule, 'ignoreMissingVnetServiceEndpoint') ? virtualNetworkRule.ignoreMissingVnetServiceEndpoint : false
     virtualNetworkSubnetId: virtualNetworkRule.virtualNetworkSubnetId
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -290,7 +290,6 @@ module server_securityAlertPolicies 'security-alert-policy/main.bicep' = [for (s
     state: contains(securityAlertPolicy, 'state') ? securityAlertPolicy.state : 'Disabled'
     storageAccountAccessKey: contains(securityAlertPolicy, 'storageAccountAccessKey') ? securityAlertPolicy.storageAccountAccessKey : ''
     storageEndpoint: contains(securityAlertPolicy, 'storageEndpoint') ? securityAlertPolicy.storageEndpoint : ''
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -305,7 +304,6 @@ module server_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' = if
     storageAccountResourceId: vulnerabilityAssessmentsObj.storageAccountResourceId
     useStorageAccountAccessKey: contains(vulnerabilityAssessmentsObj, 'useStorageAccountAccessKey') ? vulnerabilityAssessmentsObj.useStorageAccountAccessKey : false
     createStorageRoleAssignment: contains(vulnerabilityAssessmentsObj, 'createStorageRoleAssignment') ? vulnerabilityAssessmentsObj.createStorageRoleAssignment : true
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     server_securityAlertPolicies
@@ -319,7 +317,6 @@ module server_keys 'key/main.bicep' = [for (key, index) in keys: {
     serverName: server.name
     serverKeyType: contains(key, 'serverKeyType') ? key.serverKeyType : 'ServiceManaged'
     uri: contains(key, 'uri') ? key.uri : ''
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -330,7 +327,6 @@ module server_encryptionProtector 'encryption-protector/main.bicep' = if (!empty
     serverKeyName: encryptionProtectorObj.serverKeyName
     serverKeyType: contains(encryptionProtectorObj, 'serverKeyType') ? encryptionProtectorObj.serverKeyType : 'ServiceManaged'
     autoRotationEnabled: contains(encryptionProtectorObj, 'autoRotationEnabled') ? encryptionProtectorObj.autoRotationEnabled : true
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     server_keys
