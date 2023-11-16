@@ -1,0 +1,113 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "8422402072460240545"
+    },
+    "name": "SQL Server Database Long Term Backup Retention Policies",
+    "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "serverName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the parent SQL Server."
+      }
+    },
+    "databaseName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the parent database."
+      }
+    },
+    "weeklyRetention": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Monthly retention in ISO 8601 duration format."
+      }
+    },
+    "monthlyRetention": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Weekly retention in ISO 8601 duration format."
+      }
+    },
+    "weekOfYear": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "Optional. Week of year backup to keep for yearly retention."
+      }
+    },
+    "yearlyRetention": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Yearly retention in ISO 8601 duration format."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",
+      "apiVersion": "2022-05-01-preview",
+      "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
+      "properties": {
+        "monthlyRetention": "[parameters('monthlyRetention')]",
+        "weeklyRetention": "[parameters('weeklyRetention')]",
+        "weekOfYear": "[parameters('weekOfYear')]",
+        "yearlyRetention": "[parameters('yearlyRetention')]"
+      }
+    }
+  ],
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the long-term policy was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the long-term policy."
+      },
+      "value": "default"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the long-term policy."
+      },
+      "value": "[resourceId('Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies', parameters('serverName'), parameters('databaseName'), 'default')]"
+    }
+  }
+}

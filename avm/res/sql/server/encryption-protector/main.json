@@ -1,0 +1,102 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "17224807912051676418"
+    },
+    "name": "Azure SQL Server Encryption Protector",
+    "description": "This module deploys an Azure SQL Server Encryption Protector.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "sqlServerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the sql server. Required if the template is used in a standalone deployment."
+      }
+    },
+    "serverKeyName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the server key."
+      }
+    },
+    "autoRotationEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Key auto rotation opt-in."
+      }
+    },
+    "serverKeyType": {
+      "type": "string",
+      "defaultValue": "ServiceManaged",
+      "allowedValues": [
+        "AzureKeyVault",
+        "ServiceManaged"
+      ],
+      "metadata": {
+        "description": "Optional. The encryption protector type."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/encryptionProtector",
+      "apiVersion": "2022-05-01-preview",
+      "name": "[format('{0}/{1}', parameters('sqlServerName'), 'current')]",
+      "properties": {
+        "serverKeyType": "[parameters('serverKeyType')]",
+        "autoRotationEnabled": "[parameters('autoRotationEnabled')]",
+        "serverKeyName": "[parameters('serverKeyName')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed encryption protector."
+      },
+      "value": "current"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the encryption protector."
+      },
+      "value": "[resourceId('Microsoft.Sql/servers/encryptionProtector', parameters('sqlServerName'), 'current')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed encryption protector."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

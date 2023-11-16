@@ -1,0 +1,210 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "9388916155534343976"
+    },
+    "name": "SQL Server Elastic Pool",
+    "description": "This module deploys an Azure SQL Server Elastic Pool.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Elastic Pool."
+      }
+    },
+    "serverName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent SQL Server. Required if the template is used in a standalone deployment."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "skuCapacity": {
+      "type": "int",
+      "defaultValue": 2,
+      "metadata": {
+        "description": "Optional. Capacity of the particular SKU."
+      }
+    },
+    "skuName": {
+      "type": "string",
+      "defaultValue": "GP_Gen5",
+      "metadata": {
+        "description": "Optional. The name of the SKU, typically, a letter + Number code, e.g. P3."
+      }
+    },
+    "skuTier": {
+      "type": "string",
+      "defaultValue": "GeneralPurpose",
+      "metadata": {
+        "description": "Optional. The tier or edition of the particular SKU, e.g. Basic, Premium."
+      }
+    },
+    "highAvailabilityReplicaCount": {
+      "type": "int",
+      "defaultValue": -1,
+      "metadata": {
+        "description": "Optional. The number of secondary replicas associated with the elastic pool that are used to provide high availability. Applicable only to Hyperscale elastic pools."
+      }
+    },
+    "licenseType": {
+      "type": "string",
+      "defaultValue": "LicenseIncluded",
+      "allowedValues": [
+        "BasePrice",
+        "LicenseIncluded"
+      ],
+      "metadata": {
+        "description": "Optional. The license type to apply for this elastic pool."
+      }
+    },
+    "maintenanceConfigurationId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Maintenance configuration resource ID assigned to the elastic pool. This configuration defines the period when the maintenance updates will will occur."
+      }
+    },
+    "maxSizeBytes": {
+      "type": "int",
+      "defaultValue": 34359738368,
+      "metadata": {
+        "description": "Optional. The storage limit for the database elastic pool in bytes."
+      }
+    },
+    "minCapacity": {
+      "type": "int",
+      "defaultValue": -1,
+      "metadata": {
+        "description": "Optional. Minimal capacity that serverless pool will not shrink below, if not paused."
+      }
+    },
+    "databaseMaxCapacity": {
+      "type": "int",
+      "defaultValue": 2,
+      "metadata": {
+        "description": "Optional. The maximum capacity any one database can consume."
+      }
+    },
+    "databaseMinCapacity": {
+      "type": "int",
+      "defaultValue": 0,
+      "metadata": {
+        "description": "Optional. The minimum capacity all databases are guaranteed."
+      }
+    },
+    "zoneRedundant": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "resources": {
+    "defaultTelemetry": {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    "server": {
+      "existing": true,
+      "type": "Microsoft.Sql/servers",
+      "apiVersion": "2022-05-01-preview",
+      "name": "[parameters('serverName')]"
+    },
+    "elasticPool": {
+      "type": "Microsoft.Sql/servers/elasticPools",
+      "apiVersion": "2022-05-01-preview",
+      "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "sku": {
+        "capacity": "[parameters('skuCapacity')]",
+        "name": "[parameters('skuName')]",
+        "tier": "[parameters('skuTier')]"
+      },
+      "properties": {
+        "highAvailabilityReplicaCount": "[if(greater(parameters('highAvailabilityReplicaCount'), -1), parameters('highAvailabilityReplicaCount'), null())]",
+        "licenseType": "[parameters('licenseType')]",
+        "maintenanceConfigurationId": "[parameters('maintenanceConfigurationId')]",
+        "maxSizeBytes": "[parameters('maxSizeBytes')]",
+        "minCapacity": "[parameters('minCapacity')]",
+        "perDatabaseSettings": {
+          "minCapacity": "[parameters('databaseMinCapacity')]",
+          "maxCapacity": "[parameters('databaseMaxCapacity')]"
+        },
+        "zoneRedundant": "[parameters('zoneRedundant')]"
+      },
+      "dependsOn": [
+        "server"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed Elastic Pool."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed Elastic Pool."
+      },
+      "value": "[resourceId('Microsoft.Sql/servers/elasticPools', parameters('serverName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed Elastic Pool."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('elasticPool', '2022-05-01-preview', 'full').location]"
+    }
+  }
+}

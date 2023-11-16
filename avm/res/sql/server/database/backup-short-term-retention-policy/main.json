@@ -1,0 +1,97 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "11274542290979624142"
+    },
+    "name": "Azure SQL Server Database Short Term Backup Retention Policies",
+    "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "serverName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the parent SQL Server."
+      }
+    },
+    "databaseName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the parent database."
+      }
+    },
+    "diffBackupIntervalInHours": {
+      "type": "int",
+      "defaultValue": 24,
+      "metadata": {
+        "description": "Optional. Differential backup interval in hours."
+      }
+    },
+    "retentionDays": {
+      "type": "int",
+      "defaultValue": 7,
+      "metadata": {
+        "description": "Optional. Poin-in-time retention in days."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies",
+      "apiVersion": "2022-05-01-preview",
+      "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
+      "properties": {
+        "diffBackupIntervalInHours": "[parameters('diffBackupIntervalInHours')]",
+        "retentionDays": "[parameters('retentionDays')]"
+      }
+    }
+  ],
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the short-term policy was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the short-term policy."
+      },
+      "value": "default"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the short-term policy."
+      },
+      "value": "[resourceId('Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies', parameters('serverName'), parameters('databaseName'), 'default')]"
+    }
+  }
+}
