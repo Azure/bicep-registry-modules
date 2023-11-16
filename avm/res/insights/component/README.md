@@ -224,13 +224,6 @@ module component 'br/public:avm/res/insights/component:<version>' = {
       }
     ]
     location: '<location>'
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -278,15 +271,6 @@ module component 'br/public:avm/res/insights/component:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
     },
     "tags": {
       "value": {
