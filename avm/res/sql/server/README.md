@@ -40,7 +40,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/sql/server:<version>`.
 
-- [Admin](#example-1-admin)
+- [With an administrator](#example-1-with-an-administrator)
 - [Using only defaults](#example-2-using-only-defaults)
 - [Using large parameter set](#example-3-using-large-parameter-set)
 - [Using Private Endpoints](#example-4-using-private-endpoints)
@@ -48,7 +48,10 @@ The following section provides usage examples for the module, which were used to
 - [With vulnerability assessment](#example-6-with-vulnerability-assessment)
 - [WAF-aligned](#example-7-waf-aligned)
 
-### Example 1: _Admin_
+### Example 1: _With an administrator_
+
+This instance deploys the module with a Microsoft Entra ID identity as SQL administrator.
+
 
 <details>
 
@@ -120,10 +123,10 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module server 'br/public:avm/res/sql/server:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ssdef'
+  name: '${uniqueString(deployment().name, location)}-test-ssmin'
   params: {
     // Required parameters
-    name: 'ssdef001'
+    name: 'ssmin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -144,7 +147,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssdef001"
+      "value": "ssmin001"
     },
     // Non-required parameters
     "location": {
