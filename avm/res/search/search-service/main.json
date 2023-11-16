@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "14844015650477504858"
+      "templateHash": "10662812229242750213"
     },
     "name": "Search Services",
     "description": "This module deploys a Search Service.",
@@ -1299,7 +1299,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "16651652216333850770"
+              "templateHash": "11248295684927123666"
             },
             "name": "Search Services Private Link Resources",
             "description": "This module deploys a Search Service Private Link Resource.",
@@ -1351,8 +1351,8 @@
               "name": "[format('{0}/{1}', parameters('searchServiceName'), parameters('name'))]",
               "properties": {
                 "privateLinkResourceId": "[parameters('privateLinkResourceId')]",
-                "groupId": "[if(not(empty(parameters('groupId'))), parameters('groupId'), null())]",
-                "requestMessage": "[if(not(empty(parameters('requestMessage'))), parameters('requestMessage'), null())]",
+                "groupId": "[parameters('groupId')]",
+                "requestMessage": "[parameters('requestMessage')]",
                 "resourceRegion": "[if(not(empty(parameters('resourceRegion'))), parameters('resourceRegion'), null())]"
               }
             }

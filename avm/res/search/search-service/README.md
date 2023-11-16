@@ -457,18 +457,6 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     }
     partitionCount: 2
     replicaCount: 3
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Search Service Contributor'
-      }
-    ]
     sku: 'standard3'
     tags: {
       Environment: 'Non-Prod'
@@ -559,20 +547,6 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     },
     "replicaCount": {
       "value": 3
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Search Service Contributor"
-        }
-      ]
     },
     "sku": {
       "value": "standard3"

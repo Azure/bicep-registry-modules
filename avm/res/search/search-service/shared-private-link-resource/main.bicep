@@ -33,8 +33,8 @@ resource sharedPrivateLinkResource 'Microsoft.Search/searchServices/sharedPrivat
   name: name
   properties: {
     privateLinkResourceId: privateLinkResourceId
-    groupId: !empty(groupId) ? groupId : null
-    requestMessage: !empty(requestMessage) ? requestMessage : null
+    groupId: groupId
+    requestMessage: requestMessage
     resourceRegion: !empty(resourceRegion) ? resourceRegion : null
   }
 }
