@@ -39,6 +39,7 @@ param peering bool = false
 ])
 param peeringType string = 'AzurePrivatePeering'
 
+@secure()
 @description('Optional. The shared key for peering configuration. Router does MD5 hash comparison to validate the packets sent by BGP connection. This parameter is optional and can be removed from peering configuration if not required.')
 param sharedKey string = ''
 
