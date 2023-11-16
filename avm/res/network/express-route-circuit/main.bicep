@@ -29,6 +29,9 @@ param skuTier string = 'Standard'
 ])
 param skuFamily string = 'MeteredData'
 
+@description('Optional. Enabled BGP peering type for the Circuit.')
+param peering bool = false
+
 @description('Optional. BGP peering type for the Circuit. Choose from AzurePrivatePeering, AzurePublicPeering or MicrosoftPeering.')
 @allowed([
   'AzurePrivatePeering'
@@ -131,7 +134,7 @@ resource expressRouteCircuits 'Microsoft.Network/expressRouteCircuits@2023-04-01
       peeringLocation: peeringLocation
       bandwidthInMbps: bandwidthInMbps
     }
-    peerings: [
+    peerings: peering ? [
       {
         name: peeringType
         properties: {
@@ -143,7 +146,7 @@ resource expressRouteCircuits 'Microsoft.Network/expressRouteCircuits@2023-04-01
           vlanId: vlanId
         }
       }
-    ]
+    ] : null
   }
 }
 
