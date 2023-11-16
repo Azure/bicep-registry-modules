@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.22.6.54827",
-      "templateHash": "17171509116984372740"
+      "version": "0.23.1.45101",
+      "templateHash": "4173676486943562626"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace.",
@@ -439,6 +439,29 @@
         }
       },
       "nullable": true
+    },
+    "skuType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "Basic",
+            "Premium",
+            "Standard"
+          ],
+          "metadata": {
+            "description": "Required. Name of this SKU. - Basic, Standard, Premium."
+          }
+        },
+        "capacity": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The specified messaging units for the tier. Only used for Premium Sku tier."
+          }
+        }
+      }
     }
   },
   "parameters": {
@@ -456,31 +479,10 @@
         "description": "Optional. Location for all resources."
       }
     },
-    "skuName": {
-      "type": "string",
-      "defaultValue": "Basic",
-      "allowedValues": [
-        "Basic",
-        "Standard",
-        "Premium"
-      ],
+    "skuObject": {
+      "$ref": "#/definitions/skuType",
       "metadata": {
-        "description": "Optional. Name of this SKU. - Basic, Standard, Premium."
-      }
-    },
-    "skuCapacity": {
-      "type": "int",
-      "defaultValue": 1,
-      "allowedValues": [
-        1,
-        2,
-        4,
-        8,
-        16,
-        32
-      ],
-      "metadata": {
-        "description": "Optional. The specified messaging units for the tier. Only used for Premium Sku tier."
+        "description": "Required. The SKU of the Service Bus Namespace."
       }
     },
     "zoneRedundant": {
@@ -504,7 +506,7 @@
     },
     "alternateName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Alternate name for namespace."
       }
@@ -534,14 +536,14 @@
     },
     "migrationConfigurations": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. The migration configuration."
       }
     },
     "disasterRecoveryConfigs": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. The disaster recovery configuration."
       }
@@ -591,7 +593,7 @@
     },
     "networkRuleSets": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configure networking options for Premium SKU Service Bus. This object contains IPs/Subnets to allow or restrict access to private endpoints only. For security reasons, it is recommended to configure this object on the Namespace."
       }
@@ -610,7 +612,7 @@
         "description": "Optional. Tags of the resource."
       }
     },
-    "enableDefaultTelemetry": {
+    "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
@@ -619,14 +621,14 @@
     },
     "queues": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The queues to create in the service bus namespace."
       }
     },
     "topics": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The topics to create in the service bus namespace."
       }
@@ -648,7 +650,6 @@
   "variables": {
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
-    "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Azure Service Bus Data Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '090c5cfd-751d-490a-894a-3ce6f1109419')]",
       "Azure Service Bus Data Receiver": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')]",
@@ -673,17 +674,23 @@
         "cMKKeyVault"
       ]
     },
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.servicebus-namespace.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
-          "resources": []
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
         }
       }
     },
@@ -710,19 +717,19 @@
       "apiVersion": "2022-10-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
-      "tags": "[if(empty(parameters('tags')), null(), parameters('tags'))]",
+      "tags": "[parameters('tags')]",
       "sku": {
-        "name": "[parameters('skuName')]",
-        "capacity": "[if(equals(parameters('skuName'), 'Premium'), parameters('skuCapacity'), null())]"
+        "name": "[parameters('skuObject').name]",
+        "capacity": "[tryGet(parameters('skuObject'), 'capacity')]"
       },
       "identity": "[variables('identity')]",
       "properties": {
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkRuleSets'))), 'Disabled', 'Enabled'))]",
         "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
-        "alternateName": "[if(not(empty(parameters('alternateName'))), parameters('alternateName'), null())]",
+        "alternateName": "[parameters('alternateName')]",
         "zoneRedundant": "[parameters('zoneRedundant')]",
         "disableLocalAuth": "[parameters('disableLocalAuth')]",
-        "premiumMessagingPartitions": "[if(equals(parameters('skuName'), 'Premium'), parameters('premiumMessagingPartitions'), 0)]",
+        "premiumMessagingPartitions": "[if(equals(parameters('skuObject').name, 'Premium'), parameters('premiumMessagingPartitions'), 0)]",
         "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.KeyVault', 'keyVaultProperties', createArray(createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), null()), 'keyName', parameters('customerManagedKey').keyName, 'keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), 'requireInfrastructureEncryption', parameters('requireInfrastructureEncryption')), null())]"
       },
       "dependsOn": [
@@ -809,10 +816,7 @@
           "name": {
             "value": "[parameters('authorizationRules')[copyIndex()].name]"
           },
-          "rights": "[if(contains(parameters('authorizationRules')[copyIndex()], 'rights'), createObject('value', parameters('authorizationRules')[copyIndex()].rights), createObject('value', createArray()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "rights": "[if(contains(parameters('authorizationRules')[copyIndex()], 'rights'), createObject('value', parameters('authorizationRules')[copyIndex()].rights), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -820,8 +824,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "4747986299110708591"
+              "version": "0.23.1.45101",
+              "templateHash": "1264227897820313372"
             },
             "name": "Service Bus Namespace Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Authorization Rule.",
@@ -929,11 +933,14 @@
           "namespaceName": {
             "value": "[parameters('name')]"
           },
-          "name": "[if(contains(parameters('disasterRecoveryConfigs'), 'name'), createObject('value', parameters('disasterRecoveryConfigs').name), createObject('value', 'default'))]",
-          "alternateName": "[if(contains(parameters('disasterRecoveryConfigs'), 'alternateName'), createObject('value', parameters('disasterRecoveryConfigs').alternateName), createObject('value', ''))]",
-          "partnerNamespaceResourceID": "[if(contains(parameters('disasterRecoveryConfigs'), 'partnerNamespace'), createObject('value', parameters('disasterRecoveryConfigs').partnerNamespace), createObject('value', ''))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
+          "name": {
+            "value": "[coalesce(tryGet(parameters('disasterRecoveryConfigs'), 'name'), 'default')]"
+          },
+          "alternateName": {
+            "value": "[coalesce(tryGet(parameters('disasterRecoveryConfigs'), 'alternateName'), '')]"
+          },
+          "partnerNamespaceResourceID": {
+            "value": "[coalesce(tryGet(parameters('disasterRecoveryConfigs'), 'partnerNamespace'), '')]"
           }
         },
         "template": {
@@ -942,8 +949,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "3706608794197885431"
+              "version": "0.23.1.45101",
+              "templateHash": "10655153602613161335"
             },
             "name": "Service Bus Namespace Disaster Recovery Configs",
             "description": "This module deploys a Service Bus Namespace Disaster Recovery Config",
@@ -1056,13 +1063,10 @@
             "value": "[parameters('name')]"
           },
           "postMigrationName": {
-            "value": "[parameters('migrationConfigurations').postMigrationName]"
+            "value": "[tryGet(parameters('migrationConfigurations'), 'postMigrationName')]"
           },
           "targetNamespaceResourceId": {
-            "value": "[parameters('migrationConfigurations').targetNamespace]"
-          },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
+            "value": "[tryGet(parameters('migrationConfigurations'), 'targetNamespace')]"
           }
         },
         "template": {
@@ -1071,8 +1075,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "11329412672781710568"
+              "version": "0.23.1.45101",
+              "templateHash": "5089878909119216074"
             },
             "name": "Service Bus Namespace Migration Configuration",
             "description": "This module deploys a Service Bus Namespace Migration Configuration.",
@@ -1175,13 +1179,20 @@
           "namespaceName": {
             "value": "[parameters('name')]"
           },
-          "publicNetworkAccess": "[if(contains(parameters('networkRuleSets'), 'publicNetworkAccess'), createObject('value', parameters('networkRuleSets').publicNetworkAccess), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkRuleSets'))), createObject('value', 'Disabled'), createObject('value', 'Enabled')))]",
-          "defaultAction": "[if(contains(parameters('networkRuleSets'), 'defaultAction'), createObject('value', parameters('networkRuleSets').defaultAction), createObject('value', 'Allow'))]",
-          "trustedServiceAccessEnabled": "[if(contains(parameters('networkRuleSets'), 'trustedServiceAccessEnabled'), createObject('value', parameters('networkRuleSets').trustedServiceAccessEnabled), createObject('value', true()))]",
-          "ipRules": "[if(contains(parameters('networkRuleSets'), 'ipRules'), createObject('value', parameters('networkRuleSets').ipRules), createObject('value', createArray()))]",
-          "virtualNetworkRules": "[if(contains(parameters('networkRuleSets'), 'virtualNetworkRules'), createObject('value', parameters('networkRuleSets').virtualNetworkRules), createObject('value', createArray()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
+          "publicNetworkAccess": {
+            "value": "[coalesce(tryGet(parameters('networkRuleSets'), 'publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkRuleSets'))), 'Disabled', 'Enabled'))]"
+          },
+          "defaultAction": {
+            "value": "[coalesce(tryGet(parameters('networkRuleSets'), 'defaultAction'), 'Allow')]"
+          },
+          "trustedServiceAccessEnabled": {
+            "value": "[coalesce(tryGet(parameters('networkRuleSets'), 'trustedServiceAccessEnabled'), true())]"
+          },
+          "ipRules": {
+            "value": "[coalesce(tryGet(parameters('networkRuleSets'), 'ipRules'), createArray())]"
+          },
+          "virtualNetworkRules": {
+            "value": "[coalesce(tryGet(parameters('networkRuleSets'), 'virtualNetworkRules'), createArray())]"
           }
         },
         "template": {
@@ -1190,8 +1201,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "533952694982260366"
+              "version": "0.23.1.45101",
+              "templateHash": "13436940198974346018"
             },
             "name": "Service Bus Namespace Network Rule Sets",
             "description": "This module deploys a ServiceBus Namespace Network Rule Set.",
@@ -1329,7 +1340,7 @@
     "serviceBusNamespace_queues": {
       "copy": {
         "name": "serviceBusNamespace_queues",
-        "count": "[length(parameters('queues'))]"
+        "count": "[length(coalesce(parameters('queues'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1344,32 +1355,47 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('queues')[copyIndex()].name]"
+            "value": "[coalesce(parameters('queues'), createArray())[copyIndex()].name]"
           },
-          "autoDeleteOnIdle": "[if(contains(parameters('queues')[copyIndex()], 'autoDeleteOnIdle'), createObject('value', parameters('queues')[copyIndex()].autoDeleteOnIdle), createObject('value', ''))]",
-          "forwardDeadLetteredMessagesTo": "[if(contains(parameters('queues')[copyIndex()], 'forwardDeadLetteredMessagesTo'), createObject('value', parameters('queues')[copyIndex()].forwardDeadLetteredMessagesTo), createObject('value', ''))]",
-          "forwardTo": "[if(contains(parameters('queues')[copyIndex()], 'forwardTo'), createObject('value', parameters('queues')[copyIndex()].forwardTo), createObject('value', ''))]",
-          "maxMessageSizeInKilobytes": "[if(contains(parameters('queues')[copyIndex()], 'maxMessageSizeInKilobytes'), createObject('value', parameters('queues')[copyIndex()].maxMessageSizeInKilobytes), createObject('value', 1024))]",
-          "authorizationRules": "[if(contains(parameters('queues')[copyIndex()], 'authorizationRules'), createObject('value', parameters('queues')[copyIndex()].authorizationRules), createObject('value', createArray(createObject('name', 'RootManageSharedAccessKey', 'rights', createArray('Listen', 'Manage', 'Send')))))]",
-          "deadLetteringOnMessageExpiration": "[if(contains(parameters('queues')[copyIndex()], 'deadLetteringOnMessageExpiration'), createObject('value', parameters('queues')[copyIndex()].deadLetteringOnMessageExpiration), createObject('value', true()))]",
-          "defaultMessageTimeToLive": "[if(contains(parameters('queues')[copyIndex()], 'defaultMessageTimeToLive'), createObject('value', parameters('queues')[copyIndex()].defaultMessageTimeToLive), createObject('value', 'P14D'))]",
-          "duplicateDetectionHistoryTimeWindow": "[if(contains(parameters('queues')[copyIndex()], 'duplicateDetectionHistoryTimeWindow'), createObject('value', parameters('queues')[copyIndex()].duplicateDetectionHistoryTimeWindow), createObject('value', 'PT10M'))]",
-          "enableBatchedOperations": "[if(contains(parameters('queues')[copyIndex()], 'enableBatchedOperations'), createObject('value', parameters('queues')[copyIndex()].enableBatchedOperations), createObject('value', true()))]",
-          "enableExpress": "[if(contains(parameters('queues')[copyIndex()], 'enableExpress'), createObject('value', parameters('queues')[copyIndex()].enableExpress), createObject('value', false()))]",
-          "enablePartitioning": "[if(contains(parameters('queues')[copyIndex()], 'enablePartitioning'), createObject('value', parameters('queues')[copyIndex()].enablePartitioning), createObject('value', false()))]",
+          "autoDeleteOnIdle": {
+            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'autoDeleteOnIdle'), '')]"
+          },
+          "forwardDeadLetteredMessagesTo": {
+            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'forwardDeadLetteredMessagesTo'), '')]"
+          },
+          "forwardTo": {
+            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'forwardTo'), '')]"
+          },
+          "maxMessageSizeInKilobytes": {
+            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'maxMessageSizeInKilobytes'), 1024)]"
+          },
+          "authorizationRules": {
+            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'authorizationRules'), createArray(createObject('name', 'RootManageSharedAccessKey', 'rights', createArray('Listen', 'Manage', 'Send'))))]"
+          },
+          "deadLetteringOnMessageExpiration": {
+            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'deadLetteringOnMessageExpiration'), true())]"
+          },
+          "defaultMessageTimeToLive": {
+            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'defaultMessageTimeToLive'), 'P14D')]"
+          },
+          "duplicateDetectionHistoryTimeWindow": {
+            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'duplicateDetectionHistoryTimeWindow'), 'PT10M')]"
+          },
+          "enableBatchedOperations": {
+            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'enableBatchedOperations'), true())]"
+          },
+          "enableExpress": "[if(contains(coalesce(parameters('queues'), createArray())[copyIndex()], 'enableExpress'), createObject('value', coalesce(parameters('queues'), createArray())[copyIndex()].enableExpress), createObject('value', false()))]",
+          "enablePartitioning": "[if(contains(coalesce(parameters('queues'), createArray())[copyIndex()], 'enablePartitioning'), createObject('value', coalesce(parameters('queues'), createArray())[copyIndex()].enablePartitioning), createObject('value', false()))]",
           "lock": {
-            "value": "[coalesce(tryGet(parameters('queues')[copyIndex()], 'lock'), parameters('lock'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
-          "lockDuration": "[if(contains(parameters('queues')[copyIndex()], 'lockDuration'), createObject('value', parameters('queues')[copyIndex()].lockDuration), createObject('value', 'PT1M'))]",
-          "maxDeliveryCount": "[if(contains(parameters('queues')[copyIndex()], 'maxDeliveryCount'), createObject('value', parameters('queues')[copyIndex()].maxDeliveryCount), createObject('value', 10))]",
-          "maxSizeInMegabytes": "[if(contains(parameters('queues')[copyIndex()], 'maxSizeInMegabytes'), createObject('value', parameters('queues')[copyIndex()].maxSizeInMegabytes), createObject('value', 1024))]",
-          "requiresDuplicateDetection": "[if(contains(parameters('queues')[copyIndex()], 'requiresDuplicateDetection'), createObject('value', parameters('queues')[copyIndex()].requiresDuplicateDetection), createObject('value', false()))]",
-          "requiresSession": "[if(contains(parameters('queues')[copyIndex()], 'requiresSession'), createObject('value', parameters('queues')[copyIndex()].requiresSession), createObject('value', false()))]",
-          "roleAssignments": "[if(contains(parameters('queues')[copyIndex()], 'roleAssignments'), createObject('value', parameters('queues')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-          "status": "[if(contains(parameters('queues')[copyIndex()], 'status'), createObject('value', parameters('queues')[copyIndex()].status), createObject('value', 'Active'))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "lockDuration": "[if(contains(coalesce(parameters('queues'), createArray())[copyIndex()], 'lockDuration'), createObject('value', coalesce(parameters('queues'), createArray())[copyIndex()].lockDuration), createObject('value', 'PT1M'))]",
+          "maxDeliveryCount": "[if(contains(coalesce(parameters('queues'), createArray())[copyIndex()], 'maxDeliveryCount'), createObject('value', coalesce(parameters('queues'), createArray())[copyIndex()].maxDeliveryCount), createObject('value', 10))]",
+          "maxSizeInMegabytes": "[if(contains(coalesce(parameters('queues'), createArray())[copyIndex()], 'maxSizeInMegabytes'), createObject('value', coalesce(parameters('queues'), createArray())[copyIndex()].maxSizeInMegabytes), createObject('value', 1024))]",
+          "requiresDuplicateDetection": "[if(contains(coalesce(parameters('queues'), createArray())[copyIndex()], 'requiresDuplicateDetection'), createObject('value', coalesce(parameters('queues'), createArray())[copyIndex()].requiresDuplicateDetection), createObject('value', false()))]",
+          "requiresSession": "[if(contains(coalesce(parameters('queues'), createArray())[copyIndex()], 'requiresSession'), createObject('value', coalesce(parameters('queues'), createArray())[copyIndex()].requiresSession), createObject('value', false()))]",
+          "roleAssignments": "[if(contains(coalesce(parameters('queues'), createArray())[copyIndex()], 'roleAssignments'), createObject('value', coalesce(parameters('queues'), createArray())[copyIndex()].roleAssignments), createObject('value', createArray()))]",
+          "status": "[if(contains(coalesce(parameters('queues'), createArray())[copyIndex()], 'status'), createObject('value', coalesce(parameters('queues'), createArray())[copyIndex()].status), createObject('value', 'Active'))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1378,8 +1404,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "7820306070042751113"
+              "version": "0.23.1.45101",
+              "templateHash": "5391834923114562885"
             },
             "name": "Service Bus Namespace Queue",
             "description": "This module deploys a Service Bus Namespace Queue.",
@@ -1497,21 +1523,21 @@
             },
             "autoDeleteOnIdle": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. ISO 8061 timeSpan idle interval after which the queue is automatically deleted. The minimum duration is 5 minutes (PT5M)."
               }
             },
             "forwardDeadLetteredMessagesTo": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Queue/Topic name to forward the Dead Letter message."
               }
             },
             "forwardTo": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Queue/Topic name to forward the messages."
               }
@@ -1647,13 +1673,6 @@
               "metadata": {
                 "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "variables": {
@@ -1670,20 +1689,6 @@
             }
           },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             "namespace": {
               "existing": true,
               "type": "Microsoft.ServiceBus/namespaces",
@@ -1786,8 +1791,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.22.6.54827",
-                      "templateHash": "4578845431207793137"
+                      "version": "0.23.1.45101",
+                      "templateHash": "17590031156732651952"
                     },
                     "name": "Service Bus Namespace Queue Authorization Rules",
                     "description": "This module deploys a Service Bus Namespace Queue Authorization Rule.",
@@ -1918,7 +1923,7 @@
     "serviceBusNamespace_topics": {
       "copy": {
         "name": "serviceBusNamespace_topics",
-        "count": "[length(parameters('topics'))]"
+        "count": "[length(coalesce(parameters('topics'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1933,27 +1938,24 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('topics')[copyIndex()].name]"
+            "value": "[coalesce(parameters('topics'), createArray())[copyIndex()].name]"
           },
-          "authorizationRules": "[if(contains(parameters('topics')[copyIndex()], 'authorizationRules'), createObject('value', parameters('topics')[copyIndex()].authorizationRules), createObject('value', createArray(createObject('name', 'RootManageSharedAccessKey', 'rights', createArray('Listen', 'Manage', 'Send')))))]",
-          "autoDeleteOnIdle": "[if(contains(parameters('topics')[copyIndex()], 'autoDeleteOnIdle'), createObject('value', parameters('topics')[copyIndex()].autoDeleteOnIdle), createObject('value', 'PT5M'))]",
-          "defaultMessageTimeToLive": "[if(contains(parameters('topics')[copyIndex()], 'defaultMessageTimeToLive'), createObject('value', parameters('topics')[copyIndex()].defaultMessageTimeToLive), createObject('value', 'P14D'))]",
-          "duplicateDetectionHistoryTimeWindow": "[if(contains(parameters('topics')[copyIndex()], 'duplicateDetectionHistoryTimeWindow'), createObject('value', parameters('topics')[copyIndex()].duplicateDetectionHistoryTimeWindow), createObject('value', 'PT10M'))]",
-          "enableBatchedOperations": "[if(contains(parameters('topics')[copyIndex()], 'enableBatchedOperations'), createObject('value', parameters('topics')[copyIndex()].enableBatchedOperations), createObject('value', true()))]",
-          "enableExpress": "[if(contains(parameters('topics')[copyIndex()], 'enableExpress'), createObject('value', parameters('topics')[copyIndex()].enableExpress), createObject('value', false()))]",
-          "enablePartitioning": "[if(contains(parameters('topics')[copyIndex()], 'enablePartitioning'), createObject('value', parameters('topics')[copyIndex()].enablePartitioning), createObject('value', false()))]",
+          "authorizationRules": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'authorizationRules'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].authorizationRules), createObject('value', createArray(createObject('name', 'RootManageSharedAccessKey', 'rights', createArray('Listen', 'Manage', 'Send')))))]",
+          "autoDeleteOnIdle": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'autoDeleteOnIdle'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].autoDeleteOnIdle), createObject('value', 'PT5M'))]",
+          "defaultMessageTimeToLive": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'defaultMessageTimeToLive'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].defaultMessageTimeToLive), createObject('value', 'P14D'))]",
+          "duplicateDetectionHistoryTimeWindow": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'duplicateDetectionHistoryTimeWindow'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].duplicateDetectionHistoryTimeWindow), createObject('value', 'PT10M'))]",
+          "enableBatchedOperations": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'enableBatchedOperations'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].enableBatchedOperations), createObject('value', true()))]",
+          "enableExpress": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'enableExpress'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].enableExpress), createObject('value', false()))]",
+          "enablePartitioning": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'enablePartitioning'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].enablePartitioning), createObject('value', false()))]",
           "lock": {
-            "value": "[coalesce(tryGet(parameters('topics')[copyIndex()], 'lock'), parameters('lock'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
-          "maxMessageSizeInKilobytes": "[if(contains(parameters('topics')[copyIndex()], 'maxMessageSizeInKilobytes'), createObject('value', parameters('topics')[copyIndex()].maxMessageSizeInKilobytes), createObject('value', 1024))]",
-          "maxSizeInMegabytes": "[if(contains(parameters('topics')[copyIndex()], 'maxSizeInMegabytes'), createObject('value', parameters('topics')[copyIndex()].maxSizeInMegabytes), createObject('value', 1024))]",
-          "requiresDuplicateDetection": "[if(contains(parameters('topics')[copyIndex()], 'requiresDuplicateDetection'), createObject('value', parameters('topics')[copyIndex()].requiresDuplicateDetection), createObject('value', false()))]",
-          "roleAssignments": "[if(contains(parameters('topics')[copyIndex()], 'roleAssignments'), createObject('value', parameters('topics')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-          "status": "[if(contains(parameters('topics')[copyIndex()], 'status'), createObject('value', parameters('topics')[copyIndex()].status), createObject('value', 'Active'))]",
-          "supportOrdering": "[if(contains(parameters('topics')[copyIndex()], 'supportOrdering'), createObject('value', parameters('topics')[copyIndex()].supportOrdering), createObject('value', false()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "maxMessageSizeInKilobytes": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'maxMessageSizeInKilobytes'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].maxMessageSizeInKilobytes), createObject('value', 1024))]",
+          "maxSizeInMegabytes": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'maxSizeInMegabytes'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].maxSizeInMegabytes), createObject('value', 1024))]",
+          "requiresDuplicateDetection": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'requiresDuplicateDetection'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].requiresDuplicateDetection), createObject('value', false()))]",
+          "roleAssignments": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'roleAssignments'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].roleAssignments), createObject('value', createArray()))]",
+          "status": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'status'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].status), createObject('value', 'Active'))]",
+          "supportOrdering": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'supportOrdering'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].supportOrdering), createObject('value', false()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1962,8 +1964,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "14755107204839231715"
+              "version": "0.23.1.45101",
+              "templateHash": "17834121031858727476"
             },
             "name": "Service Bus Namespace Topic",
             "description": "This module deploys a Service Bus Namespace Topic.",
@@ -2330,8 +2332,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.22.6.54827",
-                      "templateHash": "3590235297575239025"
+                      "version": "0.23.1.45101",
+                      "templateHash": "1333107238814449885"
                     },
                     "name": "Service Bus Namespace Topic Authorization Rules",
                     "description": "This module deploys a Service Bus Namespace Topic Authorization Rule.",
@@ -2487,9 +2489,6 @@
           "subnetResourceId": {
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
-          "enableDefaultTelemetry": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableDefaultTelemetry'), variables('enableReferencedModulesTelemetry'))]"
-          },
           "location": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
           },
@@ -2531,8 +2530,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "12078057657290521609"
+              "version": "0.23.1.45101",
+              "templateHash": "2788827530274342759"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -2629,71 +2628,6 @@
                 }
               },
               "nullable": true
-            },
-            "ipConfigurationsType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the resource that is unique within a resource group."
-                    }
-                  },
-                  "properties": {
-                    "type": "object",
-                    "properties": {
-                      "groupId": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
-                        }
-                      },
-                      "memberName": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
-                        }
-                      },
-                      "privateIPAddress": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. A private ip address obtained from the private endpoint's subnet."
-                        }
-                      }
-                    },
-                    "metadata": {
-                      "description": "Required. Properties of private endpoint IP configurations."
-                    }
-                  }
-                }
-              },
-              "nullable": true
-            },
-            "customDnsConfigType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "fqdn": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. Fqdn that resolves to private endpoint ip address."
-                    }
-                  },
-                  "ipAddresses": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "metadata": {
-                      "description": "Required. A list of private ip addresses of the private endpoint."
-                    }
-                  }
-                }
-              },
-              "nullable": true
             }
           },
           "parameters": {
@@ -2730,7 +2664,7 @@
               }
             },
             "ipConfigurations": {
-              "$ref": "#/definitions/ipConfigurationsType",
+              "type": "array",
               "nullable": true,
               "metadata": {
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
@@ -2783,7 +2717,7 @@
               }
             },
             "customDnsConfigs": {
-              "$ref": "#/definitions/customDnsConfigType",
+              "type": "array",
               "nullable": true,
               "metadata": {
                 "description": "Optional. Custom DNS configurations."
@@ -2796,7 +2730,7 @@
                 "description": "Optional. Manual PrivateLink Service Connections."
               }
             },
-            "enableDefaultTelemetry": {
+            "enableTelemetry": {
               "type": "bool",
               "defaultValue": true,
               "metadata": {
@@ -2805,7 +2739,6 @@
             }
           },
           "variables": {
-            "enableReferencedModulesTelemetry": false,
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "DNS Resolver Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d')]",
@@ -2820,17 +2753,23 @@
             }
           },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+              "apiVersion": "2023-07-01",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                   "contentVersion": "1.0.0.0",
-                  "resources": []
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
                 }
               }
             },
@@ -2850,7 +2789,7 @@
                     }
                   }
                 ],
-                "customDnsConfigs": "[parameters('customDnsConfigs')]",
+                "customDnsConfigs": "[coalesce(parameters('customDnsConfigs'), createArray())]",
                 "customNetworkInterfaceName": "[coalesce(parameters('customNetworkInterfaceName'), '')]",
                 "ipConfigurations": "[coalesce(parameters('ipConfigurations'), createArray())]",
                 "manualPrivateLinkServiceConnections": "[coalesce(parameters('manualPrivateLinkServiceConnections'), createArray())]",
@@ -2923,9 +2862,6 @@
                   },
                   "privateEndpointName": {
                     "value": "[parameters('name')]"
-                  },
-                  "enableDefaultTelemetry": {
-                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -2934,8 +2870,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.22.6.54827",
-                      "templateHash": "16391702514342252839"
+                      "version": "0.23.1.45101",
+                      "templateHash": "18168683629401652671"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
@@ -2962,13 +2898,6 @@
                       "metadata": {
                         "description": "Optional. The name of the private DNS zone group."
                       }
-                    },
-                    "enableDefaultTelemetry": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enable/Disable usage telemetry for module."
-                      }
                     }
                   },
                   "variables": {
@@ -2986,20 +2915,6 @@
                     ]
                   },
                   "resources": [
-                    {
-                      "condition": "[parameters('enableDefaultTelemetry')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2021-04-01",
-                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-                      "properties": {
-                        "mode": "Incremental",
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "resources": []
-                        }
-                      }
-                    },
                     {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
                       "apiVersion": "2023-04-01",

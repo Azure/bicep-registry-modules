@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.22.6.54827",
-      "templateHash": "7820306070042751113"
+      "version": "0.23.1.45101",
+      "templateHash": "5391834923114562885"
     },
     "name": "Service Bus Namespace Queue",
     "description": "This module deploys a Service Bus Namespace Queue.",
@@ -124,21 +124,21 @@
     },
     "autoDeleteOnIdle": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. ISO 8061 timeSpan idle interval after which the queue is automatically deleted. The minimum duration is 5 minutes (PT5M)."
       }
     },
     "forwardDeadLetteredMessagesTo": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Queue/Topic name to forward the Dead Letter message."
       }
     },
     "forwardTo": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Queue/Topic name to forward the messages."
       }
@@ -274,13 +274,6 @@
       "metadata": {
         "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
       }
-    },
-    "enableDefaultTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-      }
     }
   },
   "variables": {
@@ -297,20 +290,6 @@
     }
   },
   "resources": {
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": []
-        }
-      }
-    },
     "namespace": {
       "existing": true,
       "type": "Microsoft.ServiceBus/namespaces",
@@ -413,8 +392,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "4578845431207793137"
+              "version": "0.23.1.45101",
+              "templateHash": "17590031156732651952"
             },
             "name": "Service Bus Namespace Queue Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Queue Authorization Rule.",

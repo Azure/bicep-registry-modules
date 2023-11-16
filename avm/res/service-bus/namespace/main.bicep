@@ -9,24 +9,8 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. Name of this SKU. - Basic, Standard, Premium.')
-@allowed([
-  'Basic'
-  'Standard'
-  'Premium'
-])
-param skuName string = 'Basic'
-
-@description('Optional. The specified messaging units for the tier. Only used for Premium Sku tier.')
-@allowed([
-  1
-  2
-  4
-  8
-  16
-  32
-])
-param skuCapacity int = 1
+@description('Required. The SKU of the Service Bus Namespace.')
+param skuObject skuType
 
 @description('Optional. Enabling this property creates a Premium Service Bus Namespace in regions supported availability zones.')
 param zoneRedundant bool = false
@@ -166,8 +150,8 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview
   location: location
   tags: tags
   sku: {
-    name: skuName
-    capacity: skuName == 'Premium' ? skuCapacity : null
+    name: skuObject.name
+    capacity: skuObject.?capacity
   }
   identity: identity
   properties: {
@@ -176,7 +160,7 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview
     alternateName: alternateName
     zoneRedundant: zoneRedundant
     disableLocalAuth: disableLocalAuth
-    premiumMessagingPartitions: skuName == 'Premium' ? premiumMessagingPartitions : 0
+    premiumMessagingPartitions: skuObject.name == 'Premium' ? premiumMessagingPartitions : 0
     encryption: !empty(customerManagedKey) ? {
       keySource: 'Microsoft.KeyVault'
       keyVaultProperties: [
@@ -207,7 +191,7 @@ module serviceBusNamespace_disasterRecoveryConfig 'disaster-recovery-config/main
   name: '${uniqueString(deployment().name, location)}-DisasterRecoveryConfig'
   params: {
     namespaceName: serviceBusNamespace.name
-    name:  disasterRecoveryConfigs.?name ?? 'default'
+    name: disasterRecoveryConfigs.?name ?? 'default'
     alternateName: disasterRecoveryConfigs.?alternateName ?? ''
     partnerNamespaceResourceID: disasterRecoveryConfigs.?partnerNamespace ?? ''
   }
@@ -226,11 +210,11 @@ module serviceBusNamespace_networkRuleSet 'network-rule-set/main.bicep' = if (!e
   name: '${uniqueString(deployment().name, location)}-NetworkRuleSet'
   params: {
     namespaceName: serviceBusNamespace.name
-    publicNetworkAccess: contains(networkRuleSets, 'publicNetworkAccess') ? networkRuleSets.publicNetworkAccess : (!empty(privateEndpoints) && empty(networkRuleSets) ? 'Disabled' : 'Enabled')
-    defaultAction: contains(networkRuleSets, 'defaultAction') ? networkRuleSets.defaultAction : 'Allow'
-    trustedServiceAccessEnabled: contains(networkRuleSets, 'trustedServiceAccessEnabled') ? networkRuleSets.trustedServiceAccessEnabled : true
-    ipRules: contains(networkRuleSets, 'ipRules') ? networkRuleSets.ipRules : []
-    virtualNetworkRules: contains(networkRuleSets, 'virtualNetworkRules') ? networkRuleSets.virtualNetworkRules : []
+    publicNetworkAccess: networkRuleSets.?publicNetworkAccess ?? (!empty(privateEndpoints) && empty(networkRuleSets) ? 'Disabled' : 'Enabled')
+    defaultAction: networkRuleSets.?defaultAction ?? 'Allow'
+    trustedServiceAccessEnabled: networkRuleSets.?trustedServiceAccessEnabled ?? true
+    ipRules: networkRuleSets.?ipRules ?? []
+    virtualNetworkRules: networkRuleSets.?virtualNetworkRules ?? []
   }
 }
 
@@ -242,7 +226,7 @@ module serviceBusNamespace_queues 'queue/main.bicep' = [for (queue, index) in (q
     autoDeleteOnIdle: queue.?autoDeleteOnIdle ?? ''
     forwardDeadLetteredMessagesTo: queue.?forwardDeadLetteredMessagesTo ?? ''
     forwardTo: queue.?forwardTo ?? ''
-    maxMessageSizeInKilobytes:  queue.?maxMessageSizeInKilobytes ?? 1024
+    maxMessageSizeInKilobytes: queue.?maxMessageSizeInKilobytes ?? 1024
     authorizationRules: queue.?authorizationRules ?? [
       {
         name: 'RootManageSharedAccessKey'
@@ -253,10 +237,10 @@ module serviceBusNamespace_queues 'queue/main.bicep' = [for (queue, index) in (q
         ]
       }
     ]
-    deadLetteringOnMessageExpiration: contains(queue, 'deadLetteringOnMessageExpiration') ? queue.deadLetteringOnMessageExpiration : true
-    defaultMessageTimeToLive: contains(queue, 'defaultMessageTimeToLive') ? queue.defaultMessageTimeToLive : 'P14D'
-    duplicateDetectionHistoryTimeWindow: contains(queue, 'duplicateDetectionHistoryTimeWindow') ? queue.duplicateDetectionHistoryTimeWindow : 'PT10M'
-    enableBatchedOperations: contains(queue, 'enableBatchedOperations') ? queue.enableBatchedOperations : true
+    deadLetteringOnMessageExpiration: queue.?deadLetteringOnMessageExpiration ?? true
+    defaultMessageTimeToLive: queue.?defaultMessageTimeToLive ?? 'P14D'
+    duplicateDetectionHistoryTimeWindow: queue.?duplicateDetectionHistoryTimeWindow ?? 'PT10M'
+    enableBatchedOperations: queue.?enableBatchedOperations ?? true
     enableExpress: contains(queue, 'enableExpress') ? queue.enableExpress : false
     enablePartitioning: contains(queue, 'enablePartitioning') ? queue.enablePartitioning : false
     lock: queue.?lock ?? lock
@@ -270,7 +254,7 @@ module serviceBusNamespace_queues 'queue/main.bicep' = [for (queue, index) in (q
   }
 }]
 
-module serviceBusNamespace_topics 'topic/main.bicep' = [for (topic, index) in topics: {
+module serviceBusNamespace_topics 'topic/main.bicep' = [for (topic, index) in (topics ?? []): {
   name: '${uniqueString(deployment().name, location)}-Topic-${index}'
   params: {
     namespaceName: serviceBusNamespace.name
@@ -550,3 +534,11 @@ type customerManagedKeyType = {
   @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
   userAssignedIdentityResourceId: string?
 }?
+
+type skuType = {
+  @description('Required. Name of this SKU. - Basic, Standard, Premium.')
+  name: ('Basic' | 'Standard' | 'Premium')
+
+  @description('Optional. The specified messaging units for the tier. Only used for Premium Sku tier.')
+  capacity: int?
+}
