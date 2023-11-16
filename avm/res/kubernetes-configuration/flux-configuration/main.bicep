@@ -25,7 +25,7 @@ param configurationProtectedSettings object?
 param gitRepository object?
 
 @description('Required. Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster.')
-param kustomizations object?
+param kustomizations object
 
 @description('Required. The namespace to which this configuration is installed to. Maximum of 253 lower case alphanumeric characters, hyphen and period only.')
 param namespace string
