@@ -128,6 +128,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     // Required parameters
     name: 'ssmin001'
     // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
     location: '<location>'
   }
 }
@@ -150,6 +152,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       "value": "ssmin001"
     },
     // Non-required parameters
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
     "location": {
       "value": "<location>"
     }
