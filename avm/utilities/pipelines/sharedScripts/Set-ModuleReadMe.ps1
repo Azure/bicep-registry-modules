@@ -422,8 +422,6 @@ function Set-DefinitionSection {
                 }
             }
         }
-
-        # $tableSectionContent += ''
     }
 
     $newSectionContent += $tableSectionContent
