@@ -17,7 +17,7 @@ param resourceGroupName string = 'dep-${namePrefix}-desktopvirtualization.scp-${
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'scpmin'
+param serviceShort string = 'dvspmin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = 'tst' //'#_namePrefix_#'
@@ -44,7 +44,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}002'
     friendlyName: 'myFriendlyName'
-    location: 'eastus'
+    location: location
     description: 'myDescription'
     lock: {}
     roleAssignments: []

@@ -148,13 +148,6 @@ resource scalingPlan_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2
     workspaceId: diagnosticSetting.?workspaceResourceId
     eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
     eventHubName: diagnosticSetting.?eventHubName
-    metrics: diagnosticSetting.?metricCategories ?? [
-      {
-        category: 'AllMetrics'
-        timeGrain: null
-        enabled: true
-      }
-    ]
     logs: diagnosticSetting.?logCategoriesAndGroups ?? [
       {
         categoryGroup: 'allLogs'
@@ -166,6 +159,30 @@ resource scalingPlan_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2
   }
   scope: scalingPlan
 }]
+
+// resource scalingplan_diagnosticSettings 'Microsoft.Insights/diagnosticsettings@2021-05-01-preview' = if ((!empty(diagnosticStorageAccountId)) || (!empty(diagnosticWorkspaceId)) || (!empty(diagnosticEventHubAuthorizationRuleId)) || (!empty(diagnosticEventHubName))) {
+//   name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+//   properties: {
+//     storageAccountId: !empty(storageAccountResourceId) ? diagnosticStorageAccountId : null
+//     workspaceId: !empty(diagnosticWorkspaceId) ? diagnosticWorkspaceId : null
+//     eventHubAuthorizationRuleId: !empty(diagnosticEventHubAuthorizationRuleId) ? diagnosticEventHubAuthorizationRuleId : null
+//     eventHubName: !empty(diagnosticEventHubName) ? diagnosticEventHubName : null
+//     logs: diagnosticsLogs
+//   }
+//   scope: scalingPlan
+// }
+
+// resource scalingplan_diagnosticSettings 'Microsoft.Insights/diagnosticsettings@2021-05-01-preview' = if ((!empty(diagnosticStorageAccountId)) || (!empty(diagnosticWorkspaceId)) || (!empty(diagnosticEventHubAuthorizationRuleId)) || (!empty(diagnosticEventHubName))) {
+//   name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+//   properties: {
+//     storageAccountId: !empty(diagnosticStorageAccountId) ? diagnosticStorageAccountId : null
+//     workspaceId: !empty(diagnosticWorkspaceId) ? diagnosticWorkspaceId : null
+//     eventHubAuthorizationRuleId: !empty(diagnosticEventHubAuthorizationRuleId) ? diagnosticEventHubAuthorizationRuleId : null
+//     eventHubName: !empty(diagnosticEventHubName) ? diagnosticEventHubName : null
+//     logs: diagnosticsLogs
+//   }
+//   scope: scalingPlan
+// }
 
 // =========== //
 // Outputs     //

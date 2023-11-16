@@ -69,17 +69,9 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     diagnosticSettings: [
       {
         name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
         logCategoriesAndGroups: [
           {
-            category: 'AzurePolicyEvaluationDetails'
-          }
-          {
-            category: 'AuditEvent'
+            category: 'allLogs'
           }
         ]
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
@@ -87,12 +79,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
-      {
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
+      // {
+      //   eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+      //   eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+      //   storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+      //   workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+      // }
     ]
 
     lock: {
