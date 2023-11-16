@@ -1022,7 +1022,12 @@ Describe 'Module tests' -Tag 'Module' {
           $implementedSchema = $templateFileContentBicep[$implementedSchemaStartIndex..$implementedSchemaEndIndex]
 
           try {
-            $expectedSchemaFull = (Invoke-WebRequest -Uri $expectedUdtUrl).Content -split '\n'
+            $rawReponse = Invoke-WebRequest -Uri $expectedUdtUrl
+            if (($rawReponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
+              $expectedSchemaFull = $rawReponse.Content -split '\n'
+            } else {
+              throw "Failed to fetch schema from [$expectedUdtUrl]. Skipping schema check"
+            }
           } catch {
             Write-Warning "Failed to fetch schema from [$expectedUdtUrl]. Skipping schema check"
             return
