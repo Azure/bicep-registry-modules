@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "5309269677812401681"
+      "templateHash": "9887015317023929385"
     },
     "name": "ExpressRoute Circuits",
     "description": "This module deploys an Express Route Circuit.",
@@ -259,6 +259,13 @@
         "description": "Optional. Chosen SKU family of ExpressRoute circuit. Choose from MeteredData or UnlimitedData SKU families."
       }
     },
+    "peering": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enabled BGP peering type for the Circuit."
+      }
+    },
     "peeringType": {
       "type": "string",
       "defaultValue": "AzurePrivatePeering",
@@ -425,19 +432,7 @@
           "peeringLocation": "[parameters('peeringLocation')]",
           "bandwidthInMbps": "[parameters('bandwidthInMbps')]"
         },
-        "peerings": [
-          {
-            "name": "[parameters('peeringType')]",
-            "properties": {
-              "peeringType": "[parameters('peeringType')]",
-              "sharedKey": "[parameters('sharedKey')]",
-              "peerASN": "[parameters('peerASN')]",
-              "primaryPeerAddressPrefix": "[parameters('primaryPeerAddressPrefix')]",
-              "secondaryPeerAddressPrefix": "[parameters('secondaryPeerAddressPrefix')]",
-              "vlanId": "[parameters('vlanId')]"
-            }
-          }
-        ]
+        "peerings": "[if(parameters('peering'), createArray(createObject('name', parameters('peeringType'), 'properties', createObject('peeringType', parameters('peeringType'), 'sharedKey', parameters('sharedKey'), 'peerASN', parameters('peerASN'), 'primaryPeerAddressPrefix', parameters('primaryPeerAddressPrefix'), 'secondaryPeerAddressPrefix', parameters('secondaryPeerAddressPrefix'), 'vlanId', parameters('vlanId')))), null())]"
       }
     },
     "expressRouteCircuits_lock": {
