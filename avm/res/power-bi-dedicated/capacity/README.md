@@ -309,7 +309,6 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
 
 ## Parameters
 
-
 **Required parameters**
 
 | Parameter | Type | Description |

@@ -277,12 +277,11 @@ function Set-DefinitionSection {
         }
 
         $tableSectionContent += @(
-            ($tableSectionContent[-1] -ne '' ? '' : $null),
             ('**{0} parameters**' -f $category),
             '',
             '| Parameter | Type | Description |',
             '| :-- | :-- | :-- |'
-        ) | Where-Object { $null -ne $_ }
+        )
 
         foreach ($parameter in $categoryParameters) {
 
@@ -393,7 +392,6 @@ function Set-DefinitionSection {
             # Build list item
             # ===============
             $listSectionContent += @(
-                ($listSectionContent[-1] -ne '' ? '' : $null),
                 $paramHeader,
             ($parameter.ContainsKey('metadata') ? '' : $null),
             ($parameter.ContainsKey('metadata') ? $parameter['metadata']['description'].substring("$category. ".Length) : $null),
@@ -402,6 +400,7 @@ function Set-DefinitionSection {
             ('- Type: {0}' -f $type),
             ((-not [String]::IsNullOrEmpty($formattedDefaultValue)) ? $formattedDefaultValue : $null),
             ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null)
+                ''
             ) | Where-Object { $null -ne $_ }
 
             #recursive call for children
@@ -420,11 +419,12 @@ function Set-DefinitionSection {
                 }
             }
         }
+
+        $tableSectionContent += ''
     }
 
     $newSectionContent += $tableSectionContent
     $newSectionContent += $listSectionContent
-    $newSectionContent += ''
     return $newSectionContent
 }
 
