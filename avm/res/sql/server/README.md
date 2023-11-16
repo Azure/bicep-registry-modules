@@ -38,14 +38,15 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/sql.server:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/sql/server:<version>`.
 
 - [Admin](#example-1-admin)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Pe](#example-3-pe)
-- [Secondary](#example-4-secondary)
-- [Vulnassm](#example-5-vulnassm)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Using Private Endpoints](#example-4-using-private-endpoints)
+- [With a secondary database](#example-5-with-a-secondary-database)
+- [With vulnerability assessment](#example-6-with-vulnerability-assessment)
+- [WAF-aligned](#example-7-waf-aligned)
 
 ### Example 1: _Admin_
 
@@ -54,7 +55,7 @@ The following section provides usage examples for the module, which were used to
 <summary>via Bicep module</summary>
 
 ```bicep
-module server 'br:bicep/modules/sql.server:1.0.0' = {
+module server 'br/public:avm/res/sql/server:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-sqlsadmin'
   params: {
     // Required parameters
@@ -67,7 +68,7 @@ module server 'br:bicep/modules/sql.server:1.0.0' = {
       sid: '<sid>'
       tenantId: '<tenantId>'
     }
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -98,8 +99,8 @@ module server 'br:bicep/modules/sql.server:1.0.0' = {
         "tenantId": "<tenantId>"
       }
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -108,7 +109,55 @@ module server 'br:bicep/modules/sql.server:1.0.0' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-ssdef'
+  params: {
+    // Required parameters
+    name: 'ssdef001'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssdef001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -118,7 +167,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module server 'br:bicep/modules/sql.server:1.0.0' = {
+module server 'br/public:avm/res/sql/server:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-sqlsmax'
   params: {
     // Required parameters
@@ -166,7 +215,6 @@ module server 'br:bicep/modules/sql.server:1.0.0' = {
         skuTier: 'GeneralPurpose'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     firewallRules: [
       {
         endIpAddress: '0.0.0.0'
@@ -313,9 +361,6 @@ module server 'br:bicep/modules/sql.server:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "firewallRules": {
       "value": [
         {
@@ -426,14 +471,17 @@ module server 'br:bicep/modules/sql.server:1.0.0' = {
 </details>
 <p>
 
-### Example 3: _Pe_
+### Example 4: _Using Private Endpoints_
+
+This instance deploys the module with Private Endpoints.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module server 'br:bicep/modules/sql.server:1.0.0' = {
+module server 'br/public:avm/res/sql/server:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-sqlspe'
   params: {
     // Required parameters
@@ -441,7 +489,7 @@ module server 'br:bicep/modules/sql.server:1.0.0' = {
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -487,8 +535,8 @@ module server 'br:bicep/modules/sql.server:1.0.0' = {
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "privateEndpoints": {
       "value": [
@@ -519,14 +567,17 @@ module server 'br:bicep/modules/sql.server:1.0.0' = {
 </details>
 <p>
 
-### Example 4: _Secondary_
+### Example 5: _With a secondary database_
+
+This instance deploys the module with a secondary database.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module server 'br:bicep/modules/sql.server:1.0.0' = {
+module server 'br/public:avm/res/sql/server:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-sqlsec'
   params: {
     // Required parameters
@@ -544,7 +595,7 @@ module server 'br:bicep/modules/sql.server:1.0.0' = {
         sourceDatabaseResourceId: '<sourceDatabaseResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -589,8 +640,8 @@ module server 'br:bicep/modules/sql.server:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "tags": {
       "value": {
@@ -606,14 +657,17 @@ module server 'br:bicep/modules/sql.server:1.0.0' = {
 </details>
 <p>
 
-### Example 5: _Vulnassm_
+### Example 6: _With vulnerability assessment_
+
+This instance deploys the module with a vulnerability assessment.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module server 'br:bicep/modules/sql.server:1.0.0' = {
+module server 'br/public:avm/res/sql/server:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-sqlsvln'
   params: {
     // Required parameters
@@ -621,7 +675,6 @@ module server 'br:bicep/modules/sql.server:1.0.0' = {
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     location: '<location>'
     managedIdentities: {
       systemAssigned: true
@@ -681,9 +734,6 @@ module server 'br:bicep/modules/sql.server:1.0.0' = {
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
@@ -735,7 +785,7 @@ module server 'br:bicep/modules/sql.server:1.0.0' = {
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 7: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -745,7 +795,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module server 'br:bicep/modules/sql.server:1.0.0' = {
+module server 'br/public:avm/res/sql/server:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-sqlswaf'
   params: {
     // Required parameters
@@ -793,7 +843,6 @@ module server 'br:bicep/modules/sql.server:1.0.0' = {
         skuTier: 'GeneralPurpose'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     firewallRules: [
       {
         endIpAddress: '0.0.0.0'
@@ -940,9 +989,6 @@ module server 'br:bicep/modules/sql.server:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "firewallRules": {
       "value": [
         {
@@ -1077,7 +1123,7 @@ module server 'br:bicep/modules/sql.server:1.0.0' = {
 | :-- | :-- | :-- |
 | [`databases`](#parameter-databases) | array | The databases to create in the server. |
 | [`elasticPools`](#parameter-elasticpools) | array | The Elastic Pools to create in the server. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encryptionProtectorObj`](#parameter-encryptionprotectorobj) | object | The encryption protection configuration. |
 | [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the server. |
 | [`keys`](#parameter-keys) | array | The keys to configure. |
@@ -1129,9 +1175,9 @@ The Elastic Pools to create in the server.
 - Type: array
 - Default: `[]`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
@@ -1585,7 +1631,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `modules/network/private-endpoint` | Local reference |
+| `br/public:avm/res/network/private-endpoint:0.2.1` | Remote reference |
 
 ## Notes
 

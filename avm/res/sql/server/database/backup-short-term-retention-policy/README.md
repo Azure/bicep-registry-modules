@@ -29,7 +29,6 @@ This module deploys an Azure SQL Server Database Short-Term Backup Retention Pol
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diffBackupIntervalInHours`](#parameter-diffbackupintervalinhours) | int | Differential backup interval in hours. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`retentionDays`](#parameter-retentiondays) | int | Poin-in-time retention in days. |
 
 ### Parameter: `databaseName`
@@ -44,13 +43,6 @@ Differential backup interval in hours.
 - Required: No
 - Type: int
 - Default: `24`
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `retentionDays`
 

@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'With a secondary database'
+metadata description = 'This instance deploys the module with a secondary database.'
+
 // ========== //
 // Parameters //
 // ========== //

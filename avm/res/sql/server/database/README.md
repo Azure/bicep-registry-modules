@@ -43,7 +43,6 @@ This module deploys an Azure SQL Server Database.
 | [`createMode`](#parameter-createmode) | string | Specifies the mode of database creation. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`elasticPoolId`](#parameter-elasticpoolid) | string | The resource ID of the elastic pool containing this database. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`highAvailabilityReplicaCount`](#parameter-highavailabilityreplicacount) | int | The number of readonly secondary replicas associated with the database. |
 | [`isLedgerOn`](#parameter-isledgeron) | bool | Whether or not this database is a ledger database, which means all tables in the database are ledger tables. Note: the value of this property cannot be changed after the database has been created. |
 | [`licenseType`](#parameter-licensetype) | string | The license type to apply for this database. |
@@ -236,13 +235,6 @@ The resource ID of the elastic pool containing this database.
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `highAvailabilityReplicaCount`
 

@@ -28,7 +28,6 @@ This module deploys an Azure SQL Server Database Long-Term Backup Retention Poli
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`monthlyRetention`](#parameter-monthlyretention) | string | Weekly retention in ISO 8601 duration format. |
 | [`weeklyRetention`](#parameter-weeklyretention) | string | Monthly retention in ISO 8601 duration format. |
 | [`weekOfYear`](#parameter-weekofyear) | int | Week of year backup to keep for yearly retention. |
@@ -39,13 +38,6 @@ This module deploys an Azure SQL Server Database Long-Term Backup Retention Poli
 The name of the parent database.
 - Required: Yes
 - Type: string
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `monthlyRetention`
 

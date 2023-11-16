@@ -34,7 +34,6 @@ This module deploys an Azure SQL Server Encryption Protector.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`autoRotationEnabled`](#parameter-autorotationenabled) | bool | Key auto rotation opt-in. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`serverKeyType`](#parameter-serverkeytype) | string | The encryption protector type. |
 
 ### Parameter: `autoRotationEnabled`
@@ -43,13 +42,6 @@ Key auto rotation opt-in.
 - Required: No
 - Type: bool
 - Default: `False`
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `serverKeyName`
 

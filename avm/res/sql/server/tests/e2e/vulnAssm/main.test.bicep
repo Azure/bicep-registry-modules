@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'With vulnerability assessment'
+metadata description = 'This instance deploys the module with a vulnerability assessment.'
+
 // ========== //
 // Parameters //
 // ========== //
