@@ -146,6 +146,7 @@ resource appInsights_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2
   }
   scope: appInsights
 }]
+
 @description('The name of the application insights component.')
 output name string = appInsights.name
 
