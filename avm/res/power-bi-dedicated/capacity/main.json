@@ -5,14 +5,39 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.21.1.54444",
-      "templateHash": "10926648479875609377"
+      "version": "0.22.6.54827",
+      "templateHash": "4472977690395272155"
     },
-    "name": "Key Vault Keys",
-    "description": "This module deploys a Key Vault Key.",
+    "name": "Power BI Dedicated Capacities",
+    "description": "This module deploys a Power BI Dedicated Capacity.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "nullable": true
+    },
     "roleAssignmentType": {
       "type": "array",
       "items": {
@@ -78,96 +103,101 @@
         }
       },
       "nullable": true
+    },
+    "skuTpe": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "A1",
+            "A2",
+            "A3",
+            "A4",
+            "A5",
+            "A6"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the SKU."
+          }
+        },
+        "capacity": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The capacity of the SKU."
+          }
+        },
+        "tier": {
+          "type": "string",
+          "allowedValues": [
+            "AutoPremiumHost",
+            "PBIE_Azure",
+            "Premium"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tier of the SKU."
+          }
+        }
+      }
     }
   },
   "parameters": {
-    "keyVaultName": {
-      "type": "string",
-      "metadata": {
-        "description": "Conditional. The name of the parent key vault. Required if the template is used in a standalone deployment."
-      }
-    },
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the key."
+        "description": "Required. Name of the PowerBI Embedded."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all Resources."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
       }
     },
     "tags": {
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Resource tags."
+        "description": "Optional. Tags of the resource."
       }
     },
-    "attributesEnabled": {
-      "type": "bool",
-      "defaultValue": true,
+    "sku": {
+      "$ref": "#/definitions/skuTpe",
       "metadata": {
-        "description": "Optional. Determines whether the object is enabled."
+        "description": "Required. Sku configuration of the resource."
       }
     },
-    "attributesExp": {
-      "type": "int",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Expiry date in seconds since 1970-01-01T00:00:00Z. For security reasons, it is recommended to set an expiration date whenever possible."
-      }
-    },
-    "attributesNbf": {
-      "type": "int",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Not before date in seconds since 1970-01-01T00:00:00Z."
-      }
-    },
-    "curveName": {
-      "type": "string",
-      "defaultValue": "P-256",
-      "allowedValues": [
-        "P-256",
-        "P-256K",
-        "P-384",
-        "P-521"
-      ],
-      "metadata": {
-        "description": "Optional. The elliptic curve name."
-      }
-    },
-    "keyOps": {
+    "members": {
       "type": "array",
-      "nullable": true,
-      "allowedValues": [
-        "decrypt",
-        "encrypt",
-        "import",
-        "sign",
-        "unwrapKey",
-        "verify",
-        "wrapKey"
-      ],
       "metadata": {
-        "description": "Optional. Array of JsonWebKeyOperation."
+        "description": "Required. Members of the resource."
       }
     },
-    "keySize": {
-      "type": "int",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The key size in bits. For example: 2048, 3072, or 4096 for RSA."
-      }
-    },
-    "kty": {
+    "mode": {
       "type": "string",
-      "defaultValue": "EC",
+      "defaultValue": "Gen2",
       "allowedValues": [
-        "EC",
-        "EC-HSM",
-        "RSA",
-        "RSA-HSM"
+        "Gen1",
+        "Gen2"
       ],
       "metadata": {
-        "description": "Optional. The type of the key."
+        "description": "Optional. Mode of the resource."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
       }
     },
     "roleAssignments": {
@@ -175,27 +205,13 @@
       "metadata": {
         "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
       }
-    },
-    "rotationPolicy": {
-      "type": "object",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Key rotation policy properties object."
-      }
     }
   },
   "variables": {
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-      "Key Vault Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')]",
-      "Key Vault Certificates Officer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a4417e6f-fecd-4de8-b567-7b0420556985')]",
-      "Key Vault Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f25e0fa2-a7c8-4377-a976-54943a77a395')]",
-      "Key Vault Crypto Officer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '14b46e9e-c2b7-41b4-b07b-48a6ebf60603')]",
-      "Key Vault Crypto Service Encryption User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e147488a-f6f5-4113-8e2d-b22465e65bf6')]",
-      "Key Vault Crypto User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '12338af0-0e69-4776-bea7-57ae8d297424')]",
-      "Key Vault Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '21090545-7ca7-4776-b22c-e363652d74d2')]",
-      "Key Vault Secrets Officer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7')]",
-      "Key Vault Secrets User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')]",
+      "Log Analytics Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '92aaf0da-9dab-42b6-94a3-d43ce8d16293')]",
+      "Log Analytics Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '73c42c96-874c-492b-b04d-ab87d138a893')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
@@ -203,42 +219,67 @@
     }
   },
   "resources": {
-    "keyVault": {
-      "existing": true,
-      "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2022-07-01",
-      "name": "[parameters('keyVaultName')]"
-    },
-    "key": {
-      "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2022-07-01",
-      "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
-      "tags": "[parameters('tags')]",
+    "defaultTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('46d3xbcp.res.powerbidedicated-capacity.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
-        "attributes": {
-          "enabled": "[parameters('attributesEnabled')]",
-          "exp": "[parameters('attributesExp')]",
-          "nbf": "[parameters('attributesNbf')]"
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "capacity": {
+      "type": "Microsoft.PowerBIDedicated/capacities",
+      "apiVersion": "2021-01-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "sku": {
+        "name": "[coalesce(tryGet(parameters('sku'), 'name'), 'A1')]",
+        "capacity": "[parameters('sku').capacity]",
+        "tier": "[coalesce(tryGet(parameters('sku'), 'tier'), 'PBIE_Azure')]"
+      },
+      "properties": {
+        "administration": {
+          "members": "[parameters('members')]"
         },
-        "curveName": "[parameters('curveName')]",
-        "keyOps": "[parameters('keyOps')]",
-        "keySize": "[parameters('keySize')]",
-        "kty": "[parameters('kty')]",
-        "rotationPolicy": "[parameters('rotationPolicy')]"
+        "mode": "[parameters('mode')]"
+      }
+    },
+    "capacity_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.PowerBIDedicated/capacities/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
       },
       "dependsOn": [
-        "keyVault"
+        "capacity"
       ]
     },
-    "key_roleAssignments": {
+    "capacity_roleAssignments": {
       "copy": {
-        "name": "key_roleAssignments",
+        "name": "capacity_roleAssignments",
         "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.KeyVault/vaults/{0}/keys/{1}', parameters('keyVaultName'), parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.KeyVault/vaults/keys', parameters('keyVaultName'), parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "scope": "[format('Microsoft.PowerBIDedicated/capacities/{0}', parameters('name'))]",
+      "name": "[guid(resourceId('Microsoft.PowerBIDedicated/capacities', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
       "properties": {
         "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
         "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
@@ -249,31 +290,38 @@
         "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
-        "key"
+        "capacity"
       ]
     }
   },
   "outputs": {
-    "name": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the key."
-      },
-      "value": "[parameters('name')]"
-    },
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the key."
+        "description": "The resource ID of the PowerBi Embedded instance."
       },
-      "value": "[resourceId('Microsoft.KeyVault/vaults/keys', parameters('keyVaultName'), parameters('name'))]"
+      "value": "[resourceId('Microsoft.PowerBIDedicated/capacities', parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the resource group the key was created in."
+        "description": "The name of the resource group the PowerBi Embedded was created in."
       },
       "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The Name of the PowerBi Embedded instance."
+      },
+      "value": "[parameters('name')]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('capacity', '2021-01-01', 'full').location]"
     }
   }
 }
