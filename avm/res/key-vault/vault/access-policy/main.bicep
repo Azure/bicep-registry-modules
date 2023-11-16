@@ -10,7 +10,7 @@ param accessPolicies accessPoliciesType
 
 var formattedAccessPolicies = [for accessPolicy in (accessPolicies ?? []): {
   applicationId: accessPolicy.?applicationId ?? ''
-  objectId: accessPolicy.?objectId ?? ''
+  objectId: accessPolicy.objectId
   permissions: accessPolicy.permissions
   tenantId: accessPolicy.?tenantId ?? tenant().tenantId
 }]
