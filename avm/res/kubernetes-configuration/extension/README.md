@@ -153,6 +153,11 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
           timeoutInSeconds: 180
           url: 'https://github.com/mspnp/aks-baseline'
         }
+        kustomizations: {
+          unified: {
+            path: './cluster-manifests'
+          }
+        }
         namespace: 'flux-system'
         suspend: false
       }
@@ -212,6 +217,11 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
             "syncIntervalInSeconds": 300,
             "timeoutInSeconds": 180,
             "url": "https://github.com/mspnp/aks-baseline"
+          },
+          "kustomizations": {
+            "unified": {
+              "path": "./cluster-manifests"
+            }
           },
           "namespace": "flux-system",
           "suspend": false
@@ -277,6 +287,11 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
           timeoutInSeconds: 180
           url: 'https://github.com/mspnp/aks-baseline'
         }
+        kustomizations: {
+          unified: {
+            path: './cluster-manifests'
+          }
+        }
         namespace: 'flux-system'
         suspend: false
       }
@@ -336,6 +351,11 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
             "syncIntervalInSeconds": 300,
             "timeoutInSeconds": 180,
             "url": "https://github.com/mspnp/aks-baseline"
+          },
+          "kustomizations": {
+            "unified": {
+              "path": "./cluster-manifests"
+            }
           },
           "namespace": "flux-system",
           "suspend": false
@@ -478,7 +498,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/kubernetes-configuration/flux-configuration:0.3.0` | Remote reference |
+| `br/public:avm/res/kubernetes-configuration/flux-configuration:0.3.1` | Remote reference |
 
 ## Notes
 
