@@ -24,7 +24,7 @@ resource server 'Microsoft.Sql/servers@2022-05-01-preview' existing = {
 
 resource backupShortTermRetentionPolicy 'Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies@2022-05-01-preview' = {
   name: 'default'
-  parent: database
+  parent: server::database
   properties: {
     diffBackupIntervalInHours: diffBackupIntervalInHours
     retentionDays: retentionDays
