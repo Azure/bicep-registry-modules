@@ -16,11 +16,10 @@ param retentionDays int = 7
 
 resource server 'Microsoft.Sql/servers@2022-05-01-preview' existing = {
   name: serverName
-}
 
-resource database 'Microsoft.Sql/servers/databases@2022-05-01-preview' existing = {
-  name: databaseName
-  parent: server
+  resource database 'databases@2022-05-01-preview' existing = {
+    name: databaseName
+  }
 }
 
 resource backupShortTermRetentionPolicy 'Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies@2022-05-01-preview' = {
