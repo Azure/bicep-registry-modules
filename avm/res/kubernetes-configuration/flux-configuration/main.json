@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "12231512467754753013"
+      "templateHash": "885928168160399718"
     },
     "name": "Kubernetes Configuration Flux Configurations",
     "description": "This module deploys a Kubernetes Configuration Flux Configuration.",
@@ -62,7 +62,6 @@
     },
     "kustomizations": {
       "type": "object",
-      "nullable": true,
       "metadata": {
         "description": "Required. Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster."
       }
