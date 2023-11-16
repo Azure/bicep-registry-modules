@@ -82,7 +82,7 @@ resource extension 'Microsoft.KubernetesConfiguration/extensions@2022-03-01' = {
   }
 }
 
-module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:0.2.0' = [for (fluxConfiguration, index) in (fluxConfigurations ?? []): {
+module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:0.3.0' = [for (fluxConfiguration, index) in (fluxConfigurations ?? []): {
   name: '${uniqueString(deployment().name, location)}-ManagedCluster-FluxConfiguration${index}'
   params: {
     enableTelemetry: enableTelemetry
