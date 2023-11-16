@@ -277,12 +277,12 @@ function Set-DefinitionSection {
         }
 
         $tableSectionContent += @(
-            '',
+            ($tableSectionContent[-1] -ne '' ? '' : $null),
             ('**{0} parameters**' -f $category),
             '',
             '| Parameter | Type | Description |',
             '| :-- | :-- | :-- |'
-        )
+        ) | Where-Object { $null -ne $_ }
 
         foreach ($parameter in $categoryParameters) {
 
@@ -293,8 +293,6 @@ function Set-DefinitionSection {
             $paramIdentifier = (-not [String]::IsNullOrEmpty($ParentName)) ? '{0}.{1}' -f $ParentName, $parameter.name : $parameter.name
             $paramHeader = '### Parameter: `{0}`' -f $paramIdentifier
             $paramIdentifierLink = (-not [String]::IsNullOrEmpty($ParentIdentifierLink)) ? ('{0}{1}' -f $ParentIdentifierLink, $parameter.name).ToLower() :  ('#{0}' -f $paramHeader.TrimStart('#').Trim().ToLower()) -replace '[:|`]' -replace ' ', '-'
-
-            # $paramIdentifier = ('#{0}' -f $paramHeader.TrimStart('#').Trim().ToLower()) -replace '[:|`]' -replace ' ', '-'
 
             # definition type (if any)
             if ($parameter.Keys -contains '$ref') {
@@ -395,7 +393,7 @@ function Set-DefinitionSection {
             # Build list item
             # ===============
             $listSectionContent += @(
-                '',
+                ($listSectionContent[-1] -ne '' ? '' : $null),
                 $paramHeader,
             ($parameter.ContainsKey('metadata') ? '' : $null),
             ($parameter.ContainsKey('metadata') ? $parameter['metadata']['description'].substring("$category. ".Length) : $null),

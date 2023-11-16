@@ -403,7 +403,6 @@ The tier of the SKU.
   ]
   ```
 
-
 ### Parameter: `enableTelemetry`
 
 Enable telemetry via a Globally Unique Identifier (GUID).
@@ -455,7 +454,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-
 
 ### Parameter: `mode`
 
@@ -560,7 +558,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-
 
 ### Parameter: `tags`
 
