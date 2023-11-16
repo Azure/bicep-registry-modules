@@ -24,7 +24,7 @@ param configurationProtectedSettings object?
 @description('Conditional. Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `GitRepository`.')
 param gitRepository object?
 
-@description('Optional. Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster.')
+@description('Required. Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster.')
 param kustomizations object?
 
 @description('Required. The namespace to which this configuration is installed to. Maximum of 253 lower case alphanumeric characters, hyphen and period only.')
@@ -48,7 +48,7 @@ param sourceKind string
 param suspend bool = false
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.kubernetesconfiguration-extension.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.res.kubernetesconfiguration-fluxconfig.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -69,7 +69,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2022-07-01' 
   name: clusterName
 }
 
-resource fluxConfiguration 'Microsoft.KubernetesConfiguration/fluxConfigurations@2022-03-01' = {
+resource fluxConfiguration 'Microsoft.KubernetesConfiguration/fluxConfigurations@2023-05-01' = {
   name: name
   scope: managedCluster
   properties: {
