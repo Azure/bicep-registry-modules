@@ -30,7 +30,7 @@ resource server 'Microsoft.Sql/servers@2022-05-01-preview' existing = {
 
 resource backupLongTermRetentionPolicy 'Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies@2022-05-01-preview' = {
   name: 'default'
-  parent: database
+  parent: server::database
   properties: {
     monthlyRetention: monthlyRetention
     weeklyRetention: weeklyRetention
