@@ -286,7 +286,6 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
       Role: 'DeploymentValidation'
     }
   }
-  dependsOn: [nestedDependencies]
 }
 ```
 

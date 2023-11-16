@@ -57,7 +57,7 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 // Test Execution //
 // ============== //
-
+@batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
@@ -101,7 +101,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Role: 'DeploymentValidation'
     }
   }
-  dependsOn: [nestedDependencies]
 }]
 
 
