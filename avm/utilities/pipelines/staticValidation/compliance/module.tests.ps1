@@ -43,7 +43,7 @@ foreach ($moduleFolderPath in $moduleFolderPaths) {
 $builtTestFileMap = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
 $pathsToBuild | ForEach-Object -Parallel {
   $dict = $using:builtTestFileMap
-
+  Write-Output "Trying to set [$_] as key"
   $builtTemplate = bicep build $_ --stdout | ConvertFrom-Json -AsHashtable
   $null = $dict.TryAdd($_, $builtTemplate)
 }
