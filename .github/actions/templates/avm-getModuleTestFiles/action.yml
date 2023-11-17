@@ -24,7 +24,7 @@ runs:
 
         # Get the list of parameter file paths
         $moduleFolderPath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.modulePath }}'
-        $testFilePaths = (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName
+        $testFilePaths = (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object
 
         $modulePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.modulePath }}'
         $testFilePaths = $testFilePaths | ForEach-Object {

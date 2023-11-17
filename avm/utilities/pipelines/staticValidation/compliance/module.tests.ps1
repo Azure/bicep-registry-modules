@@ -20,9 +20,9 @@ $script:RgDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-0
 $script:SubscriptionDeploymentSchema = 'https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#'
 $script:MgDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#'
 $script:TenantDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#'
-$script:moduleFolderPaths = $moduleFolderPaths
 $script:telemetryResCsvLink = 'https://aka.ms/avm/index/bicep/res/csv'
 $script:telemetryPtnCsvLink = 'https://aka.ms/avm/index/bicep/ptn/csv'
+$script:moduleFolderPaths = $moduleFolderPaths
 
 # Shared exception messages
 $script:bicepTemplateCompilationFailedException = "Unable to compile the main.bicep template's content. This can happen if there is an error in the template. Please check if you can run the command ``bicep build {0} --stdout | ConvertFrom-Json -AsHashtable``." # -f $templateFilePath
@@ -36,25 +36,18 @@ Import-Module (Join-Path $PSScriptRoot 'helper' 'helper.psm1') -Force
 $pathsToBuild = [System.Collections.ArrayList]@()
 $pathsToBuild += $moduleFolderPaths | ForEach-Object { Join-Path $_ 'main.bicep' }
 foreach ($moduleFolderPath in $moduleFolderPaths) {
-  if ($testFilePaths = (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName) {
+  if ($testFilePaths = ((Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object)) {
     $pathsToBuild += $testFilePaths
   }
 }
 
 # building paths
 $builtTestFileMap = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
-Write-Verbose ($pathsToBuild | ConvertTo-Json) -Verbose # TODO: Remove
 $pathsToBuild | ForEach-Object -Parallel {
-  Write-Output "2 $_" # TODO: Remove
   $dict = $using:builtTestFileMap
-  Write-Output "3 $_" # TODO: Remove
   $builtTemplate = bicep build $_ --stdout | ConvertFrom-Json -AsHashtable
-  Write-Output "4 $_" # TODO: Remove
   $null = $dict.TryAdd($_, $builtTemplate)
-  Write-Output "5 $_" # TODO: Remove
 }
-
-Write-Verbose 'Post generation of test files' -Verbose
 
 Describe 'File/folder tests' -Tag 'Modules' {
 
@@ -336,7 +329,7 @@ Describe 'Module tests' -Tag 'Module' {
       if (Test-Path (Join-Path $moduleFolderPath 'tests')) {
 
         # TODO: Can be removed after full migration to bicep test files
-        $moduleTestFilePaths = (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName
+        $moduleTestFilePaths = (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object
 
         foreach ($moduleTestFilePath in $moduleTestFilePaths) {
           $deploymentFileContent = $builtTestFileMap[$moduleTestFilePath]
@@ -1087,7 +1080,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
 
     foreach ($moduleFolderPath in $moduleFolderPaths) {
       if (Test-Path (Join-Path $moduleFolderPath 'tests')) {
-        $testFilePaths = (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName
+        $testFilePaths = (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object
         foreach ($testFilePath in $testFilePaths) {
           $testFileContent = Get-Content $testFilePath
           $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
