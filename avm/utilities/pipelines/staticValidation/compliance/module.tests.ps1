@@ -1231,7 +1231,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
         { $PSItem -like '*diagnosticsettings*' } {
           $testCases += @{
             moduleName                     = $moduleFolderName
-            resourceType                   = 'diagnosticsettings'
+            resourceType                   = 'diagnosticSettings'
             ProviderNamespace              = 'Microsoft.Insights'
             TargetApi                      = $resource.ApiVersion
             AvailableApiVersions           = $ApiVersions
@@ -1253,7 +1253,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
         { $PSItem -like '*roleAssignments' } {
           $testCases += @{
             moduleName                     = $moduleFolderName
-            resourceType                   = 'roleassignments'
+            resourceType                   = 'roleAssignments'
             ProviderNamespace              = 'Microsoft.Authorization'
             TargetApi                      = $resource.ApiVersion
             AvailableApiVersions           = $ApiVersions
@@ -1295,7 +1295,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
       [string] $ResourceType,
       [string] $TargetApi,
       [string] $ProviderNamespace,
-      [PSCustomObject] $AvailableApiVersions,
+      [hashtable] $AvailableApiVersions,
       [bool] $AllowPreviewVersionsInAPITests
     )
 
