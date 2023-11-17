@@ -17,10 +17,12 @@ Write-Verbose ("repoRootPath: $repoRootPath") -Verbose
 Write-Verbose ("moduleFolderPaths: $($moduleFolderPaths.count)") -Verbose
 
 $script:RgDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-$script:SubscriptionDeploymentSchema = 'https://schema.management.azure.com/schemas/2018-05-01/SubscriptionDeploymentSchemaTemplate.json#'
+$script:SubscriptionDeploymentSchema = 'https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#'
 $script:MgDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#'
-$script:TenantDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/TenantDeploymentSchemaTemplate.json#'
+$script:TenantDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#'
 $script:moduleFolderPaths = $moduleFolderPaths
+$script:telemetryResCsvLink = 'https://aka.ms/avm/index/bicep/res/csv'
+$script:telemetryPtnCsvLink = 'https://aka.ms/avm/index/bicep/ptn/csv'
 
 # For runtime purposes, we cache the compiled template in a hashtable that uses a formatted relative module path as a key
 $script:convertedTemplates = @{}
@@ -536,8 +538,8 @@ Describe 'Module tests' -Tag 'Module' {
         $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
       }
 
-      $telemetryDeployment = $templateResources | Where-Object { $_.name -like "*'46d3xbcp.*" } # The AVM telemetry prefix
-      $telemetryDeployment | Should -Not -BeNullOrEmpty -Because 'The telemetry resource with name prefix [46d3xbcp] should be present in the tempalte'
+      $telemetryDeployment = $templateResources | Where-Object { $_.condition -like "*telemetry*" } # The AVM telemetry prefix
+      $telemetryDeployment | Should -Not -BeNullOrEmpty -Because 'A telemetry resource with name prefix [46d3xbcp] should be present in the template'
     }
 
     It '[<moduleFolderName>] Telemetry deployment should have correct condition in the template.' -TestCases ($deploymentFolderTestCases | Where-Object { $_.isTopLevelModule }) {
@@ -554,7 +556,7 @@ Describe 'Module tests' -Tag 'Module' {
         $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
       }
 
-      $telemetryDeployment = $templateResources | Where-Object { $_.name -like "*'46d3xbcp.*" } # The AVM telemetry prefix
+      $telemetryDeployment = $templateResources | Where-Object { $_.condition -like "*telemetry*" } # The AVM telemetry prefix
 
       if (-not $telemetryDeployment) {
         Set-ItResult -Skipped -Because 'Skipping this test as telemetry was not implemented in template'
@@ -578,7 +580,7 @@ Describe 'Module tests' -Tag 'Module' {
         $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
       }
 
-      $telemetryDeployment = $templateResources | Where-Object { $_.name -like "*'46d3xbcp.*" } # The AVM telemetry prefix
+      $telemetryDeployment = $templateResources | Where-Object { $_.condition -like "*telemetry*" } # The AVM telemetry prefix
 
       if (-not $telemetryDeployment) {
         Set-ItResult -Skipped -Because 'Skipping this test as telemetry was not implemented in template'
@@ -587,6 +589,53 @@ Describe 'Module tests' -Tag 'Module' {
 
       $telemetryDeployment.properties.template.outputs.Keys | Should -Contain 'telemetry'
       $telemetryDeployment.properties.template.outputs['telemetry'].value | Should -Be 'For more information, see https://aka.ms/avm/TelemetryInfo'
+    }
+
+    It '[<moduleFolderName>] Telemetry deployment should have expected telemetry identifier.' -TestCases ($deploymentFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+
+      param(
+        [string] $templateFilePath,
+        [hashtable] $templateContent
+      )
+
+      # Use correct telemetry link based on file path
+      $telemetryCsvLink = $templateFilePath -match '[\\|\/]res[\\|\/]' ? $telemetryResCsvLink : $telemetryPtnCsvLink
+
+      # Fetch CSV
+      # =========
+      try {
+        $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
+      } catch {
+        $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
+        Write-Error "Failed to download telemetry CSV file from [$errorMessage]."
+        Set-ItResult -Skipped -Because $errorMessage
+      }
+      $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
+
+      # Get correct row item & expected identifier
+      # ==========================================
+      $moduleName = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
+      $relevantCSVRow = $csvData | Where-Object {
+        $_.ModuleName -eq $moduleName
+      }
+
+      if (-not $relevantCSVRow) {
+        $errorMessage = "Failed to identify module [$moduleName]."
+        Write-Error "Failed to download telemetry CSV file from [$errorMessage]."
+        Set-ItResult -Skipped -Because $errorMessage
+      }
+      $expectedTelemetryIdentifier = $relevantCSVRow.TelemetryIdPrefix
+
+      # Collect resource & compare
+      # ==========================
+      # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
+      if ($templateContent.resources.GetType().Name -eq 'Object[]') {
+        $templateResources = $templateContent.resources
+      } else {
+        $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
+      }
+      $telemetryDeploymentName = ($templateResources | Where-Object { $_.condition -like "*telemetry*" }).name # The AVM telemetry prefix
+      $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
     }
 
     It '[<moduleFolderName>] The Location should be defined as a parameter, with the default value of [resourceGroup().Location] or global for ResourceGroup deployment scope.' -TestCases $deploymentFolderTestCases {
@@ -995,7 +1044,7 @@ Describe 'Module tests' -Tag 'Module' {
     }
 
 
-    It "[<moduleFolderName>] If template has a parameter [<parameterName>], it should implement the user-defined type [<udtName>]" -TestCases $udtTestCases {
+    It '[<moduleFolderName>] If template has a parameter [<parameterName>], it should implement the user-defined type [<udtName>]' -TestCases $udtTestCases {
 
       param(
         [hashtable] $templateFileContent,
@@ -1021,7 +1070,18 @@ Describe 'Module tests' -Tag 'Module' {
           }
           $implementedSchema = $templateFileContentBicep[$implementedSchemaStartIndex..$implementedSchemaEndIndex]
 
-          $expectedSchemaFull = (Invoke-WebRequest -Uri $expectedUdtUrl).Content -split "\n"
+          try {
+            $rawReponse = Invoke-WebRequest -Uri $expectedUdtUrl
+            if (($rawReponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
+              $expectedSchemaFull = $rawReponse.Content -split '\n'
+            } else {
+              throw "Failed to fetch schema from [$expectedUdtUrl]. Skipping schema check"
+            }
+          } catch {
+            Write-Warning "Failed to fetch schema from [$expectedUdtUrl]. Skipping schema check"
+            return
+          }
+
           $expectedSchemaStartIndex = $expectedSchemaFull.IndexOf("type $udtName = {")
           $expectedSchemaEndIndex = $expectedSchemaStartIndex + 1
           while ($expectedSchemaFull[$expectedSchemaEndIndex] -notmatch '^\}.*' -and $expectedSchemaEndIndex -lt $expectedSchemaFull.Length) {
@@ -1047,7 +1107,7 @@ Describe 'Module tests' -Tag 'Module' {
 
             # Adding also to output to show in GitHub CI
             $mdFormattedDiff = ($formattedDiff -join '</br>') -replace '\|', '\|'
-            $mdFormattedWarningMessage = "The implemented user-defined type is not the same as the expected [user-defined type]({0}) defined in the [AVM specs]({1}) and should not have diff</br><pre>{2}</pre>" -f $expectedUdtUrl, $link, $mdFormattedDiff
+            $mdFormattedWarningMessage = 'The implemented user-defined type is not the same as the expected [user-defined type]({0}) defined in the [AVM specs]({1}) and should not have diff</br><pre>{2}</pre>' -f $expectedUdtUrl, $link, $mdFormattedDiff
             Write-Output @{
               Warning = $mdFormattedWarningMessage
             }
@@ -1058,7 +1118,7 @@ Describe 'Module tests' -Tag 'Module' {
       }
     }
 
-    It "[<moduleFolderName>] If a UDT definition [managedIdentitiesType] exists and supports system-assigned-identities, the template should have an output for its principal ID." -TestCases $udtSpecificTestCases {
+    It '[<moduleFolderName>] If a UDT definition [managedIdentitiesType] exists and supports system-assigned-identities, the template should have an output for its principal ID.' -TestCases $udtSpecificTestCases {
 
       param(
         [hashtable] $templateFileContent
@@ -1067,11 +1127,11 @@ Describe 'Module tests' -Tag 'Module' {
       if ($templateFileContent.definitions.Keys -contains 'managedIdentitiesType' -and $templateFileContent.definitions.managedIdentitiesType.properties.keys -contains 'systemAssigned') {
         $templateFileContent.outputs.Keys | Should -Contain 'systemAssignedMIPrincipalId' -Because 'The AVM specs require a this output. For information please review the [AVM Specs](https://aka.ms/avm/interfaces/managed-identities).'
       } else {
-        Set-ItResult -Skipped -Because "the module template has no [managedIdentitiesType] UDT definition or does not support system-assigned-identities."
+        Set-ItResult -Skipped -Because 'the module template has no [managedIdentitiesType] UDT definition or does not support system-assigned-identities.'
       }
     }
 
-    It "[<moduleFolderName>] If a parameter [tags] exists it should be nullable." -TestCases $udtSpecificTestCases {
+    It '[<moduleFolderName>] If a parameter [tags] exists it should be nullable.' -TestCases $udtSpecificTestCases {
 
       param(
         [hashtable] $templateFileContent
@@ -1080,7 +1140,7 @@ Describe 'Module tests' -Tag 'Module' {
       if ($templateFileContent.parameters.Keys -contains 'tags') {
         $templateFileContent.parameters.tags.nullable | Should -Be $true -Because 'The AVM specs require a specific format. For information please review the [AVM Specs](https://aka.ms/avm/interfaces/tags).'
       } else {
-        Set-ItResult -Skipped -Because "the module template has no [tags] parameter."
+        Set-ItResult -Skipped -Because 'the module template has no [tags] parameter.'
       }
     }
   }
@@ -1109,7 +1169,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       }
     }
 
-    It "[<moduleFolderName>] [<testName>] Bicep test deployment files should contain a parameter [serviceShort]" -TestCases $deploymentTestFileTestCases {
+    It '[<moduleFolderName>] [<testName>] Bicep test deployment files should contain a parameter [serviceShort]' -TestCases $deploymentTestFileTestCases {
 
       param(
         [object[]] $testFileContent
@@ -1117,59 +1177,59 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       ($testFileContent -match "^param serviceShort string = '(.*)$") | Should -Not -BeNullOrEmpty -Because 'the module test deployment file should contain a parameter [serviceShort] using the syntax [param serviceShort string = ''*''].'
     }
 
-    It "[<moduleFolderName>] [<testName>] Bicep test deployment files in a [defaults] folder should have a parameter [serviceShort] with a value ending with [min]" -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]defaults[\\|\/].*' }) {
+    It '[<moduleFolderName>] [<testName>] Bicep test deployment files in a [defaults] folder should have a parameter [serviceShort] with a value ending with [min]' -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]defaults[\\|\/].*' }) {
 
       param(
         [object[]] $testFileContent
       )
 
       if (($testFileContent | Out-String) -match "param serviceShort string = '(.*)'") {
-        $Matches[1] | Should -BeLike "*min"
+        $Matches[1] | Should -BeLike '*min'
       } else {
         Set-ItResult -Skipped -Because 'the module test deployment file should contain a parameter [serviceShort] using the syntax [param serviceShort string = ''*min''] but it doesn''t.'
       }
     }
 
-    It "[<moduleFolderName>] [<testName>] Bicep test deployment files in a [max] folder should have a [serviceShort] parameter with a value ending with  [max]" -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]max[\\|\/].*' }) {
+    It '[<moduleFolderName>] [<testName>] Bicep test deployment files in a [max] folder should have a [serviceShort] parameter with a value ending with  [max]' -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]max[\\|\/].*' }) {
 
       param(
         [object[]] $testFileContent
       )
 
       if (($testFileContent | Out-String) -match "param serviceShort string = '(.*)'") {
-        $Matches[1] | Should -BeLike "*max"
+        $Matches[1] | Should -BeLike '*max'
       } else {
         Set-ItResult -Skipped -Because 'the module test deployment file should contain a parameter [serviceShort] using the syntax [param serviceShort string = ''*max''] but it doesn''t.'
       }
     }
 
-    It "[<moduleFolderName>] [<testName>] Bicep test deployment files in a [waf-aligned] folder should have a [serviceShort] parameter with a value ending with [waf]" -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]waf\-aligned[\\|\/].*' }) {
+    It '[<moduleFolderName>] [<testName>] Bicep test deployment files in a [waf-aligned] folder should have a [serviceShort] parameter with a value ending with [waf]' -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]waf\-aligned[\\|\/].*' }) {
 
       param(
         [object[]] $testFileContent
       )
 
       if (($testFileContent | Out-String) -match "param serviceShort string = '(.*)'") {
-        $Matches[1] | Should -BeLike "*waf"
+        $Matches[1] | Should -BeLike '*waf'
       } else {
         Set-ItResult -Skipped -Because 'the module test deployment file should contain a parameter [serviceShort] using the syntax [param serviceShort string = ''*waf''] but it doesn''t.'
       }
     }
 
-    It "[<moduleFolderName>] [<testName>] Bicep test deployment files should contain a metadata string [name]" -TestCases $deploymentTestFileTestCases {
+    It '[<moduleFolderName>] [<testName>] Bicep test deployment files should contain a metadata string [name]' -TestCases $deploymentTestFileTestCases {
 
       param(
         [object[]] $testFileContent
       )
-      ($testFileContent | Out-String) | Should -Match "metadata name = .+" -Because 'Test cases should contain a metadata string [name] in the format `metadata name = ''One cake of a name''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
+      ($testFileContent | Out-String) | Should -Match 'metadata name = .+' -Because 'Test cases should contain a metadata string [name] in the format `metadata name = ''One cake of a name''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
     }
 
-    It "[<moduleFolderName>] [<testName>] Bicep test deployment files should contain a metadata string [description]" -TestCases $deploymentTestFileTestCases {
+    It '[<moduleFolderName>] [<testName>] Bicep test deployment files should contain a metadata string [description]' -TestCases $deploymentTestFileTestCases {
 
       param(
         [object[]] $testFileContent
       )
-      ($testFileContent | Out-String) | Should -Match "metadata description = .+" -Because 'Test cases should contain a metadata string [description] in the format `metadata description = ''The cake is a lie''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
+      ($testFileContent | Out-String) | Should -Match 'metadata description = .+' -Because 'Test cases should contain a metadata string [description] in the format `metadata description = ''The cake is a lie''` to be more descriptive. If provided, the tooling will automatically inject it into the module''s readme.md file.'
     }
 
     It "[<moduleFolderName>] [<testName>] Bicep test deployment files should contain a parameter [namePrefix] with value ['#_namePrefix_#']" -TestCases $deploymentTestFileTestCases {
@@ -1178,7 +1238,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
         [object[]] $testFileContent
       )
 
-      ($testFileContent | Out-String) | Should -Match  "param namePrefix string = '#_namePrefix_#'" -Because 'The test CI needs this value to ensure that deployed resources have unique names per fork.'
+      ($testFileContent | Out-String) | Should -Match "param namePrefix string = '#_namePrefix_#'" -Because 'The test CI needs this value to ensure that deployed resources have unique names per fork.'
     }
 
     It "[<moduleFolderName>] [<testName>] Bicep test deployment files should invoke test like [`module testDeployment '../.*main.bicep' = {`]" -TestCases $deploymentTestFileTestCases {

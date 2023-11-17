@@ -40,7 +40,7 @@ param version string?
 param fluxConfigurations array?
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.kubernetesconfiguration-fluxconfig.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.res.kubernetesconfiguration-extension.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -82,7 +82,7 @@ resource extension 'Microsoft.KubernetesConfiguration/extensions@2022-03-01' = {
   }
 }
 
-module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:0.2.0' = [for (fluxConfiguration, index) in (fluxConfigurations ?? []): {
+module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:0.3.1' = [for (fluxConfiguration, index) in (fluxConfigurations ?? []): {
   name: '${uniqueString(deployment().name, location)}-ManagedCluster-FluxConfiguration${index}'
   params: {
     enableTelemetry: enableTelemetry
@@ -94,7 +94,7 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
     bucket: fluxConfiguration.?bucket
     configurationProtectedSettings: fluxConfiguration.?configurationProtectedSettings
     gitRepository: fluxConfiguration.?gitRepository
-    kustomizations: fluxConfiguration.?kustomizations
+    kustomizations: fluxConfiguration.kustomizations
     suspend: fluxConfiguration.?suspend
   }
   dependsOn: [
