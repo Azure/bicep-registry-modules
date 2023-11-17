@@ -18,7 +18,7 @@ param category string
 param query string
 
 @description('Optional. Tags to configure in the resource.')
-param tags array = []
+param tags array?
 
 @description('Optional. The function alias if query serves as a function.')
 param functionAlias string = ''
