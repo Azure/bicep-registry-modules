@@ -36,7 +36,9 @@ Import-Module (Join-Path $PSScriptRoot 'helper' 'helper.psm1') -Force
 $pathsToBuild = [System.Collections.ArrayList]@()
 $pathsToBuild += $moduleFolderPaths | ForEach-Object { Join-Path $_ 'main.bicep' }
 foreach ($moduleFolderPath in $moduleFolderPaths) {
-  $pathsToBuild += (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName
+  if ($testFilePaths = (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName) {
+    $pathsToBuild += $testFilePaths
+  }
 }
 
 # building paths
