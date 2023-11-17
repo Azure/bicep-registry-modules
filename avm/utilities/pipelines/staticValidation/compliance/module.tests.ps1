@@ -16,11 +16,6 @@ param (
 Write-Verbose ("repoRootPath: $repoRootPath") -Verbose
 Write-Verbose ("moduleFolderPaths: $($moduleFolderPaths.count)") -Verbose
 
-Write-Verbose 'TODO: Remove 1' -Verbose
-$moduleFolderPaths | ForEach-Object {
-  Write-Verbose $_ -Verbose
-}
-
 $script:RgDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
 $script:SubscriptionDeploymentSchema = 'https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#'
 $script:MgDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#'
@@ -44,10 +39,6 @@ foreach ($moduleFolderPath in $moduleFolderPaths) {
   $pathsToBuild += (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName
 }
 
-Write-Verbose 'TODO: Remove 2' -Verbose
-Write-Verbose ($pathsToBuild | Out-String) -Verbose
-
-
 # building paths
 $builtTestFileMap = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
 $pathsToBuild | ForEach-Object -Parallel {
@@ -56,6 +47,8 @@ $pathsToBuild | ForEach-Object -Parallel {
   $builtTemplate = bicep build $_ --stdout | ConvertFrom-Json -AsHashtable
   $null = $dict.TryAdd($_, $builtTemplate)
 }
+
+Write-Verbose 'Post generation of test files' -Verbose
 
 Describe 'File/folder tests' -Tag 'Modules' {
 
