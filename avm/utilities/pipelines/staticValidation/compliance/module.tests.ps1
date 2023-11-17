@@ -33,20 +33,15 @@ Import-Module (Join-Path $PSScriptRoot 'helper' 'helper.psm1') -Force
 
 # Building all required files for tests to optimize performance (using thread-safe multithreading) to consume later
 # Collecting paths
-Write-Verbose "-3" -Verbose # TODO: Remove
 $pathsToBuild = [System.Collections.ArrayList]@()
-Write-Verbose "-2" -Verbose # TODO: Remove
 $pathsToBuild += $moduleFolderPaths | ForEach-Object { Join-Path $_ 'main.bicep' }
-Write-Verbose "-1" -Verbose # TODO: Remove
 foreach ($moduleFolderPath in $moduleFolderPaths) {
-  Write-Verbose "-1.1 $moduleFolderPath" -Verbose # TODO: Remove
   $pathsToBuild += (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName
 }
 
 # building paths
-Write-Verbose "0" -Verbose # TODO: Remove
 $builtTestFileMap = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
-Write-Verbose "1" -Verbose # TODO: Remove
+Write-Verbose ($pathsToBuild | ConvertTo-Json) -Verbose # TODO: Remove
 $pathsToBuild | ForEach-Object -Parallel {
   Write-Output "2 $_" # TODO: Remove
   $dict = $using:builtTestFileMap
