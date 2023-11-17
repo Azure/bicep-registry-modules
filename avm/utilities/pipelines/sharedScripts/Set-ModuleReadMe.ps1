@@ -1614,7 +1614,6 @@ function Set-ModuleReadMe {
 
     # Load external functions
     . (Join-Path $PSScriptRoot 'Get-NestedResourceList.ps1')
-    . (Join-Path $PSScriptRoot 'Get-ModuleTestFileList.ps1')
     . (Join-Path $PSScriptRoot 'helper' 'Merge-FileWithNewContent.ps1')
     . (Join-Path $PSScriptRoot 'helper' 'Get-IsParameterRequired.ps1')
     . (Join-Path $PSScriptRoot 'helper' 'Get-SpecsAlignedResourceName.ps1')
