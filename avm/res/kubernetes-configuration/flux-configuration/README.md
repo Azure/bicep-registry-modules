@@ -1,10 +1,5 @@
 # Kubernetes Configuration Flux Configurations `[Microsoft.KubernetesConfiguration/fluxConfigurations]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a Kubernetes Configuration Flux Configuration.
 
 ## Navigation
@@ -20,7 +15,7 @@ This module deploys a Kubernetes Configuration Flux Configuration.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.KubernetesConfiguration/fluxConfigurations` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2022-03-01/fluxConfigurations) |
+| `Microsoft.KubernetesConfiguration/fluxConfigurations` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/fluxConfigurations) |
 
 ## Usage examples
 
@@ -28,7 +23,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm-res-kubernetesconfiguration-fluxconfiguration:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/kubernetes-configuration/flux-configuration:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -46,11 +41,16 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfiguration:1.0.0' = {
+module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-kcfcmin'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
+    kustomizations: {
+      unified: {
+        path: './cluster-manifests'
+      }
+    }
     name: 'kcfcmin001'
     namespace: 'flux-system'
     sourceKind: 'GitRepository'
@@ -66,7 +66,6 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
       timeoutInSeconds: 180
       url: 'https://github.com/mspnp/aks-baseline'
     }
-    kustomizations: '<kustomizations>'
     location: '<location>'
   }
 }
@@ -87,6 +86,13 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
     // Required parameters
     "clusterName": {
       "value": "<clusterName>"
+    },
+    "kustomizations": {
+      "value": {
+        "unified": {
+          "path": "./cluster-manifests"
+        }
+      }
     },
     "name": {
       "value": "kcfcmin001"
@@ -115,9 +121,6 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
         "url": "https://github.com/mspnp/aks-baseline"
       }
     },
-    "kustomizations": {
-      "value": "<kustomizations>"
-    },
     "location": {
       "value": "<location>"
     }
@@ -138,11 +141,27 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfiguration:1.0.0' = {
+module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-kcfcmax'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
+    kustomizations: {
+      unified: {
+        dependsOn: []
+        force: false
+        path: './cluster-manifests'
+        postBuild: {
+          substitute: {
+            TEST_VAR1: 'foo'
+            TEST_VAR2: 'bar'
+          }
+        }
+        prune: true
+        syncIntervalInSeconds: 300
+        timeoutInSeconds: 300
+      }
+    }
     name: 'kcfcmax001'
     namespace: 'flux-system'
     sourceKind: 'GitRepository'
@@ -157,16 +176,6 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
       syncIntervalInSeconds: 300
       timeoutInSeconds: 180
       url: 'https://github.com/mspnp/aks-baseline'
-    }
-    kustomizations: {
-      unified: {
-        dependsOn: []
-        force: false
-        path: './cluster-manifests'
-        prune: true
-        syncIntervalInSeconds: 300
-        timeoutInSeconds: 300
-      }
     }
     location: '<location>'
   }
@@ -188,6 +197,24 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
     // Required parameters
     "clusterName": {
       "value": "<clusterName>"
+    },
+    "kustomizations": {
+      "value": {
+        "unified": {
+          "dependsOn": [],
+          "force": false,
+          "path": "./cluster-manifests",
+          "postBuild": {
+            "substitute": {
+              "TEST_VAR1": "foo",
+              "TEST_VAR2": "bar"
+            }
+          },
+          "prune": true,
+          "syncIntervalInSeconds": 300,
+          "timeoutInSeconds": 300
+        }
+      }
     },
     "name": {
       "value": "kcfcmax001"
@@ -216,18 +243,6 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
         "url": "https://github.com/mspnp/aks-baseline"
       }
     },
-    "kustomizations": {
-      "value": {
-        "unified": {
-          "dependsOn": [],
-          "force": false,
-          "path": "./cluster-manifests",
-          "prune": true,
-          "syncIntervalInSeconds": 300,
-          "timeoutInSeconds": 300
-        }
-      }
-    },
     "location": {
       "value": "<location>"
     }
@@ -248,11 +263,21 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfiguration:1.0.0' = {
+module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-configuration:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-kcfcwaf'
   params: {
     // Required parameters
     clusterName: '<clusterName>'
+    kustomizations: {
+      unified: {
+        dependsOn: []
+        force: false
+        path: './cluster-manifests'
+        prune: true
+        syncIntervalInSeconds: 300
+        timeoutInSeconds: 300
+      }
+    }
     name: 'kcfcwaf001'
     namespace: 'flux-system'
     sourceKind: 'GitRepository'
@@ -267,16 +292,6 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
       syncIntervalInSeconds: 300
       timeoutInSeconds: 180
       url: 'https://github.com/mspnp/aks-baseline'
-    }
-    kustomizations: {
-      unified: {
-        dependsOn: []
-        force: false
-        path: './cluster-manifests'
-        prune: true
-        syncIntervalInSeconds: 300
-        timeoutInSeconds: 300
-      }
     }
     location: '<location>'
   }
@@ -298,6 +313,18 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
     // Required parameters
     "clusterName": {
       "value": "<clusterName>"
+    },
+    "kustomizations": {
+      "value": {
+        "unified": {
+          "dependsOn": [],
+          "force": false,
+          "path": "./cluster-manifests",
+          "prune": true,
+          "syncIntervalInSeconds": 300,
+          "timeoutInSeconds": 300
+        }
+      }
     },
     "name": {
       "value": "kcfcwaf001"
@@ -326,18 +353,6 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
         "url": "https://github.com/mspnp/aks-baseline"
       }
     },
-    "kustomizations": {
-      "value": {
-        "unified": {
-          "dependsOn": [],
-          "force": false,
-          "path": "./cluster-manifests",
-          "prune": true,
-          "syncIntervalInSeconds": 300,
-          "timeoutInSeconds": 300
-        }
-      }
-    },
     "location": {
       "value": "<location>"
     }
@@ -356,6 +371,7 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`clusterName`](#parameter-clustername) | string | The name of the AKS cluster that should be configured. |
+| [`kustomizations`](#parameter-kustomizations) | object | Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster. |
 | [`name`](#parameter-name) | string | The name of the Flux Configuration. |
 | [`namespace`](#parameter-namespace) | string | The namespace to which this configuration is installed to. Maximum of 253 lower case alphanumeric characters, hyphen and period only. |
 | [`scope`](#parameter-scope) | string | Scope at which the configuration will be installed. |
@@ -374,7 +390,6 @@ module fluxConfiguration 'br/public:avm-res-kubernetesconfiguration-fluxconfigur
 | :-- | :-- | :-- |
 | [`configurationProtectedSettings`](#parameter-configurationprotectedsettings) | secureObject | Key-value pairs of protected configuration settings for the configuration. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`kustomizations`](#parameter-kustomizations) | object | Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`suspend`](#parameter-suspend) | bool | Whether this configuration should suspend its reconciliation of its kustomizations and sources. |
 
@@ -412,7 +427,7 @@ Parameters to reconcile to the GitRepository source kind type. Required if `sour
 ### Parameter: `kustomizations`
 
 Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster.
-- Required: No
+- Required: Yes
 - Type: object
 
 ### Parameter: `location`
@@ -439,14 +454,26 @@ The namespace to which this configuration is installed to. Maximum of 253 lower 
 Scope at which the configuration will be installed.
 - Required: Yes
 - Type: string
-- Allowed: `[cluster, namespace]`
+- Allowed:
+  ```Bicep
+  [
+    'cluster'
+    'namespace'
+  ]
+  ```
 
 ### Parameter: `sourceKind`
 
 Source Kind to pull the configuration data from.
 - Required: Yes
 - Type: string
-- Allowed: `[Bucket, GitRepository]`
+- Allowed:
+  ```Bicep
+  [
+    'Bucket'
+    'GitRepository'
+  ]
+  ```
 
 ### Parameter: `suspend`
 

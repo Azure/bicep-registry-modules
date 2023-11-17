@@ -25,7 +25,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm-res-network-privateendpoint:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/private-endpoint:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -43,7 +43,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
+module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-npemin'
   params: {
     // Required parameters
@@ -147,7 +147,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
+module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-npemax'
   params: {
     // Required parameters
@@ -161,7 +161,14 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
     applicationSecurityGroupResourceIds: [
       '<applicationSecurityGroupResourceId>'
     ]
-    customDnsConfigs: []
+    customDnsConfigs: [
+      {
+        fqdn: 'abc.keyvault.com'
+        ipAddresses: [
+          '10.0.0.10'
+        ]
+      }
+    ]
     customNetworkInterfaceName: 'npemax001nic'
     ipConfigurations: [
       {
@@ -233,7 +240,14 @@ module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
       ]
     },
     "customDnsConfigs": {
-      "value": []
+      "value": [
+        {
+          "fqdn": "abc.keyvault.com",
+          "ipAddresses": [
+            "10.0.0.10"
+          ]
+        }
+      ]
     },
     "customNetworkInterfaceName": {
       "value": "npemax001nic"
@@ -303,7 +317,7 @@ This instance deploys the module in alignment with the best-practices of the Wel
 <summary>via Bicep module</summary>
 
 ```bicep
-module privateEndpoint 'br/public:avm-res-network-privateendpoint:1.0.0' = {
+module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-npewaf'
   params: {
     // Required parameters
@@ -490,6 +504,26 @@ Custom DNS configurations.
 - Required: No
 - Type: array
 
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`fqdn`](#parameter-customdnsconfigsfqdn) | Yes | string | Required. Fqdn that resolves to private endpoint ip address. |
+| [`ipAddresses`](#parameter-customdnsconfigsipaddresses) | Yes | array | Required. A list of private ip addresses of the private endpoint. |
+
+### Parameter: `customDnsConfigs.fqdn`
+
+Required. Fqdn that resolves to private endpoint ip address.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customDnsConfigs.ipAddresses`
+
+Required. A list of private ip addresses of the private endpoint.
+
+- Required: Yes
+- Type: array
+
 ### Parameter: `customNetworkInterfaceName`
 
 The custom name of the network interface attached to the private endpoint.
@@ -514,6 +548,54 @@ Subtype(s) of the connection to be created. The allowed values depend on the typ
 A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.
 - Required: No
 - Type: array
+
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`name`](#parameter-ipconfigurationsname) | Yes | string | Required. The name of the resource that is unique within a resource group. |
+| [`properties`](#parameter-ipconfigurationsproperties) | Yes | object | Required. Properties of private endpoint IP configurations. |
+
+### Parameter: `ipConfigurations.name`
+
+Required. The name of the resource that is unique within a resource group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipConfigurations.properties`
+
+Required. Properties of private endpoint IP configurations.
+
+- Required: Yes
+- Type: object
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`groupId`](#parameter-ipconfigurationspropertiesgroupid) | Yes | string | Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`memberName`](#parameter-ipconfigurationspropertiesmembername) | Yes | string | Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateIPAddress`](#parameter-ipconfigurationspropertiesprivateipaddress) | Yes | string | Required. A private ip address obtained from the private endpoint's subnet. |
+
+### Parameter: `ipConfigurations.properties.groupId`
+
+Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipConfigurations.properties.memberName`
+
+Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipConfigurations.properties.privateIPAddress`
+
+Required. A private ip address obtained from the private endpoint's subnet.
+
+- Required: Yes
+- Type: string
+
 
 ### Parameter: `location`
 

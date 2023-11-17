@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.22.6.54827",
-      "templateHash": "14904442878386197851"
+      "version": "0.23.1.45101",
+      "templateHash": "13360561055754827389"
     },
     "name": "Private DNS Zone PTR record",
     "description": "This module deploys a Private DNS Zone PTR record.",
