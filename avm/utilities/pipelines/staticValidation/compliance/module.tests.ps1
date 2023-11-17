@@ -1330,7 +1330,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
 
     $approvedApiVersions = $approvedApiVersions | Sort-Object -Unique -Descending
 
-    if ( $approvedApiVersions -notcontains $TargetApi) {
+    if ($approvedApiVersions -notcontains $TargetApi) {
       # Using a warning now instead of an error, as we don't want to block PRs for this.
       Write-Warning ("The used API version [$TargetApi] is not one of the most recent 5 versions. Please consider upgrading to one of the following: {0}" -f $approvedApiVersions -join ', ')
 
