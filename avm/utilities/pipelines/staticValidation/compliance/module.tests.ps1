@@ -41,11 +41,15 @@ foreach ($moduleFolderPath in $moduleFolderPaths) {
 
 # building paths
 $builtTestFileMap = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
+Write-Output "1" # TODO: Remove
 $pathsToBuild | ForEach-Object -Parallel {
+  Write-Output "2 $_" # TODO: Remove
   $dict = $using:builtTestFileMap
-  Write-Output "Trying to set [$_] as key"
+  Write-Output "3 $_" # TODO: Remove
   $builtTemplate = bicep build $_ --stdout | ConvertFrom-Json -AsHashtable
+  Write-Output "4 $_" # TODO: Remove
   $null = $dict.TryAdd($_, $builtTemplate)
+  Write-Output "5 $_" # TODO: Remove
 }
 
 Write-Verbose 'Post generation of test files' -Verbose
