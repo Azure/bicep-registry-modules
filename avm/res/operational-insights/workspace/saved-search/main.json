@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "17009532885229273685"
+      "templateHash": "15380855553217354458"
     },
     "name": "Log Analytics Workspace Saved Searches",
     "description": "This module deploys a Log Analytics Workspace Saved Search.",
@@ -92,7 +92,7 @@
       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
       "properties": {
         "etag": "[parameters('etag')]",
-        "tags": "[parameters('tags')]",
+        "tags": "[coalesce(parameters('tags'), createArray())]",
         "displayName": "[parameters('displayName')]",
         "category": "[parameters('category')]",
         "query": "[parameters('query')]",

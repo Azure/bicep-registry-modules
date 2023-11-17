@@ -42,7 +42,7 @@ resource savedSearch 'Microsoft.OperationalInsights/workspaces/savedSearches@202
   //etag: etag // According to API, the variable should be here, but it doesn't work here.
   properties: {
     etag: etag
-    tags: tags
+    tags: tags ?? []
     displayName: displayName
     category: category
     query: query
