@@ -21,6 +21,8 @@ $script:SubscriptionDeploymentSchema = 'https://schema.management.azure.com/sche
 $script:MgDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#'
 $script:TenantDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#'
 $script:moduleFolderPaths = $moduleFolderPaths
+$script:telemetryResCsvLink = 'https://aka.ms/avm/index/bicep/res/csv'
+$script:telemetryPtnCsvLink = 'https://aka.ms/avm/index/bicep/ptn/csv'
 
 # For runtime purposes, we cache the compiled template in a hashtable that uses a formatted relative module path as a key
 $script:convertedTemplates = @{}
@@ -536,8 +538,8 @@ Describe 'Module tests' -Tag 'Module' {
         $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
       }
 
-      $telemetryDeployment = $templateResources | Where-Object { $_.name -like "*'46d3xbcp.*" } # The AVM telemetry prefix
-      $telemetryDeployment | Should -Not -BeNullOrEmpty -Because 'The telemetry resource with name prefix [46d3xbcp] should be present in the tempalte'
+      $telemetryDeployment = $templateResources | Where-Object { $_.condition -like "*telemetry*" } # The AVM telemetry prefix
+      $telemetryDeployment | Should -Not -BeNullOrEmpty -Because 'A telemetry resource with name prefix [46d3xbcp] should be present in the template'
     }
 
     It '[<moduleFolderName>] Telemetry deployment should have correct condition in the template.' -TestCases ($deploymentFolderTestCases | Where-Object { $_.isTopLevelModule }) {
@@ -554,7 +556,7 @@ Describe 'Module tests' -Tag 'Module' {
         $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
       }
 
-      $telemetryDeployment = $templateResources | Where-Object { $_.name -like "*'46d3xbcp.*" } # The AVM telemetry prefix
+      $telemetryDeployment = $templateResources | Where-Object { $_.condition -like "*telemetry*" } # The AVM telemetry prefix
 
       if (-not $telemetryDeployment) {
         Set-ItResult -Skipped -Because 'Skipping this test as telemetry was not implemented in template'
@@ -578,7 +580,7 @@ Describe 'Module tests' -Tag 'Module' {
         $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
       }
 
-      $telemetryDeployment = $templateResources | Where-Object { $_.name -like "*'46d3xbcp.*" } # The AVM telemetry prefix
+      $telemetryDeployment = $templateResources | Where-Object { $_.condition -like "*telemetry*" } # The AVM telemetry prefix
 
       if (-not $telemetryDeployment) {
         Set-ItResult -Skipped -Because 'Skipping this test as telemetry was not implemented in template'
@@ -587,6 +589,53 @@ Describe 'Module tests' -Tag 'Module' {
 
       $telemetryDeployment.properties.template.outputs.Keys | Should -Contain 'telemetry'
       $telemetryDeployment.properties.template.outputs['telemetry'].value | Should -Be 'For more information, see https://aka.ms/avm/TelemetryInfo'
+    }
+
+    It '[<moduleFolderName>] Telemetry deployment should have expected telemetry identifier.' -TestCases ($deploymentFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+
+      param(
+        [string] $templateFilePath,
+        [hashtable] $templateContent
+      )
+
+      # Use correct telemetry link based on file path
+      $telemetryCsvLink = $templateFilePath -match '[\\|\/]res[\\|\/]' ? $telemetryResCsvLink : $telemetryPtnCsvLink
+
+      # Fetch CSV
+      # =========
+      try {
+        $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
+      } catch {
+        $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
+        Write-Error "Failed to download telemetry CSV file from [$errorMessage]."
+        Set-ItResult -Skipped -Because $errorMessage
+      }
+      $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
+
+      # Get correct row item & expected identifier
+      # ==========================================
+      $moduleName = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
+      $relevantCSVRow = $csvData | Where-Object {
+        $_.ModuleName -eq $moduleName
+      }
+
+      if (-not $relevantCSVRow) {
+        $errorMessage = "Failed to identify module [$moduleName]."
+        Write-Error "Failed to download telemetry CSV file from [$errorMessage]."
+        Set-ItResult -Skipped -Because $errorMessage
+      }
+      $expectedTelemetryIdentifier = $relevantCSVRow.TelemetryIdPrefix
+
+      # Collect resource & compare
+      # ==========================
+      # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
+      if ($templateContent.resources.GetType().Name -eq 'Object[]') {
+        $templateResources = $templateContent.resources
+      } else {
+        $templateResources = $templateContent.resources.Keys | ForEach-Object { $templateContent.resources[$_] }
+      }
+      $telemetryDeploymentName = ($templateResources | Where-Object { $_.condition -like "*telemetry*" }).name # The AVM telemetry prefix
+      $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
     }
 
     It '[<moduleFolderName>] The Location should be defined as a parameter, with the default value of [resourceGroup().Location] or global for ResourceGroup deployment scope.' -TestCases $deploymentFolderTestCases {
@@ -1021,7 +1070,18 @@ Describe 'Module tests' -Tag 'Module' {
           }
           $implementedSchema = $templateFileContentBicep[$implementedSchemaStartIndex..$implementedSchemaEndIndex]
 
-          $expectedSchemaFull = (Invoke-WebRequest -Uri $expectedUdtUrl).Content -split '\n'
+          try {
+            $rawReponse = Invoke-WebRequest -Uri $expectedUdtUrl
+            if (($rawReponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
+              $expectedSchemaFull = $rawReponse.Content -split '\n'
+            } else {
+              throw "Failed to fetch schema from [$expectedUdtUrl]. Skipping schema check"
+            }
+          } catch {
+            Write-Warning "Failed to fetch schema from [$expectedUdtUrl]. Skipping schema check"
+            return
+          }
+
           $expectedSchemaStartIndex = $expectedSchemaFull.IndexOf("type $udtName = {")
           $expectedSchemaEndIndex = $expectedSchemaStartIndex + 1
           while ($expectedSchemaFull[$expectedSchemaEndIndex] -notmatch '^\}.*' -and $expectedSchemaEndIndex -lt $expectedSchemaFull.Length) {
