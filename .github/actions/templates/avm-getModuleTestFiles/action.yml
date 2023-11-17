@@ -26,6 +26,14 @@ runs:
         $moduleFolderPath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.modulePath }}'
         $testFilePaths = (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName
 
+        $modulePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.modulePath }}'
+        $testFilePaths = $testFilePaths | ForEach-Object {
+          $_.Replace($modulePath, '').Trim('\').Trim('/')
+        }
+
+        Write-Verbose 'Found module test files' -Verbose
+        $testFilePaths | ForEach-Object { Write-Verbose "- [$_]" -Verbose }
+
         # Output values to be accessed by next jobs
         $compressedOutput = $testFilePaths | ConvertTo-Json -Compress
         if($compressedOutput -notmatch "\[.*\]") {
