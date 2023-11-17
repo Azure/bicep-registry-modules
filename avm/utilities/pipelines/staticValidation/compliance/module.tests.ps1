@@ -35,11 +35,13 @@ Import-Module (Join-Path $PSScriptRoot 'helper' 'helper.psm1') -Force
 # Collecting paths
 $pathsToBuild = [System.Collections.ArrayList]@()
 $pathsToBuild += $moduleFolderPaths | ForEach-Object { Join-Path $_ 'main.bicep' }
+Write-Output "-1" # TODO: Remove
 foreach ($moduleFolderPath in $moduleFolderPaths) {
   $pathsToBuild += (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName
 }
 
 # building paths
+Write-Output "0" # TODO: Remove
 $builtTestFileMap = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
 Write-Output "1" # TODO: Remove
 $pathsToBuild | ForEach-Object -Parallel {
