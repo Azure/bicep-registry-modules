@@ -16,6 +16,11 @@ param (
 Write-Verbose ("repoRootPath: $repoRootPath") -Verbose
 Write-Verbose ("moduleFolderPaths: $($moduleFolderPaths.count)") -Verbose
 
+Write-Verbose 'TODO: Remove 1' -Verbose
+$moduleFolderPaths | ForEach-Object {
+  Write-Verbose $_ -Verbose
+}
+
 $script:RgDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
 $script:SubscriptionDeploymentSchema = 'https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#'
 $script:MgDeploymentSchema = 'https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#'
@@ -31,7 +36,6 @@ $script:templateNotFoundException = 'No template file found in folder [{0}]' # -
 # Import any helper function used in this test script
 Import-Module (Join-Path $PSScriptRoot 'helper' 'helper.psm1') -Force
 
-
 # Building all required files for tests to optimize performance (using thread-safe multithreading) to consume later
 # Collecting paths
 $pathsToBuild = [System.Collections.ArrayList]@()
@@ -39,6 +43,11 @@ $pathsToBuild += $moduleFolderPaths | ForEach-Object { Join-Path $_ 'main.bicep'
 foreach ($moduleFolderPath in $moduleFolderPaths) {
   $pathsToBuild += (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName
 }
+
+Write-Verbose 'TODO: Remove 2' -Verbose
+Write-Verbose ($pathsToBuild | Out-String) -Verbose
+
+
 # building paths
 $builtTestFileMap = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
 $pathsToBuild | ForEach-Object -Parallel {
