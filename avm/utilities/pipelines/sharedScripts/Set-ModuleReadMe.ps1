@@ -51,7 +51,6 @@ Update the 'Resource Types' section of the given readme file
 
 .DESCRIPTION
 Update the 'Resource Types' section of the given readme file
-The section is added at the end if it does not exist
 
 .PARAMETER TemplateFileContent
 Mandatory. The template file content object to crawl data from
@@ -138,7 +137,6 @@ Update the 'parameters' section of the given readme file
 
 .DESCRIPTION
 Update the 'parameters' section of the given readme file
-The section is added at the end if it does not exist
 
 .PARAMETER TemplateFileContent
 Mandatory. The template file content object to crawl data from
@@ -465,7 +463,6 @@ Update the 'outputs' section of the given readme file
 
 .DESCRIPTION
 Update the 'outputs' section of the given readme file
-The section is added at the end if it does not exist
 
 .PARAMETER TemplateFileContent
 Mandatory. The template file content object to crawl data from
@@ -525,13 +522,28 @@ function Set-OutputsSection {
     return $updatedFileContent
 }
 
-function Set-TelemetrySection {
+<#
+.SYNOPSIS
+Update the 'Data Collection' section of the given readme file
+
+.DESCRIPTION
+Update the 'Data Collection' section of the given readme file
+
+.PARAMETER ReadMeFileContent
+Mandatory. The readme file content array to update
+
+.PARAMETER SectionStartIdentifier
+Optional. The identifier of the section. Defaults to '## Data Collection'
+
+.EXAMPLE
+Set-DataCollectionSection -ReadMeFileContent @('# Title', '', '## Section 1', ...)
+
+Update the given readme file's 'Data Collection' section
+#>
+function Set-DataCollectionSection {
 
     [CmdletBinding(SupportsShouldProcess)]
     param (
-        [Parameter(Mandatory)]
-        [hashtable] $TemplateFileContent,
-
         [Parameter(Mandatory)]
         [object[]] $ReadMeFileContent,
 
@@ -553,15 +565,15 @@ function Set-TelemetrySection {
     }
 
     # Filter noise
-    if ($telemetryInfoContent[0] -like '<!--*') {
-        $telemetryInfoContent = $telemetryInfoContent[1..($telemetryInfoContent.Length - 1)]
-    }
-    if ($telemetryInfoContent[0] -like '## Data Collection*') {
-        $telemetryInfoContent = $telemetryInfoContent[1..($telemetryInfoContent.Length - 1)]
-    }
-    if ($telemetryInfoContent[0] -like '') {
-        $telemetryInfoContent = $telemetryInfoContent[1..($telemetryInfoContent.Length - 1)]
-    }
+    # if ($telemetryInfoContent[0] -like '<!--*') {
+    #     $telemetryInfoContent = $telemetryInfoContent[1..($telemetryInfoContent.Length - 1)]
+    # }
+    # if ($telemetryInfoContent[0] -like '## Data Collection*') {
+    #     $telemetryInfoContent = $telemetryInfoContent[1..($telemetryInfoContent.Length - 1)]
+    # }
+    # if ($telemetryInfoContent[0] -like '') {
+    #     $telemetryInfoContent = $telemetryInfoContent[1..($telemetryInfoContent.Length - 1)]
+    # }
 
     # Build result
     if ($PSCmdlet.ShouldProcess('Original file with new output content', 'Merge')) {
@@ -1645,7 +1657,7 @@ function Set-ModuleReadMe {
             'CrossReferences',
             'Template references',
             'Navigation',
-            'Telemetry'
+            'DataCollection'
         )]
         [string[]] $SectionsToRefresh = @(
             'Resource Types',
@@ -1655,7 +1667,7 @@ function Set-ModuleReadMe {
             'CrossReferences',
             'Template references',
             'Navigation',
-            'Telemetry'
+            'DataCollection'
         )
     )
 
@@ -1797,14 +1809,13 @@ function Set-ModuleReadMe {
         $readMeFileContent += $notes
     }
 
-    if ($SectionsToRefresh -contains 'Telemetry') {
-        # Handle [Telemetry] section
+    if ($SectionsToRefresh -contains 'DataCollection') {
+        # Handle [DataCollection] section
         # ========================
         $inputObject = @{
-            ReadMeFileContent   = $readMeFileContent
             TemplateFileContent = $templateFileContent
         }
-        $readMeFileContent = Set-TelemetrySection @inputObject
+        $readMeFileContent = Set-DataCollectionSection @inputObject
     }
 
     if ($SectionsToRefresh -contains 'Navigation') {
