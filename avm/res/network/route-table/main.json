@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.21.1.54444",
-      "templateHash": "4086847291713214960"
+      "version": "0.23.1.45101",
+      "templateHash": "17284213437442846894"
     },
     "name": "Route Tables",
     "description": "This module deploys a User Defined Route Table (UDR).",
