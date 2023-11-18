@@ -6,6 +6,9 @@
             "rules": {
                 "no-deployments-resources": {
                     "level": "off" // Reason: The telemetry resource only has a single output and is self-contained in a deployment
+                },
+                "explicit-values-for-loc-params": {
+                    "level": "off" // Reason: Our modules default to e.g. the location of their parent resource group which is sufficient if deploying a self-contained solution
                 }
             }
         }
