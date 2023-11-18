@@ -525,6 +525,51 @@ function Set-OutputsSection {
     return $updatedFileContent
 }
 
+function Set-TelemetrySection {
+
+    [CmdletBinding(SupportsShouldProcess)]
+    param (
+        [Parameter(Mandatory)]
+        [hashtable] $TemplateFileContent,
+
+        [Parameter(Mandatory)]
+        [object[]] $ReadMeFileContent,
+
+        [Parameter(Mandatory = $false)]
+        [string] $SectionStartIdentifier = '## Data Collection'
+    )
+
+
+    $telemetryUrl = 'https://aka.ms/avm/static/telemetry'
+    try {
+        $rawReponse = Invoke-WebRequest -Uri $telemetryUrl
+        if (($rawReponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
+            $telemetryInfoContent = $rawReponse.Content -split '\n'
+        } else {
+            throw "Failed to telemetry information from [$telemetryUrl]." # Incorrect Url (e.g., points to HTML)
+        }
+    } catch {
+        throw "Failed to telemetry information from [$telemetryUrl]." # Invalid url
+    }
+
+    # Filter noise
+    if ($telemetryInfoContent[0] -like '<!--*') {
+        $telemetryInfoContent = $telemetryInfoContent[1..($telemetryInfoContent.Length - 1)]
+    }
+    if ($telemetryInfoContent[0] -like '## Data Collection*') {
+        $telemetryInfoContent = $telemetryInfoContent[1..($telemetryInfoContent.Length - 1)]
+    }
+    if ($telemetryInfoContent[0] -like '') {
+        $telemetryInfoContent = $telemetryInfoContent[1..($telemetryInfoContent.Length - 1)]
+    }
+
+    # Build result
+    if ($PSCmdlet.ShouldProcess('Original file with new output content', 'Merge')) {
+        $updatedFileContent = Merge-FileWithNewContent -oldContent $ReadMeFileContent -newContent $telemetryInfoContent -SectionStartIdentifier $SectionStartIdentifier -contentType 'nextH2'
+    }
+    return $updatedFileContent
+}
+
 <#
 .SYNOPSIS
 Add module references (cross-references) to the module's readme
@@ -1599,7 +1644,8 @@ function Set-ModuleReadMe {
             'Outputs',
             'CrossReferences',
             'Template references',
-            'Navigation'
+            'Navigation',
+            'Telemetry'
         )]
         [string[]] $SectionsToRefresh = @(
             'Resource Types',
@@ -1608,7 +1654,8 @@ function Set-ModuleReadMe {
             'Outputs',
             'CrossReferences',
             'Template references',
-            'Navigation'
+            'Navigation',
+            'Telemetry'
         )
     )
 
@@ -1742,11 +1789,22 @@ function Set-ModuleReadMe {
         }
         $readMeFileContent = Set-CrossReferencesSection @inputObject
     }
+
     # Handle [Notes] section
     # ========================
     if ($notes) {
         $readMeFileContent += @( '' )
         $readMeFileContent += $notes
+    }
+
+    if ($SectionsToRefresh -contains 'Telemetry') {
+        # Handle [Telemetry] section
+        # ========================
+        $inputObject = @{
+            ReadMeFileContent   = $readMeFileContent
+            TemplateFileContent = $templateFileContent
+        }
+        $readMeFileContent = Set-TelemetrySection @inputObject
     }
 
     if ($SectionsToRefresh -contains 'Navigation') {
