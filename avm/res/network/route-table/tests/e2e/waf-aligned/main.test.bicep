@@ -39,6 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    location: location
   }
 }
 
@@ -52,6 +53,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     enableDefaultTelemetry: enableDefaultTelemetry
     name: '${namePrefix}${serviceShort}001'
+    location: location
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
