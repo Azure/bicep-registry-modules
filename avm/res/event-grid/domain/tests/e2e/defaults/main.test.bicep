@@ -42,7 +42,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location 
+
+    // Workaround for PSRule 
     managedIdentities: null
+    privateEndpoints: null
   }
 }]
 
