@@ -44,7 +44,7 @@ param tags object?
 param enableTelemetry bool = true
 
 @description('Optional. The topic names which are associated with the domain.')
-param topics array = []
+param topics array?
 
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentitiesType
@@ -103,7 +103,7 @@ resource domain 'Microsoft.EventGrid/domains@2023-06-01-preview' = {
   }
 }
 
-module domain_topics 'topic/main.bicep' = [for (topic, index) in topics: {
+module domain_topics 'topic/main.bicep' = [for (topic, index) in (topics ?? []): {
   name: '${uniqueString(deployment().name, location)}-topics-${index}'
   params: {
     domainName: domain.name
@@ -197,7 +197,6 @@ output location string = domain.location
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(domain.identity, 'principalId') ? domain.identity.principalId : ''
-
 
 // =============== //
 //   Definitions   //

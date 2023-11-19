@@ -1025,7 +1025,6 @@ Tags of the resource.
 The topic names which are associated with the domain.
 - Required: No
 - Type: array
-- Default: `[]`
 
 
 ## Outputs
