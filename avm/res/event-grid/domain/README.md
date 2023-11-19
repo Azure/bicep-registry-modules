@@ -51,25 +51,8 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
     // Required parameters
     name: 'egdmin001'
     // Non-required parameters
-    inboundIpRules: []
     location: '<location>'
-    managedIdentities: {
-      systemAssigned: true
-    }
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        service: 'domain'
-        subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
-      }
-    ]
+    managedIdentities: '<managedIdentities>'
   }
 }
 ```
@@ -91,32 +74,11 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
       "value": "egdmin001"
     },
     // Non-required parameters
-    "inboundIpRules": {
-      "value": []
-    },
     "location": {
       "value": "<location>"
     },
     "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
-    },
-    "privateEndpoints": {
-      "value": [
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "service": "domain",
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          }
-        }
-      ]
+      "value": "<managedIdentities>"
     }
   }
 }
@@ -417,9 +379,6 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    managedIdentities: {
-      systemAssigned: true
-    }
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -432,13 +391,6 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
           'hidden-title': 'This is visible in the resource name'
           Role: 'DeploymentValidation'
         }
-      }
-    ]
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
       }
     ]
     tags: {
@@ -498,11 +450,6 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
         "name": "myCustomLockName"
       }
     },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
-    },
     "privateEndpoints": {
       "value": [
         {
@@ -516,15 +463,6 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
             "hidden-title": "This is visible in the resource name",
             "Role": "DeploymentValidation"
           }
-        }
-      ]
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
         }
       ]
     },
