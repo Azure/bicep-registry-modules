@@ -807,6 +807,16 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         displayName: 'VMSS Instance Count2'
         name: 'VMSSQueries'
         query: 'Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer'
+        tags: [
+          {
+            Name: 'Environment'
+            Value: 'Non-Prod'
+          }
+          {
+            Name: 'Role'
+            Value: 'DeploymentValidation'
+          }
+        ]
       }
     ]
     storageInsightsConfigs: [
@@ -1018,7 +1028,17 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
           "category": "VDC Saved Searches",
           "displayName": "VMSS Instance Count2",
           "name": "VMSSQueries",
-          "query": "Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer"
+          "query": "Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer",
+          "tags": [
+            {
+              "Name": "Environment",
+              "Value": "Non-Prod"
+            },
+            {
+              "Name": "Role",
+              "Value": "DeploymentValidation"
+            }
+          ]
         }
       ]
     },
