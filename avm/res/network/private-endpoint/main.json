@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "13477311172998188302"
+      "templateHash": "7602734043719523424"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint.",
@@ -215,6 +215,14 @@
         "description": "Required. Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to."
       }
     },
+    "requestMessage": {
+      "type": "string",
+      "nullable": true,
+      "maxLength": 140,
+      "metadata": {
+        "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+      }
+    },
     "privateDnsZoneGroupName": {
       "type": "string",
       "nullable": true,
@@ -261,11 +269,15 @@
         "description": "Optional. Custom DNS configurations."
       }
     },
-    "manualPrivateLinkServiceConnections": {
-      "type": "array",
-      "nullable": true,
+    "privateLinkServiceConnectionType": {
+      "type": "string",
+      "defaultValue": "auto",
+      "allowedValues": [
+        "auto",
+        "manual"
+      ],
       "metadata": {
-        "description": "Optional. Manual PrivateLink Service Connections."
+        "description": "Optional. Private Link Service Connection type."
       }
     },
     "enableTelemetry": {
@@ -330,16 +342,8 @@
         "customDnsConfigs": "[coalesce(parameters('customDnsConfigs'), createArray())]",
         "customNetworkInterfaceName": "[coalesce(parameters('customNetworkInterfaceName'), '')]",
         "ipConfigurations": "[coalesce(parameters('ipConfigurations'), createArray())]",
-        "manualPrivateLinkServiceConnections": "[coalesce(parameters('manualPrivateLinkServiceConnections'), createArray())]",
-        "privateLinkServiceConnections": [
-          {
-            "name": "[parameters('name')]",
-            "properties": {
-              "privateLinkServiceId": "[parameters('serviceResourceId')]",
-              "groupIds": "[parameters('groupIds')]"
-            }
-          }
-        ],
+        "manualPrivateLinkServiceConnections": "[if(equals(parameters('privateLinkServiceConnectionType'), 'manual'), createArray(createObject('name', parameters('name'), 'properties', createObject('privateLinkServiceId', parameters('serviceResourceId'), 'groupIds', coalesce(parameters('groupIds'), createArray()), 'requestMessage', coalesce(parameters('requestMessage'), null())))), createArray())]",
+        "privateLinkServiceConnections": "[if(equals(parameters('privateLinkServiceConnectionType'), 'auto'), createArray(createObject('name', parameters('name'), 'properties', createObject('privateLinkServiceId', parameters('serviceResourceId'), 'groupIds', coalesce(parameters('groupIds'), createArray())))), createArray())]",
         "subnet": {
           "id": "[parameters('subnetResourceId')]"
         }

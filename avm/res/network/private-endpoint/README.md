@@ -60,7 +60,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     ipConfigurations: []
     location: '<location>'
     lock: {}
-    manualPrivateLinkServiceConnections: []
     privateDnsZoneGroupName: ''
     privateDnsZoneResourceIds: []
     roleAssignments: []
@@ -114,9 +113,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     },
     "lock": {
       "value": {}
-    },
-    "manualPrivateLinkServiceConnections": {
-      "value": []
     },
     "privateDnsZoneGroupName": {
       "value": ""
@@ -185,7 +181,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    manualPrivateLinkServiceConnections: []
     privateDnsZoneGroupName: 'default'
     privateDnsZoneResourceIds: [
       '<privateDNSZoneResourceId>'
@@ -273,9 +268,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         "name": "myCustomLockName"
       }
     },
-    "manualPrivateLinkServiceConnections": {
-      "value": []
-    },
     "privateDnsZoneGroupName": {
       "value": "default"
     },
@@ -348,7 +340,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    manualPrivateLinkServiceConnections: []
     privateDnsZoneGroupName: 'default'
     privateDnsZoneResourceIds: [
       '<privateDNSZoneResourceId>'
@@ -429,9 +420,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         "name": "myCustomLockName"
       }
     },
-    "manualPrivateLinkServiceConnections": {
-      "value": []
-    },
     "privateDnsZoneGroupName": {
       "value": "default"
     },
@@ -486,9 +474,10 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 | [`ipConfigurations`](#parameter-ipconfigurations) | array | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`manualPrivateLinkServiceConnections`](#parameter-manualprivatelinkserviceconnections) | array | Manual PrivateLink Service Connections. |
 | [`privateDnsZoneGroupName`](#parameter-privatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+| [`privateLinkServiceConnectionType`](#parameter-privatelinkserviceconnectiontype) | string | Private Link Service Connection type. |
+| [`requestMessage`](#parameter-requestmessage) | string | A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 | [`tags`](#parameter-tags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
@@ -631,12 +620,6 @@ Optional. Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `manualPrivateLinkServiceConnections`
-
-Manual PrivateLink Service Connections.
-- Required: No
-- Type: array
-
 ### Parameter: `name`
 
 Name of the private endpoint resource to create.
@@ -654,6 +637,26 @@ The name of the private DNS zone group to create if `privateDnsZoneResourceIds` 
 The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
 - Required: No
 - Type: array
+
+### Parameter: `privateLinkServiceConnectionType`
+
+Private Link Service Connection type.
+- Required: No
+- Type: string
+- Default: `'auto'`
+- Allowed:
+  ```Bicep
+  [
+    'auto'
+    'manual'
+  ]
+  ```
+
+### Parameter: `requestMessage`
+
+A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.
+- Required: No
+- Type: string
 
 ### Parameter: `roleAssignments`
 

@@ -69,7 +69,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ipConfigurations: []
     customDnsConfigs: []
     privateDnsZoneResourceIds: []
-    manualPrivateLinkServiceConnections: []
     tags: {}
   }
 }]

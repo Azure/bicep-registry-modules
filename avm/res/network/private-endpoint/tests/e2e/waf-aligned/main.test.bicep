@@ -95,6 +95,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     // Workaround for PSRule
     privateDnsZoneGroupName: 'default'
     customDnsConfigs: []
-    manualPrivateLinkServiceConnections: []
   }
 }]
