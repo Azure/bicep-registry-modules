@@ -18,7 +18,6 @@ param location string = deployment().location
 @maxLength(7)
 param serviceShort string = 'cspkwaf'
 
-
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
@@ -40,6 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
     generateSshPubKeyScriptName: 'dep-${namePrefix}-ds-${serviceShort}-generateSshPubKey'
     sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    location: location
   }
 }
 

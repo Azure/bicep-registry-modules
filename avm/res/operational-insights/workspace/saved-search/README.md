@@ -98,7 +98,6 @@ Kusto Query to be stored.
 Tags to configure in the resource.
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `version`
 

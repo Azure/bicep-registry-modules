@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "12293754418506359991"
+      "templateHash": "629585137254239873"
     },
     "name": "Kubernetes Configuration Extensions",
     "description": "This module deploys a Kubernetes Configuration Extension.",
@@ -100,7 +100,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
-      "name": "[format('46d3xbcp.res.kubernetesconfiguration-fluxconfig.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.res.kubernetesconfiguration-extension.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -183,7 +183,7 @@
             "value": "[tryGet(coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()], 'gitRepository')]"
           },
           "kustomizations": {
-            "value": "[tryGet(coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()], 'kustomizations')]"
+            "value": "[coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()].kustomizations]"
           },
           "suspend": {
             "value": "[tryGet(coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()], 'suspend')]"
@@ -197,7 +197,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "13420454476526931427"
+              "templateHash": "885928168160399718"
             },
             "name": "Kubernetes Configuration Flux Configurations",
             "description": "This module deploys a Kubernetes Configuration Flux Configuration.",
@@ -253,9 +253,8 @@
             },
             "kustomizations": {
               "type": "object",
-              "nullable": true,
               "metadata": {
-                "description": "Optional. Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster."
+                "description": "Required. Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster."
               }
             },
             "namespace": {
@@ -297,7 +296,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.kubernetesconfiguration-extension.{0}.{1}', replace('0.2.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.kubernetesconfiguration-fluxconfig.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -321,7 +320,7 @@
             },
             "fluxConfiguration": {
               "type": "Microsoft.KubernetesConfiguration/fluxConfigurations",
-              "apiVersion": "2022-03-01",
+              "apiVersion": "2023-05-01",
               "scope": "[format('Microsoft.ContainerService/managedClusters/{0}', parameters('clusterName'))]",
               "name": "[parameters('name')]",
               "properties": {
