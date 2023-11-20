@@ -44,8 +44,11 @@ param tags object?
 @description('Optional. Custom DNS configurations.')
 param customDnsConfigs customDnsConfigType
 
-@description('Optional. Manual PrivateLink Service Connections.')
+@description('Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource.')
 param manualPrivateLinkServiceConnections array?
+
+@description('Optional. A grouping of information about the connection to the remote resource.')
+param privateLinkServiceConnections array?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -93,7 +96,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-04-01' = {
     customNetworkInterfaceName: customNetworkInterfaceName ?? ''
     ipConfigurations: ipConfigurations ?? []
     manualPrivateLinkServiceConnections: manualPrivateLinkServiceConnections ?? []
-    privateLinkServiceConnections: [
+    privateLinkServiceConnections: privateLinkServiceConnections ?? [
       {
         name: name
         properties: {
@@ -105,7 +108,6 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-04-01' = {
     subnet: {
       id: subnetResourceId
     }
-
   }
 }
 
