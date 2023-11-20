@@ -66,11 +66,7 @@ module testDeployment '../../../main.bicep' = {
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    query: '''
-    resourcecontainers
-    | where type == 'microsoft.resources/subscriptions'
-    | take 5
-    '''
+    query: 'resourcecontainers| where type == \'microsoft.resources/subscriptions\' | take 5'
     queryDescription: 'An example query to list first 5 subscriptions.'
   }
 }
