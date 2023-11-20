@@ -27,14 +27,14 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.resource-graph.query"
+      - ".github/workflows/avm.res.resource-graph.query.yml"
       - "avm/res/resource-graph.query/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/resource-graph.query"
-  workflowPath: ".github/workflows/avm.res.resource-graph.query"
+  modulePath: "avm/res/resource-graph/query"
+  workflowPath: ".github/workflows/avm.res.resource-graph.query.yml"
 
 concurrency:
   group: ${{ github.workflow }}
