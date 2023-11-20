@@ -203,6 +203,16 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         displayName: 'VMSS Instance Count2'
         name: 'VMSSQueries'
         query: 'Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer'
+        tags: [
+          {
+            Name: 'Environment'
+            Value: 'Non-Prod'
+          }
+          {
+            Name: 'Role'
+            Value: 'DeploymentValidation'
+          }
+        ]
       }
     ]
     storageInsightsConfigs: [
