@@ -24,11 +24,11 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/route-table:0.1`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/route-table:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -40,13 +40,13 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module routeTable 'br/public:avm/res/network/route-table:0.1' = {
+module routeTable 'br/public:avm/res/network/route-table:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-nrtmin'
   params: {
     // Required parameters
     name: 'nrtmin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -68,8 +68,8 @@ module routeTable 'br/public:avm/res/network/route-table:0.1' = {
       "value": "nrtmin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -88,13 +88,13 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module routeTable 'br/public:avm/res/network/route-table:0.1' = {
-  name: '${uniqueString(deployment().name, location)}-test-nrtcom'
+module routeTable 'br/public:avm/res/network/route-table:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-nrtmax'
   params: {
     // Required parameters
-    name: 'nrtcom001'
+    name: 'nrtmax001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -139,11 +139,11 @@ module routeTable 'br/public:avm/res/network/route-table:0.1' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "nrtcom001"
+      "value": "nrtmax001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -186,9 +186,9 @@ module routeTable 'br/public:avm/res/network/route-table:0.1' = {
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 3: _WAF-aligned_
 
-This instance deploys the module with most of its features enabled.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
@@ -196,24 +196,17 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module routeTable 'br/public:avm/res/network/route-table:0.1' = {
-  name: '${uniqueString(deployment().name, location)}-test-nrtcom'
+module routeTable 'br/public:avm/res/network/route-table:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-nrtwaf'
   params: {
     // Required parameters
-    name: 'nrtcom001'
+    name: 'nrtwaf001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
     routes: [
       {
         name: 'default'
@@ -247,26 +240,17 @@ module routeTable 'br/public:avm/res/network/route-table:0.1' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "nrtcom001"
+      "value": "nrtwaf001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
     },
     "routes": {
       "value": [
@@ -308,7 +292,7 @@ module routeTable 'br/public:avm/res/network/route-table:0.1' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`disableBgpRoutePropagation`](#parameter-disablebgproutepropagation) | bool | Switch to disable BGP route propagation. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
@@ -322,9 +306,9 @@ Switch to disable BGP route propagation.
 - Type: bool
 - Default: `False`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
