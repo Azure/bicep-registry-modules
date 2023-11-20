@@ -241,16 +241,16 @@ module serviceBusNamespace_queues 'queue/main.bicep' = [for (queue, index) in (q
     defaultMessageTimeToLive: queue.?defaultMessageTimeToLive ?? 'P14D'
     duplicateDetectionHistoryTimeWindow: queue.?duplicateDetectionHistoryTimeWindow ?? 'PT10M'
     enableBatchedOperations: queue.?enableBatchedOperations ?? true
-    enableExpress: contains(queue, 'enableExpress') ? queue.enableExpress : false
-    enablePartitioning: contains(queue, 'enablePartitioning') ? queue.enablePartitioning : false
+    enableExpress: queue.?enableExpress ?? false
+    enablePartitioning: queue.?enablePartitioning ?? false
     lock: queue.?lock ?? lock
-    lockDuration: contains(queue, 'lockDuration') ? queue.lockDuration : 'PT1M'
-    maxDeliveryCount: contains(queue, 'maxDeliveryCount') ? queue.maxDeliveryCount : 10
-    maxSizeInMegabytes: contains(queue, 'maxSizeInMegabytes') ? queue.maxSizeInMegabytes : 1024
-    requiresDuplicateDetection: contains(queue, 'requiresDuplicateDetection') ? queue.requiresDuplicateDetection : false
-    requiresSession: contains(queue, 'requiresSession') ? queue.requiresSession : false
-    roleAssignments: contains(queue, 'roleAssignments') ? queue.roleAssignments : []
-    status: contains(queue, 'status') ? queue.status : 'Active'
+    lockDuration: queue.?lockDuration ?? 'PT1M'
+    maxDeliveryCount: queue.?maxDeliveryCount ?? 10
+    maxSizeInMegabytes: queue.?maxSizeInMegabytes ?? 1024
+    requiresDuplicateDetection: queue.?requiresDuplicateDetection ?? false
+    requiresSession: queue.?requiresSession ?? false
+    roleAssignments: queue.?roleAssignments ?? []
+    status: queue.?status ?? 'Active'
   }
 }]
 
