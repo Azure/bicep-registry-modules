@@ -1,4 +1,4 @@
-name: "avm.res.resources.resource-graph.query"
+name: "avm.res.resource-graph.query"
 
 on:
   schedule:
@@ -27,14 +27,14 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.resources.resource-graph.query"
-      - "avm/res/resources/resource-graph.query/**"
+      - ".github/workflows/avm.res.resource-graph.query"
+      - "avm/res/resource-graph.query/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/resources/resource-graph.query"
-  workflowPath: ".github/workflows/avm.res.resources.resource-graph.query"
+  modulePath: "avm/res/resource-graph.query"
+  workflowPath: ".github/workflows/avm.res.resource-graph.query"
 
 concurrency:
   group: ${{ github.workflow }}
