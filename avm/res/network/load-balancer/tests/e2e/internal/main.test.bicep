@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Using internal load balancer parameter'
+metadata description = 'This instance deploys the module with the minimum set of required parameters to deploy an internal load balancer.'
+
 // ========== //
 // Parameters //
 // ========== //
@@ -38,20 +41,6 @@ module nestedDependencies 'dependencies.bicep' = {
   }
 }
 
-// Diagnostics
-// ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-diagnosticDependencies'
-  params: {
-    storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
-    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: location
-  }
-}
-
 // ============== //
 // Test Execution //
 // ============== //
@@ -72,20 +61,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     backendAddressPools: [
       {
         name: 'servers'
-      }
-    ]
-    diagnosticSettings: [
-      {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
     ]
     inboundNatRules: [
