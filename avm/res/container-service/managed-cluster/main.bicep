@@ -336,7 +336,7 @@ param tags object?
 param diskEncryptionSetID string = ''
 
 @description('Optional. Settings and configurations for the flux extension.')
-param fluxExtension fluxExtensionType
+param extension extensionType
 
 @description('Optional. Configurations for provisioning the cluster with HTTP proxy servers.')
 param httpProxyConfig object = {}
@@ -418,6 +418,10 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
     }
   }
 }
+
+// ============== //
+// Main Resources //
+// ============== //
 
 resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-preview' = {
   name: name
@@ -620,19 +624,21 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [for (agentPool, inde
   }
 }]
 
-module managedCluster_extension 'br/public:avm-res-kubernetesconfiguration-fluxconfiguration:0.1.1' = if (!empty(fluxExtension ?? {})) {
+module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/extension:0.2.0' = if (!empty(extension ?? {})) {
   name: '${uniqueString(deployment().name, location)}-ManagedCluster-FluxExtension'
   params: {
+    extensionType: 'microsoft.flux'
     clusterName: managedCluster.name
-    name: fluxExtension.?name ?? 'flux-extension'
-    namespace: fluxExtension.?namespace ?? 'flux-system'
-    sourceKind: fluxExtension.?sourceKind ?? 'GitRepository'
-    bucket: fluxExtension.?bucket
-    configurationProtectedSettings: fluxExtension.?configurationProtectedSettings
-    gitRepository: fluxExtension.?gitRepository
-    kustomizations: fluxExtension.?kustomizations
+    name: extension.?name ?? 'flux-extension'
+    configurationProtectedSettings: extension.?configurationProtectedSettings
+    configurationSettings: extension.?configurationSettings
+    releaseTrain: extension.?releaseTrain
+    releaseNamespace: extension.?releaseNamespace
+    targetNamespace: extension.?targetNamespace
+    version: extension.?version
+    fluxConfigurations: extension.?configurations
     location: location
-    scope: fluxExtension.?scope ?? 'cluster'
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -739,46 +745,122 @@ output addonProfiles object = contains(managedCluster.properties, 'addonProfiles
 //   Definitions   //
 // =============== //
 
-type agendPoolType = [
-  {
-    @description('Required. The name of the agent pool.')
-    name: string
+type agendPoolType = {
+  @description('Required. The name of the agent pool.')
+  name: string?
 
-    @description('Optional. The availability zones of the agent pool.')
-    availabilityZones: string[]?
+  @description('Optional. The availability zones of the agent pool.')
+  availabilityZones: string[]?
 
-    @description('Optional. The number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).')
-    count: int?
+  @description('Optional. The number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).')
+  count: int?
 
-    @description('Optional. The source resource ID to create the agent pool from.')
-    sourceResourceId: string?
+  @description('Optional. The source resource ID to create the agent pool from.')
+  sourceResourceId: string?
 
-    @description('Optional. Whether to enable auto-scaling for the agent pool.')
-    enableAutoScaling: bool?
+  @description('Optional. Whether to enable auto-scaling for the agent pool.')
+  enableAutoScaling: bool?
 
-    @description('Optional. Whether to enable encryption at host for the agent pool.')
-    enableEncryptionAtHost: bool?
+  @description('Optional. Whether to enable encryption at host for the agent pool.')
+  enableEncryptionAtHost: bool?
 
-    @description('Optional. Whether to enable FIPS for the agent pool.')
-    enableFIPS: bool?
+  @description('Optional. Whether to enable FIPS for the agent pool.')
+  enableFIPS: bool?
 
-    @description('Optional. Whether to enable node public IP for the agent pool.')
-    enableNodePublicIP: bool?
+  @description('Optional. Whether to enable node public IP for the agent pool.')
+  enableNodePublicIP: bool?
 
-    @description('Optional. Whether to enable Ultra SSD for the agent pool.')
-    enableUltraSSD: bool?
+  @description('Optional. Whether to enable Ultra SSD for the agent pool.')
+  enableUltraSSD: bool?
 
-    @description('Optional. The GPU instance profile of the agent pool.')
-    gpuInstanceProfile: ('' | 'MIG1g' | 'MIG2g' | 'MIG3g' | 'MIG4g' | 'MIG7g' | null)
+  @description('Optional. The GPU instance profile of the agent pool.')
+  gpuInstanceProfile: ('MIG1g' | 'MIG2g' | 'MIG3g' | 'MIG4g' | 'MIG7g')?
 
-    @description('Optional. The kubelet disk type of the agent pool.')
-    kubeletDiskType: string?
+  @description('Optional. The kubelet disk type of the agent pool.')
+  kubeletDiskType: string?
 
-    @description('Optional. The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).')
-    maxCount: int?
+  @description('Optional. The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).')
+  maxCount: int?
 
-  }?
-]
+  @description('Optional. The minimum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).')
+  minCount: int?
+
+  @description('Optional. The maximum number of pods that can run on a node.')
+  maxPods: int?
+
+  @description('Optional. The minimum number of pods that can run on a node.')
+  minPods: int?
+
+  @description('Optional. The mode of the agent pool.')
+  mode: ('System' | 'User')?
+
+  @description('Optional. The node labels of the agent pool.')
+  nodeLabels: object?
+
+  @description('Optional. The node public IP prefix ID of the agent pool.')
+  nodePublicIpPrefixId: string?
+
+  @description('Optional. The node taints of the agent pool.')
+  nodeTaints: string[]?
+
+  @description('Optional. The Kubernetes version of the agent pool.')
+  orchestratorVersion: string?
+
+  @description('Optional. The OS disk size in GB of the agent pool.')
+  osDiskSizeGB: int?
+
+  @description('Optional. The OS disk type of the agent pool.')
+  osDiskType: string?
+
+  @description('Optional. The OS SKU of the agent pool.')
+  osSku: string?
+
+  @description('Optional. The OS type of the agent pool.')
+  osType: ('Linux' | 'Windows')?
+
+  @description('Optional. The pod subnet ID of the agent pool.')
+  podSubnetId: string?
+
+  @description('Optional. The proximity placement group resource ID of the agent pool.')
+  proximityPlacementGroupResourceId: string?
+
+  @description('Optional. The scale down mode of the agent pool.')
+  scaleDownMode: ('Delete' | 'Pause' | 'Requeue' | 'DeleteRequeue')?
+
+  @description('Optional. The scale set eviction policy of the agent pool.')
+  scaleSetEvictionPolicy: ('Delete' | 'Deallocate')?
+
+  @description('Optional. The scale set priority of the agent pool.')
+  scaleSetPriority: ('Low' | 'Regular' | 'Spot')?
+
+  @description('Optional. The spot max price of the agent pool.')
+  spotMaxPrice: int?
+
+  @description('Optional. The tags of the agent pool.')
+  tags: object?
+
+  @description('Optional. The type of the agent pool.')
+  type: ('AvailabilitySet' | 'VirtualMachineScaleSets')?
+
+  @description('Optional. The maximum number of nodes that can be created during an upgrade.')
+  maxSurge: string?
+
+  @description('Optional. The VM size of the agent pool.')
+  vmSize: string?
+
+  @description('Optional. The VNet subnet ID of the agent pool.')
+  vnetSubnetID: string?
+
+  @description('Optional. The workload runtime of the agent pool.')
+  workloadRuntime: string?
+
+  @description('Optional. The enable default telemetry of the agent pool.')
+  enableDefaultTelemetry: bool?
+
+  @description('')
+  storageProfile: string?
+
+}[]?
 
 type managedIdentitiesType = {
   @description('Optional. Enables system assigned managed identity on the resource.')
@@ -862,28 +944,28 @@ type fluxConfigurationProtectedSettingsType = {
   sshPrivateKey: string?
 }?
 
-type fluxExtensionType = {
+type extensionType = {
   @description('Required. The name of the extension.')
-  name: string
+  name: string?
 
-  @description('Required. The namespace of the extension.')
-  namespace: string
+  @description('Optional. Namespace where the extension Release must be placed.')
+  releaseNamespace: string?
 
-  @description('Required. The source kind of the extension.')
-  sourceKind: ('GitRepository' | 'Bucket' | null)
+  @description('Optional. Namespace where the extension will be created for an Namespace scoped extension.')
+  targetNamespace: string?
 
-  @description('Optional. The bucket of the extension.')
-  bucket: object?
+  @description('Required. The release train of the extension.')
+  releaseTrain: string?
 
   @description('Optional. The configuration protected settings of the extension.')
   configurationProtectedSettings: fluxConfigurationProtectedSettingsType?
 
-  @description('Optional. The Git repository of the extension.')
-  gitRepository: object?
+  @description('Optional. The configuration settings of the extension.')
+  configurationSettings: object?
 
-  @description('Optional. The kustomizations of the extension.')
-  kustomizations: object?
+  @description('Optional. The version of the extension.')
+  version: string?
 
-  @description('Required. The scope of the extension.')
-  scope: ('cluster' | 'namespace')?
+  @description('Optional. The flux configurations of the extension.')
+  configurations: array?
 }?

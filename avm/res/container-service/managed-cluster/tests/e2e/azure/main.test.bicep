@@ -35,6 +35,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
+    location: location
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     managedIdentityKubeletIdentityName: 'dep-${namePrefix}-msiki-${serviceShort}'
@@ -66,10 +67,11 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' =  [for iteration in [ 'init', 'idem' ]: {
+module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
+    location: location
     name: '${namePrefix}${serviceShort}001'
     primaryAgentPoolProfile: [
       {
@@ -202,7 +204,7 @@ module testDeployment '../../../main.bicep' =  [for iteration in [ 'init', 'idem
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    fluxExtension: {
+    extension: {
       configurationSettings: {
         'helm-controller.enabled': 'true'
         'source-controller.enabled': 'true'
