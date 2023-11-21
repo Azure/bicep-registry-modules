@@ -42,7 +42,6 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualWANName: 'dep-${namePrefix}-vwan-${serviceShort}'
     virtualHubName: 'dep-${namePrefix}-hub-${serviceShort}'
     location: location
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
 // ============== //
@@ -67,12 +66,5 @@ module testDeployment '../../../main.bicep' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Reader'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
   }
 }

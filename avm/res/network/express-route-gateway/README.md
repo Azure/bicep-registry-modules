@@ -211,13 +211,6 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
     tags: {
       hello: 'world'
       'hidden-title': 'This is visible in the resource name'
@@ -263,15 +256,6 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
     },
     "tags": {
       "value": {
