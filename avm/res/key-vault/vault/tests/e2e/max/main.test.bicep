@@ -137,6 +137,16 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             principalId: nestedDependencies.outputs.managedIdentityPrincipalId
             principalType: 'ServicePrincipal'
           }
+          {
+            roleDefinitionIdOrName: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
+          }
+          {
+            roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
+          }
         ]
         rotationPolicy: {
           attributes: {
@@ -230,6 +240,16 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           roleAssignments: [
             {
               roleDefinitionIdOrName: 'Reader'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
             }
