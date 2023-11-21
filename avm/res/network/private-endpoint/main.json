@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "10636662892891609347"
+      "templateHash": "11725718020023633062"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint.",
@@ -334,13 +334,13 @@
     "manualPrivateLinkServiceConnections": {
       "$ref": "#/definitions/manualPrivateLinkServiceConnectionsType",
       "metadata": {
-        "description": "Required. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource."
+        "description": "Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource."
       }
     },
     "privateLinkServiceConnections": {
       "$ref": "#/definitions/privateLinkServiceConnectionsType",
       "metadata": {
-        "description": "Required. A grouping of information about the connection to the remote resource."
+        "description": "Optional. A grouping of information about the connection to the remote resource."
       }
     },
     "enableTelemetry": {
