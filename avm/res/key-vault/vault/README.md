@@ -209,12 +209,12 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
           }
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           }
           {
             principalId: '<principalId>'
@@ -292,12 +292,12 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
       }
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
       }
       {
         principalId: '<principalId>'
@@ -316,12 +316,12 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
             {
               principalId: '<principalId>'
               principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Reader'
+              roleDefinitionIdOrName: 'Owner'
             }
             {
               principalId: '<principalId>'
               principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
             }
             {
               principalId: '<principalId>'
@@ -435,12 +435,12 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
             },
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "acdd72a7-3385-48ef-bd42-f606fba81ae7"
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
             },
             {
               "principalId": "<principalId>",
@@ -528,12 +528,12 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
         },
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "acdd72a7-3385-48ef-bd42-f606fba81ae7"
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
         },
         {
           "principalId": "<principalId>",
@@ -554,12 +554,12 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
               {
                 "principalId": "<principalId>",
                 "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "Reader"
+                "roleDefinitionIdOrName": "Owner"
               },
               {
                 "principalId": "<principalId>",
                 "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "acdd72a7-3385-48ef-bd42-f606fba81ae7"
+                "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
               },
               {
                 "principalId": "<principalId>",
