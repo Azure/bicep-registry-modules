@@ -1,0 +1,321 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.23.1.45101",
+      "templateHash": "8314710518368415809"
+    },
+    "name": "DocumentDB Database Account Gremlin Databases",
+    "description": "This module deploys a Gremlin Database within a CosmosDB Account.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "managedIdentitiesType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource."
+          }
+        }
+      },
+      "nullable": true
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the Gremlin database."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the Gremlin database resource."
+      }
+    },
+    "databaseAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Gremlin database. Required if the template is used in a standalone deployment."
+      }
+    },
+    "graphs": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Array of graphs to deploy in the Gremlin database."
+      }
+    },
+    "maxThroughput": {
+      "type": "int",
+      "defaultValue": 4000,
+      "metadata": {
+        "description": "Optional. Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored."
+      }
+    },
+    "throughput": {
+      "type": "int",
+      "defaultValue": -1,
+      "metadata": {
+        "description": "Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "variables": {
+    "enableReferencedModulesTelemetry": false
+  },
+  "resources": {
+    "defaultTelemetry": {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    "databaseAccount": {
+      "existing": true,
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "apiVersion": "2023-04-15",
+      "name": "[parameters('databaseAccountName')]"
+    },
+    "gremlinDatabase": {
+      "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
+      "apiVersion": "2023-04-15",
+      "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), createObject(), createObject('autoscaleSettings', if(equals(parameters('throughput'), -1), createObject('maxThroughput', parameters('maxThroughput')), null()), 'throughput', if(not(equals(parameters('throughput'), -1)), parameters('throughput'), null())))]",
+        "resource": {
+          "id": "[parameters('name')]"
+        }
+      },
+      "dependsOn": [
+        "databaseAccount"
+      ]
+    },
+    "gremlinDatabase_gremlinGraphs": {
+      "copy": {
+        "name": "gremlinDatabase_gremlinGraphs",
+        "count": "[length(parameters('graphs'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-gremlindb-{1}', uniqueString(deployment().name, parameters('name')), parameters('graphs')[copyIndex()].name)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('graphs')[copyIndex()].name]"
+          },
+          "gremlinDatabaseName": {
+            "value": "[parameters('name')]"
+          },
+          "databaseAccountName": {
+            "value": "[parameters('databaseAccountName')]"
+          },
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
+          "indexingPolicy": "[if(contains(parameters('graphs')[copyIndex()], 'indexingPolicy'), createObject('value', parameters('graphs')[copyIndex()].indexingPolicy), createObject('value', true()))]",
+          "partitionKeyPaths": "[if(not(empty(parameters('graphs')[copyIndex()].partitionKeyPaths)), createObject('value', parameters('graphs')[copyIndex()].partitionKeyPaths), createObject('value', createArray()))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "4035784770059836359"
+            },
+            "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
+            "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the graph."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the Gremlin graph resource."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            },
+            "databaseAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "gremlinDatabaseName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Gremlin Database. Required if the template is used in a standalone deployment."
+              }
+            },
+            "indexingPolicy": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Indexing policy of the graph."
+              }
+            },
+            "partitionKeyPaths": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. List of paths using which data within the container can be partitioned."
+              }
+            }
+          },
+          "resources": {
+            "databaseAccount::gremlinDatabase": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
+              "apiVersion": "2023-04-15",
+              "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('gremlinDatabaseName'))]",
+              "dependsOn": [
+                "databaseAccount"
+              ]
+            },
+            "defaultTelemetry": {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            "databaseAccount": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2023-04-15",
+              "name": "[parameters('databaseAccountName')]"
+            },
+            "gremlinGraph": {
+              "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs",
+              "apiVersion": "2023-04-15",
+              "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('gremlinDatabaseName'), parameters('name'))]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "resource": {
+                  "id": "[parameters('name')]",
+                  "indexingPolicy": "[if(not(empty(parameters('indexingPolicy'))), parameters('indexingPolicy'), null())]",
+                  "partitionKey": {
+                    "paths": "[if(not(empty(parameters('partitionKeyPaths'))), parameters('partitionKeyPaths'), null())]"
+                  }
+                }
+              },
+              "dependsOn": [
+                "databaseAccount::gremlinDatabase"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the graph."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the graph."
+              },
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs', parameters('databaseAccountName'), parameters('gremlinDatabaseName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the graph was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "gremlinDatabase"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Gremlin database."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Gremlin database."
+      },
+      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/gremlinDatabases', parameters('databaseAccountName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the Gremlin database was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

@@ -1,0 +1,366 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "10948740009827102632"
+    },
+    "name": "DocumentDB Database Account SQL Databases",
+    "description": "This module deploys a SQL Database in a CosmosDB Account.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "databaseAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the SQL database ."
+      }
+    },
+    "containers": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Array of containers to deploy in the SQL database."
+      }
+    },
+    "throughput": {
+      "type": "int",
+      "defaultValue": 400,
+      "metadata": {
+        "description": "Optional. Request units per second. Will be set to null if autoscaleSettingsMaxThroughput is used."
+      }
+    },
+    "autoscaleSettingsMaxThroughput": {
+      "type": "int",
+      "defaultValue": -1,
+      "metadata": {
+        "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to -1, then the property will be set to null and autoscale will be disabled."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the SQL database resource."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "variables": {
+    "enableReferencedModulesTelemetry": false
+  },
+  "resources": {
+    "defaultTelemetry": {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    "databaseAccount": {
+      "existing": true,
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "apiVersion": "2023-04-15",
+      "name": "[parameters('databaseAccountName')]"
+    },
+    "sqlDatabase": {
+      "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
+      "apiVersion": "2023-04-15",
+      "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "resource": {
+          "id": "[parameters('name')]"
+        },
+        "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', if(equals(parameters('autoscaleSettingsMaxThroughput'), -1), parameters('throughput'), null()), 'autoscaleSettings', if(not(equals(parameters('autoscaleSettingsMaxThroughput'), -1)), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null())))]"
+      },
+      "dependsOn": [
+        "databaseAccount"
+      ]
+    },
+    "container": {
+      "copy": {
+        "name": "container",
+        "count": "[length(parameters('containers'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-sqldb-{1}', uniqueString(deployment().name, parameters('name')), parameters('containers')[copyIndex()].name)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "databaseAccountName": {
+            "value": "[parameters('databaseAccountName')]"
+          },
+          "sqlDatabaseName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('containers')[copyIndex()].name]"
+          },
+          "analyticalStorageTtl": "[if(contains(parameters('containers')[copyIndex()], 'analyticalStorageTtl'), createObject('value', parameters('containers')[copyIndex()].analyticalStorageTtl), createObject('value', 0))]",
+          "autoscaleSettingsMaxThroughput": "[if(contains(parameters('containers')[copyIndex()], 'autoscaleSettingsMaxThroughput'), createObject('value', parameters('containers')[copyIndex()].autoscaleSettingsMaxThroughput), createObject('value', -1))]",
+          "conflictResolutionPolicy": "[if(contains(parameters('containers')[copyIndex()], 'conflictResolutionPolicy'), createObject('value', parameters('containers')[copyIndex()].conflictResolutionPolicy), createObject('value', createObject()))]",
+          "defaultTtl": "[if(contains(parameters('containers')[copyIndex()], 'defaultTtl'), createObject('value', parameters('containers')[copyIndex()].defaultTtl), createObject('value', -1))]",
+          "indexingPolicy": "[if(contains(parameters('containers')[copyIndex()], 'indexingPolicy'), createObject('value', parameters('containers')[copyIndex()].indexingPolicy), createObject('value', createObject()))]",
+          "kind": "[if(contains(parameters('containers')[copyIndex()], 'kind'), createObject('value', parameters('containers')[copyIndex()].kind), createObject('value', 'Hash'))]",
+          "paths": "[if(contains(parameters('containers')[copyIndex()], 'paths'), createObject('value', parameters('containers')[copyIndex()].paths), createObject('value', createArray()))]",
+          "throughput": "[if(contains(parameters('containers')[copyIndex()], 'throughput'), createObject('value', parameters('containers')[copyIndex()].throughput), createObject('value', 400))]",
+          "uniqueKeyPolicyKeys": "[if(contains(parameters('containers')[copyIndex()], 'uniqueKeyPolicyKeys'), createObject('value', parameters('containers')[copyIndex()].uniqueKeyPolicyKeys), createObject('value', createArray()))]",
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.22.6.54827",
+              "templateHash": "5628064493958565248"
+            },
+            "name": "DocumentDB Database Account SQL Database Containers",
+            "description": "This module deploys a SQL Database Container in a CosmosDB Account.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "databaseAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "sqlDatabaseName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent SQL Database. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the container."
+              }
+            },
+            "analyticalStorageTtl": {
+              "type": "int",
+              "defaultValue": 0,
+              "metadata": {
+                "description": "Optional. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store."
+              }
+            },
+            "conflictResolutionPolicy": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions."
+              }
+            },
+            "defaultTtl": {
+              "type": "int",
+              "defaultValue": -1,
+              "minValue": -1,
+              "maxValue": 2147483647,
+              "metadata": {
+                "description": "Optional. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to \"-1\", it is equal to infinity, and items dont expire by default."
+              }
+            },
+            "throughput": {
+              "type": "int",
+              "defaultValue": 400,
+              "metadata": {
+                "description": "Optional. Request Units per second. Will be set to null if autoscaleSettingsMaxThroughput is used."
+              }
+            },
+            "autoscaleSettingsMaxThroughput": {
+              "type": "int",
+              "defaultValue": -1,
+              "maxValue": 1000000,
+              "metadata": {
+                "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to -1, then the property will be set to null and autoscale will be disabled."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the SQL Database resource."
+              }
+            },
+            "paths": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. List of paths using which data within the container can be partitioned."
+              }
+            },
+            "indexingPolicy": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Indexing policy of the container."
+              }
+            },
+            "uniqueKeyPolicyKeys": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service."
+              }
+            },
+            "kind": {
+              "type": "string",
+              "defaultValue": "Hash",
+              "allowedValues": [
+                "Hash",
+                "MultiHash",
+                "Range"
+              ],
+              "metadata": {
+                "description": "Optional. Indicates the kind of algorithm used for partitioning."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            }
+          },
+          "resources": {
+            "databaseAccount::sqlDatabase": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
+              "apiVersion": "2023-04-15",
+              "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('sqlDatabaseName'))]",
+              "dependsOn": [
+                "databaseAccount"
+              ]
+            },
+            "defaultTelemetry": {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            "databaseAccount": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2023-04-15",
+              "name": "[parameters('databaseAccountName')]"
+            },
+            "container": {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+              "apiVersion": "2023-04-15",
+              "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('sqlDatabaseName'), parameters('name'))]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "resource": {
+                  "analyticalStorageTtl": "[parameters('analyticalStorageTtl')]",
+                  "conflictResolutionPolicy": "[parameters('conflictResolutionPolicy')]",
+                  "defaultTtl": "[parameters('defaultTtl')]",
+                  "id": "[parameters('name')]",
+                  "indexingPolicy": "[if(not(empty(parameters('indexingPolicy'))), parameters('indexingPolicy'), null())]",
+                  "partitionKey": {
+                    "paths": "[parameters('paths')]",
+                    "kind": "[parameters('kind')]"
+                  },
+                  "uniqueKeyPolicy": "[if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())]"
+                },
+                "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', if(equals(parameters('autoscaleSettingsMaxThroughput'), -1), parameters('throughput'), null()), 'autoscaleSettings', if(not(equals(parameters('autoscaleSettingsMaxThroughput'), -1)), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null())))]"
+              },
+              "dependsOn": [
+                "databaseAccount::sqlDatabase"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the container."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the container."
+              },
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers', parameters('databaseAccountName'), parameters('sqlDatabaseName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the container was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "sqlDatabase"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the SQL database."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the SQL database."
+      },
+      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('databaseAccountName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the SQL database was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

@@ -1,0 +1,270 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "18265317713061610546"
+    },
+    "name": "DocumentDB Database Account MongoDB Databases",
+    "description": "This module deploys a MongoDB Database within a CosmosDB Account.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "databaseAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Cosmos DB database account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the mongodb database."
+      }
+    },
+    "throughput": {
+      "type": "int",
+      "defaultValue": 400,
+      "metadata": {
+        "description": "Optional. Name of the mongodb database."
+      }
+    },
+    "collections": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Collections in the mongodb database."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "variables": {
+    "enableReferencedModulesTelemetry": false
+  },
+  "resources": {
+    "defaultTelemetry": {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    "databaseAccount": {
+      "existing": true,
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "apiVersion": "2023-04-15",
+      "name": "[parameters('databaseAccountName')]"
+    },
+    "mongodbDatabase": {
+      "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases",
+      "apiVersion": "2023-04-15",
+      "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "resource": {
+          "id": "[parameters('name')]"
+        },
+        "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput')))]"
+      },
+      "dependsOn": [
+        "databaseAccount"
+      ]
+    },
+    "mongodbDatabase_collections": {
+      "copy": {
+        "name": "mongodbDatabase_collections",
+        "count": "[length(parameters('collections'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-collection-{1}', uniqueString(deployment().name, parameters('name')), parameters('collections')[copyIndex()].name)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "databaseAccountName": {
+            "value": "[parameters('databaseAccountName')]"
+          },
+          "mongodbDatabaseName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('collections')[copyIndex()].name]"
+          },
+          "indexes": {
+            "value": "[parameters('collections')[copyIndex()].indexes]"
+          },
+          "shardKey": {
+            "value": "[parameters('collections')[copyIndex()].shardKey]"
+          },
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.22.6.54827",
+              "templateHash": "14573428332905458641"
+            },
+            "name": "DocumentDB Database Account MongoDB Database Collections",
+            "description": "This module deploys a MongoDB Database Collection.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "databaseAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Cosmos DB database account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "mongodbDatabaseName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent mongodb database. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the collection."
+              }
+            },
+            "throughput": {
+              "type": "int",
+              "defaultValue": 400,
+              "metadata": {
+                "description": "Optional. Name of the mongodb database."
+              }
+            },
+            "indexes": {
+              "type": "array",
+              "metadata": {
+                "description": "Required. Indexes for the collection."
+              }
+            },
+            "shardKey": {
+              "type": "object",
+              "metadata": {
+                "description": "Required. ShardKey for the collection."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections",
+              "apiVersion": "2023-04-15",
+              "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('mongodbDatabaseName'), parameters('name'))]",
+              "properties": {
+                "options": "[if(contains(reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), '2023-04-15').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput')))]",
+                "resource": {
+                  "id": "[parameters('name')]",
+                  "indexes": "[parameters('indexes')]",
+                  "shardKey": "[parameters('shardKey')]"
+                }
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the mongodb database."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the mongodb database."
+              },
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections', parameters('databaseAccountName'), parameters('mongodbDatabaseName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the mongodb database was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "mongodbDatabase"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the mongodb database."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the mongodb database."
+      },
+      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/mongodbDatabases', parameters('databaseAccountName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the mongodb database was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
