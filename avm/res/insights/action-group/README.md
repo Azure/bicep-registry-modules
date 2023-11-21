@@ -23,20 +23,23 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm-res-insights-actiongroup:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/insights/action-group:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Max](#example-2-max)
-- [Waf-Aligned](#example-3-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
-### Example 1: _Defaults_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
+module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-iagmin'
   params: {
     // Required parameters
@@ -126,14 +129,17 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
 </details>
 <p>
 
-### Example 2: _Max_
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
+module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-iagmax'
   params: {
     // Required parameters
@@ -245,14 +251,17 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
 </details>
 <p>
 
-### Example 3: _Waf-Aligned_
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
+module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-iagwaf'
   params: {
     // Required parameters

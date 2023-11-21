@@ -16,7 +16,7 @@ This module deploys a Kubernetes Configuration Extension.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.KubernetesConfiguration/extensions` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2022-03-01/extensions) |
-| `Microsoft.KubernetesConfiguration/fluxConfigurations` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2022-03-01/fluxConfigurations) |
+| `Microsoft.KubernetesConfiguration/fluxConfigurations` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/fluxConfigurations) |
 
 ## Usage examples
 
@@ -24,7 +24,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm-res-kubernetesconfiguration-extension:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/kubernetes-configuration/extension:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
+module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-kcemin'
   params: {
     // Required parameters
@@ -126,7 +126,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
+module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-kcemax'
   params: {
     // Required parameters
@@ -152,6 +152,11 @@ module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
           syncIntervalInSeconds: 300
           timeoutInSeconds: 180
           url: 'https://github.com/mspnp/aks-baseline'
+        }
+        kustomizations: {
+          unified: {
+            path: './cluster-manifests'
+          }
         }
         namespace: 'flux-system'
         suspend: false
@@ -213,6 +218,11 @@ module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
             "timeoutInSeconds": 180,
             "url": "https://github.com/mspnp/aks-baseline"
           },
+          "kustomizations": {
+            "unified": {
+              "path": "./cluster-manifests"
+            }
+          },
           "namespace": "flux-system",
           "suspend": false
         }
@@ -250,7 +260,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
+module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-kcewaf'
   params: {
     // Required parameters
@@ -276,6 +286,11 @@ module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
           syncIntervalInSeconds: 300
           timeoutInSeconds: 180
           url: 'https://github.com/mspnp/aks-baseline'
+        }
+        kustomizations: {
+          unified: {
+            path: './cluster-manifests'
+          }
         }
         namespace: 'flux-system'
         suspend: false
@@ -336,6 +351,11 @@ module extension 'br/public:avm-res-kubernetesconfiguration-extension:1.0.0' = {
             "syncIntervalInSeconds": 300,
             "timeoutInSeconds": 180,
             "url": "https://github.com/mspnp/aks-baseline"
+          },
+          "kustomizations": {
+            "unified": {
+              "path": "./cluster-manifests"
+            }
           },
           "namespace": "flux-system",
           "suspend": false
@@ -478,7 +498,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm-res-kubernetesconfiguration-fluxconfiguration:0.1.1` | Remote reference |
+| `br/public:avm/res/kubernetes-configuration/flux-configuration:0.3.1` | Remote reference |
 
 ## Notes
 

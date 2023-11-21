@@ -43,16 +43,11 @@ function Get-ModuleVersionChange {
     $newVersion = (New-Object System.Version($matches[1], $matches[2]))
   }
 
-  Write-Verbose "The old version is [$oldVersion]" -Verbose
-  Write-Verbose "The new version is [$newVersion]" -Verbose
-
   if ($newVersion -lt $oldVersion) {
     Write-Verbose "The new version is smaller than the old version"
-  }
-  elseif ($newVersion -eq $oldVersion) {
+  } elseif ($newVersion -eq $oldVersion) {
     Write-Verbose "The new version equals the old version"
-  }
-  else {
+  } else {
     Write-Verbose "The new version is greater than the old version"
   }
 
