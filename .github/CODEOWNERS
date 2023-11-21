@@ -1,7 +1,7 @@
 * @Azure/bicep-admins @Azure/avm-core-team-technical-bicep
 /.github/ @Azure/bicep-admins @Azure/avm-core-team-technical-bicep
 /scripts/ @Azure/bicep-admins @Azure/avm-core-team-technical-bicep
-/avm @Azure/avm-core-team-technical-bicep
+/avm/ @Azure/avm-core-team-technical-bicep
 /avm/utilities/ @Azure/avm-core-team-technical-bicep
 #/avm/res/aad/domain-service/ @Azure/avm-res-aad-domainservice-module-owners-bicep
 #/avm/res/analysis-services/server/ @Azure/avm-res-analysisservices-server-module-owners-bicep
