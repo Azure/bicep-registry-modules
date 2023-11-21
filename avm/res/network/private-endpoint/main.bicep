@@ -38,7 +38,7 @@ param tags object?
 @description('Optional. Custom DNS configurations.')
 param customDnsConfigs customDnsConfigType
 
-@description('Required. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource.')
+@description('Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource.')
 param manualPrivateLinkServiceConnections manualPrivateLinkServiceConnectionsType
 
 @description('Optional. A grouping of information about the connection to the remote resource.')
