@@ -8,9 +8,6 @@ param name string
 @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
 param subnetResourceId string
 
-@description('Required. Resource ID of the resource that needs to be connected to the network.')
-param serviceResourceId string
-
 @description('Optional. Application security groups in which the private endpoint IP configuration is included.')
 param applicationSecurityGroupResourceIds array?
 
@@ -19,9 +16,6 @@ param customNetworkInterfaceName string?
 
 @description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
 param ipConfigurations ipConfigurationsType
-
-@description('Required. Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to.')
-param groupIds array
 
 @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
 param privateDnsZoneGroupName string?
@@ -96,15 +90,7 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-04-01' = {
     customNetworkInterfaceName: customNetworkInterfaceName ?? ''
     ipConfigurations: ipConfigurations ?? []
     manualPrivateLinkServiceConnections: manualPrivateLinkServiceConnections ?? []
-    privateLinkServiceConnections: privateLinkServiceConnections ?? [
-      {
-        name: name
-        properties: {
-          privateLinkServiceId: serviceResourceId
-          groupIds: groupIds
-        }
-      }
-    ]
+    privateLinkServiceConnections: privateLinkServiceConnections ?? []
     subnet: {
       id: subnetResourceId
     }
