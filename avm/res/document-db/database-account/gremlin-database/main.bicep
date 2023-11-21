@@ -20,23 +20,6 @@ param maxThroughput int = 4000
 @description('Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`.')
 param throughput int = -1
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
-var enableReferencedModulesTelemetry = false
-
-resource defaultTelemetry 'Microsoft.Resources/deployments@2022-09-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
-  }
-}
-
 resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
   name: databaseAccountName
 }
@@ -66,7 +49,6 @@ module gremlinDatabase_gremlinGraphs 'graph/main.bicep' = [for graph in graphs: 
     name: graph.name
     gremlinDatabaseName: name
     databaseAccountName: databaseAccountName
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
     indexingPolicy: contains(graph, 'indexingPolicy') ? graph.indexingPolicy : true
     partitionKeyPaths: !empty(graph.partitionKeyPaths) ? graph.partitionKeyPaths : []
   }

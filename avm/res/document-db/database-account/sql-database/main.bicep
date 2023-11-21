@@ -20,23 +20,6 @@ param autoscaleSettingsMaxThroughput int = -1
 @description('Optional. Tags of the SQL database resource.')
 param tags object?
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
-var enableReferencedModulesTelemetry = false
-
-resource defaultTelemetry 'Microsoft.Resources/deployments@2022-09-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
-  }
-}
-
 resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
   name: databaseAccountName
 }
@@ -73,7 +56,6 @@ module container 'container/main.bicep' = [for container in containers: {
     paths: contains(container, 'paths') ? container.paths : []
     throughput: contains(container, 'throughput') ? container.throughput : 400
     uniqueKeyPolicyKeys: contains(container, 'uniqueKeyPolicyKeys') ? container.uniqueKeyPolicyKeys : []
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 

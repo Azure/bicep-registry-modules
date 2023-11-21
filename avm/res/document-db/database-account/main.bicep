@@ -67,8 +67,8 @@ param mongodbDatabases array = []
 @description('Optional. Gremlin Databases configurations.')
 param gremlinDatabases array = []
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
@@ -160,8 +160,6 @@ var databaseAccount_locations = [for location in locations: {
 
 var kind = !empty(sqlDatabases) || !empty(gremlinDatabases) ? 'GlobalDocumentDB' : (!empty(mongodbDatabases) ? 'MongoDB' : 'Parse')
 
-var enableReferencedModulesTelemetry = false
-
 var capabilities = [for capability in capabilitiesToAdd: {
   name: capability
 }]
@@ -212,14 +210,20 @@ var builtInRoleNames = {
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
-resource defaultTelemetry 'Microsoft.Resources/deployments@2022-09-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.documentdb-databaseaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
       contentVersion: '1.0.0.0'
       resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
     }
   }
 }
@@ -290,7 +294,6 @@ module databaseAccount_sqlDatabases 'sql-database/main.bicep' = [for sqlDatabase
     containers: contains(sqlDatabase, 'containers') ? sqlDatabase.containers : []
     throughput: contains(sqlDatabase, 'throughput') ? sqlDatabase.throughput : 400
     autoscaleSettingsMaxThroughput: contains(sqlDatabase, 'autoscaleSettingsMaxThroughput') ? sqlDatabase.autoscaleSettingsMaxThroughput : -1
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -300,7 +303,6 @@ module databaseAccount_mongodbDatabases 'mongodb-database/main.bicep' = [for mon
     databaseAccountName: databaseAccount.name
     name: mongodbDatabase.name
     collections: contains(mongodbDatabase, 'collections') ? mongodbDatabase.collections : []
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -310,11 +312,10 @@ module databaseAccount_gremlinDatabases 'gremlin-database/main.bicep' = [for gre
     databaseAccountName: databaseAccount.name
     name: gremlinDatabase.name
     graphs: contains(gremlinDatabase, 'graphs') ? gremlinDatabase.graphs : []
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
-module databaseAccount_privateEndpoints '../../network/private-endpoint/main.bicep' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.2.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-databaseAccount-PrivateEndpoint-${index}'
   params: {
     groupIds: [
@@ -323,7 +324,6 @@ module databaseAccount_privateEndpoints '../../network/private-endpoint/main.bic
     name: privateEndpoint.?name ?? 'pep-${last(split(databaseAccount.id, '/'))}-${privateEndpoint.?service ?? privateEndpoint.service}-${index}'
     serviceResourceId: databaseAccount.id
     subnetResourceId: privateEndpoint.subnetResourceId
-    enableDefaultTelemetry: privateEndpoint.?enableDefaultTelemetry ?? enableReferencedModulesTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
     privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
@@ -335,6 +335,7 @@ module databaseAccount_privateEndpoints '../../network/private-endpoint/main.bic
     ipConfigurations: privateEndpoint.?ipConfigurations
     applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
     customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    enableTelemetry: enableTelemetry
   }
 }]
 
