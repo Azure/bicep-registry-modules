@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "12125728237409343422"
+      "templateHash": "16839638237222216387"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -1354,7 +1354,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "1264069636479132623"
+              "templateHash": "17470745141944089609"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool.",
@@ -1410,7 +1410,7 @@
             },
             "highAvailabilityReplicaCount": {
               "type": "int",
-              "defaultValue": -1,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The number of secondary replicas associated with the elastic pool that are used to provide high availability. Applicable only to Hyperscale elastic pools."
               }
@@ -1488,7 +1488,7 @@
                 "tier": "[parameters('skuTier')]"
               },
               "properties": {
-                "highAvailabilityReplicaCount": "[if(greater(parameters('highAvailabilityReplicaCount'), -1), parameters('highAvailabilityReplicaCount'), null())]",
+                "highAvailabilityReplicaCount": "[parameters('highAvailabilityReplicaCount')]",
                 "licenseType": "[parameters('licenseType')]",
                 "maintenanceConfigurationId": "[parameters('maintenanceConfigurationId')]",
                 "maxSizeBytes": "[parameters('maxSizeBytes')]",
@@ -2530,7 +2530,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "7034964676349726102"
+              "templateHash": "3944798211825370066"
             },
             "name": "Azure SQL Server Vulnerability Assessments",
             "description": "This module deploys an Azure SQL Server Vulnerability Assessment.",
@@ -2611,6 +2611,7 @@
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('{0}-sbdc-rbac', parameters('serverName'))]",
+              "subscriptionId": "[split(parameters('storageAccountResourceId'), '/')[2]]",
               "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
               "properties": {
                 "expressionEvaluationOptions": {

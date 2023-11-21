@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "1264069636479132623"
+      "templateHash": "17470745141944089609"
     },
     "name": "SQL Server Elastic Pool",
     "description": "This module deploys an Azure SQL Server Elastic Pool.",
@@ -62,7 +62,7 @@
     },
     "highAvailabilityReplicaCount": {
       "type": "int",
-      "defaultValue": -1,
+      "nullable": true,
       "metadata": {
         "description": "Optional. The number of secondary replicas associated with the elastic pool that are used to provide high availability. Applicable only to Hyperscale elastic pools."
       }
@@ -140,7 +140,7 @@
         "tier": "[parameters('skuTier')]"
       },
       "properties": {
-        "highAvailabilityReplicaCount": "[if(greater(parameters('highAvailabilityReplicaCount'), -1), parameters('highAvailabilityReplicaCount'), null())]",
+        "highAvailabilityReplicaCount": "[parameters('highAvailabilityReplicaCount')]",
         "licenseType": "[parameters('licenseType')]",
         "maintenanceConfigurationId": "[parameters('maintenanceConfigurationId')]",
         "maxSizeBytes": "[parameters('maxSizeBytes')]",

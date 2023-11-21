@@ -66,7 +66,6 @@ The minimum capacity all databases are guaranteed.
 The number of secondary replicas associated with the elastic pool that are used to provide high availability. Applicable only to Hyperscale elastic pools.
 - Required: No
 - Type: int
-- Default: `-1`
 
 ### Parameter: `licenseType`
 

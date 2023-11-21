@@ -24,7 +24,7 @@ param skuName string = 'GP_Gen5'
 param skuTier string = 'GeneralPurpose'
 
 @description('Optional. The number of secondary replicas associated with the elastic pool that are used to provide high availability. Applicable only to Hyperscale elastic pools.')
-param highAvailabilityReplicaCount int = -1
+param highAvailabilityReplicaCount int?
 
 @description('Optional. The license type to apply for this elastic pool.')
 @allowed([
@@ -66,7 +66,7 @@ resource elasticPool 'Microsoft.Sql/servers/elasticPools@2022-05-01-preview' = {
     tier: skuTier
   }
   properties: {
-    highAvailabilityReplicaCount: highAvailabilityReplicaCount > -1 ? highAvailabilityReplicaCount : null
+    highAvailabilityReplicaCount: highAvailabilityReplicaCount
     licenseType: licenseType
     maintenanceConfigurationId: maintenanceConfigurationId
     maxSizeBytes: maxSizeBytes
