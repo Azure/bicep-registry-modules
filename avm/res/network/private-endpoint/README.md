@@ -67,6 +67,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
             'vault'
           ]
           privateLinkServiceId: '<privateLinkServiceId>'
+          requestMessage: ''
         }
       }
     ]
@@ -131,7 +132,8 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
             "groupIds": [
               "vault"
             ],
-            "privateLinkServiceId": "<privateLinkServiceId>"
+            "privateLinkServiceId": "<privateLinkServiceId>",
+            "requestMessage": ""
           }
         }
       ]
@@ -206,6 +208,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
             'vault'
           ]
           privateLinkServiceId: '<privateLinkServiceId>'
+          requestMessage: ''
         }
       }
     ]
@@ -303,7 +306,8 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
             "groupIds": [
               "vault"
             ],
-            "privateLinkServiceId": "<privateLinkServiceId>"
+            "privateLinkServiceId": "<privateLinkServiceId>",
+            "requestMessage": ""
           }
         }
       ]
@@ -381,14 +385,8 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
             'vault'
           ]
           privateLinkServiceId: '<privateLinkServiceId>'
+          requestMessage: ''
         }
-      }
-    ]
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
       }
     ]
     tags: {
@@ -471,17 +469,9 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
             "groupIds": [
               "vault"
             ],
-            "privateLinkServiceId": "<privateLinkServiceId>"
+            "privateLinkServiceId": "<privateLinkServiceId>",
+            "requestMessage": ""
           }
-        }
-      ]
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
         }
       ]
     },
@@ -666,6 +656,54 @@ A grouping of information about the connection to the remote resource. Used when
 - Required: No
 - Type: array
 
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`name`](#parameter-manualprivatelinkserviceconnectionsname) | Yes | string | Required. The name of the private link service connection. |
+| [`properties`](#parameter-manualprivatelinkserviceconnectionsproperties) | Yes | object | Required. Properties of private link service connection. |
+
+### Parameter: `manualPrivateLinkServiceConnections.name`
+
+Required. The name of the private link service connection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `manualPrivateLinkServiceConnections.properties`
+
+Required. Properties of private link service connection.
+
+- Required: Yes
+- Type: object
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`groupIds`](#parameter-manualprivatelinkserviceconnectionspropertiesgroupids) | Yes | array | Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateLinkServiceId`](#parameter-manualprivatelinkserviceconnectionspropertiesprivatelinkserviceid) | Yes | string | Required. The resource id of private link service. |
+| [`requestMessage`](#parameter-manualprivatelinkserviceconnectionspropertiesrequestmessage) | Yes | string | Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars. |
+
+### Parameter: `manualPrivateLinkServiceConnections.properties.groupIds`
+
+Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `manualPrivateLinkServiceConnections.properties.privateLinkServiceId`
+
+Required. The resource id of private link service.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `manualPrivateLinkServiceConnections.properties.requestMessage`
+
+Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.
+
+- Required: Yes
+- Type: string
+
+
 ### Parameter: `name`
 
 Name of the private endpoint resource to create.
@@ -689,6 +727,54 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 A grouping of information about the connection to the remote resource.
 - Required: No
 - Type: array
+
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`name`](#parameter-privatelinkserviceconnectionsname) | Yes | string | Required. The name of the private link service connection. |
+| [`properties`](#parameter-privatelinkserviceconnectionsproperties) | Yes | object | Required. Properties of private link service connection. |
+
+### Parameter: `privateLinkServiceConnections.name`
+
+Required. The name of the private link service connection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateLinkServiceConnections.properties`
+
+Required. Properties of private link service connection.
+
+- Required: Yes
+- Type: object
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`groupIds`](#parameter-privatelinkserviceconnectionspropertiesgroupids) | Yes | array | Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateLinkServiceId`](#parameter-privatelinkserviceconnectionspropertiesprivatelinkserviceid) | Yes | string | Required. The resource id of private link service. |
+| [`requestMessage`](#parameter-privatelinkserviceconnectionspropertiesrequestmessage) | Yes | string | Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars. |
+
+### Parameter: `privateLinkServiceConnections.properties.groupIds`
+
+Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `privateLinkServiceConnections.properties.privateLinkServiceId`
+
+Required. The resource id of private link service.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateLinkServiceConnections.properties.requestMessage`
+
+Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.
+
+- Required: Yes
+- Type: string
+
 
 ### Parameter: `roleAssignments`
 

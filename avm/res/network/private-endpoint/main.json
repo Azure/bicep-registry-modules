@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "13806990273495192495"
+      "templateHash": "10636662892891609347"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint.",
@@ -145,6 +145,88 @@
       },
       "nullable": true
     },
+    "manualPrivateLinkServiceConnectionsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the private link service connection."
+            }
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "groupIds": {
+                "type": "array",
+                "metadata": {
+                  "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                }
+              },
+              "privateLinkServiceId": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The resource id of private link service."
+                }
+              },
+              "requestMessage": {
+                "type": "string",
+                "metadata": {
+                  "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                }
+              }
+            },
+            "metadata": {
+              "description": "Required. Properties of private link service connection."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "privateLinkServiceConnectionsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the private link service connection."
+            }
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "groupIds": {
+                "type": "array",
+                "metadata": {
+                  "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                }
+              },
+              "privateLinkServiceId": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The resource id of private link service."
+                }
+              },
+              "requestMessage": {
+                "type": "string",
+                "metadata": {
+                  "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                }
+              }
+            },
+            "metadata": {
+              "description": "Required. Properties of private link service connection."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
     "customDnsConfigType": {
       "type": "array",
       "items": {
@@ -250,15 +332,13 @@
       }
     },
     "manualPrivateLinkServiceConnections": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/manualPrivateLinkServiceConnectionsType",
       "metadata": {
         "description": "Required. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource."
       }
     },
     "privateLinkServiceConnections": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/privateLinkServiceConnectionsType",
       "metadata": {
         "description": "Required. A grouping of information about the connection to the remote resource."
       }

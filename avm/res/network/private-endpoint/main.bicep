@@ -200,12 +200,12 @@ type manualPrivateLinkServiceConnectionsType = {
   @description('Required. Properties of private link service connection.')
   properties: {
     @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
-    groupId: string
+    groupIds: array
 
     @description('Required. The resource id of private link service.')
     privateLinkServiceId: string
 
-    @description('Required. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.')
+    @description('Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.')
     requestMessage: string
   }
 }[]?
@@ -217,12 +217,12 @@ type privateLinkServiceConnectionsType = {
   @description('Required. Properties of private link service connection.')
   properties: {
     @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
-    groupId: string
+    groupIds: array
 
     @description('Required. The resource id of private link service.')
     privateLinkServiceId: string
 
-    @description('Required. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.')
+    @description('Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.')
     requestMessage: string
   }
 }[]?
