@@ -208,13 +208,6 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
       kind: 'None'
     }
     queryDescription: 'An example query to list first 5 subscriptions.'
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -257,15 +250,6 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
     },
     "queryDescription": {
       "value": "An example query to list first 5 subscriptions."
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
     },
     "tags": {
       "value": {
