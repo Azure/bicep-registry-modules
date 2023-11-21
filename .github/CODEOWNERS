@@ -129,7 +129,7 @@
 #/avm/res/signal-r-service/signal-r/ @Azure/avm-res-signalrservice-signalr-module-owners-bicep
 #/avm/res/signal-r-service/web-pub-sub/ @Azure/avm-res-signalrservice-webpubsub-module-owners-bicep
 #/avm/res/sql/managed-instance/ @Azure/avm-res-sql-managedinstance-module-owners-bicep
-#/avm/res/sql/server/ @Azure/avm-res-sql-server-module-owners-bicep
+/avm/res/sql/server/ @Azure/avm-res-sql-server-module-owners-bicep
 #/avm/res/storage/storage-account/ @Azure/avm-res-storage-storageaccount-module-owners-bicep
 #/avm/res/synapse/private-link-hub/ @Azure/avm-res-synapse-privatelinkhub-module-owners-bicep
 #/avm/res/synapse/workspace/ @Azure/avm-res-synapse-workspace-module-owners-bicep
