@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "16839638237222216387"
+      "templateHash": "17993935601483336558"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -632,7 +632,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "9243918020893159226"
+              "templateHash": "16643582358589893317"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database.",
@@ -782,7 +782,7 @@
             },
             "skuCapacity": {
               "type": "int",
-              "defaultValue": -1,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Capacity of the particular SKU."
               }
@@ -988,7 +988,7 @@
             }
           },
           "variables": {
-            "skuVar": "[union(createObject('name', parameters('skuName'), 'tier', parameters('skuTier')), if(not(equals(parameters('skuCapacity'), -1)), createObject('capacity', parameters('skuCapacity')), if(not(empty(parameters('skuFamily'))), createObject('family', parameters('skuFamily')), if(not(empty(parameters('skuSize'))), createObject('size', parameters('skuSize')), createObject()))))]"
+            "skuVar": "[union(createObject('name', parameters('skuName'), 'tier', parameters('skuTier')), if(not(equals(parameters('skuCapacity'), null())), createObject('capacity', parameters('skuCapacity')), if(not(empty(parameters('skuFamily'))), createObject('family', parameters('skuFamily')), if(not(empty(parameters('skuSize'))), createObject('size', parameters('skuSize')), createObject()))))]"
           },
           "resources": {
             "server": {

@@ -368,7 +368,6 @@ The name of the parent SQL Server. Required if the template is used in a standal
 Capacity of the particular SKU.
 - Required: No
 - Type: int
-- Default: `-1`
 
 ### Parameter: `skuFamily`
 

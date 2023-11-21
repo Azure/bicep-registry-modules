@@ -18,7 +18,7 @@ param skuTier string = 'GeneralPurpose'
 param skuName string = 'GP_Gen5_2'
 
 @description('Optional. Capacity of the particular SKU.')
-param skuCapacity int = -1
+param skuCapacity int?
 
 @description('Optional. Type of enclave requested on the database i.e. Default or VBS enclaves.')
 @allowed([
@@ -125,7 +125,7 @@ param backupLongTermRetentionPolicy object = {}
 var skuVar = union({
     name: skuName
     tier: skuTier
-  }, (skuCapacity != -1) ? {
+  }, (skuCapacity != null) ? {
     capacity: skuCapacity
   } : !empty(skuFamily) ? {
     family: skuFamily
