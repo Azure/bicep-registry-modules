@@ -26,9 +26,8 @@ runs:
         $moduleFolderPath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.modulePath }}'
         $testFilePaths = (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object
 
-        $modulePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.modulePath }}'
         $testFilePaths = $testFilePaths | ForEach-Object {
-          $_.Replace($modulePath, '').Trim('\').Trim('/')
+          $_.Replace($moduleFolderPath, '').Trim('\').Trim('/')
         }
 
         Write-Verbose 'Found module test files' -Verbose
