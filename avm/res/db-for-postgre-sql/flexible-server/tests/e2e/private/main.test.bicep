@@ -19,7 +19,7 @@ param serviceShort string = 'dfpsfspvt'
 param password string = newGuid()
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '[[namePrefix]]'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -38,12 +38,13 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    location: location
   }
 }
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../.shared/.templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-diagnosticDependencies'
   params: {
@@ -65,6 +66,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
+    location: location
     administratorLogin: 'adminUserName'
     administratorLoginPassword: password
     skuName: 'Standard_D2s_v3'
