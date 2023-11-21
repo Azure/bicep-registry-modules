@@ -39,10 +39,10 @@ param tags object?
 param customDnsConfigs customDnsConfigType
 
 @description('Required. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource.')
-param manualPrivateLinkServiceConnections array?
+param manualPrivateLinkServiceConnections manualPrivateLinkServiceConnectionsType
 
 @description('Required. A grouping of information about the connection to the remote resource.')
-param privateLinkServiceConnections array?
+param privateLinkServiceConnections privateLinkServiceConnectionsType
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -190,6 +190,40 @@ type ipConfigurationsType = {
 
     @description('Required. A private ip address obtained from the private endpoint\'s subnet.')
     privateIPAddress: string
+  }
+}[]?
+
+type manualPrivateLinkServiceConnectionsType = {
+  @description('Required. The name of the private link service connection.')
+  name: string
+
+  @description('Required. Properties of private link service connection.')
+  properties: {
+    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
+    groupId: string
+
+    @description('Required. The resource id of private link service.')
+    privateLinkServiceId: string
+
+    @description('Required. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.')
+    requestMessage: string
+  }
+}[]?
+
+type privateLinkServiceConnectionsType = {
+  @description('Required. The name of the private link service connection.')
+  name: string
+
+  @description('Required. Properties of private link service connection.')
+  properties: {
+    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
+    groupId: string
+
+    @description('Required. The resource id of private link service.')
+    privateLinkServiceId: string
+
+    @description('Required. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.')
+    requestMessage: string
   }
 }[]?
 
