@@ -181,7 +181,7 @@ module server_databases 'database/main.bicep' = [for (database, index) in databa
     serverName: server.name
     skuTier: contains(database, 'skuTier') ? database.skuTier : 'GeneralPurpose'
     skuName: contains(database, 'skuName') ? database.skuName : 'GP_Gen5_2'
-    skuCapacity: contains(database, 'skuCapacity') ? database.skuCapacity : -1
+    skuCapacity: database.?skuCapacity
     skuFamily: contains(database, 'skuFamily') ? database.skuFamily : ''
     skuSize: contains(database, 'skuSize') ? database.skuSize : ''
     collation: contains(database, 'collation') ? database.collation : 'SQL_Latin1_General_CP1_CI_AS'
@@ -220,7 +220,7 @@ module server_elasticPools 'elastic-pool/main.bicep' = [for (elasticPool, index)
     serverName: server.name
     databaseMaxCapacity: contains(elasticPool, 'databaseMaxCapacity') ? elasticPool.databaseMaxCapacity : 2
     databaseMinCapacity: contains(elasticPool, 'databaseMinCapacity') ? elasticPool.databaseMinCapacity : 0
-    highAvailabilityReplicaCount: contains(elasticPool, 'highAvailabilityReplicaCount') ? elasticPool.highAvailabilityReplicaCount : -1
+    highAvailabilityReplicaCount: elasticPool.?highAvailabilityReplicaCount
     licenseType: contains(elasticPool, 'licenseType') ? elasticPool.licenseType : 'LicenseIncluded'
     maintenanceConfigurationId: contains(elasticPool, 'maintenanceConfigurationId') ? elasticPool.maintenanceConfigurationId : ''
     maxSizeBytes: contains(elasticPool, 'maxSizeBytes') ? elasticPool.maxSizeBytes : 34359738368
