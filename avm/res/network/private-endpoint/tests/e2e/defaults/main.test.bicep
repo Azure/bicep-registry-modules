@@ -55,10 +55,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location
-    groupIds: [
-      'vault'
-    ]
-    serviceResourceId: nestedDependencies.outputs.keyVaultResourceId
     subnetResourceId: nestedDependencies.outputs.subnetResourceId
     // Workaround for PSRule
     lock: {}
@@ -69,6 +65,18 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ipConfigurations: []
     customDnsConfigs: []
     privateDnsZoneResourceIds: []
+    manualPrivateLinkServiceConnections: []
+    privateLinkServiceConnections: [
+      {
+        name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
+        properties: {
+          privateLinkServiceId: nestedDependencies.outputs.keyVaultResourceId
+          groupIds: [
+            'vault'
+          ]
+        }
+      }
+    ]
     tags: {}
   }
 }]
