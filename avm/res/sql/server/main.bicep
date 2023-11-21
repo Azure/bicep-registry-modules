@@ -141,7 +141,7 @@ resource server 'Microsoft.Sql/servers@2022-05-01-preview' = {
       login: administrators.login
       principalType: administrators.principalType
       sid: administrators.sid
-      tenantId: administrators?.tenantId ?? tenant().tenantId
+      tenantId: administrators.?tenantId ?? tenant().tenantId
     } : null
     version: '12.0'
     minimalTlsVersion: minimalTlsVersion

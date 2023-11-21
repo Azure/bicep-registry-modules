@@ -69,7 +69,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       login: 'myspn'
       principalType: 'Application'
       sid: '<sid>'
-      tenantId: '<tenantId>'
     }
     location: '<location>'
   }
@@ -98,8 +97,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         "azureADOnlyAuthentication": true,
         "login": "myspn",
         "principalType": "Application",
-        "sid": "<sid>",
-        "tenantId": "<tenantId>"
+        "sid": "<sid>"
       }
     },
     "location": {

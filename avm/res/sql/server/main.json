@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "14841398170863884486"
+      "templateHash": "804605641707904053"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -525,7 +525,7 @@
       "properties": {
         "administratorLogin": "[if(not(empty(parameters('administratorLogin'))), parameters('administratorLogin'), null())]",
         "administratorLoginPassword": "[if(not(empty(parameters('administratorLoginPassword'))), parameters('administratorLoginPassword'), null())]",
-        "administrators": "[if(not(empty(parameters('administrators'))), createObject('administratorType', 'ActiveDirectory', 'azureADOnlyAuthentication', parameters('administrators').azureADOnlyAuthentication, 'login', parameters('administrators').login, 'principalType', parameters('administrators').principalType, 'sid', parameters('administrators').sid, 'tenantId', parameters('administrators').tenantId), null())]",
+        "administrators": "[if(not(empty(parameters('administrators'))), createObject('administratorType', 'ActiveDirectory', 'azureADOnlyAuthentication', parameters('administrators').azureADOnlyAuthentication, 'login', parameters('administrators').login, 'principalType', parameters('administrators').principalType, 'sid', parameters('administrators').sid, 'tenantId', coalesce(tryGet(parameters('administrators'), 'tenantId'), tenant().tenantId)), null())]",
         "version": "12.0",
         "minimalTlsVersion": "[parameters('minimalTlsVersion')]",
         "primaryUserAssignedIdentityId": "[if(not(empty(parameters('primaryUserAssignedIdentityId'))), parameters('primaryUserAssignedIdentityId'), null())]",

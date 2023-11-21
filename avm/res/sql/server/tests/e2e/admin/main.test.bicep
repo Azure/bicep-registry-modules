@@ -55,7 +55,6 @@ module testDeployment '../../../main.bicep' = {
       login: 'myspn'
       sid: nestedDependencies.outputs.managedIdentityPrincipalId
       principalType: 'Application'
-      tenantId: tenant().tenantId
     }
   }
 }
