@@ -41,7 +41,7 @@ param customDnsConfigs customDnsConfigType
 @description('Required. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource.')
 param manualPrivateLinkServiceConnections manualPrivateLinkServiceConnectionsType
 
-@description('Required. A grouping of information about the connection to the remote resource.')
+@description('Optional. A grouping of information about the connection to the remote resource.')
 param privateLinkServiceConnections privateLinkServiceConnectionsType
 
 @description('Optional. Enable/Disable usage telemetry for module.')
