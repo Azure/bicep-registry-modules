@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.22.6.54827",
-      "templateHash": "16185589732703099389"
+      "version": "0.23.1.45101",
+      "templateHash": "17577658862428842934"
     },
     "name": "Private DNS Zones",
     "description": "This module deploys a Private DNS zone.",
@@ -323,8 +323,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "5612155887076115903"
+              "version": "0.23.1.45101",
+              "templateHash": "3178897665223689126"
             },
             "name": "Private DNS Zone A record",
             "description": "This module deploys a Private DNS Zone A record.",
@@ -562,8 +562,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "9292720103710124317"
+              "version": "0.23.1.45101",
+              "templateHash": "13336554047293852625"
             },
             "name": "Private DNS Zone AAAA record",
             "description": "This module deploys a Private DNS Zone AAAA record.",
@@ -801,8 +801,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "8994659188826492200"
+              "version": "0.23.1.45101",
+              "templateHash": "15225042375721382797"
             },
             "name": "Private DNS Zone CNAME record",
             "description": "This module deploys a Private DNS Zone CNAME record.",
@@ -1040,8 +1040,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "7291828223713021559"
+              "version": "0.23.1.45101",
+              "templateHash": "15979724882776547112"
             },
             "name": "Private DNS Zone MX record",
             "description": "This module deploys a Private DNS Zone MX record.",
@@ -1279,8 +1279,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "14904442878386197851"
+              "version": "0.23.1.45101",
+              "templateHash": "13360561055754827389"
             },
             "name": "Private DNS Zone PTR record",
             "description": "This module deploys a Private DNS Zone PTR record.",
@@ -1518,8 +1518,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "1730811290085898902"
+              "version": "0.23.1.45101",
+              "templateHash": "2022546465907048440"
             },
             "name": "Private DNS Zone SOA record",
             "description": "This module deploys a Private DNS Zone SOA record.",
@@ -1757,8 +1757,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "3575656882006054466"
+              "version": "0.23.1.45101",
+              "templateHash": "11017781799470369462"
             },
             "name": "Private DNS Zone SRV record",
             "description": "This module deploys a Private DNS Zone SRV record.",
@@ -1996,8 +1996,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "3136035020013914368"
+              "version": "0.23.1.45101",
+              "templateHash": "13485919432065481500"
             },
             "name": "Private DNS Zone TXT record",
             "description": "This module deploys a Private DNS Zone TXT record.",
@@ -2235,8 +2235,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "6246010514847269903"
+              "version": "0.23.1.45101",
+              "templateHash": "9679510173036585057"
             },
             "name": "Private DNS Zone Virtual Network Link",
             "description": "This module deploys a Private DNS Zone Virtual Network Link.",
