@@ -224,7 +224,7 @@ module server_elasticPools 'elastic-pool/main.bicep' = [for (elasticPool, index)
     licenseType: contains(elasticPool, 'licenseType') ? elasticPool.licenseType : 'LicenseIncluded'
     maintenanceConfigurationId: contains(elasticPool, 'maintenanceConfigurationId') ? elasticPool.maintenanceConfigurationId : ''
     maxSizeBytes: contains(elasticPool, 'maxSizeBytes') ? elasticPool.maxSizeBytes : 34359738368
-    minCapacity: contains(elasticPool, 'minCapacity') ? elasticPool.minCapacity : -1
+    minCapacity: elasticPool.?minCapacity
     skuCapacity: contains(elasticPool, 'skuCapacity') ? elasticPool.skuCapacity : 2
     skuName: contains(elasticPool, 'skuName') ? elasticPool.skuName : 'GP_Gen5'
     skuTier: contains(elasticPool, 'skuTier') ? elasticPool.skuTier : 'GeneralPurpose'

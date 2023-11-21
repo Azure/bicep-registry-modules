@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "3731246998419693620"
+      "templateHash": "14841398170863884486"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -1338,7 +1338,9 @@
           "licenseType": "[if(contains(parameters('elasticPools')[copyIndex()], 'licenseType'), createObject('value', parameters('elasticPools')[copyIndex()].licenseType), createObject('value', 'LicenseIncluded'))]",
           "maintenanceConfigurationId": "[if(contains(parameters('elasticPools')[copyIndex()], 'maintenanceConfigurationId'), createObject('value', parameters('elasticPools')[copyIndex()].maintenanceConfigurationId), createObject('value', ''))]",
           "maxSizeBytes": "[if(contains(parameters('elasticPools')[copyIndex()], 'maxSizeBytes'), createObject('value', parameters('elasticPools')[copyIndex()].maxSizeBytes), createObject('value', json('34359738368')))]",
-          "minCapacity": "[if(contains(parameters('elasticPools')[copyIndex()], 'minCapacity'), createObject('value', parameters('elasticPools')[copyIndex()].minCapacity), createObject('value', -1))]",
+          "minCapacity": {
+            "value": "[tryGet(parameters('elasticPools')[copyIndex()], 'minCapacity')]"
+          },
           "skuCapacity": "[if(contains(parameters('elasticPools')[copyIndex()], 'skuCapacity'), createObject('value', parameters('elasticPools')[copyIndex()].skuCapacity), createObject('value', 2))]",
           "skuName": "[if(contains(parameters('elasticPools')[copyIndex()], 'skuName'), createObject('value', parameters('elasticPools')[copyIndex()].skuName), createObject('value', 'GP_Gen5'))]",
           "skuTier": "[if(contains(parameters('elasticPools')[copyIndex()], 'skuTier'), createObject('value', parameters('elasticPools')[copyIndex()].skuTier), createObject('value', 'GeneralPurpose'))]",
@@ -1358,7 +1360,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "17470745141944089609"
+              "templateHash": "3978881342800176671"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool.",
@@ -1446,7 +1448,7 @@
             },
             "minCapacity": {
               "type": "int",
-              "defaultValue": -1,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Minimal capacity that serverless pool will not shrink below, if not paused."
               }

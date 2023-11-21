@@ -107,7 +107,6 @@ The storage limit for the database elastic pool in bytes.
 Minimal capacity that serverless pool will not shrink below, if not paused.
 - Required: No
 - Type: int
-- Default: `-1`
 
 ### Parameter: `name`
 

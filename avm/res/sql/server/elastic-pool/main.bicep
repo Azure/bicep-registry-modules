@@ -40,7 +40,7 @@ param maintenanceConfigurationId string = ''
 param maxSizeBytes int = 34359738368
 
 @description('Optional. Minimal capacity that serverless pool will not shrink below, if not paused.')
-param minCapacity int = -1
+param minCapacity int?
 
 @description('Optional. The maximum capacity any one database can consume.')
 param databaseMaxCapacity int = 2
