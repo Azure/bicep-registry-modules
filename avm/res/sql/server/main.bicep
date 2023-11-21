@@ -313,7 +313,7 @@ module server_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' = if
 module server_keys 'key/main.bicep' = [for (key, index) in keys: {
   name: '${uniqueString(deployment().name, location)}-Sql-Key-${index}'
   params: {
-    name: key.name
+    name: key.?name
     serverName: server.name
     serverKeyType: contains(key, 'serverKeyType') ? key.serverKeyType : 'ServiceManaged'
     uri: contains(key, 'uri') ? key.uri : ''

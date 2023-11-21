@@ -17,12 +17,6 @@ This module deploys an Azure SQL Server Key.
 
 ## Parameters
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern. |
-
 **Conditional parameters**
 
 | Parameter | Type | Description |
@@ -33,13 +27,14 @@ This module deploys an Azure SQL Server Key.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`name`](#parameter-name) | string | The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern. |
 | [`serverKeyType`](#parameter-serverkeytype) | string | The encryption protector type like "ServiceManaged", "AzureKeyVault". |
 | [`uri`](#parameter-uri) | string | The URI of the key. If the ServerKeyType is AzureKeyVault, then either the URI or the keyVaultName/keyName combination is required. |
 
 ### Parameter: `name`
 
 The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern.
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `serverKeyType`

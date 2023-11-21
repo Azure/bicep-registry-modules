@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "804605641707904053"
+      "templateHash": "12295213353677593935"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -2712,7 +2712,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('keys')[copyIndex()].name]"
+            "value": "[tryGet(parameters('keys')[copyIndex()], 'name')]"
           },
           "serverName": {
             "value": "[parameters('name')]"
@@ -2722,12 +2722,13 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "9448793859343130582"
+              "templateHash": "2292967663993625779"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key.",
@@ -2736,8 +2737,9 @@
           "parameters": {
             "name": {
               "type": "string",
+              "nullable": true,
               "metadata": {
-                "description": "Required. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern."
+                "description": "Optional. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern."
               }
             },
             "serverName": {
@@ -2769,31 +2771,40 @@
             "splittedKeyUri": "[split(parameters('uri'), '/')]",
             "serverKeyName": "[if(empty(parameters('uri')), 'ServiceManaged', format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('splittedKeyUri')[5]))]"
           },
-          "resources": [
-            {
+          "resources": {
+            "server": {
+              "existing": true,
+              "type": "Microsoft.Sql/servers",
+              "apiVersion": "2022-05-01-preview",
+              "name": "[parameters('serverName')]"
+            },
+            "key": {
               "type": "Microsoft.Sql/servers/keys",
               "apiVersion": "2022-05-01-preview",
-              "name": "[format('{0}/{1}', parameters('serverName'), if(not(empty(parameters('name'))), parameters('name'), variables('serverKeyName')))]",
+              "name": "[format('{0}/{1}', parameters('serverName'), coalesce(parameters('name'), variables('serverKeyName')))]",
               "properties": {
                 "serverKeyType": "[parameters('serverKeyType')]",
                 "uri": "[parameters('uri')]"
-              }
+              },
+              "dependsOn": [
+                "server"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
               "metadata": {
                 "description": "The name of the deployed server key."
               },
-              "value": "[if(not(empty(parameters('name'))), parameters('name'), variables('serverKeyName'))]"
+              "value": "[coalesce(parameters('name'), variables('serverKeyName'))]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the deployed server key."
               },
-              "value": "[resourceId('Microsoft.Sql/servers/keys', parameters('serverName'), if(not(empty(parameters('name'))), parameters('name'), variables('serverKeyName')))]"
+              "value": "[resourceId('Microsoft.Sql/servers/keys', parameters('serverName'), coalesce(parameters('name'), variables('serverKeyName')))]"
             },
             "resourceGroupName": {
               "type": "string",

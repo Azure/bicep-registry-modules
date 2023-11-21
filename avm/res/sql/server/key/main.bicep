@@ -2,8 +2,8 @@ metadata name = 'Azure SQL Server Keys'
 metadata description = 'This module deploys an Azure SQL Server Key.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern.')
-param name string
+@description('Optional. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern.')
+param name string?
 
 @description('Conditional. The name of the parent SQL server. Required if the template is used in a standalone deployment.')
 param serverName string
@@ -29,7 +29,7 @@ resource server 'Microsoft.Sql/servers@2022-05-01-preview' existing = {
 }
 
 resource key 'Microsoft.Sql/servers/keys@2022-05-01-preview' = {
-  name: !empty(name) ? name : serverKeyName
+  name: name ?? serverKeyName
   parent: server
   properties: {
     serverKeyType: serverKeyType
