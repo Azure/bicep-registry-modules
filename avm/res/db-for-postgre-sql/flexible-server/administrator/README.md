@@ -35,29 +35,13 @@ This module deploys a DBforPostgreSQL Flexible Server Administrator.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
-| [`location`](#parameter-location) | string | Location for all resources. |
 | [`tenantId`](#parameter-tenantid) | string | The tenantId of the Active Directory administrator. |
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `flexibleServerName`
 
 The name of the parent PostgreSQL flexible server. Required if the template is used in a standalone deployment.
 - Required: Yes
 - Type: string
-
-### Parameter: `location`
-
-Location for all resources.
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
 
 ### Parameter: `objectId`
 

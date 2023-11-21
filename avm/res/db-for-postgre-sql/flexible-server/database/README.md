@@ -35,8 +35,6 @@ This module deploys a DBforPostgreSQL Flexible Server Database.
 | :-- | :-- | :-- |
 | [`charset`](#parameter-charset) | string | The charset of the database. |
 | [`collation`](#parameter-collation) | string | The collation of the database. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
-| [`location`](#parameter-location) | string | Location for all resources. |
 
 ### Parameter: `charset`
 
@@ -52,25 +50,11 @@ The collation of the database.
 - Type: string
 - Default: `''`
 
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-- Required: No
-- Type: bool
-- Default: `True`
-
 ### Parameter: `flexibleServerName`
 
 The name of the parent PostgreSQL flexible server. Required if the template is used in a standalone deployment.
 - Required: Yes
 - Type: string
-
-### Parameter: `location`
-
-Location for all resources.
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
 
 ### Parameter: `name`
 

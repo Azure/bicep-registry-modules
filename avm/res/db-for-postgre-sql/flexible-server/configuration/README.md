@@ -33,30 +33,14 @@ This module deploys a DBforPostgreSQL Flexible Server Configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
-| [`location`](#parameter-location) | string | Location for all resources. |
 | [`source`](#parameter-source) | string | Source of the configuration. |
 | [`value`](#parameter-value) | string | Value of the configuration. |
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `flexibleServerName`
 
 The name of the parent PostgreSQL flexible server. Required if the template is used in a standalone deployment.
 - Required: Yes
 - Type: string
-
-### Parameter: `location`
-
-Location for all resources.
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
 
 ### Parameter: `name`
 

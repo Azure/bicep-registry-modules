@@ -280,7 +280,6 @@ module flexibleServer_databases 'database/main.bicep' = [for (database, index) i
   name: '${uniqueString(deployment().name, location)}-PostgreSQL-DB-${index}'
   params: {
     name: database.name
-    location: location
     flexibleServerName: flexibleServer.name
     collation: contains(database, 'collation') ? database.collation : ''
     charset: contains(database, 'charset') ? database.charset : ''
@@ -305,7 +304,6 @@ module flexibleServer_configurations 'configuration/main.bicep' = [for (configur
   name: '${uniqueString(deployment().name, location)}-PostgreSQL-Configurations-${index}'
   params: {
     name: configuration.name
-    location: location
     flexibleServerName: flexibleServer.name
     source: contains(configuration, 'source') ? configuration.source : ''
     value: contains(configuration, 'value') ? configuration.value : ''
@@ -319,7 +317,6 @@ module flexibleServer_administrators 'administrator/main.bicep' = [for (administ
   name: '${uniqueString(deployment().name, location)}-PostgreSQL-Administrators-${index}'
   params: {
     flexibleServerName: flexibleServer.name
-    location: location
     objectId: administrator.objectId
     principalName: administrator.principalName
     principalType: administrator.principalType

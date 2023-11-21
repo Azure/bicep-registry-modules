@@ -14,9 +14,6 @@ param source string = ''
 @description('Optional. Value of the configuration.')
 param value string = ''
 
-@description('Optional. Location for all resources.')
-param location string = resourceGroup().location
-
 resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' existing = {
   name: flexibleServerName
 }

@@ -23,9 +23,6 @@ param principalType string
 @description('Optional. The tenantId of the Active Directory administrator.')
 param tenantId string = tenant().tenantId
 
-@description('Optional. Location for all resources.')
-param location string = resourceGroup().location
-
 resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' existing = {
   name: flexibleServerName
 }
