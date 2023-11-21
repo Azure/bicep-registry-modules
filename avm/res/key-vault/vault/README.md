@@ -284,6 +284,16 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Reader'
       }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
     ]
     secrets: {
       secureList: [
@@ -489,6 +499,16 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Reader"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "acdd72a7-3385-48ef-bd42-f606fba81ae7"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
