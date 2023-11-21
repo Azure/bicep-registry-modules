@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "7602734043719523424"
+      "templateHash": "13806990273495192495"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint.",
@@ -183,12 +183,6 @@
         "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
       }
     },
-    "serviceResourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. Resource ID of the resource that needs to be connected to the network."
-      }
-    },
     "applicationSecurityGroupResourceIds": {
       "type": "array",
       "nullable": true,
@@ -207,20 +201,6 @@
       "$ref": "#/definitions/ipConfigurationsType",
       "metadata": {
         "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
-      }
-    },
-    "groupIds": {
-      "type": "array",
-      "metadata": {
-        "description": "Required. Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to."
-      }
-    },
-    "requestMessage": {
-      "type": "string",
-      "nullable": true,
-      "maxLength": 140,
-      "metadata": {
-        "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
       }
     },
     "privateDnsZoneGroupName": {
@@ -269,15 +249,18 @@
         "description": "Optional. Custom DNS configurations."
       }
     },
-    "privateLinkServiceConnectionType": {
-      "type": "string",
-      "defaultValue": "auto",
-      "allowedValues": [
-        "auto",
-        "manual"
-      ],
+    "manualPrivateLinkServiceConnections": {
+      "type": "array",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Private Link Service Connection type."
+        "description": "Required. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource."
+      }
+    },
+    "privateLinkServiceConnections": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Required. A grouping of information about the connection to the remote resource."
       }
     },
     "enableTelemetry": {
@@ -342,8 +325,8 @@
         "customDnsConfigs": "[coalesce(parameters('customDnsConfigs'), createArray())]",
         "customNetworkInterfaceName": "[coalesce(parameters('customNetworkInterfaceName'), '')]",
         "ipConfigurations": "[coalesce(parameters('ipConfigurations'), createArray())]",
-        "manualPrivateLinkServiceConnections": "[if(equals(parameters('privateLinkServiceConnectionType'), 'manual'), createArray(createObject('name', parameters('name'), 'properties', createObject('privateLinkServiceId', parameters('serviceResourceId'), 'groupIds', coalesce(parameters('groupIds'), createArray()), 'requestMessage', coalesce(parameters('requestMessage'), null())))), createArray())]",
-        "privateLinkServiceConnections": "[if(equals(parameters('privateLinkServiceConnectionType'), 'auto'), createArray(createObject('name', parameters('name'), 'properties', createObject('privateLinkServiceId', parameters('serviceResourceId'), 'groupIds', coalesce(parameters('groupIds'), createArray())))), createArray())]",
+        "manualPrivateLinkServiceConnections": "[coalesce(parameters('manualPrivateLinkServiceConnections'), createArray())]",
+        "privateLinkServiceConnections": "[coalesce(parameters('privateLinkServiceConnections'), createArray())]",
         "subnet": {
           "id": "[parameters('subnetResourceId')]"
         }
