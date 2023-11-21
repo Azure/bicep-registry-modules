@@ -130,7 +130,7 @@ param scaleSetEvictionPolicy string = 'Delete'
 param scaleSetPriority string = ''
 
 @description('Optional. Possible values are any decimal value greater than zero or -1 which indicates the willingness to pay any on-demand price. For more details on spot pricing, see spot VMs pricing (https://learn.microsoft.com/en-us/azure/virtual-machines/spot-vms#pricing).')
-param spotMaxPrice int = -1
+param spotMaxPrice int?
 
 @description('Optional. Tags of the resource.')
 param tags object?
