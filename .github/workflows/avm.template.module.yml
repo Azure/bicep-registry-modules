@@ -99,7 +99,7 @@ jobs:
         uses: ./.github/actions/templates/avm-validateModuleDeployment
         with:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.moduleTestFilePaths }}"
-          location: "WestEurope"
+          location: "NorthEurope"
           subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           removeDeployment: "${{ fromJson(inputs.workflowInput).removeDeployment }}"
