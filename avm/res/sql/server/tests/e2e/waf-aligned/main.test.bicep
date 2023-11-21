@@ -134,7 +134,6 @@ module testDeployment '../../../main.bicep' = {
     ]
     keys: [
       {
-        name: '${nestedDependencies.outputs.keyVaultName}_${nestedDependencies.outputs.keyVaultKeyName}_${last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))}'
         serverKeyType: 'AzureKeyVault'
         uri: nestedDependencies.outputs.keyVaultEncryptionKeyUrl
       }

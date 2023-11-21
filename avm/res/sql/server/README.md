@@ -859,7 +859,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     ]
     keys: [
       {
-        name: '<name>'
         serverKeyType: 'AzureKeyVault'
         uri: '<uri>'
       }
@@ -991,7 +990,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "keys": {
       "value": [
         {
-          "name": "<name>",
           "serverKeyType": "AzureKeyVault",
           "uri": "<uri>"
         }
