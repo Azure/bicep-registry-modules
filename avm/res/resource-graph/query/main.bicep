@@ -42,9 +42,9 @@ var builtInRoleNames = {
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
-// ============ //
-// Dependencies //
-// ============ //
+// ================ //
+// Resources        //
+// ================ //
 
 resource rgQuery_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
@@ -72,10 +72,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
     }
   }
 }
-
-// ================ //
-// Resources        //
-// ================ //
 
 resource rgQuery 'Microsoft.ResourceGraph/queries@2018-09-01-preview' = {
   name: name
