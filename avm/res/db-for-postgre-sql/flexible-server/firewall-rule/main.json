@@ -1,0 +1,95 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "13418631602887252631"
+    },
+    "name": "DBforPostgreSQL Flexible Server Firewall Rules",
+    "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the PostgreSQL flexible server Firewall Rule."
+      }
+    },
+    "startIpAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses."
+      }
+    },
+    "endIpAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses."
+      }
+    },
+    "flexibleServerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent PostgreSQL flexible server. Required if the template is used in a standalone deployment."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
+      "apiVersion": "2022-12-01",
+      "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
+      "properties": {
+        "endIpAddress": "[parameters('endIpAddress')]",
+        "startIpAddress": "[parameters('startIpAddress')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed firewall rule."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed firewall rule."
+      },
+      "value": "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers/firewallRules', parameters('flexibleServerName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed firewall rule."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
