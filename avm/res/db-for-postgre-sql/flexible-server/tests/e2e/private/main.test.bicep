@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Private access'
+metadata description = 'This instance deploys the module with private access only.'
+
 // ========== //
 // Parameters //
 // ========== //
