@@ -38,8 +38,6 @@ The following section provides usage examples for the module, which were used to
 ### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
-> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
-
 
 
 <details>
@@ -55,7 +53,6 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
     query: 'Resources | limit 10'
     // Non-required parameters
     location: '<location>'
-    queryDescription: 'Test query to get the first 10 resources in the subscription.'
   }
 }
 ```
@@ -82,9 +79,6 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "queryDescription": {
-      "value": "Test query to get the first 10 resources in the subscription."
     }
   }
 }
