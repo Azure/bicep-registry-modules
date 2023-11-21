@@ -62,13 +62,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     privateDnsZoneResourceIds: [
       nestedDependencies.outputs.privateDNSZoneResourceId
     ]
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Reader'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
     ipConfigurations: [
       {
         name: 'myIPconfig'
