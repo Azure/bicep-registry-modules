@@ -1221,6 +1221,20 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
+        logCategoriesAndGroups: [
+          {
+            category: 'kube-apiserver'
+          }
+          {
+            category: 'kube-controller-manager'
+          }
+          {
+            category: 'kube-scheduler'
+          }
+          {
+            category: 'cluster-autoscaler'
+          }
+        ]
         metricCategories: [
           {
             category: 'AllMetrics'
@@ -1357,6 +1371,20 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
+          "logCategoriesAndGroups": [
+            {
+              "category": "kube-apiserver"
+            },
+            {
+              "category": "kube-controller-manager"
+            },
+            {
+              "category": "kube-scheduler"
+            },
+            {
+              "category": "cluster-autoscaler"
+            }
+          ],
           "metricCategories": [
             {
               "category": "AllMetrics"

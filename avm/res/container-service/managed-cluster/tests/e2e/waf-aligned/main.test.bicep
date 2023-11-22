@@ -152,6 +152,20 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     diagnosticSettings: [
       {
         name: 'customSetting'
+        logCategoriesAndGroups: [
+          {
+            category: 'kube-apiserver'
+          }
+          {
+            category: 'kube-controller-manager'
+          }
+          {
+            category: 'kube-scheduler'
+          }
+          {
+            category: 'cluster-autoscaler'
+          }
+        ]
         metricCategories: [
           {
             category: 'AllMetrics'
