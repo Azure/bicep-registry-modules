@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "5676328067407184610"
+      "templateHash": "14626521191801990966"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -746,14 +746,14 @@
     },
     "skuTier": {
       "type": "string",
-      "defaultValue": "Free",
+      "nullable": true,
       "allowedValues": [
         "Free",
         "Premium",
         "Standard"
       ],
       "metadata": {
-        "description": "Optional. Tier of a managed cluster SKU. - Free or Standard."
+        "description": "Optional. Tier of a managed cluster SKU. - Free, Standard or Premium."
       }
     },
     "kubernetesVersion": {

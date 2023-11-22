@@ -528,16 +528,24 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     primaryAgentPoolProfile: [
       {
         count: 1
+        maxpod: 50
+        minCount: 1
         mode: 'System'
         name: 'systempool'
+        type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
       }
     ]
     // Non-required parameters
+    kubernetesVersion: '<kubernetesVersion>'
     location: '<location>'
     managedIdentities: {
       systemAssigned: true
     }
+    networkPolicy: '<networkPolicy>'
+    omsAgentEnabled: true
+    skuTier: 'Standard'
+    tags: {}
   }
 }
 ```
@@ -562,13 +570,19 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": [
         {
           "count": 1,
+          "maxpod": 50,
+          "minCount": 1,
           "mode": "System",
           "name": "systempool",
+          "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2"
         }
       ]
     },
     // Non-required parameters
+    "kubernetesVersion": {
+      "value": "<kubernetesVersion>"
+    },
     "location": {
       "value": "<location>"
     },
@@ -576,6 +590,18 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": {
         "systemAssigned": true
       }
+    },
+    "networkPolicy": {
+      "value": "<networkPolicy>"
+    },
+    "omsAgentEnabled": {
+      "value": true
+    },
+    "skuTier": {
+      "value": "Standard"
+    },
+    "tags": {
+      "value": {}
     }
   }
 }
@@ -1301,7 +1327,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`privateDNSZone`](#parameter-privatednszone) | string | Private DNS Zone configuration. Set to 'system' and AKS will create a private DNS zone in the node resource group. Set to '' to disable private DNS Zone creation and use public DNS. Supply the resource ID here of an existing Private DNS zone to use an existing zone. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 | [`serviceCidr`](#parameter-servicecidr) | string | A CIDR notation IP range from which to assign service cluster IPs. It must not overlap with any Subnet IP ranges. |
-| [`skuTier`](#parameter-skutier) | string | Tier of a managed cluster SKU. - Free or Standard. |
+| [`skuTier`](#parameter-skutier) | string | Tier of a managed cluster SKU. - Free, Standard or Premium. |
 | [`sshPublicKey`](#parameter-sshpublickey) | string | Specifies the SSH RSA public key string for the Linux nodes. |
 | [`supportPlan`](#parameter-supportplan) | string | The support plan for the Managed Cluster. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -2562,10 +2588,9 @@ A CIDR notation IP range from which to assign service cluster IPs. It must not o
 
 ### Parameter: `skuTier`
 
-Tier of a managed cluster SKU. - Free or Standard.
+Tier of a managed cluster SKU. - Free, Standard or Premium.
 - Required: No
 - Type: string
-- Default: `'Free'`
 - Allowed:
   ```Bicep
   [

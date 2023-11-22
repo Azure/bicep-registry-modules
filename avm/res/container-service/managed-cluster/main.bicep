@@ -67,13 +67,13 @@ param managedOutboundIPCount int = 0
 ])
 param outboundType string = 'loadBalancer'
 
-@description('Optional. Tier of a managed cluster SKU. - Free or Standard.')
+@description('Optional. Tier of a managed cluster SKU. - Free, Standard or Premium.')
 @allowed([
   'Free'
   'Premium'
   'Standard'
 ])
-param skuTier string = 'Free'
+param skuTier string?
 
 @description('Optional. Version of Kubernetes specified when creating the managed cluster.')
 param kubernetesVersion string?
