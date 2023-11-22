@@ -688,7 +688,7 @@ resource dnsZone 'Microsoft.Network/dnsZones@2018-05-01' existing = if (dnsZoneR
 }
 
 resource dnsZone_roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (enableDnsZoneContributorRoleAssignment == true && dnsZoneResourceId != null && webApplicationRoutingEnabled) {
-  name: guid(any(dnsZoneResourceId), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314'), 'DNS Zone Contributor')
+  name: guid(dnsZone.id, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314'), 'DNS Zone Contributor')
   properties: {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314') // 'DNS Zone Contributor'
     principalId: managedCluster.properties.ingressProfile.webAppRouting.identity.objectId

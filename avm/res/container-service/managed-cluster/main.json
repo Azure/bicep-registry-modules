@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "14626521191801990966"
+      "templateHash": "8461744261072850698"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -1588,7 +1588,7 @@
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.Network/dnsZones/{0}', last(split(if(not(empty(parameters('dnsZoneResourceId'))), parameters('dnsZoneResourceId'), '/dummmyZone'), '/')))]",
-      "name": "[guid(parameters('dnsZoneResourceId'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314'), 'DNS Zone Contributor')]",
+      "name": "[guid(resourceId('Microsoft.Network/dnsZones', last(split(if(not(empty(parameters('dnsZoneResourceId'))), parameters('dnsZoneResourceId'), '/dummmyZone'), '/'))), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314'), 'DNS Zone Contributor')]",
       "properties": {
         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314')]",
         "principalId": "[reference('managedCluster').ingressProfile.webAppRouting.identity.objectId]",
