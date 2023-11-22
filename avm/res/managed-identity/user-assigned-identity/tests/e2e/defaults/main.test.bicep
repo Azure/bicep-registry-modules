@@ -41,5 +41,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     location:location
+    // Workaround for PSRule
+    tags: null
   }
 }]
