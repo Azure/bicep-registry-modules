@@ -45,6 +45,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
   name: '${uniqueString(deployment().name, location)}-test-miuaimin'
   params: {
     location: '<location>'
+    tags: '<tags>'
   }
 }
 ```
@@ -63,6 +64,9 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
   "parameters": {
     "location": {
       "value": "<location>"
+    },
+    "tags": {
+      "value": "<tags>"
     }
   }
 }
