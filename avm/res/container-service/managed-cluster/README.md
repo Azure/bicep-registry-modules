@@ -30,13 +30,16 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/container-service/managed-cluster:<version>`.
 
-- [Azure](#example-1-azure)
+- [Using Azure CNI Network Plugin.](#example-1-using-azure-cni-network-plugin)
 - [Using only defaults](#example-2-using-only-defaults)
-- [Kubenet](#example-3-kubenet)
-- [Priv](#example-4-priv)
-- [Waf-Aligned](#example-5-waf-aligned)
+- [Using Kubenet Network Plugin.](#example-3-using-kubenet-network-plugin)
+- [Using Private Cluster.](#example-4-using-private-cluster)
+- [WAF-aligned](#example-5-waf-aligned)
 
-### Example 1: _Azure_
+### Example 1: _Using Azure CNI Network Plugin._
+
+This instance deploys the module with Azure CNI network plugin .
+
 
 <details>
 
@@ -581,7 +584,10 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 </details>
 <p>
 
-### Example 3: _Kubenet_
+### Example 3: _Using Kubenet Network Plugin._
+
+This instance deploys the module with Kubenet network plugin .
+
 
 <details>
 
@@ -844,7 +850,10 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 </details>
 <p>
 
-### Example 4: _Priv_
+### Example 4: _Using Private Cluster._
+
+This instance deploys the module with a private cluster instance.
+
 
 <details>
 
@@ -1115,7 +1124,10 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 </details>
 <p>
 
-### Example 5: _Waf-Aligned_
+### Example 5: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
+
 
 <details>
 

@@ -1,4 +1,6 @@
 targetScope = 'subscription'
+metadata name = 'Using Kubenet Network Plugin.'
+metadata description = 'This instance deploys the module with Kubenet network plugin .'
 
 // ========== //
 // Parameters //

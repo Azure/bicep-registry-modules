@@ -1,4 +1,6 @@
 targetScope = 'subscription'
+metadata name = 'Using Azure CNI Network Plugin.'
+metadata description = 'This instance deploys the module with Azure CNI network plugin .'
 
 // ========== //
 // Parameters //
