@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Mongo Database'
+metadata description = 'This instance deploys the module with a Mongo Database.'
+
 // ========== //
 // Parameters //
 // ========== //

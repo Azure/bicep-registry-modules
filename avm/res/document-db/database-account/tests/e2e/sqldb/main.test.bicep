@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'SQL Database'
+metadata description = 'This instance deploys the module with a SQL Database.'
+
 // ========== //
 // Parameters //
 // ========== //

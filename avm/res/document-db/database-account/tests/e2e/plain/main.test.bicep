@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Plain'
+metadata description = 'This instance deploys the module without a Database.'
+
 // ========== //
 // Parameters //
 // ========== //
@@ -61,6 +64,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
+    location: location
     locations: [
       {
         failoverPriority: 0
