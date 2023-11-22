@@ -1183,6 +1183,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           'CriticalAddonsOnly=true:NoSchedule'
         ]
         osDiskSizeGB: 128
+        osDiskType: 'Standard_LRS'
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
@@ -1208,6 +1209,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           'CriticalAddonsOnly=true:NoSchedule'
         ]
         osDiskSizeGB: 128
+        osDiskType: 'Standard_LRS'
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
@@ -1216,6 +1218,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         vmSize: 'Standard_DS2_v2'
       }
     ]
+    authorizedIPRanges: '<authorizedIPRanges>'
     autoUpgradeProfileUpgradeChannel: 'stable'
     diagnosticSettings: [
       {
@@ -1245,7 +1248,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    disableLocalAccounts: true
     dnsServiceIP: '10.10.200.10'
+    enableAzureDefender: true
     enablePrivateCluster: true
     kubernetesVersion: '<kubernetesVersion>'
     location: '<location>'
@@ -1254,6 +1259,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         '<managedIdentityResourceId>'
       ]
     }
+    monitoringWorkspaceId: '<monitoringWorkspaceId>'
     networkPlugin: 'azure'
     networkPolicy: 'azure'
     omsAgentEnabled: true
@@ -1329,6 +1335,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
             "CriticalAddonsOnly=true:NoSchedule"
           ],
           "osDiskSizeGB": 128,
+          "osDiskType": "Standard_LRS",
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
@@ -1354,6 +1361,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
             "CriticalAddonsOnly=true:NoSchedule"
           ],
           "osDiskSizeGB": 128,
+          "osDiskType": "Standard_LRS",
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
@@ -1362,6 +1370,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "vmSize": "Standard_DS2_v2"
         }
       ]
+    },
+    "authorizedIPRanges": {
+      "value": "<authorizedIPRanges>"
     },
     "autoUpgradeProfileUpgradeChannel": {
       "value": "stable"
@@ -1396,8 +1407,14 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         }
       ]
     },
+    "disableLocalAccounts": {
+      "value": true
+    },
     "dnsServiceIP": {
       "value": "10.10.200.10"
+    },
+    "enableAzureDefender": {
+      "value": true
     },
     "enablePrivateCluster": {
       "value": true
@@ -1414,6 +1431,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "<managedIdentityResourceId>"
         ]
       }
+    },
+    "monitoringWorkspaceId": {
+      "value": "<monitoringWorkspaceId>"
     },
     "networkPlugin": {
       "value": "azure"

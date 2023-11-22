@@ -107,6 +107,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         nodeTaints: [
           'CriticalAddonsOnly=true:NoSchedule'
         ]
+        osDiskType: 'Standard_LRS'
         osDiskSizeGB: 128
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
@@ -132,6 +133,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         nodeTaints: [
           'CriticalAddonsOnly=true:NoSchedule'
         ]
+        osDiskType: 'Standard_LRS'
         osDiskSizeGB: 128
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
@@ -148,7 +150,9 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     dnsServiceIP: '10.10.200.10'
     serviceCidr: '10.10.200.0/24'
     omsAgentEnabled: true
-
+    monitoringWorkspaceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+    disableLocalAccounts: true
+    enableAzureDefender: true
     diagnosticSettings: [
       {
         name: 'customSetting'
@@ -191,5 +195,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     // Workaround for PSRule
     roleAssignments: []
     kubernetesVersion: null
+    authorizedIPRanges: null
   }
 }]
