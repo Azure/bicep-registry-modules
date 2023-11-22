@@ -368,8 +368,6 @@ var lbProfile = {
   effectiveOutboundIPs: []
 }
 
-var enableReferencedModulesTelemetry = false
-
 var builtInRoleNames = {
   'Azure Kubernetes Fleet Manager Contributor Role': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '63bb64ad-9799-4770-b5c3-24ed299a07bf')
   'Azure Kubernetes Fleet Manager RBAC Admin': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '434fb43a-c01c-447e-9f67-c3ad923cfaba')
@@ -440,7 +438,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
       webAppRouting: {
         enabled: webApplicationRoutingEnabled
         dnsZoneResourceIds: !empty(dnsZoneResourceId) ? [
-          dnsZoneResourceId
+          any(dnsZoneResourceId)
         ] : null
       }
     }
@@ -686,11 +684,11 @@ resource managedCluster_roleAssignments 'Microsoft.Authorization/roleAssignments
 }]
 
 resource dnsZone 'Microsoft.Network/dnsZones@2018-05-01' existing = if (dnsZoneResourceId != null && webApplicationRoutingEnabled) {
-  name: last(split((!empty(dnsZoneResourceId) ? dnsZoneResourceId : '/dummmyZone'), '/'))!
+  name: last(split((!empty(dnsZoneResourceId) ? any(dnsZoneResourceId) : '/dummmyZone'), '/'))!
 }
 
 resource dnsZone_roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (enableDnsZoneContributorRoleAssignment == true && dnsZoneResourceId != null && webApplicationRoutingEnabled) {
-  name: guid(dnsZoneResourceId, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314'), 'DNS Zone Contributor')
+  name: guid(any(dnsZoneResourceId), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314'), 'DNS Zone Contributor')
   properties: {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314') // 'DNS Zone Contributor'
     principalId: managedCluster.properties.ingressProfile.webAppRouting.identity.objectId

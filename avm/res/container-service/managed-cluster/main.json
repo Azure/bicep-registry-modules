@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "9050756109631210802"
+      "templateHash": "5676328067407184610"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -1335,7 +1335,6 @@
       },
       "effectiveOutboundIPs": []
     },
-    "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Azure Kubernetes Fleet Manager Contributor Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '63bb64ad-9799-4770-b5c3-24ed299a07bf')]",
       "Azure Kubernetes Fleet Manager RBAC Admin": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '434fb43a-c01c-447e-9f67-c3ad923cfaba')]",

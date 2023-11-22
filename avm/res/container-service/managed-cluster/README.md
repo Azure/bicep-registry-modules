@@ -678,6 +678,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    location: '<location>'
     managedIdentities: {
       userAssignedResourcesIds: [
         '<managedIdentityResourceId>'
@@ -806,6 +807,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "location": {
+      "value": "<location>"
     },
     "managedIdentities": {
       "value": {
@@ -941,6 +945,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     ]
     dnsServiceIP: '10.10.200.10'
     enablePrivateCluster: true
+    location: '<location>'
     managedIdentities: {
       userAssignedResourcesIds: [
         '<managedIdentityResourceId>'
@@ -1073,6 +1078,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "enablePrivateCluster": {
       "value": true
+    },
+    "location": {
+      "value": "<location>"
     },
     "managedIdentities": {
       "value": {
