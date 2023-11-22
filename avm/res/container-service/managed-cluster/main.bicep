@@ -16,43 +16,39 @@ param managedIdentities managedIdentitiesType
 
 @description('Optional. Network dataplane used in the Kubernetes cluster. Not compatible with kubenet network plugin.')
 @allowed([
-  ''
   'azure'
   'cilium'
 ])
-param networkDataplane string = ''
+param networkDataplane string?
 
 @description('Optional. Specifies the network plugin used for building Kubernetes network.')
 @allowed([
-  ''
   'azure'
   'kubenet'
 ])
-param networkPlugin string = ''
+param networkPlugin string?
 
 @description('Optional. Network plugin mode used for building the Kubernetes network. Not compatible with kubenet network plugin.')
 @allowed([
-  ''
   'overlay'
 ])
-param networkPluginMode string = ''
+param networkPluginMode string?
 
 @description('Optional. Specifies the network policy used for building Kubernetes network. - calico or azure.')
 @allowed([
-  ''
   'azure'
   'calico'
 ])
-param networkPolicy string = ''
+param networkPolicy string?
 
 @description('Optional. Specifies the CIDR notation IP range from which to assign pod IPs when kubenet is used.')
-param podCidr string = ''
+param podCidr string?
 
 @description('Optional. A CIDR notation IP range from which to assign service cluster IPs. It must not overlap with any Subnet IP ranges.')
-param serviceCidr string = ''
+param serviceCidr string?
 
 @description('Optional. Specifies the IP address assigned to the Kubernetes DNS service. It must be within the Kubernetes service address range specified in serviceCidr.')
-param dnsServiceIP string = ''
+param dnsServiceIP string?
 
 @description('Optional. Specifies the sku of the load balancer used by the virtual machine scale sets used by nodepools.')
 @allowed([
@@ -80,32 +76,32 @@ param outboundType string = 'loadBalancer'
 param skuTier string = 'Free'
 
 @description('Optional. Version of Kubernetes specified when creating the managed cluster.')
-param kubernetesVersion string = ''
+param kubernetesVersion string?
 
 @description('Optional. Specifies the administrator username of Linux virtual machines.')
 param adminUsername string = 'azureuser'
 
 @description('Optional. Specifies the SSH RSA public key string for the Linux nodes.')
-param sshPublicKey string = ''
+param sshPublicKey string?
 
 @description('Conditional. Information about a service principal identity for the cluster to use for manipulating Azure APIs. Required if no managed identities are assigned to the cluster.')
-param aksServicePrincipalProfile object = {}
+param aksServicePrincipalProfile object?
 
 @description('Optional. The client AAD application ID.')
-param aadProfileClientAppID string = ''
+param aadProfileClientAppID string?
 
 @description('Optional. The server AAD application ID.')
-param aadProfileServerAppID string = ''
+param aadProfileServerAppID string?
 
 @description('Optional. The server AAD application secret.')
 #disable-next-line secure-secrets-in-params // Not a secret
-param aadProfileServerAppSecret string = ''
+param aadProfileServerAppSecret string?
 
 @description('Optional. Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication.')
 param aadProfileTenantId string = subscription().tenantId
 
 @description('Optional. Specifies the AAD group object IDs that will have admin role of the cluster.')
-param aadProfileAdminGroupObjectIDs array = []
+param aadProfileAdminGroupObjectIDs array?
 
 @description('Optional. Specifies whether to enable managed AAD integration.')
 param aadProfileManaged bool = true
@@ -123,7 +119,7 @@ param disableLocalAccounts bool = false
 param nodeResourceGroup string = '${resourceGroup().name}_aks_${name}_nodes'
 
 @description('Optional. IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer.')
-param authorizedIPRanges array = []
+param authorizedIPRanges array?
 
 @description('Optional. Whether to disable run command for the cluster or not.')
 param disableRunCommand bool = false
@@ -135,7 +131,7 @@ param enablePrivateCluster bool = false
 param enablePrivateClusterPublicFQDN bool = false
 
 @description('Optional. Private DNS Zone configuration. Set to \'system\' and AKS will create a private DNS zone in the node resource group. Set to \'\' to disable private DNS Zone creation and use public DNS. Supply the resource ID here of an existing Private DNS zone to use an existing zone.')
-param privateDNSZone string = ''
+param privateDNSZone string?
 
 @description('Required. Properties of the primary agent pool.')
 param primaryAgentPoolProfile array
@@ -150,7 +146,7 @@ param httpApplicationRoutingEnabled bool = false
 param webApplicationRoutingEnabled bool = false
 
 @description('Optional. Specifies the resource ID of connected DNS zone. It will be ignored if `webApplicationRoutingEnabled` is set to `false`.')
-param dnsZoneResourceId string = ''
+param dnsZoneResourceId string?
 
 @description('Optional. Specifies whether assing the DNS zone contributor role to the cluster service principal. It will be ignored if `webApplicationRoutingEnabled` is set to `false` or `dnsZoneResourceId` not provided.')
 param enableDnsZoneContributorRoleAssignment bool = true
@@ -159,7 +155,7 @@ param enableDnsZoneContributorRoleAssignment bool = true
 param ingressApplicationGatewayEnabled bool = false
 
 @description('Conditional. Specifies the resource ID of connected application gateway. Required if `ingressApplicationGatewayEnabled` is set to `true`.')
-param appGatewayResourceId string = ''
+param appGatewayResourceId string?
 
 @description('Optional. Specifies whether the aciConnectorLinux add-on is enabled or not.')
 param aciConnectorLinuxEnabled bool = false
@@ -263,10 +259,9 @@ param autoScalerProfileSkipNodesWithSystemPods string = 'true'
   'patch'
   'rapid'
   'stable'
-  ''
 ])
 @description('Optional. Auto-upgrade channel on the AKS cluster.')
-param autoUpgradeProfileUpgradeChannel string = ''
+param autoUpgradeProfileUpgradeChannel string?
 
 @description('Optional. Running in Kubenet is disabled by default due to the security related nature of AAD Pod Identity and the risks of IP spoofing.')
 param podIdentityProfileAllowNetworkPluginKubenet bool = false
@@ -275,10 +270,10 @@ param podIdentityProfileAllowNetworkPluginKubenet bool = false
 param podIdentityProfileEnable bool = false
 
 @description('Optional. The pod identities to use in the cluster.')
-param podIdentityProfileUserAssignedIdentities array = []
+param podIdentityProfileUserAssignedIdentities array?
 
 @description('Optional. The pod identity exceptions to allow.')
-param podIdentityProfileUserAssignedIdentityExceptions array = []
+param podIdentityProfileUserAssignedIdentityExceptions array?
 
 @description('Optional. Whether the The OIDC issuer profile of the Managed Cluster is enabled.')
 param enableOidcIssuerProfile bool = false
@@ -318,7 +313,7 @@ param diagnosticSettings diagnosticSettingType
 param omsAgentEnabled bool = true
 
 @description('Optional. Resource ID of the monitoring log analytics workspace.')
-param monitoringWorkspaceId string = ''
+param monitoringWorkspaceId string?
 
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
 param enableTelemetry bool = true
@@ -333,16 +328,16 @@ param lock lockType
 param tags object?
 
 @description('Optional. The resource ID of the disc encryption set to apply to the cluster. For security reasons, this value should be provided.')
-param diskEncryptionSetID string = ''
+param diskEncryptionSetID string?
 
 @description('Optional. Settings and configurations for the flux extension.')
 param extension extensionType
 
 @description('Optional. Configurations for provisioning the cluster with HTTP proxy servers.')
-param httpProxyConfig object = {}
+param httpProxyConfig object?
 
 @description('Optional. Identities associated with the cluster.')
-param identityProfile object = {}
+param identityProfile object?
 
 // =========== //
 // Variables   //
@@ -433,14 +428,14 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
     tier: skuTier
   }
   properties: {
-    httpProxyConfig: !empty(httpProxyConfig) ? httpProxyConfig : null
-    identityProfile: !empty(identityProfile) ? identityProfile : null
-    diskEncryptionSetID: !empty(diskEncryptionSetID) ? diskEncryptionSetID : null
-    kubernetesVersion: (empty(kubernetesVersion) ? null : kubernetesVersion)
+    httpProxyConfig: httpProxyConfig
+    identityProfile: identityProfile
+    diskEncryptionSetID: diskEncryptionSetID
+    kubernetesVersion: kubernetesVersion
     dnsPrefix: dnsPrefix
     agentPoolProfiles: primaryAgentPoolProfile
     linuxProfile: (empty(sshPublicKey) ? null : linuxProfile)
-    servicePrincipalProfile: (empty(aksServicePrincipalProfile) ? null : aksServicePrincipalProfile)
+    servicePrincipalProfile: aksServicePrincipalProfile
     ingressProfile: {
       webAppRouting: {
         enabled: webApplicationRoutingEnabled
@@ -456,14 +451,14 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
       ingressApplicationGateway: {
         enabled: ingressApplicationGatewayEnabled && !empty(appGatewayResourceId)
         config: ingressApplicationGatewayEnabled && !empty(appGatewayResourceId) ? {
-          applicationGatewayId: !empty(appGatewayResourceId) ? any(appGatewayResourceId) : null
-          effectiveApplicationGatewayId: !empty(appGatewayResourceId) ? any(appGatewayResourceId) : null
+          applicationGatewayId: appGatewayResourceId
+          effectiveApplicationGatewayId: appGatewayResourceId
         } : null
       }
       omsagent: {
         enabled: omsAgentEnabled && !empty(monitoringWorkspaceId)
         config: omsAgentEnabled && !empty(monitoringWorkspaceId) ? {
-          logAnalyticsWorkspaceResourceID: !empty(monitoringWorkspaceId) ? any(monitoringWorkspaceId) : null
+          logAnalyticsWorkspaceResourceID: monitoringWorkspaceId
         } : null
       }
       aciConnectorLinux: {
@@ -497,13 +492,13 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
     nodeResourceGroup: nodeResourceGroup
     enablePodSecurityPolicy: enablePodSecurityPolicy
     networkProfile: {
-      networkDataplane: !empty(networkDataplane) ? any(networkDataplane) : null
-      networkPlugin: !empty(networkPlugin) ? any(networkPlugin) : null
-      networkPluginMode: !empty(networkPluginMode) ? any(networkPluginMode) : null
-      networkPolicy: !empty(networkPolicy) ? any(networkPolicy) : null
-      podCidr: !empty(podCidr) ? podCidr : null
-      serviceCidr: !empty(serviceCidr) ? serviceCidr : null
-      dnsServiceIP: !empty(dnsServiceIP) ? dnsServiceIP : null
+      networkDataplane: networkDataplane
+      networkPlugin: networkPlugin
+      networkPluginMode: networkPluginMode
+      networkPolicy: networkPolicy
+      podCidr: podCidr
+      serviceCidr: serviceCidr
+      dnsServiceIP: dnsServiceIP
       outboundType: outboundType
       loadBalancerSku: loadBalancerSku
       loadBalancerProfile: managedOutboundIPCount != 0 ? lbProfile : null
@@ -537,7 +532,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
       'skip-nodes-with-system-pods': autoScalerProfileSkipNodesWithSystemPods
     }
     autoUpgradeProfile: {
-      upgradeChannel: !empty(autoUpgradeProfileUpgradeChannel) ? autoUpgradeProfileUpgradeChannel : null
+      upgradeChannel: autoUpgradeProfileUpgradeChannel
     }
     apiServerAccessProfile: {
       authorizedIPRanges: authorizedIPRanges
@@ -557,7 +552,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
         securityMonitoring: {
           enabled: enableAzureDefender
         }
-        logAnalyticsWorkspaceResourceId: !empty(monitoringWorkspaceId) ? monitoringWorkspaceId : null
+        logAnalyticsWorkspaceResourceId: monitoringWorkspaceId
       } : null
       workloadIdentity: enableWorkloadIdentity ? {
         enabled: enableWorkloadIdentity
@@ -620,7 +615,6 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [for (agentPool, inde
     vmSize: contains(agentPool, 'vmSize') ? agentPool.vmSize : 'Standard_D2s_v3'
     vnetSubnetId: contains(agentPool, 'vnetSubnetId') ? agentPool.vnetSubnetId : ''
     workloadRuntime: contains(agentPool, 'workloadRuntime') ? agentPool.workloadRuntime : ''
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
