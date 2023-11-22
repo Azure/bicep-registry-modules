@@ -1,0 +1,3 @@
+resourcecontainers
+| where type == 'microsoft.resources/subscriptions'
+| take 5

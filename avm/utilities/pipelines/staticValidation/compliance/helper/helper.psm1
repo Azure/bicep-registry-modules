@@ -10,6 +10,7 @@ $repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent.Parent.Pare
 . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-IsParameterRequired.ps1')
 . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'ConvertTo-OrderedHashtable.ps1')
 . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-CrossReferencedModuleList.ps1')
+. (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'publish' 'helper' 'Get-BRMRepositoryName.ps1')
 
 ####################################
 #   Load test-specific functions   #
@@ -166,8 +167,7 @@ function Remove-JSONMetadata {
         $TemplateObject.resources[$resourceIdentifiers[$index]] = Remove-JSONMetadata -TemplateObject $TemplateObject.resources[$resourceIdentifiers[$index]].properties.template
       }
     }
-  }
-  else {
+  } else {
     # Case: Array
     for ($index = 0; $index -lt $TemplateObject.resources.Count; $index++) {
       if ($TemplateObject.resources[$index].type -eq 'Microsoft.Resources/deployments') {

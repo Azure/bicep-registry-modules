@@ -1,0 +1,81 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.23.1.45101",
+      "templateHash": "4659476195817177643"
+    },
+    "name": "Azure SQL Server Encryption Protector",
+    "description": "This module deploys an Azure SQL Server Encryption Protector.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "sqlServerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the sql server. Required if the template is used in a standalone deployment."
+      }
+    },
+    "serverKeyName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the server key."
+      }
+    },
+    "autoRotationEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Key auto rotation opt-in."
+      }
+    },
+    "serverKeyType": {
+      "type": "string",
+      "defaultValue": "ServiceManaged",
+      "allowedValues": [
+        "AzureKeyVault",
+        "ServiceManaged"
+      ],
+      "metadata": {
+        "description": "Optional. The encryption protector type."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Sql/servers/encryptionProtector",
+      "apiVersion": "2022-05-01-preview",
+      "name": "[format('{0}/{1}', parameters('sqlServerName'), 'current')]",
+      "properties": {
+        "serverKeyType": "[parameters('serverKeyType')]",
+        "autoRotationEnabled": "[parameters('autoRotationEnabled')]",
+        "serverKeyName": "[parameters('serverKeyName')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed encryption protector."
+      },
+      "value": "current"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the encryption protector."
+      },
+      "value": "[resourceId('Microsoft.Sql/servers/encryptionProtector', parameters('sqlServerName'), 'current')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed encryption protector."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

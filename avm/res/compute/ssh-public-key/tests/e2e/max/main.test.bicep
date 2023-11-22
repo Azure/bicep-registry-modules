@@ -38,6 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
     generateSshPubKeyScriptName: 'dep-${namePrefix}-ds-${serviceShort}-generateSshPubKey'
     sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    location: location
   }
 }
 
