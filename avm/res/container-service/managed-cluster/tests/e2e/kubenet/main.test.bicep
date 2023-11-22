@@ -34,6 +34,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     dnsZoneName: 'dep-${namePrefix}-dns-${serviceShort}.com'
+    location: location
   }
 }
 
@@ -56,11 +57,12 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' =  [for iteration in [ 'init', 'idem' ]: {
+module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
+    location: location
     primaryAgentPoolProfile: [
       {
         availabilityZones: [

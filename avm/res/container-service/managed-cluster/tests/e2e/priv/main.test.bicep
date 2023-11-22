@@ -35,6 +35,7 @@ module nestedDependencies 'dependencies.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     privateDnsZoneName: 'privatelink.${location}.azmk8s.io'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    location: location
   }
 }
 
@@ -57,11 +58,12 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' =  [for iteration in [ 'init', 'idem' ]: {
+module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
+    location: location
     enablePrivateCluster: true
     primaryAgentPoolProfile: [
       {

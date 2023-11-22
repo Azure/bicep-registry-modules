@@ -73,7 +73,6 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 The list of Availability zones to use for nodes. This can only be specified if the AgentPoolType property is "VirtualMachineScaleSets".
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `count`
 
@@ -122,11 +121,9 @@ Whether to enable UltraSSD.
 GPUInstanceProfile to be used to specify GPU MIG instance profile for supported GPU VM SKU.
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'MIG1g'
     'MIG2g'
     'MIG3g'
@@ -140,7 +137,6 @@ GPUInstanceProfile to be used to specify GPU MIG instance profile for supported 
 Determines the placement of emptyDir volumes, container runtime data root, and Kubelet ephemeral storage.
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `managedClusterName`
 
@@ -153,35 +149,30 @@ The name of the parent managed cluster. Required if the template is used in a st
 The maximum number of nodes for auto-scaling.
 - Required: No
 - Type: int
-- Default: `-1`
 
 ### Parameter: `maxPods`
 
 The maximum number of pods that can run on a node.
 - Required: No
 - Type: int
-- Default: `-1`
 
 ### Parameter: `maxSurge`
 
 This can either be set to an integer (e.g. "5") or a percentage (e.g. "50%"). If a percentage is specified, it is the percentage of the total agent pool size at the time of the upgrade. For percentages, fractional nodes are rounded up. If not specified, the default is 1. For more information, including best practices, see: /azure/aks/upgrade-cluster#customize-node-surge-upgrade.
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `minCount`
 
 The minimum number of nodes for auto-scaling.
 - Required: No
 - Type: int
-- Default: `-1`
 
 ### Parameter: `mode`
 
 A cluster must have at least one "System" Agent Pool at all times. For additional information on agent pool restrictions and best practices, see: /azure/aks/use-system-pools.
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `name`
 
@@ -194,46 +185,39 @@ Name of the agent pool.
 The node labels to be persisted across all nodes in agent pool.
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `nodePublicIpPrefixId`
 
 ResourceId of the node PublicIPPrefix.
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `nodeTaints`
 
 The taints added to new nodes during node pool create and scale. For example, key=value:NoSchedule.
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `orchestratorVersion`
 
 As a best practice, you should upgrade all node pools in an AKS cluster to the same Kubernetes version. The node pool version must have the same major version as the control plane. The node pool minor version must be within two minor versions of the control plane version. The node pool version cannot be greater than the control plane version. For more information see upgrading a node pool (https://learn.microsoft.com/en-us/azure/aks/use-multiple-node-pools#upgrade-a-node-pool).
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `osDiskSizeGB`
 
 OS Disk Size in GB to be used to specify the disk size for every machine in the master/agent pool. If you specify 0, it will apply the default osDisk size according to the vmSize specified.
 - Required: No
 - Type: int
-- Default: `0`
 
 ### Parameter: `osDiskType`
 
 The default is "Ephemeral" if the VM supports it and has a cache disk larger than the requested OSDiskSizeGB. Otherwise, defaults to "Managed". May not be changed after creation. For more information see Ephemeral OS (https://learn.microsoft.com/en-us/azure/aks/cluster-configuration#ephemeral-os).
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Ephemeral'
     'Managed'
   ]
@@ -244,11 +228,9 @@ The default is "Ephemeral" if the VM supports it and has a cache disk larger tha
 Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is Linux. The default is Windows2019 when Kubernetes <= 1.24 or Windows2022 when Kubernetes >= 1.25 if OSType is Windows.
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'AzureLinux'
     'CBLMariner'
     'Ubuntu'
@@ -276,14 +258,12 @@ The operating system type. The default is Linux.
 Subnet ID for the pod IPs. If omitted, pod IPs are statically assigned on the node subnet (see vnetSubnetID for more details). This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}.
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `proximityPlacementGroupResourceId`
 
 The ID for the Proximity Placement Group.
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `scaleDownMode`
 
@@ -318,11 +298,9 @@ The eviction policy specifies what to do with the VM when it is evicted. The def
 The Virtual Machine Scale Set priority.
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Regular'
     'Spot'
   ]
@@ -333,7 +311,6 @@ The Virtual Machine Scale Set priority.
 This is the ARM ID of the source object to be used to create the target object.
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `spotMaxPrice`
 
@@ -352,7 +329,6 @@ Tags of the resource.
 The type of Agent Pool.
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `vmSize`
 
@@ -366,14 +342,12 @@ VM size. VM size availability varies by region. If a node contains insufficient 
 Node Subnet ID. If this is not specified, a VNET and subnet will be generated and used. If no podSubnetID is specified, this applies to nodes and pods, otherwise it applies to just nodes. This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}.
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `workloadRuntime`
 
 Determines the type of workload a node can run.
 - Required: No
 - Type: string
-- Default: `''`
 
 
 ## Outputs

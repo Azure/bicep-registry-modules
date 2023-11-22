@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "4497040641847720254"
+      "templateHash": "9050756109631210802"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -1665,7 +1665,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.21.1.54444",
-              "templateHash": "1347731359693691004"
+              "templateHash": "651511186748693421"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
@@ -1686,7 +1686,7 @@
             },
             "availabilityZones": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The list of Availability zones to use for nodes. This can only be specified if the AgentPoolType property is \"VirtualMachineScaleSets\"."
               }
@@ -1702,7 +1702,7 @@
             },
             "sourceResourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. This is the ARM ID of the source object to be used to create the target object."
               }
@@ -1744,14 +1744,13 @@
             },
             "gpuInstanceProfile": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "allowedValues": [
                 "MIG1g",
                 "MIG2g",
                 "MIG3g",
                 "MIG4g",
-                "MIG7g",
-                ""
+                "MIG7g"
               ],
               "metadata": {
                 "description": "Optional. GPUInstanceProfile to be used to specify GPU MIG instance profile for supported GPU VM SKU."
@@ -1759,81 +1758,80 @@
             },
             "kubeletDiskType": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Determines the placement of emptyDir volumes, container runtime data root, and Kubelet ephemeral storage."
               }
             },
             "maxCount": {
               "type": "int",
-              "defaultValue": -1,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The maximum number of nodes for auto-scaling."
               }
             },
             "maxPods": {
               "type": "int",
-              "defaultValue": -1,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The maximum number of pods that can run on a node."
               }
             },
             "minCount": {
               "type": "int",
-              "defaultValue": -1,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The minimum number of nodes for auto-scaling."
               }
             },
             "mode": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A cluster must have at least one \"System\" Agent Pool at all times. For additional information on agent pool restrictions and best practices, see: /azure/aks/use-system-pools."
               }
             },
             "nodeLabels": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The node labels to be persisted across all nodes in agent pool."
               }
             },
             "nodePublicIpPrefixId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. ResourceId of the node PublicIPPrefix."
               }
             },
             "nodeTaints": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The taints added to new nodes during node pool create and scale. For example, key=value:NoSchedule."
               }
             },
             "orchestratorVersion": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. As a best practice, you should upgrade all node pools in an AKS cluster to the same Kubernetes version. The node pool version must have the same major version as the control plane. The node pool minor version must be within two minor versions of the control plane version. The node pool version cannot be greater than the control plane version. For more information see upgrading a node pool (https://learn.microsoft.com/en-us/azure/aks/use-multiple-node-pools#upgrade-a-node-pool)."
               }
             },
             "osDiskSizeGB": {
               "type": "int",
-              "defaultValue": 0,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. OS Disk Size in GB to be used to specify the disk size for every machine in the master/agent pool. If you specify 0, it will apply the default osDisk size according to the vmSize specified."
               }
             },
             "osDiskType": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "allowedValues": [
                 "Ephemeral",
-                "Managed",
-                ""
+                "Managed"
               ],
               "metadata": {
                 "description": "Optional. The default is \"Ephemeral\" if the VM supports it and has a cache disk larger than the requested OSDiskSizeGB. Otherwise, defaults to \"Managed\". May not be changed after creation. For more information see Ephemeral OS (https://learn.microsoft.com/en-us/azure/aks/cluster-configuration#ephemeral-os)."
@@ -1841,14 +1839,13 @@
             },
             "osSku": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "allowedValues": [
                 "AzureLinux",
                 "CBLMariner",
                 "Ubuntu",
                 "Windows2019",
-                "Windows2022",
-                ""
+                "Windows2022"
               ],
               "metadata": {
                 "description": "Optional. Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is Linux. The default is Windows2019 when Kubernetes <= 1.24 or Windows2022 when Kubernetes >= 1.25 if OSType is Windows."
@@ -1867,14 +1864,14 @@
             },
             "podSubnetId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Subnet ID for the pod IPs. If omitted, pod IPs are statically assigned on the node subnet (see vnetSubnetID for more details). This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}."
               }
             },
             "proximityPlacementGroupResourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The ID for the Proximity Placement Group."
               }
@@ -1903,11 +1900,10 @@
             },
             "scaleSetPriority": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "allowedValues": [
                 "Regular",
-                "Spot",
-                ""
+                "Spot"
               ],
               "metadata": {
                 "description": "Optional. The Virtual Machine Scale Set priority."
@@ -1929,14 +1925,14 @@
             },
             "type": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The type of Agent Pool."
               }
             },
             "maxSurge": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. This can either be set to an integer (e.g. \"5\") or a percentage (e.g. \"50%\"). If a percentage is specified, it is the percentage of the total agent pool size at the time of the upgrade. For percentages, fractional nodes are rounded up. If not specified, the default is 1. For more information, including best practices, see: /azure/aks/upgrade-cluster#customize-node-surge-upgrade."
               }
@@ -1950,14 +1946,14 @@
             },
             "vnetSubnetId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Node Subnet ID. If this is not specified, a VNET and subnet will be generated and used. If no podSubnetID is specified, this applies to nodes and pods, otherwise it applies to just nodes. This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}."
               }
             },
             "workloadRuntime": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Determines the type of workload a node can run."
               }
@@ -1965,7 +1961,7 @@
           },
           "variables": {
             "creationData": {
-              "sourceResourceId": "[if(not(empty(parameters('sourceResourceId'))), parameters('sourceResourceId'), null())]"
+              "sourceResourceId": "[parameters('sourceResourceId')]"
             },
             "upgradeSettings": {
               "maxSurge": "[parameters('maxSurge')]"
@@ -1991,25 +1987,25 @@
                 "enableFIPS": "[parameters('enableFIPS')]",
                 "enableNodePublicIP": "[parameters('enableNodePublicIP')]",
                 "enableUltraSSD": "[parameters('enableUltraSSD')]",
-                "gpuInstanceProfile": "[if(not(empty(parameters('gpuInstanceProfile'))), parameters('gpuInstanceProfile'), null())]",
+                "gpuInstanceProfile": "[parameters('gpuInstanceProfile')]",
                 "kubeletDiskType": "[parameters('kubeletDiskType')]",
-                "maxCount": "[if(not(equals(parameters('maxCount'), -1)), parameters('maxCount'), null())]",
-                "maxPods": "[if(not(equals(parameters('maxPods'), -1)), parameters('maxPods'), null())]",
-                "minCount": "[if(not(equals(parameters('minCount'), -1)), parameters('minCount'), null())]",
-                "mode": "[if(not(empty(parameters('mode'))), parameters('mode'), null())]",
+                "maxCount": "[parameters('maxCount')]",
+                "maxPods": "[parameters('maxPods')]",
+                "minCount": "[parameters('minCount')]",
+                "mode": "[parameters('mode')]",
                 "nodeLabels": "[parameters('nodeLabels')]",
-                "nodePublicIPPrefixID": "[if(not(empty(parameters('nodePublicIpPrefixId'))), parameters('nodePublicIpPrefixId'), null())]",
+                "nodePublicIPPrefixID": "[parameters('nodePublicIpPrefixId')]",
                 "nodeTaints": "[parameters('nodeTaints')]",
                 "orchestratorVersion": "[parameters('orchestratorVersion')]",
-                "osDiskSizeGB": "[if(not(equals(parameters('osDiskSizeGB'), -1)), parameters('osDiskSizeGB'), null())]",
-                "osDiskType": "[if(not(empty(parameters('osDiskType'))), parameters('osDiskType'), null())]",
-                "osSKU": "[if(not(empty(parameters('osSku'))), parameters('osSku'), null())]",
+                "osDiskSizeGB": "[parameters('osDiskSizeGB')]",
+                "osDiskType": "[parameters('osDiskType')]",
+                "osSKU": "[parameters('osSku')]",
                 "osType": "[parameters('osType')]",
-                "podSubnetID": "[if(not(empty(parameters('podSubnetId'))), parameters('podSubnetId'), null())]",
-                "proximityPlacementGroupID": "[if(not(empty(parameters('proximityPlacementGroupResourceId'))), parameters('proximityPlacementGroupResourceId'), null())]",
+                "podSubnetID": "[parameters('podSubnetId')]",
+                "proximityPlacementGroupID": "[parameters('proximityPlacementGroupResourceId')]",
                 "scaleDownMode": "[parameters('scaleDownMode')]",
                 "scaleSetEvictionPolicy": "[parameters('scaleSetEvictionPolicy')]",
-                "scaleSetPriority": "[if(not(empty(parameters('scaleSetPriority'))), parameters('scaleSetPriority'), null())]",
+                "scaleSetPriority": "[parameters('scaleSetPriority')]",
                 "spotMaxPrice": "[parameters('spotMaxPrice')]",
                 "tags": "[parameters('tags')]",
                 "type": "[parameters('type')]",
