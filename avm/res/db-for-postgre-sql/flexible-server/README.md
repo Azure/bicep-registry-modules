@@ -112,10 +112,10 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dfpsfsenc'
+  name: '${uniqueString(deployment().name, location)}-test-dfpsfse'
   params: {
     // Required parameters
-    name: 'dfpsfsenc001'
+    name: 'dfpsfse001'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
     // Non-required parameters
@@ -192,7 +192,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dfpsfsenc001"
+      "value": "dfpsfse001"
     },
     "skuName": {
       "value": "Standard_D2s_v3"
