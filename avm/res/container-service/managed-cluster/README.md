@@ -521,10 +521,10 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module managedCluster 'br/public:avm/res/container-service/managed-cluster:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-csmdef'
+  name: '${uniqueString(deployment().name, location)}-test-csmin'
   params: {
     // Required parameters
-    name: 'csmdef001'
+    name: 'csmin001'
     primaryAgentPoolProfile: [
       {
         count: 1
@@ -557,7 +557,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
   "parameters": {
     // Required parameters
     "name": {
-      "value": "csmdef001"
+      "value": "csmin001"
     },
     "primaryAgentPoolProfile": {
       "value": [
