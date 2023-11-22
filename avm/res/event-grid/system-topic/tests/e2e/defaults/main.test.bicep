@@ -67,12 +67,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     source: nestedDependencies.outputs.storageAccountResourceId
     topicType: 'Microsoft.Storage.StorageAccounts'
     location: location
-    managedIdentities: {
-      systemAssigned: true
-    }
   }
 }]
-
-
-
-

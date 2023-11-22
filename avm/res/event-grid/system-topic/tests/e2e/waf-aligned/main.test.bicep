@@ -35,7 +35,6 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     storageAccountName: 'dep${namePrefix}sa${serviceShort}'
     storageQueueName: 'dep${namePrefix}sq${serviceShort}'
     location: location

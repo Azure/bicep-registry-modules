@@ -53,6 +53,7 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
     // Non-required parameters
     location: '<location>'
     managedIdentities: '<managedIdentities>'
+    privateEndpoints: '<privateEndpoints>'
   }
 }
 ```
@@ -79,6 +80,9 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
     },
     "managedIdentities": {
       "value": "<managedIdentities>"
+    },
+    "privateEndpoints": {
+      "value": "<privateEndpoints>"
     }
   }
 }

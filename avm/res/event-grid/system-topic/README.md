@@ -51,9 +51,6 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
     topicType: 'Microsoft.Storage.StorageAccounts'
     // Non-required parameters
     location: '<location>'
-    managedIdentities: {
-      systemAssigned: true
-    }
   }
 }
 ```
@@ -83,11 +80,6 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
     }
   }
 }
@@ -336,16 +328,6 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    managedIdentities: {
-      systemAssigned: true
-    }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -427,20 +409,6 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
     },
     "tags": {
       "value": {
