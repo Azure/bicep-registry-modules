@@ -25,6 +25,31 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, location)}-nestedDependencies'
+  params: {
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    privateDnsZoneName: 'privatelink.${location}.azmk8s.io'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    location: location
+  }
+}
+
+// Diagnostics
+// ===========
+module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, location)}-diagnosticDependencies'
+  params: {
+    storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
+    location: location
+  }
+}
+
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -43,16 +68,114 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location
-    managedIdentities: {
-      systemAssigned: true
-    }
+    enablePrivateCluster: true
     primaryAgentPoolProfile: [
       {
-        name: 'systempool'
-        count: 1
-        vmSize: 'Standard_DS2_v2'
+        availabilityZones: [
+          '3'
+        ]
+        count: 3
+        enableAutoScaling: true
+        maxCount: 3
+        maxPods: 50
+        minCount: 1
         mode: 'System'
+        name: 'systempool'
+        osDiskSizeGB: 0
+        osType: 'Linux'
+        serviceCidr: ''
+        storageProfile: 'ManagedDisks'
+        type: 'VirtualMachineScaleSets'
+        vmSize: 'Standard_DS2_v2'
+        vnetSubnetID: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
       }
     ]
+    agentPools: [
+      {
+        availabilityZones: [
+          '3'
+        ]
+        count: 2
+        enableAutoScaling: true
+        maxCount: 3
+        maxPods: 50
+        minCount: 1
+        minPods: 2
+        mode: 'User'
+        name: 'userpool1'
+        nodeLabels: {}
+        nodeTaints: [
+          'CriticalAddonsOnly=true:NoSchedule'
+        ]
+        osDiskSizeGB: 128
+        osType: 'Linux'
+        scaleSetEvictionPolicy: 'Delete'
+        scaleSetPriority: 'Regular'
+        storageProfile: 'ManagedDisks'
+        type: 'VirtualMachineScaleSets'
+        vmSize: 'Standard_DS2_v2'
+        vnetSubnetID: '${nestedDependencies.outputs.vNetResourceId}/subnets/defaultSubnet'
+      }
+      {
+        availabilityZones: [
+          '3'
+        ]
+        count: 2
+        enableAutoScaling: true
+        maxCount: 3
+        maxPods: 50
+        minCount: 1
+        minPods: 2
+        mode: 'User'
+        name: 'userpool2'
+        nodeLabels: {}
+        nodeTaints: [
+          'CriticalAddonsOnly=true:NoSchedule'
+        ]
+        osDiskSizeGB: 128
+        osType: 'Linux'
+        scaleSetEvictionPolicy: 'Delete'
+        scaleSetPriority: 'Regular'
+        storageProfile: 'ManagedDisks'
+        type: 'VirtualMachineScaleSets'
+        vmSize: 'Standard_DS2_v2'
+      }
+    ]
+    autoUpgradeProfileUpgradeChannel: 'stable'
+    networkPlugin: 'azure'
+    networkPolicy: 'azure'
+    skuTier: 'Standard'
+    dnsServiceIP: '10.10.200.10'
+    serviceCidr: '10.10.200.0/24'
+    omsAgentEnabled: true
+
+    diagnosticSettings: [
+      {
+        name: 'customSetting'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+      }
+    ]
+    privateDNSZone: nestedDependencies.outputs.privateDnsZoneResourceId
+    managedIdentities: {
+      userAssignedResourcesIds: [
+        nestedDependencies.outputs.managedIdentityResourceId
+      ]
+    }
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+    // Workaround for PSRule
+    roleAssignments: []
+    kubernetesVersion: null
   }
 }]

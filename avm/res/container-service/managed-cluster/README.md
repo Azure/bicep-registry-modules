@@ -528,23 +528,16 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     primaryAgentPoolProfile: [
       {
         count: 1
-        maxpod: 50
-        minCount: 1
         mode: 'System'
         name: 'systempool'
-        type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
       }
     ]
     // Non-required parameters
-    kubernetesVersion: '<kubernetesVersion>'
     location: '<location>'
     managedIdentities: {
       systemAssigned: true
     }
-    networkPolicy: '<networkPolicy>'
-    omsAgentEnabled: true
-    skuTier: 'Standard'
     tags: {}
   }
 }
@@ -570,19 +563,13 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": [
         {
           "count": 1,
-          "maxpod": 50,
-          "minCount": 1,
           "mode": "System",
           "name": "systempool",
-          "type": "VirtualMachineScaleSets",
           "vmSize": "Standard_DS2_v2"
         }
       ]
     },
     // Non-required parameters
-    "kubernetesVersion": {
-      "value": "<kubernetesVersion>"
-    },
     "location": {
       "value": "<location>"
     },
@@ -590,15 +577,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": {
         "systemAssigned": true
       }
-    },
-    "networkPolicy": {
-      "value": "<networkPolicy>"
-    },
-    "omsAgentEnabled": {
-      "value": true
-    },
-    "skuTier": {
-      "value": "Standard"
     },
     "tags": {
       "value": {}
@@ -1167,16 +1145,112 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     name: 'cswaf001'
     primaryAgentPoolProfile: [
       {
-        count: 1
+        availabilityZones: [
+          '3'
+        ]
+        count: 3
+        enableAutoScaling: true
+        maxCount: 3
+        maxPods: 50
+        minCount: 1
         mode: 'System'
         name: 'systempool'
+        osDiskSizeGB: 0
+        osType: 'Linux'
+        serviceCidr: ''
+        storageProfile: 'ManagedDisks'
+        type: 'VirtualMachineScaleSets'
         vmSize: 'Standard_DS2_v2'
+        vnetSubnetID: '<vnetSubnetID>'
       }
     ]
     // Non-required parameters
+    agentPools: [
+      {
+        availabilityZones: [
+          '3'
+        ]
+        count: 2
+        enableAutoScaling: true
+        maxCount: 3
+        maxPods: 50
+        minCount: 1
+        minPods: 2
+        mode: 'User'
+        name: 'userpool1'
+        nodeLabels: {}
+        nodeTaints: [
+          'CriticalAddonsOnly=true:NoSchedule'
+        ]
+        osDiskSizeGB: 128
+        osType: 'Linux'
+        scaleSetEvictionPolicy: 'Delete'
+        scaleSetPriority: 'Regular'
+        storageProfile: 'ManagedDisks'
+        type: 'VirtualMachineScaleSets'
+        vmSize: 'Standard_DS2_v2'
+        vnetSubnetID: '<vnetSubnetID>'
+      }
+      {
+        availabilityZones: [
+          '3'
+        ]
+        count: 2
+        enableAutoScaling: true
+        maxCount: 3
+        maxPods: 50
+        minCount: 1
+        minPods: 2
+        mode: 'User'
+        name: 'userpool2'
+        nodeLabels: {}
+        nodeTaints: [
+          'CriticalAddonsOnly=true:NoSchedule'
+        ]
+        osDiskSizeGB: 128
+        osType: 'Linux'
+        scaleSetEvictionPolicy: 'Delete'
+        scaleSetPriority: 'Regular'
+        storageProfile: 'ManagedDisks'
+        type: 'VirtualMachineScaleSets'
+        vmSize: 'Standard_DS2_v2'
+      }
+    ]
+    autoUpgradeProfileUpgradeChannel: 'stable'
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    dnsServiceIP: '10.10.200.10'
+    enablePrivateCluster: true
+    kubernetesVersion: '<kubernetesVersion>'
     location: '<location>'
     managedIdentities: {
-      systemAssigned: true
+      userAssignedResourcesIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    networkPlugin: 'azure'
+    networkPolicy: 'azure'
+    omsAgentEnabled: true
+    privateDNSZone: '<privateDNSZone>'
+    roleAssignments: []
+    serviceCidr: '10.10.200.0/24'
+    skuTier: 'Standard'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
     }
   }
 }
@@ -1201,20 +1275,144 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "primaryAgentPoolProfile": {
       "value": [
         {
-          "count": 1,
+          "availabilityZones": [
+            "3"
+          ],
+          "count": 3,
+          "enableAutoScaling": true,
+          "maxCount": 3,
+          "maxPods": 50,
+          "minCount": 1,
           "mode": "System",
           "name": "systempool",
-          "vmSize": "Standard_DS2_v2"
+          "osDiskSizeGB": 0,
+          "osType": "Linux",
+          "serviceCidr": "",
+          "storageProfile": "ManagedDisks",
+          "type": "VirtualMachineScaleSets",
+          "vmSize": "Standard_DS2_v2",
+          "vnetSubnetID": "<vnetSubnetID>"
         }
       ]
     },
     // Non-required parameters
+    "agentPools": {
+      "value": [
+        {
+          "availabilityZones": [
+            "3"
+          ],
+          "count": 2,
+          "enableAutoScaling": true,
+          "maxCount": 3,
+          "maxPods": 50,
+          "minCount": 1,
+          "minPods": 2,
+          "mode": "User",
+          "name": "userpool1",
+          "nodeLabels": {},
+          "nodeTaints": [
+            "CriticalAddonsOnly=true:NoSchedule"
+          ],
+          "osDiskSizeGB": 128,
+          "osType": "Linux",
+          "scaleSetEvictionPolicy": "Delete",
+          "scaleSetPriority": "Regular",
+          "storageProfile": "ManagedDisks",
+          "type": "VirtualMachineScaleSets",
+          "vmSize": "Standard_DS2_v2",
+          "vnetSubnetID": "<vnetSubnetID>"
+        },
+        {
+          "availabilityZones": [
+            "3"
+          ],
+          "count": 2,
+          "enableAutoScaling": true,
+          "maxCount": 3,
+          "maxPods": 50,
+          "minCount": 1,
+          "minPods": 2,
+          "mode": "User",
+          "name": "userpool2",
+          "nodeLabels": {},
+          "nodeTaints": [
+            "CriticalAddonsOnly=true:NoSchedule"
+          ],
+          "osDiskSizeGB": 128,
+          "osType": "Linux",
+          "scaleSetEvictionPolicy": "Delete",
+          "scaleSetPriority": "Regular",
+          "storageProfile": "ManagedDisks",
+          "type": "VirtualMachineScaleSets",
+          "vmSize": "Standard_DS2_v2"
+        }
+      ]
+    },
+    "autoUpgradeProfileUpgradeChannel": {
+      "value": "stable"
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "dnsServiceIP": {
+      "value": "10.10.200.10"
+    },
+    "enablePrivateCluster": {
+      "value": true
+    },
+    "kubernetesVersion": {
+      "value": "<kubernetesVersion>"
+    },
     "location": {
       "value": "<location>"
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": true
+        "userAssignedResourcesIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "networkPlugin": {
+      "value": "azure"
+    },
+    "networkPolicy": {
+      "value": "azure"
+    },
+    "omsAgentEnabled": {
+      "value": true
+    },
+    "privateDNSZone": {
+      "value": "<privateDNSZone>"
+    },
+    "roleAssignments": {
+      "value": []
+    },
+    "serviceCidr": {
+      "value": "10.10.200.0/24"
+    },
+    "skuTier": {
+      "value": "Standard"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
       }
     }
   }

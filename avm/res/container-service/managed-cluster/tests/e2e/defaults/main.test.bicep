@@ -47,17 +47,9 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         count: 1
         vmSize: 'Standard_DS2_v2'
         mode: 'System'
-        // Workaround for PSRule
-        type: 'VirtualMachineScaleSets'
-        minCount: 1
-        maxpod: 50
       }
     ]
     // Workaround for PSRule
     tags: {}
-    kubernetesVersion: null
-    omsAgentEnabled: true
-    skuTier: 'Standard'
-    networkPolicy: null
   }
 }]
