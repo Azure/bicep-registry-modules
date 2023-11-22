@@ -35,7 +35,6 @@ This module deploys a Gremlin Database within a CosmosDB Account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`graphs`](#parameter-graphs) | array | Array of graphs to deploy in the Gremlin database. |
 | [`maxThroughput`](#parameter-maxthroughput) | int | Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored. |
 | [`tags`](#parameter-tags) | object | Tags of the Gremlin database resource. |
@@ -46,13 +45,6 @@ This module deploys a Gremlin Database within a CosmosDB Account.
 The name of the parent Gremlin database. Required if the template is used in a standalone deployment.
 - Required: Yes
 - Type: string
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `graphs`
 

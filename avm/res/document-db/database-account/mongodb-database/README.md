@@ -35,7 +35,6 @@ This module deploys a MongoDB Database within a CosmosDB Account.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`collections`](#parameter-collections) | array | Collections in the mongodb database. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`throughput`](#parameter-throughput) | int | Name of the mongodb database. |
 
@@ -51,13 +50,6 @@ Collections in the mongodb database.
 The name of the parent Cosmos DB database account. Required if the template is used in a standalone deployment.
 - Required: Yes
 - Type: string
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `name`
 

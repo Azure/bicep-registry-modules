@@ -35,7 +35,6 @@ This module deploys a DocumentDB Database Accounts Gremlin Database Graph.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`indexingPolicy`](#parameter-indexingpolicy) | object | Indexing policy of the graph. |
 | [`partitionKeyPaths`](#parameter-partitionkeypaths) | array | List of paths using which data within the container can be partitioned. |
 | [`tags`](#parameter-tags) | object | Tags of the Gremlin graph resource. |
@@ -45,13 +44,6 @@ This module deploys a DocumentDB Database Accounts Gremlin Database Graph.
 The name of the parent Database Account. Required if the template is used in a standalone deployment.
 - Required: Yes
 - Type: string
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `gremlinDatabaseName`
 

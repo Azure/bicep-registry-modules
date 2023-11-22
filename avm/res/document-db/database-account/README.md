@@ -33,21 +33,90 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/document-db.database-account:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/document-db/database-account:<version>`.
 
-- [Gremlindb](#example-1-gremlindb)
-- [Mongodb](#example-2-mongodb)
-- [Plain](#example-3-plain)
-- [Sqldb](#example-4-sqldb)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Germlin Database](#example-2-germlin-database)
+- [Mongo Database](#example-3-mongo-database)
+- [Plain](#example-4-plain)
+- [SQL Database](#example-5-sql-database)
+- [WAF-aligned](#example-6-waf-aligned)
 
-### Example 1: _Gremlindb_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module databaseAccount 'br:bicep/modules/document-db.database-account:1.0.0' = {
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-dddamin'
+  params: {
+    // Required parameters
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: '<location>'
+      }
+    ]
+    name: 'dddamin001'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "locations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": false,
+          "locationName": "<location>"
+        }
+      ]
+    },
+    "name": {
+      "value": "dddamin001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Germlin Database_
+
+This instance deploys the module with a Gremlin Database.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-dddagrm'
   params: {
     // Required parameters
@@ -82,7 +151,6 @@ module databaseAccount 'br:bicep/modules/document-db.database-account:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     gremlinDatabases: [
       {
         graphs: [
@@ -213,9 +281,6 @@ module databaseAccount 'br:bicep/modules/document-db.database-account:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "gremlinDatabases": {
       "value": [
         {
@@ -307,14 +372,17 @@ module databaseAccount 'br:bicep/modules/document-db.database-account:1.0.0' = {
 </details>
 <p>
 
-### Example 2: _Mongodb_
+### Example 3: _Mongo Database_
+
+This instance deploys the module with a Mongo Database.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module databaseAccount 'br:bicep/modules/document-db.database-account:1.0.0' = {
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-dddamng'
   params: {
     // Required parameters
@@ -346,7 +414,6 @@ module databaseAccount 'br:bicep/modules/document-db.database-account:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     location: '<location>'
     managedIdentities: {
       systemAssigned: true
@@ -608,9 +675,6 @@ module databaseAccount 'br:bicep/modules/document-db.database-account:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
@@ -838,14 +902,17 @@ module databaseAccount 'br:bicep/modules/document-db.database-account:1.0.0' = {
 </details>
 <p>
 
-### Example 3: _Plain_
+### Example 4: _Plain_
+
+This instance deploys the module without a Database.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module databaseAccount 'br:bicep/modules/document-db.database-account:1.0.0' = {
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-dddapln'
   params: {
     // Required parameters
@@ -877,7 +944,7 @@ module databaseAccount 'br:bicep/modules/document-db.database-account:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -955,8 +1022,8 @@ module databaseAccount 'br:bicep/modules/document-db.database-account:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -997,14 +1064,17 @@ module databaseAccount 'br:bicep/modules/document-db.database-account:1.0.0' = {
 </details>
 <p>
 
-### Example 4: _Sqldb_
+### Example 5: _SQL Database_
+
+This instance deploys the module with a SQL Database.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module databaseAccount 'br:bicep/modules/document-db.database-account:1.0.0' = {
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-dddasql'
   params: {
     // Required parameters
@@ -1036,7 +1106,6 @@ module databaseAccount 'br:bicep/modules/document-db.database-account:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
@@ -1206,9 +1275,6 @@ module databaseAccount 'br:bicep/modules/document-db.database-account:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
@@ -1346,6 +1412,186 @@ module databaseAccount 'br:bicep/modules/document-db.database-account:1.0.0' = {
 </details>
 <p>
 
+### Example 6: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-dddawaf'
+  params: {
+    // Required parameters
+    locations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: false
+        locationName: '<location>'
+      }
+      {
+        failoverPriority: 1
+        isZoneRedundant: false
+        locationName: '<locationName>'
+      }
+    ]
+    name: 'dddawaf001'
+    // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    location: '<location>'
+    sqlDatabases: [
+      {
+        containers: [
+          {
+            analyticalStorageTtl: 0
+            conflictResolutionPolicy: {
+              conflictResolutionPath: '/myCustomId'
+              mode: 'LastWriterWins'
+            }
+            defaultTtl: 1000
+            indexingPolicy: {
+              automatic: true
+            }
+            kind: 'Hash'
+            name: 'container-001'
+            paths: [
+              '/myPartitionKey'
+            ]
+            throughput: 600
+            uniqueKeyPolicyKeys: [
+              {
+                paths: [
+                  '/firstName'
+                ]
+              }
+              {
+                paths: [
+                  '/lastName'
+                ]
+              }
+            ]
+          }
+        ]
+        name: 'sql-dddawaf-001'
+        throughput: 1000
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "locations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": false,
+          "locationName": "<location>"
+        },
+        {
+          "failoverPriority": 1,
+          "isZoneRedundant": false,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
+    "name": {
+      "value": "dddawaf001"
+    },
+    // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "sqlDatabases": {
+      "value": [
+        {
+          "containers": [
+            {
+              "analyticalStorageTtl": 0,
+              "conflictResolutionPolicy": {
+                "conflictResolutionPath": "/myCustomId",
+                "mode": "LastWriterWins"
+              },
+              "defaultTtl": 1000,
+              "indexingPolicy": {
+                "automatic": true
+              },
+              "kind": "Hash",
+              "name": "container-001",
+              "paths": [
+                "/myPartitionKey"
+              ],
+              "throughput": 600,
+              "uniqueKeyPolicyKeys": [
+                {
+                  "paths": [
+                    "/firstName"
+                  ]
+                },
+                {
+                  "paths": [
+                    "/lastName"
+                  ]
+                }
+              ]
+            }
+          ],
+          "name": "sql-dddawaf-001",
+          "throughput": 1000
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
 
 ## Parameters
 
@@ -1370,8 +1616,8 @@ module databaseAccount 'br:bicep/modules/document-db.database-account:1.0.0' = {
 | [`databaseAccountOfferType`](#parameter-databaseaccountoffertype) | string | The offer type for the Cosmos DB database account. |
 | [`defaultConsistencyLevel`](#parameter-defaultconsistencylevel) | string | The default consistency level of the Cosmos DB account. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`enableFreeTier`](#parameter-enablefreetier) | bool | Flag to indicate whether Free Tier is enabled. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`gremlinDatabases`](#parameter-gremlindatabases) | array | Gremlin Databases configurations. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -1612,19 +1858,19 @@ Optional. Resource ID of the diagnostic log analytics workspace. For security re
 - Required: No
 - Type: string
 
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-- Required: No
-- Type: bool
-- Default: `True`
-
 ### Parameter: `enableFreeTier`
 
 Flag to indicate whether Free Tier is enabled.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `gremlinDatabases`
 
@@ -2038,4 +2284,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `modules/network/private-endpoint` | Local reference |
+| `br/public:avm/res/network/private-endpoint:0.2.1` | Remote reference |

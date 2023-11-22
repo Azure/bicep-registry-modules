@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.22.6.54827",
-      "templateHash": "10948740009827102632"
+      "version": "0.23.1.45101",
+      "templateHash": "17262263760304395883"
     },
     "name": "DocumentDB Database Account SQL Databases",
     "description": "This module deploys a SQL Database in a CosmosDB Account.",
@@ -52,33 +52,9 @@
       "metadata": {
         "description": "Optional. Tags of the SQL database resource."
       }
-    },
-    "enableDefaultTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-      }
     }
   },
-  "variables": {
-    "enableReferencedModulesTelemetry": false
-  },
   "resources": {
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": []
-        }
-      }
-    },
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -131,10 +107,7 @@
           "kind": "[if(contains(parameters('containers')[copyIndex()], 'kind'), createObject('value', parameters('containers')[copyIndex()].kind), createObject('value', 'Hash'))]",
           "paths": "[if(contains(parameters('containers')[copyIndex()], 'paths'), createObject('value', parameters('containers')[copyIndex()].paths), createObject('value', createArray()))]",
           "throughput": "[if(contains(parameters('containers')[copyIndex()], 'throughput'), createObject('value', parameters('containers')[copyIndex()].throughput), createObject('value', 400))]",
-          "uniqueKeyPolicyKeys": "[if(contains(parameters('containers')[copyIndex()], 'uniqueKeyPolicyKeys'), createObject('value', parameters('containers')[copyIndex()].uniqueKeyPolicyKeys), createObject('value', createArray()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "uniqueKeyPolicyKeys": "[if(contains(parameters('containers')[copyIndex()], 'uniqueKeyPolicyKeys'), createObject('value', parameters('containers')[copyIndex()].uniqueKeyPolicyKeys), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -143,8 +116,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "5628064493958565248"
+              "version": "0.23.1.45101",
+              "templateHash": "300241451404671975"
             },
             "name": "DocumentDB Database Account SQL Database Containers",
             "description": "This module deploys a SQL Database Container in a CosmosDB Account.",
@@ -246,13 +219,6 @@
               "metadata": {
                 "description": "Optional. Indicates the kind of algorithm used for partitioning."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": {
@@ -264,20 +230,6 @@
               "dependsOn": [
                 "databaseAccount"
               ]
-            },
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
             },
             "databaseAccount": {
               "existing": true,
