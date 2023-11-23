@@ -183,7 +183,7 @@ module serviceBusNamespace_authorizationRules 'authorization-rule/main.bicep' = 
   params: {
     namespaceName: serviceBusNamespace.name
     name: authorizationRule.name
-    rights: contains(authorizationRule, 'rights') ? authorizationRule.rights : []
+    rights: authorizationRule.?rights ?? []
   }
 }]
 
@@ -259,7 +259,7 @@ module serviceBusNamespace_topics 'topic/main.bicep' = [for (topic, index) in (t
   params: {
     namespaceName: serviceBusNamespace.name
     name: topic.name
-    authorizationRules: contains(topic, 'authorizationRules') ? topic.authorizationRules : [
+    authorizationRules: topic.?authorizationRules ?? [
       {
         name: 'RootManageSharedAccessKey'
         rights: [
@@ -269,19 +269,19 @@ module serviceBusNamespace_topics 'topic/main.bicep' = [for (topic, index) in (t
         ]
       }
     ]
-    autoDeleteOnIdle: contains(topic, 'autoDeleteOnIdle') ? topic.autoDeleteOnIdle : 'PT5M'
-    defaultMessageTimeToLive: contains(topic, 'defaultMessageTimeToLive') ? topic.defaultMessageTimeToLive : 'P14D'
-    duplicateDetectionHistoryTimeWindow: contains(topic, 'duplicateDetectionHistoryTimeWindow') ? topic.duplicateDetectionHistoryTimeWindow : 'PT10M'
-    enableBatchedOperations: contains(topic, 'enableBatchedOperations') ? topic.enableBatchedOperations : true
-    enableExpress: contains(topic, 'enableExpress') ? topic.enableExpress : false
-    enablePartitioning: contains(topic, 'enablePartitioning') ? topic.enablePartitioning : false
+    autoDeleteOnIdle: topic.?autoDeleteOnIdle ?? 'PT5M'
+    defaultMessageTimeToLive: topic.?defaultMessageTimeToLive ?? 'P14D'
+    duplicateDetectionHistoryTimeWindow: topic.?duplicateDetectionHistoryTimeWindow ?? 'PT10M'
+    enableBatchedOperations: topic.?enableBatchedOperations ?? true
+    enableExpress: topic.?enableExpress ?? false
+    enablePartitioning: topic.?enablePartitioning ?? false
     lock: topic.?lock ?? lock
-    maxMessageSizeInKilobytes: contains(topic, 'maxMessageSizeInKilobytes') ? topic.maxMessageSizeInKilobytes : 1024
-    maxSizeInMegabytes: contains(topic, 'maxSizeInMegabytes') ? topic.maxSizeInMegabytes : 1024
-    requiresDuplicateDetection: contains(topic, 'requiresDuplicateDetection') ? topic.requiresDuplicateDetection : false
-    roleAssignments: contains(topic, 'roleAssignments') ? topic.roleAssignments : []
-    status: contains(topic, 'status') ? topic.status : 'Active'
-    supportOrdering: contains(topic, 'supportOrdering') ? topic.supportOrdering : false
+    maxMessageSizeInKilobytes: topic.?maxMessageSizeInKilobytes ?? 1024
+    maxSizeInMegabytes: topic.?maxSizeInMegabytes ?? 1024
+    requiresDuplicateDetection: topic.?requiresDuplicateDetection ?? false
+    roleAssignments: topic.?roleAssignments ?? []
+    status: topic.?status ?? 'Active'
+    supportOrdering: topic.?supportOrdering ?? false
   }
 }]
 

@@ -137,7 +137,7 @@ module queue_authorizationRules 'authorization-rule/main.bicep' = [for (authoriz
     namespaceName: namespaceName
     queueName: queue.name
     name: authorizationRule.name
-    rights: contains(authorizationRule, 'rights') ? authorizationRule.rights : []
+    rights: authorizationRule.?rights ?? []
     enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]

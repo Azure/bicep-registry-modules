@@ -70,8 +70,10 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       name: 'myCustomLockName'
     }
     location: location
-    skuName: 'Premium'
-    skuCapacity: 2
+    skuObject: {
+      name: 'Premium'
+      capacity: 2
+    }
     premiumMessagingPartitions: 1
     zoneRedundant: true
     tags: {
@@ -222,6 +224,4 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     publicNetworkAccess: 'Enabled'
     minimumTlsVersion: '1.2'
   }
-}
-
-
+}]
