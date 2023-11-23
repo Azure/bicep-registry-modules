@@ -1,6 +1,6 @@
-# Event Grid Domains `[Microsoft.EventGrid/domains]`
+# Event Grid System Topics `[Microsoft.EventGrid/systemTopics]`
 
-This module deploys an Event Grid Domain.
+This module deploys an Event Grid System Topic.
 
 ## Navigation
 
@@ -16,11 +16,9 @@ This module deploys an Event Grid Domain.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.EventGrid/domains` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-06-01-preview/domains) |
-| `Microsoft.EventGrid/domains/topics` | [2022-06-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2022-06-15/domains/topics) |
+| `Microsoft.EventGrid/systemTopics` | [2021-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2021-12-01/systemTopics) |
+| `Microsoft.EventGrid/systemTopics/eventSubscriptions` | [2022-06-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2022-06-15/systemTopics/eventSubscriptions) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -28,12 +26,11 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/event-grid/domain:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/event-grid/system-topic:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Using private endpoint](#example-3-using-private-endpoint)
-- [WAF-aligned](#example-4-waf-aligned)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -45,15 +42,15 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module domain 'br/public:avm/res/event-grid/domain:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-egdmin'
+module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-egstmin'
   params: {
     // Required parameters
-    name: 'egdmin001'
+    name: 'egstmin001'
+    source: '<source>'
+    topicType: 'Microsoft.Storage.StorageAccounts'
     // Non-required parameters
     location: '<location>'
-    managedIdentities: '<managedIdentities>'
-    privateEndpoints: '<privateEndpoints>'
   }
 }
 ```
@@ -72,17 +69,17 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "egdmin001"
+      "value": "egstmin001"
+    },
+    "source": {
+      "value": "<source>"
+    },
+    "topicType": {
+      "value": "Microsoft.Storage.StorageAccounts"
     },
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": "<managedIdentities>"
-    },
-    "privateEndpoints": {
-      "value": "<privateEndpoints>"
     }
   }
 }
@@ -101,11 +98,13 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module domain 'br/public:avm/res/event-grid/domain:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-egdmax'
+module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-egstmax'
   params: {
     // Required parameters
-    name: 'egdmax001'
+    name: 'egstmax001'
+    source: '<source>'
+    topicType: 'Microsoft.Storage.StorageAccounts'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -121,10 +120,27 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    inboundIpRules: [
+    eventSubscriptions: [
       {
-        action: 'Allow'
-        ipMask: '40.74.28.0/23'
+        destination: {
+          endpointType: 'StorageQueue'
+          properties: {
+            queueMessageTimeToLiveInSeconds: 86400
+            queueName: '<queueName>'
+            resourceId: '<resourceId>'
+          }
+        }
+        eventDeliverySchema: 'CloudEventSchemaV1_0'
+        expirationTimeUtc: '2099-01-01T11:00:21.715Z'
+        filter: {
+          enableAdvancedFilteringOnArrays: true
+          isSubjectCaseSensitive: false
+        }
+        name: 'egstmax001'
+        retryPolicy: {
+          eventTimeToLive: '120'
+          maxDeliveryAttempts: 10
+        }
       }
     ]
     location: '<location>'
@@ -132,20 +148,9 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        service: 'domain'
-        subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
-      }
-    ]
+    managedIdentities: {
+      systemAssigned: true
+    }
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -158,9 +163,6 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    topics: [
-      'topic-egdmax001'
-    ]
   }
 }
 ```
@@ -179,7 +181,13 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "egdmax001"
+      "value": "egstmax001"
+    },
+    "source": {
+      "value": "<source>"
+    },
+    "topicType": {
+      "value": "Microsoft.Storage.StorageAccounts"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -198,11 +206,28 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
         }
       ]
     },
-    "inboundIpRules": {
+    "eventSubscriptions": {
       "value": [
         {
-          "action": "Allow",
-          "ipMask": "40.74.28.0/23"
+          "destination": {
+            "endpointType": "StorageQueue",
+            "properties": {
+              "queueMessageTimeToLiveInSeconds": 86400,
+              "queueName": "<queueName>",
+              "resourceId": "<resourceId>"
+            }
+          },
+          "eventDeliverySchema": "CloudEventSchemaV1_0",
+          "expirationTimeUtc": "2099-01-01T11:00:21.715Z",
+          "filter": {
+            "enableAdvancedFilteringOnArrays": true,
+            "isSubjectCaseSensitive": false
+          },
+          "name": "egstmax001",
+          "retryPolicy": {
+            "eventTimeToLive": "120",
+            "maxDeliveryAttempts": 10
+          }
         }
       ]
     },
@@ -215,21 +240,10 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
         "name": "myCustomLockName"
       }
     },
-    "privateEndpoints": {
-      "value": [
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "service": "domain",
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          }
-        }
-      ]
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
     },
     "roleAssignments": {
       "value": [
@@ -246,11 +260,6 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "topics": {
-      "value": [
-        "topic-egdmax001"
-      ]
     }
   }
 }
@@ -259,95 +268,7 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
 </details>
 <p>
 
-### Example 3: _Using private endpoint_
-
-This instance deploys the module with private endpoint.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module domain 'br/public:avm/res/event-grid/domain:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-egdpe'
-  params: {
-    // Required parameters
-    name: 'egdpe001'
-    // Non-required parameters
-    location: '<location>'
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
-      }
-    ]
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "egdpe001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "privateEndpoints": {
-      "value": [
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          }
-        }
-      ]
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 4: _WAF-aligned_
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -357,11 +278,13 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module domain 'br/public:avm/res/event-grid/domain:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-egdwaf'
+module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-egstwaf'
   params: {
     // Required parameters
-    name: 'egdwaf001'
+    name: 'egstwaf001'
+    source: '<source>'
+    topicType: 'Microsoft.Storage.StorageAccounts'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -377,34 +300,39 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    inboundIpRules: []
+    eventSubscriptions: [
+      {
+        destination: {
+          endpointType: 'StorageQueue'
+          properties: {
+            queueMessageTimeToLiveInSeconds: 86400
+            queueName: '<queueName>'
+            resourceId: '<resourceId>'
+          }
+        }
+        eventDeliverySchema: 'CloudEventSchemaV1_0'
+        expirationTimeUtc: '2099-01-01T11:00:21.715Z'
+        filter: {
+          enableAdvancedFilteringOnArrays: true
+          isSubjectCaseSensitive: false
+        }
+        name: 'egstwaf001'
+        retryPolicy: {
+          eventTimeToLive: '120'
+          maxDeliveryAttempts: 10
+        }
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        service: 'domain'
-        subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
-      }
-    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    topics: [
-      'topic-egdwaf001'
-    ]
   }
 }
 ```
@@ -423,7 +351,13 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "egdwaf001"
+      "value": "egstwaf001"
+    },
+    "source": {
+      "value": "<source>"
+    },
+    "topicType": {
+      "value": "Microsoft.Storage.StorageAccounts"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -442,8 +376,30 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
         }
       ]
     },
-    "inboundIpRules": {
-      "value": []
+    "eventSubscriptions": {
+      "value": [
+        {
+          "destination": {
+            "endpointType": "StorageQueue",
+            "properties": {
+              "queueMessageTimeToLiveInSeconds": 86400,
+              "queueName": "<queueName>",
+              "resourceId": "<resourceId>"
+            }
+          },
+          "eventDeliverySchema": "CloudEventSchemaV1_0",
+          "expirationTimeUtc": "2099-01-01T11:00:21.715Z",
+          "filter": {
+            "enableAdvancedFilteringOnArrays": true,
+            "isSubjectCaseSensitive": false
+          },
+          "name": "egstwaf001",
+          "retryPolicy": {
+            "eventTimeToLive": "120",
+            "maxDeliveryAttempts": 10
+          }
+        }
+      ]
     },
     "location": {
       "value": "<location>"
@@ -454,33 +410,12 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
         "name": "myCustomLockName"
       }
     },
-    "privateEndpoints": {
-      "value": [
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "service": "domain",
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          }
-        }
-      ]
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "topics": {
-      "value": [
-        "topic-egdwaf001"
-      ]
     }
   }
 }
@@ -496,40 +431,22 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the Event Grid Domain. |
+| [`name`](#parameter-name) | string | The name of the Event Grid Topic. |
+| [`source`](#parameter-source) | string | Source for the system topic. |
+| [`topicType`](#parameter-topictype) | string | TopicType for the system topic. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`autoCreateTopicWithFirstSubscription`](#parameter-autocreatetopicwithfirstsubscription) | bool | Location for all Resources. |
-| [`autoDeleteTopicWithLastSubscription`](#parameter-autodeletetopicwithlastsubscription) | bool | Location for all Resources. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Allow only Azure AD authentication. Should be enabled for security reasons. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`inboundIpRules`](#parameter-inboundiprules) | array | This can be used to restrict traffic from specific IPs instead of all IPs. Note: These are considered only if PublicNetworkAccess is enabled. |
+| [`eventSubscriptions`](#parameter-eventsubscriptions) | array | Event subscriptions to deploy. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
-| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and inboundIpRules are not set. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`topics`](#parameter-topics) | array | The topic names which are associated with the domain. |
-
-### Parameter: `autoCreateTopicWithFirstSubscription`
-
-Location for all Resources.
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `autoDeleteTopicWithLastSubscription`
-
-Location for all Resources.
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `diagnosticSettings`
 
@@ -646,13 +563,6 @@ Optional. Resource ID of the diagnostic log analytics workspace. For security re
 - Required: No
 - Type: string
 
-### Parameter: `disableLocalAuth`
-
-Allow only Azure AD authentication. Should be enabled for security reasons.
-- Required: No
-- Type: bool
-- Default: `True`
-
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -660,9 +570,9 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `inboundIpRules`
+### Parameter: `eventSubscriptions`
 
-This can be used to restrict traffic from specific IPs instead of all IPs. Note: These are considered only if PublicNetworkAccess is enabled.
+Event subscriptions to deploy.
 - Required: No
 - Type: array
 - Default: `[]`
@@ -729,222 +639,9 @@ Optional. The resource ID(s) to assign to the resource.
 
 ### Parameter: `name`
 
-The name of the Event Grid Domain.
+The name of the Event Grid Topic.
 - Required: Yes
 - Type: string
-
-### Parameter: `privateEndpoints`
-
-Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.
-- Required: No
-- Type: array
-
-
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`applicationSecurityGroupResourceIds`](#parameter-privateendpointsapplicationsecuritygroupresourceids) | No | array | Optional. Application security groups in which the private endpoint IP configuration is included. |
-| [`customDnsConfigs`](#parameter-privateendpointscustomdnsconfigs) | No | array | Optional. Custom DNS configurations. |
-| [`customNetworkInterfaceName`](#parameter-privateendpointscustomnetworkinterfacename) | No | string | Optional. The custom name of the network interface attached to the private endpoint. |
-| [`enableTelemetry`](#parameter-privateendpointsenabletelemetry) | No | bool | Optional. Enable/Disable usage telemetry for module. |
-| [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | No | array | Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
-| [`location`](#parameter-privateendpointslocation) | No | string | Optional. The location to deploy the private endpoint to. |
-| [`lock`](#parameter-privateendpointslock) | No | object | Optional. Specify the type of lock. |
-| [`manualPrivateLinkServiceConnections`](#parameter-privateendpointsmanualprivatelinkserviceconnections) | No | array | Optional. Manual PrivateLink Service Connections. |
-| [`name`](#parameter-privateendpointsname) | No | string | Optional. The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | No | string | Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided. |
-| [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | No | array | Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
-| [`roleAssignments`](#parameter-privateendpointsroleassignments) | No | array | Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| [`service`](#parameter-privateendpointsservice) | No | string | Optional. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob". |
-| [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | Yes | string | Required. Resource ID of the subnet where the endpoint needs to be created. |
-| [`tags`](#parameter-privateendpointstags) | No | object | Optional. Tags to be applied on all resources/resource groups in this deployment. |
-
-### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
-
-Optional. Application security groups in which the private endpoint IP configuration is included.
-
-- Required: No
-- Type: array
-
-### Parameter: `privateEndpoints.customDnsConfigs`
-
-Optional. Custom DNS configurations.
-
-- Required: No
-- Type: array
-
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | No | string | Required. Fqdn that resolves to private endpoint ip address. |
-| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | Yes | array | Required. A list of private ip addresses of the private endpoint. |
-
-### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
-
-Required. Fqdn that resolves to private endpoint ip address.
-
-- Required: No
-- Type: string
-
-### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
-
-Required. A list of private ip addresses of the private endpoint.
-
-- Required: Yes
-- Type: array
-
-
-### Parameter: `privateEndpoints.customNetworkInterfaceName`
-
-Optional. The custom name of the network interface attached to the private endpoint.
-
-- Required: No
-- Type: string
-
-### Parameter: `privateEndpoints.enableTelemetry`
-
-Optional. Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-
-### Parameter: `privateEndpoints.ipConfigurations`
-
-Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.
-
-- Required: No
-- Type: array
-
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`name`](#parameter-privateendpointsipconfigurationsname) | Yes | string | Required. The name of the resource that is unique within a resource group. |
-| [`properties`](#parameter-privateendpointsipconfigurationsproperties) | Yes | object | Required. Properties of private endpoint IP configurations. |
-
-### Parameter: `privateEndpoints.ipConfigurations.name`
-
-Required. The name of the resource that is unique within a resource group.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `privateEndpoints.ipConfigurations.properties`
-
-Required. Properties of private endpoint IP configurations.
-
-- Required: Yes
-- Type: object
-
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`groupId`](#parameter-privateendpointsipconfigurationspropertiesgroupid) | Yes | string | Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. |
-| [`memberName`](#parameter-privateendpointsipconfigurationspropertiesmembername) | Yes | string | Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. |
-| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | Yes | string | Required. A private ip address obtained from the private endpoint's subnet. |
-
-### Parameter: `privateEndpoints.ipConfigurations.properties.groupId`
-
-Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
-
-Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
-
-Required. A private ip address obtained from the private endpoint's subnet.
-
-- Required: Yes
-- Type: string
-
-
-
-### Parameter: `privateEndpoints.location`
-
-Optional. The location to deploy the private endpoint to.
-
-- Required: No
-- Type: string
-
-### Parameter: `privateEndpoints.lock`
-
-Optional. Specify the type of lock.
-
-- Required: No
-- Type: object
-
-### Parameter: `privateEndpoints.manualPrivateLinkServiceConnections`
-
-Optional. Manual PrivateLink Service Connections.
-
-- Required: No
-- Type: array
-
-### Parameter: `privateEndpoints.name`
-
-Optional. The name of the private endpoint.
-
-- Required: No
-- Type: string
-
-### Parameter: `privateEndpoints.privateDnsZoneGroupName`
-
-Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.
-
-- Required: No
-- Type: string
-
-### Parameter: `privateEndpoints.privateDnsZoneResourceIds`
-
-Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.
-
-- Required: No
-- Type: array
-
-### Parameter: `privateEndpoints.roleAssignments`
-
-Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
-
-- Required: No
-- Type: array
-
-### Parameter: `privateEndpoints.service`
-
-Optional. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob".
-
-- Required: No
-- Type: string
-
-### Parameter: `privateEndpoints.subnetResourceId`
-
-Required. Resource ID of the subnet where the endpoint needs to be created.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `privateEndpoints.tags`
-
-Optional. Tags to be applied on all resources/resource groups in this deployment.
-
-- Required: No
-- Type: object
-
-### Parameter: `publicNetworkAccess`
-
-Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and inboundIpRules are not set.
-- Required: No
-- Type: string
-- Default: `''`
-- Allowed:
-  ```Bicep
-  [
-    ''
-    'Disabled'
-    'Enabled'
-  ]
-  ```
 
 ### Parameter: `roleAssignments`
 
@@ -1014,17 +711,23 @@ Required. The name of the role to assign. If it cannot be found you can specify 
 - Required: Yes
 - Type: string
 
+### Parameter: `source`
+
+Source for the system topic.
+- Required: Yes
+- Type: string
+
 ### Parameter: `tags`
 
 Tags of the resource.
 - Required: No
 - Type: object
 
-### Parameter: `topics`
+### Parameter: `topicType`
 
-The topic names which are associated with the domain.
-- Required: No
-- Type: array
+TopicType for the system topic.
+- Required: Yes
+- Type: string
 
 
 ## Outputs
@@ -1032,15 +735,11 @@ The topic names which are associated with the domain.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the event grid domain. |
-| `resourceGroupName` | string | The name of the resource group the event grid domain was deployed into. |
-| `resourceId` | string | The resource ID of the event grid domain. |
+| `name` | string | The name of the event grid system topic. |
+| `resourceGroupName` | string | The name of the resource group the event grid system topic was deployed into. |
+| `resourceId` | string | The resource ID of the event grid system topic. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
 
-This section gives you an overview of all local-referenced module files (i.e., other CARML modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |
-| `br/public:avm-res-network-privateendpoint:0.1.1` | Remote reference |
+_None_
