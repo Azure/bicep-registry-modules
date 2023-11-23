@@ -18,17 +18,17 @@ param graphs array = []
 param maxThroughput int = 4000
 
 @description('Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`.')
-param throughput int = -1
+param throughput int?
 
 resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
   name: databaseAccountName
 }
 
 var databaseOptions = contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' }) ? {} : {
-  autoscaleSettings: throughput == -1 ? {
+  autoscaleSettings: throughput == null ? {
     maxThroughput: maxThroughput
   } : null
-  throughput: throughput != -1 ? throughput : null
+  throughput: throughput
 }
 
 resource gremlinDatabase 'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases@2023-04-15' = {
