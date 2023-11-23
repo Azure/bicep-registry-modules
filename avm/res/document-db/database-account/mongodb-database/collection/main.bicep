@@ -11,7 +11,7 @@ param mongodbDatabaseName string
 @description('Required. Name of the collection.')
 param name string
 
-@description('Optional. Name of the mongodb database.')
+@description('Optional. Request Units per second.')
 param throughput int = 400
 
 @description('Required. Indexes for the collection.')
@@ -43,11 +43,11 @@ resource collection 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/coll
   }
 }
 
-@description('The name of the mongodb database.')
+@description('The name of the mongodb database collection.')
 output name string = collection.name
 
-@description('The resource ID of the mongodb database.')
+@description('The resource ID of the mongodb database collection.')
 output resourceId string = collection.id
 
-@description('The name of the resource group the mongodb database was created in.')
+@description('The name of the resource group the mongodb database collection was created in.')
 output resourceGroupName string = resourceGroup().name
