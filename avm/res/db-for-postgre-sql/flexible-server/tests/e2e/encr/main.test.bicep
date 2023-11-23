@@ -91,20 +91,14 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       {
         charset: 'UTF8'
         collation: 'en_US.utf8'
-        name: 'testdb1'
+        name: 'testdb3'
       }
       {
-        name: 'testdb2'
+        name: 'testdb4'
       }
     ]
     diagnosticSettings: [
       {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
         eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
         storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId

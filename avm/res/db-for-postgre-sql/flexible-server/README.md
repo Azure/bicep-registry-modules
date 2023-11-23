@@ -144,22 +144,16 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       {
         charset: 'UTF8'
         collation: 'en_US.utf8'
-        name: 'testdb1'
+        name: 'testdb3'
       }
       {
-        name: 'testdb2'
+        name: 'testdb4'
       }
     ]
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
       }
@@ -242,10 +236,10 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
         {
           "charset": "UTF8",
           "collation": "en_US.utf8",
-          "name": "testdb1"
+          "name": "testdb3"
         },
         {
-          "name": "testdb2"
+          "name": "testdb4"
         }
       ]
     },
@@ -254,12 +248,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
