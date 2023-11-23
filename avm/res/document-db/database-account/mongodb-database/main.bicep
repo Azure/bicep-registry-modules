@@ -43,6 +43,7 @@ module mongodbDatabase_collections 'collection/main.bicep' = [for collection in 
     name: collection.name
     indexes: collection.indexes
     shardKey: collection.shardKey
+    throughput: collection.?throughput
   }
 }]
 
