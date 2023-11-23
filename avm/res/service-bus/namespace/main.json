@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "4173676486943562626"
+      "templateHash": "14292970941031744910"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace.",
@@ -816,7 +816,9 @@
           "name": {
             "value": "[parameters('authorizationRules')[copyIndex()].name]"
           },
-          "rights": "[if(contains(parameters('authorizationRules')[copyIndex()], 'rights'), createObject('value', parameters('authorizationRules')[copyIndex()].rights), createObject('value', createArray()))]"
+          "rights": {
+            "value": "[coalesce(tryGet(parameters('authorizationRules')[copyIndex()], 'rights'), createArray())]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -825,7 +827,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "1264227897820313372"
+              "templateHash": "2882579230984727691"
             },
             "name": "Service Bus Namespace Authorization Rules",
             "description": "This module deploys a Service Bus Namespace Authorization Rule.",
@@ -857,30 +859,9 @@
               "metadata": {
                 "description": "Optional. The rights associated with the rule."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.ServiceBus/namespaces/AuthorizationRules",
               "apiVersion": "2022-10-01-preview",
@@ -1384,18 +1365,36 @@
           "enableBatchedOperations": {
             "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'enableBatchedOperations'), true())]"
           },
-          "enableExpress": "[if(contains(coalesce(parameters('queues'), createArray())[copyIndex()], 'enableExpress'), createObject('value', coalesce(parameters('queues'), createArray())[copyIndex()].enableExpress), createObject('value', false()))]",
-          "enablePartitioning": "[if(contains(coalesce(parameters('queues'), createArray())[copyIndex()], 'enablePartitioning'), createObject('value', coalesce(parameters('queues'), createArray())[copyIndex()].enablePartitioning), createObject('value', false()))]",
+          "enableExpress": {
+            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'enableExpress'), false())]"
+          },
+          "enablePartitioning": {
+            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'enablePartitioning'), false())]"
+          },
           "lock": {
             "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
-          "lockDuration": "[if(contains(coalesce(parameters('queues'), createArray())[copyIndex()], 'lockDuration'), createObject('value', coalesce(parameters('queues'), createArray())[copyIndex()].lockDuration), createObject('value', 'PT1M'))]",
-          "maxDeliveryCount": "[if(contains(coalesce(parameters('queues'), createArray())[copyIndex()], 'maxDeliveryCount'), createObject('value', coalesce(parameters('queues'), createArray())[copyIndex()].maxDeliveryCount), createObject('value', 10))]",
-          "maxSizeInMegabytes": "[if(contains(coalesce(parameters('queues'), createArray())[copyIndex()], 'maxSizeInMegabytes'), createObject('value', coalesce(parameters('queues'), createArray())[copyIndex()].maxSizeInMegabytes), createObject('value', 1024))]",
-          "requiresDuplicateDetection": "[if(contains(coalesce(parameters('queues'), createArray())[copyIndex()], 'requiresDuplicateDetection'), createObject('value', coalesce(parameters('queues'), createArray())[copyIndex()].requiresDuplicateDetection), createObject('value', false()))]",
-          "requiresSession": "[if(contains(coalesce(parameters('queues'), createArray())[copyIndex()], 'requiresSession'), createObject('value', coalesce(parameters('queues'), createArray())[copyIndex()].requiresSession), createObject('value', false()))]",
-          "roleAssignments": "[if(contains(coalesce(parameters('queues'), createArray())[copyIndex()], 'roleAssignments'), createObject('value', coalesce(parameters('queues'), createArray())[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-          "status": "[if(contains(coalesce(parameters('queues'), createArray())[copyIndex()], 'status'), createObject('value', coalesce(parameters('queues'), createArray())[copyIndex()].status), createObject('value', 'Active'))]"
+          "lockDuration": {
+            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'lockDuration'), 'PT1M')]"
+          },
+          "maxDeliveryCount": {
+            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'maxDeliveryCount'), 10)]"
+          },
+          "maxSizeInMegabytes": {
+            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'maxSizeInMegabytes'), 1024)]"
+          },
+          "requiresDuplicateDetection": {
+            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'requiresDuplicateDetection'), false())]"
+          },
+          "requiresSession": {
+            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'requiresSession'), false())]"
+          },
+          "roleAssignments": {
+            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'roleAssignments'), createArray())]"
+          },
+          "status": {
+            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'status'), 'Active')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1405,7 +1404,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "5391834923114562885"
+              "templateHash": "17290760568072585271"
             },
             "name": "Service Bus Namespace Queue",
             "description": "This module deploys a Service Bus Namespace Queue.",
@@ -1780,7 +1779,9 @@
                   "name": {
                     "value": "[parameters('authorizationRules')[copyIndex()].name]"
                   },
-                  "rights": "[if(contains(parameters('authorizationRules')[copyIndex()], 'rights'), createObject('value', parameters('authorizationRules')[copyIndex()].rights), createObject('value', createArray()))]",
+                  "rights": {
+                    "value": "[coalesce(tryGet(parameters('authorizationRules')[copyIndex()], 'rights'), createArray())]"
+                  },
                   "enableDefaultTelemetry": {
                     "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
@@ -1940,22 +1941,48 @@
           "name": {
             "value": "[coalesce(parameters('topics'), createArray())[copyIndex()].name]"
           },
-          "authorizationRules": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'authorizationRules'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].authorizationRules), createObject('value', createArray(createObject('name', 'RootManageSharedAccessKey', 'rights', createArray('Listen', 'Manage', 'Send')))))]",
-          "autoDeleteOnIdle": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'autoDeleteOnIdle'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].autoDeleteOnIdle), createObject('value', 'PT5M'))]",
-          "defaultMessageTimeToLive": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'defaultMessageTimeToLive'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].defaultMessageTimeToLive), createObject('value', 'P14D'))]",
-          "duplicateDetectionHistoryTimeWindow": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'duplicateDetectionHistoryTimeWindow'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].duplicateDetectionHistoryTimeWindow), createObject('value', 'PT10M'))]",
-          "enableBatchedOperations": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'enableBatchedOperations'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].enableBatchedOperations), createObject('value', true()))]",
-          "enableExpress": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'enableExpress'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].enableExpress), createObject('value', false()))]",
-          "enablePartitioning": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'enablePartitioning'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].enablePartitioning), createObject('value', false()))]",
+          "authorizationRules": {
+            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'authorizationRules'), createArray(createObject('name', 'RootManageSharedAccessKey', 'rights', createArray('Listen', 'Manage', 'Send'))))]"
+          },
+          "autoDeleteOnIdle": {
+            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'autoDeleteOnIdle'), 'PT5M')]"
+          },
+          "defaultMessageTimeToLive": {
+            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'defaultMessageTimeToLive'), 'P14D')]"
+          },
+          "duplicateDetectionHistoryTimeWindow": {
+            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'duplicateDetectionHistoryTimeWindow'), 'PT10M')]"
+          },
+          "enableBatchedOperations": {
+            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'enableBatchedOperations'), true())]"
+          },
+          "enableExpress": {
+            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'enableExpress'), false())]"
+          },
+          "enablePartitioning": {
+            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'enablePartitioning'), false())]"
+          },
           "lock": {
             "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
-          "maxMessageSizeInKilobytes": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'maxMessageSizeInKilobytes'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].maxMessageSizeInKilobytes), createObject('value', 1024))]",
-          "maxSizeInMegabytes": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'maxSizeInMegabytes'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].maxSizeInMegabytes), createObject('value', 1024))]",
-          "requiresDuplicateDetection": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'requiresDuplicateDetection'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].requiresDuplicateDetection), createObject('value', false()))]",
-          "roleAssignments": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'roleAssignments'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-          "status": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'status'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].status), createObject('value', 'Active'))]",
-          "supportOrdering": "[if(contains(coalesce(parameters('topics'), createArray())[copyIndex()], 'supportOrdering'), createObject('value', coalesce(parameters('topics'), createArray())[copyIndex()].supportOrdering), createObject('value', false()))]"
+          "maxMessageSizeInKilobytes": {
+            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'maxMessageSizeInKilobytes'), 1024)]"
+          },
+          "maxSizeInMegabytes": {
+            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'maxSizeInMegabytes'), 1024)]"
+          },
+          "requiresDuplicateDetection": {
+            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'requiresDuplicateDetection'), false())]"
+          },
+          "roleAssignments": {
+            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'roleAssignments'), createArray())]"
+          },
+          "status": {
+            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'status'), 'Active')]"
+          },
+          "supportOrdering": {
+            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'supportOrdering'), false())]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1965,7 +1992,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "17834121031858727476"
+              "templateHash": "7473436664465184024"
             },
             "name": "Service Bus Namespace Topic",
             "description": "This module deploys a Service Bus Namespace Topic.",
@@ -2198,13 +2225,6 @@
               "metadata": {
                 "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "variables": {
@@ -2221,20 +2241,6 @@
             }
           },
           "resources": {
-            "defaultTelemetry": {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             "namespace": {
               "existing": true,
               "type": "Microsoft.ServiceBus/namespaces",

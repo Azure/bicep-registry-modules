@@ -37,13 +37,16 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm-res-servicebus-namespace:1.0.0`.
 
-- [Defaults](#example-1-defaults)
+- [Using only defaults](#example-1-using-only-defaults)
 - [Encr](#example-2-encr)
-- [Max](#example-3-max)
+- [Using large parameter set](#example-3-using-large-parameter-set)
 - [Pe](#example-4-pe)
-- [Waf-Aligned](#example-5-waf-aligned)
+- [Using large parameter set](#example-5-using-large-parameter-set)
 
-### Example 1: _Defaults_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -55,6 +58,10 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
   params: {
     // Required parameters
     name: 'sbnmin001'
+    skuObject: {
+      name: 'Basic'
+    }
+    // Non-required parameters
     location: '<location>'
   }
 }
@@ -76,6 +83,12 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
     "name": {
       "value": "sbnmin001"
     },
+    "skuObject": {
+      "value": {
+        "name": "Basic"
+      }
+    },
+    // Non-required parameters
     "location": {
       "value": "<location>"
     }
@@ -97,8 +110,12 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-sbnencr'
   params: {
     // Required parameters
-    // Non-required parameters
     name: 'sbnencr001'
+    skuObject: {
+      capacity: 1
+      name: 'Premium'
+    }
+    // Non-required parameters
     authorizationRules: [
       {
         name: 'RootManageSharedAccessKey'
@@ -121,6 +138,7 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
+    location: '<location>'
     managedIdentities: {
       systemAssigned: false
       userAssignedResourcesIds: [
@@ -154,7 +172,6 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
         roleDefinitionIdOrName: 'Reader'
       }
     ]
-    skuName: 'Premium'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -179,6 +196,12 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
     // Required parameters
     "name": {
       "value": "sbnencr001"
+    },
+    "skuObject": {
+      "value": {
+        "capacity": 1,
+        "name": "Premium"
+      }
     },
     // Non-required parameters
     "authorizationRules": {
@@ -206,6 +229,9 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
         "keyVaultResourceId": "<keyVaultResourceId>",
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
+    },
+    "location": {
+      "value": "<location>"
     },
     "managedIdentities": {
       "value": {
@@ -246,9 +272,6 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
         }
       ]
     },
-    "skuName": {
-      "value": "Premium"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -263,7 +286,10 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
 </details>
 <p>
 
-### Example 3: _Max_
+### Example 3: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -274,8 +300,12 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-sbnmax'
   params: {
     // Required parameters
-    // Non-required parameters
     name: 'sbnmax001'
+    skuObject: {
+      capacity: 16
+      name: 'Premium'
+    }
+    // Non-required parameters
     authorizationRules: [
       {
         name: 'RootManageSharedAccessKey'
@@ -394,8 +424,6 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
         roleDefinitionIdOrName: 'Reader'
       }
     ]
-    skuCapacity: 2
-    skuName: 'Premium'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -450,6 +478,12 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
     // Required parameters
     "name": {
       "value": "sbnmax001"
+    },
+    "skuObject": {
+      "value": {
+        "capacity": 16,
+        "name": "Premium"
+      }
     },
     // Non-required parameters
     "authorizationRules": {
@@ -596,12 +630,6 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
         }
       ]
     },
-    "skuCapacity": {
-      "value": 2
-    },
-    "skuName": {
-      "value": "Premium"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -661,8 +689,12 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-sbnpe'
   params: {
     // Required parameters
-    // Non-required parameters
     name: 'sbnpe001'
+    skuObject: {
+      name: 'Premium'
+    }
+    // Non-required parameters
+    location: '<location>'
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -677,7 +709,6 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
       }
     ]
     publicNetworkAccess: 'Disabled'
-    skuName: 'Premium'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -703,7 +734,15 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
     "name": {
       "value": "sbnpe001"
     },
+    "skuObject": {
+      "value": {
+        "name": "Premium"
+      }
+    },
     // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
     "privateEndpoints": {
       "value": [
         {
@@ -722,9 +761,6 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
     "publicNetworkAccess": {
       "value": "Disabled"
     },
-    "skuName": {
-      "value": "Premium"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -739,7 +775,10 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
 </details>
 <p>
 
-### Example 5: _Waf-Aligned_
+### Example 5: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -750,8 +789,12 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
   name: '${uniqueString(deployment().name, location)}-test-sbnwaf'
   params: {
     // Required parameters
-    // Non-required parameters
     name: 'sbnwaf001'
+    skuObject: {
+      capacity: 2
+      name: 'Premium'
+    }
+    // Non-required parameters
     authorizationRules: [
       {
         name: 'RootManageSharedAccessKey'
@@ -870,8 +913,6 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
         roleDefinitionIdOrName: 'Reader'
       }
     ]
-    skuCapacity: 2
-    skuName: 'Premium'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -926,6 +967,12 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
     // Required parameters
     "name": {
       "value": "sbnwaf001"
+    },
+    "skuObject": {
+      "value": {
+        "capacity": 2,
+        "name": "Premium"
+      }
     },
     // Non-required parameters
     "authorizationRules": {
@@ -1071,12 +1118,6 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
           "roleDefinitionIdOrName": "Reader"
         }
       ]
-    },
-    "skuCapacity": {
-      "value": 2
-    },
-    "skuName": {
-      "value": "Premium"
     },
     "tags": {
       "value": {
