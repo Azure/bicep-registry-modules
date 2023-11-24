@@ -30,12 +30,15 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/load-balancer:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Internal](#example-2-internal)
-- [Max](#example-3-max)
-- [Waf-Aligned](#example-4-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using internal load balancer parameter](#example-2-using-internal-load-balancer-parameter)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
-### Example 1: _Defaults_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -102,7 +105,10 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
 </details>
 <p>
 
-### Example 2: _Internal_
+### Example 2: _Using internal load balancer parameter_
+
+This instance deploys the module with the minimum set of required parameters to deploy an internal load balancer.
+
 
 <details>
 
@@ -124,20 +130,6 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
     backendAddressPools: [
       {
         name: 'servers'
-      }
-    ]
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
       }
     ]
     inboundNatRules: [
@@ -233,22 +225,6 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
         }
       ]
     },
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
     "inboundNatRules": {
       "value": [
         {
@@ -327,7 +303,10 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
 </details>
 <p>
 
-### Example 3: _Max_
+### Example 3: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -612,7 +591,10 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
 </details>
 <p>
 
-### Example 4: _Waf-Aligned_
+### Example 4: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
+
 
 <details>
 

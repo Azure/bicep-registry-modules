@@ -1,0 +1,76 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.23.1.45101",
+      "templateHash": "12646520601030472128"
+    },
+    "name": "DBforPostgreSQL Flexible Server Configurations",
+    "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the configuration."
+      }
+    },
+    "flexibleServerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent PostgreSQL flexible server. Required if the template is used in a standalone deployment."
+      }
+    },
+    "source": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Source of the configuration."
+      }
+    },
+    "value": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Value of the configuration."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.DBforPostgreSQL/flexibleServers/configurations",
+      "apiVersion": "2022-12-01",
+      "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
+      "properties": {
+        "source": "[if(not(empty(parameters('source'))), parameters('source'), null())]",
+        "value": "[if(not(empty(parameters('value'))), parameters('value'), null())]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed configuration."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed configuration."
+      },
+      "value": "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers/configurations', parameters('flexibleServerName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed configuration."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
