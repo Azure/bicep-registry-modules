@@ -156,11 +156,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    // Workaround for PSRule
-    customerManagedKey: null
-    allowedFqdnList: null
-    apiProperties: null
-    migrationToken: null
-    userOwnedStorage: null
   }
 }]
