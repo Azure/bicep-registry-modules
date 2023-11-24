@@ -57,18 +57,7 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
     // Required parameters
     name: 'npdzmin001.com'
     // Non-required parameters
-    a: []
-    aaaa: []
-    cname: []
     location: 'global'
-    lock: {}
-    mx: []
-    ptr: []
-    roleAssignments: []
-    soa: []
-    srv: []
-    txt: []
-    virtualNetworkLinks: []
   }
 }
 ```
@@ -90,41 +79,8 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
       "value": "npdzmin001.com"
     },
     // Non-required parameters
-    "a": {
-      "value": []
-    },
-    "aaaa": {
-      "value": []
-    },
-    "cname": {
-      "value": []
-    },
     "location": {
       "value": "global"
-    },
-    "lock": {
-      "value": {}
-    },
-    "mx": {
-      "value": []
-    },
-    "ptr": {
-      "value": []
-    },
-    "roleAssignments": {
-      "value": []
-    },
-    "soa": {
-      "value": []
-    },
-    "srv": {
-      "value": []
-    },
-    "txt": {
-      "value": []
-    },
-    "virtualNetworkLinks": {
-      "value": []
     }
   }
 }
@@ -161,7 +117,17 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         ttl: 3600
@@ -188,7 +154,17 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         ttl: 3600
@@ -212,7 +188,17 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         ttl: 3600
@@ -230,7 +216,17 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         ttl: 3600
@@ -260,7 +256,17 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         soaRecord: {
@@ -282,7 +288,17 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         srvRecords: [
@@ -308,7 +324,17 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         ttl: 3600
@@ -361,7 +387,17 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "ttl": 3600
@@ -392,7 +428,17 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "ttl": 3600
@@ -422,7 +468,17 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "ttl": 3600
@@ -442,7 +498,17 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "ttl": 3600
@@ -476,7 +542,17 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "soaRecord": {
@@ -500,7 +576,17 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "srvRecords": [
@@ -530,7 +616,17 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "ttl": 3600,
@@ -575,25 +671,16 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
     // Required parameters
     name: 'npdzwaf001.com'
     // Non-required parameters
-    a: []
-    aaaa: []
-    cname: []
     location: 'global'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    mx: []
-    ptr: []
-    roleAssignments: []
-    soa: []
-    srv: []
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    txt: []
   }
 }
 ```
@@ -615,15 +702,6 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
       "value": "npdzwaf001.com"
     },
     // Non-required parameters
-    "a": {
-      "value": []
-    },
-    "aaaa": {
-      "value": []
-    },
-    "cname": {
-      "value": []
-    },
     "location": {
       "value": "global"
     },
@@ -633,30 +711,12 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:<version>' = {
         "name": "myCustomLockName"
       }
     },
-    "mx": {
-      "value": []
-    },
-    "ptr": {
-      "value": []
-    },
-    "roleAssignments": {
-      "value": []
-    },
-    "soa": {
-      "value": []
-    },
-    "srv": {
-      "value": []
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "txt": {
-      "value": []
     }
   }
 }

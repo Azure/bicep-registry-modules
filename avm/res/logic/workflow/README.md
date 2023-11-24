@@ -51,9 +51,6 @@ module workflow 'br/public:avm/res/logic/workflow:<version>' = {
     name: 'lwmin001'
     // Non-required parameters
     location: '<location>'
-    lock: '<lock>'
-    roleAssignments: '<roleAssignments>'
-    tags: {}
   }
 }
 ```
@@ -77,15 +74,6 @@ module workflow 'br/public:avm/res/logic/workflow:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": "<lock>"
-    },
-    "roleAssignments": {
-      "value": "<roleAssignments>"
-    },
-    "tags": {
-      "value": {}
     }
   }
 }

@@ -53,9 +53,6 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
     }
     // Non-required parameters
     location: '<location>'
-    lock: {}
-    roleAssignments: []
-    tags: {}
   }
 }
 ```
@@ -89,15 +86,6 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {}
-    },
-    "roleAssignments": {
-      "value": []
-    },
-    "tags": {
-      "value": {}
     }
   }
 }
@@ -263,7 +251,6 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    roleAssignments: []
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -308,9 +295,6 @@ module capacity 'br/public:avm/res/power-bi-dedicated/capacity:<version>' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
-    },
-    "roleAssignments": {
-      "value": []
     },
     "tags": {
       "value": {

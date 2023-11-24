@@ -52,8 +52,6 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
     name: 'egdmin001'
     // Non-required parameters
     location: '<location>'
-    managedIdentities: '<managedIdentities>'
-    privateEndpoints: '<privateEndpoints>'
   }
 }
 ```
@@ -77,12 +75,6 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": "<managedIdentities>"
-    },
-    "privateEndpoints": {
-      "value": "<privateEndpoints>"
     }
   }
 }

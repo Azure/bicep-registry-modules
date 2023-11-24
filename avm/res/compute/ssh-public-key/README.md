@@ -51,10 +51,6 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
     name: 'cspkmin001'
     // Non-required parameters
     location: '<location>'
-    lock: '<lock>'
-    publicKey: '<publicKey>'
-    roleAssignments: '<roleAssignments>'
-    tags: '<tags>'
   }
 }
 ```
@@ -78,18 +74,6 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": "<lock>"
-    },
-    "publicKey": {
-      "value": "<publicKey>"
-    },
-    "roleAssignments": {
-      "value": "<roleAssignments>"
-    },
-    "tags": {
-      "value": "<tags>"
     }
   }
 }

@@ -55,17 +55,8 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     // Required parameters
     name: 'kvvmin002'
     // Non-required parameters
-    accessPolicies: []
-    diagnosticSettings: []
     enablePurgeProtection: false
-    keys: []
     location: '<location>'
-    lock: {}
-    networkAcls: {}
-    privateEndpoints: []
-    roleAssignments: []
-    secrets: {}
-    tags: {}
   }
 }
 ```
@@ -82,41 +73,16 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "kvvmin002"
     },
-    "accessPolicies": {
-      "value": []
-    },
-    "diagnosticSettings": {
-      "value": []
-    },
+    // Non-required parameters
     "enablePurgeProtection": {
       "value": false
     },
-    "keys": {
-      "value": []
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {}
-    },
-    "networkAcls": {
-      "value": {}
-    },
-    "privateEndpoints": {
-      "value": []
-    },
-    "roleAssignments": {
-      "value": []
-    },
-    "secrets": {
-      "value": {}
-    },
-    "tags": {
-      "value": {}
     }
   }
 }
@@ -276,7 +242,17 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         service: 'vault'
@@ -510,7 +486,17 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "service": "vault",
@@ -697,7 +683,6 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     // Required parameters
     name: 'kvvwaf002'
     // Non-required parameters
-    accessPolicies: []
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -757,7 +742,6 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
         subnetResourceId: '<subnetResourceId>'
       }
     ]
-    roleAssignments: []
     secrets: {
       secureList: [
         {
@@ -793,9 +777,6 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
   "parameters": {
     "name": {
       "value": "kvvwaf002"
-    },
-    "accessPolicies": {
-      "value": []
     },
     "diagnosticSettings": {
       "value": [
@@ -871,9 +852,6 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
-    },
-    "roleAssignments": {
-      "value": []
     },
     "secrets": {
       "value": {

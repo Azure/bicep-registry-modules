@@ -56,18 +56,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     name: 'bbamin001'
     storageAccountId: '<storageAccountId>'
     // Non-required parameters
-    allowedAuthenticationModes: '<allowedAuthenticationModes>'
-    customerManagedKey: '<customerManagedKey>'
-    diagnosticSettings: '<diagnosticSettings>'
-    keyVaultReferenceResourceId: '<keyVaultReferenceResourceId>'
     location: '<location>'
-    lock: '<lock>'
-    managedIdentities: '<managedIdentities>'
-    networkProfile: '<networkProfile>'
-    privateEndpoints: '<privateEndpoints>'
-    roleAssignments: '<roleAssignments>'
-    storageAccessIdentityResourceId: '<storageAccessIdentityResourceId>'
-    tags: '<tags>'
   }
 }
 ```
@@ -92,41 +81,8 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
       "value": "<storageAccountId>"
     },
     // Non-required parameters
-    "allowedAuthenticationModes": {
-      "value": "<allowedAuthenticationModes>"
-    },
-    "customerManagedKey": {
-      "value": "<customerManagedKey>"
-    },
-    "diagnosticSettings": {
-      "value": "<diagnosticSettings>"
-    },
-    "keyVaultReferenceResourceId": {
-      "value": "<keyVaultReferenceResourceId>"
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": "<lock>"
-    },
-    "managedIdentities": {
-      "value": "<managedIdentities>"
-    },
-    "networkProfile": {
-      "value": "<networkProfile>"
-    },
-    "privateEndpoints": {
-      "value": "<privateEndpoints>"
-    },
-    "roleAssignments": {
-      "value": "<roleAssignments>"
-    },
-    "storageAccessIdentityResourceId": {
-      "value": "<storageAccessIdentityResourceId>"
-    },
-    "tags": {
-      "value": "<tags>"
     }
   }
 }
@@ -242,8 +198,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     name: 'bbamax001'
     storageAccountId: '<storageAccountId>'
     // Non-required parameters
-    allowedAuthenticationModes: '<allowedAuthenticationModes>'
-    customerManagedKey: '<customerManagedKey>'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -253,7 +207,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    keyVaultReferenceResourceId: '<keyVaultReferenceResourceId>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -285,7 +238,17 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         subnetResourceId: '<subnetResourceId>'
@@ -344,12 +307,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
       "value": "<storageAccountId>"
     },
     // Non-required parameters
-    "allowedAuthenticationModes": {
-      "value": "<allowedAuthenticationModes>"
-    },
-    "customerManagedKey": {
-      "value": "<customerManagedKey>"
-    },
     "diagnosticSettings": {
       "value": [
         {
@@ -360,9 +317,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "keyVaultReferenceResourceId": {
-      "value": "<keyVaultReferenceResourceId>"
     },
     "location": {
       "value": "<location>"
@@ -406,7 +360,17 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "subnetResourceId": "<subnetResourceId>",
@@ -474,8 +438,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     name: 'bbawaf001'
     storageAccountId: '<storageAccountId>'
     // Non-required parameters
-    allowedAuthenticationModes: '<allowedAuthenticationModes>'
-    customerManagedKey: '<customerManagedKey>'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -484,7 +446,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    keyVaultReferenceResourceId: '<keyVaultReferenceResourceId>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -493,7 +454,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     managedIdentities: {
       systemAssigned: true
     }
-    networkProfile: '<networkProfile>'
     poolAllocationMode: 'BatchService'
     privateEndpoints: [
       {
@@ -503,7 +463,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
         subnetResourceId: '<subnetResourceId>'
       }
     ]
-    roleAssignments: '<roleAssignments>'
     storageAccessIdentityResourceId: '<storageAccessIdentityResourceId>'
     storageAuthenticationMode: 'BatchAccountManagedIdentity'
     tags: {
@@ -535,12 +494,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
       "value": "<storageAccountId>"
     },
     // Non-required parameters
-    "allowedAuthenticationModes": {
-      "value": "<allowedAuthenticationModes>"
-    },
-    "customerManagedKey": {
-      "value": "<customerManagedKey>"
-    },
     "diagnosticSettings": {
       "value": [
         {
@@ -550,9 +503,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "keyVaultReferenceResourceId": {
-      "value": "<keyVaultReferenceResourceId>"
     },
     "location": {
       "value": "<location>"
@@ -568,9 +518,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
         "systemAssigned": true
       }
     },
-    "networkProfile": {
-      "value": "<networkProfile>"
-    },
     "poolAllocationMode": {
       "value": "BatchService"
     },
@@ -583,9 +530,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
-    },
-    "roleAssignments": {
-      "value": "<roleAssignments>"
     },
     "storageAccessIdentityResourceId": {
       "value": "<storageAccessIdentityResourceId>"

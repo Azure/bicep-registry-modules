@@ -53,11 +53,7 @@ module networkInterface 'br/public:avm/res/network/network-interface:<version>' 
     ]
     name: 'nnimin001'
     // Non-required parameters
-    diagnosticSettings: '<diagnosticSettings>'
     location: '<location>'
-    lock: '<lock>'
-    roleAssignments: '<roleAssignments>'
-    tags: {}
   }
 }
 ```
@@ -87,20 +83,8 @@ module networkInterface 'br/public:avm/res/network/network-interface:<version>' 
       "value": "nnimin001"
     },
     // Non-required parameters
-    "diagnosticSettings": {
-      "value": "<diagnosticSettings>"
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": "<lock>"
-    },
-    "roleAssignments": {
-      "value": "<roleAssignments>"
-    },
-    "tags": {
-      "value": {}
     }
   }
 }

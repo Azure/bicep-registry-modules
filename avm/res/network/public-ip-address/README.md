@@ -49,15 +49,7 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
     // Required parameters
     name: 'npiamin001'
     // Non-required parameters
-    ddosSettings: '<ddosSettings>'
-    diagnosticSettings: '<diagnosticSettings>'
-    dnsSettings: '<dnsSettings>'
     location: '<location>'
-    lock: '<lock>'
-    publicIpPrefixResourceId: '<publicIpPrefixResourceId>'
-    roleAssignments: '<roleAssignments>'
-    tags: {}
-    zones: []
   }
 }
 ```
@@ -79,32 +71,8 @@ module publicIpAddress 'br/public:avm/res/network/public-ip-address:<version>' =
       "value": "npiamin001"
     },
     // Non-required parameters
-    "ddosSettings": {
-      "value": "<ddosSettings>"
-    },
-    "diagnosticSettings": {
-      "value": "<diagnosticSettings>"
-    },
-    "dnsSettings": {
-      "value": "<dnsSettings>"
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": "<lock>"
-    },
-    "publicIpPrefixResourceId": {
-      "value": "<publicIpPrefixResourceId>"
-    },
-    "roleAssignments": {
-      "value": "<roleAssignments>"
-    },
-    "tags": {
-      "value": {}
-    },
-    "zones": {
-      "value": []
     }
   }
 }

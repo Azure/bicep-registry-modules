@@ -46,19 +46,7 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
     groupShortName: 'agiagmin001'
     name: 'iagmin001'
     // Non-required parameters
-    armRoleReceivers: '<armRoleReceivers>'
-    automationRunbookReceivers: '<automationRunbookReceivers>'
-    azureAppPushReceivers: '<azureAppPushReceivers>'
-    azureFunctionReceivers: '<azureFunctionReceivers>'
-    emailReceivers: '<emailReceivers>'
-    itsmReceivers: '<itsmReceivers>'
     location: 'global'
-    logicAppReceivers: '<logicAppReceivers>'
-    roleAssignments: '<roleAssignments>'
-    smsReceivers: '<smsReceivers>'
-    tags: '<tags>'
-    voiceReceivers: '<voiceReceivers>'
-    webhookReceivers: '<webhookReceivers>'
   }
 }
 ```
@@ -83,44 +71,8 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
       "value": "iagmin001"
     },
     // Non-required parameters
-    "armRoleReceivers": {
-      "value": "<armRoleReceivers>"
-    },
-    "automationRunbookReceivers": {
-      "value": "<automationRunbookReceivers>"
-    },
-    "azureAppPushReceivers": {
-      "value": "<azureAppPushReceivers>"
-    },
-    "azureFunctionReceivers": {
-      "value": "<azureFunctionReceivers>"
-    },
-    "emailReceivers": {
-      "value": "<emailReceivers>"
-    },
-    "itsmReceivers": {
-      "value": "<itsmReceivers>"
-    },
     "location": {
       "value": "global"
-    },
-    "logicAppReceivers": {
-      "value": "<logicAppReceivers>"
-    },
-    "roleAssignments": {
-      "value": "<roleAssignments>"
-    },
-    "smsReceivers": {
-      "value": "<smsReceivers>"
-    },
-    "tags": {
-      "value": "<tags>"
-    },
-    "voiceReceivers": {
-      "value": "<voiceReceivers>"
-    },
-    "webhookReceivers": {
-      "value": "<webhookReceivers>"
     }
   }
 }
@@ -288,23 +240,12 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
     groupShortName: 'agiagwaf001'
     name: 'iagwaf001'
     // Non-required parameters
-    armRoleReceivers: '<armRoleReceivers>'
-    automationRunbookReceivers: '<automationRunbookReceivers>'
-    azureAppPushReceivers: '<azureAppPushReceivers>'
-    azureFunctionReceivers: '<azureFunctionReceivers>'
-    emailReceivers: '<emailReceivers>'
-    itsmReceivers: '<itsmReceivers>'
     location: 'global'
-    logicAppReceivers: '<logicAppReceivers>'
-    roleAssignments: '<roleAssignments>'
-    smsReceivers: '<smsReceivers>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    voiceReceivers: '<voiceReceivers>'
-    webhookReceivers: '<webhookReceivers>'
   }
 }
 ```
@@ -329,35 +270,8 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
       "value": "iagwaf001"
     },
     // Non-required parameters
-    "armRoleReceivers": {
-      "value": "<armRoleReceivers>"
-    },
-    "automationRunbookReceivers": {
-      "value": "<automationRunbookReceivers>"
-    },
-    "azureAppPushReceivers": {
-      "value": "<azureAppPushReceivers>"
-    },
-    "azureFunctionReceivers": {
-      "value": "<azureFunctionReceivers>"
-    },
-    "emailReceivers": {
-      "value": "<emailReceivers>"
-    },
-    "itsmReceivers": {
-      "value": "<itsmReceivers>"
-    },
     "location": {
       "value": "global"
-    },
-    "logicAppReceivers": {
-      "value": "<logicAppReceivers>"
-    },
-    "roleAssignments": {
-      "value": "<roleAssignments>"
-    },
-    "smsReceivers": {
-      "value": "<smsReceivers>"
     },
     "tags": {
       "value": {
@@ -365,12 +279,6 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "voiceReceivers": {
-      "value": "<voiceReceivers>"
-    },
-    "webhookReceivers": {
-      "value": "<webhookReceivers>"
     }
   }
 }

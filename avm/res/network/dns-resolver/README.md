@@ -51,12 +51,7 @@ module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
     name: 'ndrmin001'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
-    inboundEndpoints: []
     location: '<location>'
-    lock: {}
-    outboundEndpoints: []
-    roleAssignments: []
-    tags: {}
   }
 }
 ```
@@ -81,23 +76,8 @@ module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
       "value": "<virtualNetworkResourceId>"
     },
     // Non-required parameters
-    "inboundEndpoints": {
-      "value": []
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {}
-    },
-    "outboundEndpoints": {
-      "value": []
-    },
-    "roleAssignments": {
-      "value": []
-    },
-    "tags": {
-      "value": {}
     }
   }
 }
@@ -278,7 +258,6 @@ module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
         subnetResourceId: '<subnetResourceId>'
       }
     ]
-    roleAssignments: []
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -332,9 +311,6 @@ module dnsResolver 'br/public:avm/res/network/dns-resolver:<version>' = {
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
-    },
-    "roleAssignments": {
-      "value": []
     },
     "tags": {
       "value": {

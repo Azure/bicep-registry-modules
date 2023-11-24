@@ -53,12 +53,7 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
     ]
     name: 'ndfrsmin001'
     // Non-required parameters
-    forwardingRules: []
     location: '<location>'
-    lock: {}
-    roleAssignments: []
-    tags: {}
-    vNetLinks: []
   }
 }
 ```
@@ -85,23 +80,8 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
       "value": "ndfrsmin001"
     },
     // Non-required parameters
-    "forwardingRules": {
-      "value": []
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {}
-    },
-    "roleAssignments": {
-      "value": []
-    },
-    "tags": {
-      "value": {}
-    },
-    "vNetLinks": {
-      "value": []
     }
   }
 }
@@ -279,19 +259,16 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
     ]
     name: 'ndfrswaf001'
     // Non-required parameters
-    forwardingRules: []
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    roleAssignments: []
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    vNetLinks: []
   }
 }
 ```
@@ -318,9 +295,6 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
       "value": "ndfrswaf001"
     },
     // Non-required parameters
-    "forwardingRules": {
-      "value": []
-    },
     "location": {
       "value": "<location>"
     },
@@ -330,18 +304,12 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
         "name": "myCustomLockName"
       }
     },
-    "roleAssignments": {
-      "value": []
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "vNetLinks": {
-      "value": []
     }
   }
 }
