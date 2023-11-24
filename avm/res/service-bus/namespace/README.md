@@ -38,10 +38,10 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/service-bus/namespace:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Encr](#example-2-encr)
+- [Using encryption parameter set](#example-2-using-encryption-parameter-set)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [Pe](#example-4-pe)
-- [Using large parameter set](#example-5-using-large-parameter-set)
+- [Using private endpoint parameter set](#example-4-using-private-endpoint-parameter-set)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -99,7 +99,10 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 </details>
 <p>
 
-### Example 2: _Encr_
+### Example 2: _Using encryption parameter set_
+
+This instance deploys the module with features enabled for CMK encryption.
+
 
 <details>
 
@@ -144,7 +147,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         eventHubName: '<eventHubName>'
         logCategoriesAndGroups: [
           {
-            categoryGroup: 'AllLogs'
+            category: 'RuntimeAuditLogs'
           }
         ]
         metricCategories: [
@@ -256,7 +259,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           "eventHubName": "<eventHubName>",
           "logCategoriesAndGroups": [
             {
-              "categoryGroup": "AllLogs"
+              "category": "RuntimeAuditLogs"
             }
           ],
           "metricCategories": [
@@ -369,7 +372,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         eventHubName: '<eventHubName>'
         logCategoriesAndGroups: [
           {
-            categoryGroup: 'AllLogs'
+            category: 'RuntimeAuditLogs'
           }
         ]
         metricCategories: [
@@ -557,7 +560,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           "eventHubName": "<eventHubName>",
           "logCategoriesAndGroups": [
             {
-              "categoryGroup": "AllLogs"
+              "category": "RuntimeAuditLogs"
             }
           ],
           "metricCategories": [
@@ -728,7 +731,10 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 </details>
 <p>
 
-### Example 4: _Pe_
+### Example 4: _Using private endpoint parameter set_
+
+This instance deploys the module with features enabled for private endpoint configrations.
+
 
 <details>
 
@@ -750,7 +756,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         eventHubName: '<eventHubName>'
         logCategoriesAndGroups: [
           {
-            categoryGroup: 'AllLogs'
+            category: 'RuntimeAuditLogs'
           }
         ]
         metricCategories: [
@@ -816,7 +822,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           "eventHubName": "<eventHubName>",
           "logCategoriesAndGroups": [
             {
-              "categoryGroup": "AllLogs"
+              "category": "RuntimeAuditLogs"
             }
           ],
           "metricCategories": [
@@ -865,9 +871,9 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 </details>
 <p>
 
-### Example 5: _Using large parameter set_
+### Example 5: _WAF-aligned_
 
-This instance deploys the module with most of its features enabled.
+This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
 
 <details>

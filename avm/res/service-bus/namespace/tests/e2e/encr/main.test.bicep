@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Using encryption parameter set'
+metadata description = 'This instance deploys the module with features enabled for CMK encryption.'
+
 // ========== //
 // Parameters //
 // ========== //
@@ -142,7 +145,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         ]
         logCategoriesAndGroups: [
           {
-            categoryGroup: 'AllLogs'
+            category: 'RuntimeAuditLogs'
           }
         ]
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName

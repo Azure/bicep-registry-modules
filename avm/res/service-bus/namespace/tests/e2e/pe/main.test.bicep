@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Using private endpoint parameter set'
+metadata description = 'This instance deploys the module with features enabled for private endpoint configrations.'
+
 // ========== //
 // Parameters //
 // ========== //
@@ -94,7 +97,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         ]
         logCategoriesAndGroups: [
           {
-            categoryGroup: 'AllLogs'
+            category: 'RuntimeAuditLogs'
           }
         ]
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
