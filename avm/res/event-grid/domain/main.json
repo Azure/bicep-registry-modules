@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "15252978885556587233"
+      "templateHash": "4425094317153715056"
     },
     "name": "Event Grid Domains",
     "description": "This module deploys an Event Grid Domain.",
@@ -496,7 +496,7 @@
     },
     "topics": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The topic names which are associated with the domain."
       }
@@ -628,7 +628,7 @@
     "domain_topics": {
       "copy": {
         "name": "domain_topics",
-        "count": "[length(parameters('topics'))]"
+        "count": "[length(coalesce(parameters('topics'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -643,7 +643,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('topics')[copyIndex()]]"
+            "value": "[coalesce(parameters('topics'), createArray())[copyIndex()]]"
           }
         },
         "template": {

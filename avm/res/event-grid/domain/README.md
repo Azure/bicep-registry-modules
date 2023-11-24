@@ -33,7 +33,7 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
 - [Using private endpoint](#example-3-using-private-endpoint)
-- [Using large parameter set](#example-4-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -367,9 +367,9 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 4: _WAF-aligned_
 
-This instance deploys the module with most of its features enabled.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
@@ -1045,7 +1045,6 @@ Tags of the resource.
 The topic names which are associated with the domain.
 - Required: No
 - Type: array
-- Default: `[]`
 
 
 ## Outputs
