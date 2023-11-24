@@ -746,15 +746,15 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the PostgreSQL flexible server. |
 | [`skuName`](#parameter-skuname) | string | The name of the sku, typically, tier + family + cores, e.g. Standard_D4s_v3. |
-| [`tier`](#parameter-tier) | string | The tier of the particular SKU. Tier must align with the "skuName" property. Example, tier cannot be "Burstable" if skuName is "Standard_D4s_v3". |
+| [`tier`](#parameter-tier) | string | The tier of the particular SKU. Tier must align with the 'skuName' property. Example, tier cannot be 'Burstable' if skuName is 'Standard_D4s_v3'. |
 
 **Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Required if 'cMKKeyName' is not empty. |
-| [`pointInTimeUTC`](#parameter-pointintimeutc) | string | Required if "createMode" is set to "PointInTimeRestore". |
-| [`sourceServerResourceId`](#parameter-sourceserverresourceid) | string | Required if "createMode" is set to "PointInTimeRestore". |
+| [`pointInTimeUTC`](#parameter-pointintimeutc) | string | Required if 'createMode' is set to 'PointInTimeRestore'. |
+| [`sourceServerResourceId`](#parameter-sourceserverresourceid) | string | Required if 'createMode' is set to 'PointInTimeRestore'. |
 
 **Optional parameters**
 
@@ -770,7 +770,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 | [`createMode`](#parameter-createmode) | string | The mode to create a new PostgreSQL server. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`databases`](#parameter-databases) | array | The databases to create in the server. |
-| [`delegatedSubnetResourceId`](#parameter-delegatedsubnetresourceid) | string | Delegated subnet arm resource ID. Used when the desired connectivity mode is "Private Access" - virtual network integration. |
+| [`delegatedSubnetResourceId`](#parameter-delegatedsubnetresourceid) | string | Delegated subnet arm resource ID. Used when the desired connectivity mode is 'Private Access' - virtual network integration. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the PostgreSQL flexible server. |
@@ -778,9 +778,9 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 | [`highAvailability`](#parameter-highavailability) | string | The mode for high availability. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`maintenanceWindow`](#parameter-maintenancewindow) | object | Properties for the maintenence window. If provided, "customWindow" property must exist and set to "Enabled". |
+| [`maintenanceWindow`](#parameter-maintenancewindow) | object | Properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'. |
 | [`passwordAuth`](#parameter-passwordauth) | string | If Enabled, password authentication is enabled. |
-| [`privateDnsZoneArmResourceId`](#parameter-privatednszonearmresourceid) | string | Private dns zone arm resource ID. Used when the desired connectivity mode is "Private Access" and required when "delegatedSubnetResourceId" is used. The Private DNS Zone must be lined to the Virtual Network referenced in "delegatedSubnetResourceId". |
+| [`privateDnsZoneArmResourceId`](#parameter-privatednszonearmresourceid) | string | Private dns zone arm resource ID. Used when the desired connectivity mode is 'Private Access' and required when 'delegatedSubnetResourceId' is used. The Private DNS Zone must be lined to the Virtual Network referenced in 'delegatedSubnetResourceId'. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 | [`storageSizeGB`](#parameter-storagesizegb) | int | Max storage allowed for a server. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -919,7 +919,7 @@ The databases to create in the server.
 
 ### Parameter: `delegatedSubnetResourceId`
 
-Delegated subnet arm resource ID. Used when the desired connectivity mode is "Private Access" - virtual network integration.
+Delegated subnet arm resource ID. Used when the desired connectivity mode is 'Private Access' - virtual network integration.
 - Required: No
 - Type: string
 - Default: `''`
@@ -1118,7 +1118,7 @@ Optional. Specify the name of lock.
 
 ### Parameter: `maintenanceWindow`
 
-Properties for the maintenence window. If provided, "customWindow" property must exist and set to "Enabled".
+Properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'.
 - Required: No
 - Type: object
 - Default: `{}`
@@ -1163,14 +1163,14 @@ If Enabled, password authentication is enabled.
 
 ### Parameter: `pointInTimeUTC`
 
-Required if "createMode" is set to "PointInTimeRestore".
+Required if 'createMode' is set to 'PointInTimeRestore'.
 - Required: No
 - Type: string
 - Default: `''`
 
 ### Parameter: `privateDnsZoneArmResourceId`
 
-Private dns zone arm resource ID. Used when the desired connectivity mode is "Private Access" and required when "delegatedSubnetResourceId" is used. The Private DNS Zone must be lined to the Virtual Network referenced in "delegatedSubnetResourceId".
+Private dns zone arm resource ID. Used when the desired connectivity mode is 'Private Access' and required when 'delegatedSubnetResourceId' is used. The Private DNS Zone must be lined to the Virtual Network referenced in 'delegatedSubnetResourceId'.
 - Required: No
 - Type: string
 - Default: `''`
@@ -1251,7 +1251,7 @@ The name of the sku, typically, tier + family + cores, e.g. Standard_D4s_v3.
 
 ### Parameter: `sourceServerResourceId`
 
-Required if "createMode" is set to "PointInTimeRestore".
+Required if 'createMode' is set to 'PointInTimeRestore'.
 - Required: No
 - Type: string
 - Default: `''`
@@ -1293,7 +1293,7 @@ Tenant id of the server.
 
 ### Parameter: `tier`
 
-The tier of the particular SKU. Tier must align with the "skuName" property. Example, tier cannot be "Burstable" if skuName is "Standard_D4s_v3".
+The tier of the particular SKU. Tier must align with the 'skuName' property. Example, tier cannot be 'Burstable' if skuName is 'Standard_D4s_v3'.
 - Required: Yes
 - Type: string
 - Allowed:
