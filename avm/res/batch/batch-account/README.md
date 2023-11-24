@@ -243,11 +243,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          }
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
@@ -361,11 +356,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "Owner"
-            },
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
             },
             {
               "principalId": "<principalId>",
