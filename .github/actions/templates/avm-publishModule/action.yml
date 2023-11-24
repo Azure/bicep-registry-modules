@@ -72,4 +72,25 @@ runs:
 
           Write-Output '::endgroup::'
 
-        # TODO Add publish validation (as per PBR pipeline template 'publish-module.yml')
+    - name: "Validate publish"
+      uses: azure/powershell@v1
+      with:
+        azPSVersion: "latest"
+        inlineScript: |
+          # Grouping task logs
+          Write-Output '::group::Validate publish'
+
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'publish' 'Confirm-ModuleIsPublished.ps1')
+
+          $functionInput = @{
+            $Version =    "${{ steps.parse-tag.outputs.version }}"
+            $ModulePath = "${{ steps.parse-tag.outputs.module_path }}"
+          }
+
+          Write-Verbose "Invoke function with" -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+          Confirm-ModuleIsPublished @functionInput -Verbose
+
+          Write-Output '::endgroup::'
