@@ -89,8 +89,8 @@ runs:
           . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'publish' 'Confirm-ModuleIsPublished.ps1')
 
           $functionInput = @{
-            $Version =    "${{ steps.publish_step.outputs.version }}"
-            $ModulePath = "${{ steps.publish_step.outputs.module_path }}"
+            Version =    "${{ steps.publish_step.outputs.version }}"
+            ModulePath = "${{ steps.publish_step.outputs.module_path }}"
           }
 
           Write-Verbose "Invoke function with" -Verbose
