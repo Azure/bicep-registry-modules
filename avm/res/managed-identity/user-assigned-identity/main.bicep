@@ -66,7 +66,7 @@ resource userAssignedIdentity_lock 'Microsoft.Authorization/locks@2020-05-01' = 
   scope: userAssignedIdentity
 }
 
-module userMsi_federatedIdentityCredentials 'federated-identity-credential/main.bicep' = [for (federatedIdentityCredential, index) in federatedIdentityCredentials: {
+module userAssignedIdentity_federatedIdentityCredentials 'federated-identity-credential/main.bicep' = [for (federatedIdentityCredential, index) in federatedIdentityCredentials: {
   name: '${uniqueString(deployment().name, location)}-UserMSI-FederatedIdentityCredential-${index}'
   params: {
     name: federatedIdentityCredential.name
