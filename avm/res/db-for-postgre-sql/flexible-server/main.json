@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "9838703870761845500"
+      "templateHash": "16677412780876531239"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server.",
@@ -335,7 +335,7 @@
         "MemoryOptimized"
       ],
       "metadata": {
-        "description": "Required. The tier of the particular SKU. Tier must align with the \"skuName\" property. Example, tier cannot be \"Burstable\" if skuName is \"Standard_D4s_v3\"."
+        "description": "Required. The tier of the particular SKU. Tier must align with the 'skuName' property. Example, tier cannot be 'Burstable' if skuName is 'Standard_D4s_v3'."
       }
     },
     "availabilityZone": {
@@ -445,35 +445,35 @@
       "type": "object",
       "defaultValue": {},
       "metadata": {
-        "description": "Optional. Properties for the maintenence window. If provided, \"customWindow\" property must exist and set to \"Enabled\"."
+        "description": "Optional. Properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'."
       }
     },
     "pointInTimeUTC": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Conditional. Required if \"createMode\" is set to \"PointInTimeRestore\"."
+        "description": "Conditional. Required if 'createMode' is set to 'PointInTimeRestore'."
       }
     },
     "sourceServerResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Conditional. Required if \"createMode\" is set to \"PointInTimeRestore\"."
+        "description": "Conditional. Required if 'createMode' is set to 'PointInTimeRestore'."
       }
     },
     "delegatedSubnetResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Delegated subnet arm resource ID. Used when the desired connectivity mode is \"Private Access\" - virtual network integration."
+        "description": "Optional. Delegated subnet arm resource ID. Used when the desired connectivity mode is 'Private Access' - virtual network integration."
       }
     },
     "privateDnsZoneArmResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Private dns zone arm resource ID. Used when the desired connectivity mode is \"Private Access\" and required when \"delegatedSubnetResourceId\" is used. The Private DNS Zone must be lined to the Virtual Network referenced in \"delegatedSubnetResourceId\"."
+        "description": "Optional. Private dns zone arm resource ID. Used when the desired connectivity mode is 'Private Access' and required when 'delegatedSubnetResourceId' is used. The Private DNS Zone must be lined to the Virtual Network referenced in 'delegatedSubnetResourceId'."
       }
     },
     "firewallRules": {
