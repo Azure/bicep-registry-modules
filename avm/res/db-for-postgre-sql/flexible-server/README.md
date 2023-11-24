@@ -119,22 +119,8 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
     // Non-required parameters
-    administrators: [
-      {
-        objectId: '<objectId>'
-        principalName: '<principalName>'
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    availabilityZone: '1'
-    backupRetentionDays: 20
-    configurations: [
-      {
-        name: 'log_min_messages'
-        source: 'user-override'
-        value: 'INFO'
-      }
-    ]
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
@@ -142,37 +128,15 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     }
     databases: [
       {
-        charset: 'UTF8'
-        collation: 'en_US.utf8'
-        name: 'testdb3'
-      }
-      {
-        name: 'testdb4'
+        name: 'testdb1'
       }
     ]
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    geoRedundantBackup: 'Disabled'
-    highAvailability: 'SameZone'
     location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
-    storageSizeGB: 1024
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
-    version: '14'
   }
 }
 ```
@@ -200,29 +164,11 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       "value": "GeneralPurpose"
     },
     // Non-required parameters
-    "administrators": {
-      "value": [
-        {
-          "objectId": "<objectId>",
-          "principalName": "<principalName>",
-          "principalType": "ServicePrincipal"
-        }
-      ]
+    "administratorLogin": {
+      "value": "adminUserName"
     },
-    "availabilityZone": {
-      "value": "1"
-    },
-    "backupRetentionDays": {
-      "value": 20
-    },
-    "configurations": {
-      "value": [
-        {
-          "name": "log_min_messages",
-          "source": "user-override",
-          "value": "INFO"
-        }
-      ]
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
     },
     "customerManagedKey": {
       "value": {
@@ -234,30 +180,9 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     "databases": {
       "value": [
         {
-          "charset": "UTF8",
-          "collation": "en_US.utf8",
-          "name": "testdb3"
-        },
-        {
-          "name": "testdb4"
+          "name": "testdb1"
         }
       ]
-    },
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
-    "geoRedundantBackup": {
-      "value": "Disabled"
-    },
-    "highAvailability": {
-      "value": "SameZone"
     },
     "location": {
       "value": "<location>"
@@ -268,19 +193,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
           "<managedIdentityResourceId>"
         ]
       }
-    },
-    "storageSizeGB": {
-      "value": 1024
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
-    },
-    "version": {
-      "value": "14"
     }
   }
 }

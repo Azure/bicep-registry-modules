@@ -20,6 +20,10 @@ param serviceShort string = 'dfpsfse'
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
 
+@description('Optional. The password to leverage for the login.')
+@secure()
+param password string = newGuid()
+
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
@@ -45,7 +49,6 @@ module nestedDependencies 'dependencies.bicep' = {
   }
 }
 
-
 // ============== //
 // Test Execution //
 // ============== //
@@ -56,47 +59,16 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    administrators: [
-      {
-        objectId: nestedDependencies.outputs.managedIdentityClientId
-        principalName: nestedDependencies.outputs.managedIdentityName
-        principalType: 'ServicePrincipal'
-      }
-    ]
+    location: location
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: password
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
-    availabilityZone: '1'
-    backupRetentionDays: 20
-    configurations: [
-      {
-        name: 'log_min_messages'
-        source: 'user-override'
-        value: 'INFO'
-      }
-    ]
     databases: [
       {
-        charset: 'UTF8'
-        collation: 'en_US.utf8'
-        name: 'testdb3'
-      }
-      {
-        name: 'testdb4'
+        name: 'testdb1'
       }
     ]
-    diagnosticSettings: [
-      {
-        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      }
-    ]
-    geoRedundantBackup: 'Disabled'
-    highAvailability: 'SameZone'
-    location: location
-    storageSizeGB: 1024
-    version: '14'
     customerManagedKey: {
       keyName: nestedDependencies.outputs.keyName
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
@@ -106,11 +78,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       userAssignedResourceIds: [
         nestedDependencies.outputs.managedIdentityResourceId
       ]
-    }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
   }
 }]
