@@ -13,7 +13,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. All access policies to create.')
-param accessPolicies array?
+param accessPolicies accessPoliciesType
 
 @description('Optional. All secrets to create.')
 @secure()
@@ -104,10 +104,10 @@ var builtInRoleNames = {
 }
 
 var formattedAccessPolicies = [for accessPolicy in (accessPolicies ?? []): {
-  applicationId: contains(accessPolicy, 'applicationId') ? accessPolicy.applicationId : ''
-  objectId: contains(accessPolicy, 'objectId') ? accessPolicy.objectId : ''
+  applicationId: accessPolicy.?applicationId ?? ''
+  objectId: accessPolicy.objectId
   permissions: accessPolicy.permissions
-  tenantId: contains(accessPolicy, 'tenantId') ? accessPolicy.tenantId : tenant().tenantId
+  tenantId: accessPolicy.?tenantId ?? tenant().tenantId
 }]
 
 var secretList = secrets.?secureList ?? []
@@ -202,7 +202,7 @@ module keyVault_accessPolicies 'access-policy/main.bicep' = if (!empty(accessPol
   name: '${uniqueString(deployment().name, location)}-KeyVault-AccessPolicies'
   params: {
     keyVaultName: keyVault.name
-    accessPolicies: formattedAccessPolicies
+    accessPolicies: accessPolicies
   }
 }
 
@@ -239,7 +239,7 @@ module keyVault_keys 'key/main.bicep' = [for (key, index) in (keys ?? []): {
   }
 }]
 
-module keyVault_privateEndpoints 'br/public:avm-res-network-privateendpoint:0.1.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.2.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-KeyVault-PrivateEndpoint-${index}'
   params: {
     groupIds: [
@@ -319,7 +319,7 @@ type diagnosticSettingType = {
   }[]?
 
   @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics' | null)?
+  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
 
   @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
   workspaceResourceId: string?
@@ -345,7 +345,7 @@ type roleAssignmentType = {
   principalId: string
 
   @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device' | null)?
+  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
 
   @description('Optional. The description of the role assignment.')
   description: string?
@@ -423,3 +423,28 @@ type lockType = {
   @description('Optional. Specify the type of lock.')
   kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
 }?
+
+type accessPoliciesType = {
+  @description('Optional. The tenant ID that is used for authenticating requests to the key vault.')
+  tenantId: string?
+
+  @description('Required. The object ID of a user, service principal or security group in the tenant for the vault.')
+  objectId: string
+
+  @description('Optional. Application ID of the client making request on behalf of a principal.')
+  applicationId: string?
+
+  permissions: {
+    @description('Optional. Permissions to keys.')
+    keys: ('all' | 'backup' | 'create' | 'decrypt' | 'delete' | 'encrypt' | 'get' | 'getrotationpolicy' | 'import' | 'list' | 'purge' | 'recover' | 'release' | 'restore' | 'rotate' | 'setrotationpolicy' | 'sign' | 'unwrapKey' | 'update' | 'verify' | 'wrapKey')[]?
+
+    @description('Optional. Permissions to secrets.')
+    secrets: ('all' | 'backup' | 'delete' | 'get' | 'list' | 'purge' | 'recover' | 'restore' | 'set')[]?
+
+    @description('Optional. Permissions to certificates.')
+    certificates: ('all' | 'backup' | 'create' | 'delete' | 'deleteissuers' | 'get' | 'getissuers' | 'import' | 'list' | 'listissuers' | 'managecontacts' | 'manageissuers' | 'purge' | 'recover' | 'restore' | 'setissuers' | 'update')[]?
+
+    @description('Optional. Permissions to storage accounts.')
+    storage: ('all' | 'backup' | 'delete' | 'deletesas' | 'get' | 'getsas' | 'list' | 'listsas' | 'purge' | 'recover' | 'regeneratekey' | 'restore' | 'set' | 'setsas' | 'update')[]?
+  }
+}[]?

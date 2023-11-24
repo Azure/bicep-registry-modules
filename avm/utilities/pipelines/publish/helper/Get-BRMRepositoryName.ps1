@@ -11,7 +11,7 @@ Mandatory. The template file path to convert
 .EXAMPLE
 Get-BRMRepositoryName -TemplateFilePath 'C:\avm\res\key-vault\vault\main.bicep'
 
-Convert 'C:\avm\res\key-vault\vault\main.bicep' to e.g. 'avm-res-keyvault-vault'
+Convert 'C:\avm\res\key-vault\vault\main.bicep' to e.g. 'avm/res/key-vault/vault'
 #>
 function Get-BRMRepositoryName {
 
@@ -21,8 +21,6 @@ function Get-BRMRepositoryName {
         [string] $TemplateFilePath
     )
 
-    $moduleIdentifier = ((Split-Path $TemplateFilePath -Parent) -split '[\/|\\]avm[\/|\\]')[-1]
-    $formattedModuleIdentifier = ($moduleIdentifier -replace '-', '') -replace '[\/|\\]', '-'
-
-    return "avm-$formattedModuleIdentifier"
+    $moduleIdentifier = (Split-Path $TemplateFilePath -Parent) -split '[\/|\\](avm[\/|\\])'
+    return ($moduleIdentifier[1, 2] -join '') -replace '\\', '/'
 }
