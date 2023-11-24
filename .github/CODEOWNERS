@@ -39,7 +39,7 @@
 #/avm/res/data-factory/factory/ @Azure/avm-res-datafactory-factory-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/data-protection/backup-vault/ @Azure/avm-res-dataprotection-backupvault-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/db-for-my-sql/flexible-server/ @Azure/avm-res-dbformysql-flexibleserver-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/db-for-postgre-sql/flexible-server/ @Azure/avm-res-dbforpostgresql-flexibleserver-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/db-for-postgre-sql/flexible-server/ @Azure/avm-res-dbforpostgresql-flexibleserver-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/desktop-virtualization/application-group/ @Azure/avm-res-desktopvirtualization-applicationgroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/desktop-virtualization/host-pool/ @Azure/avm-res-desktopvirtualization-hostpool-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/desktop-virtualization/scaling-plan/ @Azure/avm-res-desktopvirtualization-scalingplan-module-owners-bicep @Azure/avm-core-team-technical-bicep
