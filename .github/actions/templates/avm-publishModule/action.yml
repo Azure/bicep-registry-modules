@@ -46,6 +46,7 @@ runs:
         bicep --version
 
     - name: "Publish module to public bicep registry"
+      id: publish_step
       uses: azure/powershell@v1
       with:
         azPSVersion: "latest"
@@ -68,12 +69,16 @@ runs:
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
           # Get the modified child resources
-          Publish-ModuleFromPathToPBR @functionInput -Verbose
+          if($publishOutputs = Publish-ModuleFromPathToPBR @functionInput -Verbose) {
+            Write-Output ('{0}={1}' -f 'version', $publishOutputs.version) >> $env:GITHUB_OUTPUT
+            Write-Output ('{0}={1}' -f 'module_path', $publishOutputs.module_path) >> $env:GITHUB_OUTPUT
+          }
 
           Write-Output '::endgroup::'
 
     - name: "Validate publish"
       uses: azure/powershell@v1
+      if: ${{ steps.publish_step.outputs.version != '' && steps.publish_step.outputs.module_path != '' }}
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -84,8 +89,8 @@ runs:
           . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'publish' 'Confirm-ModuleIsPublished.ps1')
 
           $functionInput = @{
-            $Version =    "${{ steps.parse-tag.outputs.version }}"
-            $ModulePath = "${{ steps.parse-tag.outputs.module_path }}"
+            $Version =    "${{ steps.publish_step.outputs.version }}"
+            $ModulePath = "${{ steps.publish_step.outputs.module_path }}"
           }
 
           Write-Verbose "Invoke function with" -Verbose
