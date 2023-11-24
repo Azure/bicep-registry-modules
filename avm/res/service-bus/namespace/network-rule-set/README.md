@@ -40,7 +40,13 @@ Default Action for Network Rule Set. Default is "Allow". It will not be set if p
 - Required: No
 - Type: string
 - Default: `'Allow'`
-- Allowed: `[Allow, Deny]`
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'Deny'
+  ]
+  ```
 
 ### Parameter: `enableDefaultTelemetry`
 
@@ -68,7 +74,13 @@ This determines if traffic is allowed over public network. Default is "Enabled".
 - Required: No
 - Type: string
 - Default: `'Enabled'`
-- Allowed: `[Disabled, Enabled]`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `trustedServiceAccessEnabled`
 

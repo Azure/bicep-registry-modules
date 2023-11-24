@@ -194,6 +194,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             category: 'AllMetrics'
           }
         ]
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'AllLogs'
+          }
+        ]
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
         eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
         storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId

@@ -62,7 +62,14 @@ The rights associated with the rule.
 - Required: No
 - Type: array
 - Default: `[]`
-- Allowed: `[Listen, Manage, Send]`
+- Allowed:
+  ```Bicep
+  [
+    'Listen'
+    'Manage'
+    'Send'
+  ]
+  ```
 
 ### Parameter: `topicName`
 

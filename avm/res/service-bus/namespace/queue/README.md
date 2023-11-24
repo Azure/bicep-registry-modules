@@ -61,7 +61,21 @@ This module deploys a Service Bus Namespace Queue.
 Authorization Rules for the Service Bus Queue.
 - Required: No
 - Type: array
-- Default: `[System.Management.Automation.OrderedHashtable]`
+- Default:
+  ```Bicep
+  [
+    {
+      name: 'RootManageSharedAccessKey'
+      properties: {
+        rights: [
+          'Listen'
+          'Manage'
+          'Send'
+        ]
+      }
+    }
+  ]
+  ```
 
 ### Parameter: `autoDeleteOnIdle`
 
@@ -278,7 +292,20 @@ Enumerates the possible values for the status of a messaging entity. - Active, D
 - Required: No
 - Type: string
 - Default: `'Active'`
-- Allowed: `[Active, Creating, Deleting, Disabled, ReceiveDisabled, Renaming, Restoring, SendDisabled, Unknown]`
+- Allowed:
+  ```Bicep
+  [
+    'Active'
+    'Creating'
+    'Deleting'
+    'Disabled'
+    'ReceiveDisabled'
+    'Renaming'
+    'Restoring'
+    'SendDisabled'
+    'Unknown'
+  ]
+  ```
 
 
 ## Outputs

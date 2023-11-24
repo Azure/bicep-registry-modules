@@ -35,7 +35,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm-res-servicebus-namespace:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/service-bus/namespace:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Encr](#example-2-encr)
@@ -53,7 +53,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
+module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-sbnmin'
   params: {
     // Required parameters
@@ -106,7 +106,7 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
+module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-sbnencr'
   params: {
     // Required parameters
@@ -138,6 +138,25 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'AllLogs'
+          }
+        ]
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     location: '<location>'
     managedIdentities: {
       systemAssigned: false
@@ -230,6 +249,27 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "logCategoriesAndGroups": [
+            {
+              "categoryGroup": "AllLogs"
+            }
+          ],
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -296,7 +336,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
+module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-sbnmax'
   params: {
     // Required parameters
@@ -327,6 +367,11 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'AllLogs'
+          }
+        ]
         metricCategories: [
           {
             category: 'AllMetrics'
@@ -510,6 +555,11 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
+          "logCategoriesAndGroups": [
+            {
+              "categoryGroup": "AllLogs"
+            }
+          ],
           "metricCategories": [
             {
               "category": "AllMetrics"
@@ -685,7 +735,7 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
+module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-sbnpe'
   params: {
     // Required parameters
@@ -694,6 +744,25 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
       name: 'Premium'
     }
     // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'AllLogs'
+          }
+        ]
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     location: '<location>'
     privateEndpoints: [
       {
@@ -740,6 +809,27 @@ module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
       }
     },
     // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "logCategoriesAndGroups": [
+            {
+              "categoryGroup": "AllLogs"
+            }
+          ],
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -785,7 +875,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module namespace 'br/public:avm-res-servicebus-namespace:1.0.0' = {
+module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-sbnwaf'
   params: {
     // Required parameters
@@ -1215,7 +1305,19 @@ Alternate name for namespace.
 Authorization Rules for the Service Bus namespace.
 - Required: No
 - Type: array
-- Default: `[System.Management.Automation.OrderedHashtable]`
+- Default:
+  ```Bicep
+  [
+    {
+      name: 'RootManageSharedAccessKey'
+      rights: [
+        'Listen'
+        'Manage'
+        'Send'
+      ]
+    }
+  ]
+  ```
 
 ### Parameter: `customerManagedKey`
 
@@ -1466,7 +1568,14 @@ The minimum TLS version for the cluster to support.
 - Required: No
 - Type: string
 - Default: `'1.2'`
-- Allowed: `[1.0, 1.1, 1.2]`
+- Allowed:
+  ```Bicep
+  [
+    '1.0'
+    '1.1'
+    '1.2'
+  ]
+  ```
 
 ### Parameter: `name`
 
@@ -1586,6 +1695,34 @@ Required. Properties of private endpoint IP configurations.
 - Required: Yes
 - Type: object
 
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`groupId`](#parameter-privateendpointsipconfigurationspropertiesgroupid) | Yes | string | Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`memberName`](#parameter-privateendpointsipconfigurationspropertiesmembername) | Yes | string | Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | Yes | string | Required. A private ip address obtained from the private endpoint's subnet. |
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.groupId`
+
+Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
+
+Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
+
+Required. A private ip address obtained from the private endpoint's subnet.
+
+- Required: Yes
+- Type: string
+
+
 
 ### Parameter: `privateEndpoints.location`
 
@@ -1663,7 +1800,15 @@ Whether or not public network access is allowed for this resource. For security 
 - Required: No
 - Type: string
 - Default: `''`
-- Allowed: `['', Disabled, Enabled, SecuredByPerimeter]`
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'Disabled'
+    'Enabled'
+    'SecuredByPerimeter'
+  ]
+  ```
 
 ### Parameter: `queues`
 

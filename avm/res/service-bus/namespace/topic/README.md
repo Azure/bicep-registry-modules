@@ -56,7 +56,21 @@ This module deploys a Service Bus Namespace Topic.
 Authorization Rules for the Service Bus Topic.
 - Required: No
 - Type: array
-- Default: `[System.Management.Automation.OrderedHashtable]`
+- Default:
+  ```Bicep
+  [
+    {
+      name: 'RootManageSharedAccessKey'
+      properties: {
+        rights: [
+          'Listen'
+          'Manage'
+          'Send'
+        ]
+      }
+    }
+  ]
+  ```
 
 ### Parameter: `autoDeleteOnIdle`
 
@@ -234,7 +248,20 @@ Enumerates the possible values for the status of a messaging entity. - Active, D
 - Required: No
 - Type: string
 - Default: `'Active'`
-- Allowed: `[Active, Creating, Deleting, Disabled, ReceiveDisabled, Renaming, Restoring, SendDisabled, Unknown]`
+- Allowed:
+  ```Bicep
+  [
+    'Active'
+    'Creating'
+    'Deleting'
+    'Disabled'
+    'ReceiveDisabled'
+    'Renaming'
+    'Restoring'
+    'SendDisabled'
+    'Unknown'
+  ]
+  ```
 
 ### Parameter: `supportOrdering`
 
