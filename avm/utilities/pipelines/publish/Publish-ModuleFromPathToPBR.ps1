@@ -47,11 +47,11 @@ function Publish-ModuleFromPathToPBR {
     return
   }
 
-  # 2. Get Target Published Module Name
-  $publishedModuleName = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
-
-  # 3. Calculate the version that we would publish with
+  # 2. Calculate the version that we would publish with
   $targetVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
+
+  # 3. Get Target Published Module Name
+  $publishedModuleName = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
 
   # 4.Create release tag
   $tagName = New-ModuleReleaseTag -ModuleFolderPath $moduleFolderPath -TargetVersion $targetVersion
