@@ -73,7 +73,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
-    availabilityZone: '1'
     backupRetentionDays: 20
     configurations: [
       {

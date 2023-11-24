@@ -392,7 +392,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
         principalType: 'ServicePrincipal'
       }
     ]
-    availabilityZone: '1'
     backupRetentionDays: 20
     configurations: [
       {
@@ -487,9 +486,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
           "principalType": "ServicePrincipal"
         }
       ]
-    },
-    "availabilityZone": {
-      "value": "1"
     },
     "backupRetentionDays": {
       "value": 20
