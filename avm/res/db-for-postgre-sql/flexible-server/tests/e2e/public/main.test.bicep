@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata name = 'Public access'
+metadata description = 'This instance deploys the module with public access.'
 
 // ========== //
 // Parameters //
@@ -9,13 +9,13 @@ metadata description = 'This instance deploys the module in alignment with the b
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-eventgrid.domains-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-dbforpostgresql.flexibleservers-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'egdwaf'
+param serviceShort string = 'dfpsfsp'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
   name: resourceGroupName
   location: location
 }
@@ -35,7 +35,6 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: location
   }
@@ -58,13 +57,40 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 // Test Execution //
 // ============== //
+
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: location
+    administrators: [
+      {
+        objectId: nestedDependencies.outputs.managedIdentityClientId
+        principalName: nestedDependencies.outputs.managedIdentityName
+        principalType: 'ServicePrincipal'
+      }
+    ]
+    skuName: 'Standard_D2s_v3'
+    tier: 'GeneralPurpose'
+    backupRetentionDays: 20
+    configurations: [
+      {
+        name: 'log_min_messages'
+        source: 'user-override'
+        value: 'INFO'
+      }
+    ]
+    databases: [
+      {
+        charset: 'UTF8'
+        collation: 'en_US.utf8'
+        name: 'testdb1'
+      }
+      {
+        name: 'testdb2'
+      }
+    ]
     diagnosticSettings: [
       {
         name: 'customSetting'
@@ -79,32 +105,32 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
     ]
-    inboundIpRules: []
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    privateEndpoints: [
+    firewallRules: [
       {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        service: 'domain'
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
-        }
+        endIpAddress: '0.0.0.0'
+        name: 'AllowAllWindowsAzureIps'
+        startIpAddress: '0.0.0.0'
+      }
+      {
+        endIpAddress: '10.10.10.10'
+        name: 'test-rule1'
+        startIpAddress: '10.10.10.1'
+      }
+      {
+        endIpAddress: '100.100.100.10'
+        name: 'test-rule2'
+        startIpAddress: '100.100.100.1'
       }
     ]
+    geoRedundantBackup: 'Disabled'
+    highAvailability: 'SameZone'
+    location: location
+    storageSizeGB: 1024
+    version: '14'
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    topics: [
-      '${namePrefix}-topic-${serviceShort}001'
-    ]
   }
 }]
