@@ -33,7 +33,7 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
 - [Using private endpoint](#example-3-using-private-endpoint)
-- [Using large parameter set](#example-4-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -51,25 +51,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
     // Required parameters
     name: 'egtmin001'
     // Non-required parameters
-    inboundIpRules: []
     location: '<location>'
-    managedIdentities: {
-      systemAssigned: true
-    }
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        service: 'topic'
-        subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
-      }
-    ]
   }
 }
 ```
@@ -91,32 +73,8 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
       "value": "egtmin001"
     },
     // Non-required parameters
-    "inboundIpRules": {
-      "value": []
-    },
     "location": {
       "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
-    },
-    "privateEndpoints": {
-      "value": [
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "service": "topic",
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          }
-        }
-      ]
     }
   }
 }
@@ -421,9 +379,9 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 4: _WAF-aligned_
 
-This instance deploys the module with most of its features enabled.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
@@ -480,9 +438,6 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    managedIdentities: {
-      systemAssigned: true
-    }
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -495,13 +450,6 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
           'hidden-title': 'This is visible in the resource name'
           Role: 'DeploymentValidation'
         }
-      }
-    ]
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
       }
     ]
     tags: {
@@ -583,11 +531,6 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
         "name": "myCustomLockName"
       }
     },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
-    },
     "privateEndpoints": {
       "value": [
         {
@@ -601,15 +544,6 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
             "hidden-title": "This is visible in the resource name",
             "Role": "DeploymentValidation"
           }
-        }
-      ]
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
         }
       ]
     },
