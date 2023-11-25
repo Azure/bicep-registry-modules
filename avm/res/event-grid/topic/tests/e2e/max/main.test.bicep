@@ -120,6 +120,18 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         ]
         service: 'topic'
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
+        roleAssignments: [
+          {
+            roleDefinitionIdOrName: 'Owner'
+            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
+          }
+          {
+            roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+            principalType: 'ServicePrincipal'
+          }
+        ]
         tags: {
           'hidden-title': 'This is visible in the resource name'
           Environment: 'Non-Prod'
