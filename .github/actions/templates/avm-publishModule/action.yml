@@ -56,9 +56,6 @@ runs:
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'publish' 'Publish-ModuleFromPathToPBR.ps1')
 
-          ################################
-          ##   Get modules to publish   ##
-          ################################
           $functionInput = @{
             TemplateFilePath     = Join-Path $env:GITHUB_WORKSPACE "${{ inputs.templateFilePath }}"
             PublicRegistryServer = ConvertTo-SecureString '${{ env.PUBLISH_REGISTRY_SERVER }}' -AsPlainText -Force
@@ -67,7 +64,6 @@ runs:
           Write-Verbose "Invoke function with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          # Get the modified child resources
           Publish-ModuleFromPathToPBR @functionInput -Verbose
 
           Write-Output '::endgroup::'
