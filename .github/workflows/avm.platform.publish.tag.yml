@@ -1,4 +1,4 @@
-name: "Publish AVM module with tag"
+name: "AVM Platform - Publish module with tag"
 
 on:
   workflow_dispatch:
