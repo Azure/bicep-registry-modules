@@ -39,7 +39,7 @@ jobs:
           sudo mv ./bicep /usr/local/bin/bicep
           bicep --version
 
-      - name: "Publish module to public bicep registry"
+      - name: "Publish tagged module to public bicep registry"
         uses: azure/powershell@v1
         with:
           azPSVersion: "latest"
