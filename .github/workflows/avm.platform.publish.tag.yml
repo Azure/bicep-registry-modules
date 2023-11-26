@@ -52,7 +52,7 @@ jobs:
 
             $functionInput = @{
               ModuleReleaseTagName = '${{ github.event.inputs.tag }}'
-              PublicRegistryServer = ConvertTo-SecureString '${{ env.PUBLISH_REGISTRY_SERVER }}' -AsPlainText -Force
+              PublicRegistryServer = ConvertTo-SecureString '${{ secrets.PUBLISH_REGISTRY_SERVER }}' -AsPlainText -Force
             }
 
             Write-Verbose "Invoke function with" -Verbose
