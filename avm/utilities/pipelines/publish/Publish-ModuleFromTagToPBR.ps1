@@ -57,6 +57,6 @@ function Publish-ModuleFromTagToPBR {
   Write-Verbose "Publish Input:`n $($publishInput | ConvertTo-Json -Depth 10)" -Verbose
 
   if ($PSCmdlet.ShouldProcess("Module of tag [$ModuleReleaseTagName]", "Publish")) {
-    # bicep publish @publishInput
+    bicep publish @publishInput
   }
 }
