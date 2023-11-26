@@ -36,9 +36,11 @@ function Publish-ModuleFromTagToPBR {
   $moduleRelativeFolderPath = $ModuleReleaseTagName -replace "\/$targetVersion$", ''
   $moduleFolderPath = Join-Path $repositoryRoot $moduleRelativeFolderPath
   $moduleJsonFilePath = Join-Path $moduleFolderPath 'main.json'
+  Write-Verbose "Determined JSON template Path [$moduleJsonFilePath]"
 
   # 2. Get the documentation link
   $documentationUri = Get-ModuleReadmeLink -TagName $ModuleReleaseTagName -ModuleFolderPath $moduleFolderPath
+  Write-Verbose "Determined documentation URI [$documentationUri]"
 
   ###################
   ## 3.  Publish   ##
