@@ -78,7 +78,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
       $file.Name | Should -BeExactly 'README.md'
     }
 
-    It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file if orphaned.' -TestCases $moduleFolderTestCases {
+    It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases $moduleFolderTestCases {
 
       param(
         [string] $moduleFolderPath
@@ -112,15 +112,13 @@ Describe 'File/folder tests' -Tag 'Modules' {
       }
       $isOrphaned = [String]::IsNullOrEmpty($relevantCSVRow.PrimaryModuleOwnerGHHandle)
 
+      $orphanedFilePath = Join-Path -Path $moduleFolderPath 'ORPHANED.md'
       if ($isOrphaned) {
-        $readMeFilePath = Join-Path -Path $moduleFolderPath 'ORPHANED.md'
-        $pathExisting = Test-Path $readMeFilePath
-        $pathExisting | Should -Be $true
-
-        $file = Get-Item -Path $readMeFilePath
-        $file.Name | Should -BeExactly 'ORPHANED.md'
+        $pathExisting = Test-Path $orphanedFilePath
+        $pathExisting | Should -Be $true -Because 'The module is orphaned.'
       } else {
-        Set-ItResult -Skipped -Because ('Module is not orphaned, but is owned by [{0}].' -f $relevantCSVRow.PrimaryModuleOwnerGHHandle)
+        $pathExisting = Test-Path $orphanedFilePath
+        $pathExisting | Should -Be $false -Because ('The module is not orphaned but owned by [{0}].' -f $relevantCSVRow.PrimaryModuleOwnerGHHandle)
       }
     }
   }
