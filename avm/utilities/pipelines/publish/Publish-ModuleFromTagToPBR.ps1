@@ -28,21 +28,14 @@ function Publish-ModuleFromTagToPBR {
   )
 
   # Load used functions
-  Write-Verbose '1' -Verbose
   . (Join-Path $PSScriptRoot 'helper' 'Get-ModuleReadmeLink.ps1')
 
   # 1. Find tag as per function input
-  Write-Verbose '2' -Verbose
   $repositoryRoot = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent.Parent.FullName
-  Write-Verbose '3' -Verbose
   $targetVersion = Split-Path $ModuleReleaseTagName -Leaf
-  Write-Verbose '4' -Verbose
   $moduleRelativeFolderPath = $ModuleReleaseTagName -replace "\/$targetVersion$", ''
-  Write-Verbose '5' -Verbose
   $moduleFolderPath = Join-Path $repositoryRoot $moduleRelativeFolderPath
-  Write-Verbose '6' -Verbose
   $moduleJsonFilePath = Join-Path $moduleFolderPath 'main.json'
-  Write-Verbose '7' -Verbose
   Write-Verbose "Determined JSON template Path [$moduleJsonFilePath]"
 
   # 2. Get the documentation link
