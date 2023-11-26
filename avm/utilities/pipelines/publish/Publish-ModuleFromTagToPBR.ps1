@@ -28,9 +28,7 @@ function Publish-ModuleFromTagToPBR {
   )
 
   # Load used functions
-  . (Join-Path $PSScriptRoot 'helper' 'Get-BRMRepositoryName.ps1')
   . (Join-Path $PSScriptRoot 'helper' 'Get-ModuleReadmeLink.ps1')
-  . (Join-Path (Split-Path $PSScriptRoot -Parent) 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
 
   # 1. Find tag as per function input
   $repositoryRoot = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent.Parent.FullName
