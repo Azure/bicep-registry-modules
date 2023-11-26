@@ -77,6 +77,52 @@ Describe 'File/folder tests' -Tag 'Modules' {
       $file = Get-Item -Path $readMeFilePath
       $file.Name | Should -BeExactly 'README.md'
     }
+
+    It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file if orphaned.' -TestCases $moduleFolderTestCases {
+
+      param(
+        [string] $moduleFolderPath
+      )
+
+      $templateFilePath = Join-Path -Path $moduleFolderPath 'main.bicep'
+
+      # Use correct telemetry link based on file path
+      $telemetryCsvLink = $moduleFolderPath -match '[\\|\/]res[\\|\/]' ? $telemetryResCsvLink : $telemetryPtnCsvLink
+
+      # Fetch CSV
+      # =========
+      try {
+        $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
+      } catch {
+        $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
+        Write-Error "Failed to download telemetry CSV file from [$errorMessage]."
+        Set-ItResult -Skipped -Because $errorMessage
+      }
+      $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
+
+      $moduleName = Get-BRMRepositoryName -TemplateFilePath $templateFilePath
+      $relevantCSVRow = $csvData | Where-Object {
+        $_.ModuleName -eq $moduleName
+      }
+
+      if (-not $relevantCSVRow) {
+        $errorMessage = "Failed to identify module [$moduleName]."
+        Write-Error "Failed to download telemetry CSV file from [$errorMessage]."
+        Set-ItResult -Skipped -Because $errorMessage
+      }
+      $isOrphaned = [String]::IsNullOrEmpty($relevantCSVRow.PrimaryModuleOwnerGHHandle)
+
+      if ($isOrphaned) {
+        $readMeFilePath = Join-Path -Path $moduleFolderPath 'ORPHANED.md'
+        $pathExisting = Test-Path $readMeFilePath
+        $pathExisting | Should -Be $true
+
+        $file = Get-Item -Path $readMeFilePath
+        $file.Name | Should -BeExactly 'ORPHANED.md'
+      } else {
+        Set-ItResult -Skipped -Because ('Module is not orphaned, but is owned by [{0}].' -f $relevantCSVRow.PrimaryModuleOwnerGHHandle)
+      }
+    }
   }
 
   Context 'Top level module folder tests' {
