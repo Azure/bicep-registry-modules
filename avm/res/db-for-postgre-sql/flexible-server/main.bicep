@@ -44,7 +44,7 @@ param skuName string
   'Burstable'
   'MemoryOptimized'
 ])
-@description('Required. The tier of the particular SKU. Tier must align with the "skuName" property. Example, tier cannot be "Burstable" if skuName is "Standard_D4s_v3".')
+@description('Required. The tier of the particular SKU. Tier must align with the \'skuName\' property. Example, tier cannot be \'Burstable\' if skuName is \'Standard_D4s_v3\'.')
 param tier string
 
 @allowed([
@@ -116,19 +116,19 @@ param managedIdentities managedIdentitiesType
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType
 
-@description('Optional. Properties for the maintenence window. If provided, "customWindow" property must exist and set to "Enabled".')
+@description('Optional. Properties for the maintenence window. If provided, \'customWindow\' property must exist and set to \'Enabled\'.')
 param maintenanceWindow object = {}
 
-@description('Conditional. Required if "createMode" is set to "PointInTimeRestore".')
+@description('Conditional. Required if \'createMode\' is set to \'PointInTimeRestore\'.')
 param pointInTimeUTC string = ''
 
-@description('Conditional. Required if "createMode" is set to "PointInTimeRestore".')
+@description('Conditional. Required if \'createMode\' is set to \'PointInTimeRestore\'.')
 param sourceServerResourceId string = ''
 
-@description('Optional. Delegated subnet arm resource ID. Used when the desired connectivity mode is "Private Access" - virtual network integration.')
+@description('Optional. Delegated subnet arm resource ID. Used when the desired connectivity mode is \'Private Access\' - virtual network integration.')
 param delegatedSubnetResourceId string = ''
 
-@description('Optional. Private dns zone arm resource ID. Used when the desired connectivity mode is "Private Access" and required when "delegatedSubnetResourceId" is used. The Private DNS Zone must be lined to the Virtual Network referenced in "delegatedSubnetResourceId".')
+@description('Optional. Private dns zone arm resource ID. Used when the desired connectivity mode is \'Private Access\' and required when \'delegatedSubnetResourceId\' is used. The Private DNS Zone must be lined to the Virtual Network referenced in \'delegatedSubnetResourceId\'.')
 param privateDnsZoneArmResourceId string = ''
 
 @description('Optional. The firewall rules to create in the PostgreSQL flexible server.')
