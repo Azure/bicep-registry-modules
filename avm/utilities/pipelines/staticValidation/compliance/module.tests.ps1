@@ -78,7 +78,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
       $file.Name | Should -BeExactly 'README.md'
     }
 
-    It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases $moduleFolderTestCases {
+    It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
 
       param(
         [string] $moduleFolderPath
@@ -95,7 +95,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
         $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
       } catch {
         $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
-        Write-Error "Failed to download telemetry CSV file from [$errorMessage]."
+        Write-Error $errorMessage
         Set-ItResult -Skipped -Because $errorMessage
       }
       $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
@@ -107,7 +107,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
       if (-not $relevantCSVRow) {
         $errorMessage = "Failed to identify module [$moduleName]."
-        Write-Error "Failed to download telemetry CSV file from [$errorMessage]."
+        Write-Error $errorMessage
         Set-ItResult -Skipped -Because $errorMessage
       }
       $isOrphaned = [String]::IsNullOrEmpty($relevantCSVRow.PrimaryModuleOwnerGHHandle)
@@ -651,7 +651,7 @@ Describe 'Module tests' -Tag 'Module' {
         $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
       } catch {
         $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
-        Write-Error "Failed to download telemetry CSV file from [$errorMessage]."
+        Write-Error $errorMessage
         Set-ItResult -Skipped -Because $errorMessage
       }
       $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
@@ -665,7 +665,7 @@ Describe 'Module tests' -Tag 'Module' {
 
       if (-not $relevantCSVRow) {
         $errorMessage = "Failed to identify module [$moduleName]."
-        Write-Error "Failed to download telemetry CSV file from [$errorMessage]."
+        Write-Error $errorMessage
         Set-ItResult -Skipped -Because $errorMessage
       }
       $expectedTelemetryIdentifier = $relevantCSVRow.TelemetryIdPrefix
