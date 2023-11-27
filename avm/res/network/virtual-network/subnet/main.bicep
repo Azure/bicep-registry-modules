@@ -75,14 +75,14 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2023-04-01' = {
   parent: virtualNetwork
   properties: {
     addressPrefix: addressPrefix
-    networkSecurityGroup: !empty(networkSecurityGroupId) ? {
-      id: networkSecurityGroupId
+    networkSecurityGroup: !empty(networkSecurityGroupResourceId) ? {
+      id: networkSecurityGroupResourceId
     } : null
-    routeTable: !empty(routeTableId) ? {
-      id: routeTableId
+    routeTable: !empty(routeTableResourceId) ? {
+      id: routeTableResourceId
     } : null
-    natGateway: !empty(natGatewayId) ? {
-      id: natGatewayId
+    natGateway: !empty(natGatewayResourceId) ? {
+      id: natGatewayResourceId
     } : null
     serviceEndpoints: serviceEndpoints
     delegations: delegations
