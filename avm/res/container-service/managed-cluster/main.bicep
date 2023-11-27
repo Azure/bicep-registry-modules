@@ -577,42 +577,42 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
 module managedCluster_agentPools 'agent-pool/main.bicep' = [for (agentPool, index) in (agentPools ?? []): {
   name: '${uniqueString(deployment().name, location)}-ManagedCluster-AgentPool-${index}'
   params: {
-    managedClusterName: managedCluster.name
+    managedClusterName: managedCluster.?name
     name: agentPool.name
-    availabilityZones: agentPool.availabilityZones
-    count: agentPool.count
-    sourceResourceId: agentPool.sourceResourceId
-    enableAutoScaling: agentPool.enableAutoScaling
-    enableEncryptionAtHost: agentPool.enableEncryptionAtHost
-    enableFIPS: agentPool.enableFIPS
-    enableNodePublicIP: agentPool.enableNodePublicIP
-    enableUltraSSD: agentPool.enableUltraSSD
-    gpuInstanceProfile: agentPool.gpuInstanceProfile
-    kubeletDiskType: agentPool.kubeletDiskType
-    maxCount: agentPool.maxCount
-    maxPods: agentPool.maxPods
-    minCount: agentPool.minCount
-    mode: agentPool.mode
-    nodeLabels: agentPool.nodeLabels
-    nodePublicIpPrefixId: agentPool.nodePublicIpPrefixId
-    nodeTaints: agentPool.nodeTaints
+    availabilityZones: agentPool.?availabilityZones
+    count: agentPool.?count
+    sourceResourceId: agentPool.?sourceResourceId
+    enableAutoScaling: agentPool.?enableAutoScaling
+    enableEncryptionAtHost: agentPool.?enableEncryptionAtHost
+    enableFIPS: agentPool.?enableFIPS
+    enableNodePublicIP: agentPool.?enableNodePublicIP
+    enableUltraSSD: agentPool.?enableUltraSSD
+    gpuInstanceProfile: agentPool.?gpuInstanceProfile
+    kubeletDiskType: agentPool.?kubeletDiskType
+    maxCount: agentPool.?maxCount
+    maxPods: agentPool.?maxPods
+    minCount: agentPool.?minCount
+    mode: agentPool.?mode
+    nodeLabels: agentPool.?nodeLabels
+    nodePublicIpPrefixId: agentPool.?nodePublicIpPrefixId
+    nodeTaints: agentPool.?nodeTaints
     orchestratorVersion: contains(agentPool, 'orchestratorVersion') ? agentPool.orchestratorVersion : kubernetesVersion
-    osDiskSizeGB: agentPool.osDiskSizeGB
-    osDiskType: agentPool.osDiskType
-    osSku: agentPool.osSku
-    osType: agentPool.osType
-    podSubnetId: agentPool.podSubnetId
-    proximityPlacementGroupResourceId: agentPool.proximityPlacementGroupResourceId
-    scaleDownMode: agentPool.scaleDownMode
-    scaleSetEvictionPolicy: agentPool.scaleSetEvictionPolicy
-    scaleSetPriority: agentPool.scaleSetPriority
-    spotMaxPrice: agentPool.spotMaxPrice
+    osDiskSizeGB: agentPool.?osDiskSizeGB
+    osDiskType: agentPool.?osDiskType
+    osSku: agentPool.?osSku
+    osType: agentPool.?osType
+    podSubnetId: agentPool.?podSubnetId
+    proximityPlacementGroupResourceId: agentPool.?proximityPlacementGroupResourceId
+    scaleDownMode: agentPool.?scaleDownMode
+    scaleSetEvictionPolicy: agentPool.?scaleSetEvictionPolicy
+    scaleSetPriority: agentPool.?scaleSetPriority
+    spotMaxPrice: agentPool.?spotMaxPrice
     tags: agentPool.?tags ?? tags
-    type: agentPool.type
-    maxSurge: agentPool.maxSurge
-    vmSize: agentPool.vmSize ?? 'Standard_D2s_v3'
-    vnetSubnetId: agentPool.vnetSubnetId
-    workloadRuntime: agentPool.workloadRuntime
+    type: agentPool.?type
+    maxSurge: agentPool.?maxSurge
+    vmSize: agentPool.?vmSize ?? 'Standard_D2s_v3'
+    vnetSubnetId: agentPool.?vnetSubnetId
+    workloadRuntime: agentPool.?workloadRuntime
   }
 }]
 

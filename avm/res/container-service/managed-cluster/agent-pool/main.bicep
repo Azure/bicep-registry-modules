@@ -147,7 +147,7 @@ param vnetSubnetId string?
 param workloadRuntime string?
 
 var creationData = {
-  sourceResourceId: !empty(sourceResourceId) ? sourceResourceId : null
+  sourceResourceId: sourceResourceId
 }
 
 var upgradeSettings = {
