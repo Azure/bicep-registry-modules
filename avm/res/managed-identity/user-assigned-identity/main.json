@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "10854768660393860613"
+      "templateHash": "17425686371279834860"
     },
     "name": "User Assigned Identities",
     "description": "This module deploys a User Assigned Identity.",
@@ -108,9 +108,8 @@
   "parameters": {
     "name": {
       "type": "string",
-      "defaultValue": "[guid(resourceGroup().id)]",
       "metadata": {
-        "description": "Optional. Name of the User Assigned Identity."
+        "description": "Required. Name of the User Assigned Identity."
       }
     },
     "location": {
@@ -193,7 +192,7 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]"
     },
-    "userMsi_lock": {
+    "userAssignedIdentity_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
@@ -207,9 +206,9 @@
         "userAssignedIdentity"
       ]
     },
-    "userMsi_roleAssignments": {
+    "userAssignedIdentity_roleAssignments": {
       "copy": {
-        "name": "userMsi_roleAssignments",
+        "name": "userAssignedIdentity_roleAssignments",
         "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
@@ -229,9 +228,9 @@
         "userAssignedIdentity"
       ]
     },
-    "userMsi_federatedIdentityCredentials": {
+    "userAssignedIdentity_federatedIdentityCredentials": {
       "copy": {
-        "name": "userMsi_federatedIdentityCredentials",
+        "name": "userAssignedIdentity_federatedIdentityCredentials",
         "count": "[length(parameters('federatedIdentityCredentials'))]"
       },
       "type": "Microsoft.Resources/deployments",

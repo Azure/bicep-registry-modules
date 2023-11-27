@@ -44,8 +44,10 @@ This instance deploys the module with the minimum set of required parameters.
 module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-miuaimin'
   params: {
+    // Required parameters
+    name: 'miuaimin001'
+    // Non-required parameters
     location: '<location>'
-    tags: '<tags>'
   }
 }
 ```
@@ -62,11 +64,13 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
+    "name": {
+      "value": "miuaimin001"
+    },
+    // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "tags": {
-      "value": "<tags>"
     }
   }
 }
@@ -88,6 +92,9 @@ This instance deploys the module with most of its features enabled.
 module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-miuaimax'
   params: {
+    // Required parameters
+    name: 'miuaimax001'
+    // Non-required parameters
     federatedIdentityCredentials: [
       {
         audiences: [
@@ -103,7 +110,6 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    name: 'miuaimax001'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -142,6 +148,11 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
+    "name": {
+      "value": "miuaimax001"
+    },
+    // Non-required parameters
     "federatedIdentityCredentials": {
       "value": [
         {
@@ -162,9 +173,6 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
-    },
-    "name": {
-      "value": "miuaimax001"
     },
     "roleAssignments": {
       "value": [
@@ -212,6 +220,9 @@ This instance deploys the module in alignment with the best-practices of the Azu
 module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-miuaiwaf'
   params: {
+    // Required parameters
+    name: 'miuaiwaf001'
+    // Non-required parameters
     federatedIdentityCredentials: [
       {
         audiences: [
@@ -227,7 +238,6 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    name: 'miuaiwaf001'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -249,6 +259,11 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
+    "name": {
+      "value": "miuaiwaf001"
+    },
+    // Non-required parameters
     "federatedIdentityCredentials": {
       "value": [
         {
@@ -270,9 +285,6 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
         "name": "myCustomLockName"
       }
     },
-    "name": {
-      "value": "miuaiwaf001"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -290,6 +302,12 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 
 ## Parameters
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-name) | string | Name of the User Assigned Identity. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -298,7 +316,6 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 | [`federatedIdentityCredentials`](#parameter-federatedidentitycredentials) | array | The federated identity credentials list to indicate which token from the external IdP should be trusted by your application. Federated identity credentials are supported on applications only. A maximum of 20 federated identity credentials can be added per application object. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`name`](#parameter-name) | string | Name of the User Assigned Identity. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
@@ -353,9 +370,8 @@ Optional. Specify the name of lock.
 ### Parameter: `name`
 
 Name of the User Assigned Identity.
-- Required: No
+- Required: Yes
 - Type: string
-- Default: `[guid(resourceGroup().id)]`
 
 ### Parameter: `roleAssignments`
 
