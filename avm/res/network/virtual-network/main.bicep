@@ -18,7 +18,7 @@ param subnets array = []
 param dnsServers array = []
 
 @description('Optional. Resource ID of the DDoS protection plan to assign the VNET to. If it\'s left blank, DDoS protection will not be configured. If it\'s provided, the VNET created by this template will be attached to the referenced DDoS protection plan. The DDoS protection plan can exist in the same or in a different subscription.')
-param ddosProtectionPlanId string = ''
+param ddosProtectionPlanResourceId string = ''
 
 @description('Optional. Virtual Network Peerings configurations.')
 param peerings array = []
