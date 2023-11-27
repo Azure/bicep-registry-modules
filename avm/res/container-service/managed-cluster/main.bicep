@@ -137,7 +137,7 @@ param privateDNSZone string?
 param primaryAgentPoolProfile array
 
 @description('Optional. Define one or more secondary/additional agent pools.')
-param agentPools agendPoolType
+param agentPools agentPoolType
 
 @description('Optional. Specifies whether the httpApplicationRouting add-on is enabled or not.')
 param httpApplicationRoutingEnabled bool = false
@@ -737,7 +737,7 @@ output addonProfiles object = contains(managedCluster.properties, 'addonProfiles
 //   Definitions   //
 // =============== //
 
-type agendPoolType = {
+type agentPoolType = {
   @description('Required. The name of the agent pool.')
   name: string?
 

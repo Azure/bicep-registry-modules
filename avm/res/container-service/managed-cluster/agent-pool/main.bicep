@@ -146,9 +146,9 @@ param vnetSubnetId string?
 @description('Optional. Determines the type of workload a node can run.')
 param workloadRuntime string?
 
-var creationData = !empty(sourceResourceId) ? {
-  sourceResourceId: sourceResourceId
-} : null
+var creationData = {
+  sourceResourceId: !empty(sourceResourceId) ? sourceResourceId : null
+}
 
 var upgradeSettings = {
   maxSurge: maxSurge

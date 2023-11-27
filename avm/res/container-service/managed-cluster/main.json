@@ -6,14 +6,14 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "6756234451533092526"
+      "templateHash": "7343782281620103390"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
-    "agendPoolType": {
+    "agentPoolType": {
       "type": "array",
       "items": {
         "type": "object",
@@ -896,7 +896,7 @@
       }
     },
     "agentPools": {
-      "$ref": "#/definitions/agendPoolType",
+      "$ref": "#/definitions/agentPoolType",
       "metadata": {
         "description": "Optional. Define one or more secondary/additional agent pools."
       }
@@ -1728,7 +1728,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.21.1.54444",
-              "templateHash": "4780846782223891786"
+              "templateHash": "15017494300778221548"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
@@ -2023,7 +2023,9 @@
             }
           },
           "variables": {
-            "creationData": "[if(not(empty(parameters('sourceResourceId'))), createObject('sourceResourceId', parameters('sourceResourceId')), null())]",
+            "creationData": {
+              "sourceResourceId": "[if(not(empty(parameters('sourceResourceId'))), parameters('sourceResourceId'), null())]"
+            },
             "upgradeSettings": {
               "maxSurge": "[parameters('maxSurge')]"
             }
