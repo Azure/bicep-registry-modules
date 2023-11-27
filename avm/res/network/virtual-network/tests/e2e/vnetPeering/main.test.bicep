@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Deploying a bi-directional peering'
+metadata description = 'This instance deploys the module with both an inbound and outbound peering.'
+
 // ========== //
 // Parameters //
 // ========== //
