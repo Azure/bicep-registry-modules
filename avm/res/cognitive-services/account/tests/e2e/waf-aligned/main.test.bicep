@@ -101,13 +101,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     managedIdentities: {
       systemAssigned: true
     }
-    // Workaround for PSRule
-    roleAssignments: null
-    customerManagedKey: null
-    allowedFqdnList: null
-    apiProperties: null
-    migrationToken: null
-    userOwnedStorage: null
-    networkAcls: null
   }
 }]
