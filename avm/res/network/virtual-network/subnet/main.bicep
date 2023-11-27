@@ -12,7 +12,7 @@ param virtualNetworkName string
 param addressPrefix string
 
 @description('Optional. The resource ID of the network security group to assign to the subnet.')
-param networkSecurityGroupId string = ''
+param networkSecurityGroupResourceId string = ''
 
 @description('Optional. The resource ID of the route table to assign to the subnet.')
 param routeTableId string = ''
