@@ -1182,6 +1182,18 @@ function Set-UsageExamplesSection {
     ############################
     ##   Process test files   ##
     ############################
+
+    # Prepare data (using thread-safe multithreading) to consume later
+    $buildTestFileMap = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
+    $testFilePaths | ForEach-Object -Parallel {
+        $folderName = Split-Path (Split-Path -Path $_) -Leaf
+        $buildTemplate = bicep build $_ --stdout | ConvertFrom-Json -AsHashtable
+
+        $dict = $using:buildTestFileMap
+        $null = $dict.TryAdd($folderName, $buildTemplate)
+    }
+
+    # Process data
     $pathIndex = 1
     $usageExampleSectionHeaders = @()
     $testFilesContent = @()
@@ -1189,7 +1201,8 @@ function Set-UsageExamplesSection {
 
         # Read content
         $rawContentArray = Get-Content -Path $testFilePath
-        $compiledTestFileContent = bicep build $testFilePath --stdout | ConvertFrom-Json -AsHashtable
+        $folderName = Split-Path (Split-Path -Path $testFilePath) -Leaf
+        $compiledTestFileContent = $buildTestFileMap[$folderName]
         $rawContent = Get-Content -Path $testFilePath -Encoding 'utf8' | Out-String
 
         # Format example header
