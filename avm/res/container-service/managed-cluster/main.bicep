@@ -73,7 +73,7 @@ param outboundType string = 'loadBalancer'
   'Premium'
   'Standard'
 ])
-param skuTier string?
+param skuTier string = 'Standard'
 
 @description('Optional. Version of Kubernetes specified when creating the managed cluster.')
 param kubernetesVersion string?
@@ -579,40 +579,40 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [for (agentPool, inde
   params: {
     managedClusterName: managedCluster.name
     name: agentPool.name
-    availabilityZones: contains(agentPool, 'availabilityZones') ? agentPool.availabilityZones : []
-    count: contains(agentPool, 'count') ? agentPool.count : 1
-    sourceResourceId: contains(agentPool, 'sourceResourceId') ? agentPool.sourceResourceId : ''
-    enableAutoScaling: contains(agentPool, 'enableAutoScaling') ? agentPool.enableAutoScaling : false
-    enableEncryptionAtHost: contains(agentPool, 'enableEncryptionAtHost') ? agentPool.enableEncryptionAtHost : false
-    enableFIPS: contains(agentPool, 'enableFIPS') ? agentPool.enableFIPS : false
-    enableNodePublicIP: contains(agentPool, 'enableNodePublicIP') ? agentPool.enableNodePublicIP : false
-    enableUltraSSD: contains(agentPool, 'enableUltraSSD') ? agentPool.enableUltraSSD : false
-    gpuInstanceProfile: contains(agentPool, 'gpuInstanceProfile') ? agentPool.gpuInstanceProfile : ''
-    kubeletDiskType: contains(agentPool, 'kubeletDiskType') ? agentPool.kubeletDiskType : ''
-    maxCount: contains(agentPool, 'maxCount') ? agentPool.maxCount : -1
-    maxPods: contains(agentPool, 'maxPods') ? agentPool.maxPods : -1
-    minCount: contains(agentPool, 'minCount') ? agentPool.minCount : -1
-    mode: contains(agentPool, 'mode') ? agentPool.mode : ''
-    nodeLabels: contains(agentPool, 'nodeLabels') ? agentPool.nodeLabels : {}
-    nodePublicIpPrefixId: contains(agentPool, 'nodePublicIpPrefixId') ? agentPool.nodePublicIpPrefixId : ''
-    nodeTaints: contains(agentPool, 'nodeTaints') ? agentPool.nodeTaints : []
+    availabilityZones: agentPool.availabilityZones
+    count: agentPool.count
+    sourceResourceId: agentPool.sourceResourceId
+    enableAutoScaling: agentPool.enableAutoScaling
+    enableEncryptionAtHost: agentPool.enableEncryptionAtHost
+    enableFIPS: agentPool.enableFIPS
+    enableNodePublicIP: agentPool.enableNodePublicIP
+    enableUltraSSD: agentPool.enableUltraSSD
+    gpuInstanceProfile: agentPool.gpuInstanceProfile
+    kubeletDiskType: agentPool.kubeletDiskType
+    maxCount: agentPool.maxCount
+    maxPods: agentPool.maxPods
+    minCount: agentPool.minCount
+    mode: agentPool.mode
+    nodeLabels: agentPool.nodeLabels
+    nodePublicIpPrefixId: agentPool.nodePublicIpPrefixId
+    nodeTaints: agentPool.nodeTaints
     orchestratorVersion: contains(agentPool, 'orchestratorVersion') ? agentPool.orchestratorVersion : kubernetesVersion
-    osDiskSizeGB: contains(agentPool, 'osDiskSizeGB') ? agentPool.osDiskSizeGB : -1
-    osDiskType: contains(agentPool, 'osDiskType') ? agentPool.osDiskType : ''
-    osSku: contains(agentPool, 'osSku') ? agentPool.osSku : ''
-    osType: contains(agentPool, 'osType') ? agentPool.osType : 'Linux'
-    podSubnetId: contains(agentPool, 'podSubnetId') ? agentPool.podSubnetId : ''
-    proximityPlacementGroupResourceId: contains(agentPool, 'proximityPlacementGroupResourceId') ? agentPool.proximityPlacementGroupResourceId : ''
-    scaleDownMode: contains(agentPool, 'scaleDownMode') ? agentPool.scaleDownMode : 'Delete'
-    scaleSetEvictionPolicy: contains(agentPool, 'scaleSetEvictionPolicy') ? agentPool.scaleSetEvictionPolicy : 'Delete'
-    scaleSetPriority: contains(agentPool, 'scaleSetPriority') ? agentPool.scaleSetPriority : ''
-    spotMaxPrice: contains(agentPool, 'spotMaxPrice') ? agentPool.spotMaxPrice : -1
+    osDiskSizeGB: agentPool.osDiskSizeGB
+    osDiskType: agentPool.osDiskType
+    osSku: agentPool.osSku
+    osType: agentPool.osType
+    podSubnetId: agentPool.podSubnetId
+    proximityPlacementGroupResourceId: agentPool.proximityPlacementGroupResourceId
+    scaleDownMode: agentPool.scaleDownMode
+    scaleSetEvictionPolicy: agentPool.scaleSetEvictionPolicy
+    scaleSetPriority: agentPool.scaleSetPriority
+    spotMaxPrice: agentPool.spotMaxPrice
     tags: agentPool.?tags ?? tags
-    type: contains(agentPool, 'type') ? agentPool.type : ''
-    maxSurge: contains(agentPool, 'maxSurge') ? agentPool.maxSurge : ''
-    vmSize: contains(agentPool, 'vmSize') ? agentPool.vmSize : 'Standard_D2s_v3'
-    vnetSubnetId: contains(agentPool, 'vnetSubnetId') ? agentPool.vnetSubnetId : ''
-    workloadRuntime: contains(agentPool, 'workloadRuntime') ? agentPool.workloadRuntime : ''
+    type: agentPool.type
+    maxSurge: agentPool.maxSurge
+    vmSize: agentPool.vmSize ?? 'Standard_D2s_v3'
+    vnetSubnetId: agentPool.vnetSubnetId
+    workloadRuntime: agentPool.workloadRuntime
   }
 }]
 

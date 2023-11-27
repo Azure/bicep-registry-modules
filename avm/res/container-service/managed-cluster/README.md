@@ -2837,6 +2837,7 @@ A CIDR notation IP range from which to assign service cluster IPs. It must not o
 Tier of a managed cluster SKU. - Free, Standard or Premium.
 - Required: No
 - Type: string
+- Default: `'Standard'`
 - Allowed:
   ```Bicep
   [

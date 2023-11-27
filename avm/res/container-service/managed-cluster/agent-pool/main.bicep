@@ -146,9 +146,9 @@ param vnetSubnetId string?
 @description('Optional. Determines the type of workload a node can run.')
 param workloadRuntime string?
 
-var creationData = {
+var creationData = !empty(sourceResourceId) ? {
   sourceResourceId: sourceResourceId
-}
+} : null
 
 var upgradeSettings = {
   maxSurge: maxSurge
@@ -164,7 +164,7 @@ resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2023-0
   properties: {
     availabilityZones: availabilityZones
     count: count
-    creationData: !empty(sourceResourceId) ? creationData : null
+    creationData: creationData
     enableAutoScaling: enableAutoScaling
     enableEncryptionAtHost: enableEncryptionAtHost
     enableFIPS: enableFIPS
