@@ -123,6 +123,7 @@ output subnetAddressPrefix string = subnet.properties.addressPrefix
 
 @description('List of address prefixes for the subnet.')
 output subnetAddressPrefixes array = !empty(addressPrefixes) ? subnet.properties.addressPrefixes : []
+
 // =============== //
 //   Definitions   //
 // =============== //
