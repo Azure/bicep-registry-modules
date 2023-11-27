@@ -45,9 +45,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     addressPrefixes: [
       '10.0.0.0/16'
     ]
-    // Workaround for PSRule
-    lock: {}
-    diagnosticSettings: []
-    roleAssignments: []
   }
 }]
