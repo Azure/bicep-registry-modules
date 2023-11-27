@@ -45,9 +45,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location
-    // Workaround for PSRule
-    lock: null
-    roleAssignments: null
-    tags: {}
   }
 }]
