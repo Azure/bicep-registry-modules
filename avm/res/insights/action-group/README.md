@@ -46,19 +46,7 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
     groupShortName: 'agiagmin001'
     name: 'iagmin001'
     // Non-required parameters
-    armRoleReceivers: '<armRoleReceivers>'
-    automationRunbookReceivers: '<automationRunbookReceivers>'
-    azureAppPushReceivers: '<azureAppPushReceivers>'
-    azureFunctionReceivers: '<azureFunctionReceivers>'
-    emailReceivers: '<emailReceivers>'
-    itsmReceivers: '<itsmReceivers>'
     location: 'global'
-    logicAppReceivers: '<logicAppReceivers>'
-    roleAssignments: '<roleAssignments>'
-    smsReceivers: '<smsReceivers>'
-    tags: '<tags>'
-    voiceReceivers: '<voiceReceivers>'
-    webhookReceivers: '<webhookReceivers>'
   }
 }
 ```
@@ -83,44 +71,8 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
       "value": "iagmin001"
     },
     // Non-required parameters
-    "armRoleReceivers": {
-      "value": "<armRoleReceivers>"
-    },
-    "automationRunbookReceivers": {
-      "value": "<automationRunbookReceivers>"
-    },
-    "azureAppPushReceivers": {
-      "value": "<azureAppPushReceivers>"
-    },
-    "azureFunctionReceivers": {
-      "value": "<azureFunctionReceivers>"
-    },
-    "emailReceivers": {
-      "value": "<emailReceivers>"
-    },
-    "itsmReceivers": {
-      "value": "<itsmReceivers>"
-    },
     "location": {
       "value": "global"
-    },
-    "logicAppReceivers": {
-      "value": "<logicAppReceivers>"
-    },
-    "roleAssignments": {
-      "value": "<roleAssignments>"
-    },
-    "smsReceivers": {
-      "value": "<smsReceivers>"
-    },
-    "tags": {
-      "value": "<tags>"
-    },
-    "voiceReceivers": {
-      "value": "<voiceReceivers>"
-    },
-    "webhookReceivers": {
-      "value": "<webhookReceivers>"
     }
   }
 }
@@ -163,7 +115,17 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     smsReceivers: [
@@ -224,7 +186,17 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -268,23 +240,12 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
     groupShortName: 'agiagwaf001'
     name: 'iagwaf001'
     // Non-required parameters
-    armRoleReceivers: '<armRoleReceivers>'
-    automationRunbookReceivers: '<automationRunbookReceivers>'
-    azureAppPushReceivers: '<azureAppPushReceivers>'
-    azureFunctionReceivers: '<azureFunctionReceivers>'
-    emailReceivers: '<emailReceivers>'
-    itsmReceivers: '<itsmReceivers>'
     location: 'global'
-    logicAppReceivers: '<logicAppReceivers>'
-    roleAssignments: '<roleAssignments>'
-    smsReceivers: '<smsReceivers>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    voiceReceivers: '<voiceReceivers>'
-    webhookReceivers: '<webhookReceivers>'
   }
 }
 ```
@@ -309,35 +270,8 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
       "value": "iagwaf001"
     },
     // Non-required parameters
-    "armRoleReceivers": {
-      "value": "<armRoleReceivers>"
-    },
-    "automationRunbookReceivers": {
-      "value": "<automationRunbookReceivers>"
-    },
-    "azureAppPushReceivers": {
-      "value": "<azureAppPushReceivers>"
-    },
-    "azureFunctionReceivers": {
-      "value": "<azureFunctionReceivers>"
-    },
-    "emailReceivers": {
-      "value": "<emailReceivers>"
-    },
-    "itsmReceivers": {
-      "value": "<itsmReceivers>"
-    },
     "location": {
       "value": "global"
-    },
-    "logicAppReceivers": {
-      "value": "<logicAppReceivers>"
-    },
-    "roleAssignments": {
-      "value": "<roleAssignments>"
-    },
-    "smsReceivers": {
-      "value": "<smsReceivers>"
     },
     "tags": {
       "value": {
@@ -345,12 +279,6 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "voiceReceivers": {
-      "value": "<voiceReceivers>"
-    },
-    "webhookReceivers": {
-      "value": "<webhookReceivers>"
     }
   }
 }
@@ -383,7 +311,7 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
 | [`itsmReceivers`](#parameter-itsmreceivers) | array | The list of ITSM receivers that are part of this action group. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`logicAppReceivers`](#parameter-logicappreceivers) | array | The list of logic app receivers that are part of this action group. |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`smsReceivers`](#parameter-smsreceivers) | array | The list of SMS receivers that are part of this action group. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`voiceReceivers`](#parameter-voicereceivers) | array | The list of voice receivers that are part of this action group. |
@@ -466,7 +394,7 @@ The name of the action group.
 
 ### Parameter: `roleAssignments`
 
-Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+Array of role assignments to create.
 - Required: No
 - Type: array
 
@@ -479,7 +407,7 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 | [`description`](#parameter-roleassignmentsdescription) | No | string | Optional. The description of the role assignment. |
 | [`principalId`](#parameter-roleassignmentsprincipalid) | Yes | string | Required. The principal ID of the principal (user/group/identity) to assign the role to. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | No | string | Optional. The principal type of the assigned principal ID. |
-| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead. |
+| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 ### Parameter: `roleAssignments.condition`
 
@@ -527,7 +455,7 @@ Optional. The principal type of the assigned principal ID.
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
-Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.
+Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string
