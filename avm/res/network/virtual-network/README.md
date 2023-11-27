@@ -28,12 +28,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm-res-network-virtualnetwork:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/virtual-network:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Vnetpeering](#example-3-vnetpeering)
-- [Using large parameter set](#example-4-using-large-parameter-set)
+- [Deploying a bi-directional peering](#example-3-deploying-a-bi-directional-peering)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -45,7 +45,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
+module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-nvnmin'
   params: {
     // Required parameters
@@ -113,7 +113,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
+module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-nvnmax'
   params: {
     // Required parameters
@@ -161,7 +161,7 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
       {
         addressPrefix: '<addressPrefix>'
         name: 'az-subnet-x-001'
-        networkSecurityGroupId: '<networkSecurityGroupId>'
+        networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
         roleAssignments: [
           {
             principalId: '<principalId>'
@@ -169,7 +169,7 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
             roleDefinitionIdOrName: 'Reader'
           }
         ]
-        routeTableId: '<routeTableId>'
+        routeTableResourceId: '<routeTableResourceId>'
         serviceEndpoints: [
           {
             service: 'Microsoft.Storage'
@@ -190,19 +190,19 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
           }
         ]
         name: 'az-subnet-x-002'
-        networkSecurityGroupId: '<networkSecurityGroupId>'
+        networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
       }
       {
         addressPrefix: '<addressPrefix>'
         name: 'az-subnet-x-003'
-        networkSecurityGroupId: '<networkSecurityGroupId>'
+        networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
         privateEndpointNetworkPolicies: 'Disabled'
         privateLinkServiceNetworkPolicies: 'Enabled'
       }
       {
         addressPrefix: '<addressPrefix>'
         name: 'AzureBastionSubnet'
-        networkSecurityGroupId: '<networkSecurityGroupId>'
+        networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
       }
       {
         addressPrefix: '<addressPrefix>'
@@ -292,7 +292,7 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
         {
           "addressPrefix": "<addressPrefix>",
           "name": "az-subnet-x-001",
-          "networkSecurityGroupId": "<networkSecurityGroupId>",
+          "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>",
           "roleAssignments": [
             {
               "principalId": "<principalId>",
@@ -300,7 +300,7 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
               "roleDefinitionIdOrName": "Reader"
             }
           ],
-          "routeTableId": "<routeTableId>",
+          "routeTableResourceId": "<routeTableResourceId>",
           "serviceEndpoints": [
             {
               "service": "Microsoft.Storage"
@@ -321,19 +321,19 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
             }
           ],
           "name": "az-subnet-x-002",
-          "networkSecurityGroupId": "<networkSecurityGroupId>"
+          "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>"
         },
         {
           "addressPrefix": "<addressPrefix>",
           "name": "az-subnet-x-003",
-          "networkSecurityGroupId": "<networkSecurityGroupId>",
+          "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>",
           "privateEndpointNetworkPolicies": "Disabled",
           "privateLinkServiceNetworkPolicies": "Enabled"
         },
         {
           "addressPrefix": "<addressPrefix>",
           "name": "AzureBastionSubnet",
-          "networkSecurityGroupId": "<networkSecurityGroupId>"
+          "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>"
         },
         {
           "addressPrefix": "<addressPrefix>",
@@ -355,14 +355,17 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
 </details>
 <p>
 
-### Example 3: _Vnetpeering_
+### Example 3: _Deploying a bi-directional peering_
+
+This instance deploys the module with both an inbound and outbound peering.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
+module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-nvnpeer'
   params: {
     // Required parameters
@@ -396,7 +399,7 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
       {
         addressPrefix: '10.1.0.64/26'
         name: 'AzureBastionSubnet'
-        networkSecurityGroupId: '<networkSecurityGroupId>'
+        networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
       }
       {
         addressPrefix: '10.1.0.128/26'
@@ -470,7 +473,7 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
         {
           "addressPrefix": "10.1.0.64/26",
           "name": "AzureBastionSubnet",
-          "networkSecurityGroupId": "<networkSecurityGroupId>"
+          "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>"
         },
         {
           "addressPrefix": "10.1.0.128/26",
@@ -492,9 +495,9 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 4: _WAF-aligned_
 
-This instance deploys the module with most of its features enabled.
+This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
 
 <details>
@@ -502,7 +505,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
+module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-nvnwaf'
   params: {
     // Required parameters
@@ -535,13 +538,6 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
     subnets: [
       {
         addressPrefix: '<addressPrefix>'
@@ -550,7 +546,7 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
       {
         addressPrefix: '<addressPrefix>'
         name: 'az-subnet-x-001'
-        networkSecurityGroupId: '<networkSecurityGroupId>'
+        networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
         roleAssignments: [
           {
             principalId: '<principalId>'
@@ -558,7 +554,7 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
             roleDefinitionIdOrName: 'Reader'
           }
         ]
-        routeTableId: '<routeTableId>'
+        routeTableResourceId: '<routeTableResourceId>'
         serviceEndpoints: [
           {
             service: 'Microsoft.Storage'
@@ -579,19 +575,19 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
           }
         ]
         name: 'az-subnet-x-002'
-        networkSecurityGroupId: '<networkSecurityGroupId>'
+        networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
       }
       {
         addressPrefix: '<addressPrefix>'
         name: 'az-subnet-x-003'
-        networkSecurityGroupId: '<networkSecurityGroupId>'
+        networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
         privateEndpointNetworkPolicies: 'Disabled'
         privateLinkServiceNetworkPolicies: 'Enabled'
       }
       {
         addressPrefix: '<addressPrefix>'
         name: 'AzureBastionSubnet'
-        networkSecurityGroupId: '<networkSecurityGroupId>'
+        networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
       }
       {
         addressPrefix: '<addressPrefix>'
@@ -663,15 +659,6 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
         "name": "myCustomLockName"
       }
     },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
-    },
     "subnets": {
       "value": [
         {
@@ -681,7 +668,7 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
         {
           "addressPrefix": "<addressPrefix>",
           "name": "az-subnet-x-001",
-          "networkSecurityGroupId": "<networkSecurityGroupId>",
+          "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>",
           "roleAssignments": [
             {
               "principalId": "<principalId>",
@@ -689,7 +676,7 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
               "roleDefinitionIdOrName": "Reader"
             }
           ],
-          "routeTableId": "<routeTableId>",
+          "routeTableResourceId": "<routeTableResourceId>",
           "serviceEndpoints": [
             {
               "service": "Microsoft.Storage"
@@ -710,19 +697,19 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
             }
           ],
           "name": "az-subnet-x-002",
-          "networkSecurityGroupId": "<networkSecurityGroupId>"
+          "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>"
         },
         {
           "addressPrefix": "<addressPrefix>",
           "name": "az-subnet-x-003",
-          "networkSecurityGroupId": "<networkSecurityGroupId>",
+          "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>",
           "privateEndpointNetworkPolicies": "Disabled",
           "privateLinkServiceNetworkPolicies": "Enabled"
         },
         {
           "addressPrefix": "<addressPrefix>",
           "name": "AzureBastionSubnet",
-          "networkSecurityGroupId": "<networkSecurityGroupId>"
+          "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>"
         },
         {
           "addressPrefix": "<addressPrefix>",
@@ -758,7 +745,7 @@ module virtualNetwork 'br/public:avm-res-network-virtualnetwork:1.0.0' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`ddosProtectionPlanId`](#parameter-ddosprotectionplanid) | string | Resource ID of the DDoS protection plan to assign the VNET to. If it's left blank, DDoS protection will not be configured. If it's provided, the VNET created by this template will be attached to the referenced DDoS protection plan. The DDoS protection plan can exist in the same or in a different subscription. |
+| [`ddosProtectionPlanResourceId`](#parameter-ddosprotectionplanresourceid) | string | Resource ID of the DDoS protection plan to assign the VNET to. If it's left blank, DDoS protection will not be configured. If it's provided, the VNET created by this template will be attached to the referenced DDoS protection plan. The DDoS protection plan can exist in the same or in a different subscription. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`dnsServers`](#parameter-dnsservers) | array | DNS Servers associated to the Virtual Network. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -778,7 +765,7 @@ An Array of 1 or more IP Address Prefixes for the Virtual Network.
 - Required: Yes
 - Type: array
 
-### Parameter: `ddosProtectionPlanId`
+### Parameter: `ddosProtectionPlanResourceId`
 
 Resource ID of the DDoS protection plan to assign the VNET to. If it's left blank, DDoS protection will not be configured. If it's provided, the VNET created by this template will be attached to the referenced DDoS protection plan. The DDoS protection plan can exist in the same or in a different subscription.
 - Required: No
@@ -1048,7 +1035,6 @@ An Array of subnets to deploy to the Virtual Network.
 Tags of the resource.
 - Required: No
 - Type: object
-- Default: `{object}`
 
 ### Parameter: `vnetEncryption`
 
@@ -1063,7 +1049,13 @@ If the encrypted VNet allows VM that does not support encryption. Can only be us
 - Required: No
 - Type: string
 - Default: `'AllowUnencrypted'`
-- Allowed: `[AllowUnencrypted, DropUnencrypted]`
+- Allowed:
+  ```Bicep
+  [
+    'AllowUnencrypted'
+    'DropUnencrypted'
+  ]
+  ```
 
 
 ## Outputs

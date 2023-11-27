@@ -57,7 +57,7 @@ var dnsServersVar = {
 }
 
 var ddosProtectionPlan = {
-  id: ddosProtectionPlanId
+  id: ddosProtectionPlanResourceId
 }
 
 var builtInRoleNames = {
@@ -99,9 +99,9 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
     addressSpace: {
       addressPrefixes: addressPrefixes
     }
-    ddosProtectionPlan: !empty(ddosProtectionPlanId) ? ddosProtectionPlan : null
+    ddosProtectionPlan: !empty(ddosProtectionPlanResourceId) ? ddosProtectionPlan : null
     dhcpOptions: !empty(dnsServers) ? dnsServersVar : null
-    enableDdosProtection: !empty(ddosProtectionPlanId)
+    enableDdosProtection: !empty(ddosProtectionPlanResourceId)
     encryption: vnetEncryption == true ? {
       enabled: vnetEncryption
       enforcement: vnetEncryptionEnforcement
@@ -115,16 +115,16 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         applicationGatewayIPConfigurations: contains(subnet, 'applicationGatewayIPConfigurations') ? subnet.applicationGatewayIPConfigurations : []
         delegations: contains(subnet, 'delegations') ? subnet.delegations : []
         ipAllocations: contains(subnet, 'ipAllocations') ? subnet.ipAllocations : []
-        natGateway: contains(subnet, 'natGatewayId') ? {
-          id: subnet.natGatewayId
+        natGateway: contains(subnet, 'natGatewayResourceId') ? {
+          id: subnet.natGatewayResourceId
         } : null
-        networkSecurityGroup: contains(subnet, 'networkSecurityGroupId') ? {
-          id: subnet.networkSecurityGroupId
+        networkSecurityGroup: contains(subnet, 'networkSecurityGroupResourceId') ? {
+          id: subnet.networkSecurityGroupResourceId
         } : null
         privateEndpointNetworkPolicies: contains(subnet, 'privateEndpointNetworkPolicies') ? subnet.privateEndpointNetworkPolicies : null
         privateLinkServiceNetworkPolicies: contains(subnet, 'privateLinkServiceNetworkPolicies') ? subnet.privateLinkServiceNetworkPolicies : null
-        routeTable: contains(subnet, 'routeTableId') ? {
-          id: subnet.routeTableId
+        routeTable: contains(subnet, 'routeTableResourceId') ? {
+          id: subnet.routeTableResourceId
         } : null
         serviceEndpoints: contains(subnet, 'serviceEndpoints') ? subnet.serviceEndpoints : []
         serviceEndpointPolicies: contains(subnet, 'serviceEndpointPolicies') ? subnet.serviceEndpointPolicies : []
@@ -151,12 +151,12 @@ module virtualNetwork_subnets 'subnet/main.bicep' = [for (subnet, index) in subn
     applicationGatewayIPConfigurations: contains(subnet, 'applicationGatewayIPConfigurations') ? subnet.applicationGatewayIPConfigurations : []
     delegations: contains(subnet, 'delegations') ? subnet.delegations : []
     ipAllocations: contains(subnet, 'ipAllocations') ? subnet.ipAllocations : []
-    natGatewayId: contains(subnet, 'natGatewayId') ? subnet.natGatewayId : ''
-    networkSecurityGroupId: contains(subnet, 'networkSecurityGroupId') ? subnet.networkSecurityGroupId : ''
+    natGatewayResourceId: contains(subnet, 'natGatewayResourceId') ? subnet.natGatewayResourceId : ''
+    networkSecurityGroupResourceId: contains(subnet, 'networkSecurityGroupResourceId') ? subnet.networkSecurityGroupResourceId : ''
     privateEndpointNetworkPolicies: contains(subnet, 'privateEndpointNetworkPolicies') ? subnet.privateEndpointNetworkPolicies : ''
     privateLinkServiceNetworkPolicies: contains(subnet, 'privateLinkServiceNetworkPolicies') ? subnet.privateLinkServiceNetworkPolicies : ''
     roleAssignments: contains(subnet, 'roleAssignments') ? subnet.roleAssignments : []
-    routeTableId: contains(subnet, 'routeTableId') ? subnet.routeTableId : ''
+    routeTableResourceId: contains(subnet, 'routeTableResourceId') ? subnet.routeTableResourceId : ''
     serviceEndpointPolicies: contains(subnet, 'serviceEndpointPolicies') ? subnet.serviceEndpointPolicies : []
     serviceEndpoints: contains(subnet, 'serviceEndpoints') ? subnet.serviceEndpoints : []
   }

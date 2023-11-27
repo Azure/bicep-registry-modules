@@ -40,12 +40,12 @@ This module deploys a Virtual Network Subnet.
 | [`delegations`](#parameter-delegations) | array | The delegations to enable on the subnet. |
 | [`ipAllocations`](#parameter-ipallocations) | array | Array of IpAllocation which reference this subnet. |
 | [`name`](#parameter-name) | string | The Name of the subnet resource. |
-| [`natGatewayId`](#parameter-natgatewayid) | string | The resource ID of the NAT Gateway to use for the subnet. |
-| [`networkSecurityGroupId`](#parameter-networksecuritygroupid) | string | The resource ID of the network security group to assign to the subnet. |
+| [`natGatewayResourceId`](#parameter-natgatewayresourceid) | string | The resource ID of the NAT Gateway to use for the subnet. |
+| [`networkSecurityGroupResourceId`](#parameter-networksecuritygroupresourceid) | string | The resource ID of the network security group to assign to the subnet. |
 | [`privateEndpointNetworkPolicies`](#parameter-privateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
 | [`privateLinkServiceNetworkPolicies`](#parameter-privatelinkservicenetworkpolicies) | string | enable or disable apply network policies on private link service in the subnet. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| [`routeTableId`](#parameter-routetableid) | string | The resource ID of the route table to assign to the subnet. |
+| [`routeTableResourceId`](#parameter-routetableresourceid) | string | The resource ID of the route table to assign to the subnet. |
 | [`serviceEndpointPolicies`](#parameter-serviceendpointpolicies) | array | An array of service endpoint policies. |
 | [`serviceEndpoints`](#parameter-serviceendpoints) | array | The service endpoints to enable on the subnet. |
 
@@ -89,14 +89,14 @@ The Name of the subnet resource.
 - Required: Yes
 - Type: string
 
-### Parameter: `natGatewayId`
+### Parameter: `natGatewayResourceId`
 
 The resource ID of the NAT Gateway to use for the subnet.
 - Required: No
 - Type: string
 - Default: `''`
 
-### Parameter: `networkSecurityGroupId`
+### Parameter: `networkSecurityGroupResourceId`
 
 The resource ID of the network security group to assign to the subnet.
 - Required: No
@@ -109,7 +109,14 @@ enable or disable apply network policies on private endpoint in the subnet.
 - Required: No
 - Type: string
 - Default: `''`
-- Allowed: `['', Disabled, Enabled]`
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `privateLinkServiceNetworkPolicies`
 
@@ -117,7 +124,14 @@ enable or disable apply network policies on private link service in the subnet.
 - Required: No
 - Type: string
 - Default: `''`
-- Allowed: `['', Disabled, Enabled]`
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 
@@ -187,7 +201,7 @@ Required. The name of the role to assign. If it cannot be found you can specify 
 - Required: Yes
 - Type: string
 
-### Parameter: `routeTableId`
+### Parameter: `routeTableResourceId`
 
 The resource ID of the route table to assign to the subnet.
 - Required: No

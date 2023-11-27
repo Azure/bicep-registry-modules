@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "2903378995340221604"
+      "templateHash": "14234425120943800630"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet).",
@@ -245,7 +245,7 @@
         "description": "Optional. DNS Servers associated to the Virtual Network."
       }
     },
-    "ddosProtectionPlanId": {
+    "ddosProtectionPlanResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -305,7 +305,7 @@
     },
     "tags": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Tags of the resource."
       }
@@ -323,7 +323,7 @@
       "dnsServers": "[array(parameters('dnsServers'))]"
     },
     "ddosProtectionPlan": {
-      "id": "[parameters('ddosProtectionPlanId')]"
+      "id": "[parameters('ddosProtectionPlanResourceId')]"
     },
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
@@ -374,11 +374,11 @@
                 "applicationGatewayIPConfigurations": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'applicationGatewayIPConfigurations'), parameters('subnets')[copyIndex('subnets')].applicationGatewayIPConfigurations, createArray())]",
                 "delegations": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'delegations'), parameters('subnets')[copyIndex('subnets')].delegations, createArray())]",
                 "ipAllocations": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'ipAllocations'), parameters('subnets')[copyIndex('subnets')].ipAllocations, createArray())]",
-                "natGateway": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'natGatewayId'), createObject('id', parameters('subnets')[copyIndex('subnets')].natGatewayId), null())]",
-                "networkSecurityGroup": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'networkSecurityGroupId'), createObject('id', parameters('subnets')[copyIndex('subnets')].networkSecurityGroupId), null())]",
+                "natGateway": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'natGatewayResourceId'), createObject('id', parameters('subnets')[copyIndex('subnets')].natGatewayResourceId), null())]",
+                "networkSecurityGroup": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'networkSecurityGroupResourceId'), createObject('id', parameters('subnets')[copyIndex('subnets')].networkSecurityGroupResourceId), null())]",
                 "privateEndpointNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'privateEndpointNetworkPolicies'), parameters('subnets')[copyIndex('subnets')].privateEndpointNetworkPolicies, null())]",
                 "privateLinkServiceNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'privateLinkServiceNetworkPolicies'), parameters('subnets')[copyIndex('subnets')].privateLinkServiceNetworkPolicies, null())]",
-                "routeTable": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'routeTableId'), createObject('id', parameters('subnets')[copyIndex('subnets')].routeTableId), null())]",
+                "routeTable": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'routeTableResourceId'), createObject('id', parameters('subnets')[copyIndex('subnets')].routeTableResourceId), null())]",
                 "serviceEndpoints": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'serviceEndpoints'), parameters('subnets')[copyIndex('subnets')].serviceEndpoints, createArray())]",
                 "serviceEndpointPolicies": "[if(contains(parameters('subnets')[copyIndex('subnets')], 'serviceEndpointPolicies'), parameters('subnets')[copyIndex('subnets')].serviceEndpointPolicies, createArray())]"
               }
@@ -388,9 +388,9 @@
         "addressSpace": {
           "addressPrefixes": "[parameters('addressPrefixes')]"
         },
-        "ddosProtectionPlan": "[if(not(empty(parameters('ddosProtectionPlanId'))), variables('ddosProtectionPlan'), null())]",
+        "ddosProtectionPlan": "[if(not(empty(parameters('ddosProtectionPlanResourceId'))), variables('ddosProtectionPlan'), null())]",
         "dhcpOptions": "[if(not(empty(parameters('dnsServers'))), variables('dnsServersVar'), null())]",
-        "enableDdosProtection": "[not(empty(parameters('ddosProtectionPlanId')))]",
+        "enableDdosProtection": "[not(empty(parameters('ddosProtectionPlanResourceId')))]",
         "encryption": "[if(equals(parameters('vnetEncryption'), true()), createObject('enabled', parameters('vnetEncryption'), 'enforcement', parameters('vnetEncryptionEnforcement')), null())]",
         "flowTimeoutInMinutes": "[if(not(equals(parameters('flowTimeoutInMinutes'), 0)), parameters('flowTimeoutInMinutes'), null())]"
       }
@@ -481,12 +481,12 @@
           "applicationGatewayIPConfigurations": "[if(contains(parameters('subnets')[copyIndex()], 'applicationGatewayIPConfigurations'), createObject('value', parameters('subnets')[copyIndex()].applicationGatewayIPConfigurations), createObject('value', createArray()))]",
           "delegations": "[if(contains(parameters('subnets')[copyIndex()], 'delegations'), createObject('value', parameters('subnets')[copyIndex()].delegations), createObject('value', createArray()))]",
           "ipAllocations": "[if(contains(parameters('subnets')[copyIndex()], 'ipAllocations'), createObject('value', parameters('subnets')[copyIndex()].ipAllocations), createObject('value', createArray()))]",
-          "natGatewayId": "[if(contains(parameters('subnets')[copyIndex()], 'natGatewayId'), createObject('value', parameters('subnets')[copyIndex()].natGatewayId), createObject('value', ''))]",
-          "networkSecurityGroupId": "[if(contains(parameters('subnets')[copyIndex()], 'networkSecurityGroupId'), createObject('value', parameters('subnets')[copyIndex()].networkSecurityGroupId), createObject('value', ''))]",
+          "natGatewayResourceId": "[if(contains(parameters('subnets')[copyIndex()], 'natGatewayResourceId'), createObject('value', parameters('subnets')[copyIndex()].natGatewayResourceId), createObject('value', ''))]",
+          "networkSecurityGroupResourceId": "[if(contains(parameters('subnets')[copyIndex()], 'networkSecurityGroupResourceId'), createObject('value', parameters('subnets')[copyIndex()].networkSecurityGroupResourceId), createObject('value', ''))]",
           "privateEndpointNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex()], 'privateEndpointNetworkPolicies'), createObject('value', parameters('subnets')[copyIndex()].privateEndpointNetworkPolicies), createObject('value', ''))]",
           "privateLinkServiceNetworkPolicies": "[if(contains(parameters('subnets')[copyIndex()], 'privateLinkServiceNetworkPolicies'), createObject('value', parameters('subnets')[copyIndex()].privateLinkServiceNetworkPolicies), createObject('value', ''))]",
           "roleAssignments": "[if(contains(parameters('subnets')[copyIndex()], 'roleAssignments'), createObject('value', parameters('subnets')[copyIndex()].roleAssignments), createObject('value', createArray()))]",
-          "routeTableId": "[if(contains(parameters('subnets')[copyIndex()], 'routeTableId'), createObject('value', parameters('subnets')[copyIndex()].routeTableId), createObject('value', ''))]",
+          "routeTableResourceId": "[if(contains(parameters('subnets')[copyIndex()], 'routeTableResourceId'), createObject('value', parameters('subnets')[copyIndex()].routeTableResourceId), createObject('value', ''))]",
           "serviceEndpointPolicies": "[if(contains(parameters('subnets')[copyIndex()], 'serviceEndpointPolicies'), createObject('value', parameters('subnets')[copyIndex()].serviceEndpointPolicies), createObject('value', createArray()))]",
           "serviceEndpoints": "[if(contains(parameters('subnets')[copyIndex()], 'serviceEndpoints'), createObject('value', parameters('subnets')[copyIndex()].serviceEndpoints), createObject('value', createArray()))]"
         },
@@ -498,7 +498,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.21.1.54444",
-              "templateHash": "14689917493883351886"
+              "templateHash": "16295395838729593723"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet.",
@@ -591,14 +591,14 @@
                 "description": "Required. The address prefix for the subnet."
               }
             },
-            "networkSecurityGroupId": {
+            "networkSecurityGroupResourceId": {
               "type": "string",
               "defaultValue": "",
               "metadata": {
                 "description": "Optional. The resource ID of the network security group to assign to the subnet."
               }
             },
-            "routeTableId": {
+            "routeTableResourceId": {
               "type": "string",
               "defaultValue": "",
               "metadata": {
@@ -619,7 +619,7 @@
                 "description": "Optional. The delegations to enable on the subnet."
               }
             },
-            "natGatewayId": {
+            "natGatewayResourceId": {
               "type": "string",
               "defaultValue": "",
               "metadata": {
@@ -708,9 +708,9 @@
               "name": "[format('{0}/{1}', parameters('virtualNetworkName'), parameters('name'))]",
               "properties": {
                 "addressPrefix": "[parameters('addressPrefix')]",
-                "networkSecurityGroup": "[if(not(empty(parameters('networkSecurityGroupId'))), createObject('id', parameters('networkSecurityGroupId')), null())]",
-                "routeTable": "[if(not(empty(parameters('routeTableId'))), createObject('id', parameters('routeTableId')), null())]",
-                "natGateway": "[if(not(empty(parameters('natGatewayId'))), createObject('id', parameters('natGatewayId')), null())]",
+                "networkSecurityGroup": "[if(not(empty(parameters('networkSecurityGroupResourceId'))), createObject('id', parameters('networkSecurityGroupResourceId')), null())]",
+                "routeTable": "[if(not(empty(parameters('routeTableResourceId'))), createObject('id', parameters('routeTableResourceId')), null())]",
+                "natGateway": "[if(not(empty(parameters('natGatewayResourceId'))), createObject('id', parameters('natGatewayResourceId')), null())]",
                 "serviceEndpoints": "[parameters('serviceEndpoints')]",
                 "delegations": "[parameters('delegations')]",
                 "privateEndpointNetworkPolicies": "[if(not(empty(parameters('privateEndpointNetworkPolicies'))), parameters('privateEndpointNetworkPolicies'), null())]",

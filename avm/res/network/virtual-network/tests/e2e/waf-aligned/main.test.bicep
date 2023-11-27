@@ -103,7 +103,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       {
         addressPrefix: cidrSubnet(addressPrefix, 24, 1)
         name: '${namePrefix}-az-subnet-x-001'
-        networkSecurityGroupId: nestedDependencies.outputs.networkSecurityGroupResourceId
+        networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupResourceId
         roleAssignments: [
           {
             roleDefinitionIdOrName: 'Reader'
@@ -111,7 +111,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             principalType: 'ServicePrincipal'
           }
         ]
-        routeTableId: nestedDependencies.outputs.routeTableResourceId
+        routeTableResourceId: nestedDependencies.outputs.routeTableResourceId
         serviceEndpoints: [
           {
             service: 'Microsoft.Storage'
@@ -132,19 +132,19 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           }
         ]
         name: '${namePrefix}-az-subnet-x-002'
-        networkSecurityGroupId: nestedDependencies.outputs.networkSecurityGroupResourceId
+        networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupResourceId
       }
       {
         addressPrefix: cidrSubnet(addressPrefix, 24, 3)
         name: '${namePrefix}-az-subnet-x-003'
-        networkSecurityGroupId: nestedDependencies.outputs.networkSecurityGroupResourceId
+        networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupResourceId
         privateEndpointNetworkPolicies: 'Disabled'
         privateLinkServiceNetworkPolicies: 'Enabled'
       }
       {
         addressPrefix: cidrSubnet(addressPrefix, 24, 4)
         name: 'AzureBastionSubnet'
-        networkSecurityGroupId: nestedDependencies.outputs.networkSecurityGroupBastionResourceId
+        networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupBastionResourceId
       }
       {
         addressPrefix: cidrSubnet(addressPrefix, 24, 5)

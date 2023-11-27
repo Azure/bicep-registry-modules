@@ -63,7 +63,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       {
         addressPrefix: '10.1.0.64/26'
         name: 'AzureBastionSubnet'
-        networkSecurityGroupId: nestedDependencies.outputs.networkSecurityGroupBastionResourceId
+        networkSecurityGroupResourceId: nestedDependencies.outputs.networkSecurityGroupBastionResourceId
       }
       {
         addressPrefix: '10.1.0.128/26'
