@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "14144977940460902527"
+      "templateHash": "6756234451533092526"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -1619,42 +1619,106 @@
           "name": {
             "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].name]"
           },
-          "availabilityZones": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'availabilityZones'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].availabilityZones), createObject('value', createArray()))]",
-          "count": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'count'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].count), createObject('value', 1))]",
-          "sourceResourceId": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'sourceResourceId'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].sourceResourceId), createObject('value', ''))]",
-          "enableAutoScaling": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'enableAutoScaling'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].enableAutoScaling), createObject('value', false()))]",
-          "enableEncryptionAtHost": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'enableEncryptionAtHost'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].enableEncryptionAtHost), createObject('value', false()))]",
-          "enableFIPS": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'enableFIPS'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].enableFIPS), createObject('value', false()))]",
-          "enableNodePublicIP": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'enableNodePublicIP'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].enableNodePublicIP), createObject('value', false()))]",
-          "enableUltraSSD": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'enableUltraSSD'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].enableUltraSSD), createObject('value', false()))]",
-          "gpuInstanceProfile": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'gpuInstanceProfile'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].gpuInstanceProfile), createObject('value', ''))]",
-          "kubeletDiskType": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'kubeletDiskType'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].kubeletDiskType), createObject('value', ''))]",
-          "maxCount": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'maxCount'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].maxCount), createObject('value', -1))]",
-          "maxPods": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'maxPods'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].maxPods), createObject('value', -1))]",
-          "minCount": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'minCount'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].minCount), createObject('value', -1))]",
-          "mode": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'mode'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].mode), createObject('value', ''))]",
-          "nodeLabels": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'nodeLabels'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].nodeLabels), createObject('value', createObject()))]",
-          "nodePublicIpPrefixId": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'nodePublicIpPrefixId'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].nodePublicIpPrefixId), createObject('value', ''))]",
-          "nodeTaints": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'nodeTaints'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].nodeTaints), createObject('value', createArray()))]",
+          "availabilityZones": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].availabilityZones]"
+          },
+          "count": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].count]"
+          },
+          "sourceResourceId": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].sourceResourceId]"
+          },
+          "enableAutoScaling": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].enableAutoScaling]"
+          },
+          "enableEncryptionAtHost": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].enableEncryptionAtHost]"
+          },
+          "enableFIPS": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].enableFIPS]"
+          },
+          "enableNodePublicIP": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].enableNodePublicIP]"
+          },
+          "enableUltraSSD": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].enableUltraSSD]"
+          },
+          "gpuInstanceProfile": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].gpuInstanceProfile]"
+          },
+          "kubeletDiskType": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].kubeletDiskType]"
+          },
+          "maxCount": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].maxCount]"
+          },
+          "maxPods": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].maxPods]"
+          },
+          "minCount": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].minCount]"
+          },
+          "mode": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].mode]"
+          },
+          "nodeLabels": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].nodeLabels]"
+          },
+          "nodePublicIpPrefixId": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].nodePublicIpPrefixId]"
+          },
+          "nodeTaints": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].nodeTaints]"
+          },
           "orchestratorVersion": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'orchestratorVersion'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].orchestratorVersion), createObject('value', parameters('kubernetesVersion')))]",
-          "osDiskSizeGB": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'osDiskSizeGB'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].osDiskSizeGB), createObject('value', -1))]",
-          "osDiskType": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'osDiskType'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].osDiskType), createObject('value', ''))]",
-          "osSku": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'osSku'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].osSku), createObject('value', ''))]",
-          "osType": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'osType'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].osType), createObject('value', 'Linux'))]",
-          "podSubnetId": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'podSubnetId'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].podSubnetId), createObject('value', ''))]",
-          "proximityPlacementGroupResourceId": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'proximityPlacementGroupResourceId'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].proximityPlacementGroupResourceId), createObject('value', ''))]",
-          "scaleDownMode": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'scaleDownMode'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].scaleDownMode), createObject('value', 'Delete'))]",
-          "scaleSetEvictionPolicy": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'scaleSetEvictionPolicy'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].scaleSetEvictionPolicy), createObject('value', 'Delete'))]",
-          "scaleSetPriority": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'scaleSetPriority'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].scaleSetPriority), createObject('value', ''))]",
-          "spotMaxPrice": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'spotMaxPrice'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].spotMaxPrice), createObject('value', -1))]",
+          "osDiskSizeGB": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].osDiskSizeGB]"
+          },
+          "osDiskType": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].osDiskType]"
+          },
+          "osSku": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].osSku]"
+          },
+          "osType": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].osType]"
+          },
+          "podSubnetId": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].podSubnetId]"
+          },
+          "proximityPlacementGroupResourceId": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].proximityPlacementGroupResourceId]"
+          },
+          "scaleDownMode": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].scaleDownMode]"
+          },
+          "scaleSetEvictionPolicy": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].scaleSetEvictionPolicy]"
+          },
+          "scaleSetPriority": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].scaleSetPriority]"
+          },
+          "spotMaxPrice": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].spotMaxPrice]"
+          },
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "type": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'type'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].type), createObject('value', ''))]",
-          "maxSurge": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'maxSurge'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].maxSurge), createObject('value', ''))]",
-          "vmSize": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'vmSize'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].vmSize), createObject('value', 'Standard_D2s_v3'))]",
-          "vnetSubnetId": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'vnetSubnetId'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].vnetSubnetId), createObject('value', ''))]",
-          "workloadRuntime": "[if(contains(coalesce(parameters('agentPools'), createArray())[copyIndex()], 'workloadRuntime'), createObject('value', coalesce(parameters('agentPools'), createArray())[copyIndex()].workloadRuntime), createObject('value', ''))]"
+          "type": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].type]"
+          },
+          "maxSurge": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].maxSurge]"
+          },
+          "vmSize": {
+            "value": "[coalesce(coalesce(parameters('agentPools'), createArray())[copyIndex()].vmSize, 'Standard_D2s_v3')]"
+          },
+          "vnetSubnetId": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].vnetSubnetId]"
+          },
+          "workloadRuntime": {
+            "value": "[coalesce(parameters('agentPools'), createArray())[copyIndex()].workloadRuntime]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1664,7 +1728,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.21.1.54444",
-              "templateHash": "651511186748693421"
+              "templateHash": "4780846782223891786"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
@@ -1959,9 +2023,7 @@
             }
           },
           "variables": {
-            "creationData": {
-              "sourceResourceId": "[parameters('sourceResourceId')]"
-            },
+            "creationData": "[if(not(empty(parameters('sourceResourceId'))), createObject('sourceResourceId', parameters('sourceResourceId')), null())]",
             "upgradeSettings": {
               "maxSurge": "[parameters('maxSurge')]"
             }
@@ -1980,7 +2042,7 @@
               "properties": {
                 "availabilityZones": "[parameters('availabilityZones')]",
                 "count": "[parameters('count')]",
-                "creationData": "[if(not(empty(parameters('sourceResourceId'))), variables('creationData'), null())]",
+                "creationData": "[variables('creationData')]",
                 "enableAutoScaling": "[parameters('enableAutoScaling')]",
                 "enableEncryptionAtHost": "[parameters('enableEncryptionAtHost')]",
                 "enableFIPS": "[parameters('enableFIPS')]",

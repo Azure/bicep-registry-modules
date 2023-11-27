@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "651511186748693421"
+      "templateHash": "4780846782223891786"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
@@ -301,9 +301,7 @@
     }
   },
   "variables": {
-    "creationData": {
-      "sourceResourceId": "[parameters('sourceResourceId')]"
-    },
+    "creationData": "[if(not(empty(parameters('sourceResourceId'))), createObject('sourceResourceId', parameters('sourceResourceId')), null())]",
     "upgradeSettings": {
       "maxSurge": "[parameters('maxSurge')]"
     }
@@ -322,7 +320,7 @@
       "properties": {
         "availabilityZones": "[parameters('availabilityZones')]",
         "count": "[parameters('count')]",
-        "creationData": "[if(not(empty(parameters('sourceResourceId'))), variables('creationData'), null())]",
+        "creationData": "[variables('creationData')]",
         "enableAutoScaling": "[parameters('enableAutoScaling')]",
         "enableEncryptionAtHost": "[parameters('enableEncryptionAtHost')]",
         "enableFIPS": "[parameters('enableFIPS')]",
