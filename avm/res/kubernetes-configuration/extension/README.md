@@ -16,7 +16,7 @@ This module deploys a Kubernetes Configuration Extension.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.KubernetesConfiguration/extensions` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2022-03-01/extensions) |
-| `Microsoft.KubernetesConfiguration/fluxConfigurations` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2022-03-01/fluxConfigurations) |
+| `Microsoft.KubernetesConfiguration/fluxConfigurations` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/fluxConfigurations) |
 
 ## Usage examples
 
@@ -50,14 +50,9 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     extensionType: 'microsoft.flux'
     name: 'kcemin001'
     // Non-required parameters
-    configurationProtectedSettings: '<configurationProtectedSettings>'
-    configurationSettings: '<configurationSettings>'
-    fluxConfigurations: '<fluxConfigurations>'
     location: '<location>'
     releaseNamespace: 'flux-system'
     releaseTrain: 'Stable'
-    targetNamespace: '<targetNamespace>'
-    version: '<version>'
   }
 }
 ```
@@ -85,15 +80,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
       "value": "kcemin001"
     },
     // Non-required parameters
-    "configurationProtectedSettings": {
-      "value": "<configurationProtectedSettings>"
-    },
-    "configurationSettings": {
-      "value": "<configurationSettings>"
-    },
-    "fluxConfigurations": {
-      "value": "<fluxConfigurations>"
-    },
     "location": {
       "value": "<location>"
     },
@@ -102,12 +88,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     },
     "releaseTrain": {
       "value": "Stable"
-    },
-    "targetNamespace": {
-      "value": "<targetNamespace>"
-    },
-    "version": {
-      "value": "<version>"
     }
   }
 }
@@ -134,7 +114,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     extensionType: 'microsoft.flux'
     name: 'kcemax001'
     // Non-required parameters
-    configurationProtectedSettings: '<configurationProtectedSettings>'
     configurationSettings: {
       'image-automation-controller.enabled': 'false'
       'image-reflector-controller.enabled': 'false'
@@ -153,6 +132,11 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
           timeoutInSeconds: 180
           url: 'https://github.com/mspnp/aks-baseline'
         }
+        kustomizations: {
+          unified: {
+            path: './cluster-manifests'
+          }
+        }
         namespace: 'flux-system'
         suspend: false
       }
@@ -160,7 +144,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     location: '<location>'
     releaseNamespace: 'flux-system'
     releaseTrain: 'Stable'
-    targetNamespace: '<targetNamespace>'
     version: '0.5.2'
   }
 }
@@ -189,9 +172,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
       "value": "kcemax001"
     },
     // Non-required parameters
-    "configurationProtectedSettings": {
-      "value": "<configurationProtectedSettings>"
-    },
     "configurationSettings": {
       "value": {
         "image-automation-controller.enabled": "false",
@@ -213,6 +193,11 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
             "timeoutInSeconds": 180,
             "url": "https://github.com/mspnp/aks-baseline"
           },
+          "kustomizations": {
+            "unified": {
+              "path": "./cluster-manifests"
+            }
+          },
           "namespace": "flux-system",
           "suspend": false
         }
@@ -226,9 +211,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     },
     "releaseTrain": {
       "value": "Stable"
-    },
-    "targetNamespace": {
-      "value": "<targetNamespace>"
     },
     "version": {
       "value": "0.5.2"
@@ -258,7 +240,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     extensionType: 'microsoft.flux'
     name: 'kcewaf001'
     // Non-required parameters
-    configurationProtectedSettings: '<configurationProtectedSettings>'
     configurationSettings: {
       'image-automation-controller.enabled': 'false'
       'image-reflector-controller.enabled': 'false'
@@ -277,6 +258,11 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
           timeoutInSeconds: 180
           url: 'https://github.com/mspnp/aks-baseline'
         }
+        kustomizations: {
+          unified: {
+            path: './cluster-manifests'
+          }
+        }
         namespace: 'flux-system'
         suspend: false
       }
@@ -284,7 +270,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     location: '<location>'
     releaseNamespace: 'flux-system'
     releaseTrain: 'Stable'
-    targetNamespace: '<targetNamespace>'
     version: '0.5.2'
   }
 }
@@ -313,9 +298,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
       "value": "kcewaf001"
     },
     // Non-required parameters
-    "configurationProtectedSettings": {
-      "value": "<configurationProtectedSettings>"
-    },
     "configurationSettings": {
       "value": {
         "image-automation-controller.enabled": "false",
@@ -337,6 +319,11 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
             "timeoutInSeconds": 180,
             "url": "https://github.com/mspnp/aks-baseline"
           },
+          "kustomizations": {
+            "unified": {
+              "path": "./cluster-manifests"
+            }
+          },
           "namespace": "flux-system",
           "suspend": false
         }
@@ -350,9 +337,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     },
     "releaseTrain": {
       "value": "Stable"
-    },
-    "targetNamespace": {
-      "value": "<targetNamespace>"
     },
     "version": {
       "value": "0.5.2"
@@ -478,7 +462,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm-res-kubernetesconfiguration-fluxconfiguration:0.1.1` | Remote reference |
+| `br/public:avm/res/kubernetes-configuration/flux-configuration:0.3.1` | Remote reference |
 
 ## Notes
 

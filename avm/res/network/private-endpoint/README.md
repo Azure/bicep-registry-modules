@@ -54,17 +54,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     serviceResourceId: '<serviceResourceId>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
-    applicationSecurityGroupResourceIds: []
-    customDnsConfigs: []
-    customNetworkInterfaceName: ''
-    ipConfigurations: []
     location: '<location>'
-    lock: {}
-    manualPrivateLinkServiceConnections: []
-    privateDnsZoneGroupName: ''
-    privateDnsZoneResourceIds: []
-    roleAssignments: []
-    tags: {}
   }
 }
 ```
@@ -97,38 +87,8 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       "value": "<subnetResourceId>"
     },
     // Non-required parameters
-    "applicationSecurityGroupResourceIds": {
-      "value": []
-    },
-    "customDnsConfigs": {
-      "value": []
-    },
-    "customNetworkInterfaceName": {
-      "value": ""
-    },
-    "ipConfigurations": {
-      "value": []
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {}
-    },
-    "manualPrivateLinkServiceConnections": {
-      "value": []
-    },
-    "privateDnsZoneGroupName": {
-      "value": ""
-    },
-    "privateDnsZoneResourceIds": {
-      "value": []
-    },
-    "roleAssignments": {
-      "value": []
-    },
-    "tags": {
-      "value": {}
     }
   }
 }
@@ -161,7 +121,14 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     applicationSecurityGroupResourceIds: [
       '<applicationSecurityGroupResourceId>'
     ]
-    customDnsConfigs: []
+    customDnsConfigs: [
+      {
+        fqdn: 'abc.keyvault.com'
+        ipAddresses: [
+          '10.0.0.10'
+        ]
+      }
+    ]
     customNetworkInterfaceName: 'npemax001nic'
     ipConfigurations: [
       {
@@ -178,8 +145,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    manualPrivateLinkServiceConnections: []
-    privateDnsZoneGroupName: 'default'
     privateDnsZoneResourceIds: [
       '<privateDNSZoneResourceId>'
     ]
@@ -187,7 +152,17 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     tags: {
@@ -233,7 +208,14 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       ]
     },
     "customDnsConfigs": {
-      "value": []
+      "value": [
+        {
+          "fqdn": "abc.keyvault.com",
+          "ipAddresses": [
+            "10.0.0.10"
+          ]
+        }
+      ]
     },
     "customNetworkInterfaceName": {
       "value": "npemax001nic"
@@ -259,12 +241,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         "name": "myCustomLockName"
       }
     },
-    "manualPrivateLinkServiceConnections": {
-      "value": []
-    },
-    "privateDnsZoneGroupName": {
-      "value": "default"
-    },
     "privateDnsZoneResourceIds": {
       "value": [
         "<privateDNSZoneResourceId>"
@@ -275,7 +251,17 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -317,7 +303,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     applicationSecurityGroupResourceIds: [
       '<applicationSecurityGroupResourceId>'
     ]
-    customDnsConfigs: []
     customNetworkInterfaceName: 'npewaf001nic'
     ipConfigurations: [
       {
@@ -334,8 +319,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    manualPrivateLinkServiceConnections: []
-    privateDnsZoneGroupName: 'default'
     privateDnsZoneResourceIds: [
       '<privateDNSZoneResourceId>'
     ]
@@ -343,7 +326,17 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     tags: {
@@ -388,9 +381,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         "<applicationSecurityGroupResourceId>"
       ]
     },
-    "customDnsConfigs": {
-      "value": []
-    },
     "customNetworkInterfaceName": {
       "value": "npewaf001nic"
     },
@@ -415,12 +405,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         "name": "myCustomLockName"
       }
     },
-    "manualPrivateLinkServiceConnections": {
-      "value": []
-    },
-    "privateDnsZoneGroupName": {
-      "value": "default"
-    },
     "privateDnsZoneResourceIds": {
       "value": [
         "<privateDNSZoneResourceId>"
@@ -431,7 +415,17 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -475,7 +469,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 | [`manualPrivateLinkServiceConnections`](#parameter-manualprivatelinkserviceconnections) | array | Manual PrivateLink Service Connections. |
 | [`privateDnsZoneGroupName`](#parameter-privatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
 ### Parameter: `applicationSecurityGroupResourceIds`
@@ -488,6 +482,26 @@ Application security groups in which the private endpoint IP configuration is in
 
 Custom DNS configurations.
 - Required: No
+- Type: array
+
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`fqdn`](#parameter-customdnsconfigsfqdn) | Yes | string | Required. Fqdn that resolves to private endpoint ip address. |
+| [`ipAddresses`](#parameter-customdnsconfigsipaddresses) | Yes | array | Required. A list of private ip addresses of the private endpoint. |
+
+### Parameter: `customDnsConfigs.fqdn`
+
+Required. Fqdn that resolves to private endpoint ip address.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customDnsConfigs.ipAddresses`
+
+Required. A list of private ip addresses of the private endpoint.
+
+- Required: Yes
 - Type: array
 
 ### Parameter: `customNetworkInterfaceName`
@@ -514,6 +528,54 @@ Subtype(s) of the connection to be created. The allowed values depend on the typ
 A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.
 - Required: No
 - Type: array
+
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`name`](#parameter-ipconfigurationsname) | Yes | string | Required. The name of the resource that is unique within a resource group. |
+| [`properties`](#parameter-ipconfigurationsproperties) | Yes | object | Required. Properties of private endpoint IP configurations. |
+
+### Parameter: `ipConfigurations.name`
+
+Required. The name of the resource that is unique within a resource group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipConfigurations.properties`
+
+Required. Properties of private endpoint IP configurations.
+
+- Required: Yes
+- Type: object
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`groupId`](#parameter-ipconfigurationspropertiesgroupid) | Yes | string | Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`memberName`](#parameter-ipconfigurationspropertiesmembername) | Yes | string | Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateIPAddress`](#parameter-ipconfigurationspropertiesprivateipaddress) | Yes | string | Required. A private ip address obtained from the private endpoint's subnet. |
+
+### Parameter: `ipConfigurations.properties.groupId`
+
+Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipConfigurations.properties.memberName`
+
+Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipConfigurations.properties.privateIPAddress`
+
+Required. A private ip address obtained from the private endpoint's subnet.
+
+- Required: Yes
+- Type: string
+
 
 ### Parameter: `location`
 
@@ -575,7 +637,7 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 ### Parameter: `roleAssignments`
 
-Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+Array of role assignments to create.
 - Required: No
 - Type: array
 
@@ -588,7 +650,7 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 | [`description`](#parameter-roleassignmentsdescription) | No | string | Optional. The description of the role assignment. |
 | [`principalId`](#parameter-roleassignmentsprincipalid) | Yes | string | Required. The principal ID of the principal (user/group/identity) to assign the role to. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | No | string | Optional. The principal type of the assigned principal ID. |
-| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead. |
+| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 ### Parameter: `roleAssignments.condition`
 
@@ -636,7 +698,7 @@ Optional. The principal type of the assigned principal ID.
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
-Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.
+Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string

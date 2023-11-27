@@ -55,17 +55,8 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     // Required parameters
     name: 'kvvmin002'
     // Non-required parameters
-    accessPolicies: []
-    diagnosticSettings: []
     enablePurgeProtection: false
-    keys: []
     location: '<location>'
-    lock: {}
-    networkAcls: {}
-    privateEndpoints: []
-    roleAssignments: []
-    secrets: {}
-    tags: {}
   }
 }
 ```
@@ -82,41 +73,16 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "kvvmin002"
     },
-    "accessPolicies": {
-      "value": []
-    },
-    "diagnosticSettings": {
-      "value": []
-    },
+    // Non-required parameters
     "enablePurgeProtection": {
       "value": false
     },
-    "keys": {
-      "value": []
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {}
-    },
-    "networkAcls": {
-      "value": {}
-    },
-    "privateEndpoints": {
-      "value": []
-    },
-    "roleAssignments": {
-      "value": []
-    },
-    "secrets": {
-      "value": {}
-    },
-    "tags": {
-      "value": {}
     }
   }
 }
@@ -209,7 +175,17 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         rotationPolicy: {
@@ -266,7 +242,12 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         service: 'vault'
@@ -282,7 +263,17 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     secrets: {
@@ -296,7 +287,17 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
             {
               principalId: '<principalId>'
               principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Reader'
+              roleDefinitionIdOrName: 'Owner'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+            }
+            {
+              principalId: '<principalId>'
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
             }
           ]
           value: 'secretValue'
@@ -405,7 +406,17 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "rotationPolicy": {
@@ -470,7 +481,12 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "service": "vault",
@@ -488,7 +504,17 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -504,7 +530,17 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
               {
                 "principalId": "<principalId>",
                 "principalType": "ServicePrincipal",
-                "roleDefinitionIdOrName": "Reader"
+                "roleDefinitionIdOrName": "Owner"
+              },
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+              },
+              {
+                "principalId": "<principalId>",
+                "principalType": "ServicePrincipal",
+                "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
               }
             ],
             "value": "secretValue"
@@ -637,7 +673,6 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
     // Required parameters
     name: 'kvvwaf002'
     // Non-required parameters
-    accessPolicies: []
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -697,7 +732,6 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
         subnetResourceId: '<subnetResourceId>'
       }
     ]
-    roleAssignments: []
     secrets: {
       secureList: [
         {
@@ -733,9 +767,6 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
   "parameters": {
     "name": {
       "value": "kvvwaf002"
-    },
-    "accessPolicies": {
-      "value": []
     },
     "diagnosticSettings": {
       "value": [
@@ -812,9 +843,6 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
         }
       ]
     },
-    "roleAssignments": {
-      "value": []
-    },
     "secrets": {
       "value": {
         "secureList": [
@@ -874,7 +902,7 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 | [`networkAcls`](#parameter-networkacls) | object | Rules governing the accessibility of the resouce from specific network locations. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`secrets`](#parameter-secrets) | secureObject | All secrets to create. |
 | [`sku`](#parameter-sku) | string | Specifies the SKU for the vault. |
 | [`softDeleteRetentionInDays`](#parameter-softdeleteretentionindays) | int | softDelete data retention days. It accepts >=7 and <=90. |
@@ -885,6 +913,79 @@ module vault 'br/public:avm/res/key-vault/vault:<version>' = {
 All access policies to create.
 - Required: No
 - Type: array
+
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`applicationId`](#parameter-accesspoliciesapplicationid) | No | string | Optional. Application ID of the client making request on behalf of a principal. |
+| [`objectId`](#parameter-accesspoliciesobjectid) | Yes | string | Required. The object ID of a user, service principal or security group in the tenant for the vault. |
+| [`permissions`](#parameter-accesspoliciespermissions) | Yes | object |  |
+| [`tenantId`](#parameter-accesspoliciestenantid) | No | string | Optional. The tenant ID that is used for authenticating requests to the key vault. |
+
+### Parameter: `accessPolicies.applicationId`
+
+Optional. Application ID of the client making request on behalf of a principal.
+
+- Required: No
+- Type: string
+
+### Parameter: `accessPolicies.objectId`
+
+Required. The object ID of a user, service principal or security group in the tenant for the vault.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `accessPolicies.permissions`
+- Required: Yes
+- Type: object
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`certificates`](#parameter-accesspoliciespermissionscertificates) | No | array | Optional. Permissions to certificates. |
+| [`keys`](#parameter-accesspoliciespermissionskeys) | No | array | Optional. Permissions to keys. |
+| [`secrets`](#parameter-accesspoliciespermissionssecrets) | No | array | Optional. Permissions to secrets. |
+| [`storage`](#parameter-accesspoliciespermissionsstorage) | No | array | Optional. Permissions to storage accounts. |
+
+### Parameter: `accessPolicies.permissions.certificates`
+
+Optional. Permissions to certificates.
+
+- Required: No
+- Type: array
+- Allowed: `[all, backup, create, delete, deleteissuers, get, getissuers, import, list, listissuers, managecontacts, manageissuers, purge, recover, restore, setissuers, update]`
+
+### Parameter: `accessPolicies.permissions.keys`
+
+Optional. Permissions to keys.
+
+- Required: No
+- Type: array
+- Allowed: `[all, backup, create, decrypt, delete, encrypt, get, getrotationpolicy, import, list, purge, recover, release, restore, rotate, setrotationpolicy, sign, unwrapKey, update, verify, wrapKey]`
+
+### Parameter: `accessPolicies.permissions.secrets`
+
+Optional. Permissions to secrets.
+
+- Required: No
+- Type: array
+- Allowed: `[all, backup, delete, get, list, purge, recover, restore, set]`
+
+### Parameter: `accessPolicies.permissions.storage`
+
+Optional. Permissions to storage accounts.
+
+- Required: No
+- Type: array
+- Allowed: `[all, backup, delete, deletesas, get, getsas, list, listsas, purge, recover, regeneratekey, restore, set, setsas, update]`
+
+
+### Parameter: `accessPolicies.tenantId`
+
+Optional. The tenant ID that is used for authenticating requests to the key vault.
+
+- Required: No
+- Type: string
 
 ### Parameter: `createMode`
 
@@ -1129,7 +1230,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | No | string | Optional. The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | No | string | Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | No | array | Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
-| [`roleAssignments`](#parameter-privateendpointsroleassignments) | No | array | Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`roleAssignments`](#parameter-privateendpointsroleassignments) | No | array | Optional. Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | No | string | Optional. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob". |
 | [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | Yes | string | Required. Resource ID of the subnet where the endpoint needs to be created. |
 | [`tags`](#parameter-privateendpointstags) | No | object | Optional. Tags to be applied on all resources/resource groups in this deployment. |
@@ -1251,7 +1352,7 @@ Optional. The private DNS zone groups to associate the private endpoint with. A 
 
 ### Parameter: `privateEndpoints.roleAssignments`
 
-Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+Optional. Array of role assignments to create.
 
 - Required: No
 - Type: array
@@ -1294,7 +1395,7 @@ Whether or not public network access is allowed for this resource. For security 
 
 ### Parameter: `roleAssignments`
 
-Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+Array of role assignments to create.
 - Required: No
 - Type: array
 
@@ -1307,7 +1408,7 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 | [`description`](#parameter-roleassignmentsdescription) | No | string | Optional. The description of the role assignment. |
 | [`principalId`](#parameter-roleassignmentsprincipalid) | Yes | string | Required. The principal ID of the principal (user/group/identity) to assign the role to. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | No | string | Optional. The principal type of the assigned principal ID. |
-| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead. |
+| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1355,7 +1456,7 @@ Optional. The principal type of the assigned principal ID.
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
-Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.
+Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string
@@ -1410,4 +1511,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm-res-network-privateendpoint:0.1.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.2.0` | Remote reference |
