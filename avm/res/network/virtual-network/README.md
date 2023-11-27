@@ -54,10 +54,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     ]
     name: 'nvnmin001'
     // Non-required parameters
-    diagnosticSettings: []
     location: '<location>'
-    lock: {}
-    roleAssignments: []
   }
 }
 ```
@@ -84,17 +81,8 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       "value": "nvnmin001"
     },
     // Non-required parameters
-    "diagnosticSettings": {
-      "value": []
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {}
-    },
-    "roleAssignments": {
-      "value": []
     }
   }
 }
@@ -374,9 +362,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     ]
     name: 'nvnpeer001'
     // Non-required parameters
-    diagnosticSettings: []
     location: '<location>'
-    lock: {}
     peerings: [
       {
         allowForwardedTraffic: true
@@ -390,7 +376,6 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         useRemoteGateways: false
       }
     ]
-    roleAssignments: []
     subnets: [
       {
         addressPrefix: '10.1.0.0/26'
@@ -437,14 +422,8 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
       "value": "nvnpeer001"
     },
     // Non-required parameters
-    "diagnosticSettings": {
-      "value": []
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {}
     },
     "peerings": {
       "value": [
@@ -460,9 +439,6 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
           "useRemoteGateways": false
         }
       ]
-    },
-    "roleAssignments": {
-      "value": []
     },
     "subnets": {
       "value": [
