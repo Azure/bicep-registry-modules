@@ -15,7 +15,7 @@ param addressPrefix string
 param networkSecurityGroupResourceId string = ''
 
 @description('Optional. The resource ID of the route table to assign to the subnet.')
-param routeTableId string = ''
+param routeTableResourceId string = ''
 
 @description('Optional. The service endpoints to enable on the subnet.')
 param serviceEndpoints array = []
