@@ -37,32 +37,7 @@ Optional. A hashtable parameter that contains custom tokens to be replaced in th
 
 $TestModuleLocallyInput = @{
     TemplateFilePath           = 'C:\network\route-table\main.bicep'
-    ModuleTestFilePath          = 'C:\network\route-table\.test\parameters.json'
-    PesterTest                 = $false
-    DeploymentTest             = $false
-    ValidationTest             = $true
-    ValidateOrDeployParameters = @{
-        Location          = 'westeurope'
-        ResourceGroupName = 'validation-rg'
-        SubscriptionId    = '00000000-0000-0000-0000-000000000000'
-        ManagementGroupId = '00000000-0000-0000-0000-000000000000'
-        RemoveDeployment  = $false
-    }
-    AdditionalTokens           = @{
-        tenantId      = '00000000-0000-0000-0000-000000000000'
-        namePrefix    = 'avm'
-        moduleVersion = '1.0.0'
-    }
-}
-Test-ModuleLocally @TestModuleLocallyInput -Verbose
-
-Run a Test-Az*Deployment using a specific parameter-template combination with the provided tokens
-
-.EXAMPLE
-
-$TestModuleLocallyInput = @{
-    TemplateFilePath           = 'C:\network\route-table\main.bicep'
-    ModuleTestFilePath          = 'C:\network\route-table\.test\common\main.test.bicep'
+    ModuleTestFilePath         = 'C:\network\route-table\.test\common\main.test.bicep'
     PesterTest                 = $false
     DeploymentTest             = $false
     ValidationTest             = $true
@@ -82,30 +57,6 @@ $TestModuleLocallyInput = @{
 Test-ModuleLocally @TestModuleLocallyInput -Verbose
 
 Run a Test-Az*Deployment using a test file with the provided tokens
-
-.EXAMPLE
-
-$TestModuleLocallyInput = @{
-    TemplateFilePath           = 'C:\network\route-table\main.bicep'
-    PesterTest                 = $true
-    DeploymentTest             = $false
-    ValidationTest             = $true
-    ValidateOrDeployParameters = @{
-        Location          = 'westeurope'
-        ResourceGroupName = 'validation-rg'
-        SubscriptionId    = '00000000-0000-0000-0000-000000000000'
-        ManagementGroupId = '00000000-0000-0000-0000-000000000000'
-        RemoveDeployment  = $false
-    }
-    AdditionalTokens           = @{
-        tenantId      = '00000000-0000-0000-0000-000000000000'
-        namePrefix    = 'avm'
-        moduleVersion = '1.0.0'
-    }
-}
-Test-ModuleLocally @TestModuleLocallyInput -Verbose
-
-Run all Pester tests for a given template and a Test-Az*Deployment using each test file in the module's default test folder ('.test') in combination with the template and the provided tokens
 
 .EXAMPLE
 
@@ -136,31 +87,10 @@ Test-ModuleLocally @TestModuleLocallyInput -Verbose
 
 Run all Pester tests for the given template file including tests for the use of tokens
 
-
-$TestModuleLocallyInput = @{
-    TemplateFilePath           = 'C:\network\route-table\main.bicep'
-    ModuleTestFilePath          = 'C:\network\route-table\.test\parameters.json'
-    PesterTest                 = $false
-    DeploymentTest             = $false
-    WhatIfTest                 = $true
-    ValidationTest             = $false
-    ValidateOrDeployParameters = @{
-        Location          = 'westeurope'
-        ResourceGroupName = 'validation-rg'
-        SubscriptionId    = '00000000-0000-0000-0000-000000000000'
-        ManagementGroupId = '00000000-0000-0000-0000-000000000000'
-        RemoveDeployment  = $false
-    }
-    AdditionalTokens           = @{
-        tenantId = '00000000-0000-0000-0000-000000000000'
-    }
-}
-Test-ModuleLocally @TestModuleLocallyInput -Verbose
-Get What-If deployment result using a specific parameter-template combination with the provided tokens
 .EXAMPLE
 $TestModuleLocallyInput = @{
     TemplateFilePath           = 'C:\network\route-table\main.bicep'
-    ModuleTestFilePath          = 'C:\network\route-table\.test\common\main.test.bicep'
+    ModuleTestFilePath         = 'C:\network\route-table\.test\common\main.test.bicep'
     PesterTest                 = $false
     DeploymentTest             = $false
     WhatIfTest                 = $true
@@ -191,7 +121,7 @@ function Test-ModuleLocally {
         [string] $TemplateFilePath,
 
         [Parameter(Mandatory = $false)]
-        [string] $ModuleTestFilePath = (Join-Path (Split-Path $TemplateFilePath -Parent) '.test'),
+        [string] $ModuleTestFilePath = (Join-Path (Split-Path $TemplateFilePath -Parent) 'tests'),
 
         [Parameter(Mandatory = $false)]
         [string] $PesterTestFilePath = 'avm/utilities/pipelines/staticValidation/module.tests.ps1',
