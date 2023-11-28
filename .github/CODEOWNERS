@@ -17,7 +17,7 @@
 #/avm/res/authorization/role-assignment/ @Azure/avm-res-authorization-roleassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/authorization/role-definition/ @Azure/avm-res-authorization-roledefinition-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/automation/automation-account/ @Azure/avm-res-automation-automationaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/batch/batch-account/ @Azure/avm-res-batch-batchaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/batch/batch-account/ @Azure/avm-res-batch-batchaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/cache/redis/ @Azure/avm-res-cache-redis-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/cdn/profile/ @Azure/avm-res-cdn-profile-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/cognitive-services/account/ @Azure/avm-res-cognitiveservices-account-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -49,8 +49,8 @@
 #/avm/res/digital-twins/digital-twins-instance/ @Azure/avm-res-digitaltwins-digitaltwinsinstance-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/document-db/database-account/ @Azure/avm-res-documentdb-databaseaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/event-grid/domain/ @Azure/avm-res-eventgrid-domain-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/event-grid/system-topic/ @Azure/avm-res-eventgrid-systemtopic-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/event-grid/topic/ @Azure/avm-res-eventgrid-topic-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/event-grid/system-topic/ @Azure/avm-res-eventgrid-systemtopic-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/event-grid/topic/ @Azure/avm-res-eventgrid-topic-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/event-hub/namespace/ @Azure/avm-res-eventhub-namespace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/health-bot/health-bot/ @Azure/avm-res-healthbot-healthbot-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/healthcare-apis/workspace/ @Azure/avm-res-healthcareapis-workspace-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -85,8 +85,8 @@
 /avm/res/network/dns-forwarding-ruleset/ @Azure/avm-res-network-dnsforwardingruleset-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/dns-resolver/ @Azure/avm-res-network-dnsresolver-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/dns-zone/ @Azure/avm-res-network-dnszone-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/network/express-route-circuit/ @Azure/avm-res-network-expressroutecircuit-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/network/express-route-gateway/ @Azure/avm-res-network-expressroutegateway-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/network/express-route-circuit/ @Azure/avm-res-network-expressroutecircuit-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/network/express-route-gateway/ @Azure/avm-res-network-expressroutegateway-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/network/firewall-policy/ @Azure/avm-res-network-firewallpolicy-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/network/front-door/ @Azure/avm-res-network-frontdoor-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/network/front-door-web-application-firewall-policy/ @Azure/avm-res-network-frontdoorwebapplicationfirewallpolicy-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -107,7 +107,7 @@
 #/avm/res/network/service-endpoint-policy/ @Azure/avm-res-network-serviceendpointpolicy-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/network/trafficmanagerprofile/ @Azure/avm-res-network-trafficmanagerprofile-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/network/virtual-hub/ @Azure/avm-res-network-virtualhub-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/network/virtual-network/ @Azure/avm-res-network-virtualnetwork-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/network/virtual-network/ @Azure/avm-res-network-virtualnetwork-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/network/virtual-network-gateway/ @Azure/avm-res-network-virtualnetworkgateway-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/network/virtual-wan/ @Azure/avm-res-network-virtualwan-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/network/vpn-gateway/ @Azure/avm-res-network-vpngateway-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -119,7 +119,7 @@
 #/avm/res/purview/account/ @Azure/avm-res-purview-account-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/recovery-services/vault/ @Azure/avm-res-recoveryservices-vault-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/relay/namespace/ @Azure/avm-res-relay-namespace-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/resource-graph/query/ @Azure/avm-res-resourcegraph-query-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/resource-graph/query/ @Azure/avm-res-resourcegraph-query-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/resources/deployment-script/ @Azure/avm-res-resources-deploymentscript-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/resources/resource-group/ @Azure/avm-res-resources-resourcegroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/resources/tags/ @Azure/avm-res-resources-tags-module-owners-bicep @Azure/avm-core-team-technical-bicep
