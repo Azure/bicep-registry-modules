@@ -8,9 +8,6 @@ param name string
 @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
 param subnetResourceId string
 
-@description('Required. Resource ID of the resource that needs to be connected to the network.')
-param serviceResourceId string
-
 @description('Optional. Application security groups in which the private endpoint IP configuration is included.')
 param applicationSecurityGroupResourceIds array?
 
@@ -19,9 +16,6 @@ param customNetworkInterfaceName string?
 
 @description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
 param ipConfigurations ipConfigurationsType
-
-@description('Required. Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to.')
-param groupIds array
 
 @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
 param privateDnsZoneGroupName string?
@@ -44,8 +38,11 @@ param tags object?
 @description('Optional. Custom DNS configurations.')
 param customDnsConfigs customDnsConfigType
 
-@description('Optional. Manual PrivateLink Service Connections.')
-param manualPrivateLinkServiceConnections array?
+@description('Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource.')
+param manualPrivateLinkServiceConnections manualPrivateLinkServiceConnectionsType
+
+@description('Optional. A grouping of information about the connection to the remote resource.')
+param privateLinkServiceConnections privateLinkServiceConnectionsType
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -93,19 +90,10 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-04-01' = {
     customNetworkInterfaceName: customNetworkInterfaceName ?? ''
     ipConfigurations: ipConfigurations ?? []
     manualPrivateLinkServiceConnections: manualPrivateLinkServiceConnections ?? []
-    privateLinkServiceConnections: [
-      {
-        name: name
-        properties: {
-          privateLinkServiceId: serviceResourceId
-          groupIds: groupIds
-        }
-      }
-    ]
+    privateLinkServiceConnections: privateLinkServiceConnections ?? []
     subnet: {
       id: subnetResourceId
     }
-
   }
 }
 
@@ -202,6 +190,40 @@ type ipConfigurationsType = {
 
     @description('Required. A private IP address obtained from the private endpoint\'s subnet.')
     privateIPAddress: string
+  }
+}[]?
+
+type manualPrivateLinkServiceConnectionsType = {
+  @description('Required. The name of the private link service connection.')
+  name: string
+
+  @description('Required. Properties of private link service connection.')
+  properties: {
+    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
+    groupIds: array
+
+    @description('Required. The resource id of private link service.')
+    privateLinkServiceId: string
+
+    @description('Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.')
+    requestMessage: string
+  }
+}[]?
+
+type privateLinkServiceConnectionsType = {
+  @description('Required. The name of the private link service connection.')
+  name: string
+
+  @description('Required. Properties of private link service connection.')
+  properties: {
+    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
+    groupIds: array
+
+    @description('Required. The resource id of private link service.')
+    privateLinkServiceId: string
+
+    @description('Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.')
+    requestMessage: string
   }
 }[]?
 
