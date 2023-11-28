@@ -74,6 +74,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
     ]
+    // Only for testing purposes
+    enablePurgeProtection: false
     enableRbacAuthorization: true
     keys: [
       {
@@ -140,7 +142,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    // Only for testing purposes
-    enablePurgeProtection: false
   }
 }]
