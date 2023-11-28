@@ -316,7 +316,7 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| [`routes`](#parameter-routes) | array | An Array of Routes to be established within the hub route table. |
+| [`routes`](#parameter-routes) | array | An array of routes to be established within the hub route table. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `disableBgpRoutePropagation`
@@ -443,10 +443,63 @@ Required. The name of the role to assign. If it cannot be found you can specify 
 
 ### Parameter: `routes`
 
-An Array of Routes to be established within the hub route table.
+An array of routes to be established within the hub route table.
 - Required: No
 - Type: array
-- Default: `[]`
+
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`name`](#parameter-routesname) | Yes | string | Name of the route. |
+| [`properties`](#parameter-routesproperties) | Yes | object |  |
+
+### Parameter: `routes.name`
+
+Name of the route.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `routes.properties`
+- Required: Yes
+- Type: object
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`addressPrefix`](#parameter-routespropertiesaddressprefix) | No | string | Optional. The destination CIDR to which the route applies. |
+| [`hasBgpOverride`](#parameter-routespropertieshasbgpoverride) | No | bool | Optional. A value indicating whether this route overrides overlapping BGP routes regardless of LPM. |
+| [`nextHopIpAddress`](#parameter-routespropertiesnexthopipaddress) | No | string | Optional. The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance. |
+| [`nextHopType`](#parameter-routespropertiesnexthoptype) | Yes | string | The type of Azure hop the packet should be sent to. |
+
+### Parameter: `routes.properties.addressPrefix`
+
+Optional. The destination CIDR to which the route applies.
+
+- Required: No
+- Type: string
+
+### Parameter: `routes.properties.hasBgpOverride`
+
+Optional. A value indicating whether this route overrides overlapping BGP routes regardless of LPM.
+
+- Required: No
+- Type: bool
+
+### Parameter: `routes.properties.nextHopIpAddress`
+
+Optional. The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance.
+
+- Required: No
+- Type: string
+
+### Parameter: `routes.properties.nextHopType`
+
+The type of Azure hop the packet should be sent to.
+
+- Required: Yes
+- Type: string
+- Allowed: `[Internet, None, VirtualAppliance, VirtualNetworkGateway, VnetLocal]`
+
 
 ### Parameter: `tags`
 
