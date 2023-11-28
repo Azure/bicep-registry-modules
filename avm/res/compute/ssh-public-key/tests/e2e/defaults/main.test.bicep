@@ -41,10 +41,6 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}-${serviceShort}001'
-    // Workaround for PSRule
-    lock: null
-    tags: null
-    publicKey: null
-    roleAssignments: null
+    location: location
   }
 }
