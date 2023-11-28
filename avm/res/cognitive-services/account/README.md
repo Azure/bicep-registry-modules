@@ -1,10 +1,5 @@
 # Cognitive Services `[Microsoft.CognitiveServices/accounts]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a Cognitive Service.
 
 ## Navigation
@@ -58,20 +53,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     kind: 'SpeechServices'
     name: 'csamin001'
     // Non-required parameters
-    allowedFqdnList: '<allowedFqdnList>'
-    apiProperties: '<apiProperties>'
-    customerManagedKey: '<customerManagedKey>'
-    customSubDomainName: '<customSubDomainName>'
-    diagnosticSettings: '<diagnosticSettings>'
     location: '<location>'
-    lock: '<lock>'
-    managedIdentities: '<managedIdentities>'
-    migrationToken: '<migrationToken>'
-    networkAcls: '<networkAcls>'
-    privateEndpoints: '<privateEndpoints>'
-    roleAssignments: '<roleAssignments>'
-    tags: '<tags>'
-    userOwnedStorage: '<userOwnedStorage>'
   }
 }
 ```
@@ -96,47 +78,8 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       "value": "csamin001"
     },
     // Non-required parameters
-    "allowedFqdnList": {
-      "value": "<allowedFqdnList>"
-    },
-    "apiProperties": {
-      "value": "<apiProperties>"
-    },
-    "customerManagedKey": {
-      "value": "<customerManagedKey>"
-    },
-    "customSubDomainName": {
-      "value": "<customSubDomainName>"
-    },
-    "diagnosticSettings": {
-      "value": "<diagnosticSettings>"
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": "<lock>"
-    },
-    "managedIdentities": {
-      "value": "<managedIdentities>"
-    },
-    "migrationToken": {
-      "value": "<migrationToken>"
-    },
-    "networkAcls": {
-      "value": "<networkAcls>"
-    },
-    "privateEndpoints": {
-      "value": "<privateEndpoints>"
-    },
-    "roleAssignments": {
-      "value": "<roleAssignments>"
-    },
-    "tags": {
-      "value": "<tags>"
-    },
-    "userOwnedStorage": {
-      "value": "<userOwnedStorage>"
     }
   }
 }
@@ -162,9 +105,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     kind: 'Face'
     name: 'csamax001'
     // Non-required parameters
-    allowedFqdnList: '<allowedFqdnList>'
-    apiProperties: '<apiProperties>'
-    customerManagedKey: '<customerManagedKey>'
     customSubDomainName: 'xcsamax'
     diagnosticSettings: [
       {
@@ -205,7 +145,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
-    migrationToken: '<migrationToken>'
     networkAcls: {
       defaultAction: 'Deny'
       ipRules: [
@@ -238,7 +177,17 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     sku: 'S0'
@@ -247,7 +196,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    userOwnedStorage: '<userOwnedStorage>'
   }
 }
 ```
@@ -272,15 +220,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       "value": "csamax001"
     },
     // Non-required parameters
-    "allowedFqdnList": {
-      "value": "<allowedFqdnList>"
-    },
-    "apiProperties": {
-      "value": "<apiProperties>"
-    },
-    "customerManagedKey": {
-      "value": "<customerManagedKey>"
-    },
     "customSubDomainName": {
       "value": "xcsamax"
     },
@@ -331,9 +270,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         ]
       }
     },
-    "migrationToken": {
-      "value": "<migrationToken>"
-    },
     "networkAcls": {
       "value": {
         "defaultAction": "Deny",
@@ -373,7 +309,17 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -386,9 +332,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "userOwnedStorage": {
-      "value": "<userOwnedStorage>"
     }
   }
 }
@@ -414,21 +357,14 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     kind: 'SpeechServices'
     name: 'csaspeech001'
     // Non-required parameters
-    allowedFqdnList: '<allowedFqdnList>'
-    apiProperties: '<apiProperties>'
-    customerManagedKey: '<customerManagedKey>'
     customSubDomainName: 'speechdomain'
-    diagnosticSettings: '<diagnosticSettings>'
     location: '<location>'
-    lock: '<lock>'
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
-    migrationToken: '<migrationToken>'
-    networkAcls: '<networkAcls>'
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -442,14 +378,12 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         }
       }
     ]
-    roleAssignments: '<roleAssignments>'
     sku: 'S0'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    userOwnedStorage: '<userOwnedStorage>'
   }
 }
 ```
@@ -474,26 +408,11 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       "value": "csaspeech001"
     },
     // Non-required parameters
-    "allowedFqdnList": {
-      "value": "<allowedFqdnList>"
-    },
-    "apiProperties": {
-      "value": "<apiProperties>"
-    },
-    "customerManagedKey": {
-      "value": "<customerManagedKey>"
-    },
     "customSubDomainName": {
       "value": "speechdomain"
     },
-    "diagnosticSettings": {
-      "value": "<diagnosticSettings>"
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": "<lock>"
     },
     "managedIdentities": {
       "value": {
@@ -502,12 +421,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
           "<managedIdentityResourceId>"
         ]
       }
-    },
-    "migrationToken": {
-      "value": "<migrationToken>"
-    },
-    "networkAcls": {
-      "value": "<networkAcls>"
     },
     "privateEndpoints": {
       "value": [
@@ -524,9 +437,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         }
       ]
     },
-    "roleAssignments": {
-      "value": "<roleAssignments>"
-    },
     "sku": {
       "value": "S0"
     },
@@ -536,9 +446,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "userOwnedStorage": {
-      "value": "<userOwnedStorage>"
     }
   }
 }
@@ -564,28 +471,17 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     kind: 'SpeechServices'
     name: '<name>'
     // Non-required parameters
-    allowedFqdnList: '<allowedFqdnList>'
-    apiProperties: '<apiProperties>'
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
     }
-    customSubDomainName: '<customSubDomainName>'
-    diagnosticSettings: '<diagnosticSettings>'
     location: '<location>'
-    lock: '<lock>'
     managedIdentities: {
       systemAssigned: true
     }
-    migrationToken: '<migrationToken>'
-    networkAcls: '<networkAcls>'
-    privateEndpoints: '<privateEndpoints>'
     publicNetworkAccess: 'Enabled'
     restrictOutboundNetworkAccess: false
-    roleAssignments: '<roleAssignments>'
     sku: 'S0'
-    tags: '<tags>'
-    userOwnedStorage: '<userOwnedStorage>'
   }
 }
 ```
@@ -610,43 +506,19 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       "value": "<name>"
     },
     // Non-required parameters
-    "allowedFqdnList": {
-      "value": "<allowedFqdnList>"
-    },
-    "apiProperties": {
-      "value": "<apiProperties>"
-    },
     "customerManagedKey": {
       "value": {
         "keyName": "<keyName>",
         "keyVaultResourceId": "<keyVaultResourceId>"
       }
     },
-    "customSubDomainName": {
-      "value": "<customSubDomainName>"
-    },
-    "diagnosticSettings": {
-      "value": "<diagnosticSettings>"
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": "<lock>"
     },
     "managedIdentities": {
       "value": {
         "systemAssigned": true
       }
-    },
-    "migrationToken": {
-      "value": "<migrationToken>"
-    },
-    "networkAcls": {
-      "value": "<networkAcls>"
-    },
-    "privateEndpoints": {
-      "value": "<privateEndpoints>"
     },
     "publicNetworkAccess": {
       "value": "Enabled"
@@ -654,17 +526,8 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     "restrictOutboundNetworkAccess": {
       "value": false
     },
-    "roleAssignments": {
-      "value": "<roleAssignments>"
-    },
     "sku": {
       "value": "S0"
-    },
-    "tags": {
-      "value": "<tags>"
-    },
-    "userOwnedStorage": {
-      "value": "<userOwnedStorage>"
     }
   }
 }
@@ -690,31 +553,20 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     kind: 'SpeechServices'
     name: 'csaencr001'
     // Non-required parameters
-    allowedFqdnList: '<allowedFqdnList>'
-    apiProperties: '<apiProperties>'
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    customSubDomainName: '<customSubDomainName>'
-    diagnosticSettings: '<diagnosticSettings>'
     location: '<location>'
-    lock: '<lock>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
-    migrationToken: '<migrationToken>'
-    networkAcls: '<networkAcls>'
-    privateEndpoints: '<privateEndpoints>'
     publicNetworkAccess: 'Enabled'
     restrictOutboundNetworkAccess: false
-    roleAssignments: '<roleAssignments>'
     sku: 'S0'
-    tags: '<tags>'
-    userOwnedStorage: '<userOwnedStorage>'
   }
 }
 ```
@@ -739,12 +591,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       "value": "csaencr001"
     },
     // Non-required parameters
-    "allowedFqdnList": {
-      "value": "<allowedFqdnList>"
-    },
-    "apiProperties": {
-      "value": "<apiProperties>"
-    },
     "customerManagedKey": {
       "value": {
         "keyName": "<keyName>",
@@ -752,17 +598,8 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
-    "customSubDomainName": {
-      "value": "<customSubDomainName>"
-    },
-    "diagnosticSettings": {
-      "value": "<diagnosticSettings>"
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": "<lock>"
     },
     "managedIdentities": {
       "value": {
@@ -771,32 +608,14 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         ]
       }
     },
-    "migrationToken": {
-      "value": "<migrationToken>"
-    },
-    "networkAcls": {
-      "value": "<networkAcls>"
-    },
-    "privateEndpoints": {
-      "value": "<privateEndpoints>"
-    },
     "publicNetworkAccess": {
       "value": "Enabled"
     },
     "restrictOutboundNetworkAccess": {
       "value": false
     },
-    "roleAssignments": {
-      "value": "<roleAssignments>"
-    },
     "sku": {
       "value": "S0"
-    },
-    "tags": {
-      "value": "<tags>"
-    },
-    "userOwnedStorage": {
-      "value": "<userOwnedStorage>"
     }
   }
 }
@@ -822,9 +641,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     kind: 'Face'
     name: 'csawaf001'
     // Non-required parameters
-    allowedFqdnList: '<allowedFqdnList>'
-    apiProperties: '<apiProperties>'
-    customerManagedKey: '<customerManagedKey>'
     customSubDomainName: 'xcsawaf'
     diagnosticSettings: [
       {
@@ -842,8 +658,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     managedIdentities: {
       systemAssigned: true
     }
-    migrationToken: '<migrationToken>'
-    networkAcls: '<networkAcls>'
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -857,14 +671,12 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         }
       }
     ]
-    roleAssignments: '<roleAssignments>'
     sku: 'S0'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    userOwnedStorage: '<userOwnedStorage>'
   }
 }
 ```
@@ -889,15 +701,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       "value": "csawaf001"
     },
     // Non-required parameters
-    "allowedFqdnList": {
-      "value": "<allowedFqdnList>"
-    },
-    "apiProperties": {
-      "value": "<apiProperties>"
-    },
-    "customerManagedKey": {
-      "value": "<customerManagedKey>"
-    },
     "customSubDomainName": {
       "value": "xcsawaf"
     },
@@ -925,12 +728,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         "systemAssigned": true
       }
     },
-    "migrationToken": {
-      "value": "<migrationToken>"
-    },
-    "networkAcls": {
-      "value": "<networkAcls>"
-    },
     "privateEndpoints": {
       "value": [
         {
@@ -946,9 +743,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         }
       ]
     },
-    "roleAssignments": {
-      "value": "<roleAssignments>"
-    },
     "sku": {
       "value": "S0"
     },
@@ -958,9 +752,6 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "userOwnedStorage": {
-      "value": "<userOwnedStorage>"
     }
   }
 }
@@ -1005,7 +796,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set. |
 | [`restore`](#parameter-restore) | bool | Restore a soft-deleted cognitive service at deployment time. Will fail if no such soft-deleted resource exists. |
 | [`restrictOutboundNetworkAccess`](#parameter-restrictoutboundnetworkaccess) | bool | Restrict outbound network access. |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sku`](#parameter-sku) | string | SKU of the Cognitive Services resource. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`userOwnedStorage`](#parameter-userownedstorage) | array | The storage accounts for this resource. |
@@ -1337,7 +1128,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | No | string | Optional. The name of the private endpoint. |
 | [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | No | string | Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | No | array | Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
-| [`roleAssignments`](#parameter-privateendpointsroleassignments) | No | array | Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`roleAssignments`](#parameter-privateendpointsroleassignments) | No | array | Optional. Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | No | string | Optional. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob". |
 | [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | Yes | string | Required. Resource ID of the subnet where the endpoint needs to be created. |
 | [`tags`](#parameter-privateendpointstags) | No | object | Optional. Tags to be applied on all resources/resource groups in this deployment. |
@@ -1459,7 +1250,7 @@ Optional. The private DNS zone groups to associate the private endpoint with. A 
 
 ### Parameter: `privateEndpoints.roleAssignments`
 
-Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+Optional. Array of role assignments to create.
 
 - Required: No
 - Type: array
@@ -1516,7 +1307,7 @@ Restrict outbound network access.
 
 ### Parameter: `roleAssignments`
 
-Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+Array of role assignments to create.
 - Required: No
 - Type: array
 
@@ -1529,7 +1320,7 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 | [`description`](#parameter-roleassignmentsdescription) | No | string | Optional. The description of the role assignment. |
 | [`principalId`](#parameter-roleassignmentsprincipalid) | Yes | string | Required. The principal ID of the principal (user/group/identity) to assign the role to. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | No | string | Optional. The principal type of the assigned principal ID. |
-| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead. |
+| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1577,7 +1368,7 @@ Optional. The principal type of the assigned principal ID.
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
-Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.
+Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string

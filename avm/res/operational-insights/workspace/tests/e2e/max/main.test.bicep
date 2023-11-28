@@ -203,6 +203,16 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         displayName: 'VMSS Instance Count2'
         name: 'VMSSQueries'
         query: 'Event | where Source == ServiceFabricNodeBootstrapAgent | summarize AggregatedValue = count() by Computer'
+        tags: [
+          {
+            Name: 'Environment'
+            Value: 'Non-Prod'
+          }
+          {
+            Name: 'Role'
+            Value: 'DeploymentValidation'
+          }
+        ]
       }
     ]
     storageInsightsConfigs: [
@@ -227,7 +237,17 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     }
     roleAssignments: [
       {
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
+      }
+      {
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
+      }
+      {
+        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }
