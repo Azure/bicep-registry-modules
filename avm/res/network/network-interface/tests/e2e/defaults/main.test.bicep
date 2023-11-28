@@ -57,10 +57,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         subnetResourceId: nestedDependencies.outputs.subnetResourceId
       }
     ]
-    // Workaround for PSRule
-    lock: null
-    diagnosticSettings: null
-    roleAssignments: null
-    tags: {}
   }
 }]

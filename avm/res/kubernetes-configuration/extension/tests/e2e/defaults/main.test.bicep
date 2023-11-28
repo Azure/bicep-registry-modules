@@ -58,11 +58,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     extensionType: 'microsoft.flux'
     releaseNamespace: 'flux-system'
     releaseTrain: 'Stable'
-    // Workaround for PSRule
-    fluxConfigurations: null
-    version: null
-    configurationProtectedSettings: null
-    configurationSettings: null
-    targetNamespace: null
   }
 }]
