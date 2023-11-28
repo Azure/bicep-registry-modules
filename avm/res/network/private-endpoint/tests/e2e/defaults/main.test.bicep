@@ -68,7 +68,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     manualPrivateLinkServiceConnections: []
     privateLinkServiceConnections: [
       {
-        name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
+        name: '${namePrefix}${serviceShort}001'
         properties: {
           privateLinkServiceId: nestedDependencies.outputs.keyVaultResourceId
           groupIds: [
