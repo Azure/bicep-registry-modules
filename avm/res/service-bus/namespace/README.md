@@ -912,6 +912,11 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
+        logCategoriesAndGroups: [
+          {
+            category: 'RuntimeAuditLogs'
+          }
+        ]
         metricCategories: [
           {
             category: 'AllMetrics'
@@ -1095,6 +1100,11 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
+          "logCategoriesAndGroups": [
+            {
+              "category": "RuntimeAuditLogs"
+            }
+          ],
           "metricCategories": [
             {
               "category": "AllMetrics"

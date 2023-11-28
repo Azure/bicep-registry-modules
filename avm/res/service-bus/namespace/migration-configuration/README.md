@@ -30,19 +30,6 @@ This module deploys a Service Bus Namespace Migration Configuration.
 | :-- | :-- | :-- |
 | [`namespaceName`](#parameter-namespacename) | string | The name of the parent Service Bus Namespace for the Service Bus Queue. Required if the template is used in a standalone deployment. |
 
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-- Required: No
-- Type: bool
-- Default: `True`
-
 ### Parameter: `namespaceName`
 
 The name of the parent Service Bus Namespace for the Service Bus Queue. Required if the template is used in a standalone deployment.

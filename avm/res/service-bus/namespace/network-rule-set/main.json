@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "13436940198974346018"
+      "templateHash": "17402314535401578341"
     },
     "name": "Service Bus Namespace Network Rule Sets",
     "description": "This module deploys a ServiceBus Namespace Network Rule Set.",
@@ -62,13 +62,6 @@
       "metadata": {
         "description": "Optional. List of IpRules. It will not be set if publicNetworkAccess is \"Disabled\". Otherwise, when used, defaultAction will be set to \"Deny\"."
       }
-    },
-    "enableDefaultTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-      }
     }
   },
   "variables": {
@@ -84,20 +77,6 @@
     ]
   },
   "resources": [
-    {
-      "condition": "[parameters('enableDefaultTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": []
-        }
-      }
-    },
     {
       "type": "Microsoft.ServiceBus/namespaces/networkRuleSets",
       "apiVersion": "2022-10-01-preview",
