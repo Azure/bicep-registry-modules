@@ -30,6 +30,9 @@ Optional. Name of the management group to deploy into. Mandatory if deploying in
 .PARAMETER additionalParameters
 Optional. Additional parameters you can provide with the deployment. E.g. @{ resourceGroupName = 'myResourceGroup' }
 
+.PARAMETER RepoRoot
+Optional. The path to the repository's root
+
 .EXAMPLE
 Get-TemplateDeploymentWhatIf -templateFilePath 'C:/key-vault/vault/main.bicep' -parameterFilePath 'C:/key-vault/vault/.test/parameters.json' -location 'WestEurope' -resourceGroupName 'aLegendaryRg'
 
