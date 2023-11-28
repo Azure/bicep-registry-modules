@@ -52,17 +52,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     name: '${namePrefix}${serviceShort}001'
     location: location
     storageAccountId: nestedDependencies.outputs.storageAccountResourceId
-    // Workaround for PSRule
-    storageAccessIdentityResourceId: null
-    keyVaultReferenceResourceId: null
-    networkProfile: null
-    tags: null
-    allowedAuthenticationModes: null
-    diagnosticSettings: null
-    roleAssignments: null
-    privateEndpoints: null
-    managedIdentities: null
-    customerManagedKey: null
-    lock: null
   }
 }]

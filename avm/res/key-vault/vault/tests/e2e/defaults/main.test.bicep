@@ -47,15 +47,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     location: location
     // Only for testing purposes
     enablePurgeProtection: false
-    // Workaround for PSRule
-    lock: {}
-    roleAssignments: []
-    diagnosticSettings: []
-    privateEndpoints: []
-    networkAcls: {}
-    accessPolicies: []
-    secrets: {}
-    keys: []
-    tags: {}
   }
 }]
