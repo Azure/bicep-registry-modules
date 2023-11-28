@@ -18,7 +18,7 @@ param location string = deployment().location
 param serviceShort string = 'oiwwaf'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = 'alsv'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
