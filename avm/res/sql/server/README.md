@@ -526,6 +526,24 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     location: '<location>'
     privateEndpoints: [
       {
+        customDnsConfigs: [
+          {
+            fqdn: 'abc.sqlServer.com'
+            ipAddresses: [
+              '10.0.0.10'
+            ]
+          }
+        ]
+        ipConfigurations: [
+          {
+            name: 'myIPconfig'
+            properties: {
+              groupId: 'sqlServer'
+              memberName: 'default'
+              privateIPAddress: '10.0.0.10'
+            }
+          }
+        ]
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
@@ -575,6 +593,24 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "privateEndpoints": {
       "value": [
         {
+          "customDnsConfigs": [
+            {
+              "fqdn": "abc.sqlServer.com",
+              "ipAddresses": [
+                "10.0.0.10"
+              ]
+            }
+          ],
+          "ipConfigurations": [
+            {
+              "name": "myIPconfig",
+              "properties": {
+                "groupId": "sqlServer",
+                "memberName": "default",
+                "privateIPAddress": "10.0.0.10"
+              }
+            }
+          ],
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
@@ -1307,7 +1343,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`lock`](#parameter-privateendpointslock) | No | object | Optional. Specify the type of lock. |
 | [`manualPrivateLinkServiceConnections`](#parameter-privateendpointsmanualprivatelinkserviceconnections) | No | array | Optional. Manual PrivateLink Service Connections. |
 | [`name`](#parameter-privateendpointsname) | No | string | Optional. The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | No | string | Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided. |
+| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | No | string | Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | No | array | Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | No | array | Optional. Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | No | string | Optional. The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob". |
@@ -1330,19 +1366,19 @@ Optional. Custom DNS configurations.
 
 | Name | Required | Type | Description |
 | :-- | :-- | :--| :-- |
-| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | No | string | Required. Fqdn that resolves to private endpoint ip address. |
-| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | Yes | array | Required. A list of private ip addresses of the private endpoint. |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | No | string | Required. Fqdn that resolves to private endpoint IP address. |
+| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | Yes | array | Required. A list of private IP addresses of the private endpoint. |
 
 ### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
 
-Required. Fqdn that resolves to private endpoint ip address.
+Required. Fqdn that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
 
-Required. A list of private ip addresses of the private endpoint.
+Required. A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
@@ -1392,7 +1428,7 @@ Required. Properties of private endpoint IP configurations.
 | :-- | :-- | :--| :-- |
 | [`groupId`](#parameter-privateendpointsipconfigurationspropertiesgroupid) | Yes | string | Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. |
 | [`memberName`](#parameter-privateendpointsipconfigurationspropertiesmembername) | Yes | string | Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. |
-| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | Yes | string | Required. A private ip address obtained from the private endpoint's subnet. |
+| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | Yes | string | Required. A private IP address obtained from the private endpoint's subnet. |
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.groupId`
 
@@ -1410,7 +1446,7 @@ Required. The member name of a group obtained from the remote resource that this
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
 
-Required. A private ip address obtained from the private endpoint's subnet.
+Required. A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
@@ -1447,7 +1483,7 @@ Optional. The name of the private endpoint.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroupName`
 
-Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.
+Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
 
 - Required: No
 - Type: string

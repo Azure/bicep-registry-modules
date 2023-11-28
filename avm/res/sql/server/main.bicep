@@ -397,6 +397,7 @@ type roleAssignmentType = {
 }[]?
 
 type privateEndpointType = {
+
   @description('Optional. The name of the private endpoint.')
   name: string?
 
@@ -409,7 +410,7 @@ type privateEndpointType = {
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.')
+  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
   privateDnsZoneGroupName: string?
 
   @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
@@ -417,10 +418,10 @@ type privateEndpointType = {
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint ip address.')
+    @description('Required. Fqdn that resolves to private endpoint IP address.')
     fqdn: string?
 
-    @description('Required. A list of private ip addresses of the private endpoint.')
+    @description('Required. A list of private IP addresses of the private endpoint.')
     ipAddresses: string[]
   }[]?
 
@@ -437,7 +438,7 @@ type privateEndpointType = {
       @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
       memberName: string
 
-      @description('Required. A private ip address obtained from the private endpoint\'s subnet.')
+      @description('Required. A private IP address obtained from the private endpoint\'s subnet.')
       privateIPAddress: string
     }
   }[]?

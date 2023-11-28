@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "7584068764370818289"
+      "templateHash": "7066001650216367543"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -163,7 +163,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided."
+              "description": "Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided."
             }
           },
           "privateDnsZoneResourceIds": {
@@ -185,7 +185,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint ip address."
+                    "description": "Required. Fqdn that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {
@@ -194,7 +194,7 @@
                     "type": "string"
                   },
                   "metadata": {
-                    "description": "Required. A list of private ip addresses of the private endpoint."
+                    "description": "Required. A list of private IP addresses of the private endpoint."
                   }
                 }
               }
@@ -233,7 +233,7 @@
                     "privateIPAddress": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. A private ip address obtained from the private endpoint's subnet."
+                        "description": "Required. A private IP address obtained from the private endpoint's subnet."
                       }
                     }
                   },
