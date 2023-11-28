@@ -27,11 +27,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/web/serverfarms:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Max](#example-2-max)
-- [Waf-Aligned](#example-3-waf-aligned)
+- [Using default parameter set](#example-1-using-default-parameter-set)
+- [Using max parameter set](#example-2-using-max-parameter-set)
+- [Using Well Architected parameter set](#example-3-using-well-architected-parameter-set)
 
-### Example 1: _Defaults_
+### Example 1: _Using default parameter set_
+
+This instance deploys the module with a base set of parameters. Note it does include the use of Availability zones by default.
+
 
 <details>
 
@@ -39,10 +42,10 @@ The following section provides usage examples for the module, which were used to
 
 ```bicep
 module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-wsfdef'
+  name: '${uniqueString(deployment().name, location)}-test-wsfmin'
   params: {
     // Required parameters
-    name: 'wsfdef001'
+    name: 'wsfmin001'
     sku: {
       capacity: 3
       family: 'P'
@@ -77,7 +80,7 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "wsfdef001"
+      "value": "wsfmin001"
     },
     "sku": {
       "value": {
@@ -112,7 +115,10 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
 </details>
 <p>
 
-### Example 2: _Max_
+### Example 2: _Using max parameter set_
+
+This instance deploys the module with a full set of parameters for a single scenario.
+
 
 <details>
 
@@ -253,7 +259,10 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
 </details>
 <p>
 
-### Example 3: _Waf-Aligned_
+### Example 3: _Using Well Architected parameter set_
+
+This instance deploys the module with a WAF Aligned set of parameters.
+
 
 <details>
 
