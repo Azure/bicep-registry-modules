@@ -324,7 +324,7 @@ module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-e
   name: '${uniqueString(deployment().name, location)}-serviceBusNamespace-PrivateEndpoint-${index}'
   params: {
     groupIds: [
-      privateEndpoint.?service ?? 'vault'
+      privateEndpoint.?service ?? 'namespace'
     ]
     name: privateEndpoint.?name ?? 'pep-${last(split(serviceBusNamespace.id, '/'))}-${privateEndpoint.?service ?? 'vault'}-${index}'
     serviceResourceId: serviceBusNamespace.id
