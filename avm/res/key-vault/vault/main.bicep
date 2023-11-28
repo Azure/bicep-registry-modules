@@ -239,14 +239,19 @@ module keyVault_keys 'key/main.bicep' = [for (key, index) in (keys ?? []): {
   }
 }]
 
-module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.2.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-KeyVault-PrivateEndpoint-${index}'
   params: {
-    groupIds: [
-      privateEndpoint.?service ?? 'vault'
+    privateLinkServiceConnections: [
+      {
+        name: name
+        properties: {
+          privateLinkServiceId: keyVault.id
+          groupIds: privateEndpoint.?service ?? 'vault'
+        }
+      }
     ]
     name: privateEndpoint.?name ?? 'pep-${last(split(keyVault.id, '/'))}-${privateEndpoint.?service ?? 'vault'}-${index}'
-    serviceResourceId: keyVault.id
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
