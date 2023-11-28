@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Using Well Architected parameter set'
+metadata description = 'This instance deploys the module with a WAF Aligned set of parameters.'
+
 // ========== //
 // Parameters //
 // ========== //
