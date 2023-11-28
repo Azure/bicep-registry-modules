@@ -15,7 +15,7 @@ param location string = deployment().location
 param serviceShort string = 'wsfwaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'np'
 
 // ============ //
 // Dependencies //
@@ -67,12 +67,14 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       family: 'P'
       capacity: 3
     }
+    zoneRedundant: true
     kind: 'App'
     lock: {
       name: 'lock'
       kind: 'CanNotDelete'
     }
     tags: {
+      'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
