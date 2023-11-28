@@ -44,15 +44,21 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
     // Required parameters
     name: 'wsfdef001'
     sku: {
-      capacity: 1
-      family: 'S'
-      name: 'S1'
-      size: 'S1'
-      tier: 'Standard'
+      capacity: 3
+      family: 'P'
+      name: 'P1v3'
+      size: 'P1v3'
+      tier: 'Premium'
     }
     // Non-required parameters
     kind: 'App'
     location: '<location>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    zoneRedundant: true
   }
 }
 ```
@@ -75,11 +81,11 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
     },
     "sku": {
       "value": {
-        "capacity": 1,
-        "family": "S",
-        "name": "S1",
-        "size": "S1",
-        "tier": "Standard"
+        "capacity": 3,
+        "family": "P",
+        "name": "P1v3",
+        "size": "P1v3",
+        "tier": "Premium"
       }
     },
     // Non-required parameters
@@ -88,6 +94,16 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
     },
     "location": {
       "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "zoneRedundant": {
+      "value": true
     }
   }
 }
@@ -109,11 +125,11 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
     // Required parameters
     name: 'wsfmax001'
     sku: {
-      capacity: 1
-      family: 'S'
-      name: 'S1'
-      size: 'S1'
-      tier: 'Standard'
+      capacity: 3
+      family: 'P'
+      name: 'P1v3'
+      size: 'P1v3'
+      tier: 'Premium'
     }
     // Non-required parameters
     diagnosticSettings: [
@@ -136,6 +152,7 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
       kind: 'CanNotDelete'
       name: 'lock'
     }
+    perSiteScaling: true
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -145,8 +162,10 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
     ]
     tags: {
       Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    zoneRedundant: true
   }
 }
 ```
@@ -169,11 +188,11 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
     },
     "sku": {
       "value": {
-        "capacity": 1,
-        "family": "S",
-        "name": "S1",
-        "size": "S1",
-        "tier": "Standard"
+        "capacity": 3,
+        "family": "P",
+        "name": "P1v3",
+        "size": "P1v3",
+        "tier": "Premium"
       }
     },
     // Non-required parameters
@@ -205,6 +224,9 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
         "name": "lock"
       }
     },
+    "perSiteScaling": {
+      "value": true
+    },
     "roleAssignments": {
       "value": [
         {
@@ -217,8 +239,12 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
     "tags": {
       "value": {
         "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "zoneRedundant": {
+      "value": true
     }
   }
 }
@@ -276,8 +302,10 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
     ]
     tags: {
       Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    zoneRedundant: true
   }
 }
 ```
@@ -348,8 +376,12 @@ module serverfarms 'br/public:avm/res/web/serverfarms:<version>' = {
     "tags": {
       "value": {
         "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "zoneRedundant": {
+      "value": true
     }
   }
 }

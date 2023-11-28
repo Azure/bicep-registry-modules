@@ -40,12 +40,18 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     name: '${namePrefix}${serviceShort}001'
     location: location
     sku: {
-      name: 'S1'
-      tier: 'Standard'
-      size: 'S1'
-      family: 'S'
-      capacity: 1
+      name: 'P1v3'
+      tier: 'Premium'
+      size: 'P1v3'
+      family: 'P'
+      capacity: 3
     }
+    zoneRedundant: true
     kind: 'App'
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
   }
 }]
