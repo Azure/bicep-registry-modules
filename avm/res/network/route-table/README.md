@@ -1,6 +1,6 @@
-# Resource Graph Queries `[Microsoft.ResourceGraph/queries]`
+# Route Tables `[Microsoft.Network/routeTables]`
 
-This module deploys a Resource Graph Query.
+This module deploys a User Defined Route Table (UDR).
 
 ## Navigation
 
@@ -16,7 +16,7 @@ This module deploys a Resource Graph Query.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.ResourceGraph/queries` | [2018-09-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ResourceGraph/2018-09-01-preview/queries) |
+| `Microsoft.Network/routeTables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/routeTables) |
 
 ## Usage examples
 
@@ -24,7 +24,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/resource-graph/query:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/route-table:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -40,12 +40,11 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module query 'br/public:avm/res/resource-graph/query:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdsmin'
+module routeTable 'br/public:avm/res/network/route-table:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-nrtmin'
   params: {
     // Required parameters
-    name: 'rdsmin001'
-    query: 'Resources | limit 10'
+    name: 'nrtmin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -66,10 +65,7 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "rdsmin001"
-    },
-    "query": {
-      "value": "Resources | limit 10"
+      "value": "nrtmin001"
     },
     // Non-required parameters
     "location": {
@@ -92,18 +88,17 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module query 'br/public:avm/res/resource-graph/query:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdsmax'
+module routeTable 'br/public:avm/res/network/route-table:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-nrtmax'
   params: {
     // Required parameters
-    name: 'rdsmax001'
-    query: '<query>'
+    name: 'nrtmax001'
     // Non-required parameters
     location: '<location>'
     lock: {
-      kind: 'None'
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
     }
-    queryDescription: 'An example query to list first 5 subscriptions.'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -119,6 +114,16 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    routes: [
+      {
+        name: 'default'
+        properties: {
+          addressPrefix: '0.0.0.0/0'
+          nextHopIpAddress: '172.16.0.20'
+          nextHopType: 'VirtualAppliance'
+        }
       }
     ]
     tags: {
@@ -144,10 +149,7 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "rdsmax001"
-    },
-    "query": {
-      "value": "<query>"
+      "value": "nrtmax001"
     },
     // Non-required parameters
     "location": {
@@ -155,11 +157,9 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
     },
     "lock": {
       "value": {
-        "kind": "None"
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
       }
-    },
-    "queryDescription": {
-      "value": "An example query to list first 5 subscriptions."
     },
     "roleAssignments": {
       "value": [
@@ -180,6 +180,18 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
         }
       ]
     },
+    "routes": {
+      "value": [
+        {
+          "name": "default",
+          "properties": {
+            "addressPrefix": "0.0.0.0/0",
+            "nextHopIpAddress": "172.16.0.20",
+            "nextHopType": "VirtualAppliance"
+          }
+        }
+      ]
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -196,7 +208,7 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
 
 ### Example 3: _WAF-aligned_
 
-This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
@@ -204,19 +216,27 @@ This instance deploys the module in alignment with the best-practices of the Wel
 <summary>via Bicep module</summary>
 
 ```bicep
-module query 'br/public:avm/res/resource-graph/query:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdswaf'
+module routeTable 'br/public:avm/res/network/route-table:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-nrtwaf'
   params: {
     // Required parameters
-    name: 'rdswaf001'
-    query: 'resourcecontainers| where type == \'microsoft.resources/subscriptions\' | take 5'
+    name: 'nrtwaf001'
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     lock: {
-      kind: 'None'
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
     }
-    queryDescription: 'An example query to list first 5 subscriptions.'
+    routes: [
+      {
+        name: 'default'
+        properties: {
+          addressPrefix: '0.0.0.0/0'
+          nextHopIpAddress: '172.16.0.20'
+          nextHopType: 'VirtualAppliance'
+        }
+      }
+    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -240,25 +260,29 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "rdswaf001"
-    },
-    "query": {
-      "value": "resourcecontainers| where type == \"microsoft.resources/subscriptions\" | take 5"
+      "value": "nrtwaf001"
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
     "lock": {
       "value": {
-        "kind": "None"
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
       }
     },
-    "queryDescription": {
-      "value": "An example query to list first 5 subscriptions."
+    "routes": {
+      "value": [
+        {
+          "name": "default",
+          "properties": {
+            "addressPrefix": "0.0.0.0/0",
+            "nextHopIpAddress": "172.16.0.20",
+            "nextHopType": "VirtualAppliance"
+          }
+        }
+      ]
     },
     "tags": {
       "value": {
@@ -281,19 +305,26 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the Resource Graph Query. |
-| [`query`](#parameter-query) | string | KQL query that will be graph. |
+| [`name`](#parameter-name) | string | Name given for the hub route table. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`disableBgpRoutePropagation`](#parameter-disablebgproutepropagation) | bool | Switch to disable BGP route propagation. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`queryDescription`](#parameter-querydescription) | string | The description of a graph query. |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`tags`](#parameter-tags) | object | Resource tags. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`routes`](#parameter-routes) | array | An Array of Routes to be established within the hub route table. |
+| [`tags`](#parameter-tags) | object | Tags of the resource. |
+
+### Parameter: `disableBgpRoutePropagation`
+
+Switch to disable BGP route propagation.
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `enableTelemetry`
 
@@ -338,26 +369,13 @@ Optional. Specify the name of lock.
 
 ### Parameter: `name`
 
-Name of the Resource Graph Query.
+Name given for the hub route table.
 - Required: Yes
 - Type: string
-
-### Parameter: `query`
-
-KQL query that will be graph.
-- Required: Yes
-- Type: string
-
-### Parameter: `queryDescription`
-
-The description of a graph query.
-- Required: No
-- Type: string
-- Default: `''`
 
 ### Parameter: `roleAssignments`
 
-Array of role assignments to create.
+Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 - Required: No
 - Type: array
 
@@ -370,7 +388,7 @@ Array of role assignments to create.
 | [`description`](#parameter-roleassignmentsdescription) | No | string | Optional. The description of the role assignment. |
 | [`principalId`](#parameter-roleassignmentsprincipalid) | Yes | string | Required. The principal ID of the principal (user/group/identity) to assign the role to. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | No | string | Optional. The principal type of the assigned principal ID. |
-| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead. |
 
 ### Parameter: `roleAssignments.condition`
 
@@ -418,14 +436,21 @@ Optional. The principal type of the assigned principal ID.
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
-Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.
 
 - Required: Yes
 - Type: string
 
+### Parameter: `routes`
+
+An Array of Routes to be established within the hub route table.
+- Required: No
+- Type: array
+- Default: `[]`
+
 ### Parameter: `tags`
 
-Resource tags.
+Tags of the resource.
 - Required: No
 - Type: object
 
@@ -435,9 +460,9 @@ Resource tags.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the query. |
-| `resourceGroupName` | string | The resource group the query was deployed into. |
-| `resourceId` | string | The resource ID of the query. |
+| `name` | string | The name of the route table. |
+| `resourceGroupName` | string | The resource group the route table was deployed into. |
+| `resourceId` | string | The resource ID of the route table. |
 
 ## Cross-referenced modules
 
