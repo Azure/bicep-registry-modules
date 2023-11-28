@@ -201,7 +201,7 @@ resource searchService_roleAssignments 'Microsoft.Authorization/roleAssignments@
   scope: searchService
 }]
 
-module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-searchService-PrivateEndpoint-${index}'
   params: {
     privateLinkServiceConnections: [

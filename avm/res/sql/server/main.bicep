@@ -234,7 +234,7 @@ module server_elasticPools 'elastic-pool/main.bicep' = [for (elasticPool, index)
   }
 }]
 
-module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-server-PrivateEndpoint-${index}'
   params: {
     privateLinkServiceConnections: [
