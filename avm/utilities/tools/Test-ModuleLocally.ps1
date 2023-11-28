@@ -229,7 +229,7 @@ function Test-ModuleLocally {
         # Load Modules Validation / Deployment Scripts
         . (Join-Path $utilitiesFolderPath 'pipelines' 'e2eValidation' 'resourceDeployment' 'New-TemplateDeployment.ps1')
         . (Join-Path $utilitiesFolderPath 'pipelines' 'e2eValidation' 'resourceDeployment' 'Test-TemplateDeployment.ps1')
-        . (Join-Path $PSScriptRoot 'helper' 'Get-TemplateDeploymenWhatIf.ps1')
+        . (Join-Path $PSScriptRoot 'helper' 'Get-TemplateDeploymentWhatIf.ps1')
     }
     process {
 
@@ -328,7 +328,7 @@ function Test-ModuleLocally {
                     # Loop through test files
                     foreach ($moduleTestFile in $moduleTestFiles) {
                         Write-Verbose ('Get Deployment What-If result for module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)) -Verbose
-                        Get-TemplateDeploymenWhatIf @functionInput -TemplateFilePath $moduleTestFile
+                        Get-TemplateDeploymentWhatIf @functionInput -TemplateFilePath $moduleTestFile
                     }
                 }
 
