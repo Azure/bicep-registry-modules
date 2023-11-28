@@ -67,7 +67,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
             'vault'
           ]
           privateLinkServiceId: '<privateLinkServiceId>'
-          requestMessage: ''
         }
       }
     ]
@@ -132,8 +131,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
             "groupIds": [
               "vault"
             ],
-            "privateLinkServiceId": "<privateLinkServiceId>",
-            "requestMessage": ""
+            "privateLinkServiceId": "<privateLinkServiceId>"
           }
         }
       ]
@@ -208,7 +206,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
             'vault'
           ]
           privateLinkServiceId: '<privateLinkServiceId>'
-          requestMessage: ''
+          requestMessage: 'Hey there'
         }
       }
     ]
@@ -317,7 +315,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
               "vault"
             ],
             "privateLinkServiceId": "<privateLinkServiceId>",
-            "requestMessage": ""
+            "requestMessage": "Hey there"
           }
         }
       ]
@@ -405,7 +403,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
             'vault'
           ]
           privateLinkServiceId: '<privateLinkServiceId>'
-          requestMessage: ''
         }
       }
     ]
@@ -489,8 +486,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
             "groupIds": [
               "vault"
             ],
-            "privateLinkServiceId": "<privateLinkServiceId>",
-            "requestMessage": ""
+            "privateLinkServiceId": "<privateLinkServiceId>"
           }
         }
       ]
@@ -772,7 +768,7 @@ Required. Properties of private link service connection.
 | :-- | :-- | :--| :-- |
 | [`groupIds`](#parameter-privatelinkserviceconnectionspropertiesgroupids) | Yes | array | Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. |
 | [`privateLinkServiceId`](#parameter-privatelinkserviceconnectionspropertiesprivatelinkserviceid) | Yes | string | Required. The resource id of private link service. |
-| [`requestMessage`](#parameter-privatelinkserviceconnectionspropertiesrequestmessage) | Yes | string | Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars. |
+| [`requestMessage`](#parameter-privatelinkserviceconnectionspropertiesrequestmessage) | No | string | Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars. |
 
 ### Parameter: `privateLinkServiceConnections.properties.groupIds`
 
@@ -792,7 +788,7 @@ Required. The resource id of private link service.
 
 Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 

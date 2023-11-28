@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "9677328568170167813"
+      "templateHash": "2821141217598568122"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint.",
@@ -214,6 +214,7 @@
               },
               "requestMessage": {
                 "type": "string",
+                "nullable": true,
                 "metadata": {
                   "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
                 }

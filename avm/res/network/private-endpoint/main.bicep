@@ -223,7 +223,7 @@ type privateLinkServiceConnectionsType = {
     privateLinkServiceId: string
 
     @description('Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.')
-    requestMessage: string
+    requestMessage: string?
   }
 }[]?
 
