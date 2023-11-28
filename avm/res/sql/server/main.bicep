@@ -234,14 +234,19 @@ module server_elasticPools 'elastic-pool/main.bicep' = [for (elasticPool, index)
   }
 }]
 
-module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.2.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-server-PrivateEndpoint-${index}'
   params: {
-    groupIds: [
-      privateEndpoint.?service ?? 'sqlServer'
+    privateLinkServiceConnections: [
+      {
+        name: name
+        properties: {
+          privateLinkServiceId: server.id
+          groupIds: privateEndpoint.?service ?? 'sqlServer'
+        }
+      }
     ]
     name: privateEndpoint.?name ?? 'pep-${last(split(server.id, '/'))}-${privateEndpoint.?service ?? 'sqlServer'}-${index}'
-    serviceResourceId: server.id
     subnetResourceId: privateEndpoint.subnetResourceId
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock

@@ -204,14 +204,19 @@ resource batchAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@
   scope: batchAccount
 }]
 
-module batchAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.2.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module batchAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-BatchAccount-PrivateEndpoint-${index}'
   params: {
-    groupIds: [
-      privateEndpoint.?service ?? 'batchAccount'
+    privateLinkServiceConnections: [
+      {
+        name: name
+        properties: {
+          privateLinkServiceId: batchAccount.id
+          groupIds: privateEndpoint.?service ?? 'batchAccount'
+        }
+      }
     ]
     name: privateEndpoint.?name ?? 'pep-${last(split(batchAccount.id, '/'))}-${privateEndpoint.?service ?? 'batchAccount'}-${index}'
-    serviceResourceId: batchAccount.id
     subnetResourceId: privateEndpoint.subnetResourceId
     enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
