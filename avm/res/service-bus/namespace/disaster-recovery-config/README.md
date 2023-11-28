@@ -28,7 +28,6 @@ This module deploys a Service Bus Namespace Disaster Recovery Config
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`alternateName`](#parameter-alternatename) | string | Primary/Secondary eventhub namespace name, which is part of GEO DR pairing. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`name`](#parameter-name) | string | The name of the disaster recovery config. |
 | [`partnerNamespaceResourceID`](#parameter-partnernamespaceresourceid) | string | Resource ID of the Primary/Secondary event hub namespace name, which is part of GEO DR pairing. |
 
@@ -38,13 +37,6 @@ Primary/Secondary eventhub namespace name, which is part of GEO DR pairing.
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `name`
 
