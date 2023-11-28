@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "4753216816643105726"
+      "templateHash": "10071658337078754817"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace.",
@@ -2370,17 +2370,20 @@
         "parameters": {
           "groupIds": {
             "value": [
-              "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace')]"
+              "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'vault')]"
             ]
           },
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.ServiceBus/namespaces', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'namespace'), copyIndex()))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.ServiceBus/namespaces', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'vault'), copyIndex()))]"
           },
           "serviceResourceId": {
             "value": "[resourceId('Microsoft.ServiceBus/namespaces', parameters('name'))]"
           },
           "subnetResourceId": {
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "location": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
@@ -2424,7 +2427,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "11574872241175195302"
+              "templateHash": "2788827530274342759"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint.",
@@ -2439,7 +2442,7 @@
                   "roleDefinitionIdOrName": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                      "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
                     }
                   },
                   "principalId": {
@@ -2521,71 +2524,6 @@
                 }
               },
               "nullable": true
-            },
-            "ipConfigurationsType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the resource that is unique within a resource group."
-                    }
-                  },
-                  "properties": {
-                    "type": "object",
-                    "properties": {
-                      "groupId": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
-                        }
-                      },
-                      "memberName": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
-                        }
-                      },
-                      "privateIPAddress": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. A private ip address obtained from the private endpoint's subnet."
-                        }
-                      }
-                    },
-                    "metadata": {
-                      "description": "Required. Properties of private endpoint IP configurations."
-                    }
-                  }
-                }
-              },
-              "nullable": true
-            },
-            "customDnsConfigType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "fqdn": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. Fqdn that resolves to private endpoint ip address."
-                    }
-                  },
-                  "ipAddresses": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "metadata": {
-                      "description": "Required. A list of private ip addresses of the private endpoint."
-                    }
-                  }
-                }
-              },
-              "nullable": true
             }
           },
           "parameters": {
@@ -2622,7 +2560,8 @@
               }
             },
             "ipConfigurations": {
-              "$ref": "#/definitions/ipConfigurationsType",
+              "type": "array",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
               }
@@ -2663,7 +2602,7 @@
             "roleAssignments": {
               "$ref": "#/definitions/roleAssignmentType",
               "metadata": {
-                "description": "Optional. Array of role assignments to create."
+                "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
               }
             },
             "tags": {
@@ -2674,7 +2613,8 @@
               }
             },
             "customDnsConfigs": {
-              "$ref": "#/definitions/customDnsConfigType",
+              "type": "array",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Custom DNS configurations."
               }
@@ -2713,7 +2653,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2023-07-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.2.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2787,7 +2727,7 @@
               "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
               "name": "[guid(resourceId('Microsoft.Network/privateEndpoints', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
               "properties": {
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
                 "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
                 "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
                 "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",

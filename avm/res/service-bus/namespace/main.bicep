@@ -320,15 +320,16 @@ resource serviceBusNamespace_diagnosticSettings 'Microsoft.Insights/diagnosticSe
   scope: serviceBusNamespace
 }]
 
-module serviceBusNamespace_privateEndpoints '../../network/private-endpoint/main.bicep' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.2.0' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-serviceBusNamespace-PrivateEndpoint-${index}'
   params: {
     groupIds: [
-      privateEndpoint.?service ?? 'namespace'
+      privateEndpoint.?service ?? 'vault'
     ]
-    name: privateEndpoint.?name ?? 'pep-${last(split(serviceBusNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
+    name: privateEndpoint.?name ?? 'pep-${last(split(serviceBusNamespace.id, '/'))}-${privateEndpoint.?service ?? 'vault'}-${index}'
     serviceResourceId: serviceBusNamespace.id
     subnetResourceId: privateEndpoint.subnetResourceId
+    enableTelemetry: enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
     privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
