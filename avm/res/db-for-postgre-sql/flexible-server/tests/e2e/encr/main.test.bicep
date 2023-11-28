@@ -64,11 +64,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     administratorLoginPassword: password
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
-    databases: [
-      {
-        name: 'testdb1'
-      }
-    ]
     customerManagedKey: {
       keyName: nestedDependencies.outputs.keyName
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
