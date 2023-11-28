@@ -71,14 +71,14 @@ function Get-TemplateDeploymentWhatIf {
         [Hashtable] $additionalParameters,
 
         [Parameter(Mandatory = $false)]
-        [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.FullName
+        [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName
     )
 
     begin {
         Write-Debug ('{0} entered' -f $MyInvocation.MyCommand)
 
         # Load helper
-        . (Join-Path (Get-Item -Path $PSScriptRoot).parent.FullName 'sharedScripts' 'Get-ScopeOfTemplateFile.ps1')
+        . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-ScopeOfTemplateFile.ps1')
     }
 
     process {
