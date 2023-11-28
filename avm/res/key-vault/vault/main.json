@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "7132385713843537541"
+      "templateHash": "665865372091259296"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -127,7 +127,7 @@
           "roleDefinitionIdOrName": {
             "type": "string",
             "metadata": {
-              "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
+              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
             }
           },
           "principalId": {
@@ -306,7 +306,7 @@
           "roleAssignments": {
             "$ref": "#/definitions/roleAssignmentType",
             "metadata": {
-              "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+              "description": "Optional. Array of role assignments to create."
             }
           },
           "tags": {
@@ -358,6 +358,138 @@
         }
       },
       "nullable": true
+    },
+    "accessPoliciesType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tenantId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The tenant ID that is used for authenticating requests to the key vault."
+            }
+          },
+          "objectId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The object ID of a user, service principal or security group in the tenant for the vault."
+            }
+          },
+          "applicationId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Application ID of the client making request on behalf of a principal."
+            }
+          },
+          "permissions": {
+            "type": "object",
+            "properties": {
+              "keys": {
+                "type": "array",
+                "allowedValues": [
+                  "all",
+                  "backup",
+                  "create",
+                  "decrypt",
+                  "delete",
+                  "encrypt",
+                  "get",
+                  "getrotationpolicy",
+                  "import",
+                  "list",
+                  "purge",
+                  "recover",
+                  "release",
+                  "restore",
+                  "rotate",
+                  "setrotationpolicy",
+                  "sign",
+                  "unwrapKey",
+                  "update",
+                  "verify",
+                  "wrapKey"
+                ],
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Permissions to keys."
+                }
+              },
+              "secrets": {
+                "type": "array",
+                "allowedValues": [
+                  "all",
+                  "backup",
+                  "delete",
+                  "get",
+                  "list",
+                  "purge",
+                  "recover",
+                  "restore",
+                  "set"
+                ],
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Permissions to secrets."
+                }
+              },
+              "certificates": {
+                "type": "array",
+                "allowedValues": [
+                  "all",
+                  "backup",
+                  "create",
+                  "delete",
+                  "deleteissuers",
+                  "get",
+                  "getissuers",
+                  "import",
+                  "list",
+                  "listissuers",
+                  "managecontacts",
+                  "manageissuers",
+                  "purge",
+                  "recover",
+                  "restore",
+                  "setissuers",
+                  "update"
+                ],
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Permissions to certificates."
+                }
+              },
+              "storage": {
+                "type": "array",
+                "allowedValues": [
+                  "all",
+                  "backup",
+                  "delete",
+                  "deletesas",
+                  "get",
+                  "getsas",
+                  "list",
+                  "listsas",
+                  "purge",
+                  "recover",
+                  "regeneratekey",
+                  "restore",
+                  "set",
+                  "setsas",
+                  "update"
+                ],
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Permissions to storage accounts."
+                }
+              }
+            }
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -376,8 +508,7 @@
       }
     },
     "accessPolicies": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/accessPoliciesType",
       "metadata": {
         "description": "Optional. All access policies to create."
       }
@@ -491,7 +622,7 @@
     "roleAssignments": {
       "$ref": "#/definitions/roleAssignmentType",
       "metadata": {
-        "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+        "description": "Optional. Array of role assignments to create."
       }
     },
     "privateEndpoints": {
@@ -527,10 +658,10 @@
         "name": "formattedAccessPolicies",
         "count": "[length(coalesce(parameters('accessPolicies'), createArray()))]",
         "input": {
-          "applicationId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'applicationId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].applicationId, '')]",
-          "objectId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'objectId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].objectId, '')]",
+          "applicationId": "[coalesce(tryGet(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'applicationId'), '')]",
+          "objectId": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].objectId]",
           "permissions": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].permissions]",
-          "tenantId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'tenantId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].tenantId, tenant().tenantId)]"
+          "tenantId": "[coalesce(tryGet(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'tenantId'), tenant().tenantId)]"
         }
       }
     ],
@@ -645,7 +776,7 @@
       "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('name'))]",
       "name": "[guid(resourceId('Microsoft.KeyVault/vaults', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
         "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
         "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
         "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
@@ -672,7 +803,7 @@
             "value": "[parameters('name')]"
           },
           "accessPolicies": {
-            "value": "[variables('formattedAccessPolicies')]"
+            "value": "[parameters('accessPolicies')]"
           }
         },
         "template": {
@@ -683,11 +814,145 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "4111939022872407830"
+              "templateHash": "3185669298547069044"
             },
             "name": "Key Vault Access Policies",
             "description": "This module deploys a Key Vault Access Policy.",
             "owner": "Azure/module-maintainers"
+          },
+          "definitions": {
+            "accessPoliciesType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "tenantId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The tenant ID that is used for authenticating requests to the key vault."
+                    }
+                  },
+                  "objectId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The object ID of a user, service principal or security group in the tenant for the vault."
+                    }
+                  },
+                  "applicationId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Application ID of the client making request on behalf of a principal."
+                    }
+                  },
+                  "permissions": {
+                    "type": "object",
+                    "properties": {
+                      "keys": {
+                        "type": "array",
+                        "allowedValues": [
+                          "all",
+                          "backup",
+                          "create",
+                          "decrypt",
+                          "delete",
+                          "encrypt",
+                          "get",
+                          "getrotationpolicy",
+                          "import",
+                          "list",
+                          "purge",
+                          "recover",
+                          "release",
+                          "restore",
+                          "rotate",
+                          "setrotationpolicy",
+                          "sign",
+                          "unwrapKey",
+                          "update",
+                          "verify",
+                          "wrapKey"
+                        ],
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Permissions to keys."
+                        }
+                      },
+                      "secrets": {
+                        "type": "array",
+                        "allowedValues": [
+                          "all",
+                          "backup",
+                          "delete",
+                          "get",
+                          "list",
+                          "purge",
+                          "recover",
+                          "restore",
+                          "set"
+                        ],
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Permissions to secrets."
+                        }
+                      },
+                      "certificates": {
+                        "type": "array",
+                        "allowedValues": [
+                          "all",
+                          "backup",
+                          "create",
+                          "delete",
+                          "deleteissuers",
+                          "get",
+                          "getissuers",
+                          "import",
+                          "list",
+                          "listissuers",
+                          "managecontacts",
+                          "manageissuers",
+                          "purge",
+                          "recover",
+                          "restore",
+                          "setissuers",
+                          "update"
+                        ],
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Permissions to certificates."
+                        }
+                      },
+                      "storage": {
+                        "type": "array",
+                        "allowedValues": [
+                          "all",
+                          "backup",
+                          "delete",
+                          "deletesas",
+                          "get",
+                          "getsas",
+                          "list",
+                          "listsas",
+                          "purge",
+                          "recover",
+                          "regeneratekey",
+                          "restore",
+                          "set",
+                          "setsas",
+                          "update"
+                        ],
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Permissions to storage accounts."
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            }
           },
           "parameters": {
             "keyVaultName": {
@@ -697,8 +962,7 @@
               }
             },
             "accessPolicies": {
-              "type": "array",
-              "nullable": true,
+              "$ref": "#/definitions/accessPoliciesType",
               "metadata": {
                 "description": "Optional. An array of 0 to 16 identities that have access to the key vault. All identities in the array must use the same tenant ID as the key vault's tenant ID."
               }
@@ -710,10 +974,10 @@
                 "name": "formattedAccessPolicies",
                 "count": "[length(coalesce(parameters('accessPolicies'), createArray()))]",
                 "input": {
-                  "applicationId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'applicationId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].applicationId, '')]",
-                  "objectId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'objectId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].objectId, '')]",
+                  "applicationId": "[coalesce(tryGet(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'applicationId'), '')]",
+                  "objectId": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].objectId]",
                   "permissions": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].permissions]",
-                  "tenantId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'tenantId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].tenantId, tenant().tenantId)]"
+                  "tenantId": "[coalesce(tryGet(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'tenantId'), tenant().tenantId)]"
                 }
               }
             ]
@@ -816,7 +1080,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "9180551172362989336"
+              "templateHash": "14810918598323806738"
             },
             "name": "Key Vault Secrets",
             "description": "This module deploys a Key Vault Secret.",
@@ -831,7 +1095,7 @@
                   "roleDefinitionIdOrName": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
+                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
                     }
                   },
                   "principalId": {
@@ -947,7 +1211,7 @@
             "roleAssignments": {
               "$ref": "#/definitions/roleAssignmentType",
               "metadata": {
-                "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                "description": "Optional. Array of role assignments to create."
               }
             }
           },
@@ -1004,7 +1268,7 @@
               "scope": "[format('Microsoft.KeyVault/vaults/{0}/secrets/{1}', parameters('keyVaultName'), parameters('name'))]",
               "name": "[guid(resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
               "properties": {
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
                 "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
                 "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
                 "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
@@ -1105,7 +1369,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "2691621623448325959"
+              "templateHash": "18051755205410983972"
             },
             "name": "Key Vault Keys",
             "description": "This module deploys a Key Vault Key.",
@@ -1120,7 +1384,7 @@
                   "roleDefinitionIdOrName": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead."
+                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
                     }
                   },
                   "principalId": {
@@ -1272,7 +1536,7 @@
             "roleAssignments": {
               "$ref": "#/definitions/roleAssignmentType",
               "metadata": {
-                "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                "description": "Optional. Array of role assignments to create."
               }
             },
             "rotationPolicy": {
@@ -1339,7 +1603,7 @@
               "scope": "[format('Microsoft.KeyVault/vaults/{0}/keys/{1}', parameters('keyVaultName'), parameters('name'))]",
               "name": "[guid(resourceId('Microsoft.KeyVault/vaults/keys', parameters('keyVaultName'), parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
               "properties": {
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
                 "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
                 "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
                 "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
