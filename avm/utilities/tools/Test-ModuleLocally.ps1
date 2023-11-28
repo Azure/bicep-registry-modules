@@ -194,7 +194,7 @@ function Test-ModuleLocally {
         [string] $ModuleTestFilePath = (Join-Path (Split-Path $TemplateFilePath -Parent) '.test'),
 
         [Parameter(Mandatory = $false)]
-        [string] $PesterTestFilePath = 'utilities/pipelines/staticValidation/module.tests.ps1',
+        [string] $PesterTestFilePath = 'avm/utilities/pipelines/staticValidation/module.tests.ps1',
 
         [Parameter(Mandatory = $false)]
         [Psobject] $ValidateOrDeployParameters = @{},
@@ -219,7 +219,7 @@ function Test-ModuleLocally {
     )
 
     begin {
-        $repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent
+        $repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.FullName
         $ModuleName = Split-Path (Split-Path $TemplateFilePath -Parent) -Leaf
         $utilitiesFolderPath = Split-Path $PSScriptRoot -Parent
         Write-Verbose "Running local tests for [$ModuleName]"
@@ -302,13 +302,12 @@ function Test-ModuleLocally {
             # Deployment & Validation Testing
             # -------------------------------
             $functionInput = @{
-                TemplateFilePath     = $TemplateFilePath
                 location             = $ValidateOrDeployParameters.Location
                 resourceGroupName    = $ValidateOrDeployParameters.ResourceGroupName
                 subscriptionId       = $ValidateOrDeployParameters.SubscriptionId
                 managementGroupId    = $ValidateOrDeployParameters.ManagementGroupId
                 additionalParameters = $additionalParameters
-                RepoRoot             = Split-Path (Split-Path (Split-Path $PSScriptRoot))
+                RepoRoot             = $repoRootPath
                 Verbose              = $true
             }
 
@@ -319,12 +318,7 @@ function Test-ModuleLocally {
                     # Loop through test files
                     foreach ($moduleTestFile in $moduleTestFiles) {
                         Write-Verbose ('Validating module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)) -Verbose
-                        if ((Split-Path $moduleTestFile -Extension) -eq '.json') {
-                            Test-TemplateDeployment @functionInput -ParameterFilePath $moduleTestFile
-                        } else {
-                            $functionInput['TemplateFilePath'] = $moduleTestFile
-                            Test-TemplateDeployment @functionInput
-                        }
+                        Test-TemplateDeployment @functionInput -TemplateFilePath $moduleTestFile
                     }
                 }
 
@@ -334,12 +328,7 @@ function Test-ModuleLocally {
                     # Loop through test files
                     foreach ($moduleTestFile in $moduleTestFiles) {
                         Write-Verbose ('Get Deployment What-If result for module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)) -Verbose
-                        if ((Split-Path $moduleTestFile -Extension) -eq '.json') {
-                            Get-TemplateDeploymenWhatIf @functionInput -ParameterFilePath $moduleTestFile
-                        } else {
-                            $functionInput['TemplateFilePath'] = $moduleTestFile
-                            Get-TemplateDeploymenWhatIf @functionInput
-                        }
+                        Get-TemplateDeploymenWhatIf @functionInput -TemplateFilePath $moduleTestFile
                     }
                 }
 
@@ -350,15 +339,8 @@ function Test-ModuleLocally {
                     # Loop through test files
                     foreach ($moduleTestFile in $moduleTestFiles) {
                         Write-Verbose ('Deploy Module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)) -Verbose
-                        if ((Split-Path $moduleTestFile -Extension) -eq '.json') {
-                            if ($PSCmdlet.ShouldProcess(('Module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)), 'Deploy')) {
-                                New-TemplateDeployment @functionInput -ParameterFilePath $moduleTestFile
-                            }
-                        } else {
-                            $functionInput['TemplateFilePath'] = $moduleTestFile
-                            if ($PSCmdlet.ShouldProcess(('Module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)), 'Deploy')) {
-                                New-TemplateDeployment @functionInput
-                            }
+                        if ($PSCmdlet.ShouldProcess(('Module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)), 'Deploy')) {
+                            New-TemplateDeployment @functionInput -TemplateFilePath $moduleTestFile
                         }
                     }
                 }
