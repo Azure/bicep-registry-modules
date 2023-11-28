@@ -54,10 +54,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location
-    groupIds: [
-      'vault'
-    ]
-    serviceResourceId: nestedDependencies.outputs.keyVaultResourceId
     subnetResourceId: nestedDependencies.outputs.subnetResourceId
     lock: {
       kind: 'CanNotDelete'
@@ -110,5 +106,20 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
+    // Workaround for PSRule
+    privateDnsZoneGroupName: 'default'
+    manualPrivateLinkServiceConnections: []
+    privateLinkServiceConnections: [
+      {
+        name: '${namePrefix}${serviceShort}001'
+        properties: {
+          privateLinkServiceId: nestedDependencies.outputs.keyVaultResourceId
+          groupIds: [
+            'vault'
+          ]
+          requestMessage: ''
+        }
+      }
+    ]
   }
 }]
