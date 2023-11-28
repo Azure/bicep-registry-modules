@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "11725718020023633062"
+      "templateHash": "9677328568170167813"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint.",

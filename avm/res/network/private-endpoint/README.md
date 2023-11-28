@@ -50,6 +50,10 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     name: 'npemin001'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
+    applicationSecurityGroupResourceIds: []
+    customDnsConfigs: []
+    customNetworkInterfaceName: ''
+    ipConfigurations: []
     location: '<location>'
     lock: {}
     manualPrivateLinkServiceConnections: []
@@ -57,7 +61,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     privateDnsZoneResourceIds: []
     privateLinkServiceConnections: [
       {
-        name: '<name>'
+        name: 'npemin001'
         properties: {
           groupIds: [
             'vault'
@@ -93,6 +97,18 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       "value": "<subnetResourceId>"
     },
     // Non-required parameters
+    "applicationSecurityGroupResourceIds": {
+      "value": []
+    },
+    "customDnsConfigs": {
+      "value": []
+    },
+    "customNetworkInterfaceName": {
+      "value": ""
+    },
+    "ipConfigurations": {
+      "value": []
+    },
     "location": {
       "value": "<location>"
     },
@@ -111,7 +127,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     "privateLinkServiceConnections": {
       "value": [
         {
-          "name": "<name>",
+          "name": "npemin001",
           "properties": {
             "groupIds": [
               "vault"
@@ -179,12 +195,14 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    manualPrivateLinkServiceConnections: []
+    privateDnsZoneGroupName: 'default'
     privateDnsZoneResourceIds: [
       '<privateDNSZoneResourceId>'
     ]
     privateLinkServiceConnections: [
       {
-        name: '<name>'
+        name: 'npemax001'
         properties: {
           groupIds: [
             'vault'
@@ -279,6 +297,12 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         "name": "myCustomLockName"
       }
     },
+    "manualPrivateLinkServiceConnections": {
+      "value": []
+    },
+    "privateDnsZoneGroupName": {
+      "value": "default"
+    },
     "privateDnsZoneResourceIds": {
       "value": [
         "<privateDNSZoneResourceId>"
@@ -287,7 +311,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     "privateLinkServiceConnections": {
       "value": [
         {
-          "name": "<name>",
+          "name": "npemax001",
           "properties": {
             "groupIds": [
               "vault"
@@ -351,6 +375,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     applicationSecurityGroupResourceIds: [
       '<applicationSecurityGroupResourceId>'
     ]
+    customDnsConfigs: []
     customNetworkInterfaceName: 'npewaf001nic'
     ipConfigurations: [
       {
@@ -367,12 +392,14 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    manualPrivateLinkServiceConnections: []
+    privateDnsZoneGroupName: 'default'
     privateDnsZoneResourceIds: [
       '<privateDNSZoneResourceId>'
     ]
     privateLinkServiceConnections: [
       {
-        name: '<name>'
+        name: 'npewaf001'
         properties: {
           groupIds: [
             'vault'
@@ -416,6 +443,9 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         "<applicationSecurityGroupResourceId>"
       ]
     },
+    "customDnsConfigs": {
+      "value": []
+    },
     "customNetworkInterfaceName": {
       "value": "npewaf001nic"
     },
@@ -440,6 +470,12 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         "name": "myCustomLockName"
       }
     },
+    "manualPrivateLinkServiceConnections": {
+      "value": []
+    },
+    "privateDnsZoneGroupName": {
+      "value": "default"
+    },
     "privateDnsZoneResourceIds": {
       "value": [
         "<privateDNSZoneResourceId>"
@@ -448,7 +484,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     "privateLinkServiceConnections": {
       "value": [
         {
-          "name": "<name>",
+          "name": "npewaf001",
           "properties": {
             "groupIds": [
               "vault"
@@ -498,7 +534,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 | [`privateDnsZoneGroupName`](#parameter-privatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
 | [`privateLinkServiceConnections`](#parameter-privatelinkserviceconnections) | array | A grouping of information about the connection to the remote resource. |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
 ### Parameter: `applicationSecurityGroupResourceIds`
@@ -823,7 +859,7 @@ Optional. The principal type of the assigned principal ID.
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
-Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.
+Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string
