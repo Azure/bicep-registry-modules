@@ -32,11 +32,11 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/resources/deployment-script:<version>`.
 
 - [Using Azure CLI](#example-1-using-azure-cli)
-- [Defaults](#example-2-defaults)
-- [Max](#example-3-max)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
 - [Using Private Endpoints](#example-4-using-private-endpoints)
 - [Using Azure PowerShell](#example-5-using-azure-powershell)
-- [Waf-Aligned](#example-6-waf-aligned)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using Azure CLI_
 
@@ -136,7 +136,12 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 </details>
 <p>
 
-### Example 2: _Defaults_
+### Example 2: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+> **Note:** The test currently implements additional non-required parameters to cater for a test-specific limitation.
+
+
 
 <details>
 
@@ -213,7 +218,10 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 </details>
 <p>
 
-### Example 3: _Max_
+### Example 3: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -602,7 +610,10 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 </details>
 <p>
 
-### Example 6: _Waf-Aligned_
+### Example 6: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
+
 
 <details>
 
