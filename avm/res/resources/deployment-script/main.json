@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "11347472312988025770"
+      "templateHash": "10601546100594783145"
     },
     "name": "Deployment Scripts",
     "description": "This module deploys Deployment Scripts.",
@@ -296,7 +296,7 @@
         "name": "subnetIds",
         "count": "[length(coalesce(parameters('subnetResourceIds'), createArray()))]",
         "input": {
-          "id": "[coalesce(parameters('subnetResourceIds'), createArray())[copyIndex('subnetIds')]]"
+          "id": "[if(not(empty(parameters('subnetResourceIds'))), coalesce(parameters('subnetResourceIds'), createArray())[copyIndex('subnetIds')].id, null())]"
         }
       }
     ],

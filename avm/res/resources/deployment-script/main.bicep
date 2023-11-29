@@ -118,7 +118,7 @@ var builtInRoleNames = {
 }
 
 var subnetIds = [for resourceId in (subnetResourceIds ?? []): {
-  id: resourceId
+  id: !empty(subnetResourceIds) ? resourceId.id : null
 }]
 
 var containerSettings = {
