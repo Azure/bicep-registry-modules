@@ -74,8 +74,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         path: './cluster-manifests'
       }
     }
-    // Workaround for PSRule
-    bucket: null
-    configurationProtectedSettings: null
   }
 }]
