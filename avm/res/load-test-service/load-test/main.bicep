@@ -31,13 +31,14 @@ param enableTelemetry bool = true
 param loadTestDescription string?
 
 @description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyType
+param customerManagedKey customerManagedKeyType?
 
 // =========== //
 // Variables   //
 // =========== //
 
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+
 var identity = !empty(managedIdentities) ? {
   type: (managedIdentities.?systemAssigned ?? false) ? 'SystemAssigned' : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
   userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
@@ -86,7 +87,7 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empt
   name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
   scope: resourceGroup(split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2], split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4])
 
-  resource cMKKeyUrl 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyUrl)) {
+  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
     name: customerManagedKey.?keyName ?? 'dummyKey'
   }
 }
@@ -104,8 +105,11 @@ resource loadTest 'Microsoft.LoadTestService/loadTests@2022-12-01' = {
   properties: {
     description: loadTestDescription
     encryption: !empty(customerManagedKey) ? {
-      identity: !empty(customerManagedKey.?userAssignedIdentityResourceId ?? '') ? cMKUserAssignedIdentity.properties.clientId : null
-      keyUrl: !empty(customerManagedKey.?keyUrl ?? '') ? customerManagedKey!.keyUrl : last(split(cMKKeyVault::cMKKeyUrl.properties.keyUriWithVersion, '/'))
+      identity: {
+        type: 'UserAssigned'
+        resourceId: cMKUserAssignedIdentity.id
+      }
+      keyUrl: cMKKeyVault::cMKKey.properties.keyUriWithVersion
     } : null
   }
 }
@@ -176,17 +180,23 @@ type roleAssignmentType = {
 }[]?
 
 type customerManagedKeyType = {
-  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
-  keyVaultResourceId: string
-
-  @description('Required. The Url of the key encryption key to use for encryption.')
-  keyUrl: string
-
-  @description('Required. The name of the customer managed key to use for encryption.')
-  keyName: string
+  @description('Optional. Enables system assigned managed identity on the resource.')
+  systemAssigned: bool?
 
   @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
   userAssignedIdentityResourceId: string?
+
+  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
+  keyVaultResourceId: string?
+
+  @description('Required. The name of the customer managed key to use for encryption.')
+  keyName: string?
+
+  @description('Optional. The key encryption Uri of the customer managed key to use for encryption.')
+  keyUri: string?
+
+  @description('Optional. The version of the customer managed key to reference for encryption. If not provided, using \'latest\'.')
+  keyVersion: string?
 }?
 
 type managedIdentitiesType = {

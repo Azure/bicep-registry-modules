@@ -1,11 +1,11 @@
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-@description('Required. The name of the Managed Identity to create.')
-param managedIdentityName string
-
 @description('Required. The name of the Key Vault to create.')
 param keyVaultName string
+
+@description('Required. The name of the Managed Identity to create.')
+param managedIdentityName string
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: managedIdentityName
@@ -47,14 +47,15 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
     principalType: 'ServicePrincipal'
   }
 }
+
 @description('The resource ID of the created Key Vault.')
 output keyVaultResourceId string = keyVault.id
 
 @description('The name of the created Key Vault encryption key.')
 output keyVaultKeyName string = keyVault::key.name
 
+@description('The URL of the created Key Vault.')
+output keyVaultKeyUrl string = keyVault::key.properties.keyUriWithVersion
+
 @description('The resource ID of the created Managed Identity.')
 output managedIdentityResourceId string = managedIdentity.id
-
-@description('The client ID of the created Managed Identity.')
-output managedIdentityClientId string = managedIdentity.properties.clientId
