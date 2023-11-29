@@ -124,7 +124,7 @@ function Test-ModuleLocally {
         [string] $ModuleTestFilePath = (Join-Path (Split-Path $TemplateFilePath -Parent) 'tests'),
 
         [Parameter(Mandatory = $false)]
-        [string] $PesterTestFilePath = 'avm/utilities/pipelines/staticValidation/module.tests.ps1',
+        [string] $PesterTestFilePath = 'avm/utilities/pipelines/staticValidation/compliance/module.tests.ps1',
 
         [Parameter(Mandatory = $false)]
         [Psobject] $ValidateOrDeployParameters = @{},
