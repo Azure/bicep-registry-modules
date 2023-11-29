@@ -36,7 +36,7 @@ This module deploys a MongoDB Database within a CosmosDB Account.
 | :-- | :-- | :-- |
 | [`collections`](#parameter-collections) | array | Collections in the mongodb database. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`throughput`](#parameter-throughput) | int | Name of the mongodb database. |
+| [`throughput`](#parameter-throughput) | int | Request Units per second. |
 
 ### Parameter: `collections`
 
@@ -65,7 +65,7 @@ Tags of the resource.
 
 ### Parameter: `throughput`
 
-Name of the mongodb database.
+Request Units per second.
 - Required: No
 - Type: int
 - Default: `400`

@@ -470,6 +470,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             shardKey: {
               car_id: 'Hash'
             }
+            throughput: 600
           }
           {
             indexes: [
@@ -516,6 +517,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           }
         ]
         name: 'mdb-dddamng-001'
+        throughput: 800
       }
       {
         collections: [
@@ -735,7 +737,8 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
               "name": "car_collection",
               "shardKey": {
                 "car_id": "Hash"
-              }
+              },
+              "throughput": 600
             },
             {
               "indexes": [
@@ -781,7 +784,8 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
               }
             }
           ],
-          "name": "mdb-dddamng-001"
+          "name": "mdb-dddamng-001",
+          "throughput": 800
         },
         {
           "collections": [

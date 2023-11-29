@@ -8,7 +8,7 @@ param databaseAccountName string
 @description('Required. Name of the mongodb database.')
 param name string
 
-@description('Optional. Name of the mongodb database.')
+@description('Optional. Request Units per second.')
 param throughput int = 400
 
 @description('Optional. Collections in the mongodb database.')

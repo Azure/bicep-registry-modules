@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "5055294179231005810"
+      "templateHash": "17310751145694795526"
     },
     "name": "DocumentDB Database Account MongoDB Databases",
     "description": "This module deploys a MongoDB Database within a CosmosDB Account.",
@@ -29,7 +29,7 @@
       "type": "int",
       "defaultValue": 400,
       "metadata": {
-        "description": "Optional. Name of the mongodb database."
+        "description": "Optional. Request Units per second."
       }
     },
     "collections": {

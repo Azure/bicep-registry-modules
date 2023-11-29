@@ -302,7 +302,9 @@ module databaseAccount_mongodbDatabases 'mongodb-database/main.bicep' = [for mon
   params: {
     databaseAccountName: databaseAccount.name
     name: mongodbDatabase.name
+    tags: mongodbDatabase.?tags ?? tags
     collections: contains(mongodbDatabase, 'collections') ? mongodbDatabase.collections : []
+    throughput: mongodbDatabase.?throughput
   }
 }]
 

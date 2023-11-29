@@ -136,6 +136,7 @@ module testDeployment '../../../main.bicep' = {
             shardKey: {
               car_id: 'Hash'
             }
+            throughput: 600
           }
           {
             indexes: [
@@ -182,6 +183,7 @@ module testDeployment '../../../main.bicep' = {
           }
         ]
         name: '${namePrefix}-mdb-${serviceShort}-001'
+        throughput: 800
       }
       {
         collections: [
