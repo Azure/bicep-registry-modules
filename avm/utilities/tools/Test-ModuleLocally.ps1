@@ -151,7 +151,7 @@ function Test-ModuleLocally {
         [string] $ModuleTestFilePath = (Join-Path (Split-Path $TemplateFilePath -Parent) '.test'),
 
         [Parameter(Mandatory = $false)]
-        [string] $PesterTestFilePath = 'utilities/pipelines/staticValidation/module.tests.ps1',
+        [string] $PesterTestFilePath = 'avm/utilities/pipelines/staticValidation/compliance/module.tests.ps1',
 
         [Parameter(Mandatory = $false)]
         [Psobject] $ValidateOrDeployParameters = @{},
@@ -173,7 +173,7 @@ function Test-ModuleLocally {
     )
 
     begin {
-        $repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent
+        $repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.FullName
         $ModuleName = Split-Path (Split-Path $TemplateFilePath -Parent) -Leaf
         $utilitiesFolderPath = Split-Path $PSScriptRoot -Parent
         Write-Verbose "Running local tests for [$ModuleName]"
