@@ -55,10 +55,28 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location
-    groupIds: [
-      'vault'
-    ]
-    serviceResourceId: nestedDependencies.outputs.keyVaultResourceId
     subnetResourceId: nestedDependencies.outputs.subnetResourceId
+    // Workaround for PSRule
+    lock: {}
+    roleAssignments: []
+    applicationSecurityGroupResourceIds: []
+    customNetworkInterfaceName: ''
+    privateDnsZoneGroupName: ''
+    ipConfigurations: []
+    customDnsConfigs: []
+    privateDnsZoneResourceIds: []
+    manualPrivateLinkServiceConnections: []
+    privateLinkServiceConnections: [
+      {
+        name: '${namePrefix}${serviceShort}001'
+        properties: {
+          privateLinkServiceId: nestedDependencies.outputs.keyVaultResourceId
+          groupIds: [
+            'vault'
+          ]
+        }
+      }
+    ]
+    tags: {}
   }
 }]
