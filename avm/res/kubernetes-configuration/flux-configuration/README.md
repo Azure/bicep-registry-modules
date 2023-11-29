@@ -55,8 +55,6 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
     namespace: 'flux-system'
     sourceKind: 'GitRepository'
     // Non-required parameters
-    bucket: '<bucket>'
-    configurationProtectedSettings: '<configurationProtectedSettings>'
     gitRepository: {
       repositoryRef: {
         branch: 'main'
@@ -104,12 +102,6 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
       "value": "GitRepository"
     },
     // Non-required parameters
-    "bucket": {
-      "value": "<bucket>"
-    },
-    "configurationProtectedSettings": {
-      "value": "<configurationProtectedSettings>"
-    },
     "gitRepository": {
       "value": {
         "repositoryRef": {
@@ -166,8 +158,6 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
     namespace: 'flux-system'
     sourceKind: 'GitRepository'
     // Non-required parameters
-    bucket: '<bucket>'
-    configurationProtectedSettings: '<configurationProtectedSettings>'
     gitRepository: {
       repositoryRef: {
         branch: 'main'
@@ -226,12 +216,6 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
       "value": "GitRepository"
     },
     // Non-required parameters
-    "bucket": {
-      "value": "<bucket>"
-    },
-    "configurationProtectedSettings": {
-      "value": "<configurationProtectedSettings>"
-    },
     "gitRepository": {
       "value": {
         "repositoryRef": {
@@ -282,8 +266,6 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
     namespace: 'flux-system'
     sourceKind: 'GitRepository'
     // Non-required parameters
-    bucket: '<bucket>'
-    configurationProtectedSettings: '<configurationProtectedSettings>'
     gitRepository: {
       repositoryRef: {
         branch: 'main'
@@ -336,12 +318,6 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
       "value": "GitRepository"
     },
     // Non-required parameters
-    "bucket": {
-      "value": "<bucket>"
-    },
-    "configurationProtectedSettings": {
-      "value": "<configurationProtectedSettings>"
-    },
     "gitRepository": {
       "value": {
         "repositoryRef": {
