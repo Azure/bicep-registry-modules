@@ -374,16 +374,16 @@ This instance deploys the module with access to a private network.
 
 ```bicep
 module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-rdspvet'
+  name: '${uniqueString(deployment().name, location)}-test-rdsnet'
   params: {
     // Required parameters
     kind: 'AzureCLI'
-    name: 'rdspvet001'
+    name: 'rdsnet001'
     // Non-required parameters
     arguments: '-argument1 \\\'test\\\''
     azCliVersion: '2.9.1'
     cleanupPreference: 'Always'
-    containerGroupName: 'dep-cg-rdspvet'
+    containerGroupName: 'dep-cg-rdsnet'
     environmentVariables: {
       secureList: [
         {
@@ -441,7 +441,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
       "value": "AzureCLI"
     },
     "name": {
-      "value": "rdspvet001"
+      "value": "rdsnet001"
     },
     // Non-required parameters
     "arguments": {
@@ -454,7 +454,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
       "value": "Always"
     },
     "containerGroupName": {
-      "value": "dep-cg-rdspvet"
+      "value": "dep-cg-rdsnet"
     },
     "environmentVariables": {
       "value": {
