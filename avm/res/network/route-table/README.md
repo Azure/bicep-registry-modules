@@ -450,12 +450,12 @@ An array of routes to be established within the hub route table.
 
 | Name | Required | Type | Description |
 | :-- | :-- | :--| :-- |
-| [`name`](#parameter-routesname) | Yes | string | Name of the route. |
+| [`name`](#parameter-routesname) | Yes | string | Required. Name of the route. |
 | [`properties`](#parameter-routesproperties) | Yes | object |  |
 
 ### Parameter: `routes.name`
 
-Name of the route.
+Required. Name of the route.
 
 - Required: Yes
 - Type: string
@@ -469,7 +469,7 @@ Name of the route.
 | [`addressPrefix`](#parameter-routespropertiesaddressprefix) | No | string | Optional. The destination CIDR to which the route applies. |
 | [`hasBgpOverride`](#parameter-routespropertieshasbgpoverride) | No | bool | Optional. A value indicating whether this route overrides overlapping BGP routes regardless of LPM. |
 | [`nextHopIpAddress`](#parameter-routespropertiesnexthopipaddress) | No | string | Optional. The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance. |
-| [`nextHopType`](#parameter-routespropertiesnexthoptype) | Yes | string | The type of Azure hop the packet should be sent to. |
+| [`nextHopType`](#parameter-routespropertiesnexthoptype) | Yes | string | Required. The type of Azure hop the packet should be sent to. |
 
 ### Parameter: `routes.properties.addressPrefix`
 
@@ -494,7 +494,7 @@ Optional. The IP address packets should be forwarded to. Next hop values are onl
 
 ### Parameter: `routes.properties.nextHopType`
 
-The type of Azure hop the packet should be sent to.
+Required. The type of Azure hop the packet should be sent to.
 
 - Required: Yes
 - Type: string

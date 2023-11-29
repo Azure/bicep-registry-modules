@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "8647838996015641510"
+      "templateHash": "12297099865892076814"
     },
     "name": "Route Tables",
     "description": "This module deploys a User Defined Route Table (UDR).",
@@ -112,7 +112,7 @@
           "name": {
             "type": "string",
             "metadata": {
-              "description": "Name of the route."
+              "description": "Required. Name of the route."
             }
           },
           "properties": {
@@ -128,7 +128,7 @@
                   "VnetLocal"
                 ],
                 "metadata": {
-                  "description": "The type of Azure hop the packet should be sent to."
+                  "description": "Required. The type of Azure hop the packet should be sent to."
                 }
               },
               "addressPrefix": {
