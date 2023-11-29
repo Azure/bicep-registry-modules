@@ -72,7 +72,7 @@ module testDeployment '../../../main.bicep' = {
             name: 'myIPconfig'
             properties: {
               groupId: 'sqlServer'
-              memberName: 'default'
+              memberName: 'sqlServer'
               privateIPAddress: '10.0.0.10'
             }
           }
