@@ -242,7 +242,9 @@ module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1
         name: name
         properties: {
           privateLinkServiceId: server.id
-          groupIds: privateEndpoint.?service ?? 'sqlServer'
+          groupIds: [
+            privateEndpoint.?service ?? 'sqlServer'
+          ]
         }
       }
     ]

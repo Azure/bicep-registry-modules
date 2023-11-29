@@ -269,7 +269,9 @@ module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endp
         name: name
         properties: {
           privateLinkServiceId: cognitiveService.id
-          groupIds: privateEndpoint.?service ?? 'account'
+          groupIds: [
+            privateEndpoint.?service ?? 'account'
+          ]
         }
       }
     ]

@@ -209,7 +209,9 @@ module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoin
         name: name
         properties: {
           privateLinkServiceId: searchService.id
-          groupIds: privateEndpoint.?service ?? 'searchService'
+          groupIds: [
+            privateEndpoint.?service ?? 'searchService'
+          ]
         }
       }
     ]

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "14483752859901956366"
+      "templateHash": "2440542999931048241"
     },
     "name": "Batch Accounts",
     "description": "This module deploys a Batch Account.",
@@ -800,7 +800,9 @@
                 "name": "[parameters('name')]",
                 "properties": {
                   "privateLinkServiceId": "[resourceId('Microsoft.Batch/batchAccounts', parameters('name'))]",
-                  "groupIds": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'batchAccount')]"
+                  "groupIds": [
+                    "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'batchAccount')]"
+                  ]
                 }
               }
             ]

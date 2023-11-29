@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "10634244136450605629"
+      "templateHash": "1282169260807050154"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -1691,7 +1691,9 @@
                 "name": "[parameters('name')]",
                 "properties": {
                   "privateLinkServiceId": "[resourceId('Microsoft.KeyVault/vaults', parameters('name'))]",
-                  "groupIds": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'vault')]"
+                  "groupIds": [
+                    "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'vault')]"
+                  ]
                 }
               }
             ]

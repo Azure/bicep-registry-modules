@@ -212,7 +212,9 @@ module batchAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint
         name: name
         properties: {
           privateLinkServiceId: batchAccount.id
-          groupIds: privateEndpoint.?service ?? 'batchAccount'
+          groupIds: [
+            privateEndpoint.?service ?? 'batchAccount'
+          ]
         }
       }
     ]

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "7066001650216367543"
+      "templateHash": "14112506919364586281"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server.",
@@ -1566,7 +1566,9 @@
                 "name": "[parameters('name')]",
                 "properties": {
                   "privateLinkServiceId": "[resourceId('Microsoft.Sql/servers', parameters('name'))]",
-                  "groupIds": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'sqlServer')]"
+                  "groupIds": [
+                    "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'sqlServer')]"
+                  ]
                 }
               }
             ]

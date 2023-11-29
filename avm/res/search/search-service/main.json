@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "5235703924768224603"
+      "templateHash": "6391154387448662965"
     },
     "name": "Search Services",
     "description": "This module deploys a Search Service.",
@@ -690,7 +690,9 @@
                 "name": "[parameters('name')]",
                 "properties": {
                   "privateLinkServiceId": "[resourceId('Microsoft.Search/searchServices', parameters('name'))]",
-                  "groupIds": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'searchService')]"
+                  "groupIds": [
+                    "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'searchService')]"
+                  ]
                 }
               }
             ]

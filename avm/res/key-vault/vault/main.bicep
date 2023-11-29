@@ -247,7 +247,9 @@ module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3
         name: name
         properties: {
           privateLinkServiceId: keyVault.id
-          groupIds: privateEndpoint.?service ?? 'vault'
+          groupIds: [
+            privateEndpoint.?service ?? 'vault'
+          ]
         }
       }
     ]
