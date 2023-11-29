@@ -29,7 +29,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm-res-resources-deploymentscript:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/resources/deployment-script:<version>`.
 
 - [Using Azure CLI](#example-1-using-azure-cli)
 - [Defaults](#example-2-defaults)
@@ -48,7 +48,7 @@ This instance deploys the module with an Azure CLI script.
 <summary>via Bicep module</summary>
 
 ```bicep
-module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
+module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-rdscli'
   params: {
     // Required parameters
@@ -143,7 +143,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
+module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-rdsmin'
   params: {
     // Required parameters
@@ -220,7 +220,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
+module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-rdsmax'
   params: {
     // Required parameters
@@ -370,7 +370,7 @@ This instance deploys the module with access to a private network.
 <summary>via Bicep module</summary>
 
 ```bicep
-module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
+module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-rdspvet'
   params: {
     // Required parameters
@@ -528,7 +528,7 @@ This instance deploys the module with an Azure PowerShell script.
 <summary>via Bicep module</summary>
 
 ```bicep
-module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
+module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-rdsps'
   params: {
     // Required parameters
@@ -609,7 +609,7 @@ module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module deploymentScript 'br/public:avm-res-resources-deploymentscript:1.0.0' = {
+module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-rdswaf'
   params: {
     // Required parameters
@@ -791,7 +791,14 @@ The clean up preference when the script execution gets in a terminal state. Spec
 - Required: No
 - Type: string
 - Default: `'Always'`
-- Allowed: `[Always, OnExpiration, OnSuccess]`
+- Allowed:
+  ```Bicep
+  [
+    'Always'
+    'OnExpiration'
+    'OnSuccess'
+  ]
+  ```
 
 ### Parameter: `containerGroupName`
 
@@ -811,14 +818,20 @@ Enable/Disable usage telemetry for module.
 The environment variables to pass over to the script. The list is passed as an object with a key name "secureList" and the value is the list of environment variables (array). The list must have a 'name' and a 'value' or a 'secretValue' property for each object.
 - Required: No
 - Type: secureObject
-- Default: `{object}`
+- Default: `{}`
 
 ### Parameter: `kind`
 
 Specifies the Kind of the Deployment Script.
 - Required: Yes
 - Type: string
-- Allowed: `[AzureCLI, AzurePowerShell]`
+- Allowed:
+  ```Bicep
+  [
+    'AzureCLI'
+    'AzurePowerShell'
+  ]
+  ```
 
 ### Parameter: `location`
 
