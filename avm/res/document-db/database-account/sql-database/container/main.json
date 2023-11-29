@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "300241451404671975"
+      "templateHash": "5913662241558779543"
     },
     "name": "DocumentDB Database Account SQL Database Containers",
     "description": "This module deploys a SQL Database Container in a CosmosDB Account.",
@@ -47,7 +47,7 @@
     },
     "defaultTtl": {
       "type": "int",
-      "defaultValue": -1,
+      "nullable": true,
       "minValue": -1,
       "maxValue": 2147483647,
       "metadata": {
@@ -63,7 +63,7 @@
     },
     "autoscaleSettingsMaxThroughput": {
       "type": "int",
-      "defaultValue": -1,
+      "nullable": true,
       "maxValue": 1000000,
       "metadata": {
         "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to -1, then the property will be set to null and autoscale will be disabled."
@@ -144,7 +144,7 @@
           },
           "uniqueKeyPolicy": "[if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())]"
         },
-        "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', if(equals(parameters('autoscaleSettingsMaxThroughput'), -1), parameters('throughput'), null()), 'autoscaleSettings', if(not(equals(parameters('autoscaleSettingsMaxThroughput'), -1)), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null())))]"
+        "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', if(equals(parameters('autoscaleSettingsMaxThroughput'), null()), parameters('throughput'), null()), 'autoscaleSettings', if(not(equals(parameters('autoscaleSettingsMaxThroughput'), null())), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null())))]"
       },
       "dependsOn": [
         "databaseAccount::sqlDatabase"

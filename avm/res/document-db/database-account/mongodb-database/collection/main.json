@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "17315373423674868652"
+      "templateHash": "13866251531253553631"
     },
     "name": "DocumentDB Database Account MongoDB Database Collections",
     "description": "This module deploys a MongoDB Database Collection.",
@@ -34,7 +34,7 @@
       "type": "int",
       "defaultValue": 400,
       "metadata": {
-        "description": "Optional. Name of the mongodb database."
+        "description": "Optional. Request Units per second."
       }
     },
     "indexes": {
@@ -69,21 +69,21 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the mongodb database."
+        "description": "The name of the mongodb database collection."
       },
       "value": "[parameters('name')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the mongodb database."
+        "description": "The resource ID of the mongodb database collection."
       },
       "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections', parameters('databaseAccountName'), parameters('mongodbDatabaseName'), parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the resource group the mongodb database was created in."
+        "description": "The name of the resource group the mongodb database collection was created in."
       },
       "value": "[resourceGroup().name]"
     }

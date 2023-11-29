@@ -37,7 +37,7 @@ This module deploys a MongoDB Database Collection.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`throughput`](#parameter-throughput) | int | Name of the mongodb database. |
+| [`throughput`](#parameter-throughput) | int | Request Units per second. |
 
 ### Parameter: `databaseAccountName`
 
@@ -71,7 +71,7 @@ ShardKey for the collection.
 
 ### Parameter: `throughput`
 
-Name of the mongodb database.
+Request Units per second.
 - Required: No
 - Type: int
 - Default: `400`
@@ -81,9 +81,9 @@ Name of the mongodb database.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the mongodb database. |
-| `resourceGroupName` | string | The name of the resource group the mongodb database was created in. |
-| `resourceId` | string | The resource ID of the mongodb database. |
+| `name` | string | The name of the mongodb database collection. |
+| `resourceGroupName` | string | The name of the resource group the mongodb database collection was created in. |
+| `resourceId` | string | The resource ID of the mongodb database collection. |
 
 ## Cross-referenced modules
 

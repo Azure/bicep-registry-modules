@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "12542104330227131399"
+      "templateHash": "962543155489081710"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -798,7 +798,9 @@
           },
           "containers": "[if(contains(parameters('sqlDatabases')[copyIndex()], 'containers'), createObject('value', parameters('sqlDatabases')[copyIndex()].containers), createObject('value', createArray()))]",
           "throughput": "[if(contains(parameters('sqlDatabases')[copyIndex()], 'throughput'), createObject('value', parameters('sqlDatabases')[copyIndex()].throughput), createObject('value', 400))]",
-          "autoscaleSettingsMaxThroughput": "[if(contains(parameters('sqlDatabases')[copyIndex()], 'autoscaleSettingsMaxThroughput'), createObject('value', parameters('sqlDatabases')[copyIndex()].autoscaleSettingsMaxThroughput), createObject('value', -1))]"
+          "autoscaleSettingsMaxThroughput": {
+            "value": "[tryGet(parameters('sqlDatabases')[copyIndex()], 'autoscaleSettingsMaxThroughput')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -808,7 +810,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "17262263760304395883"
+              "templateHash": "12998444494785216981"
             },
             "name": "DocumentDB Database Account SQL Databases",
             "description": "This module deploys a SQL Database in a CosmosDB Account.",
@@ -843,7 +845,7 @@
             },
             "autoscaleSettingsMaxThroughput": {
               "type": "int",
-              "defaultValue": -1,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to -1, then the property will be set to null and autoscale will be disabled."
               }
@@ -872,7 +874,7 @@
                 "resource": {
                   "id": "[parameters('name')]"
                 },
-                "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', if(equals(parameters('autoscaleSettingsMaxThroughput'), -1), parameters('throughput'), null()), 'autoscaleSettings', if(not(equals(parameters('autoscaleSettingsMaxThroughput'), -1)), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null())))]"
+                "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', if(equals(parameters('autoscaleSettingsMaxThroughput'), null()), parameters('throughput'), null()), 'autoscaleSettings', if(not(equals(parameters('autoscaleSettingsMaxThroughput'), null())), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null())))]"
               },
               "dependsOn": [
                 "databaseAccount"
@@ -902,9 +904,13 @@
                     "value": "[parameters('containers')[copyIndex()].name]"
                   },
                   "analyticalStorageTtl": "[if(contains(parameters('containers')[copyIndex()], 'analyticalStorageTtl'), createObject('value', parameters('containers')[copyIndex()].analyticalStorageTtl), createObject('value', 0))]",
-                  "autoscaleSettingsMaxThroughput": "[if(contains(parameters('containers')[copyIndex()], 'autoscaleSettingsMaxThroughput'), createObject('value', parameters('containers')[copyIndex()].autoscaleSettingsMaxThroughput), createObject('value', -1))]",
+                  "autoscaleSettingsMaxThroughput": {
+                    "value": "[tryGet(parameters('containers')[copyIndex()], 'autoscaleSettingsMaxThroughput')]"
+                  },
                   "conflictResolutionPolicy": "[if(contains(parameters('containers')[copyIndex()], 'conflictResolutionPolicy'), createObject('value', parameters('containers')[copyIndex()].conflictResolutionPolicy), createObject('value', createObject()))]",
-                  "defaultTtl": "[if(contains(parameters('containers')[copyIndex()], 'defaultTtl'), createObject('value', parameters('containers')[copyIndex()].defaultTtl), createObject('value', -1))]",
+                  "defaultTtl": {
+                    "value": "[tryGet(parameters('containers')[copyIndex()], 'defaultTtl')]"
+                  },
                   "indexingPolicy": "[if(contains(parameters('containers')[copyIndex()], 'indexingPolicy'), createObject('value', parameters('containers')[copyIndex()].indexingPolicy), createObject('value', createObject()))]",
                   "kind": "[if(contains(parameters('containers')[copyIndex()], 'kind'), createObject('value', parameters('containers')[copyIndex()].kind), createObject('value', 'Hash'))]",
                   "paths": "[if(contains(parameters('containers')[copyIndex()], 'paths'), createObject('value', parameters('containers')[copyIndex()].paths), createObject('value', createArray()))]",
@@ -919,7 +925,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.23.1.45101",
-                      "templateHash": "300241451404671975"
+                      "templateHash": "5913662241558779543"
                     },
                     "name": "DocumentDB Database Account SQL Database Containers",
                     "description": "This module deploys a SQL Database Container in a CosmosDB Account.",
@@ -960,7 +966,7 @@
                     },
                     "defaultTtl": {
                       "type": "int",
-                      "defaultValue": -1,
+                      "nullable": true,
                       "minValue": -1,
                       "maxValue": 2147483647,
                       "metadata": {
@@ -976,7 +982,7 @@
                     },
                     "autoscaleSettingsMaxThroughput": {
                       "type": "int",
-                      "defaultValue": -1,
+                      "nullable": true,
                       "maxValue": 1000000,
                       "metadata": {
                         "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to -1, then the property will be set to null and autoscale will be disabled."
@@ -1057,7 +1063,7 @@
                           },
                           "uniqueKeyPolicy": "[if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())]"
                         },
-                        "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', if(equals(parameters('autoscaleSettingsMaxThroughput'), -1), parameters('throughput'), null()), 'autoscaleSettings', if(not(equals(parameters('autoscaleSettingsMaxThroughput'), -1)), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null())))]"
+                        "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', if(equals(parameters('autoscaleSettingsMaxThroughput'), null()), parameters('throughput'), null()), 'autoscaleSettings', if(not(equals(parameters('autoscaleSettingsMaxThroughput'), null())), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null())))]"
                       },
                       "dependsOn": [
                         "databaseAccount::sqlDatabase"
@@ -1153,7 +1159,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "10060643214606071913"
+              "templateHash": "5055294179231005810"
             },
             "name": "DocumentDB Database Account MongoDB Databases",
             "description": "This module deploys a MongoDB Database within a CosmosDB Account.",
@@ -1244,6 +1250,9 @@
                   },
                   "shardKey": {
                     "value": "[parameters('collections')[copyIndex()].shardKey]"
+                  },
+                  "throughput": {
+                    "value": "[tryGet(parameters('collections')[copyIndex()], 'throughput')]"
                   }
                 },
                 "template": {
@@ -1253,7 +1262,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.23.1.45101",
-                      "templateHash": "17315373423674868652"
+                      "templateHash": "13866251531253553631"
                     },
                     "name": "DocumentDB Database Account MongoDB Database Collections",
                     "description": "This module deploys a MongoDB Database Collection.",
@@ -1282,7 +1291,7 @@
                       "type": "int",
                       "defaultValue": 400,
                       "metadata": {
-                        "description": "Optional. Name of the mongodb database."
+                        "description": "Optional. Request Units per second."
                       }
                     },
                     "indexes": {
@@ -1317,21 +1326,21 @@
                     "name": {
                       "type": "string",
                       "metadata": {
-                        "description": "The name of the mongodb database."
+                        "description": "The name of the mongodb database collection."
                       },
                       "value": "[parameters('name')]"
                     },
                     "resourceId": {
                       "type": "string",
                       "metadata": {
-                        "description": "The resource ID of the mongodb database."
+                        "description": "The resource ID of the mongodb database collection."
                       },
                       "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections', parameters('databaseAccountName'), parameters('mongodbDatabaseName'), parameters('name'))]"
                     },
                     "resourceGroupName": {
                       "type": "string",
                       "metadata": {
-                        "description": "The name of the resource group the mongodb database was created in."
+                        "description": "The name of the resource group the mongodb database collection was created in."
                       },
                       "value": "[resourceGroup().name]"
                     }
@@ -1402,7 +1411,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "6290508249059198855"
+              "templateHash": "592261013945233276"
             },
             "name": "DocumentDB Database Account Gremlin Databases",
             "description": "This module deploys a Gremlin Database within a CosmosDB Account.",
@@ -1444,7 +1453,7 @@
             },
             "throughput": {
               "type": "int",
-              "defaultValue": -1,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`."
               }
@@ -1463,7 +1472,7 @@
               "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
-                "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), createObject(), createObject('autoscaleSettings', if(equals(parameters('throughput'), -1), createObject('maxThroughput', parameters('maxThroughput')), null()), 'throughput', if(not(equals(parameters('throughput'), -1)), parameters('throughput'), null())))]",
+                "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), createObject(), createObject('autoscaleSettings', if(equals(parameters('throughput'), null()), createObject('maxThroughput', parameters('maxThroughput')), null()), 'throughput', parameters('throughput')))]",
                 "resource": {
                   "id": "[parameters('name')]"
                 }

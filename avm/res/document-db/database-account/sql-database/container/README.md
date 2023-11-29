@@ -58,7 +58,6 @@ Indicates how long data should be retained in the analytical store, for a contai
 Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to -1, then the property will be set to null and autoscale will be disabled.
 - Required: No
 - Type: int
-- Default: `-1`
 
 ### Parameter: `conflictResolutionPolicy`
 
@@ -78,7 +77,6 @@ The name of the parent Database Account. Required if the template is used in a s
 Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items dont expire by default.
 - Required: No
 - Type: int
-- Default: `-1`
 
 ### Parameter: `indexingPolicy`
 

@@ -20,14 +20,14 @@ param conflictResolutionPolicy object = {}
 @maxValue(2147483647)
 @minValue(-1)
 @description('Optional. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items dont expire by default.')
-param defaultTtl int = -1
+param defaultTtl int?
 
 @description('Optional. Request Units per second. Will be set to null if autoscaleSettingsMaxThroughput is used.')
 param throughput int = 400
 
 @maxValue(1000000)
 @description('Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to -1, then the property will be set to null and autoscale will be disabled.')
-param autoscaleSettingsMaxThroughput int = -1
+param autoscaleSettingsMaxThroughput int?
 
 @description('Optional. Tags of the SQL Database resource.')
 param tags object?
@@ -77,8 +77,8 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
       } : null
     }
     options: contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' }) ? null : {
-      throughput: autoscaleSettingsMaxThroughput == -1 ? throughput : null
-      autoscaleSettings: autoscaleSettingsMaxThroughput != -1 ? {
+      throughput: autoscaleSettingsMaxThroughput == null ? throughput : null
+      autoscaleSettings: autoscaleSettingsMaxThroughput != null ? {
         maxThroughput: autoscaleSettingsMaxThroughput
       } : null
     }

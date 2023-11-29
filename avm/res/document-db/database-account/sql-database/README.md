@@ -44,7 +44,6 @@ This module deploys a SQL Database in a CosmosDB Account.
 Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to -1, then the property will be set to null and autoscale will be disabled.
 - Required: No
 - Type: int
-- Default: `-1`
 
 ### Parameter: `containers`
 

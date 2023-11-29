@@ -15,7 +15,7 @@ param containers array = []
 param throughput int = 400
 
 @description('Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to -1, then the property will be set to null and autoscale will be disabled.')
-param autoscaleSettingsMaxThroughput int = -1
+param autoscaleSettingsMaxThroughput int?
 
 @description('Optional. Tags of the SQL database resource.')
 param tags object?
@@ -33,8 +33,8 @@ resource sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2023-04
       id: name
     }
     options: contains(databaseAccount.properties.capabilities, { name: 'EnableServerless' }) ? null : {
-      throughput: autoscaleSettingsMaxThroughput == -1 ? throughput : null
-      autoscaleSettings: autoscaleSettingsMaxThroughput != -1 ? {
+      throughput: autoscaleSettingsMaxThroughput == null ? throughput : null
+      autoscaleSettings: autoscaleSettingsMaxThroughput != null ? {
         maxThroughput: autoscaleSettingsMaxThroughput
       } : null
     }
@@ -48,9 +48,9 @@ module container 'container/main.bicep' = [for container in containers: {
     sqlDatabaseName: name
     name: container.name
     analyticalStorageTtl: contains(container, 'analyticalStorageTtl') ? container.analyticalStorageTtl : 0
-    autoscaleSettingsMaxThroughput: contains(container, 'autoscaleSettingsMaxThroughput') ? container.autoscaleSettingsMaxThroughput : -1
+    autoscaleSettingsMaxThroughput: container.?autoscaleSettingsMaxThroughput
     conflictResolutionPolicy: contains(container, 'conflictResolutionPolicy') ? container.conflictResolutionPolicy : {}
-    defaultTtl: contains(container, 'defaultTtl') ? container.defaultTtl : -1
+    defaultTtl: container.?defaultTtl
     indexingPolicy: contains(container, 'indexingPolicy') ? container.indexingPolicy : {}
     kind: contains(container, 'kind') ? container.kind : 'Hash'
     paths: contains(container, 'paths') ? container.paths : []

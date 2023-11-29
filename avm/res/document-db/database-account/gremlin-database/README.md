@@ -77,7 +77,6 @@ Tags of the Gremlin database resource.
 Request Units per second (for example 10000). Cannot be set together with `maxThroughput`.
 - Required: No
 - Type: int
-- Default: `-1`
 
 
 ## Outputs
