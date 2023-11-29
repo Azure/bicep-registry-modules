@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "11347472312988025770"
+      "templateHash": "18323920421645213914"
     },
     "name": "Deployment Scripts",
     "description": "This module deploys Deployment Scripts.",
@@ -309,7 +309,7 @@
     },
     "containerSettings": {
       "containerGroupName": "[parameters('containerGroupName')]",
-      "subnetIds": "[variables('subnetIds')]"
+      "subnetIds": "[if(not(empty(coalesce(variables('subnetIds'), createArray()))), variables('subnetIds'), null())]"
     },
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"

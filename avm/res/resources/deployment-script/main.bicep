@@ -123,7 +123,7 @@ var subnetIds = [for subnetResourceId in (subnetResourceIds ?? []): {
 
 var containerSettings = {
   containerGroupName: containerGroupName
-  subnetIds: subnetIds
+  subnetIds: !empty(subnetIds ?? []) ? subnetIds : null
 }
 
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourcesIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
