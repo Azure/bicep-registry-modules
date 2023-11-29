@@ -311,7 +311,10 @@ module databaseAccount_gremlinDatabases 'gremlin-database/main.bicep' = [for gre
   params: {
     databaseAccountName: databaseAccount.name
     name: gremlinDatabase.name
+    tags: gremlinDatabase.?tags ?? tags
     graphs: contains(gremlinDatabase, 'graphs') ? gremlinDatabase.graphs : []
+    maxThroughput: contains(gremlinDatabase, 'maxThroughput') ? gremlinDatabase.maxThroughput : 4000
+    throughput: gremlinDatabase.?throughput
   }
 }]
 

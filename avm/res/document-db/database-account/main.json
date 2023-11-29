@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "962543155489081710"
+      "templateHash": "2292690594377694639"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -1401,7 +1401,14 @@
           "name": {
             "value": "[parameters('gremlinDatabases')[copyIndex()].name]"
           },
-          "graphs": "[if(contains(parameters('gremlinDatabases')[copyIndex()], 'graphs'), createObject('value', parameters('gremlinDatabases')[copyIndex()].graphs), createObject('value', createArray()))]"
+          "tags": {
+            "value": "[coalesce(tryGet(parameters('gremlinDatabases')[copyIndex()], 'tags'), parameters('tags'))]"
+          },
+          "graphs": "[if(contains(parameters('gremlinDatabases')[copyIndex()], 'graphs'), createObject('value', parameters('gremlinDatabases')[copyIndex()].graphs), createObject('value', createArray()))]",
+          "maxThroughput": "[if(contains(parameters('gremlinDatabases')[copyIndex()], 'maxThroughput'), createObject('value', parameters('gremlinDatabases')[copyIndex()].maxThroughput), createObject('value', 4000))]",
+          "throughput": {
+            "value": "[tryGet(parameters('gremlinDatabases')[copyIndex()], 'throughput')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",

@@ -179,9 +179,10 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           }
         ]
         name: 'gdb-dddagrm-001'
+        throughput: 10000
       }
       {
-        collections: [
+        graphs: [
           {
             indexingPolicy: {
               automatic: true
@@ -309,10 +310,11 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
               ]
             }
           ],
-          "name": "gdb-dddagrm-001"
+          "name": "gdb-dddagrm-001",
+          "throughput": 10000
         },
         {
-          "collections": [
+          "graphs": [
             {
               "indexingPolicy": {
                 "automatic": true

@@ -116,9 +116,10 @@ module testDeployment '../../../main.bicep' = {
           }
         ]
         name: '${namePrefix}-gdb-${serviceShort}-001'
+        throughput: 10000
       }
       {
-        collections: [
+        graphs: [
           {
             indexingPolicy: {
               automatic: true
