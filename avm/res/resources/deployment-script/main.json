@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "2799551832148096700"
+      "templateHash": "11347472312988025770"
     },
     "name": "Deployment Scripts",
     "description": "This module deploys Deployment Scripts.",
@@ -296,7 +296,7 @@
         "name": "subnetIds",
         "count": "[length(coalesce(parameters('subnetResourceIds'), createArray()))]",
         "input": {
-          "id": "[coalesce(parameters('subnetResourceIds'), createArray())[copyIndex('subnetIds')].id]"
+          "id": "[coalesce(parameters('subnetResourceIds'), createArray())[copyIndex('subnetIds')]]"
         }
       }
     ],
@@ -309,7 +309,7 @@
     },
     "containerSettings": {
       "containerGroupName": "[parameters('containerGroupName')]",
-      "subnetIds": "[if(not(empty(variables('subnetIds'))), variables('subnetIds'), null())]"
+      "subnetIds": "[variables('subnetIds')]"
     },
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"

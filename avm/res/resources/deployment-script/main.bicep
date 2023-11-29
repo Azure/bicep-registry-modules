@@ -117,13 +117,13 @@ var builtInRoleNames = {
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
-var subnetIds = [for resourceId in (subnetResourceIds ?? []): {
-  id: resourceId.id
+var subnetIds = [for subnetResourceId in (subnetResourceIds ?? []): {
+  id: subnetResourceId
 }]
 
 var containerSettings = {
   containerGroupName: containerGroupName
-  subnetIds: !empty(subnetIds) ? subnetIds : null
+  subnetIds: subnetIds
 }
 
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourcesIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
