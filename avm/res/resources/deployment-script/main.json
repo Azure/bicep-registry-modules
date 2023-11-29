@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "13633753334490685746"
+      "templateHash": "11347472312988025770"
     },
     "name": "Deployment Scripts",
     "description": "This module deploys Deployment Scripts.",
@@ -392,7 +392,7 @@
         "azPowerShellVersion": "[if(equals(parameters('kind'), 'AzurePowerShell'), parameters('azPowerShellVersion'), null())]",
         "azCliVersion": "[if(equals(parameters('kind'), 'AzureCLI'), parameters('azCliVersion'), null())]",
         "containerSettings": "[if(not(empty(parameters('containerGroupName'))), variables('containerSettings'), null())]",
-        "storageAccountSettings": "[if(not(empty(parameters('storageAccountResourceId'))), if(not(empty(parameters('storageAccountResourceId'))), createObject('storageAccountKey', if(reference('storageAccount').allowSharedKeyAccess, listKeys(parameters('storageAccountResourceId'), '2023-01-01').keys[0].value, null()), 'storageAccountName', last(split(parameters('storageAccountResourceId'), '/'))), null()), null())]",
+        "storageAccountSettings": "[if(not(empty(parameters('storageAccountResourceId'))), if(not(empty(parameters('storageAccountResourceId'))), createObject('storageAccountKey', listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '//'), '/')[2], split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), 'dummyAccount'), '/'))), '2023-01-01').keys[0].value, 'storageAccountName', last(split(parameters('storageAccountResourceId'), '/'))), null()), null())]",
         "arguments": "[parameters('arguments')]",
         "environmentVariables": "[if(not(empty(parameters('environmentVariables'))), parameters('environmentVariables').secureList, createArray())]",
         "scriptContent": "[if(not(empty(parameters('scriptContent'))), parameters('scriptContent'), null())]",
