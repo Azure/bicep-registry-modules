@@ -48,6 +48,9 @@ runs:
         Write-Verbose "Publishing output: $compressedOutput" -Verbose
         Write-Output ('{0}={1}' -f 'moduleTestFilePaths', $compressedOutput) >> $env:GITHUB_OUTPUT
 
+        Write-Output '::endgroup::'
+
+        Write-Output '::group::Get PSRule test files'
         $psRuleTestFilePaths = $testFilePaths | Where-Object { $_ -match '${{ inputs.psRuleFilterRegex }}' }
 
         Write-Verbose 'Found PSRule module test files' -Verbose
