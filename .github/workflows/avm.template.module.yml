@@ -35,7 +35,7 @@ jobs:
   #   Static validation   #
   #########################
   job_module_static_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-    name: "Static validation"
+    name: "Static"
     runs-on: ubuntu-20.04
     if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
     steps:
@@ -54,7 +54,7 @@ jobs:
   #   PSRule validation   #
   #########################
   job_psrule_test: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-    name: "PSRule validation"
+    name: "PSRule"
     runs-on: ubuntu-20.04
     if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
     strategy:
@@ -78,7 +78,7 @@ jobs:
   #   Deployment validation   #
   #############################
   job_module_deploy_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-    name: "Deployment validation"
+    name: "Deploy"
     runs-on: ubuntu-20.04
     if: |
       !cancelled() &&
