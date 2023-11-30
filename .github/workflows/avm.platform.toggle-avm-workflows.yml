@@ -4,15 +4,17 @@ on:
   push:
     branches:
       - users/rahalan/DisableWorkflows
-  workflow_dispatch:
+  # workflow_dispatch:
+  workflow_call:
     inputs:
       workMode:
-        type: choice
+        # type: choice
+        type: string
         description: "Enable or disable workflows"
         required: true
-        options:
-          - "enable"
-          - "disable"
+        # options:
+        #   - "enable"
+        #   - "disable"
         default: "disable"
       includePattern:
         type: string
@@ -26,7 +28,7 @@ on:
         default: ""
 
 jobs:
-  disable-avm-workflows:
+  toggle-avm-workflows:
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout'
