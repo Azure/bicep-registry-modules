@@ -56,38 +56,14 @@ module testDeployment '../../../main.bicep' = {
     kind: 'AzureCLI'
     retentionInterval: 'P1D'
     cleanupPreference: 'Always'
-    lock: {
-      kind: 'None'
-    }
     subnetResourceIds: [
       nestedDependencies.outputs.subnetResourceId
     ]
-    containerGroupName: 'dep-${namePrefix}-cg-${serviceShort}'
-    arguments: '-argument1 \\"test\\"'
-    environmentVariables: {
-      secureList: [
-        {
-          name: 'var1'
-          value: 'test'
-        }
-        {
-          name: 'var2'
-          secureValue: guid(deployment().name)
-        }
-      ]
-    }
     managedIdentities: {
       userAssignedResourcesIds: [
         nestedDependencies.outputs.managedIdentityResourceId
       ]
     }
-    roleAssignments: [
-      {
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
     timeout: 'PT1H'
     runOnce: true
     scriptContent: 'echo \'AVM Deployment Script test!\''
