@@ -1,0 +1,44 @@
+name: 'avm.platform.toggle-avm-workflows'
+
+on:
+  workflow_dispatch:
+    inputs:
+      workMode:
+        type: choice
+        description: "Enable or disable workflows"
+        required: true
+        options:
+          - "enable"
+          - "disable"
+        default: "disable"
+      includePattern:
+        type: string
+        description: "RegEx which workflows are included"
+        required: false
+        default: "avm.res"
+      excludePattern:
+        type: string
+        description: "RegEx which workflows are excluded"
+        required: false
+        default: ""
+
+jobs:
+  disable-avm-workflows:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        name: Disable AVM workflows
+        shell: pwsh
+        run: |
+            $repo = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
+            $workflows = gh workflow list --repo $repo --json 'name,state,id' | ConvertFrom-Json -Depth 100 | Where-Object {$_.state -eq 'active' -and $_.name -match "${{ inputs.includePattern }}" -and (-not (($_.name -match "${{ inputs.excludePattern }}") -and ${{ inputs.excludePattern }}.Length -gt 0))}
+
+            foreach ($workflow in $workflows) {
+                Write-Verbose "Disabling $($workflow.name)" -Verbose
+                gh workflow ${{ inputs.workMode }} $workflow.id  --repo $repo
+            }
