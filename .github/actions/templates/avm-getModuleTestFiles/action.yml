@@ -5,11 +5,18 @@ inputs:
   modulePath:
     description: "The path to the module's folder"
     required: true
+  psRuleFilterRegex:
+    description: "The path to the module's folder"
+    required: true
+    default: "(defaults|waf-aligned)"
 
 outputs:
   moduleTestFilePaths:
     description: "The module test files to use for template evaluation"
     value: ${{ steps.get-module-test-file-paths.outputs.moduleTestFilePaths }}
+  psRuleModuleTestFilePaths:
+    description: "The module test files to use for PSRule evaluation"
+    value: ${{ steps.get-module-test-file-paths.outputs.psRuleModuleTestFilePaths }}
 
 runs:
   using: "composite"
@@ -19,19 +26,22 @@ runs:
       shell: pwsh
       run: |
         # Grouping task logs
-        Write-Output '::group::Get parameter files'
+        Write-Output '::group::Get all test files'
         # Load used functions
 
         # Get the list of parameter file paths
         $moduleFolderPath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.modulePath }}'
-        $testFilePaths = (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object
 
+        $testFilePaths = (Get-ChildItem -Path $moduleFolderPath -Recurse -Filter 'main.test.bicep').FullName | Sort-Object
         $testFilePaths = $testFilePaths | ForEach-Object {
           $_.Replace($moduleFolderPath, '').Trim('\').Trim('/')
         }
+        $psRuleTestFilePaths = $testFilePaths | Where-Object { $_ -match '${{ inputs.psRuleFilterRegex }}' }
 
-        Write-Verbose 'Found module test files' -Verbose
+        Write-Verbose 'Found all module test files' -Verbose
         $testFilePaths | ForEach-Object { Write-Verbose "- [$_]" -Verbose }
+        Write-Verbose 'Found PSRule module test files' -Verbose
+        $psRuleTestFilePaths | ForEach-Object { Write-Verbose "- [$_]" -Verbose }
 
         # Output values to be accessed by next jobs
         $compressedOutput = $testFilePaths | ConvertTo-Json -Compress
