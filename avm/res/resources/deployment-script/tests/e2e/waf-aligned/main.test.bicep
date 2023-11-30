@@ -72,7 +72,6 @@ module testDeployment '../../../main.bicep' = {
       ]
     }
     // Workaround for PSRule
-    roleAssignments: []
     tags: {}
   }
 }
