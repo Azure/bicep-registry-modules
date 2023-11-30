@@ -11,6 +11,10 @@ on:
         type: string
         description: "List of relative path to the module test files in JSON format"
         required: true
+      psRuleModuleTestFilePaths:
+          type: string
+          description: "List of relative path to the PSRule module test files in JSON format"
+          required: true
       modulePath:
         type: string
         description: "Relative path to the module folder"
@@ -56,7 +60,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        moduleTestFilePaths: ${{ fromJson(inputs.moduleTestFilePaths) }}
+        psRuleModuleTestFilePaths: ${{ fromJson(inputs.psRuleModuleTestFilePaths) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -65,7 +69,7 @@ jobs:
       - name: Set PSRule validation
         uses: ./.github/actions/templates/avm-validateModulePSRule
         with:
-          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.moduleTestFilePaths }}"
+          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.psRuleModuleTestFilePaths }}"
           subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           psrulePath: "avm/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'

@@ -21,13 +21,12 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: "Get parameter file paths"
+    - name: "Get module test file paths"
       id: get-module-test-file-paths
       shell: pwsh
       run: |
         # Grouping task logs
         Write-Output '::group::Get all test files'
-        # Load used functions
 
         # Get the list of parameter file paths
         $moduleFolderPath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.modulePath }}'
