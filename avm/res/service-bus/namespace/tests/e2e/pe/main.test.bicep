@@ -93,7 +93,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             name: 'myIPconfig'
             properties: {
               groupId: 'namespace'
-              memberName: 'default'
+              memberName: 'namespace'
               privateIPAddress: '10.0.0.10'
             }
           }

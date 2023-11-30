@@ -821,7 +821,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
             name: 'myIPconfig'
             properties: {
               groupId: 'namespace'
-              memberName: 'default'
+              memberName: 'namespace'
               privateIPAddress: '10.0.0.10'
             }
           }
@@ -916,7 +916,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
               "name": "myIPconfig",
               "properties": {
                 "groupId": "namespace",
-                "memberName": "default",
+                "memberName": "namespace",
                 "privateIPAddress": "10.0.0.10"
               }
             }
