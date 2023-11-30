@@ -260,12 +260,27 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     runOnce: true
     scriptContent: 'echo \'AVM Deployment Script test!\''
     storageAccountResourceId: '<storageAccountResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
     timeout: 'PT1H'
   }
 }
@@ -340,7 +355,17 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -352,6 +377,13 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     },
     "storageAccountResourceId": {
       "value": "<storageAccountResourceId>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     },
     "timeout": {
       "value": "PT1H"
@@ -580,7 +612,11 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     runOnce: true
     scriptContent: 'echo \'AVM Deployment Script test!\''
     storageAccountResourceId: '<storageAccountResourceId>'
-    tags: {}
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
     timeout: 'PT1H'
   }
 }
@@ -643,7 +679,11 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
       "value": "<storageAccountResourceId>"
     },
     "tags": {
-      "value": {}
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     },
     "timeout": {
       "value": "PT1H"

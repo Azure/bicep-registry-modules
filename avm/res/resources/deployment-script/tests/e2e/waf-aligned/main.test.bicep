@@ -62,6 +62,11 @@ module testDeployment '../../../main.bicep' = {
     lock: {
       kind: 'None'
     }
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
     timeout: 'PT1H'
     runOnce: true
     scriptContent: 'echo \'AVM Deployment Script test!\''
@@ -71,7 +76,5 @@ module testDeployment '../../../main.bicep' = {
         nestedDependencies.outputs.managedIdentityResourceId
       ]
     }
-    // Workaround for PSRule
-    tags: {}
   }
 }
