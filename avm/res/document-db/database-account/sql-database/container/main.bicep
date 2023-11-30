@@ -19,7 +19,7 @@ param conflictResolutionPolicy object = {}
 
 @maxValue(2147483647)
 @minValue(-1)
-@description('Optional. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items dont expire by default.')
+@description('Optional. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items don\'t expire by default.')
 param defaultTtl int?
 
 @description('Optional. Request Units per second. Will be set to null if autoscaleSettingsMaxThroughput is used.')
@@ -65,7 +65,7 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
     resource: {
       analyticalStorageTtl: analyticalStorageTtl
       conflictResolutionPolicy: conflictResolutionPolicy
-      defaultTtl: defaultTtl
+      defaultTtl: defaultTtl ?? -1
       id: name
       indexingPolicy: !empty(indexingPolicy) ? indexingPolicy : null
       partitionKey: {

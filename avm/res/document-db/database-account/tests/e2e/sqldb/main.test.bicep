@@ -157,7 +157,6 @@ module testDeployment '../../../main.bicep' = {
           }
         ]
         name: '${namePrefix}-sql-${serviceShort}-001'
-        throughput: 1000
       }
       {
         containers: []
@@ -180,7 +179,6 @@ module testDeployment '../../../main.bicep' = {
               conflictResolutionPath: '/myCustomId'
               mode: 'LastWriterWins'
             }
-            defaultTtl: 1000
             uniqueKeyPolicyKeys: [
               {
                 paths: [

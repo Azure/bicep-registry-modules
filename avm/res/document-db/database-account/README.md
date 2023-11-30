@@ -1188,7 +1188,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           }
         ]
         name: 'sql-dddasql-001'
-        throughput: 1000
       }
       {
         containers: []
@@ -1204,7 +1203,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
               conflictResolutionPath: '/myCustomId'
               mode: 'LastWriterWins'
             }
-            defaultTtl: 1000
             indexingPolicy: {
               automatic: true
             }
@@ -1365,8 +1363,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
               ]
             }
           ],
-          "name": "sql-dddasql-001",
-          "throughput": 1000
+          "name": "sql-dddasql-001"
         },
         {
           "containers": [],
@@ -1382,7 +1379,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
                 "conflictResolutionPath": "/myCustomId",
                 "mode": "LastWriterWins"
               },
-              "defaultTtl": 1000,
               "indexingPolicy": {
                 "automatic": true
               },
