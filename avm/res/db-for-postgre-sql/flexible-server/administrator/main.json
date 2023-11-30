@@ -1,0 +1,88 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.23.1.45101",
+      "templateHash": "14731498034273397058"
+    },
+    "name": "DBforPostgreSQL Flexible Server Administrators",
+    "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "flexibleServerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent PostgreSQL flexible server. Required if the template is used in a standalone deployment."
+      }
+    },
+    "objectId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The objectId of the Active Directory administrator."
+      }
+    },
+    "principalName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Active Directory administrator principal name."
+      }
+    },
+    "principalType": {
+      "type": "string",
+      "allowedValues": [
+        "Group",
+        "ServicePrincipal",
+        "Unknown",
+        "User"
+      ],
+      "metadata": {
+        "description": "Required. The principal type used to represent the type of Active Directory Administrator."
+      }
+    },
+    "tenantId": {
+      "type": "string",
+      "defaultValue": "[tenant().tenantId]",
+      "metadata": {
+        "description": "Optional. The tenantId of the Active Directory administrator."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.DBforPostgreSQL/flexibleServers/administrators",
+      "apiVersion": "2022-12-01",
+      "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('objectId'))]",
+      "properties": {
+        "principalName": "[parameters('principalName')]",
+        "principalType": "[parameters('principalType')]",
+        "tenantId": "[parameters('tenantId')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed administrator."
+      },
+      "value": "[parameters('objectId')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed administrator."
+      },
+      "value": "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers/administrators', parameters('flexibleServerName'), parameters('objectId'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed administrator."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
