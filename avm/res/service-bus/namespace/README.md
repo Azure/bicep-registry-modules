@@ -421,6 +421,24 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     premiumMessagingPartitions: 1
     privateEndpoints: [
       {
+        customDnsConfigs: [
+          {
+            fqdn: 'abc.namespace.com'
+            ipAddresses: [
+              '10.0.0.10'
+            ]
+          }
+        ]
+        ipConfigurations: [
+          {
+            name: 'myIPconfig'
+            properties: {
+              groupId: 'namespace'
+              memberName: 'namespace'
+              privateIPAddress: '10.0.0.10'
+            }
+          }
+        ]
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
@@ -625,6 +643,24 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     "privateEndpoints": {
       "value": [
         {
+          "customDnsConfigs": [
+            {
+              "fqdn": "abc.namespace.com",
+              "ipAddresses": [
+                "10.0.0.10"
+              ]
+            }
+          ],
+          "ipConfigurations": [
+            {
+              "name": "myIPconfig",
+              "properties": {
+                "groupId": "namespace",
+                "memberName": "namespace",
+                "privateIPAddress": "10.0.0.10"
+              }
+            }
+          ],
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
@@ -772,8 +808,33 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     location: '<location>'
     privateEndpoints: [
       {
+        customDnsConfigs: [
+          {
+            fqdn: 'abc.keyvault.com'
+            ipAddresses: [
+              '10.0.0.10'
+            ]
+          }
+        ]
+        ipConfigurations: [
+          {
+            name: 'myIPconfig'
+            properties: {
+              groupId: 'vault'
+              memberName: 'default'
+              privateIPAddress: '10.0.0.10'
+            }
+          }
+        ]
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
+        ]
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Reader'
+          }
         ]
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -842,8 +903,33 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     "privateEndpoints": {
       "value": [
         {
+          "customDnsConfigs": [
+            {
+              "fqdn": "abc.keyvault.com",
+              "ipAddresses": [
+                "10.0.0.10"
+              ]
+            }
+          ],
+          "ipConfigurations": [
+            {
+              "name": "myIPconfig",
+              "properties": {
+                "groupId": "vault",
+                "memberName": "default",
+                "privateIPAddress": "10.0.0.10"
+              }
+            }
+          ],
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
+          ],
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Reader"
+            }
           ],
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -1970,4 +2056,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.2.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.3.1` | Remote reference |

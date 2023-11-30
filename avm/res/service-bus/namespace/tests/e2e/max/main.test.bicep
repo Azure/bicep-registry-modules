@@ -217,6 +217,24 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
         }
+        ipConfigurations: [
+          {
+            name: 'myIPconfig'
+            properties: {
+              groupId: 'namespace'
+              memberName: 'namespace'
+              privateIPAddress: '10.0.0.10'
+            }
+          }
+        ]
+        customDnsConfigs: [
+          {
+            fqdn: 'abc.namespace.com'
+            ipAddresses: [
+              '10.0.0.10'
+            ]
+          }
+        ]
       }
     ]
     managedIdentities: {
