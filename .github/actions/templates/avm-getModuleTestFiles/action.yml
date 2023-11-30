@@ -6,7 +6,7 @@ inputs:
     description: "The path to the module's folder"
     required: true
   psRuleFilterRegex:
-    description: "The path to the module's folder"
+    description: "The regex used to filter PSRule compliant files"
     required: true
     default: "(defaults|waf-aligned)"
 
@@ -36,12 +36,9 @@ runs:
         $testFilePaths = $testFilePaths | ForEach-Object {
           $_.Replace($moduleFolderPath, '').Trim('\').Trim('/')
         }
-        $psRuleTestFilePaths = $testFilePaths | Where-Object { $_ -match '${{ inputs.psRuleFilterRegex }}' }
 
         Write-Verbose 'Found all module test files' -Verbose
         $testFilePaths | ForEach-Object { Write-Verbose "- [$_]" -Verbose }
-        Write-Verbose 'Found PSRule module test files' -Verbose
-        $psRuleTestFilePaths | ForEach-Object { Write-Verbose "- [$_]" -Verbose }
 
         # Output values to be accessed by next jobs
         $compressedOutput = $testFilePaths | ConvertTo-Json -Compress
@@ -50,4 +47,18 @@ runs:
         }
         Write-Verbose "Publishing output: $compressedOutput" -Verbose
         Write-Output ('{0}={1}' -f 'moduleTestFilePaths', $compressedOutput) >> $env:GITHUB_OUTPUT
+
+        $psRuleTestFilePaths = $testFilePaths | Where-Object { $_ -match '${{ inputs.psRuleFilterRegex }}' }
+
+        Write-Verbose 'Found PSRule module test files' -Verbose
+        $psRuleTestFilePaths | ForEach-Object { Write-Verbose "- [$_]" -Verbose }
+
+        # Output values to be accessed by next jobs
+        $psRuleCompressedOutput = $psRuleTestFilePaths | ConvertTo-Json -Compress
+        if($psRuleCompressedOutput -notmatch "\[.*\]") {
+          $psRuleCompressedOutput = "[$psRuleCompressedOutput]"
+        }
+        Write-Verbose "Publishing output: $psRuleCompressedOutput" -Verbose
+        Write-Output ('{0}={1}' -f 'psRuleModuleTestFilePaths', $psRuleCompressedOutput) >> $env:GITHUB_OUTPUT
+        compressedPSRuleTestFileOutput
         Write-Output '::endgroup::'
