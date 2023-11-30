@@ -67,6 +67,24 @@ module testDeployment '../../../main.bicep' = {
           Environment: 'Non-Prod'
           Role: 'DeploymentValidation'
         }
+        ipConfigurations: [
+          {
+            name: 'myIPconfig'
+            properties: {
+              groupId: 'sqlServer'
+              memberName: 'sqlServer'
+              privateIPAddress: '10.0.0.10'
+            }
+          }
+        ]
+        customDnsConfigs: [
+          {
+            fqdn: 'abc.sqlServer.com'
+            ipAddresses: [
+              '10.0.0.10'
+            ]
+          }
+        ]
       }
     ]
     tags: {

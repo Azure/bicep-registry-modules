@@ -226,6 +226,24 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     poolAllocationMode: 'BatchService'
     privateEndpoints: [
       {
+        customDnsConfigs: [
+          {
+            fqdn: 'abc.batch.com'
+            ipAddresses: [
+              '10.0.0.10'
+            ]
+          }
+        ]
+        ipConfigurations: [
+          {
+            name: 'myIPconfig'
+            properties: {
+              groupId: 'batchAccount'
+              memberName: 'batchAccount'
+              privateIPAddress: '10.0.0.10'
+            }
+          }
+        ]
         privateDnsZoneResourceIds: [
           '<privateDNSZoneResourceId>'
         ]
@@ -343,6 +361,24 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     "privateEndpoints": {
       "value": [
         {
+          "customDnsConfigs": [
+            {
+              "fqdn": "abc.batch.com",
+              "ipAddresses": [
+                "10.0.0.10"
+              ]
+            }
+          ],
+          "ipConfigurations": [
+            {
+              "name": "myIPconfig",
+              "properties": {
+                "groupId": "batchAccount",
+                "memberName": "batchAccount",
+                "privateIPAddress": "10.0.0.10"
+              }
+            }
+          ],
           "privateDnsZoneResourceIds": [
             "<privateDNSZoneResourceId>"
           ],
@@ -895,14 +931,20 @@ Optional. Custom DNS configurations.
 
 | Name | Required | Type | Description |
 | :-- | :-- | :--| :-- |
-| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | No | string |  |
-| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | Yes | array |  |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | No | string | Required. Fqdn that resolves to private endpoint IP address. |
+| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | Yes | array | Required. A list of private IP addresses of the private endpoint. |
 
 ### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+
+Required. Fqdn that resolves to private endpoint IP address.
+
 - Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
+
+Required. A list of private IP addresses of the private endpoint.
+
 - Required: Yes
 - Type: array
 
@@ -930,26 +972,50 @@ Optional. A list of IP configurations of the private endpoint. This will be used
 
 | Name | Required | Type | Description |
 | :-- | :-- | :--| :-- |
-| [`groupId`](#parameter-privateendpointsipconfigurationsgroupid) | Yes | string |  |
-| [`memberName`](#parameter-privateendpointsipconfigurationsmembername) | Yes | string |  |
-| [`name`](#parameter-privateendpointsipconfigurationsname) | Yes | string |  |
-| [`privateIpAddress`](#parameter-privateendpointsipconfigurationsprivateipaddress) | Yes | string |  |
-
-### Parameter: `privateEndpoints.ipConfigurations.groupId`
-- Required: Yes
-- Type: string
-
-### Parameter: `privateEndpoints.ipConfigurations.memberName`
-- Required: Yes
-- Type: string
+| [`name`](#parameter-privateendpointsipconfigurationsname) | Yes | string | Required. The name of the resource that is unique within a resource group. |
+| [`properties`](#parameter-privateendpointsipconfigurationsproperties) | Yes | object | Required. Properties of private endpoint IP configurations. |
 
 ### Parameter: `privateEndpoints.ipConfigurations.name`
+
+Required. The name of the resource that is unique within a resource group.
+
 - Required: Yes
 - Type: string
 
-### Parameter: `privateEndpoints.ipConfigurations.privateIpAddress`
+### Parameter: `privateEndpoints.ipConfigurations.properties`
+
+Required. Properties of private endpoint IP configurations.
+
+- Required: Yes
+- Type: object
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`groupId`](#parameter-privateendpointsipconfigurationspropertiesgroupid) | Yes | string | Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`memberName`](#parameter-privateendpointsipconfigurationspropertiesmembername) | Yes | string | Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | Yes | string | Required. A private IP address obtained from the private endpoint's subnet. |
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.groupId`
+
+Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
 - Required: Yes
 - Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
+
+Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
+
+Required. A private IP address obtained from the private endpoint's subnet.
+
+- Required: Yes
+- Type: string
+
 
 
 ### Parameter: `privateEndpoints.location`
@@ -1154,4 +1220,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.2.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.3.1` | Remote reference |
