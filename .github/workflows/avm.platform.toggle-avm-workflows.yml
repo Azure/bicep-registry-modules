@@ -35,7 +35,7 @@ jobs:
           fetch-depth: 0
       - env:
           GH_TOKEN: ${{ github.token }}
-        name: Disable AVM workflows
+        name: ${{ inputs.workMode }} AVM workflows
         shell: pwsh
         run: |
             $repo = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
