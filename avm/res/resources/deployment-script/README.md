@@ -719,7 +719,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`primaryScriptUri`](#parameter-primaryscripturi) | string | Uri for the external script. This is the entry point for the external script. To run an internal script, use the scriptContent instead. |
+| [`primaryScriptUri`](#parameter-primaryscripturi) | string | Uri for the external script. This is the entry point for the external script. To run an internal script, use the scriptContent parameter instead. |
 | [`retentionInterval`](#parameter-retentioninterval) | string | Interval for which the service retains the script resource after it reaches a terminal state. Resource will be deleted when this duration expires. Duration is based on ISO 8601 pattern (for example P7D means one week). |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`runOnce`](#parameter-runonce) | bool | When set to false, script will run every time the template is deployed. When set to true, the script will only run once. |
@@ -869,7 +869,7 @@ Name of the Deployment Script.
 
 ### Parameter: `primaryScriptUri`
 
-Uri for the external script. This is the entry point for the external script. To run an internal script, use the scriptContent instead.
+Uri for the external script. This is the entry point for the external script. To run an internal script, use the scriptContent parameter instead.
 - Required: No
 - Type: string
 
