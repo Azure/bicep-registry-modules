@@ -47,7 +47,7 @@
 #/avm/res/dev-center/devcenter/ @Azure/avm-res-devcenter-devcenter-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/dev-test-lab/lab/ @Azure/avm-res-devtestlab-lab-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/digital-twins/digital-twins-instance/ @Azure/avm-res-digitaltwins-digitaltwinsinstance-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/document-db/database-account/ @Azure/avm-res-documentdb-databaseaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/document-db/database-account/ @Azure/avm-res-documentdb-databaseaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/event-grid/domain/ @Azure/avm-res-eventgrid-domain-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/event-grid/system-topic/ @Azure/avm-res-eventgrid-systemtopic-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/event-grid/topic/ @Azure/avm-res-eventgrid-topic-module-owners-bicep @Azure/avm-core-team-technical-bicep
