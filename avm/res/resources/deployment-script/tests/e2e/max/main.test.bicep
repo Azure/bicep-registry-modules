@@ -9,15 +9,15 @@ metadata description = 'This instance deploys the module with most of its featur
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-network.privateendpoints-${serviceShort}-rg'
+param resourceGroupName string = 'avm-${namePrefix}-resources.deploymentscripts-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'npemax'
+param serviceShort string = 'rdsmax'
 
-@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
+@description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
 // ============ //
@@ -35,10 +35,8 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    applicationSecurityGroupName: 'dep-${namePrefix}-asg-${serviceShort}'
+    storageAccountName: 'dep${namePrefix}st${serviceShort}'
     location: location
   }
 }
@@ -47,21 +45,43 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-@batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
+module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
+  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location
-    subnetResourceId: nestedDependencies.outputs.subnetResourceId
+    azCliVersion: '2.9.1'
+    kind: 'AzureCLI'
+    retentionInterval: 'P1D'
+    cleanupPreference: 'Always'
     lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
+      kind: 'None'
     }
-    privateDnsZoneResourceIds: [
-      nestedDependencies.outputs.privateDNSZoneResourceId
-    ]
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+    containerGroupName: 'dep-${namePrefix}-cg-${serviceShort}'
+    arguments: '-argument1 \\"test\\"'
+    environmentVariables: {
+      secureList: [
+        {
+          name: 'var1'
+          value: 'test'
+        }
+        {
+          name: 'var2'
+          secureValue: guid(deployment().name)
+        }
+      ]
+    }
+    managedIdentities: {
+      userAssignedResourcesIds: [
+        nestedDependencies.outputs.managedIdentityResourceId
+      ]
+    }
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Owner'
@@ -79,47 +99,9 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         principalType: 'ServicePrincipal'
       }
     ]
-    ipConfigurations: [
-      {
-        name: 'myIPconfig'
-        properties: {
-          groupId: 'vault'
-          memberName: 'default'
-          privateIPAddress: '10.0.0.10'
-        }
-      }
-    ]
-    customDnsConfigs: [
-      {
-        fqdn: 'abc.keyvault.com'
-        ipAddresses: [
-          '10.0.0.10'
-        ]
-      }
-    ]
-    customNetworkInterfaceName: '${namePrefix}${serviceShort}001nic'
-    applicationSecurityGroupResourceIds: [
-      nestedDependencies.outputs.applicationSecurityGroupResourceId
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
-    // Workaround for PSRule
-    privateDnsZoneGroupName: 'default'
-    manualPrivateLinkServiceConnections: []
-    privateLinkServiceConnections: [
-      {
-        name: '${namePrefix}${serviceShort}001'
-        properties: {
-          privateLinkServiceId: nestedDependencies.outputs.keyVaultResourceId
-          groupIds: [
-            'vault'
-          ]
-          requestMessage: 'Hey there'
-        }
-      }
-    ]
+    timeout: 'PT1H'
+    runOnce: true
+    scriptContent: 'echo \'AVM Deployment Script test!\''
+    storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
   }
-}]
+}
