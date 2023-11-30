@@ -65,7 +65,7 @@ param publicNetworkAccess string = 'enabled'
 @maxValue(12)
 param replicaCount int = 1
 
-@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+@description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
 @description('Optional. Defines the SKU of an Azure Cognitive Search Service, which determines price tier and capacity limits.')
@@ -190,7 +190,7 @@ resource searchService_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!em
 resource searchService_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
   name: guid(searchService.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
   properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : roleAssignment.roleDefinitionIdOrName
+    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
     principalId: roleAssignment.principalId
     description: roleAssignment.?description
     principalType: roleAssignment.?principalType
@@ -201,14 +201,21 @@ resource searchService_roleAssignments 'Microsoft.Authorization/roleAssignments@
   scope: searchService
 }]
 
-module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.2.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-searchService-PrivateEndpoint-${index}'
   params: {
-    groupIds: [
-      privateEndpoint.?service ?? 'searchService'
+    privateLinkServiceConnections: [
+      {
+        name: name
+        properties: {
+          privateLinkServiceId: searchService.id
+          groupIds: [
+            privateEndpoint.?service ?? 'searchService'
+          ]
+        }
+      }
     ]
     name: privateEndpoint.?name ?? 'pep-${last(split(searchService.id, '/'))}-${privateEndpoint.?service ?? 'searchService'}-${index}'
-    serviceResourceId: searchService.id
     subnetResourceId: privateEndpoint.subnetResourceId
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
@@ -278,7 +285,7 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
-  @description('Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.')
+  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
   @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
@@ -355,7 +362,7 @@ type privateEndpointType = {
   @description('Optional. Specify the type of lock.')
   lock: lockType
 
-  @description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+  @description('Optional. Array of role assignments to create.')
   roleAssignments: roleAssignmentType
 
   @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
