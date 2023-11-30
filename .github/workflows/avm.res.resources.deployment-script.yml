@@ -34,7 +34,7 @@ on:
 
 env:
   modulePath: "avm/res/resources/deployment-script"
-  workflowPath: ".github/workflows/avm.res.resources.deployment-script"
+  workflowPath: ".github/workflows/avm.res.resources.deployment-script.yml"
 
 concurrency:
   group: ${{ github.workflow }}
