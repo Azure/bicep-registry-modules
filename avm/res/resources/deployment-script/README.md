@@ -29,7 +29,7 @@ The following section provides usage examples for the module, which were used to
 - [Using Azure CLI](#example-1-using-azure-cli)
 - [Using only defaults](#example-2-using-only-defaults)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [Using Private Endpoints](#example-4-using-private-endpoints)
+- [Using Private Networking](#example-4-using-private-networking)
 - [Using Azure PowerShell](#example-5-using-azure-powershell)
 - [WAF-aligned](#example-6-waf-aligned)
 
@@ -363,7 +363,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 </details>
 <p>
 
-### Example 4: _Using Private Endpoints_
+### Example 4: _Using Private Networking_
 
 This instance deploys the module with access to a private network.
 
@@ -380,39 +380,15 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     kind: 'AzureCLI'
     name: 'rdsnet001'
     // Non-required parameters
-    arguments: '-argument1 \\\'test\\\''
     azCliVersion: '2.9.1'
     cleanupPreference: 'Always'
-    containerGroupName: 'dep-cg-rdsnet'
-    environmentVariables: {
-      secureList: [
-        {
-          name: 'var1'
-          value: 'test'
-        }
-        {
-          name: 'var2'
-          secureValue: '<secureValue>'
-        }
-      ]
-    }
     location: '<location>'
-    lock: {
-      kind: 'None'
-    }
     managedIdentities: {
       userAssignedResourcesIds: [
         '<managedIdentityResourceId>'
       ]
     }
     retentionInterval: 'P1D'
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
     runOnce: true
     scriptContent: 'echo \'AVM Deployment Script test!\''
     storageAccountResourceId: '<storageAccountResourceId>'
@@ -444,39 +420,14 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
       "value": "rdsnet001"
     },
     // Non-required parameters
-    "arguments": {
-      "value": "-argument1 \\\"test\\\""
-    },
     "azCliVersion": {
       "value": "2.9.1"
     },
     "cleanupPreference": {
       "value": "Always"
     },
-    "containerGroupName": {
-      "value": "dep-cg-rdsnet"
-    },
-    "environmentVariables": {
-      "value": {
-        "secureList": [
-          {
-            "name": "var1",
-            "value": "test"
-          },
-          {
-            "name": "var2",
-            "secureValue": "<secureValue>"
-          }
-        ]
-      }
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "None"
-      }
     },
     "managedIdentities": {
       "value": {
@@ -487,15 +438,6 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     },
     "retentionInterval": {
       "value": "P1D"
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
     },
     "runOnce": {
       "value": true
@@ -635,15 +577,10 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
       ]
     }
     retentionInterval: 'P1D'
-    roleAssignments: []
     runOnce: true
     scriptContent: 'echo \'AVM Deployment Script test!\''
     storageAccountResourceId: '<storageAccountResourceId>'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
+    tags: {}
     timeout: 'PT1H'
   }
 }
@@ -696,9 +633,6 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     "retentionInterval": {
       "value": "P1D"
     },
-    "roleAssignments": {
-      "value": []
-    },
     "runOnce": {
       "value": true
     },
@@ -709,11 +643,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
       "value": "<storageAccountResourceId>"
     },
     "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
+      "value": {}
     },
     "timeout": {
       "value": "PT1H"
@@ -751,7 +681,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`primaryScriptUri`](#parameter-primaryscripturi) | string | Uri for the external script. This is the entry point for the external script. To run an internal script, use the scriptContent instead. |
 | [`retentionInterval`](#parameter-retentioninterval) | string | Interval for which the service retains the script resource after it reaches a terminal state. Resource will be deleted when this duration expires. Duration is based on ISO 8601 pattern (for example P7D means one week). |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`runOnce`](#parameter-runonce) | bool | When set to false, script will run every time the template is deployed. When set to true, the script will only run once. |
 | [`scriptContent`](#parameter-scriptcontent) | string | Script body. Max length: 32000 characters. To run an external script, use primaryScriptURI instead. |
 | [`storageAccountResourceId`](#parameter-storageaccountresourceid) | string | The resource ID of the storage account to use for this deployment script. If none is provided, the deployment script uses a temporary, managed storage account. |
@@ -911,7 +841,7 @@ Interval for which the service retains the script resource after it reaches a te
 
 ### Parameter: `roleAssignments`
 
-Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+Array of role assignments to create.
 - Required: No
 - Type: array
 
@@ -924,7 +854,7 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 | [`description`](#parameter-roleassignmentsdescription) | No | string | Optional. The description of the role assignment. |
 | [`principalId`](#parameter-roleassignmentsprincipalid) | Yes | string | Required. The principal ID of the principal (user/group/identity) to assign the role to. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | No | string | Optional. The principal type of the assigned principal ID. |
-| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead. |
+| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 ### Parameter: `roleAssignments.condition`
 
@@ -972,7 +902,7 @@ Optional. The principal type of the assigned principal ID.
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
-Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.
+Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string
