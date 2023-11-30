@@ -77,6 +77,7 @@ The name of the parent Database Account. Required if the template is used in a s
 Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items don't expire by default.
 - Required: No
 - Type: int
+- Default: `-1`
 
 ### Parameter: `indexingPolicy`
 

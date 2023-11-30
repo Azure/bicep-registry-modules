@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "3972427978610605563"
+      "templateHash": "3052744132966067719"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account.",
@@ -810,7 +810,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "7417392415152261073"
+              "templateHash": "7647871510117896362"
             },
             "name": "DocumentDB Database Account SQL Databases",
             "description": "This module deploys a SQL Database in a CosmosDB Account.",
@@ -925,7 +925,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.23.1.45101",
-                      "templateHash": "686425319502854491"
+                      "templateHash": "15077280114983040068"
                     },
                     "name": "DocumentDB Database Account SQL Database Containers",
                     "description": "This module deploys a SQL Database Container in a CosmosDB Account.",
@@ -966,7 +966,7 @@
                     },
                     "defaultTtl": {
                       "type": "int",
-                      "nullable": true,
+                      "defaultValue": -1,
                       "minValue": -1,
                       "maxValue": 2147483647,
                       "metadata": {
@@ -1054,7 +1054,7 @@
                         "resource": {
                           "analyticalStorageTtl": "[parameters('analyticalStorageTtl')]",
                           "conflictResolutionPolicy": "[parameters('conflictResolutionPolicy')]",
-                          "defaultTtl": "[coalesce(parameters('defaultTtl'), -1)]",
+                          "defaultTtl": "[parameters('defaultTtl')]",
                           "id": "[parameters('name')]",
                           "indexingPolicy": "[if(not(empty(parameters('indexingPolicy'))), parameters('indexingPolicy'), null())]",
                           "partitionKey": {
