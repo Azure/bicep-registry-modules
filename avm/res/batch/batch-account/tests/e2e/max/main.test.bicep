@@ -105,6 +105,24 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             principalType: 'ServicePrincipal'
           }
         ]
+        ipConfigurations: [
+          {
+            name: 'myIPconfig'
+            properties: {
+              groupId: 'batchAccount'
+              memberName: 'batchAccount'
+              privateIPAddress: '10.0.0.10'
+            }
+          }
+        ]
+        customDnsConfigs: [
+          {
+            fqdn: 'abc.batch.com'
+            ipAddresses: [
+              '10.0.0.10'
+            ]
+          }
+        ]
       }
     ]
     networkProfile: {
