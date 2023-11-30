@@ -1000,7 +1000,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         eventHubName: '<eventHubName>'
         logCategoriesAndGroups: [
           {
-            category: 'RuntimeAuditLogs'
+            categoryGroup: 'AllLogs'
           }
         ]
         metricCategories: [
@@ -1188,7 +1188,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           "eventHubName": "<eventHubName>",
           "logCategoriesAndGroups": [
             {
-              "category": "RuntimeAuditLogs"
+              "categoryGroup": "AllLogs"
             }
           ],
           "metricCategories": [
