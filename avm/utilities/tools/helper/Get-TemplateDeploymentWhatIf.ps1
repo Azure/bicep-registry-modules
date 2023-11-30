@@ -1,9 +1,9 @@
 <#
 .SYNOPSIS
-Run a template validation using a given parameter file
+Get a template What-If deployment result using a given parameter file
 
 .DESCRIPTION
-Run a template validation using a given parameter file
+Get a template What-If deployment resultusing a given parameter file
 Works on a resource group, subscription, managementgroup and tenant level
 
 .PARAMETER parametersBasePath
@@ -31,24 +31,24 @@ Optional. Name of the management group to deploy into. Mandatory if deploying in
 Optional. Additional parameters you can provide with the deployment. E.g. @{ resourceGroupName = 'myResourceGroup' }
 
 .PARAMETER RepoRoot
-Optional. Path to the root of the repository.
+Optional. The path to the repository's root
 
 .EXAMPLE
-Test-TemplateDeployment -templateFilePath 'C:/key-vault/vault/main.bicep' -parameterFilePath 'C:/key-vault/vault/.test/parameters.json' -location 'WestEurope' -resourceGroupName 'aLegendaryRg'
+Get-TemplateDeploymentWhatIf -templateFilePath 'C:/key-vault/vault/main.bicep' -parameterFilePath 'C:/key-vault/vault/.test/parameters.json' -location 'WestEurope' -resourceGroupName 'aLegendaryRg'
 
-Test the main.bicep of the KeyVault module with the parameter file 'parameters.json' using the resource group 'aLegendaryRg' in location 'WestEurope'
-
-.EXAMPLE
-Test-TemplateDeployment -templateFilePath 'C:/key-vault/vault/main.bicep' -location 'WestEurope' -resourceGroupName 'aLegendaryRg'
-
-Test the main.bicep of the KeyVault module using the resource group 'aLegendaryRg' in location 'WestEurope'
+Get What-If deployment result for the main.bicep of the KeyVault module with the parameter file 'parameters.json' using the resource group 'aLegendaryRg' in location 'WestEurope'
 
 .EXAMPLE
-Test-TemplateDeployment -templateFilePath 'C:/resources/resource-group/main.json' -parameterFilePath 'C:/resources/resource-group/.test/parameters.json' -location 'WestEurope'
+Get-TemplateDeploymentWhatIf -templateFilePath 'C:/key-vault/vault/main.bicep' -location 'WestEurope' -resourceGroupName 'aLegendaryRg'
 
-Test the main.json of the ResourceGroup module with the parameter file 'parameters.json' in location 'WestEurope'
+Get What-If deployment result for the main.bicep of the KeyVault module using the resource group 'aLegendaryRg' in location 'WestEurope'
+
+.EXAMPLE
+Get-TemplateDeploymentWhatIf -templateFilePath 'C:/resources/resource-group/main.json' -parameterFilePath 'C:/resources/resource-group/.test/parameters.json' -location 'WestEurope'
+
+Get What-If deployment result for the main.json of the ResourceGroup module with the parameter file 'parameters.json' in location 'WestEurope'
 #>
-function Test-TemplateDeployment {
+function Get-TemplateDeploymentWhatIf {
 
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -74,7 +74,7 @@ function Test-TemplateDeployment {
         [Hashtable] $additionalParameters,
 
         [Parameter(Mandatory = $false)]
-        [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.parent.FullName
+        [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName
     )
 
     begin {
@@ -127,7 +127,7 @@ function Test-TemplateDeployment {
         } while ($deploymentName -notmatch '^[-\w\._\(\)]+$')
 
         if ($deploymentScope -ne 'resourceGroup') {
-            Write-Verbose "Testing with deployment name [$deploymentName]" -Verbose
+            Write-Verbose "What-If Deployment Test with deployment name [$deploymentName]" -Verbose
             $DeploymentInputs['DeploymentName'] = $deploymentName
         }
 
@@ -145,8 +145,8 @@ function Test-TemplateDeployment {
                         $null = New-AzResourceGroup -Name $resourceGroupName -Location $location
                     }
                 }
-                if ($PSCmdlet.ShouldProcess('Resource group level deployment', 'Test')) {
-                    $res = Test-AzResourceGroupDeployment @DeploymentInputs -ResourceGroupName $resourceGroupName
+                if ($PSCmdlet.ShouldProcess('Resource group level deployment', 'WhatIf')) {
+                    $res = New-AzResourceGroupDeployment @DeploymentInputs -WhatIf
                 }
                 break
             }
@@ -155,21 +155,21 @@ function Test-TemplateDeployment {
                     Write-Verbose ('Setting context to subscription [{0}]' -f $subscriptionId)
                     $null = Set-AzContext -Subscription $subscriptionId
                 }
-                if ($PSCmdlet.ShouldProcess('Subscription level deployment', 'Test')) {
-                    $res = Test-AzSubscriptionDeployment @DeploymentInputs -Location $Location
+                if ($PSCmdlet.ShouldProcess('Subscription level deployment', 'WhatIf')) {
+                    $res = New-AzDeployment @DeploymentInputs -Location $Location -WhatIf
                 }
                 break
             }
             'managementGroup' {
-                if ($PSCmdlet.ShouldProcess('Management group level deployment', 'Test')) {
-                    $res = Test-AzManagementGroupDeployment @DeploymentInputs -Location $Location -ManagementGroupId $ManagementGroupId
+                if ($PSCmdlet.ShouldProcess('Management group level deployment', 'WhatIf')) {
+                    $res = New-AzManagementGroupDeployment @DeploymentInputs -Location $Location -ManagementGroupId $ManagementGroupId -WhatIf
                 }
                 break
             }
             'tenant' {
                 Write-Verbose 'Handling tenant level validation'
-                if ($PSCmdlet.ShouldProcess('Tenant level deployment', 'Test')) {
-                    $res = Test-AzTenantDeployment @DeploymentInputs -Location $location
+                if ($PSCmdlet.ShouldProcess('Tenant level deployment', 'WhatIf')) {
+                    $res = New-AzTenantDeployment @DeploymentInputs -Location $location -WhatIf
                 }
                 break
             }
