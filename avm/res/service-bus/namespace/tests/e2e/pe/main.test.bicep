@@ -92,7 +92,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           {
             name: 'myIPconfig'
             properties: {
-              groupId: 'vault'
+              groupId: 'namespace'
               memberName: 'default'
               privateIPAddress: '10.0.0.10'
             }
@@ -100,7 +100,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         ]
         customDnsConfigs: [
           {
-            fqdn: 'abc.keyvault.com'
+            fqdn: 'abc.namespace.com'
             ipAddresses: [
               '10.0.0.10'
             ]

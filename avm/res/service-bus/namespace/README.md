@@ -372,7 +372,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         eventHubName: '<eventHubName>'
         logCategoriesAndGroups: [
           {
-            category: 'AllLogs'
+            category: 'RuntimeAuditLogs'
           }
         ]
         metricCategories: [
@@ -578,7 +578,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           "eventHubName": "<eventHubName>",
           "logCategoriesAndGroups": [
             {
-              "category": "AllLogs"
+              "category": "RuntimeAuditLogs"
             }
           ],
           "metricCategories": [
@@ -810,7 +810,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       {
         customDnsConfigs: [
           {
-            fqdn: 'abc.keyvault.com'
+            fqdn: 'abc.namespace.com'
             ipAddresses: [
               '10.0.0.10'
             ]
@@ -820,7 +820,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           {
             name: 'myIPconfig'
             properties: {
-              groupId: 'vault'
+              groupId: 'namespace'
               memberName: 'default'
               privateIPAddress: '10.0.0.10'
             }
@@ -905,7 +905,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         {
           "customDnsConfigs": [
             {
-              "fqdn": "abc.keyvault.com",
+              "fqdn": "abc.namespace.com",
               "ipAddresses": [
                 "10.0.0.10"
               ]
@@ -915,7 +915,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
             {
               "name": "myIPconfig",
               "properties": {
-                "groupId": "vault",
+                "groupId": "namespace",
                 "memberName": "default",
                 "privateIPAddress": "10.0.0.10"
               }
