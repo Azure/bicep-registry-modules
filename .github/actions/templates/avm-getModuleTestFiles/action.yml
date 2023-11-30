@@ -60,5 +60,5 @@ runs:
         }
         Write-Verbose "Publishing output: $psRuleCompressedOutput" -Verbose
         Write-Output ('{0}={1}' -f 'psRuleModuleTestFilePaths', $psRuleCompressedOutput) >> $env:GITHUB_OUTPUT
-        compressedPSRuleTestFileOutput
+
         Write-Output '::endgroup::'
