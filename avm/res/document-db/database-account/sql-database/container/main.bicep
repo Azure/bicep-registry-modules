@@ -63,7 +63,7 @@ resource container 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/container
   tags: tags
   properties: {
     resource: {
-      analyticalStorageTtl: analyticalStorageTtl
+      analyticalStorageTtl: analyticalStorageTtl // please note that this property is not idempotent
       conflictResolutionPolicy: conflictResolutionPolicy
       defaultTtl: defaultTtl ?? -1
       id: name
