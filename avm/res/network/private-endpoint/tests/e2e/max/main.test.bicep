@@ -54,10 +54,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location
-    groupIds: [
-      'vault'
-    ]
-    serviceResourceId: nestedDependencies.outputs.keyVaultResourceId
     subnetResourceId: nestedDependencies.outputs.subnetResourceId
     lock: {
       kind: 'CanNotDelete'
@@ -68,7 +64,17 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     roleAssignments: [
       {
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
+      }
+      {
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
+      }
+      {
+        roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
         principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }
@@ -83,6 +89,14 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         }
       }
     ]
+    customDnsConfigs: [
+      {
+        fqdn: 'abc.keyvault.com'
+        ipAddresses: [
+          '10.0.0.10'
+        ]
+      }
+    ]
     customNetworkInterfaceName: '${namePrefix}${serviceShort}001nic'
     applicationSecurityGroupResourceIds: [
       nestedDependencies.outputs.applicationSecurityGroupResourceId
@@ -94,7 +108,18 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     }
     // Workaround for PSRule
     privateDnsZoneGroupName: 'default'
-    customDnsConfigs: []
     manualPrivateLinkServiceConnections: []
+    privateLinkServiceConnections: [
+      {
+        name: '${namePrefix}${serviceShort}001'
+        properties: {
+          privateLinkServiceId: nestedDependencies.outputs.keyVaultResourceId
+          groupIds: [
+            'vault'
+          ]
+          requestMessage: 'Hey there'
+        }
+      }
+    ]
   }
 }]

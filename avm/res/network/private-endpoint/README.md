@@ -47,11 +47,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
   name: '${uniqueString(deployment().name, location)}-test-npemin'
   params: {
     // Required parameters
-    groupIds: [
-      'vault'
-    ]
     name: 'npemin001'
-    serviceResourceId: '<serviceResourceId>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     applicationSecurityGroupResourceIds: []
@@ -63,6 +59,17 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     manualPrivateLinkServiceConnections: []
     privateDnsZoneGroupName: ''
     privateDnsZoneResourceIds: []
+    privateLinkServiceConnections: [
+      {
+        name: 'npemin001'
+        properties: {
+          groupIds: [
+            'vault'
+          ]
+          privateLinkServiceId: '<privateLinkServiceId>'
+        }
+      }
+    ]
     roleAssignments: []
     tags: {}
   }
@@ -82,16 +89,8 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "groupIds": {
-      "value": [
-        "vault"
-      ]
-    },
     "name": {
       "value": "npemin001"
-    },
-    "serviceResourceId": {
-      "value": "<serviceResourceId>"
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
@@ -124,6 +123,19 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     "privateDnsZoneResourceIds": {
       "value": []
     },
+    "privateLinkServiceConnections": {
+      "value": [
+        {
+          "name": "npemin001",
+          "properties": {
+            "groupIds": [
+              "vault"
+            ],
+            "privateLinkServiceId": "<privateLinkServiceId>"
+          }
+        }
+      ]
+    },
     "roleAssignments": {
       "value": []
     },
@@ -151,17 +163,20 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
   name: '${uniqueString(deployment().name, location)}-test-npemax'
   params: {
     // Required parameters
-    groupIds: [
-      'vault'
-    ]
     name: 'npemax001'
-    serviceResourceId: '<serviceResourceId>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     applicationSecurityGroupResourceIds: [
       '<applicationSecurityGroupResourceId>'
     ]
-    customDnsConfigs: []
+    customDnsConfigs: [
+      {
+        fqdn: 'abc.keyvault.com'
+        ipAddresses: [
+          '10.0.0.10'
+        ]
+      }
+    ]
     customNetworkInterfaceName: 'npemax001nic'
     ipConfigurations: [
       {
@@ -183,11 +198,33 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     privateDnsZoneResourceIds: [
       '<privateDNSZoneResourceId>'
     ]
+    privateLinkServiceConnections: [
+      {
+        name: 'npemax001'
+        properties: {
+          groupIds: [
+            'vault'
+          ]
+          privateLinkServiceId: '<privateLinkServiceId>'
+          requestMessage: 'Hey there'
+        }
+      }
+    ]
     roleAssignments: [
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     tags: {
@@ -212,16 +249,8 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "groupIds": {
-      "value": [
-        "vault"
-      ]
-    },
     "name": {
       "value": "npemax001"
-    },
-    "serviceResourceId": {
-      "value": "<serviceResourceId>"
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
@@ -233,7 +262,14 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       ]
     },
     "customDnsConfigs": {
-      "value": []
+      "value": [
+        {
+          "fqdn": "abc.keyvault.com",
+          "ipAddresses": [
+            "10.0.0.10"
+          ]
+        }
+      ]
     },
     "customNetworkInterfaceName": {
       "value": "npemax001nic"
@@ -270,12 +306,36 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         "<privateDNSZoneResourceId>"
       ]
     },
+    "privateLinkServiceConnections": {
+      "value": [
+        {
+          "name": "npemax001",
+          "properties": {
+            "groupIds": [
+              "vault"
+            ],
+            "privateLinkServiceId": "<privateLinkServiceId>",
+            "requestMessage": "Hey there"
+          }
+        }
+      ]
+    },
     "roleAssignments": {
       "value": [
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -307,11 +367,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
   name: '${uniqueString(deployment().name, location)}-test-npewaf'
   params: {
     // Required parameters
-    groupIds: [
-      'vault'
-    ]
     name: 'npewaf001'
-    serviceResourceId: '<serviceResourceId>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     applicationSecurityGroupResourceIds: [
@@ -339,11 +395,15 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     privateDnsZoneResourceIds: [
       '<privateDNSZoneResourceId>'
     ]
-    roleAssignments: [
+    privateLinkServiceConnections: [
       {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        name: 'npewaf001'
+        properties: {
+          groupIds: [
+            'vault'
+          ]
+          privateLinkServiceId: '<privateLinkServiceId>'
+        }
       }
     ]
     tags: {
@@ -368,16 +428,8 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "groupIds": {
-      "value": [
-        "vault"
-      ]
-    },
     "name": {
       "value": "npewaf001"
-    },
-    "serviceResourceId": {
-      "value": "<serviceResourceId>"
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
@@ -426,12 +478,16 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         "<privateDNSZoneResourceId>"
       ]
     },
-    "roleAssignments": {
+    "privateLinkServiceConnections": {
       "value": [
         {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "name": "npewaf001",
+          "properties": {
+            "groupIds": [
+              "vault"
+            ],
+            "privateLinkServiceId": "<privateLinkServiceId>"
+          }
         }
       ]
     },
@@ -456,9 +512,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`groupIds`](#parameter-groupids) | array | Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to. |
 | [`name`](#parameter-name) | string | Name of the private endpoint resource to create. |
-| [`serviceResourceId`](#parameter-serviceresourceid) | string | Resource ID of the resource that needs to be connected to the network. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -472,10 +526,11 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
 | [`ipConfigurations`](#parameter-ipconfigurations) | array | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`manualPrivateLinkServiceConnections`](#parameter-manualprivatelinkserviceconnections) | array | Manual PrivateLink Service Connections. |
+| [`manualPrivateLinkServiceConnections`](#parameter-manualprivatelinkserviceconnections) | array | A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. |
 | [`privateDnsZoneGroupName`](#parameter-privatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`privateLinkServiceConnections`](#parameter-privatelinkserviceconnections) | array | A grouping of information about the connection to the remote resource. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
 ### Parameter: `applicationSecurityGroupResourceIds`
@@ -488,6 +543,26 @@ Application security groups in which the private endpoint IP configuration is in
 
 Custom DNS configurations.
 - Required: No
+- Type: array
+
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`fqdn`](#parameter-customdnsconfigsfqdn) | Yes | string | Required. Fqdn that resolves to private endpoint IP address. |
+| [`ipAddresses`](#parameter-customdnsconfigsipaddresses) | Yes | array | Required. A list of private IP addresses of the private endpoint. |
+
+### Parameter: `customDnsConfigs.fqdn`
+
+Required. Fqdn that resolves to private endpoint IP address.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customDnsConfigs.ipAddresses`
+
+Required. A list of private IP addresses of the private endpoint.
+
+- Required: Yes
 - Type: array
 
 ### Parameter: `customNetworkInterfaceName`
@@ -503,17 +578,59 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `groupIds`
-
-Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to.
-- Required: Yes
-- Type: array
-
 ### Parameter: `ipConfigurations`
 
 A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.
 - Required: No
 - Type: array
+
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`name`](#parameter-ipconfigurationsname) | Yes | string | Required. The name of the resource that is unique within a resource group. |
+| [`properties`](#parameter-ipconfigurationsproperties) | Yes | object | Required. Properties of private endpoint IP configurations. |
+
+### Parameter: `ipConfigurations.name`
+
+Required. The name of the resource that is unique within a resource group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipConfigurations.properties`
+
+Required. Properties of private endpoint IP configurations.
+
+- Required: Yes
+- Type: object
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`groupId`](#parameter-ipconfigurationspropertiesgroupid) | Yes | string | Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`memberName`](#parameter-ipconfigurationspropertiesmembername) | Yes | string | Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateIPAddress`](#parameter-ipconfigurationspropertiesprivateipaddress) | Yes | string | Required. A private IP address obtained from the private endpoint's subnet. |
+
+### Parameter: `ipConfigurations.properties.groupId`
+
+Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipConfigurations.properties.memberName`
+
+Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipConfigurations.properties.privateIPAddress`
+
+Required. A private IP address obtained from the private endpoint's subnet.
+
+- Required: Yes
+- Type: string
+
 
 ### Parameter: `location`
 
@@ -551,9 +668,57 @@ Optional. Specify the name of lock.
 
 ### Parameter: `manualPrivateLinkServiceConnections`
 
-Manual PrivateLink Service Connections.
+A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource.
 - Required: No
 - Type: array
+
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`name`](#parameter-manualprivatelinkserviceconnectionsname) | Yes | string | Required. The name of the private link service connection. |
+| [`properties`](#parameter-manualprivatelinkserviceconnectionsproperties) | Yes | object | Required. Properties of private link service connection. |
+
+### Parameter: `manualPrivateLinkServiceConnections.name`
+
+Required. The name of the private link service connection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `manualPrivateLinkServiceConnections.properties`
+
+Required. Properties of private link service connection.
+
+- Required: Yes
+- Type: object
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`groupIds`](#parameter-manualprivatelinkserviceconnectionspropertiesgroupids) | Yes | array | Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateLinkServiceId`](#parameter-manualprivatelinkserviceconnectionspropertiesprivatelinkserviceid) | Yes | string | Required. The resource id of private link service. |
+| [`requestMessage`](#parameter-manualprivatelinkserviceconnectionspropertiesrequestmessage) | Yes | string | Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars. |
+
+### Parameter: `manualPrivateLinkServiceConnections.properties.groupIds`
+
+Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `manualPrivateLinkServiceConnections.properties.privateLinkServiceId`
+
+Required. The resource id of private link service.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `manualPrivateLinkServiceConnections.properties.requestMessage`
+
+Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.
+
+- Required: Yes
+- Type: string
+
 
 ### Parameter: `name`
 
@@ -573,9 +738,63 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 - Required: No
 - Type: array
 
+### Parameter: `privateLinkServiceConnections`
+
+A grouping of information about the connection to the remote resource.
+- Required: No
+- Type: array
+
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`name`](#parameter-privatelinkserviceconnectionsname) | Yes | string | Required. The name of the private link service connection. |
+| [`properties`](#parameter-privatelinkserviceconnectionsproperties) | Yes | object | Required. Properties of private link service connection. |
+
+### Parameter: `privateLinkServiceConnections.name`
+
+Required. The name of the private link service connection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateLinkServiceConnections.properties`
+
+Required. Properties of private link service connection.
+
+- Required: Yes
+- Type: object
+
+| Name | Required | Type | Description |
+| :-- | :-- | :--| :-- |
+| [`groupIds`](#parameter-privatelinkserviceconnectionspropertiesgroupids) | Yes | array | Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. |
+| [`privateLinkServiceId`](#parameter-privatelinkserviceconnectionspropertiesprivatelinkserviceid) | Yes | string | Required. The resource id of private link service. |
+| [`requestMessage`](#parameter-privatelinkserviceconnectionspropertiesrequestmessage) | No | string | Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars. |
+
+### Parameter: `privateLinkServiceConnections.properties.groupIds`
+
+Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `privateLinkServiceConnections.properties.privateLinkServiceId`
+
+Required. The resource id of private link service.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateLinkServiceConnections.properties.requestMessage`
+
+Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.
+
+- Required: No
+- Type: string
+
+
 ### Parameter: `roleAssignments`
 
-Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+Array of role assignments to create.
 - Required: No
 - Type: array
 
@@ -588,7 +807,7 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 | [`description`](#parameter-roleassignmentsdescription) | No | string | Optional. The description of the role assignment. |
 | [`principalId`](#parameter-roleassignmentsprincipalid) | Yes | string | Required. The principal ID of the principal (user/group/identity) to assign the role to. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | No | string | Optional. The principal type of the assigned principal ID. |
-| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead. |
+| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 ### Parameter: `roleAssignments.condition`
 
@@ -636,14 +855,8 @@ Optional. The principal type of the assigned principal ID.
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
-Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.
+Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
-- Required: Yes
-- Type: string
-
-### Parameter: `serviceResourceId`
-
-Resource ID of the resource that needs to be connected to the network.
 - Required: Yes
 - Type: string
 
