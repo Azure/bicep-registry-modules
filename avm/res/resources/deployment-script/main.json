@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "18060507539317064739"
+      "templateHash": "15035964448255167860"
     },
     "name": "Deployment Scripts",
     "description": "This module deploys Deployment Scripts.",
@@ -183,7 +183,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Uri for the external script. This is the entry point for the external script. To run an internal script, use the scriptContent instead."
+        "description": "Optional. Uri for the external script. This is the entry point for the external script. To run an internal script, use the scriptContent parameter instead."
       }
     },
     "environmentVariables": {

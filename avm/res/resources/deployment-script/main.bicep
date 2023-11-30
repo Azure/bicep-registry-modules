@@ -34,7 +34,7 @@ param azCliVersion string?
 @description('Optional. Script body. Max length: 32000 characters. To run an external script, use primaryScriptURI instead.')
 param scriptContent string?
 
-@description('Optional. Uri for the external script. This is the entry point for the external script. To run an internal script, use the scriptContent instead.')
+@description('Optional. Uri for the external script. This is the entry point for the external script. To run an internal script, use the scriptContent parameter instead.')
 param primaryScriptUri string?
 
 @metadata({
