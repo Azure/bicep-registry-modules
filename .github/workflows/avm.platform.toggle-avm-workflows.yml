@@ -1,20 +1,15 @@
 name: 'avm.platform.toggle-avm-workflows'
 
 on:
-  push:
-    branches:
-      - users/rahalan/DisableWorkflows
-  # workflow_dispatch:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       workMode:
-        # type: choice
-        type: string
+        type: choice
         description: "Enable or disable workflows"
         required: true
-        # options:
-        #   - "enable"
-        #   - "disable"
+        options:
+          - "enable"
+          - "disable"
         default: "disable"
       includePattern:
         type: string
