@@ -27,7 +27,10 @@ function Confirm-ModuleIsPublished {
         [string] $ModulePath
     )
 
-    $catalogUrl = 'https://mcr.microsoft.com/v2/_catalog'
+    $baseUrl = 'https://mcr.microsoft.com/v2'
+    $catalogUrl = "$baseUrl/_catalog"
+    $moduleVersionsUrl = "$baseUrl/bicep/$ModulePath/tags/list"
+
     $time_limit_seconds = 3600
     $end_time = (Get-Date).AddSeconds($time_limit_seconds)
     $retry_seconds = 5
@@ -52,8 +55,7 @@ function Confirm-ModuleIsPublished {
     }
 
     while ($true) {
-        $existingTagsUrl = "https://mcr.microsoft.com/v2/bicep/$ModulePath/tags/list"
-        $tagsContentRaw = (Invoke-WebRequest -Uri $existingTagsUrl -UseBasicParsing).Content
+        $tagsContentRaw = (Invoke-WebRequest -Uri $moduleVersionsUrl -UseBasicParsing).Content
         $tagsContent = ($tagsContentRaw | ConvertFrom-Json).tags
 
         Write-Verbose ("Tags for module in path [$ModulePath] found in MCR catalog:`n{0}" -f ($tagsContent | Out-String))
