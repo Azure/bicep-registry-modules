@@ -38,9 +38,31 @@ This module deploys an Event Grid Topic Event Subscription.
 | [`labels`](#parameter-labels) | array | The list of user defined labels. |
 | [`retryPolicy`](#parameter-retrypolicy) | object | The retry policy for events. This can be used to configure the TTL and maximum number of delivery attempts and time to live for events. |
 
+### Parameter: `destination`
+
+The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information).
+
+- Required: Yes
+- Type: object
+
+### Parameter: `name`
+
+The name of the Event Subscription.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `topicName`
+
+Name of the Event Grid Topic.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `deadLetterDestination`
 
 Dead Letter Destination. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterdestination-objects for more information).
+
 - Required: No
 - Type: object
 - Default: `{}`
@@ -48,6 +70,7 @@ Dead Letter Destination. (See https://learn.microsoft.com/en-us/azure/templates/
 ### Parameter: `deadLetterWithResourceIdentity`
 
 Dead Letter with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterwithresourceidentity-objects for more information).
+
 - Required: No
 - Type: object
 - Default: `{}`
@@ -55,19 +78,15 @@ Dead Letter with Resource Identity Configuration. (See https://learn.microsoft.c
 ### Parameter: `deliveryWithResourceIdentity`
 
 Delivery with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deliverywithresourceidentity-objects for more information).
+
 - Required: No
 - Type: object
 - Default: `{}`
 
-### Parameter: `destination`
-
-The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information).
-- Required: Yes
-- Type: object
-
 ### Parameter: `eventDeliverySchema`
 
 The event delivery schema for the event subscription.
+
 - Required: No
 - Type: string
 - Default: `'EventGridSchema'`
@@ -84,6 +103,7 @@ The event delivery schema for the event subscription.
 ### Parameter: `expirationTimeUtc`
 
 The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ).
+
 - Required: No
 - Type: string
 - Default: `''`
@@ -91,6 +111,7 @@ The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTH
 ### Parameter: `filter`
 
 The filter for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptionfilter for more information).
+
 - Required: No
 - Type: object
 - Default: `{}`
@@ -98,28 +119,18 @@ The filter for the event subscription. (See https://learn.microsoft.com/en-us/az
 ### Parameter: `labels`
 
 The list of user defined labels.
+
 - Required: No
 - Type: array
 - Default: `[]`
 
-### Parameter: `name`
-
-The name of the Event Subscription.
-- Required: Yes
-- Type: string
-
 ### Parameter: `retryPolicy`
 
 The retry policy for events. This can be used to configure the TTL and maximum number of delivery attempts and time to live for events.
+
 - Required: No
 - Type: object
 - Default: `{}`
-
-### Parameter: `topicName`
-
-Name of the Event Grid Topic.
-- Required: Yes
-- Type: string
 
 
 ## Outputs
