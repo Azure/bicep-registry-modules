@@ -1000,7 +1000,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         eventHubName: '<eventHubName>'
         logCategoriesAndGroups: [
           {
-            categoryGroup: 'AllLogs'
+            categoryGroup: 'audit'
           }
         ]
         metricCategories: [
@@ -1084,22 +1084,10 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         autoDeleteOnIdle: 'PT5M'
         maxMessageSizeInKilobytes: 2048
         name: 'sbnwafq001'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
+        roleAssignments: []
       }
     ]
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
+    roleAssignments: []
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -1125,13 +1113,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           }
         ]
         name: 'sbnwaft001'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
+        roleAssignments: []
       }
     ]
     zoneRedundant: true
@@ -1188,7 +1170,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           "eventHubName": "<eventHubName>",
           "logCategoriesAndGroups": [
             {
-              "categoryGroup": "AllLogs"
+              "categoryGroup": "audit"
             }
           ],
           "metricCategories": [
@@ -1292,24 +1274,12 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           "autoDeleteOnIdle": "PT5M",
           "maxMessageSizeInKilobytes": 2048,
           "name": "sbnwafq001",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ]
+          "roleAssignments": []
         }
       ]
     },
     "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
+      "value": []
     },
     "tags": {
       "value": {
@@ -1339,13 +1309,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
             }
           ],
           "name": "sbnwaft001",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ]
+          "roleAssignments": []
         }
       ]
     },

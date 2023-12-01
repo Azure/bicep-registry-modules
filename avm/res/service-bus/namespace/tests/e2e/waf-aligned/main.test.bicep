@@ -81,14 +81,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Reader'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-
-        principalType: 'ServicePrincipal'
-      }
-    ]
+    roleAssignments: []
     networkRuleSets: {
       defaultAction: 'Deny'
       trustedServiceAccessEnabled: true
@@ -129,13 +122,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     queues: [
       {
         name: '${namePrefix}${serviceShort}q001'
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
+        roleAssignments: []
         authorizationRules: [
           {
             name: 'RootManageSharedAccessKey'
@@ -160,13 +147,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     topics: [
       {
         name: '${namePrefix}${serviceShort}t001'
-        roleAssignments: [
-          {
-            roleDefinitionIdOrName: 'Reader'
-            principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-            principalType: 'ServicePrincipal'
-          }
-        ]
+        roleAssignments: []
         authorizationRules: [
           {
             name: 'RootManageSharedAccessKey'
@@ -196,7 +177,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         ]
         logCategoriesAndGroups: [
           {
-            categoryGroup: 'AllLogs'
+            categoryGroup: 'audit'
           }
         ]
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
