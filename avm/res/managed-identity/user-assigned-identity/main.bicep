@@ -1,34 +1,32 @@
-metadata name = 'Route Tables'
-metadata description = 'This module deploys a User Defined Route Table (UDR).'
+metadata name = 'User Assigned Identities'
+metadata description = 'This module deploys a User Assigned Identity.'
 metadata owner = 'Azure/module-maintainers'
 
-@description('Required. Name given for the hub route table.')
+@description('Required. Name of the User Assigned Identity.')
 param name string
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. An array of routes to be established within the hub route table.')
-param routes routeType
-
-@description('Optional. Switch to disable BGP route propagation.')
-param disableBgpRoutePropagation bool = false
+@description('Optional. The federated identity credentials list to indicate which token from the external IdP should be trusted by your application. Federated identity credentials are supported on applications only. A maximum of 20 federated identity credentials can be added per application object.')
+param federatedIdentityCredentials array = []
 
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
-@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+@description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
 @description('Optional. Tags of the resource.')
 param tags object?
 
-@description('Optional. Enable/Disable usage telemetry for module.')
+@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
 param enableTelemetry bool = true
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
-  'Network Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')
+  'Managed Identity Contributor': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e40ec5ca-96e0-45a2-b4ff-59039f2c2b59')
+  'Managed Identity Operator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f1a07417-d97a-45cb-824c-7a7467783830')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
   'Role Based Access Control Administrator (Preview)': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')
@@ -36,7 +34,7 @@ var builtInRoleNames = {
 }
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: take('46d3xbcp.res.network-routetable.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}', 64)
+  name: '46d3xbcp.res.managedidentity-userassignedidentity.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -53,27 +51,34 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource routeTable 'Microsoft.Network/routeTables@2023-04-01' = {
+resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: name
   location: location
   tags: tags
-  properties: {
-    routes: routes
-    disableBgpRoutePropagation: disableBgpRoutePropagation
-  }
 }
 
-resource routeTable_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+resource userAssignedIdentity_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
   properties: {
     level: lock.?kind ?? ''
     notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
   }
-  scope: routeTable
+  scope: userAssignedIdentity
 }
 
-resource routeTable_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
-  name: guid(routeTable.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+module userAssignedIdentity_federatedIdentityCredentials 'federated-identity-credential/main.bicep' = [for (federatedIdentityCredential, index) in federatedIdentityCredentials: {
+  name: '${uniqueString(deployment().name, location)}-UserMSI-FederatedIdentityCredential-${index}'
+  params: {
+    name: federatedIdentityCredential.name
+    userAssignedIdentityName: userAssignedIdentity.name
+    audiences: federatedIdentityCredential.audiences
+    issuer: federatedIdentityCredential.issuer
+    subject: federatedIdentityCredential.subject
+  }
+}]
+
+resource userAssignedIdentity_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
+  name: guid(userAssignedIdentity.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
   properties: {
     roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
     principalId: roleAssignment.principalId
@@ -83,20 +88,26 @@ resource routeTable_roleAssignments 'Microsoft.Authorization/roleAssignments@202
     conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
     delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
   }
-  scope: routeTable
+  scope: userAssignedIdentity
 }]
 
-@description('The resource group the route table was deployed into.')
+@description('The name of the user assigned identity.')
+output name string = userAssignedIdentity.name
+
+@description('The resource ID of the user assigned identity.')
+output resourceId string = userAssignedIdentity.id
+
+@description('The principal ID (object ID) of the user assigned identity.')
+output principalId string = userAssignedIdentity.properties.principalId
+
+@description('The client ID (application ID) of the user assigned identity.')
+output clientId string = userAssignedIdentity.properties.clientId
+
+@description('The resource group the user assigned identity was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
-@description('The name of the route table.')
-output name string = routeTable.name
-
-@description('The resource ID of the route table.')
-output resourceId string = routeTable.id
-
 @description('The location the resource was deployed into.')
-output location string = routeTable.location
+output location string = userAssignedIdentity.location
 
 // =============== //
 //   Definitions   //
@@ -111,7 +122,7 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
-  @description('Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.')
+  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
   @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
@@ -131,23 +142,4 @@ type roleAssignmentType = {
 
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
-}[]?
-
-type routeType = {
-  @description('Required. Name of the route.')
-  name: string
-
-  properties: {
-    @description('Required. The type of Azure hop the packet should be sent to.')
-    nextHopType: ('VirtualAppliance' | 'VnetLocal' | 'Internet' | 'VirtualNetworkGateway' | 'None')
-
-    @description('Optional. The destination CIDR to which the route applies.')
-    addressPrefix: string?
-
-    @description('Optional. A value indicating whether this route overrides overlapping BGP routes regardless of LPM.')
-    hasBgpOverride: bool?
-
-    @description('Optional. The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance.')
-    nextHopIpAddress: string?
-  }
 }[]?

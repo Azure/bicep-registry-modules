@@ -1,6 +1,6 @@
-# Route Tables `[Microsoft.Network/routeTables]`
+# User Assigned Identities `[Microsoft.ManagedIdentity/userAssignedIdentities]`
 
-This module deploys a User Defined Route Table (UDR).
+This module deploys a User Assigned Identity.
 
 ## Navigation
 
@@ -16,7 +16,8 @@ This module deploys a User Defined Route Table (UDR).
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/routeTables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/routeTables) |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
+| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities/federatedIdentityCredentials) |
 
 ## Usage examples
 
@@ -24,7 +25,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/route-table:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/managed-identity/user-assigned-identity:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -40,11 +41,11 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module routeTable 'br/public:avm/res/network/route-table:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nrtmin'
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-miuaimin'
   params: {
     // Required parameters
-    name: 'nrtmin001'
+    name: 'miuaimin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -65,7 +66,7 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "nrtmin001"
+      "value": "miuaimin001"
     },
     // Non-required parameters
     "location": {
@@ -88,12 +89,22 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module routeTable 'br/public:avm/res/network/route-table:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nrtmax'
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-miuaimax'
   params: {
     // Required parameters
-    name: 'nrtmax001'
+    name: 'miuaimax001'
     // Non-required parameters
+    federatedIdentityCredentials: [
+      {
+        audiences: [
+          'api://AzureADTokenExchange'
+        ]
+        issuer: '<issuer>'
+        name: 'test-fed-cred-miuaimax-001'
+        subject: 'system:serviceaccount:default:workload-identity-sa'
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -114,16 +125,6 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
-    routes: [
-      {
-        name: 'default'
-        properties: {
-          addressPrefix: '0.0.0.0/0'
-          nextHopIpAddress: '172.16.0.20'
-          nextHopType: 'VirtualAppliance'
-        }
       }
     ]
     tags: {
@@ -149,9 +150,21 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "nrtmax001"
+      "value": "miuaimax001"
     },
     // Non-required parameters
+    "federatedIdentityCredentials": {
+      "value": [
+        {
+          "audiences": [
+            "api://AzureADTokenExchange"
+          ],
+          "issuer": "<issuer>",
+          "name": "test-fed-cred-miuaimax-001",
+          "subject": "system:serviceaccount:default:workload-identity-sa"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -180,18 +193,6 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
         }
       ]
     },
-    "routes": {
-      "value": [
-        {
-          "name": "default",
-          "properties": {
-            "addressPrefix": "0.0.0.0/0",
-            "nextHopIpAddress": "172.16.0.20",
-            "nextHopType": "VirtualAppliance"
-          }
-        }
-      ]
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -216,27 +217,27 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module routeTable 'br/public:avm/res/network/route-table:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nrtwaf'
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-miuaiwaf'
   params: {
     // Required parameters
-    name: 'nrtwaf001'
+    name: 'miuaiwaf001'
     // Non-required parameters
+    federatedIdentityCredentials: [
+      {
+        audiences: [
+          'api://AzureADTokenExchange'
+        ]
+        issuer: '<issuer>'
+        name: 'test-fed-cred-miuaiwaf-001'
+        subject: 'system:serviceaccount:default:workload-identity-sa'
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    routes: [
-      {
-        name: 'default'
-        properties: {
-          addressPrefix: '0.0.0.0/0'
-          nextHopIpAddress: '172.16.0.20'
-          nextHopType: 'VirtualAppliance'
-        }
-      }
-    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -260,9 +261,21 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "nrtwaf001"
+      "value": "miuaiwaf001"
     },
     // Non-required parameters
+    "federatedIdentityCredentials": {
+      "value": [
+        {
+          "audiences": [
+            "api://AzureADTokenExchange"
+          ],
+          "issuer": "<issuer>",
+          "name": "test-fed-cred-miuaiwaf-001",
+          "subject": "system:serviceaccount:default:workload-identity-sa"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -271,18 +284,6 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
-    },
-    "routes": {
-      "value": [
-        {
-          "name": "default",
-          "properties": {
-            "addressPrefix": "0.0.0.0/0",
-            "nextHopIpAddress": "172.16.0.20",
-            "nextHopType": "VirtualAppliance"
-          }
-        }
-      ]
     },
     "tags": {
       "value": {
@@ -305,33 +306,32 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name given for the hub route table. |
+| [`name`](#parameter-name) | string | Name of the User Assigned Identity. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`disableBgpRoutePropagation`](#parameter-disablebgproutepropagation) | bool | Switch to disable BGP route propagation. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`federatedIdentityCredentials`](#parameter-federatedidentitycredentials) | array | The federated identity credentials list to indicate which token from the external IdP should be trusted by your application. Federated identity credentials are supported on applications only. A maximum of 20 federated identity credentials can be added per application object. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-| [`routes`](#parameter-routes) | array | An array of routes to be established within the hub route table. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-
-### Parameter: `disableBgpRoutePropagation`
-
-Switch to disable BGP route propagation.
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `enableTelemetry`
 
-Enable/Disable usage telemetry for module.
+Enable telemetry via a Globally Unique Identifier (GUID).
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `federatedIdentityCredentials`
+
+The federated identity credentials list to indicate which token from the external IdP should be trusted by your application. Federated identity credentials are supported on applications only. A maximum of 20 federated identity credentials can be added per application object.
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `location`
 
@@ -369,13 +369,13 @@ Optional. Specify the name of lock.
 
 ### Parameter: `name`
 
-Name given for the hub route table.
+Name of the User Assigned Identity.
 - Required: Yes
 - Type: string
 
 ### Parameter: `roleAssignments`
 
-Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+Array of role assignments to create.
 - Required: No
 - Type: array
 
@@ -388,7 +388,7 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 | [`description`](#parameter-roleassignmentsdescription) | No | string | Optional. The description of the role assignment. |
 | [`principalId`](#parameter-roleassignmentsprincipalid) | Yes | string | Required. The principal ID of the principal (user/group/identity) to assign the role to. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | No | string | Optional. The principal type of the assigned principal ID. |
-| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead. |
+| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 ### Parameter: `roleAssignments.condition`
 
@@ -436,70 +436,10 @@ Optional. The principal type of the assigned principal ID.
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
-Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.
+Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `routes`
-
-An array of routes to be established within the hub route table.
-- Required: No
-- Type: array
-
-
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`name`](#parameter-routesname) | Yes | string | Required. Name of the route. |
-| [`properties`](#parameter-routesproperties) | Yes | object |  |
-
-### Parameter: `routes.name`
-
-Required. Name of the route.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `routes.properties`
-- Required: Yes
-- Type: object
-
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`addressPrefix`](#parameter-routespropertiesaddressprefix) | No | string | Optional. The destination CIDR to which the route applies. |
-| [`hasBgpOverride`](#parameter-routespropertieshasbgpoverride) | No | bool | Optional. A value indicating whether this route overrides overlapping BGP routes regardless of LPM. |
-| [`nextHopIpAddress`](#parameter-routespropertiesnexthopipaddress) | No | string | Optional. The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance. |
-| [`nextHopType`](#parameter-routespropertiesnexthoptype) | Yes | string | Required. The type of Azure hop the packet should be sent to. |
-
-### Parameter: `routes.properties.addressPrefix`
-
-Optional. The destination CIDR to which the route applies.
-
-- Required: No
-- Type: string
-
-### Parameter: `routes.properties.hasBgpOverride`
-
-Optional. A value indicating whether this route overrides overlapping BGP routes regardless of LPM.
-
-- Required: No
-- Type: bool
-
-### Parameter: `routes.properties.nextHopIpAddress`
-
-Optional. The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance.
-
-- Required: No
-- Type: string
-
-### Parameter: `routes.properties.nextHopType`
-
-Required. The type of Azure hop the packet should be sent to.
-
-- Required: Yes
-- Type: string
-- Allowed: `[Internet, None, VirtualAppliance, VirtualNetworkGateway, VnetLocal]`
-
 
 ### Parameter: `tags`
 
@@ -512,10 +452,12 @@ Tags of the resource.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `clientId` | string | The client ID (application ID) of the user assigned identity. |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the route table. |
-| `resourceGroupName` | string | The resource group the route table was deployed into. |
-| `resourceId` | string | The resource ID of the route table. |
+| `name` | string | The name of the user assigned identity. |
+| `principalId` | string | The principal ID (object ID) of the user assigned identity. |
+| `resourceGroupName` | string | The resource group the user assigned identity was deployed into. |
+| `resourceId` | string | The resource ID of the user assigned identity. |
 
 ## Cross-referenced modules
 
