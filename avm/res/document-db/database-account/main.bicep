@@ -329,7 +329,7 @@ module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpo
         properties: {
           privateLinkServiceId: databaseAccount.id
           groupIds: [
-            privateEndpoint.?service ?? 'vault'
+            privateEndpoint.?service ?? 'Sql'
           ]
         }
       }
