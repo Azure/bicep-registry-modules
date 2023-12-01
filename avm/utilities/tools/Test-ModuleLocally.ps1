@@ -37,32 +37,7 @@ Optional. A hashtable parameter that contains custom tokens to be replaced in th
 
 $TestModuleLocallyInput = @{
     TemplateFilePath           = 'C:\network\route-table\main.bicep'
-    ModuleTestFilePath          = 'C:\network\route-table\.test\parameters.json'
-    PesterTest                 = $false
-    DeploymentTest             = $false
-    ValidationTest             = $true
-    ValidateOrDeployParameters = @{
-        Location          = 'westeurope'
-        ResourceGroupName = 'validation-rg'
-        SubscriptionId    = '00000000-0000-0000-0000-000000000000'
-        ManagementGroupId = '00000000-0000-0000-0000-000000000000'
-        RemoveDeployment  = $false
-    }
-    AdditionalTokens           = @{
-        tenantId      = '00000000-0000-0000-0000-000000000000'
-        namePrefix    = 'avm'
-        moduleVersion = '1.0.0'
-    }
-}
-Test-ModuleLocally @TestModuleLocallyInput -Verbose
-
-Run a Test-Az*Deployment using a specific parameter-template combination with the provided tokens
-
-.EXAMPLE
-
-$TestModuleLocallyInput = @{
-    TemplateFilePath           = 'C:\network\route-table\main.bicep'
-    ModuleTestFilePath          = 'C:\network\route-table\.test\common\main.test.bicep'
+    ModuleTestFilePath         = 'C:\network\route-table\.test\common\main.test.bicep'
     PesterTest                 = $false
     DeploymentTest             = $false
     ValidationTest             = $true
@@ -82,30 +57,6 @@ $TestModuleLocallyInput = @{
 Test-ModuleLocally @TestModuleLocallyInput -Verbose
 
 Run a Test-Az*Deployment using a test file with the provided tokens
-
-.EXAMPLE
-
-$TestModuleLocallyInput = @{
-    TemplateFilePath           = 'C:\network\route-table\main.bicep'
-    PesterTest                 = $true
-    DeploymentTest             = $false
-    ValidationTest             = $true
-    ValidateOrDeployParameters = @{
-        Location          = 'westeurope'
-        ResourceGroupName = 'validation-rg'
-        SubscriptionId    = '00000000-0000-0000-0000-000000000000'
-        ManagementGroupId = '00000000-0000-0000-0000-000000000000'
-        RemoveDeployment  = $false
-    }
-    AdditionalTokens           = @{
-        tenantId      = '00000000-0000-0000-0000-000000000000'
-        namePrefix    = 'avm'
-        moduleVersion = '1.0.0'
-    }
-}
-Test-ModuleLocally @TestModuleLocallyInput -Verbose
-
-Run all Pester tests for a given template and a Test-Az*Deployment using each test file in the module's default test folder ('.test') in combination with the template and the provided tokens
 
 .EXAMPLE
 
@@ -136,9 +87,31 @@ Test-ModuleLocally @TestModuleLocallyInput -Verbose
 
 Run all Pester tests for the given template file including tests for the use of tokens
 
+.EXAMPLE
+$TestModuleLocallyInput = @{
+    TemplateFilePath           = 'C:\network\route-table\main.bicep'
+    ModuleTestFilePath         = 'C:\network\route-table\.test\common\main.test.bicep'
+    PesterTest                 = $false
+    DeploymentTest             = $false
+    WhatIfTest                 = $true
+    ValidationTest             = $false
+    ValidateOrDeployParameters = @{
+        Location          = 'westeurope'
+        ResourceGroupName = 'validation-rg'
+        SubscriptionId    = '00000000-0000-0000-0000-000000000000'
+        ManagementGroupId = '00000000-0000-0000-0000-000000000000'
+        RemoveDeployment  = $false
+    }
+    AdditionalTokens           = @{
+        tenantId = '00000000-0000-0000-0000-000000000000'
+    }
+}
+Test-ModuleLocally @TestModuleLocallyInput -Verbose
+Get What-If deployment result using a test file with the provided tokens
+
 .NOTES
 - Make sure you provide the right information in the 'ValidateOrDeployParameters' parameter for this function to work.
-- Ensure you have the ability to perform the deployment operations using your account (if planning to test deploy)
+- Ensure you have the ability to perform the deployment operations using your account (if planning to test deploy or performing what-if validation.)
 #>
 function Test-ModuleLocally {
 
@@ -148,10 +121,10 @@ function Test-ModuleLocally {
         [string] $TemplateFilePath,
 
         [Parameter(Mandatory = $false)]
-        [string] $ModuleTestFilePath = (Join-Path (Split-Path $TemplateFilePath -Parent) '.test'),
+        [string] $ModuleTestFilePath = (Join-Path (Split-Path $TemplateFilePath -Parent) 'tests'),
 
         [Parameter(Mandatory = $false)]
-        [string] $PesterTestFilePath = 'utilities/pipelines/staticValidation/module.tests.ps1',
+        [string] $PesterTestFilePath = 'avm/utilities/pipelines/staticValidation/compliance/module.tests.ps1',
 
         [Parameter(Mandatory = $false)]
         [Psobject] $ValidateOrDeployParameters = @{},
@@ -169,11 +142,14 @@ function Test-ModuleLocally {
         [switch] $DeploymentTest,
 
         [Parameter(Mandatory = $false)]
-        [switch] $ValidationTest
+        [switch] $ValidationTest,
+
+        [Parameter(Mandatory = $false)]
+        [switch] $WhatIfTest
     )
 
     begin {
-        $repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent
+        $repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.FullName
         $ModuleName = Split-Path (Split-Path $TemplateFilePath -Parent) -Leaf
         $utilitiesFolderPath = Split-Path $PSScriptRoot -Parent
         Write-Verbose "Running local tests for [$ModuleName]"
@@ -183,6 +159,7 @@ function Test-ModuleLocally {
         # Load Modules Validation / Deployment Scripts
         . (Join-Path $utilitiesFolderPath 'pipelines' 'e2eValidation' 'resourceDeployment' 'New-TemplateDeployment.ps1')
         . (Join-Path $utilitiesFolderPath 'pipelines' 'e2eValidation' 'resourceDeployment' 'Test-TemplateDeployment.ps1')
+        . (Join-Path $PSScriptRoot 'helper' 'Get-TemplateDeploymentWhatIf.ps1')
     }
     process {
 
@@ -247,7 +224,7 @@ function Test-ModuleLocally {
         # Validation & Deployment tests #
         #################################
 
-        if (($ValidationTest -or $DeploymentTest) -and $ValidateOrDeployParameters) {
+        if (($ValidationTest -or $DeploymentTest -or $WhatIfTest) -and $ValidateOrDeployParameters) {
 
             # Invoke Token Replacement Functionality and Convert Tokens in Parameter Files
             $null = Convert-TokensInFileList @tokenConfiguration
@@ -255,13 +232,12 @@ function Test-ModuleLocally {
             # Deployment & Validation Testing
             # -------------------------------
             $functionInput = @{
-                TemplateFilePath     = $TemplateFilePath
                 location             = $ValidateOrDeployParameters.Location
                 resourceGroupName    = $ValidateOrDeployParameters.ResourceGroupName
                 subscriptionId       = $ValidateOrDeployParameters.SubscriptionId
                 managementGroupId    = $ValidateOrDeployParameters.ManagementGroupId
                 additionalParameters = $additionalParameters
-                RepoRoot             = Split-Path (Split-Path (Split-Path $PSScriptRoot))
+                RepoRoot             = $repoRootPath
                 Verbose              = $true
             }
 
@@ -272,12 +248,17 @@ function Test-ModuleLocally {
                     # Loop through test files
                     foreach ($moduleTestFile in $moduleTestFiles) {
                         Write-Verbose ('Validating module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)) -Verbose
-                        if ((Split-Path $moduleTestFile -Extension) -eq '.json') {
-                            Test-TemplateDeployment @functionInput -ParameterFilePath $moduleTestFile
-                        } else {
-                            $functionInput['TemplateFilePath'] = $moduleTestFile
-                            Test-TemplateDeployment @functionInput
-                        }
+                        Test-TemplateDeployment @functionInput -TemplateFilePath $moduleTestFile
+                    }
+                }
+
+                # What-If validation for template
+                # -----------------
+                if ($WhatIfTest) {
+                    # Loop through test files
+                    foreach ($moduleTestFile in $moduleTestFiles) {
+                        Write-Verbose ('Get Deployment What-If result for module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)) -Verbose
+                        Get-TemplateDeploymentWhatIf @functionInput -TemplateFilePath $moduleTestFile
                     }
                 }
 
@@ -288,15 +269,8 @@ function Test-ModuleLocally {
                     # Loop through test files
                     foreach ($moduleTestFile in $moduleTestFiles) {
                         Write-Verbose ('Deploy Module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)) -Verbose
-                        if ((Split-Path $moduleTestFile -Extension) -eq '.json') {
-                            if ($PSCmdlet.ShouldProcess(('Module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)), 'Deploy')) {
-                                New-TemplateDeployment @functionInput -ParameterFilePath $moduleTestFile
-                            }
-                        } else {
-                            $functionInput['TemplateFilePath'] = $moduleTestFile
-                            if ($PSCmdlet.ShouldProcess(('Module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)), 'Deploy')) {
-                                New-TemplateDeployment @functionInput
-                            }
+                        if ($PSCmdlet.ShouldProcess(('Module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)), 'Deploy')) {
+                            New-TemplateDeployment @functionInput -TemplateFilePath $moduleTestFile
                         }
                     }
                 }
