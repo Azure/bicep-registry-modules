@@ -79,7 +79,13 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       ]
       logCategoriesAndGroups: [
         {
-          categoryGroup: 'AllLogs'
+          category: 'JobLogs'
+        }
+        {
+          category: 'JobStreams'
+        }
+        {
+          category: 'DSCNodeStatus'
         }
       ]
     }
