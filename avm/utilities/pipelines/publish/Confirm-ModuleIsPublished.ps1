@@ -31,11 +31,13 @@ function Confirm-ModuleIsPublished {
     $catalogUrl = "$baseUrl/_catalog"
     $moduleVersionsUrl = "$baseUrl/bicep/$ModulePath/tags/list"
 
-    $time_limit_seconds = 3600
+    $time_limit_seconds = 3600 # 1h
     $end_time = (Get-Date).AddSeconds($time_limit_seconds)
     $retry_seconds = 5
 
-
+    #####################################
+    ##   Confirm module is published   ##
+    #####################################
     while ($true) {
         $catalogContentRaw = (Invoke-WebRequest -Uri $catalogUrl -UseBasicParsing).Content
         $bicepCatalogContent = ($catalogContentRaw | ConvertFrom-Json).repositories | Select-String 'bicep/'
@@ -54,6 +56,9 @@ function Confirm-ModuleIsPublished {
         }
     }
 
+    #############################################
+    ##   Confirm module version is published   ##
+    #############################################
     while ($true) {
         $tagsContentRaw = (Invoke-WebRequest -Uri $moduleVersionsUrl -UseBasicParsing).Content
         $tagsContent = ($tagsContentRaw | ConvertFrom-Json).tags
