@@ -308,7 +308,7 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
 | [`autoScaleConfigurationBoundsMax`](#parameter-autoscaleconfigurationboundsmax) | int | Maximum number of scale units deployed for ExpressRoute gateway. |
 | [`autoScaleConfigurationBoundsMin`](#parameter-autoscaleconfigurationboundsmin) | int | Minimum number of scale units deployed for ExpressRoute gateway. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
-| [`expressRouteConnections`](#parameter-expressrouteconnections) | array | List of ExpressRoute connections to the ExpressRoute gateway. |
+| [`expressRouteConnections`](#parameter-expressrouteconnections) | array | List of ExpressRoute connections to the ExpressRoute gateway. **Note:** This parameter will overwrite existing connections, including deleting any that are not provided. This is by-design behavior of the resource provider. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -344,7 +344,7 @@ Enable telemetry via a Globally Unique Identifier (GUID).
 
 ### Parameter: `expressRouteConnections`
 
-List of ExpressRoute connections to the ExpressRoute gateway.
+List of ExpressRoute connections to the ExpressRoute gateway. **Note:** This parameter will overwrite existing connections, including deleting any that are not provided. This is by-design behavior of the resource provider.
 - Required: No
 - Type: array
 - Default: `[]`
