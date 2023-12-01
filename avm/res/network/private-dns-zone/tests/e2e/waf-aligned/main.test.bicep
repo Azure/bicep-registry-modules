@@ -61,16 +61,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-
-    // Workaround for PS Rule
-    a: []
-    aaaa: []
-    cname: []
-    mx: []
-    ptr: []
-    roleAssignments: []
-    soa: []
-    srv: []
-    txt: []
   }
 }]

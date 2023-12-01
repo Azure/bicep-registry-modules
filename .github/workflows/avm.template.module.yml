@@ -11,6 +11,10 @@ on:
         type: string
         description: "List of relative path to the module test files in JSON format"
         required: true
+      psRuleModuleTestFilePaths:
+        type: string
+        description: "List of relative path to the PSRule module test files in JSON format"
+        required: true
       modulePath:
         type: string
         description: "Relative path to the module folder"
@@ -50,13 +54,13 @@ jobs:
   #   PSRule validation   #
   #########################
   job_psrule_test: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-    name: "PSRule validation"
+    name: "PSRule"
     runs-on: ubuntu-20.04
     if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
     strategy:
       fail-fast: false
       matrix:
-        moduleTestFilePaths: ${{ fromJson(inputs.moduleTestFilePaths) }}
+        psRuleModuleTestFilePaths: ${{ fromJson(inputs.psRuleModuleTestFilePaths) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -65,7 +69,7 @@ jobs:
       - name: Set PSRule validation
         uses: ./.github/actions/templates/avm-validateModulePSRule
         with:
-          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.moduleTestFilePaths }}"
+          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.psRuleModuleTestFilePaths }}"
           subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           psrulePath: "avm/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
@@ -74,7 +78,7 @@ jobs:
   #   Deployment validation   #
   #############################
   job_module_deploy_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-    name: "Deployment validation"
+    name: "Deploy"
     runs-on: ubuntu-20.04
     if: |
       !cancelled() &&

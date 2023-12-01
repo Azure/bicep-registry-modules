@@ -50,14 +50,9 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     extensionType: 'microsoft.flux'
     name: 'kcemin001'
     // Non-required parameters
-    configurationProtectedSettings: '<configurationProtectedSettings>'
-    configurationSettings: '<configurationSettings>'
-    fluxConfigurations: '<fluxConfigurations>'
     location: '<location>'
     releaseNamespace: 'flux-system'
     releaseTrain: 'Stable'
-    targetNamespace: '<targetNamespace>'
-    version: '<version>'
   }
 }
 ```
@@ -85,15 +80,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
       "value": "kcemin001"
     },
     // Non-required parameters
-    "configurationProtectedSettings": {
-      "value": "<configurationProtectedSettings>"
-    },
-    "configurationSettings": {
-      "value": "<configurationSettings>"
-    },
-    "fluxConfigurations": {
-      "value": "<fluxConfigurations>"
-    },
     "location": {
       "value": "<location>"
     },
@@ -102,12 +88,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     },
     "releaseTrain": {
       "value": "Stable"
-    },
-    "targetNamespace": {
-      "value": "<targetNamespace>"
-    },
-    "version": {
-      "value": "<version>"
     }
   }
 }
@@ -134,7 +114,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     extensionType: 'microsoft.flux'
     name: 'kcemax001'
     // Non-required parameters
-    configurationProtectedSettings: '<configurationProtectedSettings>'
     configurationSettings: {
       'image-automation-controller.enabled': 'false'
       'image-reflector-controller.enabled': 'false'
@@ -165,7 +144,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     location: '<location>'
     releaseNamespace: 'flux-system'
     releaseTrain: 'Stable'
-    targetNamespace: '<targetNamespace>'
     version: '0.5.2'
   }
 }
@@ -194,9 +172,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
       "value": "kcemax001"
     },
     // Non-required parameters
-    "configurationProtectedSettings": {
-      "value": "<configurationProtectedSettings>"
-    },
     "configurationSettings": {
       "value": {
         "image-automation-controller.enabled": "false",
@@ -236,9 +211,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     },
     "releaseTrain": {
       "value": "Stable"
-    },
-    "targetNamespace": {
-      "value": "<targetNamespace>"
     },
     "version": {
       "value": "0.5.2"
@@ -268,7 +240,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     extensionType: 'microsoft.flux'
     name: 'kcewaf001'
     // Non-required parameters
-    configurationProtectedSettings: '<configurationProtectedSettings>'
     configurationSettings: {
       'image-automation-controller.enabled': 'false'
       'image-reflector-controller.enabled': 'false'
@@ -299,7 +270,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     location: '<location>'
     releaseNamespace: 'flux-system'
     releaseTrain: 'Stable'
-    targetNamespace: '<targetNamespace>'
     version: '0.5.2'
   }
 }
@@ -328,9 +298,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
       "value": "kcewaf001"
     },
     // Non-required parameters
-    "configurationProtectedSettings": {
-      "value": "<configurationProtectedSettings>"
-    },
     "configurationSettings": {
       "value": {
         "image-automation-controller.enabled": "false",
@@ -370,9 +337,6 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
     },
     "releaseTrain": {
       "value": "Stable"
-    },
-    "targetNamespace": {
-      "value": "<targetNamespace>"
     },
     "version": {
       "value": "0.5.2"
