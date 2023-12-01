@@ -141,25 +141,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        logCategoriesAndGroups: [
-          {
-            category: 'RuntimeAuditLogs'
-          }
-        ]
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
+    diagnosticSettings: []
     location: '<location>'
     managedIdentities: {
       systemAssigned: false
@@ -253,25 +235,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       }
     },
     "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "logCategoriesAndGroups": [
-            {
-              "category": "RuntimeAuditLogs"
-            }
-          ],
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
+      "value": []
     },
     "location": {
       "value": "<location>"
@@ -380,7 +344,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
             category: 'AllMetrics'
           }
         ]
-        name: 'customSetting'
+        name: 'diagnosticsetting'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
       }
@@ -586,7 +550,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
               "category": "AllMetrics"
             }
           ],
-          "name": "customSetting",
+          "name": "diagnosticsetting",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
@@ -786,14 +750,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       name: 'Premium'
     }
     // Non-required parameters
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
+    diagnosticSettings: []
     location: '<location>'
     privateEndpoints: [
       {
@@ -866,14 +823,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     },
     // Non-required parameters
     "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
+      "value": []
     },
     "location": {
       "value": "<location>"

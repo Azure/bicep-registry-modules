@@ -188,7 +188,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     diagnosticSettings: [
       {
-        name: 'customSetting'
+        name: '${namePrefix}-diagnosticsetting'
         metricCategories: [
           {
             category: 'AllMetrics'
