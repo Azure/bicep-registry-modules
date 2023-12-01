@@ -1,4 +1,4 @@
-name: "avm.res.network.traffic-manager-profile"
+name: "avm.res.network.trafficmanagerprofile"
 
 on:
   schedule:
@@ -27,14 +27,14 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.network.traffic-manager-profile"
-      - "avm/res/network/trafic-manager-profile/**"
+      - ".github/workflows/avm.res.network.trafficmanagerprofile"
+      - "avm/res/network/trafficmanagerprofile/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/network/traffic-manager-profile"
-  workflowPath: ".github/workflows/avm.res.network.traffic-manager-profile.yml"
+  modulePath: "avm/res/network/trafficmanagerprofile"
+  workflowPath: ".github/workflows/avm.res.network.trafficmanagerprofile.yml"
 
 concurrency:
   group: ${{ github.workflow }}
