@@ -320,8 +320,8 @@ module databaseAccount_gremlinDatabases 'gremlin-database/main.bicep' = [for gre
   }
 }]
 
-module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-KeyVault-PrivateEndpoint-${index}'
+module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+  name: '${uniqueString(deployment().name, location)}-databaseAccount-PrivateEndpoint-${index}'
   params: {
     privateLinkServiceConnections: [
       {
