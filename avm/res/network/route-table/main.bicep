@@ -8,8 +8,8 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. An Array of Routes to be established within the hub route table.')
-param routes array = []
+@description('Optional. An array of routes to be established within the hub route table.')
+param routes routeType
 
 @description('Optional. Switch to disable BGP route propagation.')
 param disableBgpRoutePropagation bool = false
@@ -131,4 +131,23 @@ type roleAssignmentType = {
 
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
+}[]?
+
+type routeType = {
+  @description('Required. Name of the route.')
+  name: string
+
+  properties: {
+    @description('Required. The type of Azure hop the packet should be sent to.')
+    nextHopType: ('VirtualAppliance' | 'VnetLocal' | 'Internet' | 'VirtualNetworkGateway' | 'None')
+
+    @description('Optional. The destination CIDR to which the route applies.')
+    addressPrefix: string?
+
+    @description('Optional. A value indicating whether this route overrides overlapping BGP routes regardless of LPM.')
+    hasBgpOverride: bool?
+
+    @description('Optional. The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance.')
+    nextHopIpAddress: string?
+  }
 }[]?
