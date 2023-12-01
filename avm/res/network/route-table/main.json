@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "6317323502554535880"
+      "version": "0.21.1.54444",
+      "templateHash": "12297099865892076814"
     },
     "name": "Route Tables",
     "description": "This module deploys a User Defined Route Table (UDR).",
@@ -103,6 +103,60 @@
         }
       },
       "nullable": true
+    },
+    "routeType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Name of the route."
+            }
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "nextHopType": {
+                "type": "string",
+                "allowedValues": [
+                  "Internet",
+                  "None",
+                  "VirtualAppliance",
+                  "VirtualNetworkGateway",
+                  "VnetLocal"
+                ],
+                "metadata": {
+                  "description": "Required. The type of Azure hop the packet should be sent to."
+                }
+              },
+              "addressPrefix": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The destination CIDR to which the route applies."
+                }
+              },
+              "hasBgpOverride": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. A value indicating whether this route overrides overlapping BGP routes regardless of LPM."
+                }
+              },
+              "nextHopIpAddress": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance."
+                }
+              }
+            }
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -120,10 +174,9 @@
       }
     },
     "routes": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/routeType",
       "metadata": {
-        "description": "Optional. An Array of Routes to be established within the hub route table."
+        "description": "Optional. An array of routes to be established within the hub route table."
       }
     },
     "disableBgpRoutePropagation": {
