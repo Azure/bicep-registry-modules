@@ -201,14 +201,21 @@ resource searchService_roleAssignments 'Microsoft.Authorization/roleAssignments@
   scope: searchService
 }]
 
-module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.2.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-searchService-PrivateEndpoint-${index}'
   params: {
-    groupIds: [
-      privateEndpoint.?service ?? 'searchService'
+    privateLinkServiceConnections: [
+      {
+        name: name
+        properties: {
+          privateLinkServiceId: searchService.id
+          groupIds: [
+            privateEndpoint.?service ?? 'searchService'
+          ]
+        }
+      }
     ]
     name: privateEndpoint.?name ?? 'pep-${last(split(searchService.id, '/'))}-${privateEndpoint.?service ?? 'searchService'}-${index}'
-    serviceResourceId: searchService.id
     subnetResourceId: privateEndpoint.subnetResourceId
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
