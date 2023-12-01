@@ -25,7 +25,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/traffic-manager-profile:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/trafficmanagerprofile:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -41,7 +41,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module trafficManagerProfile 'br/public:avm/res/network/traffic-manager-profile:<version>' = {
+module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-ntmpmin'
   params: {
     // Required parameters
@@ -93,7 +93,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module trafficManagerProfile 'br/public:avm/res/network/traffic-manager-profile:<version>' = {
+module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-ntmpmax'
   params: {
     // Required parameters
@@ -233,7 +233,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module trafficManagerProfile 'br/public:avm/res/network/traffic-manager-profile:<version>' = {
+module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-ntmpwaf'
   params: {
     // Required parameters
