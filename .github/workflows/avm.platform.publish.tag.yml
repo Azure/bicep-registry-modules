@@ -1,4 +1,4 @@
-name: "avm.platform.publish.tag"
+name: "avm.platform.publish-tag"
 
 on:
   workflow_dispatch:
