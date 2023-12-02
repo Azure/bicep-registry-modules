@@ -29,9 +29,9 @@ Optional. Input parameters to pass into the pipeline. Must match the names of th
 Required. The path to the workflow.
 
 .EXAMPLE
-Invoke-GitHubWorkflow -PersonalAccessToken '<Placeholder>' -RepositoryOwner 'Azure' -RepositoryName 'ResourceModules' -WorkflowFileName 'avm.res.analysis-services.servers.yml' -TargetBranch 'main' -WorkflowInputs @{ prerelease = 'false'; staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' }
+Invoke-GitHubWorkflow -PersonalAccessToken '<Placeholder>' -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules' -WorkflowFileName 'avm.res.analysis-services.servers.yml' -TargetBranch 'main' -WorkflowInputs @{ prerelease = 'false'; staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' }
 
-Trigger the workflow 'ms.analysisservices.servers.yml' with branch 'main' in repository 'Azure/ResourceModules'.
+Trigger the workflow 'avm.res.analysis-services.servers.yml' with branch 'main' in repository 'Azure/bicep-registry-modules'.
 #>
 function Invoke-GitHubWorkflow {
 
@@ -148,11 +148,10 @@ function Get-GitHubModuleWorkflowList {
 
 <#
 .SYNOPSIS
-Trigger all pipelines for either Azure DevOps or GitHub
+Trigger all pipelines for GitHub
 
 .DESCRIPTION
-Trigger all pipelines for either Azure DevOps or GitHub. By default, pipelines are filtered to CARML module pipelines.
-Note, for Azure DevOps you'll need the 'azure-devops' extension: `az extension add --upgrade -n azure-devops`
+Trigger all workflows for the given GitHub repository. By default, pipelines are filtered to AVM module pipelines.
 
 .PARAMETER PersonalAccessToken
 Mandatory. The PAT to use to interact with either GitHub / Azure DevOps.
@@ -161,10 +160,7 @@ Mandatory. The PAT to use to interact with either GitHub / Azure DevOps.
 Mandatory. The branch to run the pipelines for (e.g. `main`).
 
 .PARAMETER PipelineFilter
-Optional. The pipeline files to filter down to. By default only files with a name that starts with 'ms.*' are considered. E.g. 'ms.network*'.
-
-.PARAMETER Environment
-Optional. The environment to run the pipelines for. By default it's GitHub.
+Optional. The pipeline files to filter down to. By default only files with a name that starts with 'avm.res.*' are considered. E.g. 'avm.res.*'.
 
 .PARAMETER SkipPipelineBadges
 Optional. Specify to disable the output of generated pipeline status badges for the given pipeline configuration.
@@ -178,7 +174,7 @@ Optional. The GitHub repository to run the workfows in. Required if the chosen e
 .EXAMPLE
 Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm.res.*' -WorkflowInputs @{ prerelease = 'false'; staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' }
 
-Run all GitHub workflows that start with 'ms.network.*' using branch 'feature/branch'. Also returns all GitHub status badges.
+Run all GitHub workflows that start with'avm.res.*' using branch 'feature/branch'. Also returns all GitHub status badges.
 #>
 function Invoke-WorkflowsForBranch {
 
