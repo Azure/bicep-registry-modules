@@ -52,12 +52,21 @@ This module deploys a Virtual Network Subnet.
 ### Parameter: `addressPrefix`
 
 The address prefix for the subnet.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualNetworkName`
+
+The name of the parent virtual network. Required if the template is used in a standalone deployment.
+
 - Required: Yes
 - Type: string
 
 ### Parameter: `addressPrefixes`
 
 List of address prefixes for the subnet.
+
 - Required: No
 - Type: array
 - Default: `[]`
@@ -65,6 +74,7 @@ List of address prefixes for the subnet.
 ### Parameter: `applicationGatewayIPConfigurations`
 
 Application gateway IP configurations of virtual network resource.
+
 - Required: No
 - Type: array
 - Default: `[]`
@@ -72,6 +82,7 @@ Application gateway IP configurations of virtual network resource.
 ### Parameter: `delegations`
 
 The delegations to enable on the subnet.
+
 - Required: No
 - Type: array
 - Default: `[]`
@@ -79,6 +90,7 @@ The delegations to enable on the subnet.
 ### Parameter: `ipAllocations`
 
 Array of IpAllocation which reference this subnet.
+
 - Required: No
 - Type: array
 - Default: `[]`
@@ -86,12 +98,14 @@ Array of IpAllocation which reference this subnet.
 ### Parameter: `name`
 
 The Name of the subnet resource.
+
 - Required: Yes
 - Type: string
 
 ### Parameter: `natGatewayResourceId`
 
 The resource ID of the NAT Gateway to use for the subnet.
+
 - Required: No
 - Type: string
 - Default: `''`
@@ -99,6 +113,7 @@ The resource ID of the NAT Gateway to use for the subnet.
 ### Parameter: `networkSecurityGroupResourceId`
 
 The resource ID of the network security group to assign to the subnet.
+
 - Required: No
 - Type: string
 - Default: `''`
@@ -106,6 +121,7 @@ The resource ID of the network security group to assign to the subnet.
 ### Parameter: `privateEndpointNetworkPolicies`
 
 enable or disable apply network policies on private endpoint in the subnet.
+
 - Required: No
 - Type: string
 - Default: `''`
@@ -121,6 +137,7 @@ enable or disable apply network policies on private endpoint in the subnet.
 ### Parameter: `privateLinkServiceNetworkPolicies`
 
 enable or disable apply network policies on private link service in the subnet.
+
 - Required: No
 - Type: string
 - Default: `''`
@@ -136,74 +153,96 @@ enable or disable apply network policies on private link service in the subnet.
 ### Parameter: `roleAssignments`
 
 Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
 - Required: No
 - Type: array
 
+**Required parameters**
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`condition`](#parameter-roleassignmentscondition) | No | string | Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
-| [`conditionVersion`](#parameter-roleassignmentsconditionversion) | No | string | Optional. Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | No | string | Optional. The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-roleassignmentsdescription) | No | string | Optional. The description of the role assignment. |
-| [`principalId`](#parameter-roleassignmentsprincipalid) | Yes | string | Required. The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`principalType`](#parameter-roleassignmentsprincipaltype) | No | string | Optional. The principal type of the assigned principal ID. |
-| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead. |
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-roleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | string | The name of the role to assign. If it cannot be found you can specify the role definition ID instead. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `roleAssignments.roleDefinitionIdOrName`
+
+The name of the role to assign. If it cannot be found you can specify the role definition ID instead.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `roleAssignments.condition`
 
-Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
 
 - Required: No
 - Type: string
 
 ### Parameter: `roleAssignments.conditionVersion`
 
-Optional. Version of the condition.
+Version of the condition.
 
 - Required: No
 - Type: string
-- Allowed: `[2.0]`
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
-Optional. The Resource Id of the delegated managed identity resource.
+The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
 
 ### Parameter: `roleAssignments.description`
 
-Optional. The description of the role assignment.
+The description of the role assignment.
 
 - Required: No
-- Type: string
-
-### Parameter: `roleAssignments.principalId`
-
-Required. The principal ID of the principal (user/group/identity) to assign the role to.
-
-- Required: Yes
 - Type: string
 
 ### Parameter: `roleAssignments.principalType`
 
-Optional. The principal type of the assigned principal ID.
+The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Allowed: `[Device, ForeignGroup, Group, ServicePrincipal, User]`
-
-### Parameter: `roleAssignments.roleDefinitionIdOrName`
-
-Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.
-
-- Required: Yes
-- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
 
 ### Parameter: `routeTableResourceId`
 
 The resource ID of the route table to assign to the subnet.
+
 - Required: No
 - Type: string
 - Default: `''`
@@ -211,6 +250,7 @@ The resource ID of the route table to assign to the subnet.
 ### Parameter: `serviceEndpointPolicies`
 
 An array of service endpoint policies.
+
 - Required: No
 - Type: array
 - Default: `[]`
@@ -218,15 +258,10 @@ An array of service endpoint policies.
 ### Parameter: `serviceEndpoints`
 
 The service endpoints to enable on the subnet.
+
 - Required: No
 - Type: array
 - Default: `[]`
-
-### Parameter: `virtualNetworkName`
-
-The name of the parent virtual network. Required if the template is used in a standalone deployment.
-- Required: Yes
-- Type: string
 
 
 ## Outputs

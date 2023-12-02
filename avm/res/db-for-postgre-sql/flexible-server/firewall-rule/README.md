@@ -34,24 +34,28 @@ This module deploys a DBforPostgreSQL Flexible Server Firewall Rule.
 ### Parameter: `endIpAddress`
 
 The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses.
-- Required: Yes
-- Type: string
 
-### Parameter: `flexibleServerName`
-
-The name of the parent PostgreSQL flexible server. Required if the template is used in a standalone deployment.
 - Required: Yes
 - Type: string
 
 ### Parameter: `name`
 
 The name of the PostgreSQL flexible server Firewall Rule.
+
 - Required: Yes
 - Type: string
 
 ### Parameter: `startIpAddress`
 
 The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `flexibleServerName`
+
+The name of the parent PostgreSQL flexible server. Required if the template is used in a standalone deployment.
+
 - Required: Yes
 - Type: string
 
