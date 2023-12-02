@@ -25,9 +25,6 @@ Optional. The branch to trigger the pipeline for.
 .PARAMETER WorkflowInputs
 Optional. Input parameters to pass into the pipeline. Must match the names of the runtime parameters in the yaml file(s)
 
-.PARAMETER WorkflowFilePath
-Required. The path to the workflow.
-
 .EXAMPLE
 Invoke-GitHubWorkflow -PersonalAccessToken '<Placeholder>' -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules' -WorkflowFileName 'avm.res.analysis-services.servers.yml' -TargetBranch 'main' -WorkflowInputs @{ prerelease = 'false'; staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' }
 
