@@ -736,34 +736,52 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
 | :-- | :-- | :-- |
 | [`baseTime`](#parameter-basetime) | string | Do not provide a value! This date value is used to make sure the script run every time the template is deployed. |
 
+### Parameter: `kind`
+
+Specifies the Kind of the Deployment Script.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureCLI'
+    'AzurePowerShell'
+  ]
+  ```
+
+### Parameter: `name`
+
+Name of the Deployment Script.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `arguments`
 
 Command-line arguments to pass to the script. Arguments are separated by spaces.
+
 - Required: No
 - Type: string
 
 ### Parameter: `azCliVersion`
 
 Azure CLI module version to be used. See a list of supported Azure CLI versions: https://mcr.microsoft.com/v2/azure-cli/tags/list.
+
 - Required: No
 - Type: string
 
 ### Parameter: `azPowerShellVersion`
 
 Azure PowerShell module version to be used. See a list of supported Azure PowerShell versions: https://mcr.microsoft.com/v2/azuredeploymentscripts-powershell/tags/list.
+
 - Required: No
 - Type: string
-
-### Parameter: `baseTime`
-
-Do not provide a value! This date value is used to make sure the script run every time the template is deployed.
-- Required: No
-- Type: string
-- Default: `[utcNow('yyyy-MM-dd-HH-mm-ss')]`
 
 ### Parameter: `cleanupPreference`
 
 The clean up preference when the script execution gets in a terminal state. Specify the preference on when to delete the deployment script resources. The default value is Always, which means the deployment script resources are deleted despite the terminal state (Succeeded, Failed, canceled).
+
 - Required: No
 - Type: string
 - Default: `'Always'`
@@ -779,12 +797,14 @@ The clean up preference when the script execution gets in a terminal state. Spec
 ### Parameter: `containerGroupName`
 
 Container group name, if not specified then the name will get auto-generated. Not specifying a 'containerGroupName' indicates the system to generate a unique name which might end up flagging an Azure Policy as non-compliant. Use 'containerGroupName' when you have an Azure Policy that expects a specific naming convention or when you want to fully control the name. 'containerGroupName' property must be between 1 and 63 characters long, must contain only lowercase letters, numbers, and dashes and it cannot start or end with a dash and consecutive dashes are not allowed.
+
 - Required: No
 - Type: string
 
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
+
 - Required: No
 - Type: bool
 - Default: `True`
@@ -792,26 +812,15 @@ Enable/Disable usage telemetry for module.
 ### Parameter: `environmentVariables`
 
 The environment variables to pass over to the script. The list is passed as an object with a key name "secureList" and the value is the list of environment variables (array). The list must have a 'name' and a 'value' or a 'secretValue' property for each object.
+
 - Required: No
 - Type: secureObject
 - Default: `{}`
 
-### Parameter: `kind`
-
-Specifies the Kind of the Deployment Script.
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AzureCLI'
-    'AzurePowerShell'
-  ]
-  ```
-
 ### Parameter: `location`
 
 Location for all resources.
+
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
@@ -819,26 +828,35 @@ Location for all resources.
 ### Parameter: `lock`
 
 The lock settings of the service.
+
 - Required: No
 - Type: object
 
+**Optional parameters**
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`kind`](#parameter-lockkind) | No | string | Optional. Specify the type of lock. |
-| [`name`](#parameter-lockname) | No | string | Optional. Specify the name of lock. |
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-lockname) | string | Specify the name of lock. |
 
 ### Parameter: `lock.kind`
 
-Optional. Specify the type of lock.
+Specify the type of lock.
 
 - Required: No
 - Type: string
-- Allowed: `[CanNotDelete, None, ReadOnly]`
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
 
 ### Parameter: `lock.name`
 
-Optional. Specify the name of lock.
+Specify the name of lock.
 
 - Required: No
 - Type: string
@@ -846,110 +864,130 @@ Optional. Specify the name of lock.
 ### Parameter: `managedIdentities`
 
 The managed identity definition for this resource.
+
 - Required: No
 - Type: object
 
+**Optional parameters**
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`userAssignedResourcesIds`](#parameter-managedidentitiesuserassignedresourcesids) | Yes | array | Optional. The resource ID(s) to assign to the resource. |
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`userAssignedResourcesIds`](#parameter-managedidentitiesuserassignedresourcesids) | array | The resource ID(s) to assign to the resource. |
 
 ### Parameter: `managedIdentities.userAssignedResourcesIds`
 
-Optional. The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource.
 
 - Required: Yes
 - Type: array
 
-### Parameter: `name`
-
-Name of the Deployment Script.
-- Required: Yes
-- Type: string
-
 ### Parameter: `primaryScriptUri`
 
 Uri for the external script. This is the entry point for the external script. To run an internal script, use the scriptContent parameter instead.
+
 - Required: No
 - Type: string
 
 ### Parameter: `retentionInterval`
 
 Interval for which the service retains the script resource after it reaches a terminal state. Resource will be deleted when this duration expires. Duration is based on ISO 8601 pattern (for example P7D means one week).
+
 - Required: No
 - Type: string
 
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
+
 - Required: No
 - Type: array
 
+**Required parameters**
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`condition`](#parameter-roleassignmentscondition) | No | string | Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
-| [`conditionVersion`](#parameter-roleassignmentsconditionversion) | No | string | Optional. Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | No | string | Optional. The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-roleassignmentsdescription) | No | string | Optional. The description of the role assignment. |
-| [`principalId`](#parameter-roleassignmentsprincipalid) | Yes | string | Required. The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`principalType`](#parameter-roleassignmentsprincipaltype) | No | string | Optional. The principal type of the assigned principal ID. |
-| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-roleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `roleAssignments.condition`
 
-Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
 
 - Required: No
 - Type: string
 
 ### Parameter: `roleAssignments.conditionVersion`
 
-Optional. Version of the condition.
+Version of the condition.
 
 - Required: No
 - Type: string
-- Allowed: `[2.0]`
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
-Optional. The Resource Id of the delegated managed identity resource.
+The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
 
 ### Parameter: `roleAssignments.description`
 
-Optional. The description of the role assignment.
+The description of the role assignment.
 
 - Required: No
-- Type: string
-
-### Parameter: `roleAssignments.principalId`
-
-Required. The principal ID of the principal (user/group/identity) to assign the role to.
-
-- Required: Yes
 - Type: string
 
 ### Parameter: `roleAssignments.principalType`
 
-Optional. The principal type of the assigned principal ID.
+The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Allowed: `[Device, ForeignGroup, Group, ServicePrincipal, User]`
-
-### Parameter: `roleAssignments.roleDefinitionIdOrName`
-
-Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
-
-- Required: Yes
-- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
 
 ### Parameter: `runOnce`
 
 When set to false, script will run every time the template is deployed. When set to true, the script will only run once.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -957,12 +995,14 @@ When set to false, script will run every time the template is deployed. When set
 ### Parameter: `scriptContent`
 
 Script body. Max length: 32000 characters. To run an external script, use primaryScriptURI instead.
+
 - Required: No
 - Type: string
 
 ### Parameter: `storageAccountResourceId`
 
 The resource ID of the storage account to use for this deployment script. If none is provided, the deployment script uses a temporary, managed storage account.
+
 - Required: No
 - Type: string
 - Default: `''`
@@ -970,26 +1010,38 @@ The resource ID of the storage account to use for this deployment script. If non
 ### Parameter: `subnetResourceIds`
 
 List of subnet IDs to use for the container group. This is required if you want to run the deployment script in a private network.
+
 - Required: No
 - Type: array
 
 ### Parameter: `supportingScriptUris`
 
 List of supporting files for the external script (defined in primaryScriptUri). Does not work with internal scripts (code defined in scriptContent).
+
 - Required: No
 - Type: array
 
 ### Parameter: `tags`
 
 Resource tags.
+
 - Required: No
 - Type: object
 
 ### Parameter: `timeout`
 
 Maximum allowed script execution time specified in ISO 8601 format. Default value is PT1H - 1 hour; 'PT30M' - 30 minutes; 'P5D' - 5 days; 'P1Y' 1 year.
+
 - Required: No
 - Type: string
+
+### Parameter: `baseTime`
+
+Do not provide a value! This date value is used to make sure the script run every time the template is deployed.
+
+- Required: No
+- Type: string
+- Default: `[utcNow('yyyy-MM-dd-HH-mm-ss')]`
 
 
 ## Outputs
