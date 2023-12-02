@@ -26,7 +26,7 @@ Optional. The branch to trigger the pipeline for.
 Optional. Input parameters to pass into the pipeline. Must match the names of the runtime parameters in the yaml file(s)
 
 .EXAMPLE
-Invoke-GitHubWorkflow -PersonalAccessToken '<Placeholder>' -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules' -WorkflowFileName 'avm.res.analysis-services.servers.yml' -TargetBranch 'main' -WorkflowInputs @{ prerelease = 'false'; staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' }
+Invoke-GitHubWorkflow -PersonalAccessToken '<Placeholder>' -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules' -WorkflowFileName 'avm.res.analysis-services.servers.yml' -TargetBranch 'main' -WorkflowInputs @{ staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' }
 
 Trigger the workflow 'avm.res.analysis-services.servers.yml' with branch 'main' in repository 'Azure/bicep-registry-modules'.
 #>
@@ -93,12 +93,12 @@ Mandatory. The repository's organization.
 Mandatory. The name of the repository to fetch the workflows from.
 
 .PARAMETER Filter
-Optional. A filter to apply when fetching the workflows. By default we fetch all module workflows (ms.*).
+Optional. A filter to apply when fetching the workflows. By default we fetch all module workflows (avm.res.*).
 
 .EXAMPLE
-Get-GitHubModuleWorkflowList -PersonalAccessToken '<Placeholder>' -RepositoryOwner 'Azure' -RepositoryName 'ResourceModules'
+Get-GitHubModuleWorkflowList -PersonalAccessToken '<Placeholder>' -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules'
 
-Get all module workflows from repository 'Azure/ResourceModules'
+Get all module workflows from repository 'Azure/bicep-registry-modules'
 #>
 function Get-GitHubModuleWorkflowList {
 
@@ -163,13 +163,13 @@ Optional. The pipeline files to filter down to. By default only files with a nam
 Optional. Specify to disable the output of generated pipeline status badges for the given pipeline configuration.
 
 .PARAMETER RepositoryOwner
-Optional. The GitHub organization to run the workfows in. Required if the chosen environment is `GitHub`. Defaults to 'Azure'.
+Optional. The GitHub organization to run the workfows in.
 
 .PARAMETER RepositoryName
-Optional. The GitHub repository to run the workfows in. Required if the chosen environment is `GitHub`. Defaults to 'ResourceModules'.
+Optional. The GitHub repository to run the workfows in.
 
 .EXAMPLE
-Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm.res.*' -WorkflowInputs @{ prerelease = 'false'; staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' }
+Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm.res.*' -WorkflowInputs @{ staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' }
 
 Run all GitHub workflows that start with'avm.res.*' using branch 'feature/branch'. Also returns all GitHub status badges.
 #>
