@@ -169,9 +169,6 @@ Optional. The environment to run the pipelines for. By default it's GitHub.
 .PARAMETER SkipPipelineBadges
 Optional. Specify to disable the output of generated pipeline status badges for the given pipeline configuration.
 
-.PARAMETER RepositoryRoot
-Optional. The root of the repository. Used to load related functions in their folder path.
-
 .PARAMETER RepositoryOwner
 Optional. The GitHub organization to run the workfows in. Required if the chosen environment is `GitHub`. Defaults to 'Azure'.
 
@@ -198,9 +195,6 @@ function Invoke-WorkflowsForBranch {
 
         [Parameter(Mandatory = $false)]
         [switch] $SkipPipelineBadges,
-
-        [Parameter(Mandatory = $false)]
-        [string] $RepositoryRoot = (Split-Path (Split-Path $PSScriptRoot -Parent)),
 
         [Parameter(Mandatory = $false)]
         [string] $RepositoryOwner = 'Azure',
