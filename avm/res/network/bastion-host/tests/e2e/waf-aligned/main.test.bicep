@@ -82,10 +82,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     enableFileCopy: false
     enableIpConnect: false
     enableShareableLink: false
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     scaleUnits: 4
     skuName: 'Standard'
     tags: {

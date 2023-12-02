@@ -407,10 +407,6 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
     enableIpConnect: false
     enableShareableLink: false
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     scaleUnits: 4
     skuName: 'Standard'
     tags: {
@@ -470,12 +466,6 @@ module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "scaleUnits": {
       "value": 4
