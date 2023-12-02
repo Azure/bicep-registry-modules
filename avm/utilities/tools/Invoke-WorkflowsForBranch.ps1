@@ -166,8 +166,8 @@ Optional. The pipeline files to filter down to. By default only files with a nam
 .PARAMETER Environment
 Optional. The environment to run the pipelines for. By default it's GitHub.
 
-.PARAMETER GeneratePipelineBadges
-Optional. Generate pipeline status badges for the given pipeline configuration.
+.PARAMETER SkipPipelineBadges
+Optional. Specify to disable the output of generated pipeline status badges for the given pipeline configuration.
 
 .PARAMETER RepositoryRoot
 Optional. The root of the repository. Used to load related functions in their folder path.
@@ -179,7 +179,7 @@ Optional. The GitHub organization to run the workfows in. Required if the chosen
 Optional. The GitHub repository to run the workfows in. Required if the chosen environment is `GitHub`. Defaults to 'ResourceModules'.
 
 .EXAMPLE
-Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm.res.*' -WorkflowInputs @{ prerelease = 'false'; staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' } -GeneratePipelineBadges
+Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm.res.*' -WorkflowInputs @{ prerelease = 'false'; staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' }
 
 Run all GitHub workflows that start with 'ms.network.*' using branch 'feature/branch'. Also returns all GitHub status badges.
 #>
@@ -197,7 +197,7 @@ function Invoke-WorkflowsForBranch {
         [string] $PipelineFilter = 'avm.res.*',
 
         [Parameter(Mandatory = $false)]
-        [switch] $GeneratePipelineBadges,
+        [switch] $SkipPipelineBadges,
 
         [Parameter(Mandatory = $false)]
         [string] $RepositoryRoot = (Split-Path (Split-Path $PSScriptRoot -Parent)),
@@ -237,7 +237,7 @@ function Invoke-WorkflowsForBranch {
         }
 
         # Generate pipeline badges
-        if ($GeneratePipelineBadges) {
+        if ($SkipPipelineBadges) {
             $encodedBranch = [uri]::EscapeDataString($TargetBranch)
             $workflowUrl = "https://github.com/$RepositoryOwner/$RepositoryName/actions/workflows/$workflowFileName&event=workflow_dispatch"
             $gitHubWorkflowBadges += "[![$($workflow.name)]($workflowUrl/badge.svg?branch=$encodedBranch)]($workflowUrl)"
