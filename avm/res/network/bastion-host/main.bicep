@@ -56,8 +56,8 @@ param roleAssignments roleAssignmentType
 @description('Optional. Tags of the resource.')
 param tags object?
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 // ----------------------------------------------------------------------------
 // Prep ipConfigurations object AzureBastionSubnet for different uses cases:
@@ -79,8 +79,6 @@ var ipConfigurations = [
   }
 ]
 
-var enableReferencedModulesTelemetry = false
-
 // ----------------------------------------------------------------------------
 
 var builtInRoleNames = {
@@ -91,29 +89,35 @@ var builtInRoleNames = {
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
-resource defaultTelemetry 'Microsoft.Resources/deployments@2022-09-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.network-bastionhost.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
       contentVersion: '1.0.0.0'
       resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
     }
   }
 }
 
-module publicIPAddress '../public-ip-address/main.bicep' = if (empty(bastionSubnetPublicIpResourceId)) {
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.2.1' = if (empty(bastionSubnetPublicIpResourceId)) {
   name: '${uniqueString(deployment().name, location)}-Bastion-PIP'
   params: {
     name: publicIPAddressObject.name
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    enableTelemetry: enableTelemetry
     location: location
     lock: lock
     diagnosticSettings: publicIPAddressObject.?diagnosticSettings
     publicIPAddressVersion: contains(publicIPAddressObject, 'publicIPAddressVersion') ? publicIPAddressObject.publicIPAddressVersion : 'IPv4'
     publicIPAllocationMethod: contains(publicIPAddressObject, 'publicIPAllocationMethod') ? publicIPAddressObject.publicIPAllocationMethod : 'Static'
-    publicIPPrefixResourceId: contains(publicIPAddressObject, 'publicIPPrefixResourceId') ? publicIPAddressObject.publicIPPrefixResourceId : ''
+    publicIpPrefixResourceId: contains(publicIPAddressObject, 'publicIPPrefixResourceId') ? publicIPAddressObject.publicIPPrefixResourceId : ''
     roleAssignments: contains(publicIPAddressObject, 'roleAssignments') ? publicIPAddressObject.roleAssignments : []
     skuName: contains(publicIPAddressObject, 'skuName') ? publicIPAddressObject.skuName : 'Standard'
     skuTier: contains(publicIPAddressObject, 'skuTier') ? publicIPAddressObject.skuTier : 'Regional'
