@@ -71,14 +71,14 @@ runs:
           # Get the modified child resources
           if($publishOutputs = Publish-ModuleFromPathToPBR @functionInput -Verbose) {
             Write-Output ('{0}={1}' -f 'version', $publishOutputs.version) >> $env:GITHUB_OUTPUT
-            Write-Output ('{0}={1}' -f 'module_path', $publishOutputs.module_path) >> $env:GITHUB_OUTPUT
+            Write-Output ('{0}={1}' -f 'publishedModuleName', $publishOutputs.publishedModuleName) >> $env:GITHUB_OUTPUT
           }
 
           Write-Output '::endgroup::'
 
     - name: "Validate publish"
       uses: azure/powershell@v1
-      if: ${{ steps.publish_step.outputs.version != '' && steps.publish_step.outputs.module_path != '' }}
+      if: ${{ steps.publish_step.outputs.version != '' && steps.publish_step.outputs.publishedModuleName != '' }}
       with:
         azPSVersion: "latest"
         inlineScript: |
@@ -89,8 +89,8 @@ runs:
           . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'publish' 'Confirm-ModuleIsPublished.ps1')
 
           $functionInput = @{
-            Version =    "${{ steps.publish_step.outputs.version }}"
-            ModulePath = "${{ steps.publish_step.outputs.module_path }}"
+            Version             = "${{ steps.publish_step.outputs.version }}"
+            PublishedModuleName = "${{ steps.publish_step.outputs.publishedModuleName }}"
           }
 
           Write-Verbose "Invoke function with" -Verbose

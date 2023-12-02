@@ -98,7 +98,7 @@ function Publish-ModuleFromPathToPBR {
   bicep publish @publishInput
 
   return @{
-    version     = $targetVersion
-    module_path = $publishedModuleName
+    version             = $targetVersion
+    publishedModuleName = $publishedModuleName
   }
 }
