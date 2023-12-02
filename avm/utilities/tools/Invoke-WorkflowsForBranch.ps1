@@ -1,0 +1,252 @@
+#region helper functions
+
+<#
+.SYNOPSIS
+Invoke a given GitHub workflow
+
+.DESCRIPTION
+Long description
+
+.PARAMETER PersonalAccessToken
+Mandatory. The GitHub PAT to leverage when interacting with the GitHub API.
+
+.PARAMETER RepositoryOwner
+Mandatory. The repository's organization.
+
+.PARAMETER RepositoryName
+Mandatory. The name of the repository to trigger the workflows in.
+
+.PARAMETER WorkflowFileName
+Mandatory. The name of the workflow to trigger
+
+.PARAMETER TargetBranch
+Optional. The branch to trigger the pipeline for.
+
+.PARAMETER WorkflowInputs
+Optional. Input parameters to pass into the pipeline. Must match the names of the runtime parameters in the yaml file(s)
+
+.PARAMETER WorkflowFilePath
+Required. The path to the workflow.
+
+.EXAMPLE
+Invoke-GitHubWorkflow -PersonalAccessToken '<Placeholder>' -RepositoryOwner 'Azure' -RepositoryName 'ResourceModules' -WorkflowFileName 'avm.res.analysis-services.servers.yml' -TargetBranch 'main' -WorkflowInputs @{ prerelease = 'false'; staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' }
+
+Trigger the workflow 'ms.analysisservices.servers.yml' with branch 'main' in repository 'Azure/ResourceModules'.
+#>
+function Invoke-GitHubWorkflow {
+
+    [CmdletBinding(SupportsShouldProcess)]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string] $PersonalAccessToken,
+
+        [Parameter(Mandatory = $true)]
+        [string] $RepositoryOwner,
+
+        [Parameter(Mandatory = $true)]
+        [string] $RepositoryName,
+
+        [Parameter(Mandatory = $false)]
+        [hashtable] $WorkflowInputs = @{},
+
+        [Parameter(Mandatory = $true)]
+        [string] $WorkflowFileName,
+
+        [Parameter(Mandatory = $false)]
+        [string] $TargetBranch = 'main'
+    )
+
+    $requestInputObject = @{
+        Method  = 'POST'
+        Uri     = "https://api.github.com/repos/$RepositoryOwner/$RepositoryName/actions/workflows/$WorkflowFileName/dispatches"
+        Headers = @{
+            Authorization = "Bearer $PersonalAccessToken"
+        }
+        Body    = @{
+            ref    = $TargetBranch
+            inputs = $WorkflowInputs
+        } | ConvertTo-Json
+    }
+    if ($PSCmdlet.ShouldProcess("GitHub workflow [$WorkflowFileName] for branch [$TargetBranch]", 'Invoke')) {
+        $response = Invoke-RestMethod @requestInputObject -Verbose:$false
+
+        if ($response) {
+            Write-Error "Request failed. Reponse: [$response]"
+            return $false
+        }
+    }
+
+    return $true
+}
+
+<#
+.SYNOPSIS
+Get a list of all GitHub module workflows
+
+.DESCRIPTION
+Get a list of all GitHub module workflows. Does not return all properties but only the relevant ones.
+
+.PARAMETER PersonalAccessToken
+Mandatory. The GitHub PAT to leverage when interacting with the GitHub API.
+
+.PARAMETER RepositoryOwner
+Mandatory. The repository's organization.
+
+.PARAMETER RepositoryName
+Mandatory. The name of the repository to fetch the workflows from.
+
+.PARAMETER Filter
+Optional. A filter to apply when fetching the workflows. By default we fetch all module workflows (ms.*).
+
+.EXAMPLE
+Get-GitHubModuleWorkflowList -PersonalAccessToken '<Placeholder>' -RepositoryOwner 'Azure' -RepositoryName 'ResourceModules'
+
+Get all module workflows from repository 'Azure/ResourceModules'
+#>
+function Get-GitHubModuleWorkflowList {
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string] $PersonalAccessToken,
+
+        [Parameter(Mandatory = $true)]
+        [string] $RepositoryOwner,
+
+        [Parameter(Mandatory = $true)]
+        [string] $RepositoryName,
+
+        [Parameter(Mandatory = $false)]
+        [string] $Filter = 'avm.res.*'
+    )
+
+    $allWorkflows = @()
+    $page = 1
+    do {
+        $requestInputObject = @{
+            Method  = 'GET'
+            Uri     = "https://api.github.com/repos/$RepositoryOwner/$RepositoryName/actions/workflows?per_page=100&page=$page"
+            Headers = @{
+                Authorization = "Bearer $PersonalAccessToken"
+            }
+        }
+        $response = Invoke-RestMethod @requestInputObject
+
+        if (-not $response.workflows) {
+            Write-Error "Request failed. Reponse: [$response]"
+        }
+
+        $allWorkflows += $response.workflows | Select-Object -Property @('id', 'name', 'path', 'badge_url') | Where-Object { (Split-Path $_.path -Leaf) -like $Filter }
+
+        $expectedPages = [math]::ceiling($response.total_count / 100)
+        $page++
+    } while ($page -le $expectedPages)
+
+    return $allWorkflows
+}
+#endregion
+
+<#
+.SYNOPSIS
+Trigger all pipelines for either Azure DevOps or GitHub
+
+.DESCRIPTION
+Trigger all pipelines for either Azure DevOps or GitHub. By default, pipelines are filtered to CARML module pipelines.
+Note, for Azure DevOps you'll need the 'azure-devops' extension: `az extension add --upgrade -n azure-devops`
+
+.PARAMETER PersonalAccessToken
+Mandatory. The PAT to use to interact with either GitHub / Azure DevOps.
+
+.PARAMETER TargetBranch
+Mandatory. The branch to run the pipelines for (e.g. `main`).
+
+.PARAMETER PipelineFilter
+Optional. The pipeline files to filter down to. By default only files with a name that starts with 'ms.*' are considered. E.g. 'ms.network*'.
+
+.PARAMETER Environment
+Optional. The environment to run the pipelines for. By default it's GitHub.
+
+.PARAMETER GeneratePipelineBadges
+Optional. Generate pipeline status badges for the given pipeline configuration.
+
+.PARAMETER RepositoryRoot
+Optional. The root of the repository. Used to load related functions in their folder path.
+
+.PARAMETER RepositoryOwner
+Optional. The GitHub organization to run the workfows in. Required if the chosen environment is `GitHub`. Defaults to 'Azure'.
+
+.PARAMETER RepositoryName
+Optional. The GitHub repository to run the workfows in. Required if the chosen environment is `GitHub`. Defaults to 'ResourceModules'.
+
+.EXAMPLE
+Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm.res.*' -WorkflowInputs @{ prerelease = 'false'; staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' } -GeneratePipelineBadges
+
+Run all GitHub workflows that start with 'ms.network.*' using branch 'feature/branch'. Also returns all GitHub status badges.
+#>
+function Invoke-WorkflowsForBranch {
+
+    [CmdletBinding(SupportsShouldProcess)]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string] $PersonalAccessToken,
+
+        [Parameter(Mandatory = $true)]
+        [string] $TargetBranch,
+
+        [Parameter(Mandatory = $false)]
+        [string] $PipelineFilter = 'avm.res.*',
+
+        [Parameter(Mandatory = $false)]
+        [switch] $GeneratePipelineBadges,
+
+        [Parameter(Mandatory = $false)]
+        [string] $RepositoryRoot = (Split-Path (Split-Path $PSScriptRoot -Parent)),
+
+        [Parameter(Mandatory = $false)]
+        [string] $RepositoryOwner = 'Azure',
+
+        [Parameter(Mandatory = $false)]
+        [string] $RepositoryName = 'bicep-registry-modules',
+
+        [Parameter(Mandatory = $false)]
+        [hashtable] $WorkflowInputs = @{
+            prerelease           = 'false'
+            deploymentValidation = 'false'
+            removeDeployment     = 'true'
+        }
+    )
+
+    $baseInputObject = @{
+        PersonalAccessToken = $PersonalAccessToken
+        RepositoryOwner     = $RepositoryOwner
+        RepositoryName      = $RepositoryName
+    }
+
+    Write-Verbose 'Fetching current GitHub workflows' -Verbose
+    $workflows = Get-GitHubModuleWorkflowList @baseInputObject -Filter $PipelineFilter
+
+    $gitHubWorkflowBadges = [System.Collections.ArrayList]@()
+
+    Write-Verbose "Triggering GitHub workflows for branch [$TargetBranch]" -Verbose
+    foreach ($workflow in $workflows) {
+
+        $workflowFileName = Split-Path $Workflow.path -Leaf
+
+        if ($PSCmdlet.ShouldProcess("GitHub workflow [$workflowFileName] for branch [$TargetBranch]", 'Invoke')) {
+            $null = Invoke-GitHubWorkflow @baseInputObject -TargetBranch $TargetBranch -WorkflowFileName $workflowFileName -WorkflowInputs $WorkflowInputs
+        }
+
+        # Generate pipeline badges
+        if ($GeneratePipelineBadges) {
+            $encodedBranch = [uri]::EscapeDataString($TargetBranch)
+            $workflowUrl = "https://github.com/$RepositoryOwner/$RepositoryName/actions/workflows/$workflowFileName&event=workflow_dispatch"
+            $gitHubWorkflowBadges += "[![$($workflow.name)]($workflowUrl/badge.svg?branch=$encodedBranch)]($workflowUrl)"
+        }
+    }
+
+    if ($gitHubWorkflowBadges.Count -gt 0) {
+        Write-Verbose 'GitHub Workflow Badges' -Verbose
+        Write-Verbose '======================' -Verbose
+        Write-Verbose ($gitHubWorkflowBadges | Sort-Object | Out-String) -Verbose
+    }
+}
