@@ -47,7 +47,7 @@
 #/avm/res/dev-center/devcenter/ @Azure/avm-res-devcenter-devcenter-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/dev-test-lab/lab/ @Azure/avm-res-devtestlab-lab-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/digital-twins/digital-twins-instance/ @Azure/avm-res-digitaltwins-digitaltwinsinstance-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/document-db/database-account/ @Azure/avm-res-documentdb-databaseaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/document-db/database-account/ @Azure/avm-res-documentdb-databaseaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/event-grid/domain/ @Azure/avm-res-eventgrid-domain-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/event-grid/system-topic/ @Azure/avm-res-eventgrid-systemtopic-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/event-grid/topic/ @Azure/avm-res-eventgrid-topic-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -71,7 +71,7 @@
 /avm/res/logic/workflow/ @Azure/avm-res-logic-workflow-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/machine-learning-services/workspace/ @Azure/avm-res-machinelearningservices-workspace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/maintenance/maintenance-configuration/ @Azure/avm-res-maintenance-maintenanceconfiguration-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/managed-identity/user-assigned-identity/ @Azure/avm-res-managedidentity-userassignedidentity-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/managed-identity/user-assigned-identity/ @Azure/avm-res-managedidentity-userassignedidentity-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/managed-services/registration-definition/ @Azure/avm-res-managedservices-registrationdefinition-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/management/management-group/ @Azure/avm-res-management-managementgroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/net-app/net-app-account/ @Azure/avm-res-netapp-netappaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -120,7 +120,7 @@
 #/avm/res/recovery-services/vault/ @Azure/avm-res-recoveryservices-vault-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/relay/namespace/ @Azure/avm-res-relay-namespace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/resource-graph/query/ @Azure/avm-res-resourcegraph-query-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/resources/deployment-script/ @Azure/avm-res-resources-deploymentscript-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/resources/deployment-script/ @Azure/avm-res-resources-deploymentscript-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/resources/resource-group/ @Azure/avm-res-resources-resourcegroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/resources/tags/ @Azure/avm-res-resources-tags-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/search/search-service/ @Azure/avm-res-search-searchservice-module-owners-bicep @Azure/avm-core-team-technical-bicep
