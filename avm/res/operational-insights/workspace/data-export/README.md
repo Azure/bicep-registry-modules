@@ -37,9 +37,24 @@ This module deploys a Log Analytics Workspace Data Export.
 | [`enable`](#parameter-enable) | bool | Active when enabled. |
 | [`tableNames`](#parameter-tablenames) | array | An array of tables to export, for example: ['Heartbeat', 'SecurityEvent']. |
 
+### Parameter: `name`
+
+The data export rule name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `workspaceName`
+
+The name of the parent workspaces. Required if the template is used in a standalone deployment.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `destination`
 
 Destination properties.
+
 - Required: No
 - Type: object
 - Default: `{}`
@@ -47,28 +62,18 @@ Destination properties.
 ### Parameter: `enable`
 
 Active when enabled.
+
 - Required: No
 - Type: bool
 - Default: `False`
 
-### Parameter: `name`
-
-The data export rule name.
-- Required: Yes
-- Type: string
-
 ### Parameter: `tableNames`
 
 An array of tables to export, for example: ['Heartbeat', 'SecurityEvent'].
+
 - Required: No
 - Type: array
 - Default: `[]`
-
-### Parameter: `workspaceName`
-
-The name of the parent workspaces. Required if the template is used in a standalone deployment.
-- Required: Yes
-- Type: string
 
 
 ## Outputs

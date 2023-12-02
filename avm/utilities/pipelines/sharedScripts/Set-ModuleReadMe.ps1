@@ -180,20 +180,79 @@ function Set-ParametersSection {
         [string[]] $ColumnsInOrder = @('Required', 'Conditional', 'Optional', 'Generated')
     )
 
-    # Collect sources for parameter usage section
-    $parameterUsageContentMap = @{}
-    if (Test-Path (Join-Path $PSScriptRoot 'moduleReadMeSource')) {
-        if ($resourceUsageSourceFiles = Get-ChildItem (Join-Path $PSScriptRoot 'moduleReadMeSource') -Recurse -Filter 'resourceUsage-*') {
-            foreach ($sourceFile in $resourceUsageSourceFiles.FullName) {
-                $parameterName = (Split-Path $sourceFile -LeafBase).Replace('resourceUsage-', '')
+    # Invoking recursive function to resolve parameters
+    $newSectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -ColumnsInOrder $ColumnsInOrder
 
-                $parameterUsageContentMap[$parameterName] = Get-Content $sourceFile -Raw
-            }
-        }
+    # Build result
+    if ($PSCmdlet.ShouldProcess('Original file with new parameters content', 'Merge')) {
+        $updatedFileContent = Merge-FileWithNewContent -oldContent $ReadMeFileContent -newContent $newSectionContent -SectionStartIdentifier $SectionStartIdentifier -contentType 'nextH2'
     }
 
-    # Get all descriptions
-    $descriptions = $TemplateFileContent.parameters.Values.metadata.description
+    return $updatedFileContent
+}
+
+<#
+.SYNOPSIS
+Update parts of the 'parameters' section of the given readme file, if user defined types are used
+
+.DESCRIPTION
+Adds user defined types to the 'parameters' section of the given readme file
+
+.PARAMETER TemplateFileContent
+Mandatory. The template file content object to crawl data from
+
+.PARAMETER Properties
+Optional. Hashtable of the user defined properties
+
+.PARAMETER ParentName
+Optional. Name of the parameter, that has the user defined types
+
+.PARAMETER ParentIdentifierLink
+Optional. Link of the parameter, that has the user defined types
+
+.PARAMETER ColumnsInOrder
+Optional. The order of parameter categories to show in the readme parameters section.
+
+.EXAMPLE
+Set-DefinitionSection -TemplateFileContent @{ resource = @{}; ... } -ColumnsInOrder @('Required', 'Optional')
+
+Top-level invocation. Will start from the TemplateFile's parameters object and recursively crawl through all children. Tables will be ordered by 'Required' first and 'Optional' after.
+
+.EXAMPLE
+Set-DefinitionSection -TemplateFileContent @{ resource = @{}; ... } -Properties @{ @{ name = @{ type = 'string'; 'allowedValues' = @('A1','A2','A3','A4','A5','A6'); 'nullable' = $true; (...) } -ParentName 'diagnosticSettings' -ParentIdentifierLink '#parameter-diagnosticsettings'
+
+.NOTES
+The function is recursive and will also output grand, great grand children, ... .
+#>
+function Set-DefinitionSection {
+    param (
+        [Parameter(Mandatory = $true)]
+        [hashtable] $TemplateFileContent,
+
+        [Parameter(Mandatory = $false)]
+        [hashtable] $Properties,
+
+        [Parameter(Mandatory = $false)]
+        [string] $ParentName,
+
+        [Parameter(Mandatory = $false)]
+        [string] $ParentIdentifierLink,
+
+        [Parameter(Mandatory = $false)]
+        [string[]] $ColumnsInOrder = @('Required', 'Conditional', 'Optional', 'Generated')
+    )
+
+    if (-not $Properties) {
+        # Top-level invocation
+        # Get all descriptions
+        $descriptions = $TemplateFileContent.parameters.Values.metadata.description
+        # Add name as property for later reference
+        $TemplateFileContent.parameters.Keys | ForEach-Object { $TemplateFileContent.parameters[$_]['name'] = $_ }
+    } else {
+        $descriptions = $Properties.Values.metadata.description
+        # Add name as property for later reference
+        $Properties.Keys | ForEach-Object { $Properties[$_]['name'] = $_ }
+    }
 
     # Get the module parameter categories
     $paramCategories = $descriptions | ForEach-Object { $_.Split('.')[0] } | Select-Object -Unique
@@ -202,34 +261,66 @@ function Set-ParametersSection {
     $sortedParamCategories = $ColumnsInOrder | Where-Object { $paramCategories -contains $_ }
     # Add all others that exist but are not specified in the columnsInOrder parameter
     $sortedParamCategories += $paramCategories | Where-Object { $ColumnsInOrder -notcontains $_ }
-
-    # Add name as property for later reference
-    $TemplateFileContent.parameters.Keys | ForEach-Object { $TemplateFileContent.parameters[$_]['name'] = $_ }
-
     $newSectionContent = [System.Collections.ArrayList]@()
-    $parameterList = @{}
+    $tableSectionContent = [System.Collections.ArrayList]@()
+    $listSectionContent = [System.Collections.ArrayList]@()
 
-    # Create parameter blocks
     foreach ($category in $sortedParamCategories) {
 
         # 1. Prepare
         # Filter to relevant items
-        [array] $categoryParameters = $TemplateFileContent.parameters.Values | Where-Object { $_.metadata.description -like "$category. *" } | Sort-Object -Property 'Name' -Culture 'en-US'
+        if (-not $Properties) {
+            # Top-level invocation
+            [array] $categoryParameters = $TemplateFileContent.parameters.Values | Where-Object { $_.metadata.description -like "$category. *" } | Sort-Object -Property 'Name' -Culture 'en-US'
+        } else {
+            $categoryParameters = $Properties.Values | Where-Object { $_.metadata.description -like "$category. *" } | Sort-Object -Property 'Name' -Culture 'en-US'
+        }
 
-        # 2. Create header including optional columns & initiate the parameter list
-        $newSectionContent += @(
+        $tableSectionContent += @(
             ('**{0} parameters**' -f $category),
             '',
             '| Parameter | Type | Description |',
             '| :-- | :-- | :-- |'
         )
 
-        # 3. Add individual parameters
         foreach ($parameter in $categoryParameters) {
 
-            $isRequired = Get-IsParameterRequired -TemplateFileContent $TemplateFileContent -Parameter $parameter
+            ######################
+            #   Gather details   #
+            ######################
 
-            # Default values
+            $paramIdentifier = (-not [String]::IsNullOrEmpty($ParentName)) ? '{0}.{1}' -f $ParentName, $parameter.name : $parameter.name
+            $paramHeader = '### Parameter: `{0}`' -f $paramIdentifier
+            $paramIdentifierLink = (-not [String]::IsNullOrEmpty($ParentIdentifierLink)) ? ('{0}{1}' -f $ParentIdentifierLink, $parameter.name).ToLower() :  ('#{0}' -f $paramHeader.TrimStart('#').Trim().ToLower()) -replace '[:|`]' -replace ' ', '-'
+
+            # definition type (if any)
+            if ($parameter.Keys -contains '$ref') {
+                $identifier = Split-Path $parameter.'$ref' -Leaf
+                $definition = $TemplateFileContent.definitions[$identifier]
+                $type = $definition['type']
+                $rawAllowedValues = $definition['allowedValues']
+            } else {
+                $definition = $null
+                $type = $parameter.type
+                $rawAllowedValues = $parameter.allowedValues
+            }
+
+            $isRequired = (Get-IsParameterRequired -TemplateFileContent $TemplateFileContent -Parameter $parameter) ? 'Yes' : 'No'
+            $description = $parameter.ContainsKey('metadata') ? $parameter['metadata']['description'] : $null
+
+            #####################
+            #   Table content   #
+            #####################
+
+            # build table for definition properties
+            $tableSectionContent += ('| [`{0}`]({1}) | {2} | {3} |' -f $parameter.name, $paramIdentifierLink, $type, $description.substring("$category. ".Length))
+
+            ####################
+            #   List content   #
+            ####################
+
+            # Format default values
+            # =====================
             if ($parameter.defaultValue -is [array]) {
                 if ($parameter.defaultValue.count -eq 0) {
                     $defaultValue = '[]'
@@ -253,18 +344,23 @@ function Set-ParametersSection {
                 $defaultValue = $parameter.defaultValue
             }
 
-            # User defined type
-            if ($null -eq $parameter.type -and $parameter.ContainsKey('$ref')) {
-                $identifier = Split-Path $parameter.'$ref' -Leaf
-                $definition = $TemplateFileContent.definitions[$identifier]
-                $type = $definition['type']
-                $rawAllowedValues = $definition['allowedValues']
+            if (-not [String]::IsNullOrEmpty($defaultValue)) {
+                if (($defaultValue -split '\n').count -eq 1) {
+                    $formattedDefaultValue = '- Default: `{0}`' -f $defaultValue
+                } else {
+                    $formattedDefaultValue = @(
+                        '- Default:',
+                        '  ```Bicep',
+                ($defaultValue -split '\n' | ForEach-Object { "  $_" } | Out-String).TrimEnd(),
+                        '  ```'
+                    )
+                }
             } else {
-                $type = $parameter.type
-                $rawAllowedValues = $parameter.allowedValues
+                $formattedDefaultValue = $null
             }
 
-            # Allowed values
+            # Format allowed values
+            # =====================
             if ($rawAllowedValues -is [array]) {
                 $bicepJSONAllowedParameterObject = @{ $parameter.name = ($rawAllowedValues ?? @()) } # Wrapping on object to work with formatted Bicep script
                 $bicepRawformattedAllowed = ConvertTo-FormattedBicep -JSONParameters $bicepJSONAllowedParameterObject
@@ -278,37 +374,6 @@ function Set-ParametersSection {
                 $allowedValues = $rawAllowedValues
             }
 
-            # Prepare the links to local headers
-            $paramHeader = '### Parameter: `{0}`' -f $parameter.name
-            $paramIdentifier = ('#{0}' -f $paramHeader.TrimStart('#').Trim().ToLower()) -replace '[:|`]' -replace ' ', '-'
-
-            # Add external single quotes to all default values of type string except for those using functions
-            $description = $parameter.metadata.description.Replace("`r`n", '<p>').Replace("`n", '<p>')
-            # Further, replace all "empty string" default values with actual visible quotes
-            if ([regex]::Match($allowedValues, '^(\[\s*,.+)|(\[.+,\s*,)|(.+,\s*\])$').Captures.Count -gt 0) {
-                $allowedValues = $allowedValues -replace '\[\s*,', "[''," -replace ',\s*,', ", ''," -replace ',\s*\]', ", '']"
-            }
-
-            # Update parameter table content based on parameter category
-            ## Remove category from parameter description
-            $description = $description.substring("$category. ".Length)
-            $newSectionContent += ('| [`{0}`]({1}) | {2} | {3} |' -f $parameter.name, $paramIdentifier, $type, $description)
-
-            if (-not [String]::IsNullOrEmpty($defaultValue)) {
-                if (($defaultValue -split '\n').count -eq 1) {
-                    $formattedDefaultValue = '- Default: `{0}`' -f $defaultValue
-                } else {
-                    $formattedDefaultValue = @(
-                        '- Default:',
-                        '  ```Bicep',
-                    ($defaultValue -split '\n' | ForEach-Object { "  $_" } | Out-String).TrimEnd(),
-                        '  ```'
-                    )
-                }
-            } else {
-                $formattedDefaultValue = $null
-            }
-
             if (-not [String]::IsNullOrEmpty($allowedValues)) {
                 if (($allowedValues -split '\n').count -eq 1) {
                     $formattedAllowedValues = '- Default: `{0}`' -f $allowedValues
@@ -316,7 +381,7 @@ function Set-ParametersSection {
                     $formattedAllowedValues = @(
                         '- Allowed:',
                         '  ```Bicep',
-                    ($allowedValues -split '\n' | Where-Object { -not [String]::IsNullOrEmpty($_) } | ForEach-Object { "  $_" } | Out-String).TrimEnd(),
+                ($allowedValues -split '\n' | Where-Object { -not [String]::IsNullOrEmpty($_) } | ForEach-Object { "  $_" } | Out-String).TrimEnd(),
                         '  ```'
                     )
                 }
@@ -324,138 +389,42 @@ function Set-ParametersSection {
                 $formattedAllowedValues = $null
             }
 
-            $parameterList += @{
-                $paramIdentifier = @(
-                    $paramHeader,
-                    '',
-                    $description,
-                ('- Required: {0}' -f ($isRequired ? 'Yes' : 'No')),
-                ('- Type: {0}' -f $type),
-                ((-not [String]::IsNullOrEmpty($formattedDefaultValue)) ? $formattedDefaultValue : $null),
-                ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null),
-                    '',
-                (($parameterUsageContentMap.Keys -contains $parameter.name) ? $parameterUsageContentMap[$parameter.name] : $null)
-                ) | Where-Object { $null -ne $_ }
-            }
-
-            if (($parameter.Keys -contains '$ref') -or ($parameter.Keys -contains 'items' -and $parameter.items.Keys -contains '$ref')) {
-                # Has a user-defined type
-                $identifier = ($parameter.Keys -contains '$ref') ? (Split-Path $parameter.'$ref' -Leaf) : (Split-Path $parameter.items.'$ref' -Leaf)
-                $definition = $TemplateFileContent.definitions[$identifier]
-                $properties = ($definition.Keys -contains 'items' ? $definition['items']['properties'] : $definition['properties'])
-                $parameterList[$paramIdentifier] += Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $properties -ParentName $parameter.name -ParentIdentifierLink $paramIdentifier
-            }
-        }
-        $newSectionContent += ''
-    }
-
-    $sortedFlatParamList = [System.Collections.ArrayList]@()
-    foreach ($key in ($parameterList.Keys | Sort-Object)) {
-        $sortedFlatParamList += $parameterList[$key]
-    }
-    $newSectionContent += $sortedFlatParamList
-
-    # Build result
-    if ($PSCmdlet.ShouldProcess('Original file with new parameters content', 'Merge')) {
-        $updatedFileContent = Merge-FileWithNewContent -oldContent $ReadMeFileContent -newContent $newSectionContent -SectionStartIdentifier $SectionStartIdentifier -contentType 'nextH2'
-    }
-
-    return $updatedFileContent
-}
-
-<#
-.SYNOPSIS
-Update parts of the 'parameters' section of the given readme file, if user defined types are used
-
-.DESCRIPTION
-Adds user defined types to the 'parameters' section of the given readme file
-
-.PARAMETER TemplateFileContent
-Mandatory. The template file content object to crawl data from
-
-.PARAMETER Properties
-Mandatory. Hashtable of the user defined properties
-
-.PARAMETER ParentName
-Mandatory. Name of the parameter, that has the user defined types
-
-.PARAMETER ParentIdentifierLink
-Mandatory. Link of the parameter, that has the user defined types
-
-.EXAMPLE
-Set-DefinitionSection -TemplateFileContent @{ resource = @{}; ... } -Properties @{ resource = @{}; ... } -ParentName 'diagnosticSettings' -ParentIdentifierLink '#parameter-diagnosticsettings'
-
-.NOTES
-The function is recursive and will also output grand, great grand children, ... .
-#>
-function Set-DefinitionSection {
-    param (
-        [Parameter(Mandatory)]
-        [hashtable] $TemplateFileContent,
-
-        [Parameter(Mandatory)]
-        [hashtable] $Properties,
-
-        [Parameter(Mandatory)]
-        [string] $ParentName,
-
-        [Parameter(Mandatory)]
-        [string] $ParentIdentifierLink
-    )
-    $newSectionContent = @(
-        '',
-        '| Name | Required | Type | Description |',
-        '| :-- | :-- | :--| :-- |'
-    )
-    $tableSectionContent = [System.Collections.ArrayList]@()
-    $listSectionContent = [System.Collections.ArrayList]@()
-
-    foreach ($parameterName in $Properties.Keys | Sort-Object) {
-        $parameterValue = $Properties[$parameterName]
-        $paramIdentifier = '{0}.{1}' -f $ParentName, $parameterName
-        $paramIdentifierLink = ('{0}{1}' -f $ParentIdentifierLink, $parameterName).ToLower()
-
-        # definition type (if any)
-        if ($parameterValue.Keys -contains '$ref') {
-            $definition = $TemplateFileContent.definitions[(Split-Path $parameterValue.'$ref' -Leaf)]
-        } else {
-            $definition = $null
-        }
-
-        $isRequired = (Get-IsParameterRequired -TemplateFileContent $TemplateFileContent -Parameter $parameterValue) ? 'Yes' : 'No'
-        $type = ($parameterValue.Keys -contains '$ref') ? $definition.type : $parameterValue['type']
-        $description = $parameterValue.ContainsKey('metadata') ? $parameterValue['metadata']['description'] : $null
-
-        # build table for definition properties
-        $tableSectionContent += ('| [`{0}`]({1}) | {2} | {3} | {4} |' -f $parameterName, $paramIdentifierLink, $isRequired, $type, $description)
-        $allowedValues = ($parameterValue.ContainsKey('allowedValues')) ? (($parameterValue['allowedValues'] -is [array]) ? ('[{0}]' -f (($parameterValue['allowedValues'] | Sort-Object) -join ', ')) : (($parameterValue['allowedValues'] -is [hashtable]) ? '{object}' : $parameterValue['allowedValues'])) : $null
-
-        #build flat list for definition properties
-        $listSectionContent += @(
-            '',
-            ('### Parameter: `{0}`' -f $paramIdentifier),
-            ($parameterValue.ContainsKey('metadata') ? '' : $null),
-            ($parameterValue.ContainsKey('metadata') ? $parameterValue['metadata']['description'] : $null),
-            ($parameterValue.ContainsKey('metadata') ? '' : $null),
+            # Build list item
+            # ===============
+            $listSectionContent += @(
+                $paramHeader,
+            ($parameter.ContainsKey('metadata') ? '' : $null),
+            ($parameter.ContainsKey('metadata') ? $parameter['metadata']['description'].substring("$category. ".Length) : $null),
+            ($parameter.ContainsKey('metadata') ? '' : $null),
             ('- Required: {0}' -f $isRequired),
             ('- Type: {0}' -f $type),
-            (($null -ne $allowedValues) ? ('- Allowed: `{0}`' -f $allowedValues) : $null)
-        ) | Where-Object { $null -ne $_ }
+            ((-not [String]::IsNullOrEmpty($formattedDefaultValue)) ? $formattedDefaultValue : $null),
+            ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null)
+                ''
+            ) | Where-Object { $null -ne $_ }
 
-        #recursive call for children
-        if ($parameterValue.ContainsKey('items') -and $parameterValue['items'].ContainsKey('properties')) {
-            $childProperties = $parameterValue['items']['properties']
-            $listSectionContent += Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink
-        } elseif ($parameterValue.type -eq 'object' -and $parameterValue['properties']) {
-            $childProperties = $parameterValue['properties']
-            $listSectionContent += Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink
+            #recursive call for children
+            if ($definition) {
+                if ($definition.ContainsKey('items') -and $definition['items'].ContainsKey('properties')) {
+                    $childProperties = $definition['items']['properties']
+                    $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
+
+                    $listSectionContent += $sectionContent
+
+                } elseif ($definition.type -eq 'object' -and $definition['properties']) {
+                    $childProperties = $definition['properties']
+                    $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
+
+                    $listSectionContent += $sectionContent
+                }
+            }
         }
+
+        $tableSectionContent += ''
     }
 
     $newSectionContent += $tableSectionContent
     $newSectionContent += $listSectionContent
-    $newSectionContent += ''
-
     return $newSectionContent
 }
 
