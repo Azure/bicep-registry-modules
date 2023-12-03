@@ -55,8 +55,6 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
     namespace: 'flux-system'
     sourceKind: 'GitRepository'
     // Non-required parameters
-    bucket: '<bucket>'
-    configurationProtectedSettings: '<configurationProtectedSettings>'
     gitRepository: {
       repositoryRef: {
         branch: 'main'
@@ -104,12 +102,6 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
       "value": "GitRepository"
     },
     // Non-required parameters
-    "bucket": {
-      "value": "<bucket>"
-    },
-    "configurationProtectedSettings": {
-      "value": "<configurationProtectedSettings>"
-    },
     "gitRepository": {
       "value": {
         "repositoryRef": {
@@ -166,8 +158,6 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
     namespace: 'flux-system'
     sourceKind: 'GitRepository'
     // Non-required parameters
-    bucket: '<bucket>'
-    configurationProtectedSettings: '<configurationProtectedSettings>'
     gitRepository: {
       repositoryRef: {
         branch: 'main'
@@ -226,12 +216,6 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
       "value": "GitRepository"
     },
     // Non-required parameters
-    "bucket": {
-      "value": "<bucket>"
-    },
-    "configurationProtectedSettings": {
-      "value": "<configurationProtectedSettings>"
-    },
     "gitRepository": {
       "value": {
         "repositoryRef": {
@@ -282,8 +266,6 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
     namespace: 'flux-system'
     sourceKind: 'GitRepository'
     // Non-required parameters
-    bucket: '<bucket>'
-    configurationProtectedSettings: '<configurationProtectedSettings>'
     gitRepository: {
       repositoryRef: {
         branch: 'main'
@@ -336,12 +318,6 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
       "value": "GitRepository"
     },
     // Non-required parameters
-    "bucket": {
-      "value": "<bucket>"
-    },
-    "configurationProtectedSettings": {
-      "value": "<configurationProtectedSettings>"
-    },
     "gitRepository": {
       "value": {
         "repositoryRef": {
@@ -393,65 +369,38 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`suspend`](#parameter-suspend) | bool | Whether this configuration should suspend its reconciliation of its kustomizations and sources. |
 
-### Parameter: `bucket`
-
-Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `Bucket`.
-- Required: No
-- Type: object
-
 ### Parameter: `clusterName`
 
 The name of the AKS cluster that should be configured.
+
 - Required: Yes
 - Type: string
-
-### Parameter: `configurationProtectedSettings`
-
-Key-value pairs of protected configuration settings for the configuration.
-- Required: No
-- Type: secureObject
-
-### Parameter: `enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `gitRepository`
-
-Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `GitRepository`.
-- Required: No
-- Type: object
 
 ### Parameter: `kustomizations`
 
 Array of kustomizations used to reconcile the artifact pulled by the source type on the cluster.
+
 - Required: Yes
 - Type: object
-
-### Parameter: `location`
-
-Location for all resources.
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
 
 ### Parameter: `name`
 
 The name of the Flux Configuration.
+
 - Required: Yes
 - Type: string
 
 ### Parameter: `namespace`
 
 The namespace to which this configuration is installed to. Maximum of 253 lower case alphanumeric characters, hyphen and period only.
+
 - Required: Yes
 - Type: string
 
 ### Parameter: `scope`
 
 Scope at which the configuration will be installed.
+
 - Required: Yes
 - Type: string
 - Allowed:
@@ -465,6 +414,7 @@ Scope at which the configuration will be installed.
 ### Parameter: `sourceKind`
 
 Source Kind to pull the configuration data from.
+
 - Required: Yes
 - Type: string
 - Allowed:
@@ -475,9 +425,47 @@ Source Kind to pull the configuration data from.
   ]
   ```
 
+### Parameter: `bucket`
+
+Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `Bucket`.
+
+- Required: No
+- Type: object
+
+### Parameter: `gitRepository`
+
+Parameters to reconcile to the GitRepository source kind type. Required if `sourceKind` is `GitRepository`.
+
+- Required: No
+- Type: object
+
+### Parameter: `configurationProtectedSettings`
+
+Key-value pairs of protected configuration settings for the configuration.
+
+- Required: No
+- Type: secureObject
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `location`
+
+Location for all resources.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
+
 ### Parameter: `suspend`
 
 Whether this configuration should suspend its reconciliation of its kustomizations and sources.
+
 - Required: No
 - Type: bool
 - Default: `False`

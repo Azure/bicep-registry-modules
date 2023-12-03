@@ -53,12 +53,7 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
     ]
     name: 'ndfrsmin001'
     // Non-required parameters
-    forwardingRules: []
     location: '<location>'
-    lock: {}
-    roleAssignments: []
-    tags: {}
-    vNetLinks: []
   }
 }
 ```
@@ -85,23 +80,8 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
       "value": "ndfrsmin001"
     },
     // Non-required parameters
-    "forwardingRules": {
-      "value": []
-    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {}
-    },
-    "roleAssignments": {
-      "value": []
-    },
-    "tags": {
-      "value": {}
-    },
-    "vNetLinks": {
-      "value": []
     }
   }
 }
@@ -151,7 +131,17 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     tags: {
@@ -217,7 +207,17 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -259,19 +259,16 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
     ]
     name: 'ndfrswaf001'
     // Non-required parameters
-    forwardingRules: []
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    roleAssignments: []
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    vNetLinks: []
   }
 }
 ```
@@ -298,9 +295,6 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
       "value": "ndfrswaf001"
     },
     // Non-required parameters
-    "forwardingRules": {
-      "value": []
-    },
     "location": {
       "value": "<location>"
     },
@@ -310,18 +304,12 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
         "name": "myCustomLockName"
       }
     },
-    "roleAssignments": {
-      "value": []
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "vNetLinks": {
-      "value": []
     }
   }
 }
@@ -348,19 +336,28 @@ module dnsForwardingRuleset 'br/public:avm/res/network/dns-forwarding-ruleset:<v
 | [`forwardingRules`](#parameter-forwardingrules) | array | Array of forwarding rules. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`vNetLinks`](#parameter-vnetlinks) | array | Array of virtual network links. |
 
 ### Parameter: `dnsForwardingRulesetOutboundEndpointResourceIds`
 
 The reference to the DNS resolver outbound endpoints that are used to route DNS queries matching the forwarding rules in the ruleset to the target DNS servers.
+
 - Required: Yes
 - Type: array
+
+### Parameter: `name`
+
+Name of the DNS Forwarding Ruleset.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `enableTelemetry`
 
 Enable telemetry via a Globally Unique Identifier (GUID).
+
 - Required: No
 - Type: bool
 - Default: `True`
@@ -368,57 +365,92 @@ Enable telemetry via a Globally Unique Identifier (GUID).
 ### Parameter: `forwardingRules`
 
 Array of forwarding rules.
+
 - Required: No
 - Type: array
 
+**Required parameters**
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`domainName`](#parameter-forwardingrulesdomainname) | Yes | string | Required. The domain name to forward. |
-| [`forwardingRuleState`](#parameter-forwardingrulesforwardingrulestate) | No | string | Optional. The state of the forwarding rule. |
-| [`metadata`](#parameter-forwardingrulesmetadata) | No | string | Optional. Metadata attached to the forwarding rule. |
-| [`name`](#parameter-forwardingrulesname) | Yes | string | Required. The name of the forwarding rule. |
-| [`targetDnsServers`](#parameter-forwardingrulestargetdnsservers) | Yes | array | Required. The target DNS servers to forward to. |
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`domainName`](#parameter-forwardingrulesdomainname) | string | The domain name to forward. |
+| [`name`](#parameter-forwardingrulesname) | string | The name of the forwarding rule. |
+| [`targetDnsServers`](#parameter-forwardingrulestargetdnsservers) | array | The target DNS servers to forward to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`forwardingRuleState`](#parameter-forwardingrulesforwardingrulestate) | string | The state of the forwarding rule. |
+| [`metadata`](#parameter-forwardingrulesmetadata) | string | Metadata attached to the forwarding rule. |
 
 ### Parameter: `forwardingRules.domainName`
 
-Required. The domain name to forward.
+The domain name to forward.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `forwardingRules.forwardingRuleState`
-
-Optional. The state of the forwarding rule.
-
-- Required: No
-- Type: string
-- Allowed: `[Disabled, Enabled]`
-
-### Parameter: `forwardingRules.metadata`
-
-Optional. Metadata attached to the forwarding rule.
-
-- Required: No
-- Type: string
-
 ### Parameter: `forwardingRules.name`
 
-Required. The name of the forwarding rule.
+The name of the forwarding rule.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `forwardingRules.targetDnsServers`
 
-Required. The target DNS servers to forward to.
+The target DNS servers to forward to.
 
 - Required: Yes
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ipAddress`](#parameter-forwardingrulestargetdnsserversipaddress) | string | The IP address of the target DNS server. |
+| [`port`](#parameter-forwardingrulestargetdnsserversport) | string | The port of the target DNS server. |
+
+### Parameter: `forwardingRules.targetDnsServers.ipAddress`
+
+The IP address of the target DNS server.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `forwardingRules.targetDnsServers.port`
+
+The port of the target DNS server.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `forwardingRules.forwardingRuleState`
+
+The state of the forwarding rule.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `forwardingRules.metadata`
+
+Metadata attached to the forwarding rule.
+
+- Required: No
+- Type: string
+
 ### Parameter: `location`
 
 Location for all resources.
+
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
@@ -426,113 +458,139 @@ Location for all resources.
 ### Parameter: `lock`
 
 The lock settings of the service.
+
 - Required: No
 - Type: object
 
+**Optional parameters**
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`kind`](#parameter-lockkind) | No | string | Optional. Specify the type of lock. |
-| [`name`](#parameter-lockname) | No | string | Optional. Specify the name of lock. |
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-lockname) | string | Specify the name of lock. |
 
 ### Parameter: `lock.kind`
 
-Optional. Specify the type of lock.
+Specify the type of lock.
 
 - Required: No
 - Type: string
-- Allowed: `[CanNotDelete, None, ReadOnly]`
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
 
 ### Parameter: `lock.name`
 
-Optional. Specify the name of lock.
+Specify the name of lock.
 
 - Required: No
-- Type: string
-
-### Parameter: `name`
-
-Name of the DNS Forwarding Ruleset.
-- Required: Yes
 - Type: string
 
 ### Parameter: `roleAssignments`
 
-Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+Array of role assignments to create.
+
 - Required: No
 - Type: array
 
+**Required parameters**
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`condition`](#parameter-roleassignmentscondition) | No | string | Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
-| [`conditionVersion`](#parameter-roleassignmentsconditionversion) | No | string | Optional. Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | No | string | Optional. The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-roleassignmentsdescription) | No | string | Optional. The description of the role assignment. |
-| [`principalId`](#parameter-roleassignmentsprincipalid) | Yes | string | Required. The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`principalType`](#parameter-roleassignmentsprincipaltype) | No | string | Optional. The principal type of the assigned principal ID. |
-| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead. |
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-roleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `roleAssignments.condition`
 
-Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
 
 - Required: No
 - Type: string
 
 ### Parameter: `roleAssignments.conditionVersion`
 
-Optional. Version of the condition.
+Version of the condition.
 
 - Required: No
 - Type: string
-- Allowed: `[2.0]`
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
-Optional. The Resource Id of the delegated managed identity resource.
+The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
 
 ### Parameter: `roleAssignments.description`
 
-Optional. The description of the role assignment.
+The description of the role assignment.
 
 - Required: No
-- Type: string
-
-### Parameter: `roleAssignments.principalId`
-
-Required. The principal ID of the principal (user/group/identity) to assign the role to.
-
-- Required: Yes
 - Type: string
 
 ### Parameter: `roleAssignments.principalType`
 
-Optional. The principal type of the assigned principal ID.
+The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Allowed: `[Device, ForeignGroup, Group, ServicePrincipal, User]`
-
-### Parameter: `roleAssignments.roleDefinitionIdOrName`
-
-Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.
-
-- Required: Yes
-- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
 
 ### Parameter: `tags`
 
 Tags of the resource.
+
 - Required: No
 - Type: object
 
 ### Parameter: `vNetLinks`
 
 Array of virtual network links.
+
 - Required: No
 - Type: array
 

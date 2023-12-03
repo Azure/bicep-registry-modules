@@ -38,41 +38,47 @@ This template deploys Forwarding Rule in a Dns Forwarding Ruleset.
 | [`forwardingRuleState`](#parameter-forwardingrulestate) | string | The state of forwarding rule. |
 | [`metadata`](#parameter-metadata) | object | Metadata attached to the forwarding rule. |
 
-### Parameter: `dnsForwardingRulesetName`
-
-Name of the parent DNS Forwarding Ruleset. Required if the template is used in a standalone deployment.
-- Required: Yes
-- Type: string
-
 ### Parameter: `domainName`
 
 The domain name for the forwarding rule.
+
 - Required: Yes
 - Type: string
-
-### Parameter: `forwardingRuleState`
-
-The state of forwarding rule.
-- Required: No
-- Type: string
-
-### Parameter: `metadata`
-
-Metadata attached to the forwarding rule.
-- Required: No
-- Type: object
 
 ### Parameter: `name`
 
 Name of the Forwarding Rule.
+
 - Required: Yes
 - Type: string
 
 ### Parameter: `targetDnsServers`
 
 DNS servers to forward the DNS query to.
+
 - Required: Yes
 - Type: array
+
+### Parameter: `dnsForwardingRulesetName`
+
+Name of the parent DNS Forwarding Ruleset. Required if the template is used in a standalone deployment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `forwardingRuleState`
+
+The state of forwarding rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `metadata`
+
+Metadata attached to the forwarding rule.
+
+- Required: No
+- Type: object
 
 
 ## Outputs
