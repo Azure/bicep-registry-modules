@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using custom public IP address'
-metadata description = 'This instance deploys the module with a custom public IP address.'
+metadata name = 'With a custom public IP address deployed by the module'
+metadata description = 'This instance does not require a pre-deployed public IP but includes its deployment as part of the Bastion module deployment.'
 
 // ========== //
 // Parameters //
