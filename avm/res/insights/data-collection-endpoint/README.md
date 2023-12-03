@@ -24,7 +24,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/insights.data-collection-endpoint:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/insights/data-collection-endpoint:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -40,13 +40,13 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module dataCollectionEndpoint 'br:bicep/modules/insights.data-collection-endpoint:1.0.0' = {
+module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoint:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-idcemin'
   params: {
     // Required parameters
     name: 'idcemin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -68,8 +68,8 @@ module dataCollectionEndpoint 'br:bicep/modules/insights.data-collection-endpoin
       "value": "idcemin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -88,14 +88,14 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module dataCollectionEndpoint 'br:bicep/modules/insights.data-collection-endpoint:1.0.0' = {
+module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoint:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-idcemax'
   params: {
     // Required parameters
     name: 'idcemax001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     kind: 'Windows'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -134,11 +134,11 @@ module dataCollectionEndpoint 'br:bicep/modules/insights.data-collection-endpoin
       "value": "idcemax001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "kind": {
       "value": "Windows"
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -182,26 +182,15 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module dataCollectionEndpoint 'br:bicep/modules/insights.data-collection-endpoint:1.0.0' = {
+module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoint:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-idcewaf'
   params: {
     // Required parameters
     name: 'idcewaf001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     kind: 'Windows'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
+    location: '<location>'
     publicNetworkAccess: 'Enabled'
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
     tags: {
       'hidden-title': 'This is visible in the resource name'
       kind: 'Windows'
@@ -228,29 +217,14 @@ module dataCollectionEndpoint 'br:bicep/modules/insights.data-collection-endpoin
       "value": "idcewaf001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "kind": {
       "value": "Windows"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
+    "location": {
+      "value": "<location>"
     },
     "publicNetworkAccess": {
       "value": "Enabled"
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
     },
     "tags": {
       "value": {
@@ -279,7 +253,7 @@ module dataCollectionEndpoint 'br:bicep/modules/insights.data-collection-endpoin
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via the Customer Usage Attribution ID (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`kind`](#parameter-kind) | string | The kind of the resource. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -294,9 +268,9 @@ The name of the data collection endpoint. The name is case insensitive.
 - Required: Yes
 - Type: string
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via the Customer Usage Attribution ID (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
