@@ -36,21 +36,24 @@ This module deploys a DBforPostgreSQL Flexible Server Configuration.
 | [`source`](#parameter-source) | string | Source of the configuration. |
 | [`value`](#parameter-value) | string | Value of the configuration. |
 
-### Parameter: `flexibleServerName`
-
-The name of the parent PostgreSQL flexible server. Required if the template is used in a standalone deployment.
-- Required: Yes
-- Type: string
-
 ### Parameter: `name`
 
 The name of the configuration.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `flexibleServerName`
+
+The name of the parent PostgreSQL flexible server. Required if the template is used in a standalone deployment.
+
 - Required: Yes
 - Type: string
 
 ### Parameter: `source`
 
 Source of the configuration.
+
 - Required: No
 - Type: string
 - Default: `''`
@@ -58,6 +61,7 @@ Source of the configuration.
 ### Parameter: `value`
 
 Value of the configuration.
+
 - Required: No
 - Type: string
 - Default: `''`

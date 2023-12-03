@@ -36,28 +36,32 @@ This module deploys an Azure SQL Server Firewall Rule.
 | [`endIpAddress`](#parameter-endipaddress) | string | The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses. |
 | [`startIpAddress`](#parameter-startipaddress) | string | The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses. |
 
-### Parameter: `endIpAddress`
-
-The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses.
-- Required: No
-- Type: string
-- Default: `'0.0.0.0'`
-
 ### Parameter: `name`
 
 The name of the Server Firewall Rule.
+
 - Required: Yes
 - Type: string
 
 ### Parameter: `serverName`
 
 The name of the parent SQL Server. Required if the template is used in a standalone deployment.
+
 - Required: Yes
 - Type: string
+
+### Parameter: `endIpAddress`
+
+The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses.
+
+- Required: No
+- Type: string
+- Default: `'0.0.0.0'`
 
 ### Parameter: `startIpAddress`
 
 The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses.
+
 - Required: No
 - Type: string
 - Default: `'0.0.0.0'`
