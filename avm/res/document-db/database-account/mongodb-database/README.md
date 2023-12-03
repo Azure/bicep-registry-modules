@@ -38,34 +38,39 @@ This module deploys a MongoDB Database within a CosmosDB Account.
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`throughput`](#parameter-throughput) | int | Request Units per second. |
 
-### Parameter: `collections`
+### Parameter: `name`
 
-Collections in the mongodb database.
-- Required: No
-- Type: array
-- Default: `[]`
+Name of the mongodb database.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `databaseAccountName`
 
 The name of the parent Cosmos DB database account. Required if the template is used in a standalone deployment.
+
 - Required: Yes
 - Type: string
 
-### Parameter: `name`
+### Parameter: `collections`
 
-Name of the mongodb database.
-- Required: Yes
-- Type: string
+Collections in the mongodb database.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `tags`
 
 Tags of the resource.
+
 - Required: No
 - Type: object
 
 ### Parameter: `throughput`
 
 Request Units per second.
+
 - Required: No
 - Type: int
 - Default: `400`

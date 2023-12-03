@@ -40,15 +40,24 @@ This module deploys a Gremlin Database within a CosmosDB Account.
 | [`tags`](#parameter-tags) | object | Tags of the Gremlin database resource. |
 | [`throughput`](#parameter-throughput) | int | Request Units per second (for example 10000). Cannot be set together with `maxThroughput`. |
 
+### Parameter: `name`
+
+Name of the Gremlin database.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `databaseAccountName`
 
 The name of the parent Gremlin database. Required if the template is used in a standalone deployment.
+
 - Required: Yes
 - Type: string
 
 ### Parameter: `graphs`
 
 Array of graphs to deploy in the Gremlin database.
+
 - Required: No
 - Type: array
 - Default: `[]`
@@ -56,25 +65,22 @@ Array of graphs to deploy in the Gremlin database.
 ### Parameter: `maxThroughput`
 
 Represents maximum throughput, the resource can scale up to. Cannot be set together with `throughput`. If `throughput` is set to something else than -1, this autoscale setting is ignored.
+
 - Required: No
 - Type: int
 - Default: `4000`
 
-### Parameter: `name`
-
-Name of the Gremlin database.
-- Required: Yes
-- Type: string
-
 ### Parameter: `tags`
 
 Tags of the Gremlin database resource.
+
 - Required: No
 - Type: object
 
 ### Parameter: `throughput`
 
 Request Units per second (for example 10000). Cannot be set together with `maxThroughput`.
+
 - Required: No
 - Type: int
 

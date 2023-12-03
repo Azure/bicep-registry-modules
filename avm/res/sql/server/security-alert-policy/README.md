@@ -41,9 +41,24 @@ This module deploys an Azure SQL Server Security Alert Policy.
 | [`storageAccountAccessKey`](#parameter-storageaccountaccesskey) | securestring | Specifies the identifier key of the Threat Detection audit storage account.. |
 | [`storageEndpoint`](#parameter-storageendpoint) | string | Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs. |
 
+### Parameter: `name`
+
+The name of the Security Alert Policy.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `serverName`
+
+The name of the parent SQL Server. Required if the template is used in a standalone deployment.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `disabledAlerts`
 
 Specifies an array of alerts that are disabled. Allowed values are: Sql_Injection, Sql_Injection_Vulnerability, Access_Anomaly, Data_Exfiltration, Unsafe_Action, Brute_Force.
+
 - Required: No
 - Type: array
 - Default: `[]`
@@ -51,6 +66,7 @@ Specifies an array of alerts that are disabled. Allowed values are: Sql_Injectio
 ### Parameter: `emailAccountAdmins`
 
 Specifies that the alert is sent to the account administrators.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -58,32 +74,23 @@ Specifies that the alert is sent to the account administrators.
 ### Parameter: `emailAddresses`
 
 Specifies an array of email addresses to which the alert is sent.
+
 - Required: No
 - Type: array
 - Default: `[]`
 
-### Parameter: `name`
-
-The name of the Security Alert Policy.
-- Required: Yes
-- Type: string
-
 ### Parameter: `retentionDays`
 
 Specifies the number of days to keep in the Threat Detection audit logs.
+
 - Required: No
 - Type: int
 - Default: `0`
 
-### Parameter: `serverName`
-
-The name of the parent SQL Server. Required if the template is used in a standalone deployment.
-- Required: Yes
-- Type: string
-
 ### Parameter: `state`
 
 Specifies the state of the policy, whether it is enabled or disabled or a policy has not been applied yet on the specific database.
+
 - Required: No
 - Type: string
 - Default: `'Disabled'`
@@ -98,6 +105,7 @@ Specifies the state of the policy, whether it is enabled or disabled or a policy
 ### Parameter: `storageAccountAccessKey`
 
 Specifies the identifier key of the Threat Detection audit storage account..
+
 - Required: No
 - Type: securestring
 - Default: `''`
@@ -105,6 +113,7 @@ Specifies the identifier key of the Threat Detection audit storage account..
 ### Parameter: `storageEndpoint`
 
 Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs.
+
 - Required: No
 - Type: string
 - Default: `''`

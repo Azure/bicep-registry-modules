@@ -38,35 +38,40 @@ This module deploys a Log Analytics Workspace Storage Insight Config.
 | [`tables`](#parameter-tables) | array | The names of the Azure tables that the workspace should read. |
 | [`tags`](#parameter-tags) | object | Tags to configure in the resource. |
 
-### Parameter: `containers`
+### Parameter: `storageAccountResourceId`
 
-The names of the blob containers that the workspace should read.
-- Required: No
-- Type: array
-- Default: `[]`
+The Azure Resource Manager ID of the storage account resource.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `logAnalyticsWorkspaceName`
 
 The name of the parent Log Analytics workspace. Required if the template is used in a standalone deployment.
+
 - Required: Yes
 - Type: string
+
+### Parameter: `containers`
+
+The names of the blob containers that the workspace should read.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `name`
 
 The name of the storage insights config.
+
 - Required: No
 - Type: string
 - Default: `[format('{0}-stinsconfig', last(split(parameters('storageAccountResourceId'), '/')))]`
 
-### Parameter: `storageAccountResourceId`
-
-The Azure Resource Manager ID of the storage account resource.
-- Required: Yes
-- Type: string
-
 ### Parameter: `tables`
 
 The names of the Azure tables that the workspace should read.
+
 - Required: No
 - Type: array
 - Default: `[]`
@@ -74,6 +79,7 @@ The names of the Azure tables that the workspace should read.
 ### Parameter: `tags`
 
 Tags to configure in the resource.
+
 - Required: No
 - Type: object
 
