@@ -8,9 +8,9 @@ on:
         description: "Enable or disable workflows"
         required: true
         options:
-          - "enable"
-          - "disable"
-        default: "disable"
+          - "Enable"
+          - "Disable"
+        default: "Disable"
       includePattern:
         type: string
         description: "RegEx which workflows are included"
@@ -33,19 +33,22 @@ jobs:
           fetch-depth: 0
       - env:
           GH_TOKEN: ${{ github.token }}
-        name: ${{ inputs.workMode }} AVM workflows
+        name: \[${{ inputs.workMode }}\] AVM workflows
         shell: pwsh
         run: |
-          $repo = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
-          $workflows = gh workflow list --repo $repo --all --json "name,state,id" | ConvertFrom-Json -Depth 100
-          $relevantWorkflows = $workflows | Where-Object {
-              $_.name -match "${{ inputs.includePattern }}" -and $_.name -notmatch "${{ inputs.excludePattern }}"
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines'  'platform' 'Switch-WorkflowSate.ps1')
+
+          $functionInput = @{
+            RepositoryOwner = '${{ github.repository_owner }}'
+            RepositoryName  = '${{ github.event.repository.name }}'
+            WorkMode        = '${{ inputs.workMode }}'.ToLower()
+            IncludePattern  = '${{ inputs.includePattern }}'
+            ExlcudePattern  = '${{ inputs.excludePattern }}'
           }
 
-          foreach ($workflow in $relevantWorkflows) {
-              if (("${{ inputs.workMode }}" -eq "disable" -and $workflow.state -eq "active") -or ("${{ inputs.workMode }}" -eq "enable" -and $workflow.state -ne "active"))
-              {
-                Write-Verbose "${{ inputs.workMode }} $($workflow.name)" -Verbose
-                gh workflow ${{ inputs.workMode }} $workflow.id  --repo $repo
-              }
-          }
+          Write-Verbose "Invoke function with" -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+          # Get the modified child resources
+          Switch-WorkflowSate @functionInput -Verbose
