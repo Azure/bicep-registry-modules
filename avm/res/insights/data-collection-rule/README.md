@@ -24,14 +24,15 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/insights.data-collection-rule:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/insights/data-collection-rule:<version>`.
 
 - [Customadv](#example-1-customadv)
 - [Custombasic](#example-2-custombasic)
 - [Customiis](#example-3-customiis)
 - [Using only defaults](#example-4-using-only-defaults)
 - [Linux](#example-5-linux)
-- [Windows](#example-6-windows)
+- [Waf-Aligned](#example-6-waf-aligned)
+- [Windows](#example-7-windows)
 
 ### Example 1: _Customadv_
 
@@ -40,7 +41,7 @@ The following section provides usage examples for the module, which were used to
 <summary>via Bicep module</summary>
 
 ```bicep
-module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0' = {
+module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-idcrcusadv'
   params: {
     // Required parameters
@@ -88,8 +89,8 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
     // Non-required parameters
     dataCollectionEndpointId: '<dataCollectionEndpointId>'
     description: 'Collecting custom text logs with ingestion-time transformation to columns. Expected format of a log line (comma separated values): \'<DateTime><EventLevel><EventCode><Message>\' for example: \'2023-01-25T20:15:05ZERROR404Page not found\''
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     kind: 'Windows'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -98,7 +99,17 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     streamDeclarations: {
@@ -209,11 +220,11 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
     "description": {
       "value": "Collecting custom text logs with ingestion-time transformation to columns. Expected format of a log line (comma separated values): \"<DateTime>,<EventLevel>,<EventCode>,<Message>\", for example: \"2023-01-25T20:15:05Z,ERROR,404,Page not found\""
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "kind": {
       "value": "Windows"
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -226,7 +237,17 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -283,7 +304,7 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
 <summary>via Bicep module</summary>
 
 ```bicep
-module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0' = {
+module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-idcrcusbas'
   params: {
     // Required parameters
@@ -331,8 +352,8 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
     // Non-required parameters
     dataCollectionEndpointId: '<dataCollectionEndpointId>'
     description: 'Collecting custom text logs without ingestion-time transformation.'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     kind: 'Windows'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -341,7 +362,17 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     streamDeclarations: {
@@ -436,11 +467,11 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
     "description": {
       "value": "Collecting custom text logs without ingestion-time transformation."
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "kind": {
       "value": "Windows"
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -453,7 +484,17 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -494,7 +535,7 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
 <summary>via Bicep module</summary>
 
 ```bicep
-module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0' = {
+module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-idcrcusiis'
   params: {
     // Required parameters
@@ -535,8 +576,8 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
     // Non-required parameters
     dataCollectionEndpointId: '<dataCollectionEndpointId>'
     description: 'Collecting IIS logs.'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     kind: 'Windows'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -545,7 +586,17 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     tags: {
@@ -619,11 +670,11 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
     "description": {
       "value": "Collecting IIS logs."
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "kind": {
       "value": "Windows"
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -636,7 +687,17 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -664,7 +725,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0' = {
+module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-idcrmin'
   params: {
     // Required parameters
@@ -708,8 +769,8 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
     }
     name: 'idcrmin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     kind: 'Windows'
+    location: '<location>'
   }
 }
 ```
@@ -775,11 +836,11 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
       "value": "idcrmin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "kind": {
       "value": "Windows"
+    },
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -795,7 +856,7 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
 <summary>via Bicep module</summary>
 
 ```bicep
-module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0' = {
+module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-idcrlin'
   params: {
     // Required parameters
@@ -949,8 +1010,8 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
     name: 'idcrlin001'
     // Non-required parameters
     description: 'Collecting Linux-specific performance counters and Linux Syslog'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     kind: 'Linux'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -959,7 +1020,17 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     tags: {
@@ -1144,11 +1215,11 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
     "description": {
       "value": "Collecting Linux-specific performance counters and Linux Syslog"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "kind": {
       "value": "Linux"
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -1161,7 +1232,17 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -1179,14 +1260,287 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
 </details>
 <p>
 
-### Example 6: _Windows_
+### Example 6: _Waf-Aligned_
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0' = {
+module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-idcrwaf'
+  params: {
+    // Required parameters
+    dataFlows: [
+      {
+        destinations: [
+          'azureMonitorMetrics-default'
+        ]
+        streams: [
+          'Microsoft-InsightsMetrics'
+        ]
+      }
+      {
+        destinations: [
+          '<logAnalyticsWorkspaceName>'
+        ]
+        streams: [
+          'Microsoft-Event'
+        ]
+      }
+    ]
+    dataSources: {
+      performanceCounters: [
+        {
+          counterSpecifiers: [
+            '\\LogicalDisk(_Total)\\% Disk Read Time'
+            '\\LogicalDisk(_Total)\\% Disk Time'
+            '\\LogicalDisk(_Total)\\% Disk Write Time'
+            '\\LogicalDisk(_Total)\\% Free Space'
+            '\\LogicalDisk(_Total)\\% Idle Time'
+            '\\LogicalDisk(_Total)\\Avg. Disk Queue Length'
+            '\\LogicalDisk(_Total)\\Avg. Disk Read Queue Length'
+            '\\LogicalDisk(_Total)\\Avg. Disk sec/Read'
+            '\\LogicalDisk(_Total)\\Avg. Disk sec/Transfer'
+            '\\LogicalDisk(_Total)\\Avg. Disk sec/Write'
+            '\\LogicalDisk(_Total)\\Avg. Disk Write Queue Length'
+            '\\LogicalDisk(_Total)\\Disk Bytes/sec'
+            '\\LogicalDisk(_Total)\\Disk Read Bytes/sec'
+            '\\LogicalDisk(_Total)\\Disk Reads/sec'
+            '\\LogicalDisk(_Total)\\Disk Transfers/sec'
+            '\\LogicalDisk(_Total)\\Disk Write Bytes/sec'
+            '\\LogicalDisk(_Total)\\Disk Writes/sec'
+            '\\LogicalDisk(_Total)\\Free Megabytes'
+            '\\Memory\\% Committed Bytes In Use'
+            '\\Memory\\Available Bytes'
+            '\\Memory\\Cache Bytes'
+            '\\Memory\\Committed Bytes'
+            '\\Memory\\Page Faults/sec'
+            '\\Memory\\Pages/sec'
+            '\\Memory\\Pool Nonpaged Bytes'
+            '\\Memory\\Pool Paged Bytes'
+            '\\Network Interface(*)\\Bytes Received/sec'
+            '\\Network Interface(*)\\Bytes Sent/sec'
+            '\\Network Interface(*)\\Bytes Total/sec'
+            '\\Network Interface(*)\\Packets Outbound Errors'
+            '\\Network Interface(*)\\Packets Received Errors'
+            '\\Network Interface(*)\\Packets Received/sec'
+            '\\Network Interface(*)\\Packets Sent/sec'
+            '\\Network Interface(*)\\Packets/sec'
+            '\\Process(_Total)\\Handle Count'
+            '\\Process(_Total)\\Thread Count'
+            '\\Process(_Total)\\Working Set'
+            '\\Process(_Total)\\Working Set - Private'
+            '\\Processor Information(_Total)\\% Privileged Time'
+            '\\Processor Information(_Total)\\% Processor Time'
+            '\\Processor Information(_Total)\\% User Time'
+            '\\Processor Information(_Total)\\Processor Frequency'
+            '\\System\\Context Switches/sec'
+            '\\System\\Processes'
+            '\\System\\Processor Queue Length'
+            '\\System\\System Up Time'
+          ]
+          name: 'perfCounterDataSource60'
+          samplingFrequencyInSeconds: 60
+          streams: [
+            'Microsoft-InsightsMetrics'
+          ]
+        }
+      ]
+      windowsEventLogs: [
+        {
+          name: 'eventLogsDataSource'
+          streams: [
+            'Microsoft-Event'
+          ]
+          xPathQueries: [
+            'Application!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]'
+            'Security!*[System[(band(Keywords13510798882111488))]]'
+            'System!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]'
+          ]
+        }
+      ]
+    }
+    destinations: {
+      azureMonitorMetrics: {
+        name: 'azureMonitorMetrics-default'
+      }
+      logAnalytics: [
+        {
+          name: '<name>'
+          workspaceResourceId: '<workspaceResourceId>'
+        }
+      ]
+    }
+    name: 'idcrwaf001'
+    // Non-required parameters
+    description: 'Collecting Windows-specific performance counters and Windows Event Logs'
+    kind: 'Windows'
+    location: '<location>'
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      kind: 'Windows'
+      resourceType: 'Data Collection Rules'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "dataFlows": {
+      "value": [
+        {
+          "destinations": [
+            "azureMonitorMetrics-default"
+          ],
+          "streams": [
+            "Microsoft-InsightsMetrics"
+          ]
+        },
+        {
+          "destinations": [
+            "<logAnalyticsWorkspaceName>"
+          ],
+          "streams": [
+            "Microsoft-Event"
+          ]
+        }
+      ]
+    },
+    "dataSources": {
+      "value": {
+        "performanceCounters": [
+          {
+            "counterSpecifiers": [
+              "\\LogicalDisk(_Total)\\% Disk Read Time",
+              "\\LogicalDisk(_Total)\\% Disk Time",
+              "\\LogicalDisk(_Total)\\% Disk Write Time",
+              "\\LogicalDisk(_Total)\\% Free Space",
+              "\\LogicalDisk(_Total)\\% Idle Time",
+              "\\LogicalDisk(_Total)\\Avg. Disk Queue Length",
+              "\\LogicalDisk(_Total)\\Avg. Disk Read Queue Length",
+              "\\LogicalDisk(_Total)\\Avg. Disk sec/Read",
+              "\\LogicalDisk(_Total)\\Avg. Disk sec/Transfer",
+              "\\LogicalDisk(_Total)\\Avg. Disk sec/Write",
+              "\\LogicalDisk(_Total)\\Avg. Disk Write Queue Length",
+              "\\LogicalDisk(_Total)\\Disk Bytes/sec",
+              "\\LogicalDisk(_Total)\\Disk Read Bytes/sec",
+              "\\LogicalDisk(_Total)\\Disk Reads/sec",
+              "\\LogicalDisk(_Total)\\Disk Transfers/sec",
+              "\\LogicalDisk(_Total)\\Disk Write Bytes/sec",
+              "\\LogicalDisk(_Total)\\Disk Writes/sec",
+              "\\LogicalDisk(_Total)\\Free Megabytes",
+              "\\Memory\\% Committed Bytes In Use",
+              "\\Memory\\Available Bytes",
+              "\\Memory\\Cache Bytes",
+              "\\Memory\\Committed Bytes",
+              "\\Memory\\Page Faults/sec",
+              "\\Memory\\Pages/sec",
+              "\\Memory\\Pool Nonpaged Bytes",
+              "\\Memory\\Pool Paged Bytes",
+              "\\Network Interface(*)\\Bytes Received/sec",
+              "\\Network Interface(*)\\Bytes Sent/sec",
+              "\\Network Interface(*)\\Bytes Total/sec",
+              "\\Network Interface(*)\\Packets Outbound Errors",
+              "\\Network Interface(*)\\Packets Received Errors",
+              "\\Network Interface(*)\\Packets Received/sec",
+              "\\Network Interface(*)\\Packets Sent/sec",
+              "\\Network Interface(*)\\Packets/sec",
+              "\\Process(_Total)\\Handle Count",
+              "\\Process(_Total)\\Thread Count",
+              "\\Process(_Total)\\Working Set",
+              "\\Process(_Total)\\Working Set - Private",
+              "\\Processor Information(_Total)\\% Privileged Time",
+              "\\Processor Information(_Total)\\% Processor Time",
+              "\\Processor Information(_Total)\\% User Time",
+              "\\Processor Information(_Total)\\Processor Frequency",
+              "\\System\\Context Switches/sec",
+              "\\System\\Processes",
+              "\\System\\Processor Queue Length",
+              "\\System\\System Up Time"
+            ],
+            "name": "perfCounterDataSource60",
+            "samplingFrequencyInSeconds": 60,
+            "streams": [
+              "Microsoft-InsightsMetrics"
+            ]
+          }
+        ],
+        "windowsEventLogs": [
+          {
+            "name": "eventLogsDataSource",
+            "streams": [
+              "Microsoft-Event"
+            ],
+            "xPathQueries": [
+              "Application!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]",
+              "Security!*[System[(band(Keywords,13510798882111488))]]",
+              "System!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]"
+            ]
+          }
+        ]
+      }
+    },
+    "destinations": {
+      "value": {
+        "azureMonitorMetrics": {
+          "name": "azureMonitorMetrics-default"
+        },
+        "logAnalytics": [
+          {
+            "name": "<name>",
+            "workspaceResourceId": "<workspaceResourceId>"
+          }
+        ]
+      }
+    },
+    "name": {
+      "value": "idcrwaf001"
+    },
+    // Non-required parameters
+    "description": {
+      "value": "Collecting Windows-specific performance counters and Windows Event Logs"
+    },
+    "kind": {
+      "value": "Windows"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "hidden-title": "This is visible in the resource name",
+        "kind": "Windows",
+        "resourceType": "Data Collection Rules"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 7: _Windows_
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-idcrwin'
   params: {
     // Required parameters
@@ -1294,8 +1648,8 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
     name: 'idcrwin001'
     // Non-required parameters
     description: 'Collecting Windows-specific performance counters and Windows Event Logs'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     kind: 'Windows'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -1304,7 +1658,17 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     tags: {
@@ -1443,11 +1807,11 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
     "description": {
       "value": "Collecting Windows-specific performance counters and Windows Event Logs"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "kind": {
       "value": "Windows"
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -1460,7 +1824,17 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -1496,7 +1870,7 @@ module dataCollectionRule 'br:bicep/modules/insights.data-collection-rule:1.0.0'
 | :-- | :-- | :-- |
 | [`dataCollectionEndpointId`](#parameter-datacollectionendpointid) | string | The resource ID of the data collection endpoint that this rule can be used with. |
 | [`description`](#parameter-description) | string | Description of the data collection rule. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via the Customer Usage Attribution ID (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`kind`](#parameter-kind) | string | The kind of the resource. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -1548,9 +1922,9 @@ Description of the data collection rule.
 - Type: string
 - Default: `''`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via the Customer Usage Attribution ID (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
