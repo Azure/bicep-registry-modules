@@ -41,7 +41,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: 'Disabled'
     kind: 'Windows'
     tags: {
       'hidden-title': 'This is visible in the resource name'

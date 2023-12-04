@@ -105,7 +105,17 @@ module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoi
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     tags: {
@@ -154,7 +164,17 @@ module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoi
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -190,7 +210,7 @@ module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoi
     // Non-required parameters
     kind: 'Windows'
     location: '<location>'
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: 'Disabled'
     tags: {
       'hidden-title': 'This is visible in the resource name'
       kind: 'Windows'
@@ -224,7 +244,7 @@ module dataCollectionEndpoint 'br/public:avm/res/insights/data-collection-endpoi
       "value": "<location>"
     },
     "publicNetworkAccess": {
-      "value": "Enabled"
+      "value": "Disabled"
     },
     "tags": {
       "value": {
