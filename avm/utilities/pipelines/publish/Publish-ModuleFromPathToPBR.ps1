@@ -33,7 +33,7 @@ function Publish-ModuleFromPathToPBR {
   # Load used functions
   . (Join-Path $PSScriptRoot 'helper' 'Get-ModulesToPublish.ps1')
   . (Join-Path $PSScriptRoot 'helper' 'Get-ModuleTargetVersion.ps1')
-  . (Join-Path $PSScriptRoot 'helper' 'Get-BRMRepositoryName.ps1')
+  . (Join-Path (Split-Path $PSScriptRoot) 'sharedScripts' 'Get-BRMRepositoryName.ps1')
   . (Join-Path $PSScriptRoot 'helper' 'New-ModuleReleaseTag.ps1')
   . (Join-Path $PSScriptRoot 'helper' 'Get-ModuleReadmeLink.ps1')
   . (Join-Path (Split-Path $PSScriptRoot -Parent) 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
@@ -96,4 +96,9 @@ function Publish-ModuleFromPathToPBR {
   Write-Verbose "Publish Input:`n $($publishInput | ConvertTo-Json -Depth 10)" -Verbose
 
   bicep publish @publishInput
+
+  return @{
+    version             = $targetVersion
+    publishedModuleName = $publishedModuleName
+  }
 }

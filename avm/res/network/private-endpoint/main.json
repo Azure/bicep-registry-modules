@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "11574872241175195302"
+      "templateHash": "2821141217598568122"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint.",
@@ -133,12 +133,95 @@
               "privateIPAddress": {
                 "type": "string",
                 "metadata": {
-                  "description": "Required. A private ip address obtained from the private endpoint's subnet."
+                  "description": "Required. A private IP address obtained from the private endpoint's subnet."
                 }
               }
             },
             "metadata": {
               "description": "Required. Properties of private endpoint IP configurations."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "manualPrivateLinkServiceConnectionsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the private link service connection."
+            }
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "groupIds": {
+                "type": "array",
+                "metadata": {
+                  "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                }
+              },
+              "privateLinkServiceId": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The resource id of private link service."
+                }
+              },
+              "requestMessage": {
+                "type": "string",
+                "metadata": {
+                  "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                }
+              }
+            },
+            "metadata": {
+              "description": "Required. Properties of private link service connection."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "privateLinkServiceConnectionsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the private link service connection."
+            }
+          },
+          "properties": {
+            "type": "object",
+            "properties": {
+              "groupIds": {
+                "type": "array",
+                "metadata": {
+                  "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+                }
+              },
+              "privateLinkServiceId": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The resource id of private link service."
+                }
+              },
+              "requestMessage": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                }
+              }
+            },
+            "metadata": {
+              "description": "Required. Properties of private link service connection."
             }
           }
         }
@@ -153,7 +236,7 @@
           "fqdn": {
             "type": "string",
             "metadata": {
-              "description": "Required. Fqdn that resolves to private endpoint ip address."
+              "description": "Required. Fqdn that resolves to private endpoint IP address."
             }
           },
           "ipAddresses": {
@@ -162,7 +245,7 @@
               "type": "string"
             },
             "metadata": {
-              "description": "Required. A list of private ip addresses of the private endpoint."
+              "description": "Required. A list of private IP addresses of the private endpoint."
             }
           }
         }
@@ -183,12 +266,6 @@
         "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
       }
     },
-    "serviceResourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. Resource ID of the resource that needs to be connected to the network."
-      }
-    },
     "applicationSecurityGroupResourceIds": {
       "type": "array",
       "nullable": true,
@@ -207,12 +284,6 @@
       "$ref": "#/definitions/ipConfigurationsType",
       "metadata": {
         "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
-      }
-    },
-    "groupIds": {
-      "type": "array",
-      "metadata": {
-        "description": "Required. Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to."
       }
     },
     "privateDnsZoneGroupName": {
@@ -262,10 +333,15 @@
       }
     },
     "manualPrivateLinkServiceConnections": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/manualPrivateLinkServiceConnectionsType",
       "metadata": {
-        "description": "Optional. Manual PrivateLink Service Connections."
+        "description": "Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource."
+      }
+    },
+    "privateLinkServiceConnections": {
+      "$ref": "#/definitions/privateLinkServiceConnectionsType",
+      "metadata": {
+        "description": "Optional. A grouping of information about the connection to the remote resource."
       }
     },
     "enableTelemetry": {
@@ -331,15 +407,7 @@
         "customNetworkInterfaceName": "[coalesce(parameters('customNetworkInterfaceName'), '')]",
         "ipConfigurations": "[coalesce(parameters('ipConfigurations'), createArray())]",
         "manualPrivateLinkServiceConnections": "[coalesce(parameters('manualPrivateLinkServiceConnections'), createArray())]",
-        "privateLinkServiceConnections": [
-          {
-            "name": "[parameters('name')]",
-            "properties": {
-              "privateLinkServiceId": "[parameters('serviceResourceId')]",
-              "groupIds": "[parameters('groupIds')]"
-            }
-          }
-        ],
+        "privateLinkServiceConnections": "[coalesce(parameters('privateLinkServiceConnections'), createArray())]",
         "subnet": {
           "id": "[parameters('subnetResourceId')]"
         }
