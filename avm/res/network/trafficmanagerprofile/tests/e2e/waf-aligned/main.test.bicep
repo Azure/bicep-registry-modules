@@ -37,6 +37,12 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: location
+    serverFarmName01: 'dep-${namePrefix}-sf-${serviceShort}01'
+    serverFarmName02: 'dep-${namePrefix}-sf-${serviceShort}02'
+    webApp01Name: 'dep-${namePrefix}-wa-${serviceShort}01'
+    webApp02Name: 'dep-${namePrefix}-wa-${serviceShort}02'
+    location01: 'eastus'
+    location02: 'westus'
   }
 }
 
@@ -89,5 +95,27 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
+    endpoints: [
+      {
+        name: 'webApp01Endpoint'
+        type: 'Microsoft.Network/trafficManagerProfiles/azureEndpoints'
+        properties: {
+          targetResourceId: nestedDependencies.outputs.webApp01ResourceId
+          weight: 1
+          priority: 1
+          endpointLocation: 'eastus'
+        }
+      }
+      {
+        name: 'webApp02Endpoint'
+        type: 'Microsoft.Network/trafficManagerProfiles/azureEndpoints'
+        properties: {
+          targetResourceId: nestedDependencies.outputs.webApp02ResourceId
+          weight: 1
+          priority: 2
+          endpointLocation: 'westus'
+        }
+      }
+    ]
   }
 }]
