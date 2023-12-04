@@ -36,9 +36,24 @@ This module deploys a DBforPostgreSQL Flexible Server Database.
 | [`charset`](#parameter-charset) | string | The charset of the database. |
 | [`collation`](#parameter-collation) | string | The collation of the database. |
 
+### Parameter: `name`
+
+The name of the database.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `flexibleServerName`
+
+The name of the parent PostgreSQL flexible server. Required if the template is used in a standalone deployment.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `charset`
 
 The charset of the database.
+
 - Required: No
 - Type: string
 - Default: `''`
@@ -46,21 +61,10 @@ The charset of the database.
 ### Parameter: `collation`
 
 The collation of the database.
+
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `flexibleServerName`
-
-The name of the parent PostgreSQL flexible server. Required if the template is used in a standalone deployment.
-- Required: Yes
-- Type: string
-
-### Parameter: `name`
-
-The name of the database.
-- Required: Yes
-- Type: string
 
 
 ## Outputs

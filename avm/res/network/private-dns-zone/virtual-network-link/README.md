@@ -38,9 +38,24 @@ This module deploys a Private DNS Zone Virtual Network Link.
 | [`registrationEnabled`](#parameter-registrationenabled) | bool | Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled?. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
+### Parameter: `virtualNetworkResourceId`
+
+Link to another virtual network resource ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateDnsZoneName`
+
+The name of the parent Private DNS zone. Required if the template is used in a standalone deployment.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `location`
 
 The location of the PrivateDNSZone. Should be global.
+
 - Required: No
 - Type: string
 - Default: `'global'`
@@ -48,19 +63,15 @@ The location of the PrivateDNSZone. Should be global.
 ### Parameter: `name`
 
 The name of the virtual network link.
+
 - Required: No
 - Type: string
 - Default: `[format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/')))]`
 
-### Parameter: `privateDnsZoneName`
-
-The name of the parent Private DNS zone. Required if the template is used in a standalone deployment.
-- Required: Yes
-- Type: string
-
 ### Parameter: `registrationEnabled`
 
 Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled?.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -68,14 +79,9 @@ Is auto-registration of virtual machine records in the virtual network in the Pr
 ### Parameter: `tags`
 
 Tags of the resource.
+
 - Required: No
 - Type: object
-
-### Parameter: `virtualNetworkResourceId`
-
-Link to another virtual network resource ID.
-- Required: Yes
-- Type: string
 
 
 ## Outputs
