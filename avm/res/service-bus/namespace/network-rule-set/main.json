@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "17402314535401578341"
+      "templateHash": "14004912029824569109"
     },
     "name": "Service Bus Namespace Network Rule Sets",
     "description": "This module deploys a ServiceBus Namespace Network Rule Set.",
@@ -83,10 +83,10 @@
       "name": "[format('{0}/{1}', parameters('namespaceName'), 'default')]",
       "properties": {
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
-        "defaultAction": "[if(equals(parameters('publicNetworkAccess'), 'Disabled'), null(), if(or(not(empty(parameters('ipRules'))), not(empty(parameters('virtualNetworkRules')))), 'Deny', parameters('defaultAction')))]",
-        "trustedServiceAccessEnabled": "[if(equals(parameters('publicNetworkAccess'), 'Disabled'), null(), parameters('trustedServiceAccessEnabled'))]",
-        "ipRules": "[if(equals(parameters('publicNetworkAccess'), 'Disabled'), null(), parameters('ipRules'))]",
-        "virtualNetworkRules": "[if(equals(parameters('publicNetworkAccess'), 'Disabled'), null(), variables('networkRules'))]"
+        "defaultAction": "[if(equals(parameters('publicNetworkAccess'), 'Enabled'), if(or(not(empty(parameters('ipRules'))), not(empty(parameters('virtualNetworkRules')))), 'Deny', parameters('defaultAction')), null())]",
+        "trustedServiceAccessEnabled": "[if(equals(parameters('publicNetworkAccess'), 'Enabled'), parameters('trustedServiceAccessEnabled'), null())]",
+        "ipRules": "[if(equals(parameters('publicNetworkAccess'), 'Enabled'), parameters('ipRules'), null())]",
+        "virtualNetworkRules": "[if(equals(parameters('publicNetworkAccess'), 'Enabled'), variables('networkRules'), null())]"
       }
     }
   ],

@@ -38,18 +38,21 @@ This module deploys a Service Bus Namespace Authorization Rule.
 ### Parameter: `name`
 
 The name of the authorization rule.
+
 - Required: Yes
 - Type: string
 
 ### Parameter: `namespaceName`
 
 The name of the parent Service Bus Namespace for the Service Bus Queue. Required if the template is used in a standalone deployment.
+
 - Required: Yes
 - Type: string
 
 ### Parameter: `rights`
 
 The rights associated with the rule.
+
 - Required: No
 - Type: array
 - Default: `[]`

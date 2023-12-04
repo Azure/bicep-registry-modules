@@ -75,66 +75,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       capacity: 1
     }
     location: location
-    roleAssignments: [
-      {
-        roleDefinitionIdOrName: 'Reader'
-        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-        principalType: 'ServicePrincipal'
-      }
-    ]
-    networkRuleSets: {
-      defaultAction: 'Deny'
-      trustedServiceAccessEnabled: true
-      virtualNetworkRules: [
-        {
-          ignoreMissingVnetServiceEndpoint: true
-          subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        }
-      ]
-      ipRules: [
-        {
-          ipMask: '10.0.1.0/32'
-          action: 'Allow'
-        }
-        {
-          ipMask: '10.0.2.0/32'
-          action: 'Allow'
-        }
-      ]
-    }
-    authorizationRules: [
-      {
-        name: 'RootManageSharedAccessKey'
-        rights: [
-          'Listen'
-          'Manage'
-          'Send'
-        ]
-      }
-      {
-        name: 'AnotherKey'
-        rights: [
-          'Listen'
-          'Send'
-        ]
-      }
-    ]
-    managedIdentities: {
-      systemAssigned: false
-      userAssignedResourcesIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
     customerManagedKey: {
       keyName: nestedDependencies.outputs.keyName
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
     }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
-    diagnosticSettings: []
+
   }
 }]
