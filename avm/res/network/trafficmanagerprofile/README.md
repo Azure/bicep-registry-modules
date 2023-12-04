@@ -114,6 +114,28 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    endpoints: [
+      {
+        name: 'webApp01Endpoint'
+        properties: {
+          endpointLocation: 'eastus'
+          priority: 1
+          targetResourceId: '<targetResourceId>'
+          weight: 1
+        }
+        type: 'Microsoft.Network/trafficManagerProfiles/azureEndpoints'
+      }
+      {
+        name: 'webApp02Endpoint'
+        properties: {
+          endpointLocation: 'westtus'
+          priority: 2
+          targetResourceId: '<targetResourceId>'
+          weight: 1
+        }
+        type: 'Microsoft.Network/trafficManagerProfiles/azureEndpoints'
+      }
+    ]
     location: 'global'
     lock: {
       kind: 'CanNotDelete'
@@ -178,6 +200,30 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
           "name": "customSetting",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "endpoints": {
+      "value": [
+        {
+          "name": "webApp01Endpoint",
+          "properties": {
+            "endpointLocation": "eastus",
+            "priority": 1,
+            "targetResourceId": "<targetResourceId>",
+            "weight": 1
+          },
+          "type": "Microsoft.Network/trafficManagerProfiles/azureEndpoints"
+        },
+        {
+          "name": "webApp02Endpoint",
+          "properties": {
+            "endpointLocation": "westtus",
+            "priority": 2,
+            "targetResourceId": "<targetResourceId>",
+            "weight": 1
+          },
+          "type": "Microsoft.Network/trafficManagerProfiles/azureEndpoints"
         }
       ]
     },
