@@ -72,6 +72,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     name: resourceName
     relativeName: resourceName
     location: 'global'
+    monitorConfig: {
+      protocol: 'https'
+      port: '443'
+      path: '/'
+    }
     diagnosticSettings: [
       {
         name: 'customSetting'

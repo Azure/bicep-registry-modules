@@ -283,6 +283,11 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    monitorConfig: {
+      path: '/'
+      port: '443'
+      protocol: 'https'
+    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -361,6 +366,13 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "monitorConfig": {
+      "value": {
+        "path": "/",
+        "port": "443",
+        "protocol": "https"
       }
     },
     "tags": {
