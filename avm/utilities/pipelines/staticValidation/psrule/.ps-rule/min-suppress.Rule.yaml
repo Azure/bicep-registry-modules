@@ -18,6 +18,7 @@ spec:
     - Azure.KeyVault.Firewall
       # Traffic Manager specific
     - Azure.TrafficManager.Endpoints
+    - Azure.TrafficManager.Protocol
   if:
     name: "."
     contains:
