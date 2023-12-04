@@ -57,7 +57,7 @@
 /avm/res/insights/action-group/ @Azure/avm-res-insights-actiongroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/insights/activity-log-alert/ @Azure/avm-res-insights-activitylogalert-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/component/ @Azure/avm-res-insights-component-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/insights/data-collection-endpoint/ @Azure/avm-res-insights-datacollectionendpoint-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/insights/data-collection-endpoint/ @Azure/avm-res-insights-datacollectionendpoint-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/data-collection-rule/ @Azure/avm-res-insights-datacollectionrule-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/diagnostic-setting/ @Azure/avm-res-insights-diagnosticsetting-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/insights/metric-alert/ @Azure/avm-res-insights-metricalert-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -124,7 +124,7 @@
 #/avm/res/resources/resource-group/ @Azure/avm-res-resources-resourcegroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/resources/tags/ @Azure/avm-res-resources-tags-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/search/search-service/ @Azure/avm-res-search-searchservice-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/service-bus/namespace/ @Azure/avm-res-servicebus-namespace-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/service-bus/namespace/ @Azure/avm-res-servicebus-namespace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/service-fabric/cluster/ @Azure/avm-res-servicefabric-cluster-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/signal-r-service/signal-r/ @Azure/avm-res-signalrservice-signalr-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/signal-r-service/web-pub-sub/ @Azure/avm-res-signalrservice-webpubsub-module-owners-bicep @Azure/avm-core-team-technical-bicep
