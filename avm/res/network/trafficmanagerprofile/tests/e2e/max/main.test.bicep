@@ -37,10 +37,10 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: location
-    serverFarmName01: 'dep-[[namePrefix]]-sf-${serviceShort}01'
-    serverFarmName02: 'dep-[[namePrefix]]-sf-${serviceShort}02'
-    webApp01Name: 'dep-[[namePrefix]]-wa-${serviceShort}01'
-    webApp02Name: 'dep-[[namePrefix]]-wa-${serviceShort}02'
+    serverFarmName01: 'dep-${namePrefix}-sf-${serviceShort}01'
+    serverFarmName02: 'dep-${namePrefix}-sf-${serviceShort}02'
+    webApp01Name: 'dep-${namePrefix}-wa-${serviceShort}01'
+    webApp02Name: 'dep-${namePrefix}-wa-${serviceShort}02'
     location01: 'eastus'
     location02: 'westus'
   }
