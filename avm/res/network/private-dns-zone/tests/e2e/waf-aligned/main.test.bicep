@@ -52,29 +52,14 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001.com'
     location: 'global'
-    a: []
-    aaaa: []
-    cname: []
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    mx: []
-    ptr: []
-    roleAssignments: []
-    soa: []
-    srv: []
-    txt: []
-    virtualNetworkLinks: [
-      {
-        registrationEnabled: true
-        virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
-      }
-    ]
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
+    }
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
     }
   }
 }]

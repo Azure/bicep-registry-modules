@@ -29,16 +29,52 @@ This module deploys a Key Vault Access Policy.
 | :-- | :-- | :-- |
 | [`accessPolicies`](#parameter-accesspolicies) | array | An array of 0 to 16 identities that have access to the key vault. All identities in the array must use the same tenant ID as the key vault's tenant ID. |
 
-### Parameter: `accessPolicies`
-
-An array of 0 to 16 identities that have access to the key vault. All identities in the array must use the same tenant ID as the key vault's tenant ID.
-- Required: No
-- Type: array
-
 ### Parameter: `keyVaultName`
 
 The name of the parent key vault. Required if the template is used in a standalone deployment.
+
 - Required: Yes
+- Type: string
+
+### Parameter: `accessPolicies`
+
+An array of 0 to 16 identities that have access to the key vault. All identities in the array must use the same tenant ID as the key vault's tenant ID.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`objectId`](#parameter-accesspoliciesobjectid) | string | The object ID of a user, service principal or security group in the tenant for the vault. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`applicationId`](#parameter-accesspoliciesapplicationid) | string | Application ID of the client making request on behalf of a principal. |
+| [`tenantId`](#parameter-accesspoliciestenantid) | string | The tenant ID that is used for authenticating requests to the key vault. |
+
+### Parameter: `accessPolicies.objectId`
+
+The object ID of a user, service principal or security group in the tenant for the vault.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `accessPolicies.applicationId`
+
+Application ID of the client making request on behalf of a principal.
+
+- Required: No
+- Type: string
+
+### Parameter: `accessPolicies.tenantId`
+
+The tenant ID that is used for authenticating requests to the key vault.
+
+- Required: No
 - Type: string
 
 
