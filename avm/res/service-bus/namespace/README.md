@@ -125,6 +125,12 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
     location: '<location>'
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourcesIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
   }
 }
 ```
@@ -161,6 +167,14 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     },
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": false,
+        "userAssignedResourcesIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
     }
   }
 }
