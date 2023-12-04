@@ -46,10 +46,10 @@ resource networkRuleSet 'Microsoft.ServiceBus/namespaces/networkRuleSets@2022-10
   parent: namespace
   properties: {
     publicNetworkAccess: publicNetworkAccess
-    defaultAction: publicNetworkAccess == 'Disabled' ? null : (!empty(ipRules) || !empty(virtualNetworkRules) ? 'Deny' : defaultAction)
-    trustedServiceAccessEnabled: publicNetworkAccess == 'Disabled' ? null : trustedServiceAccessEnabled
-    ipRules: publicNetworkAccess == 'Disabled' ? null : ipRules
-    virtualNetworkRules: publicNetworkAccess == 'Disabled' ? null : networkRules
+    defaultAction: publicNetworkAccess == 'Enabled' ? (!empty(ipRules) || !empty(virtualNetworkRules) ? 'Deny' : defaultAction) : null
+    trustedServiceAccessEnabled: publicNetworkAccess == 'Enabled' ? trustedServiceAccessEnabled : null
+    ipRules: publicNetworkAccess == 'Enabled' ? ipRules : null
+    virtualNetworkRules: publicNetworkAccess == 'Enabled' ? networkRules : null
   }
 }
 
