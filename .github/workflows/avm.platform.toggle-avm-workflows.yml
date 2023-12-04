@@ -3,7 +3,7 @@ name: "avm.platform.toggle-avm-workflows"
 on:
   workflow_dispatch:
     inputs:
-      workMode:
+      targetState:
         type: choice
         description: "Enable or disable workflows"
         required: true
@@ -33,7 +33,7 @@ jobs:
           fetch-depth: 0
       - env:
           GH_TOKEN: ${{ github.token }}
-        name: \[${{ inputs.workMode }}\] AVM workflows
+        name: \[${{ inputs.targetState }}\] AVM workflows
         shell: pwsh
         run: |
           # Load used functions
@@ -42,7 +42,7 @@ jobs:
           $functionInput = @{
             RepositoryOwner = '${{ github.repository_owner }}'
             RepositoryName  = '${{ github.event.repository.name }}'
-            WorkMode        = '${{ inputs.workMode }}'.ToLower()
+            TargetState     = '${{ inputs.targetState }}'.ToLower()
             IncludePattern  = '${{ inputs.includePattern }}'
             ExlcudePattern  = '${{ inputs.excludePattern }}'
           }
