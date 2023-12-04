@@ -117,7 +117,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           groupIds: [
             'vault'
           ]
-          requestMessage: ''
+          requestMessage: 'Hey there'
         }
       }
     ]

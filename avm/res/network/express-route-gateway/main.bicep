@@ -20,7 +20,7 @@ param autoScaleConfigurationBoundsMax int = 2
 @description('Optional. Minimum number of scale units deployed for ExpressRoute gateway.')
 param autoScaleConfigurationBoundsMin int = 2
 
-@description('Optional. List of ExpressRoute connections to the ExpressRoute gateway.')
+@description('Optional. List of ExpressRoute connections to the ExpressRoute gateway. **Note:** This parameter will overwrite existing connections, including deleting any that are not provided. This is by-design behavior of the resource provider.')
 param expressRouteConnections array = []
 
 @description('Required. Resource ID of the Virtual Wan Hub.')
