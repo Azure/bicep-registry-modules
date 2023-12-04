@@ -27,9 +27,9 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: location
 }
 
-module resourceGroupResources 'dependencies.bicep' = {
+module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-paramNested'
+  name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     dataCollectionEndpointName: 'dep-${namePrefix}-dce-${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
@@ -48,7 +48,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    dataCollectionEndpointId: resourceGroupResources.outputs.dataCollectionEndpointResourceId
+    dataCollectionEndpointId: nestedDependencies.outputs.dataCollectionEndpointResourceId
     description: 'Collecting custom text logs with ingestion-time transformation to columns. Expected format of a log line (comma separated values): "<DateTime>,<EventLevel>,<EventCode>,<Message>", for example: "2023-01-25T20:15:05Z,ERROR,404,Page not found"'
     dataFlows: [
       {
@@ -56,7 +56,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           'Custom-CustomTableAdvanced_CL'
         ]
         destinations: [
-          resourceGroupResources.outputs.logAnalyticsWorkspaceName
+          nestedDependencies.outputs.logAnalyticsWorkspaceName
         ]
         transformKql: 'source | extend LogFields = split(RawData, ",") | extend EventTime = todatetime(LogFields[0]) | extend EventLevel = tostring(LogFields[1]) | extend EventCode = toint(LogFields[2]) | extend Message = tostring(LogFields[3]) | project TimeGenerated, EventTime, EventLevel, EventCode, Message'
         outputStream: 'Custom-CustomTableAdvanced_CL'
@@ -85,8 +85,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     destinations: {
       logAnalytics: [
         {
-          workspaceResourceId: resourceGroupResources.outputs.logAnalyticsWorkspaceResourceId
-          name: resourceGroupResources.outputs.logAnalyticsWorkspaceName
+          workspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+          name: nestedDependencies.outputs.logAnalyticsWorkspaceName
         }
       ]
     }
@@ -128,7 +128,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Reader'
-        principalId: resourceGroupResources.outputs.managedIdentityPrincipalId
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }
     ]

@@ -27,9 +27,9 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: location
 }
 
-module resourceGroupResources 'dependencies.bicep' = {
+module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-paramNested'
+  name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
@@ -172,8 +172,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       }
       logAnalytics: [
         {
-          workspaceResourceId: resourceGroupResources.outputs.logAnalyticsWorkspaceResourceId
-          name: resourceGroupResources.outputs.logAnalyticsWorkspaceName
+          workspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+          name: nestedDependencies.outputs.logAnalyticsWorkspaceName
         }
       ]
     }
@@ -191,7 +191,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           'Microsoft-Syslog'
         ]
         destinations: [
-          resourceGroupResources.outputs.logAnalyticsWorkspaceName
+          nestedDependencies.outputs.logAnalyticsWorkspaceName
         ]
       }
 
@@ -204,7 +204,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Reader'
-        principalId: resourceGroupResources.outputs.managedIdentityPrincipalId
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
         principalType: 'ServicePrincipal'
       }
     ]
