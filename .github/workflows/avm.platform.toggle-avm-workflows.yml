@@ -37,9 +37,12 @@ jobs:
         shell: pwsh
         run: |
             $repo = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
-            $workflows = gh workflow list --repo $repo --all --json 'name,state,id' | ConvertFrom-Json -Depth 100 | Where-Object {$_.name -match "${{ inputs.includePattern }}" -and (-not (($_.name -match "${{ inputs.excludePattern }}") -and "${{ inputs.excludePattern }}".Length -gt 0))}
+            $workflows = gh workflow list --repo $repo --all --json 'name,state,id' | ConvertFrom-Json -Depth 100
+            $relevantWorkflows = $workflows | Where-Object {
+                $_.name -match "${{ inputs.includePattern }}" -and $_.name -notmatch "${{ inputs.excludePattern }}"
+            }
 
-            foreach ($workflow in $workflows) {
+            foreach ($workflow in $relevantWorkflows) {
                 if (("${{ inputs.workMode }}" -eq "disable" -and $workflow.state -eq 'active') -or ("${{ inputs.workMode }}" -eq "enable" -and $workflow.state -ne 'active'))
                 {
                   Write-Verbose "${{ inputs.workMode }} $($workflow.name)" -Verbose
