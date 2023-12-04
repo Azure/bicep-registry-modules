@@ -405,8 +405,6 @@ type managedIdentitiesType = {
   userAssignedResourceIds: string[]?
 }?
 
-module test 'br/public:avm/res/key-vault/vault:'
-
 type customerManagedKeyType = {
   @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
   keyVaultResourceId: string
