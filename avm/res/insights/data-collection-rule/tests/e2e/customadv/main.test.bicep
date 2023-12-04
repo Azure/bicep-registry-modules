@@ -14,7 +14,7 @@ param location string = deployment().location
 param serviceShort string = 'idcrcusadv'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '[[namePrefix]]'
+param namePrefix string = '#_namePrefix_#'
 
 // =========== //
 // Deployments //
