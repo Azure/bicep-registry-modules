@@ -33,7 +33,7 @@ jobs:
           fetch-depth: 0
       - env:
           GH_TOKEN: ${{ github.token }}
-        name: \[${{ inputs.targetState }}\] AVM workflows
+        name: ${{ inputs.targetState }} AVM workflows
         shell: pwsh
         run: |
           # Load used functions
