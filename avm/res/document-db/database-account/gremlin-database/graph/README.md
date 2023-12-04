@@ -39,34 +39,39 @@ This module deploys a DocumentDB Database Accounts Gremlin Database Graph.
 | [`partitionKeyPaths`](#parameter-partitionkeypaths) | array | List of paths using which data within the container can be partitioned. |
 | [`tags`](#parameter-tags) | object | Tags of the Gremlin graph resource. |
 
+### Parameter: `name`
+
+Name of the graph.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `databaseAccountName`
 
 The name of the parent Database Account. Required if the template is used in a standalone deployment.
+
 - Required: Yes
 - Type: string
 
 ### Parameter: `gremlinDatabaseName`
 
 The name of the parent Gremlin Database. Required if the template is used in a standalone deployment.
+
 - Required: Yes
 - Type: string
 
 ### Parameter: `indexingPolicy`
 
 Indexing policy of the graph.
+
 - Required: No
 - Type: object
 - Default: `{}`
 
-### Parameter: `name`
-
-Name of the graph.
-- Required: Yes
-- Type: string
-
 ### Parameter: `partitionKeyPaths`
 
 List of paths using which data within the container can be partitioned.
+
 - Required: No
 - Type: array
 - Default: `[]`
@@ -74,6 +79,7 @@ List of paths using which data within the container can be partitioned.
 ### Parameter: `tags`
 
 Tags of the Gremlin graph resource.
+
 - Required: No
 - Type: object
 

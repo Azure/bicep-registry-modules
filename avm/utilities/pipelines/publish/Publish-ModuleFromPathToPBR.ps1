@@ -96,4 +96,9 @@ function Publish-ModuleFromPathToPBR {
   Write-Verbose "Publish Input:`n $($publishInput | ConvertTo-Json -Depth 10)" -Verbose
 
   bicep publish @publishInput
+
+  return @{
+    version             = $targetVersion
+    publishedModuleName = $publishedModuleName
+  }
 }
