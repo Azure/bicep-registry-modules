@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Collecting Windows-specific information'
+metadata description = 'This instance deploys the module to setup connection of Windows-specific performance counters and Windows Event Logs.'
+
 // ========== //
 // Parameters //
 // ========== //

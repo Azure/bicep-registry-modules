@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Collecting custom text logs with ingestion-time transformation'
+metadata description = 'This instance deploys the module to setup collection of custom logs and ingestion-time transformation.'
+
 // ========== //
 // Parameters //
 // ========== //

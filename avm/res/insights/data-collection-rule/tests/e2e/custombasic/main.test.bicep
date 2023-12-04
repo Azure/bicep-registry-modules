@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Collecting custom text logs'
+metadata description = 'This instance deploys the module to setup collection of custom logs.'
+
 // ========== //
 // Parameters //
 // ========== //

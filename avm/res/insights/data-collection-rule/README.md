@@ -26,15 +26,19 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/insights/data-collection-rule:<version>`.
 
-- [Customadv](#example-1-customadv)
-- [Custombasic](#example-2-custombasic)
-- [Customiis](#example-3-customiis)
+- [Collecting custom text logs with ingestion-time transformation](#example-1-collecting-custom-text-logs-with-ingestion-time-transformation)
+- [Collecting custom text logs](#example-2-collecting-custom-text-logs)
+- [Collecting IIS logs](#example-3-collecting-iis-logs)
 - [Using only defaults](#example-4-using-only-defaults)
-- [Linux](#example-5-linux)
-- [Waf-Aligned](#example-6-waf-aligned)
-- [Windows](#example-7-windows)
+- [Collecting Linux-specific information](#example-5-collecting-linux-specific-information)
+- [Using large parameter set](#example-6-using-large-parameter-set)
+- [WAF-aligned](#example-7-waf-aligned)
+- [Collecting Windows-specific information](#example-8-collecting-windows-specific-information)
 
-### Example 1: _Customadv_
+### Example 1: _Collecting custom text logs with ingestion-time transformation_
+
+This instance deploys the module to setup collection of custom logs and ingestion-time transformation.
+
 
 <details>
 
@@ -91,27 +95,6 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     description: 'Collecting custom text logs with ingestion-time transformation to columns. Expected format of a log line (comma separated values): \'<DateTime><EventLevel><EventCode><Message>\' for example: \'2023-01-25T20:15:05ZERROR404Page not found\''
     kind: 'Windows'
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
     streamDeclarations: {
       'Custom-CustomTableAdvanced_CL': {
         columns: [
@@ -226,31 +209,6 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     "location": {
       "value": "<location>"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
-    },
     "streamDeclarations": {
       "value": {
         "Custom-CustomTableAdvanced_CL": {
@@ -297,7 +255,10 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 </details>
 <p>
 
-### Example 2: _Custombasic_
+### Example 2: _Collecting custom text logs_
+
+This instance deploys the module to setup collection of custom logs.
+
 
 <details>
 
@@ -354,27 +315,6 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     description: 'Collecting custom text logs without ingestion-time transformation.'
     kind: 'Windows'
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
     streamDeclarations: {
       'Custom-CustomTableBasic_CL': {
         columns: [
@@ -473,31 +413,6 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     "location": {
       "value": "<location>"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
-    },
     "streamDeclarations": {
       "value": {
         "Custom-CustomTableBasic_CL": {
@@ -528,7 +443,10 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 </details>
 <p>
 
-### Example 3: _Customiis_
+### Example 3: _Collecting IIS logs_
+
+This instance deploys the module to setup collection of IIS logs.
+
 
 <details>
 
@@ -578,27 +496,6 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     description: 'Collecting IIS logs.'
     kind: 'Windows'
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
     tags: {
       'hidden-title': 'This is visible in the resource name'
       kind: 'Windows'
@@ -675,31 +572,6 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
     },
     "tags": {
       "value": {
@@ -849,7 +721,10 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 </details>
 <p>
 
-### Example 5: _Linux_
+### Example 5: _Collecting Linux-specific information_
+
+This instance deploys the module to setup collection of Linux-specific performance counters and Linux Syslog.
+
 
 <details>
 
@@ -1012,27 +887,6 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     description: 'Collecting Linux-specific performance counters and Linux Syslog'
     kind: 'Linux'
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
     tags: {
       'hidden-title': 'This is visible in the resource name'
       kind: 'Linux'
@@ -1221,6 +1075,199 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     "location": {
       "value": "<location>"
     },
+    "tags": {
+      "value": {
+        "hidden-title": "This is visible in the resource name",
+        "kind": "Linux",
+        "resourceType": "Data Collection Rules"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 6: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-idcrmax'
+  params: {
+    // Required parameters
+    dataFlows: [
+      {
+        destinations: [
+          '<logAnalyticsWorkspaceName>'
+        ]
+        outputStream: 'Custom-CustomTableBasic_CL'
+        streams: [
+          'Custom-CustomTableBasic_CL'
+        ]
+        transformKql: 'source'
+      }
+    ]
+    dataSources: {
+      logFiles: [
+        {
+          filePatterns: [
+            'C:\\TestLogsBasic\\TestLog*.log'
+          ]
+          format: 'text'
+          name: 'CustomTableBasic_CL'
+          samplingFrequencyInSeconds: 60
+          settings: {
+            text: {
+              recordStartTimestampFormat: 'ISO 8601'
+            }
+          }
+          streams: [
+            'Custom-CustomTableBasic_CL'
+          ]
+        }
+      ]
+    }
+    destinations: {
+      logAnalytics: [
+        {
+          name: '<name>'
+          workspaceResourceId: '<workspaceResourceId>'
+        }
+      ]
+    }
+    name: 'idcrmax001'
+    // Non-required parameters
+    dataCollectionEndpointId: '<dataCollectionEndpointId>'
+    description: 'Collecting custom text logs without ingestion-time transformation.'
+    kind: 'Windows'
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    streamDeclarations: {
+      'Custom-CustomTableBasic_CL': {
+        columns: [
+          {
+            name: 'TimeGenerated'
+            type: 'datetime'
+          }
+          {
+            name: 'RawData'
+            type: 'string'
+          }
+        ]
+      }
+    }
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      kind: 'Windows'
+      resourceType: 'Data Collection Rules'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "dataFlows": {
+      "value": [
+        {
+          "destinations": [
+            "<logAnalyticsWorkspaceName>"
+          ],
+          "outputStream": "Custom-CustomTableBasic_CL",
+          "streams": [
+            "Custom-CustomTableBasic_CL"
+          ],
+          "transformKql": "source"
+        }
+      ]
+    },
+    "dataSources": {
+      "value": {
+        "logFiles": [
+          {
+            "filePatterns": [
+              "C:\\TestLogsBasic\\TestLog*.log"
+            ],
+            "format": "text",
+            "name": "CustomTableBasic_CL",
+            "samplingFrequencyInSeconds": 60,
+            "settings": {
+              "text": {
+                "recordStartTimestampFormat": "ISO 8601"
+              }
+            },
+            "streams": [
+              "Custom-CustomTableBasic_CL"
+            ]
+          }
+        ]
+      }
+    },
+    "destinations": {
+      "value": {
+        "logAnalytics": [
+          {
+            "name": "<name>",
+            "workspaceResourceId": "<workspaceResourceId>"
+          }
+        ]
+      }
+    },
+    "name": {
+      "value": "idcrmax001"
+    },
+    // Non-required parameters
+    "dataCollectionEndpointId": {
+      "value": "<dataCollectionEndpointId>"
+    },
+    "description": {
+      "value": "Collecting custom text logs without ingestion-time transformation."
+    },
+    "kind": {
+      "value": "Windows"
+    },
+    "location": {
+      "value": "<location>"
+    },
     "lock": {
       "value": {
         "kind": "CanNotDelete",
@@ -1246,10 +1293,26 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
         }
       ]
     },
+    "streamDeclarations": {
+      "value": {
+        "Custom-CustomTableBasic_CL": {
+          "columns": [
+            {
+              "name": "TimeGenerated",
+              "type": "datetime"
+            },
+            {
+              "name": "RawData",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
     "tags": {
       "value": {
         "hidden-title": "This is visible in the resource name",
-        "kind": "Linux",
+        "kind": "Windows",
         "resourceType": "Data Collection Rules"
       }
     }
@@ -1260,7 +1323,10 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 </details>
 <p>
 
-### Example 6: _Waf-Aligned_
+### Example 7: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
@@ -1533,7 +1599,10 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 </details>
 <p>
 
-### Example 7: _Windows_
+### Example 8: _Collecting Windows-specific information_
+
+This instance deploys the module to setup connection of Windows-specific performance counters and Windows Event Logs.
+
 
 <details>
 
@@ -1650,27 +1719,6 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     description: 'Collecting Windows-specific performance counters and Windows Event Logs'
     kind: 'Windows'
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
     tags: {
       'hidden-title': 'This is visible in the resource name'
       kind: 'Windows'
@@ -1812,31 +1860,6 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
     },
     "tags": {
       "value": {
