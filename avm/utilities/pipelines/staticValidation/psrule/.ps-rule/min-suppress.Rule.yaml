@@ -16,6 +16,8 @@ spec:
       # Key Vault specific
     - Azure.KeyVault.Logs
     - Azure.KeyVault.Firewall
+      # Traffic Manager specific
+    - Azure.TrafficManager.Endpoints
   if:
     name: "."
     contains:
