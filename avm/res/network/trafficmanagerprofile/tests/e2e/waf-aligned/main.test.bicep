@@ -104,6 +104,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           weight: 1
           priority: 1
           endpointLocation: 'eastus'
+          endpointStatus: 'Enabled'
         }
       }
       {
@@ -114,6 +115,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           weight: 1
           priority: 2
           endpointLocation: 'westus'
+          endpointStatus: 'Enabled'
         }
       }
     ]

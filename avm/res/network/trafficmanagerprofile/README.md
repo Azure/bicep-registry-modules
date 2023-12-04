@@ -259,6 +259,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
         name: 'webApp01Endpoint'
         properties: {
           endpointLocation: 'eastus'
+          endpointStatus: 'Enabled'
           priority: 1
           targetResourceId: '<targetResourceId>'
           weight: 1
@@ -269,6 +270,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
         name: 'webApp02Endpoint'
         properties: {
           endpointLocation: 'westus'
+          endpointStatus: 'Enabled'
           priority: 2
           targetResourceId: '<targetResourceId>'
           weight: 1
@@ -332,6 +334,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
           "name": "webApp01Endpoint",
           "properties": {
             "endpointLocation": "eastus",
+            "endpointStatus": "Enabled",
             "priority": 1,
             "targetResourceId": "<targetResourceId>",
             "weight": 1
@@ -342,6 +345,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
           "name": "webApp02Endpoint",
           "properties": {
             "endpointLocation": "westus",
+            "endpointStatus": "Enabled",
             "priority": 2,
             "targetResourceId": "<targetResourceId>",
             "weight": 1
