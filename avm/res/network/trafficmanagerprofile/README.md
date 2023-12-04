@@ -128,7 +128,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
       {
         name: 'webApp02Endpoint'
         properties: {
-          endpointLocation: 'westtus'
+          endpointLocation: 'westus'
           priority: 2
           targetResourceId: '<targetResourceId>'
           weight: 1
@@ -218,7 +218,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
         {
           "name": "webApp02Endpoint",
           "properties": {
-            "endpointLocation": "westtus",
+            "endpointLocation": "westus",
             "priority": 2,
             "targetResourceId": "<targetResourceId>",
             "weight": 1

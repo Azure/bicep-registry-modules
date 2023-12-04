@@ -130,7 +130,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           targetResourceId: nestedDependencies.outputs.webApp02ResourceId
           weight: 1
           priority: 2
-          endpointLocation: 'westtus'
+          endpointLocation: 'westus'
         }
       }
     ]
