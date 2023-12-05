@@ -22,7 +22,7 @@ param tags object?
 @description('Optional. The ID of the resource that manages this resource group.')
 param managedBy string = ''
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 var builtInRoleNames = {
