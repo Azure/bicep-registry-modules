@@ -24,8 +24,8 @@ param profileStatus string = 'Enabled'
 ])
 param trafficRoutingMethod string = 'Performance'
 
-@description('Required. The relative DNS name provided by this Traffic Manager profile. This value is combined with the DNS domain name used by Azure Traffic Manager to form the fully-qualified domain name (FQDN) of the profile.')
-param relativeName string
+@description('Optional. The relative DNS name provided by this Traffic Manager profile. This value is combined with the DNS domain name used by Azure Traffic Manager to form the fully-qualified domain name (FQDN) of the profile.')
+param relativeName string?
 
 @description('Optional. The DNS Time-To-Live (TTL), in seconds. This informs the local DNS resolvers and DNS clients how long to cache DNS responses provided by this Traffic Manager profile.')
 param ttl int = 60
