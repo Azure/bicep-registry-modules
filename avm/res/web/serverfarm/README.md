@@ -28,8 +28,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/web/serverfarm:<version>`.
 
 - [Using default parameter set](#example-1-using-default-parameter-set)
-- [Using max parameter set](#example-2-using-max-parameter-set)
-- [Using Well Architected parameter set](#example-3-using-well-architected-parameter-set)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using default parameter set_
 
@@ -54,13 +54,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       tier: 'Premium'
     }
     // Non-required parameters
-    kind: 'App'
     location: '<location>'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
     zoneRedundant: true
   }
 }
@@ -92,18 +86,8 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       }
     },
     // Non-required parameters
-    "kind": {
-      "value": "App"
-    },
     "location": {
       "value": "<location>"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     },
     "zoneRedundant": {
       "value": true
@@ -115,9 +99,9 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using max parameter set_
+### Example 2: _Using large parameter set_
 
-This instance deploys the module with a full set of parameters for a single scenario.
+This instance deploys the module with most of its features enabled.
 
 
 <details>
@@ -164,6 +148,21 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Reader'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     tags: {
@@ -239,6 +238,21 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Reader"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -259,9 +273,9 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 </details>
 <p>
 
-### Example 3: _Using Well Architected parameter set_
+### Example 3: _WAF-aligned_
 
-This instance deploys the module with a WAF Aligned set of parameters.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
@@ -302,13 +316,6 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       kind: 'CanNotDelete'
       name: 'lock'
     }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -372,15 +379,6 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
         "kind": "CanNotDelete",
         "name": "lock"
       }
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
     },
     "tags": {
       "value": {
