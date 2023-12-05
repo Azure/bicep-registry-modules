@@ -147,11 +147,6 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
@@ -234,11 +229,6 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
     },
     "roleAssignments": {
       "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        },
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
