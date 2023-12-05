@@ -35,24 +35,27 @@ This module deploys a Private Endpoint Private DNS Zone Group.
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the private DNS zone group. |
 
-### Parameter: `name`
-
-The name of the private DNS zone group.
-- Required: No
-- Type: string
-- Default: `'default'`
-
 ### Parameter: `privateDNSResourceIds`
 
 Array of private DNS zone resource IDs. A DNS zone group can support up to 5 DNS zones.
+
 - Required: Yes
 - Type: array
 
 ### Parameter: `privateEndpointName`
 
 The name of the parent private endpoint. Required if the template is used in a standalone deployment.
+
 - Required: Yes
 - Type: string
+
+### Parameter: `name`
+
+The name of the private DNS zone group.
+
+- Required: No
+- Type: string
+- Default: `'default'`
 
 
 ## Outputs
