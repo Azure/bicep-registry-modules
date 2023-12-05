@@ -47,7 +47,7 @@ function Confirm-ModuleIsPublished {
             Write-Verbose "Passed: Found module [$PublishedModuleName] in the MCR catalog" -Verbose
             break
         } else {
-            Write-Error "Error: Module [$PublishedModuleName] is not in the MCR catalog. Retrying in [$retry_seconds] seconds"
+            Write-Warning "Warning: Module [$PublishedModuleName] is not in the MCR catalog. Retrying in [$retry_seconds] seconds"
             Start-Sleep -Seconds $retry_seconds
         }
 
@@ -69,7 +69,7 @@ function Confirm-ModuleIsPublished {
             Write-Host "Passed: Found new tag [$Version] for published module"
             break
         } else {
-            Write-Host "Error: Could not find new tag [$Version] for published module. Retrying in [$retry_seconds] seconds"
+            Write-Warning "Warning: Could not find new tag [$Version] for published module. Retrying in [$retry_seconds] seconds"
             Start-Sleep -Seconds $retry_seconds
         }
 
