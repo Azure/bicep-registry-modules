@@ -38,40 +38,46 @@ This module deploys an Azure Automation Account Module.
 | [`tags`](#parameter-tags) | object | Tags of the Automation Account resource. |
 | [`version`](#parameter-version) | string | Module version or specify latest to get the latest version. |
 
+### Parameter: `name`
+
+Name of the Automation Account module.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `uri`
+
+Module package URI, e.g. https://www.powershellgallery.com/api/v2/package.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `automationAccountName`
 
 The name of the parent Automation Account. Required if the template is used in a standalone deployment.
+
 - Required: Yes
 - Type: string
 
 ### Parameter: `location`
 
 Location for all resources.
+
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
 
-### Parameter: `name`
-
-Name of the Automation Account module.
-- Required: Yes
-- Type: string
-
 ### Parameter: `tags`
 
 Tags of the Automation Account resource.
+
 - Required: No
 - Type: object
-
-### Parameter: `uri`
-
-Module package URI, e.g. https://www.powershellgallery.com/api/v2/package.
-- Required: Yes
-- Type: string
 
 ### Parameter: `version`
 
 Module version or specify latest to get the latest version.
+
 - Required: No
 - Type: string
 - Default: `'latest'`

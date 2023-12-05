@@ -72,20 +72,9 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
       storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
       workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-      metricCategories: [
-        {
-          category: 'AllMetrics'
-        }
-      ]
       logCategoriesAndGroups: [
         {
-          category: 'JobLogs'
-        }
-        {
-          category: 'JobStreams'
-        }
-        {
-          category: 'DSCNodeStatus'
+          categoryGroup: 'AllLogs'
         }
       ]
     }
