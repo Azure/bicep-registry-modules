@@ -16,7 +16,7 @@ binding:
 # Require minimum versions of modules.
 requires:
   PSRule: "@pre >=2.9.0"
-  PSRule.Rules.Azure: ">=1.32.0-B0021" #">=1.29.0"
+  PSRule.Rules.Azure: ">=1.31.3" #">=1.29.0"
 
 # Use PSRule for Azure.
 include:
