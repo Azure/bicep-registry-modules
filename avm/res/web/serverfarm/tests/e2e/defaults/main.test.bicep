@@ -50,10 +50,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       capacity: 3
     }
     zoneRedundant: true
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
   }
 }]
