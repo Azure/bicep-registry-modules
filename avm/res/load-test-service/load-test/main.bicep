@@ -104,10 +104,10 @@ resource loadTest 'Microsoft.LoadTestService/loadTests@2022-12-01' = {
   tags: tags
   properties: {
     description: loadTestDescription
-    encryption: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? {
+    encryption: !empty(customerManagedKey) ? {
       identity: {
-        type: 'UserAssigned'
-        resourceId: cMKUserAssignedIdentity.id
+        type: (customerManagedKey.?systemAssigned ?? false) ? 'SystemAssigned' : (!empty(customerManagedKey.?userAssignedIdentityResourceId) ? 'UserAssigned' : null)
+        resourceId: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? cMKUserAssignedIdentity.id : null
       }
       keyUrl: !empty(customerManagedKey.?keyVersion ?? '') ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion}' : cMKKeyVault::cMKKey.properties.keyUriWithVersion
     } : null
