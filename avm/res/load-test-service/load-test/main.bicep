@@ -104,7 +104,7 @@ resource loadTest 'Microsoft.LoadTestService/loadTests@2022-12-01' = {
   tags: tags
   properties: {
     description: loadTestDescription
-    encryption: !empty(customerManagedKey) ? {
+    encryption: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? {
       identity: {
         type: 'UserAssigned'
         resourceId: cMKUserAssignedIdentity.id
