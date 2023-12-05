@@ -77,6 +77,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           categoryGroup: 'AllLogs'
         }
       ]
+      metricCategories: [
+       {
+          category: 'AllMetrics'
+       }
+      ]
     }
     ]
     gallerySolutions: [
