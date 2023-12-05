@@ -59,9 +59,6 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     name: 'aamin001'
     // Non-required parameters
     location: '<location>'
-    managedIdentities: {
-      systemAssigned: true
-    }
   }
 }
 ```
@@ -85,11 +82,6 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
     }
   }
 }
