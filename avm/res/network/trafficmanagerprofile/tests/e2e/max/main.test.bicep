@@ -57,14 +57,13 @@ module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/t
 // ============== //
 // Test Execution //
 // ============== //
-var resourceName = '${namePrefix}${serviceShort}001'
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
-    name: resourceName
-    relativeName: resourceName
+    name: '${namePrefix}${serviceShort}001'
+    relativeName: '${namePrefix}${serviceShort}001-rn'
     location: 'global'
     diagnosticSettings: [
       {

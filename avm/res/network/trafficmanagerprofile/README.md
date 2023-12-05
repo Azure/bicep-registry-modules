@@ -45,8 +45,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
   name: '${uniqueString(deployment().name, location)}-test-ntmpmin'
   params: {
     // Required parameters
-    name: '<name>'
-    relativeName: '<relativeName>'
+    name: 'ntmpmin001'
     // Non-required parameters
     location: 'global'
   }
@@ -67,10 +66,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
   "parameters": {
     // Required parameters
     "name": {
-      "value": "<name>"
-    },
-    "relativeName": {
-      "value": "<relativeName>"
+      "value": "ntmpmin001"
     },
     // Non-required parameters
     "location": {
@@ -97,8 +93,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
   name: '${uniqueString(deployment().name, location)}-test-ntmpmax'
   params: {
     // Required parameters
-    name: '<name>'
-    relativeName: '<relativeName>'
+    name: 'ntmpmax001'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -119,6 +114,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    relativeName: 'ntmpmax001-rn'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -159,10 +155,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
   "parameters": {
     // Required parameters
     "name": {
-      "value": "<name>"
-    },
-    "relativeName": {
-      "value": "<relativeName>"
+      "value": "ntmpmax001"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -189,6 +182,9 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
+    },
+    "relativeName": {
+      "value": "ntmpmax001-rn"
     },
     "roleAssignments": {
       "value": [
@@ -237,8 +233,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
   name: '${uniqueString(deployment().name, location)}-test-ntmpwaf'
   params: {
     // Required parameters
-    name: '<name>'
-    relativeName: '<relativeName>'
+    name: 'ntmpwaf001'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -311,10 +306,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
   "parameters": {
     // Required parameters
     "name": {
-      "value": "<name>"
-    },
-    "relativeName": {
-      "value": "<relativeName>"
+      "value": "ntmpwaf001"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -397,7 +389,6 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the Traffic Manager. |
-| [`relativeName`](#parameter-relativename) | string | The relative DNS name provided by this Traffic Manager profile. This value is combined with the DNS domain name used by Azure Traffic Manager to form the fully-qualified domain name (FQDN) of the profile. |
 
 **Optional parameters**
 
@@ -411,6 +402,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
 | [`maxReturn`](#parameter-maxreturn) | int | Maximum number of endpoints to be returned for MultiValue routing type. |
 | [`monitorConfig`](#parameter-monitorconfig) | object | The endpoint monitoring settings of the Traffic Manager profile. |
 | [`profileStatus`](#parameter-profilestatus) | string | The status of the Traffic Manager profile. |
+| [`relativeName`](#parameter-relativename) | string | The relative DNS name provided by this Traffic Manager profile. This value is combined with the DNS domain name used by Azure Traffic Manager to form the fully-qualified domain name (FQDN) of the profile. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
 | [`trafficRoutingMethod`](#parameter-trafficroutingmethod) | string | The traffic routing method of the Traffic Manager profile. |
@@ -420,13 +412,6 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
 ### Parameter: `name`
 
 Name of the Traffic Manager.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `relativeName`
-
-The relative DNS name provided by this Traffic Manager profile. This value is combined with the DNS domain name used by Azure Traffic Manager to form the fully-qualified domain name (FQDN) of the profile.
 
 - Required: Yes
 - Type: string
@@ -618,6 +603,13 @@ The status of the Traffic Manager profile.
     'Enabled'
   ]
   ```
+
+### Parameter: `relativeName`
+
+The relative DNS name provided by this Traffic Manager profile. This value is combined with the DNS domain name used by Azure Traffic Manager to form the fully-qualified domain name (FQDN) of the profile.
+
+- Required: No
+- Type: string
 
 ### Parameter: `roleAssignments`
 

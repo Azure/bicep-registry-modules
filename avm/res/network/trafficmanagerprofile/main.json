@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "15472433003521277958"
+      "templateHash": "16638909677517551189"
     },
     "name": "Traffic Manager Profiles",
     "description": "This module deploys a Traffic Manager Profile.",
@@ -247,8 +247,9 @@
     },
     "relativeName": {
       "type": "string",
+      "nullable": true,
       "metadata": {
-        "description": "Required. The relative DNS name provided by this Traffic Manager profile. This value is combined with the DNS domain name used by Azure Traffic Manager to form the fully-qualified domain name (FQDN) of the profile."
+        "description": "Optional. The relative DNS name provided by this Traffic Manager profile. This value is combined with the DNS domain name used by Azure Traffic Manager to form the fully-qualified domain name (FQDN) of the profile."
       }
     },
     "ttl": {
@@ -376,7 +377,7 @@
         "profileStatus": "[parameters('profileStatus')]",
         "trafficRoutingMethod": "[parameters('trafficRoutingMethod')]",
         "dnsConfig": {
-          "relativeName": "[parameters('relativeName')]",
+          "relativeName": "[coalesce(parameters('relativeName'), parameters('name'))]",
           "ttl": "[parameters('ttl')]"
         },
         "monitorConfig": "[parameters('monitorConfig')]",
