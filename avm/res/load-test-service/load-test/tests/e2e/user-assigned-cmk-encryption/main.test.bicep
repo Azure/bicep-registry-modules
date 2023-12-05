@@ -65,6 +65,7 @@ module testDeployment '../../../main.bicep' = {
       keyName: nestedDependencies.outputs.keyVaultKeyName
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+      systemAssigned: false
     }
   }
 }
