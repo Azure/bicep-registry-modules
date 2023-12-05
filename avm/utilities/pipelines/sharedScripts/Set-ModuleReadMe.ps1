@@ -193,6 +193,65 @@ function Set-ParametersSection {
 
 <#
 .SYNOPSIS
+Flatten the (nested) resources of a given template file content
+
+.DESCRIPTION
+Flatten the (nested) resources of a given template file content. Keys are either the identifier in the template file or a concatenation of the parent and their child identifiers
+For example:
+- batchAccount_roleAssignments
+- batchAccount_privateEndpoints.privateEndpoint_roleAssignments
+
+.PARAMETER TemplateFileContent
+Optional. The template file content who's resources to extract
+
+.PARAMETER Identifier
+Optional. A parent identifier to prepend to a resource's identifier
+
+.EXAMPLE
+Get-FlattenedResourceList -TemplateFileContent $templateContent @{ resource = @{}; ... }
+
+Extract all resources from the given template file content and return them as a flat hashtable
+
+.NOTES
+This only works if the template uses language version 2 (i.e., resources are defined in an object instead of an array)
+#>
+function Get-FlattenedResourceList {
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [hashtable] $TemplateFileContent,
+
+        [Parameter(Mandatory = $false)]
+        [string] $Identifier
+    )
+
+    $result = @{}
+
+    if ($TemplateFileContent.Keys -contains 'resources') {
+        # Collect the immediate defined resource(s)
+        $TemplateFileContent.resources.Keys | ForEach-Object {
+            $levelIdentifier = $Identifier ? "$Identifier.$_" : $_
+            $result[$levelIdentifier] = $TemplateFileContent.resources.$_
+        }
+
+        foreach ($innerKey in $TemplateFileContent['resources'].Keys) {
+            # Only investigate items that have an actual nested template (and are not just resource properties)
+            if ($TemplateFileContent['resources'][$innerKey].Keys -contains 'properties' -and $TemplateFileContent['resources'][$innerKey].properties.Keys -contains 'template') {
+                $template = $TemplateFileContent['resources'][$innerKey].properties.template
+                # But only if the nested template has resources
+                if ($template.resources.count -gt 0) {
+                    $result += Get-FlattenedResourceList -TemplateFileContent $template -Identifier $innerKey
+                }
+            }
+        }
+    }
+
+    return $result
+}
+
+<#
+.SYNOPSIS
 Update parts of the 'parameters' section of the given readme file, if user defined types are used
 
 .DESCRIPTION
@@ -356,7 +415,7 @@ function Set-DefinitionSection {
                     )
                 }
             } else {
-                $formattedDefaultValue = $null
+                $formattedDefaultValue = $null # Reset value for future iterations
             }
 
             # Format allowed values
@@ -386,7 +445,29 @@ function Set-DefinitionSection {
                     )
                 }
             } else {
-                $formattedAllowedValues = $null
+                $formattedAllowedValues = $null # Reset value for future iterations
+            }
+
+            # Special case for 'roleAssignments' parameter
+            if (($parameter.name -eq 'roleAssignments') -and ($TemplateFileContent.variables.keys -contains 'builtInRoleNames')) {
+                if ([String]::IsNullOrEmpty($ParentName)) {
+                    # Top-level invocation
+                    $roles = $TemplateFileContent.variables.builtInRoleNames.Keys
+                } else {
+                    # Nested-invocation (requires e.g., roles for of nested private endpoint template)
+                    $flattendResources = Get-FlattenedResourceList -TemplateFileContent $TemplateFileContent
+                    if ($resourceIdentifier = $flattendResources.Keys | Where-Object { $_ -match '^.*_privateEndpoints$' }) {
+                        $roles = $flattendResources[$resourceIdentifier].properties.template.variables.builtInRoleNames.Keys
+                    } else {
+                        Write-Warning ('Failed to identify roles for parameter [{0}] of type [{1}] as resource with identifier [{2}] was not found in the corresponding linked template.' -f $parameter.name, $ParentName, "*_$ParentName")
+                    }
+                }
+                $formattedRoleNames = $roles.count -gt 0 ? @(
+                    '- Roles configurable by name:',
+                    ($roles | ForEach-Object { "  - ``'$_'``" } | Out-String).TrimEnd()
+                ) : $null
+            } else {
+                $formattedRoleNames = $null # Reset value for future iterations
             }
 
             # Build list item
@@ -399,7 +480,8 @@ function Set-DefinitionSection {
             ('- Required: {0}' -f $isRequired),
             ('- Type: {0}' -f $type),
             ((-not [String]::IsNullOrEmpty($formattedDefaultValue)) ? $formattedDefaultValue : $null),
-            ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null)
+            ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null),
+            ((-not [String]::IsNullOrEmpty($formattedRoleNames)) ? $formattedRoleNames : $null),
                 ''
             ) | Where-Object { $null -ne $_ }
 
