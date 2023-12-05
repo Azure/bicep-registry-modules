@@ -23,39 +23,30 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm-res-insights-actiongroup:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/insights/action-group:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Max](#example-2-max)
-- [Waf-Aligned](#example-3-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
-### Example 1: _Defaults_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
+module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-iagmin'
   params: {
     // Required parameters
     groupShortName: 'agiagmin001'
     name: 'iagmin001'
     // Non-required parameters
-    armRoleReceivers: '<armRoleReceivers>'
-    automationRunbookReceivers: '<automationRunbookReceivers>'
-    azureAppPushReceivers: '<azureAppPushReceivers>'
-    azureFunctionReceivers: '<azureFunctionReceivers>'
-    emailReceivers: '<emailReceivers>'
-    itsmReceivers: '<itsmReceivers>'
     location: 'global'
-    logicAppReceivers: '<logicAppReceivers>'
-    roleAssignments: '<roleAssignments>'
-    smsReceivers: '<smsReceivers>'
-    tags: '<tags>'
-    voiceReceivers: '<voiceReceivers>'
-    webhookReceivers: '<webhookReceivers>'
   }
 }
 ```
@@ -80,44 +71,8 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
       "value": "iagmin001"
     },
     // Non-required parameters
-    "armRoleReceivers": {
-      "value": "<armRoleReceivers>"
-    },
-    "automationRunbookReceivers": {
-      "value": "<automationRunbookReceivers>"
-    },
-    "azureAppPushReceivers": {
-      "value": "<azureAppPushReceivers>"
-    },
-    "azureFunctionReceivers": {
-      "value": "<azureFunctionReceivers>"
-    },
-    "emailReceivers": {
-      "value": "<emailReceivers>"
-    },
-    "itsmReceivers": {
-      "value": "<itsmReceivers>"
-    },
     "location": {
       "value": "global"
-    },
-    "logicAppReceivers": {
-      "value": "<logicAppReceivers>"
-    },
-    "roleAssignments": {
-      "value": "<roleAssignments>"
-    },
-    "smsReceivers": {
-      "value": "<smsReceivers>"
-    },
-    "tags": {
-      "value": "<tags>"
-    },
-    "voiceReceivers": {
-      "value": "<voiceReceivers>"
-    },
-    "webhookReceivers": {
-      "value": "<webhookReceivers>"
     }
   }
 }
@@ -126,14 +81,17 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
 </details>
 <p>
 
-### Example 2: _Max_
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
+module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-iagmax'
   params: {
     // Required parameters
@@ -157,7 +115,17 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     smsReceivers: [
@@ -218,7 +186,17 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -245,37 +223,29 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
 </details>
 <p>
 
-### Example 3: _Waf-Aligned_
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
+module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-iagwaf'
   params: {
     // Required parameters
     groupShortName: 'agiagwaf001'
     name: 'iagwaf001'
     // Non-required parameters
-    armRoleReceivers: '<armRoleReceivers>'
-    automationRunbookReceivers: '<automationRunbookReceivers>'
-    azureAppPushReceivers: '<azureAppPushReceivers>'
-    azureFunctionReceivers: '<azureFunctionReceivers>'
-    emailReceivers: '<emailReceivers>'
-    itsmReceivers: '<itsmReceivers>'
     location: 'global'
-    logicAppReceivers: '<logicAppReceivers>'
-    roleAssignments: '<roleAssignments>'
-    smsReceivers: '<smsReceivers>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    voiceReceivers: '<voiceReceivers>'
-    webhookReceivers: '<webhookReceivers>'
   }
 }
 ```
@@ -300,35 +270,8 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
       "value": "iagwaf001"
     },
     // Non-required parameters
-    "armRoleReceivers": {
-      "value": "<armRoleReceivers>"
-    },
-    "automationRunbookReceivers": {
-      "value": "<automationRunbookReceivers>"
-    },
-    "azureAppPushReceivers": {
-      "value": "<azureAppPushReceivers>"
-    },
-    "azureFunctionReceivers": {
-      "value": "<azureFunctionReceivers>"
-    },
-    "emailReceivers": {
-      "value": "<emailReceivers>"
-    },
-    "itsmReceivers": {
-      "value": "<itsmReceivers>"
-    },
     "location": {
       "value": "global"
-    },
-    "logicAppReceivers": {
-      "value": "<logicAppReceivers>"
-    },
-    "roleAssignments": {
-      "value": "<roleAssignments>"
-    },
-    "smsReceivers": {
-      "value": "<smsReceivers>"
     },
     "tags": {
       "value": {
@@ -336,12 +279,6 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "voiceReceivers": {
-      "value": "<voiceReceivers>"
-    },
-    "webhookReceivers": {
-      "value": "<webhookReceivers>"
     }
   }
 }
@@ -374,45 +311,65 @@ module actionGroup 'br/public:avm-res-insights-actiongroup:1.0.0' = {
 | [`itsmReceivers`](#parameter-itsmreceivers) | array | The list of ITSM receivers that are part of this action group. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`logicAppReceivers`](#parameter-logicappreceivers) | array | The list of logic app receivers that are part of this action group. |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`smsReceivers`](#parameter-smsreceivers) | array | The list of SMS receivers that are part of this action group. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`voiceReceivers`](#parameter-voicereceivers) | array | The list of voice receivers that are part of this action group. |
 | [`webhookReceivers`](#parameter-webhookreceivers) | array | The list of webhook receivers that are part of this action group. |
 
+### Parameter: `groupShortName`
+
+The short name of the action group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `name`
+
+The name of the action group.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `armRoleReceivers`
 
 The list of ARM role receivers that are part of this action group. Roles are Azure RBAC roles and only built-in roles are supported.
+
 - Required: No
 - Type: array
 
 ### Parameter: `automationRunbookReceivers`
 
 The list of AutomationRunbook receivers that are part of this action group.
+
 - Required: No
 - Type: array
 
 ### Parameter: `azureAppPushReceivers`
 
 The list of AzureAppPush receivers that are part of this action group.
+
 - Required: No
 - Type: array
 
 ### Parameter: `azureFunctionReceivers`
 
 The list of function receivers that are part of this action group.
+
 - Required: No
 - Type: array
 
 ### Parameter: `emailReceivers`
 
 The list of email receivers that are part of this action group.
+
 - Required: No
 - Type: array
 
 ### Parameter: `enabled`
 
 Indicates whether this action group is enabled. If an action group is not enabled, then none of its receivers will receive communications.
+
 - Required: No
 - Type: bool
 - Default: `True`
@@ -420,25 +377,22 @@ Indicates whether this action group is enabled. If an action group is not enable
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
+
 - Required: No
 - Type: bool
 - Default: `True`
 
-### Parameter: `groupShortName`
-
-The short name of the action group.
-- Required: Yes
-- Type: string
-
 ### Parameter: `itsmReceivers`
 
 The list of ITSM receivers that are part of this action group.
+
 - Required: No
 - Type: array
 
 ### Parameter: `location`
 
 Location for all resources.
+
 - Required: No
 - Type: string
 - Default: `'global'`
@@ -446,104 +400,124 @@ Location for all resources.
 ### Parameter: `logicAppReceivers`
 
 The list of logic app receivers that are part of this action group.
+
 - Required: No
 - Type: array
-
-### Parameter: `name`
-
-The name of the action group.
-- Required: Yes
-- Type: string
 
 ### Parameter: `roleAssignments`
 
-Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+Array of role assignments to create.
+
 - Required: No
 - Type: array
 
+**Required parameters**
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`condition`](#parameter-roleassignmentscondition) | No | string | Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
-| [`conditionVersion`](#parameter-roleassignmentsconditionversion) | No | string | Optional. Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | No | string | Optional. The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-roleassignmentsdescription) | No | string | Optional. The description of the role assignment. |
-| [`principalId`](#parameter-roleassignmentsprincipalid) | Yes | string | Required. The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`principalType`](#parameter-roleassignmentsprincipaltype) | No | string | Optional. The principal type of the assigned principal ID. |
-| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead. |
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-roleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `roleAssignments.condition`
 
-Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
 
 - Required: No
 - Type: string
 
 ### Parameter: `roleAssignments.conditionVersion`
 
-Optional. Version of the condition.
+Version of the condition.
 
 - Required: No
 - Type: string
-- Allowed: `[2.0]`
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
-Optional. The Resource Id of the delegated managed identity resource.
+The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
 
 ### Parameter: `roleAssignments.description`
 
-Optional. The description of the role assignment.
+The description of the role assignment.
 
 - Required: No
-- Type: string
-
-### Parameter: `roleAssignments.principalId`
-
-Required. The principal ID of the principal (user/group/identity) to assign the role to.
-
-- Required: Yes
 - Type: string
 
 ### Parameter: `roleAssignments.principalType`
 
-Optional. The principal type of the assigned principal ID.
+The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Allowed: `[Device, ForeignGroup, Group, ServicePrincipal, User]`
-
-### Parameter: `roleAssignments.roleDefinitionIdOrName`
-
-Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.
-
-- Required: Yes
-- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
 
 ### Parameter: `smsReceivers`
 
 The list of SMS receivers that are part of this action group.
+
 - Required: No
 - Type: array
 
 ### Parameter: `tags`
 
 Tags of the resource.
+
 - Required: No
 - Type: object
 
 ### Parameter: `voiceReceivers`
 
 The list of voice receivers that are part of this action group.
+
 - Required: No
 - Type: array
 
 ### Parameter: `webhookReceivers`
 
 The list of webhook receivers that are part of this action group.
+
 - Required: No
 - Type: array
 

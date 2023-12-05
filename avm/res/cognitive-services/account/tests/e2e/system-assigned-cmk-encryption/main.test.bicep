@@ -67,17 +67,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       systemAssigned: true
     }
     restrictOutboundNetworkAccess: false
-    // Workaround for PSRule
-    lock: null
-    roleAssignments: null
-    diagnosticSettings: null
-    privateEndpoints: null
-    customSubDomainName: null
-    tags: null
-    allowedFqdnList: null
-    apiProperties: null
-    migrationToken: null
-    userOwnedStorage: null
-    networkAcls: null
   }
 }]

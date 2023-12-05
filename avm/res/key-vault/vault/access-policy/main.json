@@ -5,12 +5,146 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.22.6.54827",
-      "templateHash": "9999250509448584761"
+      "version": "0.23.1.45101",
+      "templateHash": "3185669298547069044"
     },
     "name": "Key Vault Access Policies",
     "description": "This module deploys a Key Vault Access Policy.",
     "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "accessPoliciesType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tenantId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The tenant ID that is used for authenticating requests to the key vault."
+            }
+          },
+          "objectId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The object ID of a user, service principal or security group in the tenant for the vault."
+            }
+          },
+          "applicationId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Application ID of the client making request on behalf of a principal."
+            }
+          },
+          "permissions": {
+            "type": "object",
+            "properties": {
+              "keys": {
+                "type": "array",
+                "allowedValues": [
+                  "all",
+                  "backup",
+                  "create",
+                  "decrypt",
+                  "delete",
+                  "encrypt",
+                  "get",
+                  "getrotationpolicy",
+                  "import",
+                  "list",
+                  "purge",
+                  "recover",
+                  "release",
+                  "restore",
+                  "rotate",
+                  "setrotationpolicy",
+                  "sign",
+                  "unwrapKey",
+                  "update",
+                  "verify",
+                  "wrapKey"
+                ],
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Permissions to keys."
+                }
+              },
+              "secrets": {
+                "type": "array",
+                "allowedValues": [
+                  "all",
+                  "backup",
+                  "delete",
+                  "get",
+                  "list",
+                  "purge",
+                  "recover",
+                  "restore",
+                  "set"
+                ],
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Permissions to secrets."
+                }
+              },
+              "certificates": {
+                "type": "array",
+                "allowedValues": [
+                  "all",
+                  "backup",
+                  "create",
+                  "delete",
+                  "deleteissuers",
+                  "get",
+                  "getissuers",
+                  "import",
+                  "list",
+                  "listissuers",
+                  "managecontacts",
+                  "manageissuers",
+                  "purge",
+                  "recover",
+                  "restore",
+                  "setissuers",
+                  "update"
+                ],
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Permissions to certificates."
+                }
+              },
+              "storage": {
+                "type": "array",
+                "allowedValues": [
+                  "all",
+                  "backup",
+                  "delete",
+                  "deletesas",
+                  "get",
+                  "getsas",
+                  "list",
+                  "listsas",
+                  "purge",
+                  "recover",
+                  "regeneratekey",
+                  "restore",
+                  "set",
+                  "setsas",
+                  "update"
+                ],
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Permissions to storage accounts."
+                }
+              }
+            }
+          }
+        }
+      },
+      "nullable": true
+    }
   },
   "parameters": {
     "keyVaultName": {
@@ -20,8 +154,7 @@
       }
     },
     "accessPolicies": {
-      "type": "array",
-      "nullable": true,
+      "$ref": "#/definitions/accessPoliciesType",
       "metadata": {
         "description": "Optional. An array of 0 to 16 identities that have access to the key vault. All identities in the array must use the same tenant ID as the key vault's tenant ID."
       }
@@ -33,10 +166,10 @@
         "name": "formattedAccessPolicies",
         "count": "[length(coalesce(parameters('accessPolicies'), createArray()))]",
         "input": {
-          "applicationId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'applicationId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].applicationId, '')]",
-          "objectId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'objectId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].objectId, '')]",
+          "applicationId": "[coalesce(tryGet(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'applicationId'), '')]",
+          "objectId": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].objectId]",
           "permissions": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].permissions]",
-          "tenantId": "[if(contains(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'tenantId'), coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].tenantId, tenant().tenantId)]"
+          "tenantId": "[coalesce(tryGet(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'tenantId'), tenant().tenantId)]"
         }
       }
     ]

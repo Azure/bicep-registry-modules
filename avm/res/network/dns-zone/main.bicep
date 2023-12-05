@@ -40,7 +40,7 @@ param txt array?
 @description('Optional. The location of the dnsZone. Should be global.')
 param location string = 'global'
 
-@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+@description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
 @description('Optional. Tags of the resource.')
@@ -151,8 +151,8 @@ module dnsZone_MX 'mx/main.bicep' = [for (mxRecord, index) in (mx ?? []): {
     name: mxRecord.name
     metadata: mxRecord.?metadata
     mxRecords: mxRecord.?mxRecords
-    ttl:  mxRecord.?ttl ?? 3600
-    roleAssignments:  mxRecord.?roleAssignments
+    ttl: mxRecord.?ttl ?? 3600
+    roleAssignments: mxRecord.?roleAssignments
   }
 }]
 
@@ -175,8 +175,8 @@ module dnsZone_PTR 'ptr/main.bicep' = [for (ptrRecord, index) in (ptr ?? []): {
     name: ptrRecord.name
     metadata: ptrRecord.?metadata
     ptrRecords: ptrRecord.?ptrRecords
-    ttl:  ptrRecord.?ttl ?? 3600
-    roleAssignments:  ptrRecord.?roleAssignments
+    ttl: ptrRecord.?ttl ?? 3600
+    roleAssignments: ptrRecord.?roleAssignments
   }
 }]
 
@@ -211,8 +211,8 @@ module dnsZone_TXT 'txt/main.bicep' = [for (txtRecord, index) in (txt ?? []): {
     name: txtRecord.name
     metadata: txtRecord.?metadata
     txtRecords: txtRecord.?txtRecords
-    ttl:  txtRecord.?ttl ?? 3600
-    roleAssignments:  txtRecord.?roleAssignments
+    ttl: txtRecord.?ttl ?? 3600
+    roleAssignments: txtRecord.?roleAssignments
   }
 }]
 
@@ -228,7 +228,7 @@ resource dnsZone_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lo
 resource dnsZone_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
   name: guid(dnsZone.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
   properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : roleAssignment.roleDefinitionIdOrName
+    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
     principalId: roleAssignment.principalId
     description: roleAssignment.?description
     principalType: roleAssignment.?principalType
@@ -264,14 +264,14 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
-  @description('Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.')
+  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
   @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
   principalId: string
 
   @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device' | null)?
+  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
 
   @description('Optional. The description of the role assignment.')
   description: string?
