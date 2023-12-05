@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using Well Architected parameter set'
-metadata description = 'This instance deploys the module with a WAF Aligned set of parameters.'
+metadata name = 'WAF-aligned'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
 
 // ========== //
 // Parameters //
