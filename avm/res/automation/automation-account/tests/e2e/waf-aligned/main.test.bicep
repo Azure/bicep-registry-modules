@@ -228,7 +228,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       }
       {
         description: 'TestDateTimeDescription'
-        isEncrypted: false
+        //isEncrypted: false
         name: 'TestDateTime'
         value: '\'\\/Date(1637934042656)\\/\''
       }
