@@ -49,7 +49,7 @@ configuration:
   AZURE_BICEP_FILE_EXPANSION_TIMEOUT: 10
 
   # Custom non-sensitive parameters' names
-  AZURE_DEPLOYMENT_NONSENSITIVE_PARAMETER_NAMES: ["*TokenValidityLength"]
+  AZURE_DEPLOYMENT_NONSENSITIVE_PARAMETER_NAMES: ["sasTokenValidityLength"]
 
 rule:
   # Enable custom rules that don't exist in the baseline
