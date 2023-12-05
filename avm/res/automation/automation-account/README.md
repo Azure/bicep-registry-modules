@@ -59,6 +59,9 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     name: 'aamin001'
     // Non-required parameters
     location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
   }
 }
 ```
@@ -82,6 +85,11 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
     }
   }
 }
@@ -646,11 +654,6 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
-        logCategoriesAndGroups: [
-          {
-            categoryGroup: 'AllLogs'
-          }
-        ]
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
       }
@@ -814,7 +817,6 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
       }
       {
         description: 'TestDateTimeDescription'
-        isEncrypted: false
         name: 'TestDateTime'
         value: '\'\\/Date(1637934042656)\\/\''
       }
@@ -850,11 +852,6 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
-          "logCategoriesAndGroups": [
-            {
-              "categoryGroup": "AllLogs"
-            }
-          ],
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
@@ -1046,7 +1043,6 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         },
         {
           "description": "TestDateTimeDescription",
-          "isEncrypted": false,
           "name": "TestDateTime",
           "value": "\"\\/Date(1637934042656)\\/\""
         },
