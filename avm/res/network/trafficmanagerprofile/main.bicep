@@ -104,7 +104,7 @@ resource trafficManagerProfile 'Microsoft.Network/trafficmanagerprofiles@2018-08
     profileStatus: profileStatus
     trafficRoutingMethod: trafficRoutingMethod
     dnsConfig: {
-      relativeName: relativeName
+      relativeName: relativeName ?? name
       ttl: ttl
     }
     monitorConfig: monitorConfig
