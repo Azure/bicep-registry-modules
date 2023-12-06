@@ -172,6 +172,11 @@ Optional. The GitHub repository to run the workfows in.
 Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm.res.*' -WorkflowInputs @{ staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' }
 
 Run all GitHub workflows that start with'avm.res.*' using branch 'feature/branch'. Also returns all GitHub status badges.
+
+.EXAMPLE
+Invoke-WorkflowsForBranch -PersonalAccessToken '<Placeholder>' -TargetBranch 'feature/branch' -PipelineFilter 'avm.res.*' -WorkflowInputs @{ staticValidation = 'true'; deploymentValidation = 'true'; removeDeployment = 'true' } -WhatIf
+
+Only simulate the triggering of all GitHub workflows that start with'avm.res.*' using branch 'feature/branch'. Hence ONLY returns all GitHub status badges.
 #>
 function Invoke-WorkflowsForBranch {
 
@@ -224,10 +229,10 @@ function Invoke-WorkflowsForBranch {
         }
 
         # Generate pipeline badges
-        if ($SkipPipelineBadges) {
+        if (-not $SkipPipelineBadges) {
             $encodedBranch = [uri]::EscapeDataString($TargetBranch)
-            $workflowUrl = "https://github.com/$RepositoryOwner/$RepositoryName/actions/workflows/$workflowFileName&event=workflow_dispatch"
-            $gitHubWorkflowBadges += "[![$($workflow.name)]($workflowUrl/badge.svg?branch=$encodedBranch)]($workflowUrl)"
+            $workflowUrl = "https://github.com/$RepositoryOwner/$RepositoryName/actions/workflows/$workflowFileName"
+            $gitHubWorkflowBadges += "[![$($workflow.name)]($workflowUrl/badge.svg?branch=$encodedBranch&event=workflow_dispatch)]($workflowUrl)"
         }
     }
 
