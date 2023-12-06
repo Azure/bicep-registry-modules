@@ -12,13 +12,14 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${se
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cvmlinmin'
+param serviceShort string = 'cvmwinmin'
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
+@description('Optional. The password to leverage for the login.')
+@secure()
+param password string = newGuid()
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '[[namePrefix]]'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -37,33 +38,23 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: location
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    sshDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-    sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
   }
 }
 
 // ============== //
 // Test Execution //
 // ============== //
-
-// resource sshKey 'Microsoft.Compute/sshPublicKeys@2022-03-01' existing = {
-//   name: sshKeyName
-//   scope: resourceGroup
-// }
-
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
-    enableDefaultTelemetry: enableDefaultTelemetry
     location: location
     name: '${namePrefix}${serviceShort}'
     adminUsername: 'localAdminUser'
     imageReference: {
-      publisher: 'Canonical'
-      offer: '0001-com-ubuntu-server-jammy'
-      sku: '22_04-lts-gen2'
+      publisher: 'MicrosoftWindowsServer'
+      offer: 'WindowsServer'
+      sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
     nicConfigurations: [
@@ -71,9 +62,6 @@ module testDeployment '../../../main.bicep' = {
         ipConfigurations: [
           {
             name: 'ipconfig01'
-            pipConfiguration: {
-              publicIpNameSuffix: '-pip-01'
-            }
             subnetResourceId: nestedDependencies.outputs.subnetResourceId
           }
         ]
@@ -86,17 +74,9 @@ module testDeployment '../../../main.bicep' = {
         storageAccountType: 'Premium_LRS'
       }
     }
-    osType: 'Linux'
+    osType: 'Windows'
     vmSize: 'Standard_DS2_v2'
-    disablePasswordAuthentication: true
-    publicKeys: [
-      {
-        keyData: nestedDependencies.outputs.SSHKeyPublicKey
-        path: '/home/localAdminUser/.ssh/authorized_keys'
-      }
-    ]
+    adminPassword: password
   }
-  dependsOn: [
-    nestedDependencies // Required to leverage `existing` SSH key reference
-  ]
 }
+

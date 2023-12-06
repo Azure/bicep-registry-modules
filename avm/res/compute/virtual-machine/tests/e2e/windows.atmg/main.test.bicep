@@ -18,11 +18,8 @@ param serviceShort string = 'cvmwinatmg'
 @secure()
 param password string = newGuid()
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '[[namePrefix]]'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -50,9 +47,8 @@ module nestedDependencies 'dependencies.bicep' = {
 
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
-    enableDefaultTelemetry: enableDefaultTelemetry
     location: location
     name: '${namePrefix}${serviceShort}'
     adminUsername: 'localAdministrator'
@@ -90,3 +86,4 @@ module testDeployment '../../../main.bicep' = {
     }
   }
 }
+
