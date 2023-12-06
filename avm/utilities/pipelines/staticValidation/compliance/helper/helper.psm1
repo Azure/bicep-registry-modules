@@ -5,12 +5,11 @@ $repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent.Parent.Pare
 
 . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-NestedResourceList.ps1')
 . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-ScopeOfTemplateFile.ps1')
-. (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-ModuleTestFileList.ps1')
 . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-PipelineFileName.ps1')
 . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-IsParameterRequired.ps1')
 . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'ConvertTo-OrderedHashtable.ps1')
 . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-CrossReferencedModuleList.ps1')
-. (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'publish' 'helper' 'Get-BRMRepositoryName.ps1')
+. (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-BRMRepositoryName.ps1')
 
 ####################################
 #   Load test-specific functions   #

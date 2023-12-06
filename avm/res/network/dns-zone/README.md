@@ -56,20 +56,7 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
     // Required parameters
     name: 'ndzmin001.com'
     // Non-required parameters
-    a: []
-    aaaa: []
-    caa: []
-    cname: []
     location: 'global'
-    lock: {}
-    mx: []
-    ns: []
-    ptr: []
-    roleAssignments: []
-    soa: []
-    srv: []
-    tags: {}
-    txt: []
   }
 }
 ```
@@ -91,47 +78,8 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
       "value": "ndzmin001.com"
     },
     // Non-required parameters
-    "a": {
-      "value": []
-    },
-    "aaaa": {
-      "value": []
-    },
-    "caa": {
-      "value": []
-    },
-    "cname": {
-      "value": []
-    },
     "location": {
       "value": "global"
-    },
-    "lock": {
-      "value": {}
-    },
-    "mx": {
-      "value": []
-    },
-    "ns": {
-      "value": []
-    },
-    "ptr": {
-      "value": []
-    },
-    "roleAssignments": {
-      "value": []
-    },
-    "soa": {
-      "value": []
-    },
-    "srv": {
-      "value": []
-    },
-    "tags": {
-      "value": {}
-    },
-    "txt": {
-      "value": []
     }
   }
 }
@@ -168,7 +116,17 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         ttl: 3600
@@ -195,7 +153,17 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         ttl: 3600
@@ -223,7 +191,17 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         ttl: 3600
@@ -241,7 +219,17 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         ttl: 3600
@@ -251,7 +239,17 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     soa: [
@@ -261,7 +259,17 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         soaRecord: {
@@ -283,7 +291,17 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         srvRecords: [
@@ -309,7 +327,17 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         ttl: 3600
@@ -356,7 +384,17 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "ttl": 3600
@@ -387,7 +425,17 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "ttl": 3600
@@ -421,7 +469,17 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "ttl": 3600
@@ -441,7 +499,17 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "ttl": 3600
@@ -453,7 +521,17 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -465,7 +543,17 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "soaRecord": {
@@ -489,7 +577,17 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "srvRecords": [
@@ -519,7 +617,17 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "ttl": 3600,
@@ -556,25 +664,16 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
     // Required parameters
     name: 'ndzwaf001.com'
     // Non-required parameters
-    a: []
-    aaaa: []
-    cname: []
     location: 'global'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    mx: []
-    ptr: []
-    roleAssignments: []
-    soa: []
-    srv: []
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    txt: []
   }
 }
 ```
@@ -596,15 +695,6 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
       "value": "ndzwaf001.com"
     },
     // Non-required parameters
-    "a": {
-      "value": []
-    },
-    "aaaa": {
-      "value": []
-    },
-    "cname": {
-      "value": []
-    },
     "location": {
       "value": "global"
     },
@@ -614,30 +704,12 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
         "name": "myCustomLockName"
       }
     },
-    "mx": {
-      "value": []
-    },
-    "ptr": {
-      "value": []
-    },
-    "roleAssignments": {
-      "value": []
-    },
-    "soa": {
-      "value": []
-    },
-    "srv": {
-      "value": []
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "txt": {
-      "value": []
     }
   }
 }
@@ -669,39 +741,51 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
 | [`mx`](#parameter-mx) | array | Array of MX records. |
 | [`ns`](#parameter-ns) | array | Array of NS records. |
 | [`ptr`](#parameter-ptr) | array | Array of PTR records. |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`soa`](#parameter-soa) | array | Array of SOA records. |
 | [`srv`](#parameter-srv) | array | Array of SRV records. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`txt`](#parameter-txt) | array | Array of TXT records. |
 
+### Parameter: `name`
+
+DNS zone name.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `a`
 
 Array of A records.
+
 - Required: No
 - Type: array
 
 ### Parameter: `aaaa`
 
 Array of AAAA records.
+
 - Required: No
 - Type: array
 
 ### Parameter: `caa`
 
 Array of CAA records.
+
 - Required: No
 - Type: array
 
 ### Parameter: `cname`
 
 Array of CNAME records.
+
 - Required: No
 - Type: array
 
 ### Parameter: `enableTelemetry`
 
 Enable telemetry via a Globally Unique Identifier (GUID).
+
 - Required: No
 - Type: bool
 - Default: `True`
@@ -709,6 +793,7 @@ Enable telemetry via a Globally Unique Identifier (GUID).
 ### Parameter: `location`
 
 The location of the dnsZone. Should be global.
+
 - Required: No
 - Type: string
 - Default: `'global'`
@@ -716,26 +801,35 @@ The location of the dnsZone. Should be global.
 ### Parameter: `lock`
 
 The lock settings of the service.
+
 - Required: No
 - Type: object
 
+**Optional parameters**
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`kind`](#parameter-lockkind) | No | string | Optional. Specify the type of lock. |
-| [`name`](#parameter-lockname) | No | string | Optional. Specify the name of lock. |
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-lockname) | string | Specify the name of lock. |
 
 ### Parameter: `lock.kind`
 
-Optional. Specify the type of lock.
+Specify the type of lock.
 
 - Required: No
 - Type: string
-- Allowed: `[CanNotDelete, None, ReadOnly]`
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
 
 ### Parameter: `lock.name`
 
-Optional. Specify the name of lock.
+Specify the name of lock.
 
 - Required: No
 - Type: string
@@ -743,116 +837,138 @@ Optional. Specify the name of lock.
 ### Parameter: `mx`
 
 Array of MX records.
+
 - Required: No
 - Type: array
-
-### Parameter: `name`
-
-DNS zone name.
-- Required: Yes
-- Type: string
 
 ### Parameter: `ns`
 
 Array of NS records.
+
 - Required: No
 - Type: array
 
 ### Parameter: `ptr`
 
 Array of PTR records.
+
 - Required: No
 - Type: array
 
 ### Parameter: `roleAssignments`
 
-Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+Array of role assignments to create.
+
 - Required: No
 - Type: array
 
+**Required parameters**
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`condition`](#parameter-roleassignmentscondition) | No | string | Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
-| [`conditionVersion`](#parameter-roleassignmentsconditionversion) | No | string | Optional. Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | No | string | Optional. The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-roleassignmentsdescription) | No | string | Optional. The description of the role assignment. |
-| [`principalId`](#parameter-roleassignmentsprincipalid) | Yes | string | Required. The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`principalType`](#parameter-roleassignmentsprincipaltype) | No | string | Optional. The principal type of the assigned principal ID. |
-| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead. |
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-roleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `roleAssignments.condition`
 
-Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
 
 - Required: No
 - Type: string
 
 ### Parameter: `roleAssignments.conditionVersion`
 
-Optional. Version of the condition.
+Version of the condition.
 
 - Required: No
 - Type: string
-- Allowed: `[2.0]`
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
-Optional. The Resource Id of the delegated managed identity resource.
+The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
 
 ### Parameter: `roleAssignments.description`
 
-Optional. The description of the role assignment.
+The description of the role assignment.
 
 - Required: No
-- Type: string
-
-### Parameter: `roleAssignments.principalId`
-
-Required. The principal ID of the principal (user/group/identity) to assign the role to.
-
-- Required: Yes
 - Type: string
 
 ### Parameter: `roleAssignments.principalType`
 
-Optional. The principal type of the assigned principal ID.
+The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Allowed: `[Device, ForeignGroup, Group, ServicePrincipal, User]`
-
-### Parameter: `roleAssignments.roleDefinitionIdOrName`
-
-Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.
-
-- Required: Yes
-- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
 
 ### Parameter: `soa`
 
 Array of SOA records.
+
 - Required: No
 - Type: array
 
 ### Parameter: `srv`
 
 Array of SRV records.
+
 - Required: No
 - Type: array
 
 ### Parameter: `tags`
 
 Tags of the resource.
+
 - Required: No
 - Type: object
 
 ### Parameter: `txt`
 
 Array of TXT records.
+
 - Required: No
 - Type: array
 

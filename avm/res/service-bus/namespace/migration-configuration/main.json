@@ -1,0 +1,70 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.23.1.45101",
+      "templateHash": "11716899043337263723"
+    },
+    "name": "Service Bus Namespace Migration Configuration",
+    "description": "This module deploys a Service Bus Namespace Migration Configuration.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "namespaceName": {
+      "type": "string",
+      "minLength": 6,
+      "maxLength": 50,
+      "metadata": {
+        "description": "Conditional. The name of the parent Service Bus Namespace for the Service Bus Queue. Required if the template is used in a standalone deployment."
+      }
+    },
+    "postMigrationName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name to access Standard Namespace after migration."
+      }
+    },
+    "targetNamespaceResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Existing premium Namespace resource ID which has no entities, will be used for migration."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ServiceBus/namespaces/migrationConfigurations",
+      "apiVersion": "2022-10-01-preview",
+      "name": "[format('{0}/{1}', parameters('namespaceName'), '$default')]",
+      "properties": {
+        "targetNamespace": "[parameters('targetNamespaceResourceId')]",
+        "postMigrationName": "[parameters('postMigrationName')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the migration configuration."
+      },
+      "value": "$default"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Resource ID of the migration configuration."
+      },
+      "value": "[resourceId('Microsoft.ServiceBus/namespaces/migrationConfigurations', parameters('namespaceName'), '$default')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the migration configuration was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
