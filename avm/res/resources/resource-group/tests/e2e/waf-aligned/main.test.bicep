@@ -48,7 +48,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}'
   params: {
     location: location
-    name: '${namePrefix}${serviceShort}001'
+    name: 'avm-${namePrefix}-resources.resourcegroups-${serviceShort}-rg'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'

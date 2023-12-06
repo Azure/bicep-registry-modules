@@ -44,7 +44,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-rrgmin'
   params: {
     // Required parameters
-    name: 'rrgmin001'
+    name: 'avm-resources.resourcegroups-rrgmin-rg'
     // Non-required parameters
     location: '<location>'
   }
@@ -65,7 +65,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "rrgmin001"
+      "value": "avm-resources.resourcegroups-rrgmin-rg"
     },
     // Non-required parameters
     "location": {
@@ -92,7 +92,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-rrgmax'
   params: {
     // Required parameters
-    name: 'rrgmax001'
+    name: 'avm-resources.resourcegroups-rrgmax-rg'
     // Non-required parameters
     location: '<location>'
     lock: {
@@ -103,7 +103,17 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     tags: {
@@ -129,7 +139,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "rrgmax001"
+      "value": "avm-resources.resourcegroups-rrgmax-rg"
     },
     // Non-required parameters
     "location": {
@@ -146,7 +156,17 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -178,20 +198,13 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-rrgwaf'
   params: {
     // Required parameters
-    name: 'rrgwaf001'
+    name: 'avm-resources.resourcegroups-rrgwaf-rg'
     // Non-required parameters
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -215,7 +228,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "rrgwaf001"
+      "value": "avm-resources.resourcegroups-rrgwaf-rg"
     },
     // Non-required parameters
     "location": {
@@ -226,15 +239,6 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
     },
     "tags": {
       "value": {
@@ -263,11 +267,11 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location of the Resource Group. It uses the deployment's location when not provided. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedBy`](#parameter-managedby) | string | The ID of the resource that manages this resource group. |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the storage account resource. |
 
 ### Parameter: `name`
@@ -279,7 +283,7 @@ The name of the Resource Group.
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -339,7 +343,7 @@ The ID of the resource that manages this resource group.
 
 ### Parameter: `roleAssignments`
 
-Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+Array of role assignments to create.
 
 - Required: No
 - Type: array
@@ -349,7 +353,7 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`principalId`](#parameter-roleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | string | The name of the role to assign. If it cannot be found you can specify the role definition ID instead. |
+| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 **Optional parameters**
 
@@ -370,7 +374,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
-The name of the role to assign. If it cannot be found you can specify the role definition ID instead.
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string

@@ -65,12 +65,13 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   properties: {}
 }
 
-resource resourceGroup_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
-  name: lock.?name ?? 'lock-${name}'
-  properties: {
-    level: lock.?kind ?? ''
-    notes: lock.?kind == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot delete or modify the resource or child resources.'
+module resourceGroup_lock 'modules/nested_lock.bicep' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: '${uniqueString(deployment().name, location)}-RG-Lock'
+  params: {
+    lock: lock
+    name: resourceGroup.name
   }
+  scope: resourceGroup
 }
 
 resource resourceGroup_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
