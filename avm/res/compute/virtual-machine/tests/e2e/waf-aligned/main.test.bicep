@@ -12,7 +12,11 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${se
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cvmlincom'
+param serviceShort string = 'cvmwinwaf'
+
+@description('Optional. The password to leverage for the login.')
+@secure()
+param password string = newGuid()
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -41,8 +45,7 @@ module nestedDependencies 'dependencies.bicep' = {
     recoveryServicesVaultName: 'dep-${namePrefix}-rsv-${serviceShort}'
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
     storageUploadDeploymentScriptName: 'dep-${namePrefix}-sads-${serviceShort}'
-    sshDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-    sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
+    proximityPlacementGroupName: 'dep-${namePrefix}-ppg-${serviceShort}'
   }
 }
 
@@ -68,14 +71,14 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
-    name: '${namePrefix}${serviceShort}'
-    computerName: '${namePrefix}linvm1'
     location: location
-    adminUsername: 'localAdministrator'
+    name: '${namePrefix}${serviceShort}'
+    computerName: '${namePrefix}winvm1'
+    adminUsername: 'VMAdmin'
     imageReference: {
-      publisher: 'Canonical'
-      offer: '0001-com-ubuntu-server-focal'
-      sku: '20_04-lts-gen2' // Note: 22.04 does not support OMS extension
+      publisher: 'MicrosoftWindowsServer'
+      offer: 'WindowsServer'
+      sku: '2019-datacenter'
       version: 'latest'
     }
     nicConfigurations: [
@@ -151,7 +154,7 @@ module testDeployment '../../../main.bicep' = {
       }
     ]
     osDisk: {
-      caching: 'ReadOnly'
+      caching: 'None'
       createOption: 'fromImage'
       deleteOption: 'Delete'
       diskSizeGB: '128'
@@ -159,15 +162,16 @@ module testDeployment '../../../main.bicep' = {
         storageAccountType: 'Premium_LRS'
       }
     }
-    osType: 'Linux'
+    osType: 'Windows'
     vmSize: 'Standard_DS2_v2'
-    availabilityZone: 1
+    adminPassword: password
+    availabilityZone: 2
     backupPolicyName: nestedDependencies.outputs.recoveryServicesVaultBackupPolicyName
     backupVaultName: nestedDependencies.outputs.recoveryServicesVaultName
     backupVaultResourceGroup: nestedDependencies.outputs.recoveryServicesVaultResourceGroupName
     dataDisks: [
       {
-        caching: 'ReadWrite'
+        caching: 'None'
         createOption: 'Empty'
         deleteOption: 'Delete'
         diskSizeGB: '128'
@@ -176,7 +180,7 @@ module testDeployment '../../../main.bicep' = {
         }
       }
       {
-        caching: 'ReadWrite'
+        caching: 'None'
         createOption: 'Empty'
         deleteOption: 'Delete'
         diskSizeGB: '128'
@@ -187,8 +191,30 @@ module testDeployment '../../../main.bicep' = {
     ]
     enableAutomaticUpdates: true
     patchMode: 'AutomaticByPlatform'
-    disablePasswordAuthentication: true
     encryptionAtHost: false
+    extensionAntiMalwareConfig: {
+      enabled: true
+      settings: {
+        AntimalwareEnabled: 'true'
+        Exclusions: {
+          Extensions: '.ext1;.ext2'
+          Paths: 'c:\\excluded-path-1;c:\\excluded-path-2'
+          Processes: 'excludedproc1.exe;excludedproc2.exe'
+        }
+        RealtimeProtectionEnabled: 'true'
+        ScheduledScanSettings: {
+          day: '7'
+          isEnabled: 'true'
+          scanType: 'Quick'
+          time: '120'
+        }
+      }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
+    }
     extensionCustomScriptConfig: {
       enabled: true
       fileData: [
@@ -204,7 +230,7 @@ module testDeployment '../../../main.bicep' = {
       }
     }
     extensionCustomScriptProtectedSetting: {
-      commandToExecute: 'value=$(./${nestedDependencies.outputs.storageAccountCSEFileName}); echo "$value"'
+      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -Command "& ./${nestedDependencies.outputs.storageAccountCSEFileName}"'
     }
     extensionDependencyAgentConfig: {
       enabled: true
@@ -225,11 +251,11 @@ module testDeployment '../../../main.bicep' = {
         KeyVaultURL: nestedDependencies.outputs.keyVaultUrl
         ResizeOSDisk: 'false'
         VolumeType: 'All'
-      }
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
       }
     }
     extensionAadJoinConfig: {
@@ -241,7 +267,7 @@ module testDeployment '../../../main.bicep' = {
       }
     }
     extensionDSCConfig: {
-      enabled: false
+      enabled: true
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
@@ -269,12 +295,7 @@ module testDeployment '../../../main.bicep' = {
       name: 'myCustomLockName'
     }
     monitoringWorkspaceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-    publicKeys: [
-      {
-        keyData: nestedDependencies.outputs.SSHKeyPublicKey
-        path: '/home/localAdministrator/.ssh/authorized_keys'
-      }
-    ]
+    proximityPlacementGroupResourceId: nestedDependencies.outputs.proximityPlacementGroupResourceId
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Owner'
@@ -304,8 +325,4 @@ module testDeployment '../../../main.bicep' = {
       Role: 'DeploymentValidation'
     }
   }
-  dependsOn: [
-    nestedDependencies // Required to leverage `existing` SSH key reference
-  ]
 }
-
