@@ -337,7 +337,7 @@ resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (ena
   }
 }
 
-module vm_nic '../../network/network-interface/main.bicep' = [for (nicConfiguration, index) in nicConfigurations: {
+module vm_nic 'br/public:avm/res/network/network-interface:0.2.2' = [for (nicConfiguration, index) in nicConfigurations: {
   name: '${uniqueString(deployment().name, location)}-VM-Nic-${index}'
   params: {
     name: '${name}${nicConfiguration.nicSuffix}'
