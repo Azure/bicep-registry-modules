@@ -43,19 +43,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     name: '${namePrefix}${serviceShort}001'
     kind: 'SpeechServices'
     location: location
-    // Workaround for PSRule
-    lock: null
-    roleAssignments: null
-    diagnosticSettings: null
-    managedIdentities: null
-    privateEndpoints: null
-    customerManagedKey: null
-    customSubDomainName: null
-    tags: null
-    allowedFqdnList: null
-    apiProperties: null
-    migrationToken: null
-    userOwnedStorage: null
-    networkAcls: null
   }
 }]

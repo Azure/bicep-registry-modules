@@ -31,15 +31,24 @@ This module deploys an Azure SQL Server Key.
 | [`serverKeyType`](#parameter-serverkeytype) | string | The encryption protector type like "ServiceManaged", "AzureKeyVault". |
 | [`uri`](#parameter-uri) | string | The URI of the key. If the ServerKeyType is AzureKeyVault, then either the URI or the keyVaultName/keyName combination is required. |
 
+### Parameter: `serverName`
+
+The name of the parent SQL server. Required if the template is used in a standalone deployment.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `name`
 
 The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern.
+
 - Required: No
 - Type: string
 
 ### Parameter: `serverKeyType`
 
 The encryption protector type like "ServiceManaged", "AzureKeyVault".
+
 - Required: No
 - Type: string
 - Default: `'ServiceManaged'`
@@ -51,15 +60,10 @@ The encryption protector type like "ServiceManaged", "AzureKeyVault".
   ]
   ```
 
-### Parameter: `serverName`
-
-The name of the parent SQL server. Required if the template is used in a standalone deployment.
-- Required: Yes
-- Type: string
-
 ### Parameter: `uri`
 
 The URI of the key. If the ServerKeyType is AzureKeyVault, then either the URI or the keyVaultName/keyName combination is required.
+
 - Required: No
 - Type: string
 - Default: `''`

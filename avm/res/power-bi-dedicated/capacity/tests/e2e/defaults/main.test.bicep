@@ -57,10 +57,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       nestedDependencies.outputs.managedIdentityPrincipalId
     ]
     location: location
-
-    // Workaround for PSRule
-    lock: {}
-    roleAssignments: []
-    tags: {}
   }
 }]

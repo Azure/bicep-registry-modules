@@ -85,6 +85,25 @@ function Test-TemplateDeployment {
     }
 
     process {
+        $deploymentNamePrefix = Split-Path -Path (Split-Path $templateFilePath -Parent) -LeafBase
+        if ([String]::IsNullOrEmpty($deploymentNamePrefix)) {
+            $deploymentNamePrefix = 'templateDeployment-{0}' -f (Split-Path $templateFilePath -LeafBase)
+        }
+
+        # Convert, e.g., [C:\myFork\avm\res\kubernetes-configuration\flux-configuration\tests\e2e\defaults\main.test.bicep] to [a-r-kc-fc-defaults]
+        $shortPathElems = ((Split-Path $templateFilePath) -replace ('{0}[\\|\/]' -f [regex]::Escape($repoRoot))) -split '[\\|\/]' | Where-Object { $_ -notin @('tests', 'e2e') }
+        # Shorten all elements but the last
+        $reducedElem = $shortPathElems[0 .. ($shortPathElems.Count - 2)] | ForEach-Object {
+            $shortPathElem = $_
+            if ($shortPathElem -match '-') {
+                ($shortPathElem -split '-' | ForEach-Object { $_[0] }) -join ''
+            } else {
+                $shortPathElem[0]
+            }
+        }
+        # Add the last back and join the elements together
+        $deploymentNamePrefix = ($reducedElem + @($shortPathElems[-1])) -join '-'
+
         $DeploymentInputs = @{
             TemplateFile = $templateFilePath
             Verbose      = $true
@@ -101,24 +120,6 @@ function Test-TemplateDeployment {
         }
 
         $deploymentScope = Get-ScopeOfTemplateFile -TemplateFilePath $templateFilePath -Verbose
-
-        $deploymentNamePrefix = Split-Path -Path (Split-Path $templateFilePath -Parent) -LeafBase
-        if ([String]::IsNullOrEmpty($deploymentNamePrefix)) {
-            $deploymentNamePrefix = 'templateDeployment-{0}' -f (Split-Path $templateFilePath -LeafBase)
-        }
-        if ($templateFilePath -match '.*(\\|\/)Microsoft.+') {
-            # If we can assume we're operating in a module structure, we can further fetch the provider namespace & resource type
-            $shortPathElem = (($templateFilePath -split 'Microsoft\.')[1] -replace '\\', '/') -split '/' # e.g., AppConfiguration, configurationStores, .test, common, main.test.bicep
-            $providerNamespace = $shortPathElem[0] # e.g., AppConfiguration
-            $providerNamespaceShort = ($providerNamespace -creplace '[^A-Z]').ToLower() # e.g., ac
-
-            $resourceType = $shortPathElem[1] # e.g., configurationStores
-            $resourceTypeShort = ('{0}{1}' -f ($resourceType.ToLower())[0], ($resourceType -creplace '[^A-Z]')).ToLower() # e.g. cs
-
-            $testFolderShort = Split-Path (Split-Path $templateFilePath -Parent) -Leaf  # e.g., common
-
-            $deploymentNamePrefix = "$providerNamespaceShort-$resourceTypeShort-$testFolderShort" # e.g., ac-cs-common
-        }
 
         # Generate a valid deployment name. Must match ^[-\w\._\(\)]+$
         do {

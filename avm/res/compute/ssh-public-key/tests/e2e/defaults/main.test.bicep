@@ -42,10 +42,5 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}-${serviceShort}001'
     location: location
-    // Workaround for PSRule
-    lock: null
-    tags: null
-    publicKey: null
-    roleAssignments: null
   }
 }

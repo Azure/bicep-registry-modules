@@ -28,10 +28,6 @@ function Publish-ModuleFromTagToPBR {
   )
 
   # Load used functions
-  . (Join-Path $PSScriptRoot 'helper' 'Get-ModuleReadmeLink.ps1')
-
-  # 1. Find tag as per function input
-  $repositoryRoot = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent.Parent.FullName
   $targetVersion = Split-Path $ModuleReleaseTagName -Leaf
   $moduleRelativeFolderPath = $ModuleReleaseTagName -replace "\/$targetVersion$", ''
   $moduleFolderPath = Join-Path $repositoryRoot $moduleRelativeFolderPath
@@ -56,6 +52,10 @@ function Publish-ModuleFromTagToPBR {
 
   Write-Verbose "Publish Input:`n $($publishInput | ConvertTo-Json -Depth 10)" -Verbose
 
+  if ($PSCmdlet.ShouldProcess("Module of tag [$ModuleReleaseTagName]", "Publish")) {
+    bicep publish @publishInput
+  }
+}
   if ($PSCmdlet.ShouldProcess("Module of tag [$ModuleReleaseTagName]", "Publish")) {
     bicep publish @publishInput
   }
