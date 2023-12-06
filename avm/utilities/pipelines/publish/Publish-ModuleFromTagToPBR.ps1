@@ -23,10 +23,10 @@ function Publish-ModuleFromTagToPBR {
 
   [CmdletBinding(SupportsShouldProcess)]
   param (
-    [Parameter(Mandatory)]
+    [Parameter(Mandatory = $true)]
     [string] $ModuleReleaseTagName,
 
-    [Parameter(Mandatory)]
+    [Parameter(Mandatory = $true)]
     [secureString] $PublicRegistryServer,
 
     [Parameter(Mandatory = $false)]
