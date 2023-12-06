@@ -10,7 +10,7 @@ metadata owner = 'Azure/module-maintainers'
 param name string
 
 @sys.description('Optional. The resource ID of the data collection endpoint that this rule can be used with.')
-param dataCollectionEndpointId string = ''
+param dataCollectionEndpointId string?
 
 @sys.description('Required. The specification of data flows.')
 param dataFlows array
@@ -19,7 +19,7 @@ param dataFlows array
 param dataSources object
 
 @sys.description('Optional. Description of the data collection rule.')
-param description string = ''
+param description string?
 
 @sys.description('Required. Specification of destinations that can be used in data flows.')
 param destinations object
@@ -44,7 +44,7 @@ param lock lockType
 param roleAssignments roleAssignmentType
 
 @sys.description('Optional. Declaration of custom streams used in this rule.')
-param streamDeclarations object = {}
+param streamDeclarations object?
 
 @sys.description('Optional. Resource tags.')
 param tags object?
@@ -88,9 +88,9 @@ resource dataCollectionRule 'Microsoft.Insights/dataCollectionRules@2021-09-01-p
     dataSources: dataSources
     destinations: destinations
     dataFlows: dataFlows
-    dataCollectionEndpointId: !empty(dataCollectionEndpointId) ? dataCollectionEndpointId : null
-    streamDeclarations: !empty(streamDeclarations) ? streamDeclarations : null
-    description: !empty(description) ? description : null
+    dataCollectionEndpointId: dataCollectionEndpointId
+    streamDeclarations: streamDeclarations
+    description: description
   }
 }
 

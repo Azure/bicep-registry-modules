@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "1574102137055828165"
+      "templateHash": "8120930746800632273"
     },
     "name": "Data Collection Rules",
     "description": "This module deploys a Data Collection Rule.",
@@ -114,7 +114,7 @@
     },
     "dataCollectionEndpointId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The resource ID of the data collection endpoint that this rule can be used with."
       }
@@ -133,7 +133,7 @@
     },
     "description": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Description of the data collection rule."
       }
@@ -183,7 +183,7 @@
     },
     "streamDeclarations": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Declaration of custom streams used in this rule."
       }
@@ -237,9 +237,9 @@
         "dataSources": "[parameters('dataSources')]",
         "destinations": "[parameters('destinations')]",
         "dataFlows": "[parameters('dataFlows')]",
-        "dataCollectionEndpointId": "[if(not(empty(parameters('dataCollectionEndpointId'))), parameters('dataCollectionEndpointId'), null())]",
-        "streamDeclarations": "[if(not(empty(parameters('streamDeclarations'))), parameters('streamDeclarations'), null())]",
-        "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]"
+        "dataCollectionEndpointId": "[parameters('dataCollectionEndpointId')]",
+        "streamDeclarations": "[parameters('streamDeclarations')]",
+        "description": "[parameters('description')]"
       }
     },
     "dataCollectionRule_lock": {

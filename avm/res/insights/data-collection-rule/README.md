@@ -1935,7 +1935,6 @@ The resource ID of the data collection endpoint that this rule can be used with.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `description`
 
@@ -1943,7 +1942,6 @@ Description of the data collection rule.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `enableTelemetry`
 
@@ -2107,7 +2105,6 @@ Declaration of custom streams used in this rule.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `tags`
 
