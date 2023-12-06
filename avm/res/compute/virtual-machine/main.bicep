@@ -465,6 +465,7 @@ module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.e
   params: {
     virtualMachineName: vm.name
     name: 'AADLogin'
+    location: location
     publisher: 'Microsoft.Azure.ActiveDirectory'
     type: osType == 'Windows' ? 'AADLoginForWindows' : 'AADSSHLoginforLinux'
     typeHandlerVersion: contains(extensionAadJoinConfig, 'typeHandlerVersion') ? extensionAadJoinConfig.typeHandlerVersion : '1.0'
@@ -480,6 +481,7 @@ module vm_domainJoinExtension 'extension/main.bicep' = if (extensionDomainJoinCo
   params: {
     virtualMachineName: vm.name
     name: 'DomainJoin'
+    location: location
     publisher: 'Microsoft.Compute'
     type: 'JsonADDomainExtension'
     typeHandlerVersion: contains(extensionDomainJoinConfig, 'typeHandlerVersion') ? extensionDomainJoinConfig.typeHandlerVersion : '1.3'
@@ -499,6 +501,7 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAn
   params: {
     virtualMachineName: vm.name
     name: 'MicrosoftAntiMalware'
+    location: location
     publisher: 'Microsoft.Azure.Security'
     type: 'IaaSAntimalware'
     typeHandlerVersion: contains(extensionAntiMalwareConfig, 'typeHandlerVersion') ? extensionAntiMalwareConfig.typeHandlerVersion : '1.3'
@@ -520,6 +523,7 @@ module vm_microsoftMonitoringAgentExtension 'extension/main.bicep' = if (extensi
   params: {
     virtualMachineName: vm.name
     name: 'MicrosoftMonitoringAgent'
+    location: location
     publisher: 'Microsoft.EnterpriseCloud.Monitoring'
     type: osType == 'Windows' ? 'MicrosoftMonitoringAgent' : 'OmsAgentForLinux'
     typeHandlerVersion: contains(extensionMonitoringAgentConfig, 'typeHandlerVersion') ? extensionMonitoringAgentConfig.typeHandlerVersion : (osType == 'Windows' ? '1.0' : '1.7')
@@ -541,6 +545,7 @@ module vm_dependencyAgentExtension 'extension/main.bicep' = if (extensionDepende
   params: {
     virtualMachineName: vm.name
     name: 'DependencyAgent'
+    location: location
     publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
     type: osType == 'Windows' ? 'DependencyAgentWindows' : 'DependencyAgentLinux'
     typeHandlerVersion: contains(extensionDependencyAgentConfig, 'typeHandlerVersion') ? extensionDependencyAgentConfig.typeHandlerVersion : '9.5'
@@ -556,6 +561,7 @@ module vm_networkWatcherAgentExtension 'extension/main.bicep' = if (extensionNet
   params: {
     virtualMachineName: vm.name
     name: 'NetworkWatcherAgent'
+    location: location
     publisher: 'Microsoft.Azure.NetworkWatcher'
     type: osType == 'Windows' ? 'NetworkWatcherAgentWindows' : 'NetworkWatcherAgentLinux'
     typeHandlerVersion: contains(extensionNetworkWatcherAgentConfig, 'typeHandlerVersion') ? extensionNetworkWatcherAgentConfig.typeHandlerVersion : '1.4'
@@ -571,6 +577,7 @@ module vm_desiredStateConfigurationExtension 'extension/main.bicep' = if (extens
   params: {
     virtualMachineName: vm.name
     name: 'DesiredStateConfiguration'
+    location: location
     publisher: 'Microsoft.Powershell'
     type: 'DSC'
     typeHandlerVersion: contains(extensionDSCConfig, 'typeHandlerVersion') ? extensionDSCConfig.typeHandlerVersion : '2.77'
@@ -588,6 +595,7 @@ module vm_customScriptExtension 'extension/main.bicep' = if (extensionCustomScri
   params: {
     virtualMachineName: vm.name
     name: 'CustomScriptExtension'
+    location: location
     publisher: osType == 'Windows' ? 'Microsoft.Compute' : 'Microsoft.Azure.Extensions'
     type: osType == 'Windows' ? 'CustomScriptExtension' : 'CustomScript'
     typeHandlerVersion: contains(extensionCustomScriptConfig, 'typeHandlerVersion') ? extensionCustomScriptConfig.typeHandlerVersion : (osType == 'Windows' ? '1.10' : '2.1')
@@ -610,6 +618,7 @@ module vm_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionAzu
   params: {
     virtualMachineName: vm.name
     name: 'AzureDiskEncryption'
+    location: location
     publisher: 'Microsoft.Azure.Security'
     type: osType == 'Windows' ? 'AzureDiskEncryption' : 'AzureDiskEncryptionForLinux'
     typeHandlerVersion: contains(extensionAzureDiskEncryptionConfig, 'typeHandlerVersion') ? extensionAzureDiskEncryptionConfig.typeHandlerVersion : (osType == 'Windows' ? '2.2' : '1.1')
