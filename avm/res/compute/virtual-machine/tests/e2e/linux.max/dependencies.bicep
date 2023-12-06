@@ -276,7 +276,7 @@ resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' 
     azPowerShellVersion: '9.0'
     retentionInterval: 'P1D'
     arguments: '-SSHKeyName "${sshKeyName}" -ResourceGroupName "${resourceGroup().name}"'
-    scriptContent: loadTextContent('../../../../../.shared/.scripts/New-SSHKey.ps1')
+    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/New-SSHKey.ps1')
   }
   dependsOn: [
     msiRGContrRoleAssignment
