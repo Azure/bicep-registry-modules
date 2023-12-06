@@ -219,29 +219,53 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
 Describe 'Pipeline tests' -Tag 'Pipeline' {
 
-  $moduleFolderTestCases = [System.Collections.ArrayList] @()
+  $pipelineTestCases = [System.Collections.ArrayList] @()
   foreach ($moduleFolderPath in $moduleFolderPaths) {
 
     $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
     $relativeModulePath = Join-Path 'avm' ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}')[1]
 
-    $moduleFolderTestCases += @{
-      moduleFolderName   = $resourceTypeIdentifier
-      relativeModulePath = $relativeModulePath
-      isTopLevelModule   = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
+    $isTopLevelModule = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
+    if ($isTopLevelModule) {
+
+      $workflowsFolderName = Join-Path $repoRootPath '.github' 'workflows'
+      $workflowFileName = Get-PipelineFileName -ResourceIdentifier $relativeModulePath
+      $workflowPath = Join-Path $workflowsFolderName $workflowFileName
+
+      $pipelineTestCases += @{
+        relativeModulePath = $relativeModulePath
+        moduleFolderName   = $resourceTypeIdentifier
+        workflowFileName   = $workflowFileName
+        workflowPath       = $workflowPath
+      }
     }
   }
 
-  It '[<moduleFolderName>] Module should have a GitHub workflow.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+  It '[<moduleFolderName>] Module should have a GitHub workflow in path [.github/workflows/<workflowFileName>].' -TestCases $pipelineTestCases {
 
     param(
-      [string] $relativeModulePath
+      [string] $WorkflowPath
     )
 
-    $workflowsFolderName = Join-Path $repoRootPath '.github' 'workflows'
-    $workflowFileName = Get-PipelineFileName -ResourceIdentifier $relativeModulePath
-    $workflowPath = Join-Path $workflowsFolderName $workflowFileName
-    Test-Path $workflowPath | Should -Be $true -Because "path [$workflowPath] should exist."
+    Test-Path $WorkflowPath | Should -Be $true -Because "path [$WorkflowPath] should exist."
+  }
+
+  It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>] should have [workflowPath] environment variable with value [.github/workflows/<WorkflowFileName>].' -TestCases $pipelineTestCases {
+
+    param(
+      [string] $WorkflowPath,
+      [string] $WorkflowFileName
+    )
+
+    if (-not (Test-Path $WorkflowPath)) {
+      Set-ItResult -Skipped -Because "Cannot test content of file in path [$WorkflowPath] as it does not exist."
+      return
+    }
+
+    $environmentVariables = Get-WorkflowEnvVariablesAsObject -WorkflowPath $WorkflowPath
+
+    $environmentVariables.Keys | Should -Contain 'workflowPath'
+    $environmentVariables['workflowPath'] | Should -Be ".github/workflows/$workflowFileName"
   }
 }
 
