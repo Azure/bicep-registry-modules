@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "The git tag of the module to publish."
+        description: "The git tag of the module to publish. For example: [avm/res/key-vault/vault/1.0.0]"
         required: true
         type: string
 
@@ -53,6 +53,7 @@ jobs:
             $functionInput = @{
               ModuleReleaseTagName = '${{ github.event.inputs.tag }}'
               PublicRegistryServer = ConvertTo-SecureString '${{ secrets.PUBLISH_REGISTRY_SERVER }}' -AsPlainText -Force
+              RepoRoot             = $env:GITHUB_WORKSPACE
             }
 
             Write-Verbose "Invoke function with" -Verbose

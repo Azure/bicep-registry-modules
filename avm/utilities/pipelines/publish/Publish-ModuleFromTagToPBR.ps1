@@ -11,6 +11,9 @@ Mandatory. The git tag to identify the module with & publish its code state of
 .PARAMETER PublicRegistryServer
 Mandatory. The public registry server.
 
+.PARAMETER RepoRoot
+Optional. Path to the root of the repository.
+
 .EXAMPLE
 Publish-ModuleFromTagToPBR -ModuleReleaseTagName 'avm/res/key-vault/vault/0.3.0' -PublicRegistryServer (ConvertTo-SecureString 'myServer' -AsPlainText -Force)
 
@@ -24,10 +27,16 @@ function Publish-ModuleFromTagToPBR {
     [string] $ModuleReleaseTagName,
 
     [Parameter(Mandatory)]
-    [secureString] $PublicRegistryServer
+    [secureString] $PublicRegistryServer,
+
+    [Parameter(Mandatory = $false)]
+    [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName
   )
 
   # Load used functions
+  . (Join-Path $RepoRoot 'avm' 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModuleReadmeLink.ps1')
+
+  # 1. Extract information from the tag
   $targetVersion = Split-Path $ModuleReleaseTagName -Leaf
   $moduleRelativeFolderPath = $ModuleReleaseTagName -replace "\/$targetVersion$", ''
   $moduleFolderPath = Join-Path $repositoryRoot $moduleRelativeFolderPath
@@ -52,10 +61,6 @@ function Publish-ModuleFromTagToPBR {
 
   Write-Verbose "Publish Input:`n $($publishInput | ConvertTo-Json -Depth 10)" -Verbose
 
-  if ($PSCmdlet.ShouldProcess("Module of tag [$ModuleReleaseTagName]", "Publish")) {
-    bicep publish @publishInput
-  }
-}
   if ($PSCmdlet.ShouldProcess("Module of tag [$ModuleReleaseTagName]", "Publish")) {
     bicep publish @publishInput
   }
