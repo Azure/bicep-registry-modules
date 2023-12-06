@@ -5,7 +5,7 @@
 Invoke a given GitHub workflow
 
 .DESCRIPTION
-Long description
+Invoke a given GitHub workflow
 
 .PARAMETER PersonalAccessToken
 Mandatory. The GitHub PAT to leverage when interacting with the GitHub API.
