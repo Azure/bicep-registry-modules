@@ -376,74 +376,86 @@ module extension 'br/public:avm/res/kubernetes-configuration/extension:<version>
 ### Parameter: `clusterName`
 
 The name of the AKS cluster that should be configured.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `extensionType`
+
+Type of the extension, of which this resource is an instance of. It must be one of the Extension Types registered with Microsoft.KubernetesConfiguration by the extension publisher.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `name`
+
+The name of the Flux Configuration.
+
 - Required: Yes
 - Type: string
 
 ### Parameter: `configurationProtectedSettings`
 
 Configuration settings that are sensitive, as name-value pairs for configuring this extension.
+
 - Required: No
 - Type: secureObject
 
 ### Parameter: `configurationSettings`
 
 Configuration settings, as name-value pairs for configuring this extension.
+
 - Required: No
 - Type: object
 
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
+
 - Required: No
 - Type: bool
 - Default: `True`
 
-### Parameter: `extensionType`
-
-Type of the extension, of which this resource is an instance of. It must be one of the Extension Types registered with Microsoft.KubernetesConfiguration by the extension publisher.
-- Required: Yes
-- Type: string
-
 ### Parameter: `fluxConfigurations`
 
 A list of flux configuraitons.
+
 - Required: No
 - Type: array
 
 ### Parameter: `location`
 
 Location for all resources.
+
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
 
-### Parameter: `name`
-
-The name of the Flux Configuration.
-- Required: Yes
-- Type: string
-
 ### Parameter: `releaseNamespace`
 
 Namespace where the extension Release must be placed, for a Cluster scoped extension. If this namespace does not exist, it will be created.
+
 - Required: No
 - Type: string
 
 ### Parameter: `releaseTrain`
 
 ReleaseTrain this extension participates in for auto-upgrade (e.g. Stable, Preview, etc.) - only if autoUpgradeMinorVersion is "true".
+
 - Required: No
 - Type: string
 
 ### Parameter: `targetNamespace`
 
 Namespace where the extension will be created for an Namespace scoped extension. If this namespace does not exist, it will be created.
+
 - Required: No
 - Type: string
 
 ### Parameter: `version`
 
 Version of the extension for this extension, if it is "pinned" to a specific version.
+
 - Required: No
 - Type: string
 
