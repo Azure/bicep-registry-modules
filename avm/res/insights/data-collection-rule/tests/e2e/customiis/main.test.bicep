@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Collecting IIS logs'
-metadata description = 'This instance deploys the module to setup collection of IIS logs.'
+metadata description = 'This instance deploys the module to setup the collection of IIS logs.'
 
 // ========== //
 // Parameters //
