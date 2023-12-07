@@ -635,7 +635,7 @@ module vm_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionAzu
   ]
 }
 
-module vm_backup 'protected-item/main.bicep' = if (!empty(backupVaultName)) {
+module vm_backup 'modules/protected-item.bicep' = if (!empty(backupVaultName)) {
   name: '${uniqueString(deployment().name, location)}-VM-Backup'
   params: {
     name: 'vm;iaasvmcontainerv2;${resourceGroup().name};${vm.name}'
@@ -645,7 +645,6 @@ module vm_backup 'protected-item/main.bicep' = if (!empty(backupVaultName)) {
     protectionContainerName: 'iaasvmcontainer;iaasvmcontainerv2;${resourceGroup().name};${vm.name}'
     recoveryVaultName: backupVaultName
     sourceResourceId: vm.id
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
   scope: az.resourceGroup(backupVaultResourceGroup)
   dependsOn: [
