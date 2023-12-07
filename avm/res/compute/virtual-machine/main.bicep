@@ -635,29 +635,30 @@ module vm_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionAzu
   ]
 }
 
-// module vm_backup '../../recovery-services/vault/backup-fabric/protection-container/protected-item/main.bicep' = if (!empty(backupVaultName)) {
-//   name: '${uniqueString(deployment().name, location)}-VM-Backup'
-//   params: {
-//     name: 'vm;iaasvmcontainerv2;${resourceGroup().name};${vm.name}'
-//     policyId: az.resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', backupVaultName, backupPolicyName)
-//     protectedItemType: 'Microsoft.Compute/virtualMachines'
-//     protectionContainerName: 'iaasvmcontainer;iaasvmcontainerv2;${resourceGroup().name};${vm.name}'
-//     recoveryVaultName: backupVaultName
-//     sourceResourceId: vm.id
-//     enableDefaultTelemetry: enableReferencedModulesTelemetry
-//   }
-//   scope: az.resourceGroup(backupVaultResourceGroup)
-//   dependsOn: [
-//     vm_aadJoinExtension
-//     vm_domainJoinExtension
-//     vm_microsoftMonitoringAgentExtension
-//     vm_microsoftAntiMalwareExtension
-//     vm_networkWatcherAgentExtension
-//     vm_dependencyAgentExtension
-//     vm_desiredStateConfigurationExtension
-//     vm_customScriptExtension
-//   ]
-// }
+module vm_backup 'protected-item/main.bicep' = if (!empty(backupVaultName)) {
+  name: '${uniqueString(deployment().name, location)}-VM-Backup'
+  params: {
+    name: 'vm;iaasvmcontainerv2;${resourceGroup().name};${vm.name}'
+    location: location
+    policyId: az.resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', backupVaultName, backupPolicyName)
+    protectedItemType: 'Microsoft.Compute/virtualMachines'
+    protectionContainerName: 'iaasvmcontainer;iaasvmcontainerv2;${resourceGroup().name};${vm.name}'
+    recoveryVaultName: backupVaultName
+    sourceResourceId: vm.id
+    enableDefaultTelemetry: enableReferencedModulesTelemetry
+  }
+  scope: az.resourceGroup(backupVaultResourceGroup)
+  dependsOn: [
+    vm_aadJoinExtension
+    vm_domainJoinExtension
+    vm_microsoftMonitoringAgentExtension
+    vm_microsoftAntiMalwareExtension
+    vm_networkWatcherAgentExtension
+    vm_dependencyAgentExtension
+    vm_desiredStateConfigurationExtension
+    vm_customScriptExtension
+  ]
+}
 
 resource vm_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
