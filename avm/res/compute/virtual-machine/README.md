@@ -31,16 +31,19 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/virtual-machine:<version>`.
 
-- [Linux.Atmg](#example-1-linuxatmg)
+- [Using automanage for the VM.](#example-1-using-automanage-for-the-vm)
 - [Using only defaults](#example-2-using-only-defaults)
 - [Using large parameter set](#example-3-using-large-parameter-set)
 - [WAF-aligned](#example-4-waf-aligned)
-- [Windows.Atmg](#example-5-windowsatmg)
+- [Using automanage for the VM.](#example-5-using-automanage-for-the-vm)
 - [Using only defaults](#example-6-using-only-defaults)
 - [Using large parameter set](#example-7-using-large-parameter-set)
-- [Windows.Ssecmk](#example-8-windowsssecmk)
+- [Using disk encryption set for the VM.](#example-8-using-disk-encryption-set-for-the-vm)
 
-### Example 1: _Linux.Atmg_
+### Example 1: _Using automanage for the VM._
+
+This instance deploys the module with registering to an automation account.
+
 
 <details>
 
@@ -1541,7 +1544,10 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 5: _Windows.Atmg_
+### Example 5: _Using automanage for the VM._
+
+This instance deploys the module with registering to an automation account.
+
 
 <details>
 
@@ -2398,7 +2404,10 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 </details>
 <p>
 
-### Example 8: _Windows.Ssecmk_
+### Example 8: _Using disk encryption set for the VM._
+
+This instance deploys the module with disk enryption set.
+
 
 <details>
 
