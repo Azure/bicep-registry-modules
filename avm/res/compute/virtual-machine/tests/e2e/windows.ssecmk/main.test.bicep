@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Using disk encryption set for the VM.'
+metadata description = 'This instance deploys the module with disk enryption set.'
+
 // ========== //
 // Parameters //
 // ========== //

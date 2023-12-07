@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Using automanage for the VM.'
+metadata description = 'This instance deploys the module with registering to an automation account.'
+
 // ========== //
 // Parameters //
 // ========== //
