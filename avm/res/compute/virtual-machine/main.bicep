@@ -302,8 +302,6 @@ var identity = !empty(managedIdentities) ? {
   userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
 } : null
 
-var enableReferencedModulesTelemetry = false
-
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   'Data Operator for Managed Disks': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '959f8984-c045-4866-89c7-12bf9737be2e')
@@ -492,7 +490,6 @@ module vm_domainJoinExtension 'extension/main.bicep' = if (extensionDomainJoinCo
     protectedSettings: {
       Password: extensionDomainJoinPassword
     }
-    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -509,7 +506,6 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAn
     enableAutomaticUpgrade: contains(extensionAntiMalwareConfig, 'enableAutomaticUpgrade') ? extensionAntiMalwareConfig.enableAutomaticUpgrade : false
     settings: extensionAntiMalwareConfig.settings
     tags: extensionAntiMalwareConfig.?tags ?? tags
-    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -536,7 +532,6 @@ module vm_microsoftMonitoringAgentExtension 'extension/main.bicep' = if (extensi
     protectedSettings: {
       workspaceKey: !empty(monitoringWorkspaceId) ? vm_logAnalyticsWorkspace.listKeys().primarySharedKey : ''
     }
-    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -551,7 +546,6 @@ module vm_dependencyAgentExtension 'extension/main.bicep' = if (extensionDepende
     typeHandlerVersion: contains(extensionDependencyAgentConfig, 'typeHandlerVersion') ? extensionDependencyAgentConfig.typeHandlerVersion : '9.5'
     autoUpgradeMinorVersion: contains(extensionDependencyAgentConfig, 'autoUpgradeMinorVersion') ? extensionDependencyAgentConfig.autoUpgradeMinorVersion : true
     enableAutomaticUpgrade: contains(extensionDependencyAgentConfig, 'enableAutomaticUpgrade') ? extensionDependencyAgentConfig.enableAutomaticUpgrade : true
-    enableTelemetry: enableReferencedModulesTelemetry
     tags: extensionDependencyAgentConfig.?tags ?? tags
   }
 }
@@ -567,7 +561,6 @@ module vm_networkWatcherAgentExtension 'extension/main.bicep' = if (extensionNet
     typeHandlerVersion: contains(extensionNetworkWatcherAgentConfig, 'typeHandlerVersion') ? extensionNetworkWatcherAgentConfig.typeHandlerVersion : '1.4'
     autoUpgradeMinorVersion: contains(extensionNetworkWatcherAgentConfig, 'autoUpgradeMinorVersion') ? extensionNetworkWatcherAgentConfig.autoUpgradeMinorVersion : true
     enableAutomaticUpgrade: contains(extensionNetworkWatcherAgentConfig, 'enableAutomaticUpgrade') ? extensionNetworkWatcherAgentConfig.enableAutomaticUpgrade : false
-    enableTelemetry: enableReferencedModulesTelemetry
     tags: extensionNetworkWatcherAgentConfig.?tags ?? tags
   }
 }
@@ -586,7 +579,6 @@ module vm_desiredStateConfigurationExtension 'extension/main.bicep' = if (extens
     settings: contains(extensionDSCConfig, 'settings') ? extensionDSCConfig.settings : {}
     tags: extensionDSCConfig.?tags ?? tags
     protectedSettings: contains(extensionDSCConfig, 'protectedSettings') ? extensionDSCConfig.protectedSettings : {}
-    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -606,7 +598,6 @@ module vm_customScriptExtension 'extension/main.bicep' = if (extensionCustomScri
     }
     tags: extensionCustomScriptConfig.?tags ?? tags
     protectedSettings: extensionCustomScriptProtectedSetting
-    enableTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     vm_desiredStateConfigurationExtension
@@ -627,7 +618,6 @@ module vm_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionAzu
     forceUpdateTag: contains(extensionAzureDiskEncryptionConfig, 'forceUpdateTag') ? extensionAzureDiskEncryptionConfig.forceUpdateTag : '1.0'
     settings: extensionAzureDiskEncryptionConfig.settings
     tags: extensionAzureDiskEncryptionConfig.?tags ?? tags
-    enableTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     vm_customScriptExtension
