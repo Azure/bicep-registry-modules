@@ -44,9 +44,9 @@ foreach ($moduleFolderPath in $moduleFolderPaths) {
 # building paths
 $builtTestFileMap = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
 # $pathsToBuild | ForEach-Object -Parallel {
-$pathsToBuild | ForEach-Object -Parallel {
+$pathsToBuild | ForEach-Object {
   # $dict = $using:builtTestFileMap
-  $dict = $using:builtTestFileMap
+  $dict = $builtTestFileMap
   $builtTemplate = bicep build $_ --stdout | ConvertFrom-Json -AsHashtable
   $null = $dict.TryAdd($_, $builtTemplate)
 }
