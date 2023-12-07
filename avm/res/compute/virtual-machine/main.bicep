@@ -196,7 +196,7 @@ param roleAssignments roleAssignmentType
 param tags object?
 
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
+param enableTelemetry bool = true
 
 @description('Generated. Do not provide a value! This date value is used to generate a registration token.')
 param baseTime string = utcNow('u')
@@ -325,7 +325,7 @@ var builtInRoleNames = {
   'VM Scanner Operator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'd24ecba3-c1f4-40fa-a7bb-4588a071e8fd')
 }
 
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
+resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
   name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
   properties: {
     mode: 'Incremental'
@@ -492,7 +492,7 @@ module vm_domainJoinExtension 'extension/main.bicep' = if (extensionDomainJoinCo
     protectedSettings: {
       Password: extensionDomainJoinPassword
     }
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -509,7 +509,7 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAn
     enableAutomaticUpgrade: contains(extensionAntiMalwareConfig, 'enableAutomaticUpgrade') ? extensionAntiMalwareConfig.enableAutomaticUpgrade : false
     settings: extensionAntiMalwareConfig.settings
     tags: extensionAntiMalwareConfig.?tags ?? tags
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -536,7 +536,7 @@ module vm_microsoftMonitoringAgentExtension 'extension/main.bicep' = if (extensi
     protectedSettings: {
       workspaceKey: !empty(monitoringWorkspaceId) ? vm_logAnalyticsWorkspace.listKeys().primarySharedKey : ''
     }
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -551,7 +551,7 @@ module vm_dependencyAgentExtension 'extension/main.bicep' = if (extensionDepende
     typeHandlerVersion: contains(extensionDependencyAgentConfig, 'typeHandlerVersion') ? extensionDependencyAgentConfig.typeHandlerVersion : '9.5'
     autoUpgradeMinorVersion: contains(extensionDependencyAgentConfig, 'autoUpgradeMinorVersion') ? extensionDependencyAgentConfig.autoUpgradeMinorVersion : true
     enableAutomaticUpgrade: contains(extensionDependencyAgentConfig, 'enableAutomaticUpgrade') ? extensionDependencyAgentConfig.enableAutomaticUpgrade : true
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
     tags: extensionDependencyAgentConfig.?tags ?? tags
   }
 }
@@ -567,7 +567,7 @@ module vm_networkWatcherAgentExtension 'extension/main.bicep' = if (extensionNet
     typeHandlerVersion: contains(extensionNetworkWatcherAgentConfig, 'typeHandlerVersion') ? extensionNetworkWatcherAgentConfig.typeHandlerVersion : '1.4'
     autoUpgradeMinorVersion: contains(extensionNetworkWatcherAgentConfig, 'autoUpgradeMinorVersion') ? extensionNetworkWatcherAgentConfig.autoUpgradeMinorVersion : true
     enableAutomaticUpgrade: contains(extensionNetworkWatcherAgentConfig, 'enableAutomaticUpgrade') ? extensionNetworkWatcherAgentConfig.enableAutomaticUpgrade : false
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
     tags: extensionNetworkWatcherAgentConfig.?tags ?? tags
   }
 }
@@ -586,7 +586,7 @@ module vm_desiredStateConfigurationExtension 'extension/main.bicep' = if (extens
     settings: contains(extensionDSCConfig, 'settings') ? extensionDSCConfig.settings : {}
     tags: extensionDSCConfig.?tags ?? tags
     protectedSettings: contains(extensionDSCConfig, 'protectedSettings') ? extensionDSCConfig.protectedSettings : {}
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -606,7 +606,7 @@ module vm_customScriptExtension 'extension/main.bicep' = if (extensionCustomScri
     }
     tags: extensionCustomScriptConfig.?tags ?? tags
     protectedSettings: extensionCustomScriptProtectedSetting
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     vm_desiredStateConfigurationExtension
@@ -627,7 +627,7 @@ module vm_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionAzu
     forceUpdateTag: contains(extensionAzureDiskEncryptionConfig, 'forceUpdateTag') ? extensionAzureDiskEncryptionConfig.forceUpdateTag : '1.0'
     settings: extensionAzureDiskEncryptionConfig.settings
     tags: extensionAzureDiskEncryptionConfig.?tags ?? tags
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     vm_customScriptExtension
