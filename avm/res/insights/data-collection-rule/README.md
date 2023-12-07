@@ -445,7 +445,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 
 ### Example 3: _Collecting IIS logs_
 
-This instance deploys the module to setup collection of IIS logs.
+This instance deploys the module to setup the collection of IIS logs.
 
 
 <details>
@@ -723,7 +723,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 
 ### Example 5: _Collecting Linux-specific information_
 
-This instance deploys the module to setup collection of Linux-specific performance counters and Linux Syslog.
+This instance deploys the module to setup the collection of Linux-specific performance counters and Linux Syslog.
 
 
 <details>
@@ -1601,7 +1601,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
 
 ### Example 8: _Collecting Windows-specific information_
 
-This instance deploys the module to setup connection of Windows-specific performance counters and Windows Event Logs.
+This instance deploys the module to setup the connection of Windows-specific performance counters and Windows Event Logs.
 
 
 <details>
