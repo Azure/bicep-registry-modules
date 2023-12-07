@@ -23,12 +23,123 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/insights.activity-log-alert:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/insights/activity-log-alert:<version>`.
 
-- [Using large parameter set](#example-1-using-large-parameter-set)
-- [WAF-aligned](#example-2-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
-### Example 1: _Using large parameter set_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-ialadef'
+  params: {
+    // Required parameters
+    conditions: [
+      {
+        equals: 'ServiceHealth'
+        field: 'category'
+      }
+      {
+        anyOf: [
+          {
+            equals: 'Incident'
+            field: 'properties.incidentType'
+          }
+          {
+            equals: 'Maintenance'
+            field: 'properties.incidentType'
+          }
+        ]
+      }
+      {
+        containsAny: [
+          'Storage'
+        ]
+        field: 'properties.impactedServices[*].ServiceName'
+      }
+      {
+        containsAny: [
+          'West Europe'
+        ]
+        field: 'properties.impactedServices[*].ImpactedRegions[*].RegionName'
+      }
+    ]
+    name: 'ialadef001'
+    // Non-required parameters
+    location: 'global'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "conditions": {
+      "value": [
+        {
+          "equals": "ServiceHealth",
+          "field": "category"
+        },
+        {
+          "anyOf": [
+            {
+              "equals": "Incident",
+              "field": "properties.incidentType"
+            },
+            {
+              "equals": "Maintenance",
+              "field": "properties.incidentType"
+            }
+          ]
+        },
+        {
+          "containsAny": [
+            "Storage"
+          ],
+          "field": "properties.impactedServices[*].ServiceName"
+        },
+        {
+          "containsAny": [
+            "West Europe"
+          ],
+          "field": "properties.impactedServices[*].ImpactedRegions[*].RegionName"
+        }
+      ]
+    },
+    "name": {
+      "value": "ialadef001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "global"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -38,7 +149,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module activityLogAlert 'br:bicep/modules/insights.activity-log-alert:1.0.0' = {
+module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-ialamax'
   params: {
     // Required parameters
@@ -81,7 +192,7 @@ module activityLogAlert 'br:bicep/modules/insights.activity-log-alert:1.0.0' = {
         actionGroupId: '<actionGroupId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -169,8 +280,8 @@ module activityLogAlert 'br:bicep/modules/insights.activity-log-alert:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "roleAssignments": {
       "value": [
@@ -210,7 +321,7 @@ module activityLogAlert 'br:bicep/modules/insights.activity-log-alert:1.0.0' = {
 </details>
 <p>
 
-### Example 2: _WAF-aligned_
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -220,7 +331,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module activityLogAlert 'br:bicep/modules/insights.activity-log-alert:1.0.0' = {
+module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-ialawaf'
   params: {
     // Required parameters
@@ -263,7 +374,7 @@ module activityLogAlert 'br:bicep/modules/insights.activity-log-alert:1.0.0' = {
         actionGroupId: '<actionGroupId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     scopes: [
       '<id>'
     ]
@@ -334,8 +445,8 @@ module activityLogAlert 'br:bicep/modules/insights.activity-log-alert:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "scopes": {
       "value": [
@@ -373,7 +484,7 @@ module activityLogAlert 'br:bicep/modules/insights.activity-log-alert:1.0.0' = {
 | [`actions`](#parameter-actions) | array | The list of actions to take when alert triggers. |
 | [`alertDescription`](#parameter-alertdescription) | string | Description of the alert. |
 | [`enabled`](#parameter-enabled) | bool | Indicates whether this alert is enabled. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`scopes`](#parameter-scopes) | array | The list of resource IDs that this Activity Log Alert is scoped to. |
@@ -417,9 +528,9 @@ Indicates whether this alert is enabled.
 - Type: bool
 - Default: `True`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
