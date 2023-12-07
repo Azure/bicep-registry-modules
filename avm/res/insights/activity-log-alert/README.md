@@ -197,7 +197,7 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
         actionGroupId: '<actionGroupId>'
       }
     ]
-    location: '<location>'
+    location: 'global'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -286,7 +286,7 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
       ]
     },
     "location": {
-      "value": "<location>"
+      "value": "global"
     },
     "roleAssignments": {
       "value": [
@@ -379,7 +379,7 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
         actionGroupId: '<actionGroupId>'
       }
     ]
-    location: '<location>'
+    location: 'global'
     scopes: [
       '<id>'
     ]
@@ -451,7 +451,7 @@ module activityLogAlert 'br/public:avm/res/insights/activity-log-alert:<version>
       ]
     },
     "location": {
-      "value": "<location>"
+      "value": "global"
     },
     "scopes": {
       "value": [
