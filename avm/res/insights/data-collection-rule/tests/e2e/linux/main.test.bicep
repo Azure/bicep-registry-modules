@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Collecting Linux-specific information'
-metadata description = 'This instance deploys the module to setup collection of Linux-specific performance counters and Linux Syslog.'
+metadata description = 'This instance deploys the module to setup the collection of Linux-specific performance counters and Linux Syslog.'
 
 // ========== //
 // Parameters //
