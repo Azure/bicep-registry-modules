@@ -37,6 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     actionGroupName: 'dep-${namePrefix}-ag-${serviceShort}'
+    location: location
   }
 }
 
@@ -50,6 +51,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}001'
+    location: location
     criterias: [
       {
         criterionType: 'StaticThresholdCriterion'
