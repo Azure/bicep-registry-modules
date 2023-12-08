@@ -1,5 +1,10 @@
 # Metric Alerts `[Microsoft.Insights/metricAlerts]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys a Metric Alert.
 
 ## Navigation
@@ -23,12 +28,97 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/insights.metric-alert:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/insights/metric-alert:<version>`.
 
-- [Using large parameter set](#example-1-using-large-parameter-set)
-- [WAF-aligned](#example-2-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
-### Example 1: _Using large parameter set_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-imamin'
+  params: {
+    // Required parameters
+    criterias: [
+      {
+        criterionType: 'StaticThresholdCriterion'
+        metricName: 'Percentage CPU'
+        metricNamespace: 'microsoft.compute/virtualmachines'
+        name: 'HighCPU'
+        operator: 'GreaterThan'
+        threshold: '90'
+        timeAggregation: 'Average'
+      }
+    ]
+    name: 'imamin001'
+    // Non-required parameters
+    location: 'Global'
+    targetResourceRegion: 'westeurope'
+    targetResourceType: 'microsoft.compute/virtualmachines'
+    windowSize: 'PT15M'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "criterias": {
+      "value": [
+        {
+          "criterionType": "StaticThresholdCriterion",
+          "metricName": "Percentage CPU",
+          "metricNamespace": "microsoft.compute/virtualmachines",
+          "name": "HighCPU",
+          "operator": "GreaterThan",
+          "threshold": "90",
+          "timeAggregation": "Average"
+        }
+      ]
+    },
+    "name": {
+      "value": "imamin001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "Global"
+    },
+    "targetResourceRegion": {
+      "value": "westeurope"
+    },
+    "targetResourceType": {
+      "value": "microsoft.compute/virtualmachines"
+    },
+    "windowSize": {
+      "value": "PT15M"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -38,7 +128,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module metricAlert 'br:bicep/modules/insights.metric-alert:1.0.0' = {
+module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-imamax'
   params: {
     // Required parameters
@@ -59,7 +149,7 @@ module metricAlert 'br:bicep/modules/insights.metric-alert:1.0.0' = {
       '<actionGroupResourceId>'
     ]
     alertCriteriaType: 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: 'Global'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -127,8 +217,8 @@ module metricAlert 'br:bicep/modules/insights.metric-alert:1.0.0' = {
     "alertCriteriaType": {
       "value": "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "Global"
     },
     "roleAssignments": {
       "value": [
@@ -172,7 +262,7 @@ module metricAlert 'br:bicep/modules/insights.metric-alert:1.0.0' = {
 </details>
 <p>
 
-### Example 2: _WAF-aligned_
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -182,7 +272,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module metricAlert 'br:bicep/modules/insights.metric-alert:1.0.0' = {
+module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-imawaf'
   params: {
     // Required parameters
@@ -203,7 +293,7 @@ module metricAlert 'br:bicep/modules/insights.metric-alert:1.0.0' = {
       '<actionGroupResourceId>'
     ]
     alertCriteriaType: 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: 'Global'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -254,8 +344,8 @@ module metricAlert 'br:bicep/modules/insights.metric-alert:1.0.0' = {
     "alertCriteriaType": {
       "value": "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "Global"
     },
     "tags": {
       "value": {
@@ -306,7 +396,7 @@ module metricAlert 'br:bicep/modules/insights.metric-alert:1.0.0' = {
 | [`alertDescription`](#parameter-alertdescription) | string | Description of the alert. |
 | [`autoMitigate`](#parameter-automitigate) | bool | The flag that indicates whether the alert should be auto resolved or not. |
 | [`enabled`](#parameter-enabled) | bool | Indicates whether this alert is enabled. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`evaluationFrequency`](#parameter-evaluationfrequency) | string | how often the metric alert is evaluated represented in ISO 8601 duration format. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -393,9 +483,9 @@ Indicates whether this alert is enabled.
 - Type: bool
 - Default: `True`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
