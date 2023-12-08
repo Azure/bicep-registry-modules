@@ -96,6 +96,6 @@ runs:
           Write-Verbose "Invoke function with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Confirm-ModuleIsPublished @functionInput -Verbose
+          Confirm-ModuleIsPublished @functionInput
 
           Write-Output '::endgroup::'
