@@ -1,0 +1,329 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.23.1.45101",
+      "templateHash": "12406976097155234839"
+    },
+    "name": "Scheduled Query Rules",
+    "description": "This module deploys a Scheduled Query Rule.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "roleAssignmentType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "roleDefinitionIdOrName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+            }
+          },
+          "principalId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+            }
+          },
+          "principalType": {
+            "type": "string",
+            "allowedValues": [
+              "Device",
+              "ForeignGroup",
+              "Group",
+              "ServicePrincipal",
+              "User"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The principal type of the assigned principal ID."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The description of the role assignment."
+            }
+          },
+          "condition": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+            }
+          },
+          "conditionVersion": {
+            "type": "string",
+            "allowedValues": [
+              "2.0"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Version of the condition."
+            }
+          },
+          "delegatedManagedIdentityResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The Resource Id of the delegated managed identity resource."
+            }
+          }
+        }
+      },
+      "nullable": true
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Alert."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "alertDescription": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The description of the scheduled query rule."
+      }
+    },
+    "enabled": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. The flag which indicates whether this scheduled query rule is enabled."
+      }
+    },
+    "kind": {
+      "type": "string",
+      "defaultValue": "LogAlert",
+      "allowedValues": [
+        "LogAlert",
+        "LogToMetric"
+      ],
+      "metadata": {
+        "description": "Optional. Indicates the type of scheduled query rule."
+      }
+    },
+    "autoMitigate": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kind LogAlert."
+      }
+    },
+    "queryTimeRange": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. If specified (in ISO 8601 duration format) then overrides the query time range. Relevant only for rules of the kind LogAlert."
+      }
+    },
+    "skipQueryValidation": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. The flag which indicates whether the provided query should be validated or not. Relevant only for rules of the kind LogAlert."
+      }
+    },
+    "targetResourceTypes": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of resource type of the target resource(s) on which the alert is created/updated. For example if the scope is a resource group and targetResourceTypes is Microsoft.Compute/virtualMachines, then a different alert will be fired for each virtual machine in the resource group which meet the alert criteria. Relevant only for rules of the kind LogAlert."
+      }
+    },
+    "roleAssignments": {
+      "$ref": "#/definitions/roleAssignmentType",
+      "metadata": {
+        "description": "Optional. Array of role assignments to create."
+      }
+    },
+    "scopes": {
+      "type": "array",
+      "metadata": {
+        "description": "Required. The list of resource IDs that this scheduled query rule is scoped to."
+      }
+    },
+    "severity": {
+      "type": "int",
+      "defaultValue": 3,
+      "allowedValues": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "metadata": {
+        "description": "Optional. Severity of the alert. Should be an integer between [0-4]. Value of 0 is severest. Relevant and required only for rules of the kind LogAlert."
+      }
+    },
+    "evaluationFrequency": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. How often the scheduled query rule is evaluated represented in ISO 8601 duration format. Relevant and required only for rules of the kind LogAlert."
+      }
+    },
+    "windowSize": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The period of time (in ISO 8601 duration format) on which the Alert query will be executed (bin size). Relevant and required only for rules of the kind LogAlert."
+      }
+    },
+    "actions": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Actions to invoke when the alert fires."
+      }
+    },
+    "criterias": {
+      "type": "object",
+      "metadata": {
+        "description": "Required. The rule criteria that defines the conditions of the scheduled query rule."
+      }
+    },
+    "suppressForMinutes": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled.Relevant only for rules of the kind LogAlert."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "variables": {
+    "builtInRoleNames": {
+      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+    }
+  },
+  "resources": {
+    "defaultTelemetry": {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    "queryRule": {
+      "type": "Microsoft.Insights/scheduledQueryRules",
+      "apiVersion": "2021-02-01-preview",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "kind": "[parameters('kind')]",
+      "properties": {
+        "actions": {
+          "actionGroups": "[parameters('actions')]",
+          "customProperties": {}
+        },
+        "autoMitigate": "[if(equals(parameters('kind'), 'LogAlert'), parameters('autoMitigate'), null())]",
+        "criteria": "[parameters('criterias')]",
+        "description": "[parameters('alertDescription')]",
+        "displayName": "[parameters('name')]",
+        "enabled": "[parameters('enabled')]",
+        "evaluationFrequency": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('evaluationFrequency')))), parameters('evaluationFrequency'), null())]",
+        "muteActionsDuration": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('suppressForMinutes')))), parameters('suppressForMinutes'), null())]",
+        "overrideQueryTimeRange": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('queryTimeRange')))), parameters('queryTimeRange'), null())]",
+        "scopes": "[parameters('scopes')]",
+        "severity": "[if(equals(parameters('kind'), 'LogAlert'), parameters('severity'), null())]",
+        "skipQueryValidation": "[if(equals(parameters('kind'), 'LogAlert'), parameters('skipQueryValidation'), null())]",
+        "targetResourceTypes": "[if(equals(parameters('kind'), 'LogAlert'), parameters('targetResourceTypes'), null())]",
+        "windowSize": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('windowSize')))), parameters('windowSize'), null())]"
+      }
+    },
+    "queryRule_roleAssignments": {
+      "copy": {
+        "name": "queryRule_roleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.Insights/scheduledQueryRules/{0}', parameters('name'))]",
+      "name": "[guid(resourceId('Microsoft.Insights/scheduledQueryRules', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "properties": {
+        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "queryRule"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The Name of the created query rule."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the created query rule."
+      },
+      "value": "[resourceId('Microsoft.Insights/scheduledQueryRules', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The Resource Group of the created query rule."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('queryRule', '2021-02-01-preview', 'full').location]"
+    }
+  }
+}
