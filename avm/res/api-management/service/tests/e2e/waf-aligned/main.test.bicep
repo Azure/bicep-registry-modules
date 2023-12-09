@@ -121,12 +121,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     diagnosticSettings: [
       {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
         eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
         storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
@@ -138,10 +132,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         name: 'aadProvider'
       }
     ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     namedValues: [
       {
         displayName: 'apimkey'
