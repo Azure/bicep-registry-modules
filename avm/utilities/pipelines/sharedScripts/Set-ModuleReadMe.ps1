@@ -1238,7 +1238,7 @@ function Set-UsageExamplesSection {
     $buildTestFileMap = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
     $testFilePaths | ForEach-Object -Parallel {
         $folderName = Split-Path (Split-Path -Path $_) -Leaf
-        $buildTemplate = bicep build $_ --stdout | ConvertFrom-Json -AsHashtable
+        $buildTemplate = (bicep build $_ --stdout 2>$null) | ConvertFrom-Json -AsHashtable
 
         $dict = $using:buildTestFileMap
         $null = $dict.TryAdd($folderName, $buildTemplate)
