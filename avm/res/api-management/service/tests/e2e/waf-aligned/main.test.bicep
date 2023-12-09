@@ -18,7 +18,7 @@ param location string = deployment().location
 param serviceShort string = 'apiswaf'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '[[namePrefix]]'
+param namePrefix string = '#_namePrefix_#'
 
 @description('Optional. The secret to leverage for authorization server authentication.')
 @secure()
