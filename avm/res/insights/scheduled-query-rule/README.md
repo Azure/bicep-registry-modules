@@ -770,9 +770,9 @@ The period of time (in ISO 8601 duration format) on which the Alert query will b
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The Name of the created query rule. |
-| `resourceGroupName` | string | The Resource Group of the created query rule. |
-| `resourceId` | string | The resource ID of the created query rule. |
+| `name` | string | The Name of the created scheduled query rule. |
+| `resourceGroupName` | string | The Resource Group of the created scheduled query rule. |
+| `resourceId` | string | The resource ID of the created scheduled query rule. |
 
 ## Cross-referenced modules
 

@@ -136,13 +136,13 @@ resource queryRule_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
   scope: queryRule
 }]
 
-@description('The Name of the created query rule.')
+@description('The Name of the created scheduled query rule.')
 output name string = queryRule.name
 
-@description('The resource ID of the created query rule.')
+@description('The resource ID of the created scheduled query rule.')
 output resourceId string = queryRule.id
 
-@description('The Resource Group of the created query rule.')
+@description('The Resource Group of the created scheduled query rule.')
 output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')

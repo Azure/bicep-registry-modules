@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "11679232539628900961"
+      "templateHash": "16940050529370354629"
     },
     "name": "Scheduled Query Rules",
     "description": "This module deploys a Scheduled Query Rule.",
@@ -306,21 +306,21 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The Name of the created query rule."
+        "description": "The Name of the created scheduled query rule."
       },
       "value": "[parameters('name')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the created query rule."
+        "description": "The resource ID of the created scheduled query rule."
       },
       "value": "[resourceId('Microsoft.Insights/scheduledQueryRules', parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The Resource Group of the created query rule."
+        "description": "The Resource Group of the created scheduled query rule."
       },
       "value": "[resourceGroup().name]"
     },
