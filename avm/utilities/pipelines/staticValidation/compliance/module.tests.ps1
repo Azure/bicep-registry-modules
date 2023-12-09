@@ -484,7 +484,7 @@ Describe 'Module tests' -Tag 'Module' {
         }
 
         $incorrectParameters = @()
-        foreach ($parameter in ($templateFileParameters.Keys | Sort-Object)) {
+        foreach ($parameter in ($templateFileParameters.PSBase.Keys | Sort-Object)) {
           # Parameters in the object are formatted like
           # - tags
           # - customerManagedKey.keyVaultResourceId
@@ -511,7 +511,7 @@ Describe 'Module tests' -Tag 'Module' {
         }
 
         $incorrectParameters = @()
-        foreach ($parameter in ($templateFileParameters.Keys | Sort-Object)) {
+        foreach ($parameter in ($templateFileParameters.PSBase.Keys | Sort-Object)) {
           $data = $templateFileParameters.$parameter.metadata.description
           if ($data -notmatch '(?s)^[A-Z][a-zA-Z]+\. .+\.$') {
             $incorrectParameters += $parameter
@@ -535,7 +535,7 @@ Describe 'Module tests' -Tag 'Module' {
         }
 
         $incorrectParameters = @()
-        foreach ($parameter in ($templateFileParameters.Keys | Sort-Object)) {
+        foreach ($parameter in ($templateFileParameters.PSBase.Keys | Sort-Object)) {
           $data = $templateFileParameters.$parameter.metadata.description
           switch -regex ($data) {
             '^Conditional. .*' {
@@ -556,7 +556,7 @@ Describe 'Module tests' -Tag 'Module' {
         )
 
         $incorrectParameters = @()
-        foreach ($parameter in ($templateFileParameters.Keys | Sort-Object)) {
+        foreach ($parameter in ($templateFileParameters.PSBase.Keys | Sort-Object)) {
           $isRequired = Get-IsParameterRequired -TemplateFileContent $templateFileContent -Parameter $templateFileParameters.$parameter
 
           if ($isRequired) {
