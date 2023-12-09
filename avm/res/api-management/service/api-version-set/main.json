@@ -1,0 +1,88 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "12233980723609740158"
+    },
+    "name": "API Management Service API Version Sets",
+    "description": "This module deploys an API Management Service API Version Set.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "default",
+      "metadata": {
+        "description": "Optional. API Version set name."
+      }
+    },
+    "properties": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. API Version set properties."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/apiVersionSets",
+      "apiVersion": "2021-08-01",
+      "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+      "properties": "[parameters('properties')]"
+    }
+  ],
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the API Version set."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service/apiVersionSets', parameters('apiManagementServiceName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the API Version set."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the API Version set was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

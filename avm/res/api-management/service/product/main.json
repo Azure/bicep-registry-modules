@@ -1,0 +1,395 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "2758822676627115160"
+    },
+    "name": "API Management Service Products",
+    "description": "This module deploys an API Management Service Product.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "approvalRequired": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the products APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the products APIs. Can be present only if subscriptionRequired property is present and has a value of false."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    },
+    "description": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Product description. May include HTML formatting tags."
+      }
+    },
+    "apis": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Array of Product APIs."
+      }
+    },
+    "groups": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Array of Product Groups."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Product Name."
+      }
+    },
+    "state": {
+      "type": "string",
+      "defaultValue": "published",
+      "metadata": {
+        "description": "Optional. whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators. Default state of Product is notPublished. - notPublished or published."
+      }
+    },
+    "subscriptionRequired": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether a product subscription is required for accessing APIs included in this product. If true, the product is referred to as \"protected\" and a valid subscription key is required for a request to an API included in the product to succeed. If false, the product is referred to as \"open\" and requests to an API included in the product can be made without a subscription key. If property is omitted when creating a new product it's value is assumed to be true."
+      }
+    },
+    "subscriptionsLimit": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "Optional. Whether the number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false."
+      }
+    },
+    "terms": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Product terms of use. Developers trying to subscribe to the product will be presented and required to accept these terms before they can complete the subscription process."
+      }
+    }
+  },
+  "variables": {
+    "enableReferencedModulesTelemetry": false
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/products",
+      "apiVersion": "2021-08-01",
+      "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+      "properties": {
+        "description": "[parameters('description')]",
+        "displayName": "[parameters('name')]",
+        "terms": "[parameters('terms')]",
+        "subscriptionRequired": "[parameters('subscriptionRequired')]",
+        "approvalRequired": "[if(parameters('subscriptionRequired'), parameters('approvalRequired'), null())]",
+        "subscriptionsLimit": "[if(parameters('subscriptionRequired'), parameters('subscriptionsLimit'), null())]",
+        "state": "[parameters('state')]"
+      }
+    },
+    {
+      "copy": {
+        "name": "product_apis",
+        "count": "[length(parameters('apis'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Api-{1}', deployment().name, copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "apiManagementServiceName": {
+            "value": "[parameters('apiManagementServiceName')]"
+          },
+          "name": {
+            "value": "[parameters('apis')[copyIndex()].name]"
+          },
+          "productName": {
+            "value": "[parameters('name')]"
+          },
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.22.6.54827",
+              "templateHash": "16488730655399972556"
+            },
+            "name": "API Management Service Products APIs",
+            "description": "This module deploys an API Management Service Product API.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "apiManagementServiceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "productName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Product. Required if the template is used in a standalone deployment."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the product API."
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "type": "Microsoft.ApiManagement/service/products/apis",
+              "apiVersion": "2021-08-01",
+              "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]"
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the product API."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/service/products/apis', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the product API."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the product API was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "copy": {
+        "name": "product_groups",
+        "count": "[length(parameters('groups'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Group-{1}', deployment().name, copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "apiManagementServiceName": {
+            "value": "[parameters('apiManagementServiceName')]"
+          },
+          "name": {
+            "value": "[parameters('groups')[copyIndex()].name]"
+          },
+          "productName": {
+            "value": "[parameters('name')]"
+          },
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.22.6.54827",
+              "templateHash": "14085709622188800883"
+            },
+            "name": "API Management Service Products Groups",
+            "description": "This module deploys an API Management Service Product Group.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "apiManagementServiceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "productName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Product. Required if the template is used in a standalone deployment."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the product group."
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "type": "Microsoft.ApiManagement/service/products/groups",
+              "apiVersion": "2021-08-01",
+              "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]"
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the product group."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/service/products/groups', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the product group."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the product group was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the API management service product."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service/products', parameters('apiManagementServiceName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the API management service product."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the API management service product was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "apiResourceIds": {
+      "type": "array",
+      "metadata": {
+        "description": "The Resources IDs of the API management service product APIs."
+      },
+      "copy": {
+        "count": "[length(range(0, length(parameters('apis'))))]",
+        "input": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-Api-{1}', deployment().name, range(0, length(parameters('apis')))[copyIndex()])), '2022-09-01').outputs.resourceId.value]"
+      }
+    },
+    "groupResourceIds": {
+      "type": "array",
+      "metadata": {
+        "description": "The Resources IDs of the API management service product groups."
+      },
+      "copy": {
+        "count": "[length(range(0, length(parameters('groups'))))]",
+        "input": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-Group-{1}', deployment().name, range(0, length(parameters('groups')))[copyIndex()])), '2022-09-01').outputs.resourceId.value]"
+      }
+    }
+  }
+}

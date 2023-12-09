@@ -1,0 +1,180 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "13822474427587974385"
+    },
+    "name": "API Management Service Identity Providers",
+    "description": "This module deploys an API Management Service Identity Provider.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    },
+    "enableIdentityProviders": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Used to enable the deployment of the identityProviders child resource."
+      }
+    },
+    "allowedTenants": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of Allowed Tenants when configuring Azure Active Directory login. - string."
+      }
+    },
+    "authority": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. OpenID Connect discovery endpoint hostname for AAD or AAD B2C."
+      }
+    },
+    "clientId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Conditional. Client ID of the Application in the external Identity Provider. Required if identity provider is used."
+      }
+    },
+    "clientSecret": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Conditional. Client secret of the Application in external Identity Provider, used to authenticate login request. Required if identity provider is used."
+      }
+    },
+    "passwordResetPolicyName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Password Reset Policy Name. Only applies to AAD B2C Identity Provider."
+      }
+    },
+    "profileEditingPolicyName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Profile Editing Policy Name. Only applies to AAD B2C Identity Provider."
+      }
+    },
+    "signInPolicyName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Signin Policy Name. Only applies to AAD B2C Identity Provider."
+      }
+    },
+    "signInTenant": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The TenantId to use instead of Common when logging into Active Directory."
+      }
+    },
+    "signUpPolicyName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Signup Policy Name. Only applies to AAD B2C Identity Provider."
+      }
+    },
+    "type": {
+      "type": "string",
+      "defaultValue": "aad",
+      "allowedValues": [
+        "aad",
+        "aadB2C",
+        "facebook",
+        "google",
+        "microsoft",
+        "twitter"
+      ],
+      "metadata": {
+        "description": "Optional. Identity Provider Type identifier."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Identity provider name."
+      }
+    }
+  },
+  "variables": {
+    "isAadB2C": "[equals(parameters('type'), 'aadB2C')]"
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "condition": "[parameters('enableIdentityProviders')]",
+      "type": "Microsoft.ApiManagement/service/identityProviders",
+      "apiVersion": "2021-08-01",
+      "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+      "properties": {
+        "type": "[parameters('type')]",
+        "signinTenant": "[parameters('signInTenant')]",
+        "allowedTenants": "[parameters('allowedTenants')]",
+        "authority": "[parameters('authority')]",
+        "signupPolicyName": "[if(variables('isAadB2C'), parameters('signUpPolicyName'), null())]",
+        "signinPolicyName": "[if(variables('isAadB2C'), parameters('signInPolicyName'), null())]",
+        "profileEditingPolicyName": "[if(variables('isAadB2C'), parameters('profileEditingPolicyName'), null())]",
+        "passwordResetPolicyName": "[if(variables('isAadB2C'), parameters('passwordResetPolicyName'), null())]",
+        "clientId": "[parameters('clientId')]",
+        "clientSecret": "[parameters('clientSecret')]"
+      }
+    }
+  ],
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the API management service identity provider."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service/identityProviders', parameters('apiManagementServiceName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the API management service identity provider."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the API management service identity provider was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

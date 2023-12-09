@@ -1,0 +1,210 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "7988688467600216709"
+    },
+    "name": "API Management Service Authorization Servers",
+    "description": "This module deploys an API Management Service Authorization Server.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Identifier of the authorization server."
+      }
+    },
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "authorizationEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. OAuth authorization endpoint. See <http://tools.ietf.org/html/rfc6749#section-3.2>."
+      }
+    },
+    "authorizationMethods": {
+      "type": "array",
+      "defaultValue": [
+        "GET"
+      ],
+      "metadata": {
+        "description": "Optional. HTTP verbs supported by the authorization endpoint. GET must be always present. POST is optional. - HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE."
+      }
+    },
+    "bearerTokenSendingMethods": {
+      "type": "array",
+      "defaultValue": [
+        "authorizationHeader"
+      ],
+      "metadata": {
+        "description": "Optional. Specifies the mechanism by which access token is passed to the API. - authorizationHeader or query."
+      }
+    },
+    "clientAuthenticationMethod": {
+      "type": "array",
+      "defaultValue": [
+        "Basic"
+      ],
+      "metadata": {
+        "description": "Optional. Method of authentication supported by the token endpoint of this authorization server. Possible values are Basic and/or Body. When Body is specified, client credentials and other parameters are passed within the request body in the application/x-www-form-urlencoded format. - Basic or Body."
+      }
+    },
+    "clientId": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Required. Client or app ID registered with this authorization server."
+      }
+    },
+    "clientRegistrationEndpoint": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Optional reference to a page where client or app registration for this authorization server is performed. Contains absolute URL to entity being referenced."
+      }
+    },
+    "clientSecret": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Required. Client or app secret registered with this authorization server. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    },
+    "defaultScope": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Access token scope that is going to be requested by default. Can be overridden at the API level. Should be provided in the form of a string containing space-delimited values."
+      }
+    },
+    "serverDescription": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Description of the authorization server. Can contain HTML formatting tags."
+      }
+    },
+    "grantTypes": {
+      "type": "array",
+      "metadata": {
+        "description": "Required. Form of an authorization grant, which the client uses to request the access token. - authorizationCode, implicit, resourceOwnerPassword, clientCredentials."
+      }
+    },
+    "resourceOwnerPassword": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner password."
+      }
+    },
+    "resourceOwnerUsername": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner username."
+      }
+    },
+    "supportState": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. If true, authorization server will include state parameter from the authorization request to its response. Client may use state parameter to raise protocol security."
+      }
+    },
+    "tokenBodyParameters": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {\"name\" : \"name value\", \"value\": \"a value\"}. - TokenBodyParameterContract object."
+      }
+    },
+    "tokenEndpoint": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. OAuth token endpoint. Contains absolute URI to entity being referenced."
+      }
+    }
+  },
+  "variables": {
+    "defaultAuthorizationMethods": [
+      "GET"
+    ],
+    "setAuthorizationMethods": "[union(parameters('authorizationMethods'), variables('defaultAuthorizationMethods'))]"
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/authorizationServers",
+      "apiVersion": "2021-08-01",
+      "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+      "properties": {
+        "description": "[parameters('serverDescription')]",
+        "authorizationMethods": "[variables('setAuthorizationMethods')]",
+        "clientAuthenticationMethod": "[parameters('clientAuthenticationMethod')]",
+        "tokenBodyParameters": "[parameters('tokenBodyParameters')]",
+        "tokenEndpoint": "[parameters('tokenEndpoint')]",
+        "supportState": "[parameters('supportState')]",
+        "defaultScope": "[parameters('defaultScope')]",
+        "bearerTokenSendingMethods": "[parameters('bearerTokenSendingMethods')]",
+        "resourceOwnerUsername": "[parameters('resourceOwnerUsername')]",
+        "resourceOwnerPassword": "[parameters('resourceOwnerPassword')]",
+        "displayName": "[parameters('name')]",
+        "clientRegistrationEndpoint": "[parameters('clientRegistrationEndpoint')]",
+        "authorizationEndpoint": "[parameters('authorizationEndpoint')]",
+        "grantTypes": "[parameters('grantTypes')]",
+        "clientId": "[parameters('clientId')]",
+        "clientSecret": "[parameters('clientSecret')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the API management service authorization server."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the API management service authorization server."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service/authorizationServers', parameters('apiManagementServiceName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the API management service authorization server was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

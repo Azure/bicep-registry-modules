@@ -1,0 +1,157 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "3713166604792624713"
+    },
+    "name": "API Management Service Backends",
+    "description": "This module deploys an API Management Service Backend.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Backend Name."
+      }
+    },
+    "credentials": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Backend Credentials Contract Properties."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    },
+    "description": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Backend Description."
+      }
+    },
+    "protocol": {
+      "type": "string",
+      "defaultValue": "http",
+      "metadata": {
+        "description": "Optional. Backend communication protocol. - http or soap."
+      }
+    },
+    "proxy": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Backend Proxy Contract Properties."
+      }
+    },
+    "resourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps."
+      }
+    },
+    "serviceFabricCluster": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Backend Service Fabric Cluster Properties."
+      }
+    },
+    "title": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Backend Title."
+      }
+    },
+    "tls": {
+      "type": "object",
+      "defaultValue": {
+        "validateCertificateChain": false,
+        "validateCertificateName": false
+      },
+      "metadata": {
+        "description": "Optional. Backend TLS Properties."
+      }
+    },
+    "url": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Runtime URL of the Backend."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.ApiManagement/service/backends",
+      "apiVersion": "2021-08-01",
+      "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+      "properties": {
+        "title": "[if(not(empty(parameters('title'))), parameters('title'), null())]",
+        "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
+        "resourceId": "[if(not(empty(parameters('resourceId'))), parameters('resourceId'), null())]",
+        "properties": {
+          "serviceFabricCluster": "[if(not(empty(parameters('serviceFabricCluster'))), parameters('serviceFabricCluster'), null())]"
+        },
+        "credentials": "[if(not(empty(parameters('credentials'))), parameters('credentials'), null())]",
+        "proxy": "[if(not(empty(parameters('proxy'))), parameters('proxy'), null())]",
+        "tls": "[if(not(empty(parameters('tls'))), parameters('tls'), null())]",
+        "url": "[parameters('url')]",
+        "protocol": "[parameters('protocol')]"
+      }
+    }
+  ],
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the API management service backend."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service/backends', parameters('apiManagementServiceName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the API management service backend."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the API management service backend was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

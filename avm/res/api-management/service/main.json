@@ -1,0 +1,3098 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.23.1.45101",
+      "templateHash": "12791748357960289440"
+    },
+    "name": "API Management Services",
+    "description": "This module deploys an API Management Service.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "managedIdentitiesType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "roleAssignmentType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "roleDefinitionIdOrName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+            }
+          },
+          "principalId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+            }
+          },
+          "principalType": {
+            "type": "string",
+            "allowedValues": [
+              "Device",
+              "ForeignGroup",
+              "Group",
+              "ServicePrincipal",
+              "User"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The principal type of the assigned principal ID."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The description of the role assignment."
+            }
+          },
+          "condition": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+            }
+          },
+          "conditionVersion": {
+            "type": "string",
+            "allowedValues": [
+              "2.0"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Version of the condition."
+            }
+          },
+          "delegatedManagedIdentityResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The Resource Id of the delegated managed identity resource."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "diagnosticSettingType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of diagnostic setting."
+            }
+          },
+          "logCategoriesAndGroups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                  }
+                },
+                "categoryGroup": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+            }
+          },
+          "metricCategories": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+            }
+          },
+          "logAnalyticsDestinationType": {
+            "type": "string",
+            "allowedValues": [
+              "AzureDiagnostics",
+              "Dedicated"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+            }
+          },
+          "workspaceResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+            }
+          },
+          "storageAccountResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+            }
+          },
+          "eventHubAuthorizationRuleResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+            }
+          },
+          "eventHubName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+            }
+          },
+          "marketplacePartnerResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+            }
+          }
+        }
+      },
+      "nullable": true
+    }
+  },
+  "parameters": {
+    "additionalLocations": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Additional datacenter locations of the API Management service."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the API Management service."
+      }
+    },
+    "certificates": {
+      "type": "array",
+      "defaultValue": [],
+      "maxLength": 10,
+      "metadata": {
+        "description": "Optional. List of Certificates that need to be installed in the API Management service. Max supported certificates that can be installed is 10."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    },
+    "customProperties": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Custom properties of the API Management service."
+      }
+    },
+    "disableGateway": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Property only valid for an API Management service deployed in multiple locations. This can be used to disable the gateway in master region."
+      }
+    },
+    "enableClientCertificate": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Property only meant to be used for Consumption SKU Service. This enforces a client certificate to be presented on each request to the gateway. This also enables the ability to authenticate the certificate in the policy on the gateway."
+      }
+    },
+    "hostnameConfigurations": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Custom hostname configuration of the API Management service."
+      }
+    },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentitiesType",
+      "metadata": {
+        "description": "Optional. The managed identity definition for this resource."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all Resources."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "minApiVersion": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Limit control plane API calls to API Management service with version equal to or newer than this value."
+      }
+    },
+    "notificationSenderEmail": {
+      "type": "string",
+      "defaultValue": "apimgmt-noreply@mail.windowsazure.com",
+      "metadata": {
+        "description": "Optional. The notification sender email address for the service."
+      }
+    },
+    "publisherEmail": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The email address of the owner of the service."
+      }
+    },
+    "publisherName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the owner of the service."
+      }
+    },
+    "restore": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Undelete API Management Service if it was previously soft-deleted. If this flag is specified and set to True all other properties will be ignored."
+      }
+    },
+    "roleAssignments": {
+      "$ref": "#/definitions/roleAssignmentType",
+      "metadata": {
+        "description": "Optional. Array of role assignments to create."
+      }
+    },
+    "sku": {
+      "type": "string",
+      "defaultValue": "Developer",
+      "allowedValues": [
+        "Consumption",
+        "Developer",
+        "Basic",
+        "Standard",
+        "Premium"
+      ],
+      "metadata": {
+        "description": "Optional. The pricing tier of this API Management service."
+      }
+    },
+    "skuCount": {
+      "type": "int",
+      "defaultValue": 1,
+      "allowedValues": [
+        1,
+        2
+      ],
+      "metadata": {
+        "description": "Optional. The instance size of this API Management service."
+      }
+    },
+    "subnetResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "virtualNetworkType": {
+      "type": "string",
+      "defaultValue": "None",
+      "allowedValues": [
+        "None",
+        "External",
+        "Internal"
+      ],
+      "metadata": {
+        "description": "Optional. The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only."
+      }
+    },
+    "diagnosticSettings": {
+      "$ref": "#/definitions/diagnosticSettingType",
+      "metadata": {
+        "description": "Optional. The diagnostic settings of the service."
+      }
+    },
+    "zones": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. A list of availability zones denoting where the resource needs to come from."
+      }
+    },
+    "newGuidValue": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "Optional. Necessary to create a new GUID."
+      }
+    },
+    "apis": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. APIs."
+      }
+    },
+    "apiVersionSets": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. API Version Sets."
+      }
+    },
+    "authorizationServers": {
+      "type": "secureObject",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Authorization servers."
+      }
+    },
+    "backends": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Backends."
+      }
+    },
+    "caches": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Caches."
+      }
+    },
+    "identityProviders": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Identity providers."
+      }
+    },
+    "namedValues": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Named values."
+      }
+    },
+    "policies": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Policies."
+      }
+    },
+    "portalsettings": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Portal settings."
+      }
+    },
+    "products": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Products."
+      }
+    },
+    "subscriptions": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Subscriptions."
+      }
+    }
+  },
+  "variables": {
+    "enableReferencedModulesTelemetry": false,
+    "authorizationServerList": "[if(not(empty(parameters('authorizationServers'))), parameters('authorizationServers').secureList, createArray())]",
+    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "builtInRoleNames": {
+      "API Management Developer Portal Content Editor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'c031e6a8-4391-4de0-8d69-4706a7ed3729')]",
+      "API Management Service Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '312a565d-c81f-4fd8-895a-4e21e48d571c')]",
+      "API Management Service Operator Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e022efe7-f5ba-4159-bbe4-b44f577e9b61')]",
+      "API Management Service Reader Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '71522526-b88f-4d52-b57f-d31fc3546d0d')]",
+      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+    }
+  },
+  "resources": {
+    "defaultTelemetry": {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    "service": {
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2021-08-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "sku": {
+        "name": "[parameters('sku')]",
+        "capacity": "[parameters('skuCount')]"
+      },
+      "zones": "[parameters('zones')]",
+      "identity": "[variables('identity')]",
+      "properties": {
+        "publisherEmail": "[parameters('publisherEmail')]",
+        "publisherName": "[parameters('publisherName')]",
+        "notificationSenderEmail": "[parameters('notificationSenderEmail')]",
+        "hostnameConfigurations": "[parameters('hostnameConfigurations')]",
+        "additionalLocations": "[parameters('additionalLocations')]",
+        "customProperties": "[parameters('customProperties')]",
+        "certificates": "[parameters('certificates')]",
+        "enableClientCertificate": "[if(parameters('enableClientCertificate'), true(), null())]",
+        "disableGateway": "[parameters('disableGateway')]",
+        "virtualNetworkType": "[parameters('virtualNetworkType')]",
+        "virtualNetworkConfiguration": "[if(not(empty(parameters('subnetResourceId'))), createObject('subnetResourceId', parameters('subnetResourceId')), null())]",
+        "apiVersionConstraint": "[if(not(empty(parameters('minApiVersion'))), createObject('minApiVersion', parameters('minApiVersion')), null())]",
+        "restore": "[parameters('restore')]"
+      }
+    },
+    "service_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.ApiManagement/service/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "service"
+      ]
+    },
+    "service_diagnosticSettings": {
+      "copy": {
+        "name": "service_diagnosticSettings",
+        "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
+      },
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[format('Microsoft.ApiManagement/service/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+      "properties": {
+        "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
+        "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+        "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
+        "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
+        "metrics": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics', 'timeGrain', null(), 'enabled', true())))]",
+        "logs": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'AllLogs', 'enabled', true())))]",
+        "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
+        "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
+      },
+      "dependsOn": [
+        "service"
+      ]
+    },
+    "service_roleAssignments": {
+      "copy": {
+        "name": "service_roleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.ApiManagement/service/{0}', parameters('name'))]",
+      "name": "[guid(resourceId('Microsoft.ApiManagement/service', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "properties": {
+        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "service"
+      ]
+    },
+    "service_apis": {
+      "copy": {
+        "name": "service_apis",
+        "count": "[length(parameters('apis'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Apim-Api-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "apiManagementServiceName": {
+            "value": "[parameters('name')]"
+          },
+          "displayName": {
+            "value": "[parameters('apis')[copyIndex()].displayName]"
+          },
+          "name": {
+            "value": "[parameters('apis')[copyIndex()].name]"
+          },
+          "path": {
+            "value": "[parameters('apis')[copyIndex()].path]"
+          },
+          "apiDescription": "[if(contains(parameters('apis')[copyIndex()], 'apiDescription'), createObject('value', parameters('apis')[copyIndex()].apiDescription), createObject('value', ''))]",
+          "apiRevision": "[if(contains(parameters('apis')[copyIndex()], 'apiRevision'), createObject('value', parameters('apis')[copyIndex()].apiRevision), createObject('value', ''))]",
+          "apiRevisionDescription": "[if(contains(parameters('apis')[copyIndex()], 'apiRevisionDescription'), createObject('value', parameters('apis')[copyIndex()].apiRevisionDescription), createObject('value', ''))]",
+          "apiType": "[if(contains(parameters('apis')[copyIndex()], 'apiType'), createObject('value', parameters('apis')[copyIndex()].apiType), createObject('value', 'http'))]",
+          "apiVersion": "[if(contains(parameters('apis')[copyIndex()], 'apiVersion'), createObject('value', parameters('apis')[copyIndex()].apiVersion), createObject('value', ''))]",
+          "apiVersionDescription": "[if(contains(parameters('apis')[copyIndex()], 'apiVersionDescription'), createObject('value', parameters('apis')[copyIndex()].apiVersionDescription), createObject('value', ''))]",
+          "apiVersionSetId": "[if(contains(parameters('apis')[copyIndex()], 'apiVersionSetId'), createObject('value', parameters('apis')[copyIndex()].apiVersionSetId), createObject('value', ''))]",
+          "authenticationSettings": "[if(contains(parameters('apis')[copyIndex()], 'authenticationSettings'), createObject('value', parameters('apis')[copyIndex()].authenticationSettings), createObject('value', createObject()))]",
+          "format": "[if(contains(parameters('apis')[copyIndex()], 'format'), createObject('value', parameters('apis')[copyIndex()].format), createObject('value', 'openapi'))]",
+          "isCurrent": "[if(contains(parameters('apis')[copyIndex()], 'isCurrent'), createObject('value', parameters('apis')[copyIndex()].isCurrent), createObject('value', true()))]",
+          "protocols": "[if(contains(parameters('apis')[copyIndex()], 'protocols'), createObject('value', parameters('apis')[copyIndex()].protocols), createObject('value', createArray('https')))]",
+          "policies": "[if(contains(parameters('apis')[copyIndex()], 'policies'), createObject('value', parameters('apis')[copyIndex()].policies), createObject('value', createArray()))]",
+          "serviceUrl": "[if(contains(parameters('apis')[copyIndex()], 'serviceUrl'), createObject('value', parameters('apis')[copyIndex()].serviceUrl), createObject('value', ''))]",
+          "sourceApiId": "[if(contains(parameters('apis')[copyIndex()], 'sourceApiId'), createObject('value', parameters('apis')[copyIndex()].sourceApiId), createObject('value', ''))]",
+          "subscriptionKeyParameterNames": "[if(contains(parameters('apis')[copyIndex()], 'subscriptionKeyParameterNames'), createObject('value', parameters('apis')[copyIndex()].subscriptionKeyParameterNames), createObject('value', createObject()))]",
+          "subscriptionRequired": "[if(contains(parameters('apis')[copyIndex()], 'subscriptionRequired'), createObject('value', parameters('apis')[copyIndex()].subscriptionRequired), createObject('value', false()))]",
+          "type": "[if(contains(parameters('apis')[copyIndex()], 'type'), createObject('value', parameters('apis')[copyIndex()].type), createObject('value', 'http'))]",
+          "value": "[if(contains(parameters('apis')[copyIndex()], 'value'), createObject('value', parameters('apis')[copyIndex()].value), createObject('value', ''))]",
+          "wsdlSelector": "[if(contains(parameters('apis')[copyIndex()], 'wsdlSelector'), createObject('value', parameters('apis')[copyIndex()].wsdlSelector), createObject('value', createObject()))]",
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "11512052528068634292"
+            },
+            "name": "API Management Service APIs",
+            "description": "This module deploys an API Management Service API.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number."
+              }
+            },
+            "policies": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. Array of Policies to apply to the Service API."
+              }
+            },
+            "apiManagementServiceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "apiRevision": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Describes the Revision of the API. If no value is provided, default revision 1 is created."
+              }
+            },
+            "apiRevisionDescription": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Description of the API Revision."
+              }
+            },
+            "apiType": {
+              "type": "string",
+              "defaultValue": "http",
+              "allowedValues": [
+                "graphql",
+                "http",
+                "soap",
+                "websocket"
+              ],
+              "metadata": {
+                "description": "Optional. Type of API to create. * http creates a REST API * soap creates a SOAP pass-through API * websocket creates websocket API * graphql creates GraphQL API."
+              }
+            },
+            "apiVersion": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Indicates the Version identifier of the API if the API is versioned."
+              }
+            },
+            "apiVersionSetId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Indicates the Version identifier of the API version set."
+              }
+            },
+            "apiVersionDescription": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Description of the API Version."
+              }
+            },
+            "authenticationSettings": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Collection of authentication settings included into this API."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            },
+            "apiDescription": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Description of the API. May include HTML formatting tags."
+              }
+            },
+            "displayName": {
+              "type": "string",
+              "maxLength": 300,
+              "metadata": {
+                "description": "Required. API name. Must be 1 to 300 characters long."
+              }
+            },
+            "format": {
+              "type": "string",
+              "defaultValue": "openapi",
+              "allowedValues": [
+                "wadl-xml",
+                "wadl-link-json",
+                "swagger-json",
+                "swagger-link-json",
+                "wsdl",
+                "wsdl-link",
+                "openapi",
+                "openapi+json",
+                "openapi-link",
+                "openapi+json-link"
+              ],
+              "metadata": {
+                "description": "Optional. Format of the Content in which the API is getting imported."
+              }
+            },
+            "isCurrent": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Indicates if API revision is current API revision."
+              }
+            },
+            "path": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API."
+              }
+            },
+            "protocols": {
+              "type": "array",
+              "defaultValue": [
+                "https"
+              ],
+              "metadata": {
+                "description": "Optional. Describes on which protocols the operations in this API can be invoked. - HTTP or HTTPS."
+              }
+            },
+            "serviceUrl": {
+              "type": "string",
+              "defaultValue": "",
+              "maxLength": 2000,
+              "metadata": {
+                "description": "Optional. Absolute URL of the backend service implementing this API. Cannot be more than 2000 characters long."
+              }
+            },
+            "sourceApiId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. API identifier of the source API."
+              }
+            },
+            "subscriptionKeyParameterNames": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Protocols over which API is made available."
+              }
+            },
+            "subscriptionRequired": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Specifies whether an API or Product subscription is required for accessing the API."
+              }
+            },
+            "type": {
+              "type": "string",
+              "defaultValue": "http",
+              "allowedValues": [
+                "graphql",
+                "http",
+                "soap",
+                "websocket"
+              ],
+              "metadata": {
+                "description": "Optional. Type of API."
+              }
+            },
+            "value": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Content value when Importing an API."
+              }
+            },
+            "wsdlSelector": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Criteria to limit import of WSDL to a subset of the document."
+              }
+            }
+          },
+          "variables": {
+            "enableReferencedModulesTelemetry": false
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "type": "Microsoft.ApiManagement/service/apis",
+              "apiVersion": "2021-08-01",
+              "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+              "properties": {
+                "apiRevision": "[if(not(empty(parameters('apiRevision'))), parameters('apiRevision'), null())]",
+                "apiRevisionDescription": "[if(not(empty(parameters('apiRevisionDescription'))), parameters('apiRevisionDescription'), null())]",
+                "apiType": "[if(not(empty(parameters('apiType'))), parameters('apiType'), null())]",
+                "apiVersion": "[if(not(empty(parameters('apiVersion'))), parameters('apiVersion'), null())]",
+                "apiVersionDescription": "[if(not(empty(parameters('apiVersionDescription'))), parameters('apiVersionDescription'), null())]",
+                "apiVersionSetId": "[if(not(empty(parameters('apiVersionSetId'))), parameters('apiVersionSetId'), null())]",
+                "authenticationSettings": "[parameters('authenticationSettings')]",
+                "description": "[parameters('apiDescription')]",
+                "displayName": "[parameters('displayName')]",
+                "format": "[if(not(empty(parameters('value'))), parameters('format'), null())]",
+                "isCurrent": "[parameters('isCurrent')]",
+                "path": "[parameters('path')]",
+                "protocols": "[parameters('protocols')]",
+                "serviceUrl": "[if(not(empty(parameters('serviceUrl'))), parameters('serviceUrl'), null())]",
+                "sourceApiId": "[if(not(empty(parameters('sourceApiId'))), parameters('sourceApiId'), null())]",
+                "subscriptionKeyParameterNames": "[if(not(empty(parameters('subscriptionKeyParameterNames'))), parameters('subscriptionKeyParameterNames'), null())]",
+                "subscriptionRequired": "[parameters('subscriptionRequired')]",
+                "type": "[parameters('type')]",
+                "value": "[if(not(empty(parameters('value'))), parameters('value'), null())]",
+                "wsdlSelector": "[parameters('wsdlSelector')]"
+              }
+            },
+            {
+              "copy": {
+                "name": "policy",
+                "count": "[length(parameters('policies'))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-Policy-{1}', deployment().name, copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "apiManagementServiceName": {
+                    "value": "[parameters('apiManagementServiceName')]"
+                  },
+                  "apiName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "format": "[if(contains(parameters('policies')[copyIndex()], 'format'), createObject('value', parameters('policies')[copyIndex()].format), createObject('value', 'xml'))]",
+                  "value": {
+                    "value": "[parameters('policies')[copyIndex()].value]"
+                  },
+                  "enableDefaultTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.23.1.45101",
+                      "templateHash": "17230254380289042348"
+                    },
+                    "name": "API Management Service APIs Policies",
+                    "description": "This module deploys an API Management Service API Policy.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "apiManagementServiceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "apiName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent API. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "defaultValue": "policy",
+                      "metadata": {
+                        "description": "Optional. The name of the policy."
+                      }
+                    },
+                    "enableDefaultTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+                      }
+                    },
+                    "format": {
+                      "type": "string",
+                      "defaultValue": "xml",
+                      "allowedValues": [
+                        "rawxml",
+                        "rawxml-link",
+                        "xml",
+                        "xml-link"
+                      ],
+                      "metadata": {
+                        "description": "Optional. Format of the policyContent."
+                      }
+                    },
+                    "value": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Contents of the Policy as defined by the format."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "condition": "[parameters('enableDefaultTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2021-04-01",
+                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": []
+                        }
+                      }
+                    },
+                    {
+                      "type": "Microsoft.ApiManagement/service/apis/policies",
+                      "apiVersion": "2021-08-01",
+                      "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('apiName'), parameters('name'))]",
+                      "properties": {
+                        "format": "[parameters('format')]",
+                        "value": "[parameters('value')]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the API policy."
+                      },
+                      "value": "[resourceId('Microsoft.ApiManagement/service/apis/policies', parameters('apiManagementServiceName'), parameters('apiName'), parameters('name'))]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the API policy."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group the API policy was deployed into."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('apiManagementServiceName'), parameters('name'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the API management service API."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the API management service API."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/service/apis', parameters('apiManagementServiceName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the API management service API was deployed to."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "service",
+        "service_apiVersionSets"
+      ]
+    },
+    "service_apiVersionSets": {
+      "copy": {
+        "name": "service_apiVersionSets",
+        "count": "[length(parameters('apiVersionSets'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Apim-ApiVersionSet-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "apiManagementServiceName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('apiVersionSets')[copyIndex()].name]"
+          },
+          "properties": "[if(contains(parameters('apiVersionSets')[copyIndex()], 'properties'), createObject('value', parameters('apiVersionSets')[copyIndex()].properties), createObject('value', createObject()))]",
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "16962621369738378491"
+            },
+            "name": "API Management Service API Version Sets",
+            "description": "This module deploys an API Management Service API Version Set.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "apiManagementServiceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            },
+            "name": {
+              "type": "string",
+              "defaultValue": "default",
+              "metadata": {
+                "description": "Optional. API Version set name."
+              }
+            },
+            "properties": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. API Version set properties."
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "type": "Microsoft.ApiManagement/service/apiVersionSets",
+              "apiVersion": "2021-08-01",
+              "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+              "properties": "[parameters('properties')]"
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the API Version set."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/service/apiVersionSets', parameters('apiManagementServiceName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the API Version set."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the API Version set was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "service"
+      ]
+    },
+    "service_authorizationServers": {
+      "copy": {
+        "name": "service_authorizationServers",
+        "count": "[length(variables('authorizationServerList'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Apim-AuthorizationServer-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "apiManagementServiceName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[variables('authorizationServerList')[copyIndex()].name]"
+          },
+          "authorizationEndpoint": {
+            "value": "[variables('authorizationServerList')[copyIndex()].authorizationEndpoint]"
+          },
+          "authorizationMethods": "[if(contains(variables('authorizationServerList')[copyIndex()], 'authorizationMethods'), createObject('value', variables('authorizationServerList')[copyIndex()].authorizationMethods), createObject('value', createArray('GET')))]",
+          "bearerTokenSendingMethods": "[if(contains(variables('authorizationServerList')[copyIndex()], 'bearerTokenSendingMethods'), createObject('value', variables('authorizationServerList')[copyIndex()].bearerTokenSendingMethods), createObject('value', createArray('authorizationHeader')))]",
+          "clientAuthenticationMethod": "[if(contains(variables('authorizationServerList')[copyIndex()], 'clientAuthenticationMethod'), createObject('value', variables('authorizationServerList')[copyIndex()].clientAuthenticationMethod), createObject('value', createArray('Basic')))]",
+          "clientId": {
+            "value": "[variables('authorizationServerList')[copyIndex()].clientId]"
+          },
+          "clientSecret": {
+            "value": "[variables('authorizationServerList')[copyIndex()].clientSecret]"
+          },
+          "clientRegistrationEndpoint": "[if(contains(variables('authorizationServerList')[copyIndex()], 'clientRegistrationEndpoint'), createObject('value', variables('authorizationServerList')[copyIndex()].clientRegistrationEndpoint), createObject('value', ''))]",
+          "defaultScope": "[if(contains(variables('authorizationServerList')[copyIndex()], 'defaultScope'), createObject('value', variables('authorizationServerList')[copyIndex()].defaultScope), createObject('value', ''))]",
+          "grantTypes": {
+            "value": "[variables('authorizationServerList')[copyIndex()].grantTypes]"
+          },
+          "resourceOwnerPassword": "[if(contains(variables('authorizationServerList')[copyIndex()], 'resourceOwnerPassword'), createObject('value', variables('authorizationServerList')[copyIndex()].resourceOwnerPassword), createObject('value', ''))]",
+          "resourceOwnerUsername": "[if(contains(variables('authorizationServerList')[copyIndex()], 'resourceOwnerUsername'), createObject('value', variables('authorizationServerList')[copyIndex()].resourceOwnerUsername), createObject('value', ''))]",
+          "serverDescription": "[if(contains(variables('authorizationServerList')[copyIndex()], 'serverDescription'), createObject('value', variables('authorizationServerList')[copyIndex()].serverDescription), createObject('value', ''))]",
+          "supportState": "[if(contains(variables('authorizationServerList')[copyIndex()], 'supportState'), createObject('value', variables('authorizationServerList')[copyIndex()].supportState), createObject('value', false()))]",
+          "tokenBodyParameters": "[if(contains(variables('authorizationServerList')[copyIndex()], 'tokenBodyParameters'), createObject('value', variables('authorizationServerList')[copyIndex()].tokenBodyParameters), createObject('value', createArray()))]",
+          "tokenEndpoint": "[if(contains(variables('authorizationServerList')[copyIndex()], 'tokenEndpoint'), createObject('value', variables('authorizationServerList')[copyIndex()].tokenEndpoint), createObject('value', ''))]",
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "4791396269511004286"
+            },
+            "name": "API Management Service Authorization Servers",
+            "description": "This module deploys an API Management Service Authorization Server.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Identifier of the authorization server."
+              }
+            },
+            "apiManagementServiceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "authorizationEndpoint": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. OAuth authorization endpoint. See <http://tools.ietf.org/html/rfc6749#section-3.2>."
+              }
+            },
+            "authorizationMethods": {
+              "type": "array",
+              "defaultValue": [
+                "GET"
+              ],
+              "metadata": {
+                "description": "Optional. HTTP verbs supported by the authorization endpoint. GET must be always present. POST is optional. - HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE."
+              }
+            },
+            "bearerTokenSendingMethods": {
+              "type": "array",
+              "defaultValue": [
+                "authorizationHeader"
+              ],
+              "metadata": {
+                "description": "Optional. Specifies the mechanism by which access token is passed to the API. - authorizationHeader or query."
+              }
+            },
+            "clientAuthenticationMethod": {
+              "type": "array",
+              "defaultValue": [
+                "Basic"
+              ],
+              "metadata": {
+                "description": "Optional. Method of authentication supported by the token endpoint of this authorization server. Possible values are Basic and/or Body. When Body is specified, client credentials and other parameters are passed within the request body in the application/x-www-form-urlencoded format. - Basic or Body."
+              }
+            },
+            "clientId": {
+              "type": "securestring",
+              "metadata": {
+                "description": "Required. Client or app ID registered with this authorization server."
+              }
+            },
+            "clientRegistrationEndpoint": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Optional reference to a page where client or app registration for this authorization server is performed. Contains absolute URL to entity being referenced."
+              }
+            },
+            "clientSecret": {
+              "type": "securestring",
+              "metadata": {
+                "description": "Required. Client or app secret registered with this authorization server. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            },
+            "defaultScope": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Access token scope that is going to be requested by default. Can be overridden at the API level. Should be provided in the form of a string containing space-delimited values."
+              }
+            },
+            "serverDescription": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Description of the authorization server. Can contain HTML formatting tags."
+              }
+            },
+            "grantTypes": {
+              "type": "array",
+              "metadata": {
+                "description": "Required. Form of an authorization grant, which the client uses to request the access token. - authorizationCode, implicit, resourceOwnerPassword, clientCredentials."
+              }
+            },
+            "resourceOwnerPassword": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner password."
+              }
+            },
+            "resourceOwnerUsername": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner username."
+              }
+            },
+            "supportState": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. If true, authorization server will include state parameter from the authorization request to its response. Client may use state parameter to raise protocol security."
+              }
+            },
+            "tokenBodyParameters": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {\"name\" : \"name value\", \"value\": \"a value\"}. - TokenBodyParameterContract object."
+              }
+            },
+            "tokenEndpoint": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. OAuth token endpoint. Contains absolute URI to entity being referenced."
+              }
+            }
+          },
+          "variables": {
+            "defaultAuthorizationMethods": [
+              "GET"
+            ],
+            "setAuthorizationMethods": "[union(parameters('authorizationMethods'), variables('defaultAuthorizationMethods'))]"
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "type": "Microsoft.ApiManagement/service/authorizationServers",
+              "apiVersion": "2021-08-01",
+              "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+              "properties": {
+                "description": "[parameters('serverDescription')]",
+                "authorizationMethods": "[variables('setAuthorizationMethods')]",
+                "clientAuthenticationMethod": "[parameters('clientAuthenticationMethod')]",
+                "tokenBodyParameters": "[parameters('tokenBodyParameters')]",
+                "tokenEndpoint": "[parameters('tokenEndpoint')]",
+                "supportState": "[parameters('supportState')]",
+                "defaultScope": "[parameters('defaultScope')]",
+                "bearerTokenSendingMethods": "[parameters('bearerTokenSendingMethods')]",
+                "resourceOwnerUsername": "[parameters('resourceOwnerUsername')]",
+                "resourceOwnerPassword": "[parameters('resourceOwnerPassword')]",
+                "displayName": "[parameters('name')]",
+                "clientRegistrationEndpoint": "[parameters('clientRegistrationEndpoint')]",
+                "authorizationEndpoint": "[parameters('authorizationEndpoint')]",
+                "grantTypes": "[parameters('grantTypes')]",
+                "clientId": "[parameters('clientId')]",
+                "clientSecret": "[parameters('clientSecret')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the API management service authorization server."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the API management service authorization server."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/service/authorizationServers', parameters('apiManagementServiceName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the API management service authorization server was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "service"
+      ]
+    },
+    "service_backends": {
+      "copy": {
+        "name": "service_backends",
+        "count": "[length(parameters('backends'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Apim-Backend-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "apiManagementServiceName": {
+            "value": "[parameters('name')]"
+          },
+          "url": "[if(contains(parameters('backends')[copyIndex()], 'url'), createObject('value', parameters('backends')[copyIndex()].url), createObject('value', ''))]",
+          "description": "[if(contains(parameters('backends')[copyIndex()], 'description'), createObject('value', parameters('backends')[copyIndex()].description), createObject('value', ''))]",
+          "credentials": "[if(contains(parameters('backends')[copyIndex()], 'credentials'), createObject('value', parameters('backends')[copyIndex()].credentials), createObject('value', createObject()))]",
+          "name": {
+            "value": "[parameters('backends')[copyIndex()].name]"
+          },
+          "protocol": "[if(contains(parameters('backends')[copyIndex()], 'protocol'), createObject('value', parameters('backends')[copyIndex()].protocol), createObject('value', 'http'))]",
+          "proxy": "[if(contains(parameters('backends')[copyIndex()], 'proxy'), createObject('value', parameters('backends')[copyIndex()].proxy), createObject('value', createObject()))]",
+          "resourceId": "[if(contains(parameters('backends')[copyIndex()], 'resourceId'), createObject('value', parameters('backends')[copyIndex()].resourceId), createObject('value', ''))]",
+          "serviceFabricCluster": "[if(contains(parameters('backends')[copyIndex()], 'serviceFabricCluster'), createObject('value', parameters('backends')[copyIndex()].serviceFabricCluster), createObject('value', createObject()))]",
+          "title": "[if(contains(parameters('backends')[copyIndex()], 'title'), createObject('value', parameters('backends')[copyIndex()].title), createObject('value', ''))]",
+          "tls": "[if(contains(parameters('backends')[copyIndex()], 'tls'), createObject('value', parameters('backends')[copyIndex()].tls), createObject('value', createObject('validateCertificateChain', false(), 'validateCertificateName', false())))]",
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "14371393063475773678"
+            },
+            "name": "API Management Service Backends",
+            "description": "This module deploys an API Management Service Backend.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "apiManagementServiceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Backend Name."
+              }
+            },
+            "credentials": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Backend Credentials Contract Properties."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            },
+            "description": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Backend Description."
+              }
+            },
+            "protocol": {
+              "type": "string",
+              "defaultValue": "http",
+              "metadata": {
+                "description": "Optional. Backend communication protocol. - http or soap."
+              }
+            },
+            "proxy": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Backend Proxy Contract Properties."
+              }
+            },
+            "resourceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps."
+              }
+            },
+            "serviceFabricCluster": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Backend Service Fabric Cluster Properties."
+              }
+            },
+            "title": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Backend Title."
+              }
+            },
+            "tls": {
+              "type": "object",
+              "defaultValue": {
+                "validateCertificateChain": false,
+                "validateCertificateName": false
+              },
+              "metadata": {
+                "description": "Optional. Backend TLS Properties."
+              }
+            },
+            "url": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Runtime URL of the Backend."
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "type": "Microsoft.ApiManagement/service/backends",
+              "apiVersion": "2021-08-01",
+              "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+              "properties": {
+                "title": "[if(not(empty(parameters('title'))), parameters('title'), null())]",
+                "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
+                "resourceId": "[if(not(empty(parameters('resourceId'))), parameters('resourceId'), null())]",
+                "properties": {
+                  "serviceFabricCluster": "[if(not(empty(parameters('serviceFabricCluster'))), parameters('serviceFabricCluster'), null())]"
+                },
+                "credentials": "[if(not(empty(parameters('credentials'))), parameters('credentials'), null())]",
+                "proxy": "[if(not(empty(parameters('proxy'))), parameters('proxy'), null())]",
+                "tls": "[if(not(empty(parameters('tls'))), parameters('tls'), null())]",
+                "url": "[parameters('url')]",
+                "protocol": "[parameters('protocol')]"
+              }
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the API management service backend."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/service/backends', parameters('apiManagementServiceName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the API management service backend."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the API management service backend was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "service"
+      ]
+    },
+    "service_caches": {
+      "copy": {
+        "name": "service_caches",
+        "count": "[length(parameters('caches'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Apim-Cache-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "apiManagementServiceName": {
+            "value": "[parameters('name')]"
+          },
+          "description": "[if(contains(parameters('caches')[copyIndex()], 'description'), createObject('value', parameters('caches')[copyIndex()].description), createObject('value', ''))]",
+          "connectionString": {
+            "value": "[parameters('caches')[copyIndex()].connectionString]"
+          },
+          "name": {
+            "value": "[parameters('caches')[copyIndex()].name]"
+          },
+          "resourceId": "[if(contains(parameters('caches')[copyIndex()], 'resourceId'), createObject('value', parameters('caches')[copyIndex()].resourceId), createObject('value', ''))]",
+          "useFromLocation": {
+            "value": "[parameters('caches')[copyIndex()].useFromLocation]"
+          },
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "10312358305910336044"
+            },
+            "name": "API Management Service Caches",
+            "description": "This module deploys an API Management Service Cache.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "apiManagementServiceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Identifier of the Cache entity. Cache identifier (should be either 'default' or valid Azure region identifier)."
+              }
+            },
+            "connectionString": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Runtime connection string to cache. Can be referenced by a named value like so, {{<named-value>}}."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            },
+            "description": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Cache description."
+              }
+            },
+            "resourceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Original uri of entity in external system cache points to."
+              }
+            },
+            "useFromLocation": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Location identifier to use cache from (should be either 'default' or valid Azure region identifier)."
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "type": "Microsoft.ApiManagement/service/caches",
+              "apiVersion": "2021-08-01",
+              "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+              "properties": {
+                "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
+                "connectionString": "[parameters('connectionString')]",
+                "useFromLocation": "[parameters('useFromLocation')]",
+                "resourceId": "[if(not(empty(parameters('resourceId'))), parameters('resourceId'), null())]"
+              }
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the API management service cache."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/service/caches', parameters('apiManagementServiceName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the API management service cache."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the API management service cache was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "service"
+      ]
+    },
+    "service_identityProviders": {
+      "copy": {
+        "name": "service_identityProviders",
+        "count": "[length(parameters('identityProviders'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Apim-IdentityProvider-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "apiManagementServiceName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('identityProviders')[copyIndex()].name]"
+          },
+          "enableIdentityProviders": "[if(contains(parameters('identityProviders')[copyIndex()], 'enableIdentityProviders'), createObject('value', parameters('identityProviders')[copyIndex()].enableIdentityProviders), createObject('value', false()))]",
+          "allowedTenants": "[if(contains(parameters('identityProviders')[copyIndex()], 'allowedTenants'), createObject('value', parameters('identityProviders')[copyIndex()].allowedTenants), createObject('value', createArray()))]",
+          "authority": "[if(contains(parameters('identityProviders')[copyIndex()], 'authority'), createObject('value', parameters('identityProviders')[copyIndex()].authority), createObject('value', ''))]",
+          "clientId": "[if(contains(parameters('identityProviders')[copyIndex()], 'clientId'), createObject('value', parameters('identityProviders')[copyIndex()].clientId), createObject('value', ''))]",
+          "clientSecret": "[if(contains(parameters('identityProviders')[copyIndex()], 'clientSecret'), createObject('value', parameters('identityProviders')[copyIndex()].clientSecret), createObject('value', ''))]",
+          "passwordResetPolicyName": "[if(contains(parameters('identityProviders')[copyIndex()], 'passwordResetPolicyName'), createObject('value', parameters('identityProviders')[copyIndex()].passwordResetPolicyName), createObject('value', ''))]",
+          "profileEditingPolicyName": "[if(contains(parameters('identityProviders')[copyIndex()], 'profileEditingPolicyName'), createObject('value', parameters('identityProviders')[copyIndex()].profileEditingPolicyName), createObject('value', ''))]",
+          "signInPolicyName": "[if(contains(parameters('identityProviders')[copyIndex()], 'signInPolicyName'), createObject('value', parameters('identityProviders')[copyIndex()].signInPolicyName), createObject('value', ''))]",
+          "signInTenant": "[if(contains(parameters('identityProviders')[copyIndex()], 'signInTenant'), createObject('value', parameters('identityProviders')[copyIndex()].signInTenant), createObject('value', ''))]",
+          "signUpPolicyName": "[if(contains(parameters('identityProviders')[copyIndex()], 'signUpPolicyName'), createObject('value', parameters('identityProviders')[copyIndex()].signUpPolicyName), createObject('value', ''))]",
+          "type": "[if(contains(parameters('identityProviders')[copyIndex()], 'type'), createObject('value', parameters('identityProviders')[copyIndex()].type), createObject('value', 'aad'))]",
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "13036858747462562466"
+            },
+            "name": "API Management Service Identity Providers",
+            "description": "This module deploys an API Management Service Identity Provider.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "apiManagementServiceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            },
+            "enableIdentityProviders": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Used to enable the deployment of the identityProviders child resource."
+              }
+            },
+            "allowedTenants": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. List of Allowed Tenants when configuring Azure Active Directory login. - string."
+              }
+            },
+            "authority": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. OpenID Connect discovery endpoint hostname for AAD or AAD B2C."
+              }
+            },
+            "clientId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Conditional. Client ID of the Application in the external Identity Provider. Required if identity provider is used."
+              }
+            },
+            "clientSecret": {
+              "type": "securestring",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Conditional. Client secret of the Application in external Identity Provider, used to authenticate login request. Required if identity provider is used."
+              }
+            },
+            "passwordResetPolicyName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Password Reset Policy Name. Only applies to AAD B2C Identity Provider."
+              }
+            },
+            "profileEditingPolicyName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Profile Editing Policy Name. Only applies to AAD B2C Identity Provider."
+              }
+            },
+            "signInPolicyName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Signin Policy Name. Only applies to AAD B2C Identity Provider."
+              }
+            },
+            "signInTenant": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The TenantId to use instead of Common when logging into Active Directory."
+              }
+            },
+            "signUpPolicyName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Signup Policy Name. Only applies to AAD B2C Identity Provider."
+              }
+            },
+            "type": {
+              "type": "string",
+              "defaultValue": "aad",
+              "allowedValues": [
+                "aad",
+                "aadB2C",
+                "facebook",
+                "google",
+                "microsoft",
+                "twitter"
+              ],
+              "metadata": {
+                "description": "Optional. Identity Provider Type identifier."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Identity provider name."
+              }
+            }
+          },
+          "variables": {
+            "isAadB2C": "[equals(parameters('type'), 'aadB2C')]"
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "condition": "[parameters('enableIdentityProviders')]",
+              "type": "Microsoft.ApiManagement/service/identityProviders",
+              "apiVersion": "2021-08-01",
+              "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+              "properties": {
+                "type": "[parameters('type')]",
+                "signinTenant": "[parameters('signInTenant')]",
+                "allowedTenants": "[parameters('allowedTenants')]",
+                "authority": "[parameters('authority')]",
+                "signupPolicyName": "[if(variables('isAadB2C'), parameters('signUpPolicyName'), null())]",
+                "signinPolicyName": "[if(variables('isAadB2C'), parameters('signInPolicyName'), null())]",
+                "profileEditingPolicyName": "[if(variables('isAadB2C'), parameters('profileEditingPolicyName'), null())]",
+                "passwordResetPolicyName": "[if(variables('isAadB2C'), parameters('passwordResetPolicyName'), null())]",
+                "clientId": "[parameters('clientId')]",
+                "clientSecret": "[parameters('clientSecret')]"
+              }
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the API management service identity provider."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/service/identityProviders', parameters('apiManagementServiceName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the API management service identity provider."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the API management service identity provider was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "service"
+      ]
+    },
+    "service_namedValues": {
+      "copy": {
+        "name": "service_namedValues",
+        "count": "[length(parameters('namedValues'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Apim-NamedValue-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "apiManagementServiceName": {
+            "value": "[parameters('name')]"
+          },
+          "displayName": {
+            "value": "[parameters('namedValues')[copyIndex()].displayName]"
+          },
+          "keyVault": "[if(contains(parameters('namedValues')[copyIndex()], 'keyVault'), createObject('value', parameters('namedValues')[copyIndex()].keyVault), createObject('value', createObject()))]",
+          "name": {
+            "value": "[parameters('namedValues')[copyIndex()].name]"
+          },
+          "tags": {
+            "value": "[tryGet(parameters('namedValues')[copyIndex()], 'tags')]"
+          },
+          "secret": "[if(contains(parameters('namedValues')[copyIndex()], 'secret'), createObject('value', parameters('namedValues')[copyIndex()].secret), createObject('value', false()))]",
+          "value": "[if(contains(parameters('namedValues')[copyIndex()], 'value'), createObject('value', parameters('namedValues')[copyIndex()].value), createObject('value', parameters('newGuidValue')))]",
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "14872932654104188944"
+            },
+            "name": "API Management Service Named Values",
+            "description": "This module deploys an API Management Service Named Value.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "apiManagementServiceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            },
+            "displayName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Unique name of NamedValue. It may contain only letters, digits, period, dash, and underscore characters."
+              }
+            },
+            "keyVault": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. KeyVault location details of the namedValue."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Named value Name."
+              }
+            },
+            "tags": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags that when provided can be used to filter the NamedValue list. - string."
+              }
+            },
+            "secret": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Determines whether the value is a secret and should be encrypted or not. Default value is false."
+              }
+            },
+            "value": {
+              "type": "string",
+              "defaultValue": "[newGuid()]",
+              "metadata": {
+                "description": "Optional. Value of the NamedValue. Can contain policy expressions. It may not be empty or consist only of whitespace. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value."
+              }
+            }
+          },
+          "variables": {
+            "keyVaultEmpty": "[empty(parameters('keyVault'))]"
+          },
+          "resources": {
+            "defaultTelemetry": {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            "service": {
+              "existing": true,
+              "type": "Microsoft.ApiManagement/service",
+              "apiVersion": "2021-08-01",
+              "name": "[parameters('apiManagementServiceName')]"
+            },
+            "namedValue": {
+              "type": "Microsoft.ApiManagement/service/namedValues",
+              "apiVersion": "2021-08-01",
+              "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+              "properties": {
+                "tags": "[parameters('tags')]",
+                "secret": "[parameters('secret')]",
+                "displayName": "[parameters('displayName')]",
+                "value": "[if(variables('keyVaultEmpty'), parameters('value'), null())]",
+                "keyVault": "[if(not(variables('keyVaultEmpty')), parameters('keyVault'), null())]"
+              },
+              "dependsOn": [
+                "service"
+              ]
+            }
+          },
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the named value."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/service/namedValues', parameters('apiManagementServiceName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the named value."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the named value was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "service"
+      ]
+    },
+    "service_portalsettings": {
+      "copy": {
+        "name": "service_portalsettings",
+        "count": "[length(parameters('portalsettings'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Apim-PortalSetting-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "apiManagementServiceName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('portalsettings')[copyIndex()].name]"
+          },
+          "properties": "[if(contains(parameters('portalsettings')[copyIndex()], 'properties'), createObject('value', parameters('portalsettings')[copyIndex()].properties), createObject('value', createObject()))]",
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "12676245745541867340"
+            },
+            "name": "API Management Service Portal Settings",
+            "description": "This module deploys an API Management Service Portal Setting.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "apiManagementServiceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            },
+            "name": {
+              "type": "string",
+              "allowedValues": [
+                "delegation",
+                "signin",
+                "signup"
+              ],
+              "metadata": {
+                "description": "Required. Portal setting name."
+              }
+            },
+            "properties": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Portal setting properties."
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "condition": "[not(empty(parameters('properties')))]",
+              "type": "Microsoft.ApiManagement/service/portalsettings",
+              "apiVersion": "2021-08-01",
+              "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+              "properties": "[parameters('properties')]"
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the API management service portal setting."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/service/portalsettings', parameters('apiManagementServiceName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the API management service portal setting."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the API management service portal setting was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "service"
+      ]
+    },
+    "service_policies": {
+      "copy": {
+        "name": "service_policies",
+        "count": "[length(parameters('policies'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Apim-Policy-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "apiManagementServiceName": {
+            "value": "[parameters('name')]"
+          },
+          "value": {
+            "value": "[parameters('policies')[copyIndex()].value]"
+          },
+          "format": "[if(contains(parameters('policies')[copyIndex()], 'format'), createObject('value', parameters('policies')[copyIndex()].format), createObject('value', 'xml'))]",
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "16586961527396343119"
+            },
+            "name": "API Management Service Policies",
+            "description": "This module deploys an API Management Service Policy.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "apiManagementServiceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "defaultValue": "policy",
+              "metadata": {
+                "description": "Optional. The name of the policy."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            },
+            "format": {
+              "type": "string",
+              "defaultValue": "xml",
+              "allowedValues": [
+                "rawxml",
+                "rawxml-link",
+                "xml",
+                "xml-link"
+              ],
+              "metadata": {
+                "description": "Optional. Format of the policyContent."
+              }
+            },
+            "value": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Contents of the Policy as defined by the format."
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "type": "Microsoft.ApiManagement/service/policies",
+              "apiVersion": "2021-08-01",
+              "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+              "properties": {
+                "format": "[parameters('format')]",
+                "value": "[parameters('value')]"
+              }
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the API management service policy."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/service/policies', parameters('apiManagementServiceName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the API management service policy."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the API management service policy was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "service"
+      ]
+    },
+    "service_products": {
+      "copy": {
+        "name": "service_products",
+        "count": "[length(parameters('products'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Apim-Product-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "apiManagementServiceName": {
+            "value": "[parameters('name')]"
+          },
+          "apis": "[if(contains(parameters('products')[copyIndex()], 'apis'), createObject('value', parameters('products')[copyIndex()].apis), createObject('value', createArray()))]",
+          "approvalRequired": "[if(contains(parameters('products')[copyIndex()], 'approvalRequired'), createObject('value', parameters('products')[copyIndex()].approvalRequired), createObject('value', false()))]",
+          "groups": "[if(contains(parameters('products')[copyIndex()], 'groups'), createObject('value', parameters('products')[copyIndex()].groups), createObject('value', createArray()))]",
+          "name": {
+            "value": "[parameters('products')[copyIndex()].name]"
+          },
+          "description": "[if(contains(parameters('products')[copyIndex()], 'description'), createObject('value', parameters('products')[copyIndex()].description), createObject('value', ''))]",
+          "state": "[if(contains(parameters('products')[copyIndex()], 'state'), createObject('value', parameters('products')[copyIndex()].state), createObject('value', 'published'))]",
+          "subscriptionRequired": "[if(contains(parameters('products')[copyIndex()], 'subscriptionRequired'), createObject('value', parameters('products')[copyIndex()].subscriptionRequired), createObject('value', false()))]",
+          "subscriptionsLimit": "[if(contains(parameters('products')[copyIndex()], 'subscriptionsLimit'), createObject('value', parameters('products')[copyIndex()].subscriptionsLimit), createObject('value', 1))]",
+          "terms": "[if(contains(parameters('products')[copyIndex()], 'terms'), createObject('value', parameters('products')[copyIndex()].terms), createObject('value', ''))]",
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "8527180272588578376"
+            },
+            "name": "API Management Service Products",
+            "description": "This module deploys an API Management Service Product.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "apiManagementServiceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "approvalRequired": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Whether subscription approval is required. If false, new subscriptions will be approved automatically enabling developers to call the products APIs immediately after subscribing. If true, administrators must manually approve the subscription before the developer can any of the products APIs. Can be present only if subscriptionRequired property is present and has a value of false."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            },
+            "description": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Product description. May include HTML formatting tags."
+              }
+            },
+            "apis": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. Array of Product APIs."
+              }
+            },
+            "groups": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. Array of Product Groups."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Product Name."
+              }
+            },
+            "state": {
+              "type": "string",
+              "defaultValue": "published",
+              "metadata": {
+                "description": "Optional. whether product is published or not. Published products are discoverable by users of developer portal. Non published products are visible only to administrators. Default state of Product is notPublished. - notPublished or published."
+              }
+            },
+            "subscriptionRequired": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Whether a product subscription is required for accessing APIs included in this product. If true, the product is referred to as \"protected\" and a valid subscription key is required for a request to an API included in the product to succeed. If false, the product is referred to as \"open\" and requests to an API included in the product can be made without a subscription key. If property is omitted when creating a new product it's value is assumed to be true."
+              }
+            },
+            "subscriptionsLimit": {
+              "type": "int",
+              "defaultValue": 1,
+              "metadata": {
+                "description": "Optional. Whether the number of subscriptions a user can have to this product at the same time. Set to null or omit to allow unlimited per user subscriptions. Can be present only if subscriptionRequired property is present and has a value of false."
+              }
+            },
+            "terms": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Product terms of use. Developers trying to subscribe to the product will be presented and required to accept these terms before they can complete the subscription process."
+              }
+            }
+          },
+          "variables": {
+            "enableReferencedModulesTelemetry": false
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "type": "Microsoft.ApiManagement/service/products",
+              "apiVersion": "2021-08-01",
+              "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+              "properties": {
+                "description": "[parameters('description')]",
+                "displayName": "[parameters('name')]",
+                "terms": "[parameters('terms')]",
+                "subscriptionRequired": "[parameters('subscriptionRequired')]",
+                "approvalRequired": "[if(parameters('subscriptionRequired'), parameters('approvalRequired'), null())]",
+                "subscriptionsLimit": "[if(parameters('subscriptionRequired'), parameters('subscriptionsLimit'), null())]",
+                "state": "[parameters('state')]"
+              }
+            },
+            {
+              "copy": {
+                "name": "product_apis",
+                "count": "[length(parameters('apis'))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-Api-{1}', deployment().name, copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "apiManagementServiceName": {
+                    "value": "[parameters('apiManagementServiceName')]"
+                  },
+                  "name": {
+                    "value": "[parameters('apis')[copyIndex()].name]"
+                  },
+                  "productName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "enableDefaultTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.23.1.45101",
+                      "templateHash": "17352324470715058273"
+                    },
+                    "name": "API Management Service Products APIs",
+                    "description": "This module deploys an API Management Service Product API.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "apiManagementServiceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "productName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent Product. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "enableDefaultTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Name of the product API."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "condition": "[parameters('enableDefaultTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2021-04-01",
+                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": []
+                        }
+                      }
+                    },
+                    {
+                      "type": "Microsoft.ApiManagement/service/products/apis",
+                      "apiVersion": "2021-08-01",
+                      "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]"
+                    }
+                  ],
+                  "outputs": {
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the product API."
+                      },
+                      "value": "[resourceId('Microsoft.ApiManagement/service/products/apis', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the product API."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group the product API was deployed into."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "copy": {
+                "name": "product_groups",
+                "count": "[length(parameters('groups'))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-Group-{1}', deployment().name, copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "apiManagementServiceName": {
+                    "value": "[parameters('apiManagementServiceName')]"
+                  },
+                  "name": {
+                    "value": "[parameters('groups')[copyIndex()].name]"
+                  },
+                  "productName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "enableDefaultTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.23.1.45101",
+                      "templateHash": "16541523008963717147"
+                    },
+                    "name": "API Management Service Products Groups",
+                    "description": "This module deploys an API Management Service Product Group.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "apiManagementServiceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "productName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent Product. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "enableDefaultTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Name of the product group."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "condition": "[parameters('enableDefaultTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2021-04-01",
+                      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": []
+                        }
+                      }
+                    },
+                    {
+                      "type": "Microsoft.ApiManagement/service/products/groups",
+                      "apiVersion": "2021-08-01",
+                      "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]"
+                    }
+                  ],
+                  "outputs": {
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the product group."
+                      },
+                      "value": "[resourceId('Microsoft.ApiManagement/service/products/groups', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the product group."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group the product group was deployed into."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the API management service product."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/service/products', parameters('apiManagementServiceName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the API management service product."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the API management service product was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "apiResourceIds": {
+              "type": "array",
+              "metadata": {
+                "description": "The Resources IDs of the API management service product APIs."
+              },
+              "copy": {
+                "count": "[length(range(0, length(parameters('apis'))))]",
+                "input": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-Api-{1}', deployment().name, range(0, length(parameters('apis')))[copyIndex()])), '2022-09-01').outputs.resourceId.value]"
+              }
+            },
+            "groupResourceIds": {
+              "type": "array",
+              "metadata": {
+                "description": "The Resources IDs of the API management service product groups."
+              },
+              "copy": {
+                "count": "[length(range(0, length(parameters('groups'))))]",
+                "input": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-Group-{1}', deployment().name, range(0, length(parameters('groups')))[copyIndex()])), '2022-09-01').outputs.resourceId.value]"
+              }
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "service",
+        "service_apis"
+      ]
+    },
+    "service_subscriptions": {
+      "copy": {
+        "name": "service_subscriptions",
+        "count": "[length(parameters('subscriptions'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Apim-Subscription-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "apiManagementServiceName": {
+            "value": "[parameters('name')]"
+          },
+          "name": "[if(contains(parameters('subscriptions')[copyIndex()], 'name'), createObject('value', parameters('subscriptions')[copyIndex()].name), createObject('value', ''))]",
+          "allowTracing": "[if(contains(parameters('subscriptions')[copyIndex()], 'allowTracing'), createObject('value', parameters('subscriptions')[copyIndex()].allowTracing), createObject('value', false()))]",
+          "ownerId": "[if(contains(parameters('subscriptions')[copyIndex()], 'ownerId'), createObject('value', parameters('subscriptions')[copyIndex()].ownerId), createObject('value', ''))]",
+          "primaryKey": "[if(contains(parameters('subscriptions')[copyIndex()], 'primaryKey'), createObject('value', parameters('subscriptions')[copyIndex()].primaryKey), createObject('value', ''))]",
+          "scope": "[if(contains(parameters('subscriptions')[copyIndex()], 'scope'), createObject('value', parameters('subscriptions')[copyIndex()].scope), createObject('value', '/apis'))]",
+          "secondaryKey": "[if(contains(parameters('subscriptions')[copyIndex()], 'secondaryKey'), createObject('value', parameters('subscriptions')[copyIndex()].secondaryKey), createObject('value', ''))]",
+          "state": "[if(contains(parameters('subscriptions')[copyIndex()], 'state'), createObject('value', parameters('subscriptions')[copyIndex()].state), createObject('value', ''))]",
+          "enableDefaultTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.23.1.45101",
+              "templateHash": "15367144313924447449"
+            },
+            "name": "API Management Service Subscriptions",
+            "description": "This module deploys an API Management Service Subscription.",
+            "owner": "Azure/module-maintainers"
+          },
+          "parameters": {
+            "allowTracing": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Determines whether tracing can be enabled."
+              }
+            },
+            "apiManagementServiceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+              }
+            },
+            "enableDefaultTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+              }
+            },
+            "ownerId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. User (user ID path) for whom subscription is being created in form /users/{userId}."
+              }
+            },
+            "primaryKey": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Primary subscription key. If not specified during request key will be generated automatically."
+              }
+            },
+            "scope": {
+              "type": "string",
+              "defaultValue": "/apis",
+              "metadata": {
+                "description": "Optional. Scope type to choose between a product, \"allAPIs\" or a specific API. Scope like \"/products/{productId}\" or \"/apis\" or \"/apis/{apiId}\"."
+              }
+            },
+            "secondaryKey": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Secondary subscription key. If not specified during request key will be generated automatically."
+              }
+            },
+            "state": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are \"*\" active \"?\" the subscription is active, \"*\" suspended \"?\" the subscription is blocked, and the subscriber cannot call any APIs of the product, * submitted ? the subscription request has been made by the developer, but has not yet been approved or rejected, * rejected ? the subscription request has been denied by an administrator, * cancelled ? the subscription has been cancelled by the developer or administrator, * expired ? the subscription reached its expiration date and was deactivated. - suspended, active, expired, submitted, rejected, cancelled."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Subscription name."
+              }
+            }
+          },
+          "resources": [
+            {
+              "condition": "[parameters('enableDefaultTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2021-04-01",
+              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              }
+            },
+            {
+              "type": "Microsoft.ApiManagement/service/subscriptions",
+              "apiVersion": "2021-08-01",
+              "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
+              "properties": {
+                "scope": "[parameters('scope')]",
+                "displayName": "[parameters('name')]",
+                "ownerId": "[if(not(empty(parameters('ownerId'))), parameters('ownerId'), null())]",
+                "primaryKey": "[if(not(empty(parameters('primaryKey'))), parameters('primaryKey'), null())]",
+                "secondaryKey": "[if(not(empty(parameters('secondaryKey'))), parameters('secondaryKey'), null())]",
+                "state": "[if(not(empty(parameters('state'))), parameters('state'), null())]",
+                "allowTracing": "[parameters('allowTracing')]"
+              }
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the API management service subscription."
+              },
+              "value": "[resourceId('Microsoft.ApiManagement/service/subscriptions', parameters('apiManagementServiceName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the API management service subscription."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the API management service subscription was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "service"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the API management service."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the API management service."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the API management service was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('service', '2021-08-01', 'full').identity, 'principalId')), reference('service', '2021-08-01', 'full').identity.principalId, '')]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('service', '2021-08-01', 'full').location]"
+    }
+  }
+}
