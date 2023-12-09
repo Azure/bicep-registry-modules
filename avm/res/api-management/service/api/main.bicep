@@ -12,10 +12,10 @@ param policies array = []
 param apiManagementServiceName string
 
 @description('Optional. Describes the Revision of the API. If no value is provided, default revision 1 is created.')
-param apiRevision string = ''
+param apiRevision string?
 
 @description('Optional. Description of the API Revision.')
-param apiRevisionDescription string = ''
+param apiRevisionDescription string?
 
 @description('Optional. Type of API to create. * http creates a REST API * soap creates a SOAP pass-through API * websocket creates websocket API * graphql creates GraphQL API.')
 @allowed([
@@ -27,19 +27,19 @@ param apiRevisionDescription string = ''
 param apiType string = 'http'
 
 @description('Optional. Indicates the Version identifier of the API if the API is versioned.')
-param apiVersion string = ''
+param apiVersion string?
 
 @description('Optional. Indicates the Version identifier of the API version set.')
-param apiVersionSetId string = ''
+param apiVersionSetId string?
 
 @description('Optional. Description of the API Version.')
-param apiVersionDescription string = ''
+param apiVersionDescription string?
 
 @description('Optional. Collection of authentication settings included into this API.')
-param authenticationSettings object = {}
+param authenticationSettings object?
 
 @description('Optional. Description of the API. May include HTML formatting tags.')
-param apiDescription string = ''
+param apiDescription string?
 
 @description('Required. API name. Must be 1 to 300 characters long.')
 @maxLength(300)
@@ -73,13 +73,13 @@ param protocols array = [
 
 @description('Optional. Absolute URL of the backend service implementing this API. Cannot be more than 2000 characters long.')
 @maxLength(2000)
-param serviceUrl string = ''
+param serviceUrl string?
 
 @description('Optional. API identifier of the source API.')
-param sourceApiId string = ''
+param sourceApiId string?
 
 @description('Optional. Protocols over which API is made available.')
-param subscriptionKeyParameterNames object = {}
+param subscriptionKeyParameterNames object?
 
 @description('Optional. Specifies whether an API or Product subscription is required for accessing the API.')
 param subscriptionRequired bool = false
@@ -94,10 +94,10 @@ param subscriptionRequired bool = false
 param type string = 'http'
 
 @description('Optional. Content value when Importing an API.')
-param value string = ''
+param value string?
 
 @description('Optional. Criteria to limit import of WSDL to a subset of the document.')
-param wsdlSelector object = {}
+param wsdlSelector object?
 
 resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
   name: apiManagementServiceName
@@ -107,26 +107,26 @@ resource api 'Microsoft.ApiManagement/service/apis@2021-08-01' = {
   name: name
   parent: service
   properties: {
-    apiRevision: !empty(apiRevision) ? apiRevision : null
-    apiRevisionDescription: !empty(apiRevisionDescription) ? apiRevisionDescription : null
-    apiType: !empty(apiType) ? apiType : null
-    apiVersion: !empty(apiVersion) ? apiVersion : null
-    apiVersionDescription: !empty(apiVersionDescription) ? apiVersionDescription : null
-    apiVersionSetId: !empty(apiVersionSetId) ? apiVersionSetId : null
-    authenticationSettings: authenticationSettings
-    description: apiDescription
+    apiRevision: apiRevision
+    apiRevisionDescription: apiRevisionDescription
+    apiType: apiType
+    apiVersion: apiVersion
+    apiVersionDescription: apiVersionDescription
+    apiVersionSetId: apiVersionSetId
+    authenticationSettings: authenticationSettings ?? {}
+    description: apiDescription ?? ''
     displayName: displayName
     format: !empty(value) ? format : null
     isCurrent: isCurrent
     path: path
     protocols: protocols
-    serviceUrl: !empty(serviceUrl) ? serviceUrl : null
-    sourceApiId: !empty(sourceApiId) ? sourceApiId : null
-    subscriptionKeyParameterNames: !empty(subscriptionKeyParameterNames) ? subscriptionKeyParameterNames : null
+    serviceUrl: serviceUrl
+    sourceApiId: sourceApiId
+    subscriptionKeyParameterNames: subscriptionKeyParameterNames
     subscriptionRequired: subscriptionRequired
     type: type
-    value: !empty(value) ? value : null
-    wsdlSelector: wsdlSelector
+    value: value
+    wsdlSelector: wsdlSelector ?? {}
   }
 }
 

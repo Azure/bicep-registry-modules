@@ -205,27 +205,25 @@ module service_apis 'api/main.bicep' = [for (api, index) in apis: {
     displayName: api.displayName
     name: api.name
     path: api.path
-    apiDescription: contains(api, 'apiDescription') ? api.apiDescription : ''
-    apiRevision: contains(api, 'apiRevision') ? api.apiRevision : ''
-    apiRevisionDescription: contains(api, 'apiRevisionDescription') ? api.apiRevisionDescription : ''
-    apiType: contains(api, 'apiType') ? api.apiType : 'http'
-    apiVersion: contains(api, 'apiVersion') ? api.apiVersion : ''
-    apiVersionDescription: contains(api, 'apiVersionDescription') ? api.apiVersionDescription : ''
-    apiVersionSetId: contains(api, 'apiVersionSetId') ? api.apiVersionSetId : ''
-    authenticationSettings: contains(api, 'authenticationSettings') ? api.authenticationSettings : {}
-    format: contains(api, 'format') ? api.format : 'openapi'
-    isCurrent: contains(api, 'isCurrent') ? api.isCurrent : true
-    protocols: contains(api, 'protocols') ? api.protocols : [
-      'https'
-    ]
-    policies: contains(api, 'policies') ? api.policies : []
-    serviceUrl: contains(api, 'serviceUrl') ? api.serviceUrl : ''
-    sourceApiId: contains(api, 'sourceApiId') ? api.sourceApiId : ''
-    subscriptionKeyParameterNames: contains(api, 'subscriptionKeyParameterNames') ? api.subscriptionKeyParameterNames : {}
-    subscriptionRequired: contains(api, 'subscriptionRequired') ? api.subscriptionRequired : false
-    type: contains(api, 'type') ? api.type : 'http'
-    value: contains(api, 'value') ? api.value : ''
-    wsdlSelector: contains(api, 'wsdlSelector') ? api.wsdlSelector : {}
+    apiDescription: api.?apiDescription
+    apiRevision: api.?apiRevision
+    apiRevisionDescription: api.?apiRevisionDescription
+    apiType: api.?apiType
+    apiVersion: api.?apiVersion
+    apiVersionDescription: api.?apiVersionDescription
+    apiVersionSetId: api.?apiVersionSetId
+    authenticationSettings: api.authenticationSettings
+    format: api.?format ?? 'openapi'
+    isCurrent: api.?isCurrent
+    protocols: api.?protocols
+    policies: api.?policies
+    serviceUrl: api.?serviceUrl
+    sourceApiId: api.?sourceApiId
+    subscriptionKeyParameterNames: api.?subscriptionKeyParameterNames
+    subscriptionRequired: api.?subscriptionRequired
+    type: api.?type
+    value: api.?value
+    wsdlSelector: api.?wsdlSelector
   }
   dependsOn: [
     service_apiVersionSets

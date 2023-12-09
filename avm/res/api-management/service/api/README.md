@@ -90,7 +90,6 @@ Description of the API. May include HTML formatting tags.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `apiRevision`
 
@@ -98,7 +97,6 @@ Describes the Revision of the API. If no value is provided, default revision 1 i
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `apiRevisionDescription`
 
@@ -106,7 +104,6 @@ Description of the API Revision.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `apiType`
 
@@ -131,7 +128,6 @@ Indicates the Version identifier of the API if the API is versioned.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `apiVersionDescription`
 
@@ -139,7 +135,6 @@ Description of the API Version.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `apiVersionSetId`
 
@@ -147,7 +142,6 @@ Indicates the Version identifier of the API version set.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `authenticationSettings`
 
@@ -155,7 +149,6 @@ Collection of authentication settings included into this API.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `format`
 
@@ -215,7 +208,6 @@ Absolute URL of the backend service implementing this API. Cannot be more than 2
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `sourceApiId`
 
@@ -223,7 +215,6 @@ API identifier of the source API.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `subscriptionKeyParameterNames`
 
@@ -231,7 +222,6 @@ Protocols over which API is made available.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `subscriptionRequired`
 
@@ -264,7 +254,6 @@ Content value when Importing an API.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `wsdlSelector`
 
@@ -272,7 +261,6 @@ Criteria to limit import of WSDL to a subset of the document.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 
 ## Outputs

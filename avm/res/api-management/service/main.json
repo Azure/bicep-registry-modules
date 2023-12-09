@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "3628106003168850688"
+      "templateHash": "5274790859500825878"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service.",
@@ -648,34 +648,73 @@
           "path": {
             "value": "[parameters('apis')[copyIndex()].path]"
           },
-          "apiDescription": "[if(contains(parameters('apis')[copyIndex()], 'apiDescription'), createObject('value', parameters('apis')[copyIndex()].apiDescription), createObject('value', ''))]",
-          "apiRevision": "[if(contains(parameters('apis')[copyIndex()], 'apiRevision'), createObject('value', parameters('apis')[copyIndex()].apiRevision), createObject('value', ''))]",
-          "apiRevisionDescription": "[if(contains(parameters('apis')[copyIndex()], 'apiRevisionDescription'), createObject('value', parameters('apis')[copyIndex()].apiRevisionDescription), createObject('value', ''))]",
-          "apiType": "[if(contains(parameters('apis')[copyIndex()], 'apiType'), createObject('value', parameters('apis')[copyIndex()].apiType), createObject('value', 'http'))]",
-          "apiVersion": "[if(contains(parameters('apis')[copyIndex()], 'apiVersion'), createObject('value', parameters('apis')[copyIndex()].apiVersion), createObject('value', ''))]",
-          "apiVersionDescription": "[if(contains(parameters('apis')[copyIndex()], 'apiVersionDescription'), createObject('value', parameters('apis')[copyIndex()].apiVersionDescription), createObject('value', ''))]",
-          "apiVersionSetId": "[if(contains(parameters('apis')[copyIndex()], 'apiVersionSetId'), createObject('value', parameters('apis')[copyIndex()].apiVersionSetId), createObject('value', ''))]",
-          "authenticationSettings": "[if(contains(parameters('apis')[copyIndex()], 'authenticationSettings'), createObject('value', parameters('apis')[copyIndex()].authenticationSettings), createObject('value', createObject()))]",
-          "format": "[if(contains(parameters('apis')[copyIndex()], 'format'), createObject('value', parameters('apis')[copyIndex()].format), createObject('value', 'openapi'))]",
-          "isCurrent": "[if(contains(parameters('apis')[copyIndex()], 'isCurrent'), createObject('value', parameters('apis')[copyIndex()].isCurrent), createObject('value', true()))]",
-          "protocols": "[if(contains(parameters('apis')[copyIndex()], 'protocols'), createObject('value', parameters('apis')[copyIndex()].protocols), createObject('value', createArray('https')))]",
-          "policies": "[if(contains(parameters('apis')[copyIndex()], 'policies'), createObject('value', parameters('apis')[copyIndex()].policies), createObject('value', createArray()))]",
-          "serviceUrl": "[if(contains(parameters('apis')[copyIndex()], 'serviceUrl'), createObject('value', parameters('apis')[copyIndex()].serviceUrl), createObject('value', ''))]",
-          "sourceApiId": "[if(contains(parameters('apis')[copyIndex()], 'sourceApiId'), createObject('value', parameters('apis')[copyIndex()].sourceApiId), createObject('value', ''))]",
-          "subscriptionKeyParameterNames": "[if(contains(parameters('apis')[copyIndex()], 'subscriptionKeyParameterNames'), createObject('value', parameters('apis')[copyIndex()].subscriptionKeyParameterNames), createObject('value', createObject()))]",
-          "subscriptionRequired": "[if(contains(parameters('apis')[copyIndex()], 'subscriptionRequired'), createObject('value', parameters('apis')[copyIndex()].subscriptionRequired), createObject('value', false()))]",
-          "type": "[if(contains(parameters('apis')[copyIndex()], 'type'), createObject('value', parameters('apis')[copyIndex()].type), createObject('value', 'http'))]",
-          "value": "[if(contains(parameters('apis')[copyIndex()], 'value'), createObject('value', parameters('apis')[copyIndex()].value), createObject('value', ''))]",
-          "wsdlSelector": "[if(contains(parameters('apis')[copyIndex()], 'wsdlSelector'), createObject('value', parameters('apis')[copyIndex()].wsdlSelector), createObject('value', createObject()))]"
+          "apiDescription": {
+            "value": "[tryGet(parameters('apis')[copyIndex()], 'apiDescription')]"
+          },
+          "apiRevision": {
+            "value": "[tryGet(parameters('apis')[copyIndex()], 'apiRevision')]"
+          },
+          "apiRevisionDescription": {
+            "value": "[tryGet(parameters('apis')[copyIndex()], 'apiRevisionDescription')]"
+          },
+          "apiType": {
+            "value": "[tryGet(parameters('apis')[copyIndex()], 'apiType')]"
+          },
+          "apiVersion": {
+            "value": "[tryGet(parameters('apis')[copyIndex()], 'apiVersion')]"
+          },
+          "apiVersionDescription": {
+            "value": "[tryGet(parameters('apis')[copyIndex()], 'apiVersionDescription')]"
+          },
+          "apiVersionSetId": {
+            "value": "[tryGet(parameters('apis')[copyIndex()], 'apiVersionSetId')]"
+          },
+          "authenticationSettings": {
+            "value": "[parameters('apis')[copyIndex()].authenticationSettings]"
+          },
+          "format": {
+            "value": "[coalesce(tryGet(parameters('apis')[copyIndex()], 'format'), 'openapi')]"
+          },
+          "isCurrent": {
+            "value": "[tryGet(parameters('apis')[copyIndex()], 'isCurrent')]"
+          },
+          "protocols": {
+            "value": "[tryGet(parameters('apis')[copyIndex()], 'protocols')]"
+          },
+          "policies": {
+            "value": "[tryGet(parameters('apis')[copyIndex()], 'policies')]"
+          },
+          "serviceUrl": {
+            "value": "[tryGet(parameters('apis')[copyIndex()], 'serviceUrl')]"
+          },
+          "sourceApiId": {
+            "value": "[tryGet(parameters('apis')[copyIndex()], 'sourceApiId')]"
+          },
+          "subscriptionKeyParameterNames": {
+            "value": "[tryGet(parameters('apis')[copyIndex()], 'subscriptionKeyParameterNames')]"
+          },
+          "subscriptionRequired": {
+            "value": "[tryGet(parameters('apis')[copyIndex()], 'subscriptionRequired')]"
+          },
+          "type": {
+            "value": "[tryGet(parameters('apis')[copyIndex()], 'type')]"
+          },
+          "value": {
+            "value": "[tryGet(parameters('apis')[copyIndex()], 'value')]"
+          },
+          "wsdlSelector": {
+            "value": "[tryGet(parameters('apis')[copyIndex()], 'wsdlSelector')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "3782651839276159285"
+              "templateHash": "6833640993258659219"
             },
             "name": "API Management Service APIs",
             "description": "This module deploys an API Management Service API.",
@@ -703,14 +742,14 @@
             },
             "apiRevision": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Describes the Revision of the API. If no value is provided, default revision 1 is created."
               }
             },
             "apiRevisionDescription": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Description of the API Revision."
               }
@@ -730,35 +769,35 @@
             },
             "apiVersion": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Indicates the Version identifier of the API if the API is versioned."
               }
             },
             "apiVersionSetId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Indicates the Version identifier of the API version set."
               }
             },
             "apiVersionDescription": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Description of the API Version."
               }
             },
             "authenticationSettings": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Collection of authentication settings included into this API."
               }
             },
             "apiDescription": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Description of the API. May include HTML formatting tags."
               }
@@ -813,7 +852,7 @@
             },
             "serviceUrl": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "maxLength": 2000,
               "metadata": {
                 "description": "Optional. Absolute URL of the backend service implementing this API. Cannot be more than 2000 characters long."
@@ -821,14 +860,14 @@
             },
             "sourceApiId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. API identifier of the source API."
               }
             },
             "subscriptionKeyParameterNames": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Protocols over which API is made available."
               }
@@ -855,48 +894,57 @@
             },
             "value": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Content value when Importing an API."
               }
             },
             "wsdlSelector": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Criteria to limit import of WSDL to a subset of the document."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "service": {
+              "existing": true,
+              "type": "Microsoft.ApiManagement/service",
+              "apiVersion": "2021-08-01",
+              "name": "[parameters('apiManagementServiceName')]"
+            },
+            "api": {
               "type": "Microsoft.ApiManagement/service/apis",
               "apiVersion": "2021-08-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
-                "apiRevision": "[if(not(empty(parameters('apiRevision'))), parameters('apiRevision'), null())]",
-                "apiRevisionDescription": "[if(not(empty(parameters('apiRevisionDescription'))), parameters('apiRevisionDescription'), null())]",
-                "apiType": "[if(not(empty(parameters('apiType'))), parameters('apiType'), null())]",
-                "apiVersion": "[if(not(empty(parameters('apiVersion'))), parameters('apiVersion'), null())]",
-                "apiVersionDescription": "[if(not(empty(parameters('apiVersionDescription'))), parameters('apiVersionDescription'), null())]",
-                "apiVersionSetId": "[if(not(empty(parameters('apiVersionSetId'))), parameters('apiVersionSetId'), null())]",
-                "authenticationSettings": "[parameters('authenticationSettings')]",
-                "description": "[parameters('apiDescription')]",
+                "apiRevision": "[parameters('apiRevision')]",
+                "apiRevisionDescription": "[parameters('apiRevisionDescription')]",
+                "apiType": "[parameters('apiType')]",
+                "apiVersion": "[parameters('apiVersion')]",
+                "apiVersionDescription": "[parameters('apiVersionDescription')]",
+                "apiVersionSetId": "[parameters('apiVersionSetId')]",
+                "authenticationSettings": "[coalesce(parameters('authenticationSettings'), createObject())]",
+                "description": "[coalesce(parameters('apiDescription'), '')]",
                 "displayName": "[parameters('displayName')]",
                 "format": "[if(not(empty(parameters('value'))), parameters('format'), null())]",
                 "isCurrent": "[parameters('isCurrent')]",
                 "path": "[parameters('path')]",
                 "protocols": "[parameters('protocols')]",
-                "serviceUrl": "[if(not(empty(parameters('serviceUrl'))), parameters('serviceUrl'), null())]",
-                "sourceApiId": "[if(not(empty(parameters('sourceApiId'))), parameters('sourceApiId'), null())]",
-                "subscriptionKeyParameterNames": "[if(not(empty(parameters('subscriptionKeyParameterNames'))), parameters('subscriptionKeyParameterNames'), null())]",
+                "serviceUrl": "[parameters('serviceUrl')]",
+                "sourceApiId": "[parameters('sourceApiId')]",
+                "subscriptionKeyParameterNames": "[parameters('subscriptionKeyParameterNames')]",
                 "subscriptionRequired": "[parameters('subscriptionRequired')]",
                 "type": "[parameters('type')]",
-                "value": "[if(not(empty(parameters('value'))), parameters('value'), null())]",
-                "wsdlSelector": "[parameters('wsdlSelector')]"
-              }
+                "value": "[parameters('value')]",
+                "wsdlSelector": "[coalesce(parameters('wsdlSelector'), createObject())]"
+              },
+              "dependsOn": [
+                "service"
+              ]
             },
-            {
+            "policy": {
               "copy": {
                 "name": "policy",
                 "count": "[length(parameters('policies'))]"
@@ -1011,10 +1059,10 @@
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('apiManagementServiceName'), parameters('name'))]"
+                "api"
               ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
