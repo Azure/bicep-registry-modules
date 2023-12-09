@@ -267,7 +267,6 @@ Describe 'Module tests' -Tag 'Module' {
     It '[<moduleFolderName>] `Set-ModuleReadMe` script should not apply any updates.' -TestCases $readmeFileTestCases {
 
       param(
-        [string] $moduleFolderName,
         [string] $templateFilePath,
         [hashtable] $templateFileContent,
         [string] $readMeFilePath
@@ -382,7 +381,6 @@ Describe 'Module tests' -Tag 'Module' {
       It '[<moduleFolderName>] The template file should not be empty.' -TestCases $moduleFolderTestCases {
 
         param(
-          [string] $moduleFolderName,
           [hashtable] $templateFileContent
         )
         $templateFileContent | Should -Not -BeNullOrEmpty
@@ -392,7 +390,6 @@ Describe 'Module tests' -Tag 'Module' {
         # the actual value changes depending on the scope of the template (RG, subscription, MG, tenant) !!
         # https://learn.microsoft.com/en-us/azure/azure-resource-manager/templates/template-syntax
         param(
-          [string] $moduleFolderName,
           [hashtable] $templateFileContent
         )
 
@@ -416,7 +413,6 @@ Describe 'Module tests' -Tag 'Module' {
       It '[<moduleFolderName>] Template schema should use HTTPS reference.' -TestCases $moduleFolderTestCases {
 
         param(
-          [string] $moduleFolderName,
           [hashtable] $templateFileContent
         )
         $Schemaverion = $templateFileContent.'$schema'
@@ -426,7 +422,6 @@ Describe 'Module tests' -Tag 'Module' {
       It '[<moduleFolderName>] The template file should contain required elements [schema], [contentVersion], [resources].' -TestCases $moduleFolderTestCases {
 
         param(
-          [string] $moduleFolderName,
           [hashtable] $templateFileContent
         )
         $templateFileContent.Keys | Should -Contain '$schema'
@@ -461,7 +456,6 @@ Describe 'Module tests' -Tag 'Module' {
         $templateFileContent.metadata.owner | Should -Not -BeNullOrEmpty
       }
     }
-
 
     Context "Parameters" {
 
@@ -823,7 +817,6 @@ Describe 'Module tests' -Tag 'Module' {
       It '[<moduleFolderName>] Variable names should be camel-cased (no dashes or underscores and must start with lower-case letter).' -TestCases $moduleFolderTestCases {
 
         param(
-          [string] $moduleFolderName,
           [hashtable] $templateFileContent
         )
 
@@ -850,7 +843,6 @@ Describe 'Module tests' -Tag 'Module' {
       It '[<moduleFolderName>] Telemetry deployment should be present in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
 
         param(
-          [string] $moduleFolderName,
           [hashtable] $templateFileContent
         )
 
@@ -868,7 +860,6 @@ Describe 'Module tests' -Tag 'Module' {
       It '[<moduleFolderName>] Telemetry deployment should have correct condition in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
 
         param(
-          [string] $moduleFolderName,
           [hashtable] $templateFileContent
         )
 
@@ -892,7 +883,6 @@ Describe 'Module tests' -Tag 'Module' {
       It '[<moduleFolderName>] Telemetry deployment should have expected inner output for verbosity.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
 
         param(
-          [string] $moduleFolderName,
           [hashtable] $templateFileContent
         )
 
@@ -967,7 +957,6 @@ Describe 'Module tests' -Tag 'Module' {
       It '[<moduleFolderName>] Output names should be camel-cased (no dashes or underscores and must start with lower-case letter).' -TestCases $moduleFolderTestCases {
 
         param(
-          [string] $moduleFolderName,
           [hashtable] $templateFileContent
         )
         $CamelCasingFlag = @()
@@ -986,7 +975,6 @@ Describe 'Module tests' -Tag 'Module' {
       It "[<moduleFolderName>] Output names description should start with a capital letter and contain text ending with a dot." -TestCases $moduleFolderTestCases {
 
         param(
-          [string] $moduleFolderName,
           [hashtable] $templateFileContent
         )
 
@@ -1010,7 +998,6 @@ Describe 'Module tests' -Tag 'Module' {
       It '[<moduleFolderName>] Location output should be returned for resources that use it.' -TestCases $moduleFolderTestCases {
 
         param(
-          [string] $moduleFolderName,
           [hashtable] $templateFileContent,
           [string] $templateFilePath
         )
@@ -1033,7 +1020,6 @@ Describe 'Module tests' -Tag 'Module' {
       It '[<moduleFolderName>] Resource Group output should exist for resources that are deployed into a resource group scope.' -TestCases $moduleFolderTestCases {
 
         param(
-          [string] $moduleFolderName,
           [hashtable] $templateFileContent,
           [string] $templateFilePath
         )
@@ -1049,7 +1035,6 @@ Describe 'Module tests' -Tag 'Module' {
       It '[<moduleFolderName>] Resource modules should have a name output.' -TestCases $moduleFolderTestCases {
 
         param(
-          [string] $moduleFolderName,
           [hashtable] $templateFileContent,
           [string] $readMeFilePath
         )
@@ -1083,7 +1068,6 @@ Describe 'Module tests' -Tag 'Module' {
       It '[<moduleFolderName>] Resource modules should have a Resource ID output.' -TestCases $moduleFolderTestCases {
 
         param(
-          [string] $moduleFolderName,
           [hashtable] $templateFileContent,
           [string] $readMeFilePath
         )
@@ -1118,9 +1102,7 @@ Describe 'Module tests' -Tag 'Module' {
       It '[<moduleFolderName>] Resource modules Principal ID output should exist, if supported.' -TestCases $moduleFolderTestCases {
 
         param(
-          [string] $moduleFolderName,
-          [hashtable] $templateFileContent,
-          [string] $templateFilePath
+          [hashtable] $templateFileContent
         )
 
         if ($templateFileContent.parameters.Keys -notcontains 'managedIdentities') {
@@ -1267,7 +1249,6 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       )
 
       $hasExpectedParam = ($testFileContent | Out-String) -match '\s*param\s+serviceShort\s+string\s*'
-
       $hasExpectedParam | Should -Be $true
     }
   }
@@ -1363,7 +1344,6 @@ Describe 'API version tests' -Tag 'ApiCheck' {
   It 'In [<moduleName>] used resource type [<ResourceType>] should use one of the recent API version(s). Currently using [<TargetApi>].' -TestCases $TestCases {
 
     param(
-      [string] $moduleName,
       [string] $ResourceType,
       [string] $TargetApi,
       [string] $ProviderNamespace,
