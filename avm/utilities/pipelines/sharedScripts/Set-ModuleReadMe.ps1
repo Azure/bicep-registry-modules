@@ -221,6 +221,8 @@ Top-level invocation. Will start from the TemplateFile's parameters object and r
 .EXAMPLE
 Set-DefinitionSection -TemplateFileContent @{ resource = @{}; ... } -Properties @{ @{ name = @{ type = 'string'; 'allowedValues' = @('A1','A2','A3','A4','A5','A6'); 'nullable' = $true; (...) } -ParentName 'diagnosticSettings' -ParentIdentifierLink '#parameter-diagnosticsettings'
 
+Child-level invocation during recurion.
+
 .NOTES
 The function is recursive and will also output grand, great grand children, ... .
 #>
