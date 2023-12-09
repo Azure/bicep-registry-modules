@@ -202,7 +202,7 @@ Top-level invocation. Will start from the TemplateFile's parameters object and r
 .EXAMPLE
 Resolve-ReadMeParameterList -TemplateFileContent @{ resource = @{}; parameters = @{}; ... } -Properties @{ @{ name = @{ type = 'string'; 'allowedValues' = @('A1','A2','A3','A4','A5','A6'); 'nullable' = $true; (...) } -ParentName 'diagnosticSettings'
 
-Child-level invocation during recurion.
+Child-level invocation during recursion.
 
 .NOTES
 The function is recursive and will also output grand, great grand children, ... .
