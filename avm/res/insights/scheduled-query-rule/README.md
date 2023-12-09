@@ -1,5 +1,10 @@
 # Scheduled Query Rules `[Microsoft.Insights/scheduledQueryRules]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys a Scheduled Query Rule.
 
 ## Navigation
@@ -23,12 +28,133 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/insights.scheduled-query-rule:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/insights/scheduled-query-rule:<version>`.
 
-- [Using large parameter set](#example-1-using-large-parameter-set)
-- [WAF-aligned](#example-2-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
-### Example 1: _Using large parameter set_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-isqrmin'
+  params: {
+    // Required parameters
+    criterias: {
+      allOf: [
+        {
+          dimensions: [
+            {
+              name: 'Computer'
+              operator: 'Include'
+              values: [
+                '*'
+              ]
+            }
+            {
+              name: 'InstanceName'
+              operator: 'Include'
+              values: [
+                '*'
+              ]
+            }
+          ]
+          metricMeasureColumn: 'AggregatedValue'
+          operator: 'GreaterThan'
+          query: 'Perf | where ObjectName == \'LogicalDisk\' | where CounterName == \'% Free Space\' | where InstanceName <> \'HarddiskVolume1\' and InstanceName <> \'_Total\' | summarize AggregatedValue = min(CounterValue) by Computer InstanceName bin(TimeGenerated5m)'
+          threshold: 0
+          timeAggregation: 'Average'
+        }
+      ]
+    }
+    name: 'isqrmin001'
+    scopes: [
+      '<logAnalyticsWorkspaceResourceId>'
+    ]
+    // Non-required parameters
+    evaluationFrequency: 'PT5M'
+    location: '<location>'
+    windowSize: 'PT5M'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "criterias": {
+      "value": {
+        "allOf": [
+          {
+            "dimensions": [
+              {
+                "name": "Computer",
+                "operator": "Include",
+                "values": [
+                  "*"
+                ]
+              },
+              {
+                "name": "InstanceName",
+                "operator": "Include",
+                "values": [
+                  "*"
+                ]
+              }
+            ],
+            "metricMeasureColumn": "AggregatedValue",
+            "operator": "GreaterThan",
+            "query": "Perf | where ObjectName == \"LogicalDisk\" | where CounterName == \"% Free Space\" | where InstanceName <> \"HarddiskVolume1\" and InstanceName <> \"_Total\" | summarize AggregatedValue = min(CounterValue) by Computer, InstanceName, bin(TimeGenerated,5m)",
+            "threshold": 0,
+            "timeAggregation": "Average"
+          }
+        ]
+      }
+    },
+    "name": {
+      "value": "isqrmin001"
+    },
+    "scopes": {
+      "value": [
+        "<logAnalyticsWorkspaceResourceId>"
+      ]
+    },
+    // Non-required parameters
+    "evaluationFrequency": {
+      "value": "PT5M"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "windowSize": {
+      "value": "PT5M"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -38,7 +164,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module scheduledQueryRule 'br:bicep/modules/insights.scheduled-query-rule:1.0.0' = {
+module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-isqrmax'
   params: {
     // Required parameters
@@ -76,8 +202,8 @@ module scheduledQueryRule 'br:bicep/modules/insights.scheduled-query-rule:1.0.0'
     // Non-required parameters
     alertDescription: 'My sample Alert'
     autoMitigate: false
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     evaluationFrequency: 'PT5M'
+    location: '<location>'
     queryTimeRange: 'PT5M'
     roleAssignments: [
       {
@@ -164,11 +290,11 @@ module scheduledQueryRule 'br:bicep/modules/insights.scheduled-query-rule:1.0.0'
     "autoMitigate": {
       "value": false
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "evaluationFrequency": {
       "value": "PT5M"
+    },
+    "location": {
+      "value": "<location>"
     },
     "queryTimeRange": {
       "value": "PT5M"
@@ -212,7 +338,7 @@ module scheduledQueryRule 'br:bicep/modules/insights.scheduled-query-rule:1.0.0'
 </details>
 <p>
 
-### Example 2: _WAF-aligned_
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -222,7 +348,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module scheduledQueryRule 'br:bicep/modules/insights.scheduled-query-rule:1.0.0' = {
+module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-isqrwaf'
   params: {
     // Required parameters
@@ -260,8 +386,8 @@ module scheduledQueryRule 'br:bicep/modules/insights.scheduled-query-rule:1.0.0'
     // Non-required parameters
     alertDescription: 'My sample Alert'
     autoMitigate: false
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     evaluationFrequency: 'PT5M'
+    location: '<location>'
     queryTimeRange: 'PT5M'
     suppressForMinutes: 'PT5M'
     tags: {
@@ -331,11 +457,11 @@ module scheduledQueryRule 'br:bicep/modules/insights.scheduled-query-rule:1.0.0'
     "autoMitigate": {
       "value": false
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "evaluationFrequency": {
       "value": "PT5M"
+    },
+    "location": {
+      "value": "<location>"
     },
     "queryTimeRange": {
       "value": "PT5M"
@@ -379,7 +505,7 @@ module scheduledQueryRule 'br:bicep/modules/insights.scheduled-query-rule:1.0.0'
 | [`alertDescription`](#parameter-alertdescription) | string | The description of the scheduled query rule. |
 | [`autoMitigate`](#parameter-automitigate) | bool | The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kind LogAlert. |
 | [`enabled`](#parameter-enabled) | bool | The flag which indicates whether this scheduled query rule is enabled. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`evaluationFrequency`](#parameter-evaluationfrequency) | string | How often the scheduled query rule is evaluated represented in ISO 8601 duration format. Relevant and required only for rules of the kind LogAlert. |
 | [`kind`](#parameter-kind) | string | Indicates the type of scheduled query rule. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -445,9 +571,9 @@ The flag which indicates whether this scheduled query rule is enabled.
 - Type: bool
 - Default: `True`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
