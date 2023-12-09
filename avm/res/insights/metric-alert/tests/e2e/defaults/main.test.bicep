@@ -55,6 +55,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     targetResourceRegion: 'westeurope'
     targetResourceType: 'microsoft.compute/virtualmachines'
-    windowSize: 'PT15M'
   }
 }]
