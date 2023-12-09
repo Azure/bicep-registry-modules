@@ -1,5 +1,10 @@
 # API Management Services `[Microsoft.ApiManagement/service]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys an API Management Service.
 
 ## Navigation
@@ -40,7 +45,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/api-management.service:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/api-management/service:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -56,7 +61,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module service 'br:bicep/modules/api-management.service:1.0.0' = {
+module service 'br/public:avm/res/api-management/service:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-apismin'
   params: {
     // Required parameters
@@ -64,7 +69,7 @@ module service 'br:bicep/modules/api-management.service:1.0.0' = {
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -92,8 +97,8 @@ module service 'br:bicep/modules/api-management.service:1.0.0' = {
       "value": "az-amorg-x-001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -112,7 +117,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module service 'br:bicep/modules/api-management.service:1.0.0' = {
+module service 'br/public:avm/res/api-management/service:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-apismax'
   params: {
     // Required parameters
@@ -182,12 +187,12 @@ module service 'br:bicep/modules/api-management.service:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     identityProviders: [
       {
         name: 'aadProvider'
       }
     ]
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -372,15 +377,15 @@ module service 'br:bicep/modules/api-management.service:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "identityProviders": {
       "value": [
         {
           "name": "aadProvider"
         }
       ]
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -502,7 +507,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module service 'br:bicep/modules/api-management.service:1.0.0' = {
+module service 'br/public:avm/res/api-management/service:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-apiswaf'
   params: {
     // Required parameters
@@ -562,26 +567,16 @@ module service 'br:bicep/modules/api-management.service:1.0.0' = {
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     identityProviders: [
       {
         name: 'aadProvider'
       }
     ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
+    location: '<location>'
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -734,19 +729,10 @@ module service 'br:bicep/modules/api-management.service:1.0.0' = {
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
     },
     "identityProviders": {
       "value": [
@@ -755,11 +741,8 @@ module service 'br:bicep/modules/api-management.service:1.0.0' = {
         }
       ]
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
+    "location": {
+      "value": "<location>"
     },
     "managedIdentities": {
       "value": {
@@ -872,7 +855,7 @@ module service 'br:bicep/modules/api-management.service:1.0.0' = {
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableGateway`](#parameter-disablegateway) | bool | Property only valid for an API Management service deployed in multiple locations. This can be used to disable the gateway in master region. |
 | [`enableClientCertificate`](#parameter-enableclientcertificate) | bool | Property only meant to be used for Consumption SKU Service. This enforces a client certificate to be presented on each request to the gateway. This also enables the ability to authenticate the certificate in the policy on the gateway. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`hostnameConfigurations`](#parameter-hostnameconfigurations) | array | Custom hostname configuration of the API Management service. |
 | [`identityProviders`](#parameter-identityproviders) | array | Identity providers. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -1087,9 +1070,9 @@ Property only meant to be used for Consumption SKU Service. This enforces a clie
 - Type: bool
 - Default: `False`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool

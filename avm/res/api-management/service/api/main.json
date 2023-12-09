@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.22.6.54827",
-      "templateHash": "17340528539230351720"
+      "version": "0.23.1.45101",
+      "templateHash": "3782651839276159285"
     },
     "name": "API Management Service APIs",
     "description": "This module deploys an API Management Service API.",
@@ -84,13 +84,6 @@
       "defaultValue": {},
       "metadata": {
         "description": "Optional. Collection of authentication settings included into this API."
-      }
-    },
-    "enableDefaultTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
       }
     },
     "apiDescription": {
@@ -205,24 +198,7 @@
       }
     }
   },
-  "variables": {
-    "enableReferencedModulesTelemetry": false
-  },
   "resources": [
-    {
-      "condition": "[parameters('enableDefaultTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": []
-        }
-      }
-    },
     {
       "type": "Microsoft.ApiManagement/service/apis",
       "apiVersion": "2021-08-01",
@@ -273,9 +249,6 @@
           "format": "[if(contains(parameters('policies')[copyIndex()], 'format'), createObject('value', parameters('policies')[copyIndex()].format), createObject('value', 'xml'))]",
           "value": {
             "value": "[parameters('policies')[copyIndex()].value]"
-          },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -284,8 +257,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "14571499926134179860"
+              "version": "0.23.1.45101",
+              "templateHash": "16094287091554497025"
             },
             "name": "API Management Service APIs Policies",
             "description": "This module deploys an API Management Service API Policy.",
@@ -311,13 +284,6 @@
                 "description": "Optional. The name of the policy."
               }
             },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
-            },
             "format": {
               "type": "string",
               "defaultValue": "xml",
@@ -339,20 +305,6 @@
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.ApiManagement/service/apis/policies",
               "apiVersion": "2021-08-01",

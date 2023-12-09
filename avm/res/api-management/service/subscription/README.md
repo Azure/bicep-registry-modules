@@ -34,7 +34,6 @@ This module deploys an API Management Service Subscription.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`allowTracing`](#parameter-allowtracing) | bool | Determines whether tracing can be enabled. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`ownerId`](#parameter-ownerid) | string | User (user ID path) for whom subscription is being created in form /users/{userId}. |
 | [`primaryKey`](#parameter-primarykey) | string | Primary subscription key. If not specified during request key will be generated automatically. |
 | [`scope`](#parameter-scope) | string | Scope type to choose between a product, "allAPIs" or a specific API. Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}". |
@@ -58,14 +57,6 @@ The name of the parent API Management service. Required if the template is used 
 ### Parameter: `allowTracing`
 
 Determines whether tracing can be enabled.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
 
 - Required: No
 - Type: bool

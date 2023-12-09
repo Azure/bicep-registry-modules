@@ -42,7 +42,6 @@ This module deploys an API Management Service Authorization Server.
 | [`clientAuthenticationMethod`](#parameter-clientauthenticationmethod) | array | Method of authentication supported by the token endpoint of this authorization server. Possible values are Basic and/or Body. When Body is specified, client credentials and other parameters are passed within the request body in the application/x-www-form-urlencoded format. - Basic or Body. |
 | [`clientRegistrationEndpoint`](#parameter-clientregistrationendpoint) | string | Optional reference to a page where client or app registration for this authorization server is performed. Contains absolute URL to entity being referenced. |
 | [`defaultScope`](#parameter-defaultscope) | string | Access token scope that is going to be requested by default. Can be overridden at the API level. Should be provided in the form of a string containing space-delimited values. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`resourceOwnerPassword`](#parameter-resourceownerpassword) | string | Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner password. |
 | [`resourceOwnerUsername`](#parameter-resourceownerusername) | string | Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner username. |
 | [`serverDescription`](#parameter-serverdescription) | string | Description of the authorization server. Can contain HTML formatting tags. |
@@ -146,14 +145,6 @@ Access token scope that is going to be requested by default. Can be overridden a
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `resourceOwnerPassword`
 

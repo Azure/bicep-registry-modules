@@ -30,12 +30,6 @@ This module deploys an API Management Service Product Group.
 | [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. Required if the template is used in a standalone deployment. |
 | [`productName`](#parameter-productname) | string | The name of the parent Product. Required if the template is used in a standalone deployment. |
 
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
-
 ### Parameter: `name`
 
 Name of the product group.
@@ -56,14 +50,6 @@ The name of the parent Product. Required if the template is used in a standalone
 
 - Required: Yes
 - Type: string
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 
 ## Outputs

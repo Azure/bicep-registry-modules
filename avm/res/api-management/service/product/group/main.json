@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.22.6.54827",
-      "templateHash": "14085709622188800883"
+      "version": "0.23.1.45101",
+      "templateHash": "15349196511355180524"
     },
     "name": "API Management Service Products Groups",
     "description": "This module deploys an API Management Service Product Group.",
@@ -24,13 +24,6 @@
         "description": "Conditional. The name of the parent Product. Required if the template is used in a standalone deployment."
       }
     },
-    "enableDefaultTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-      }
-    },
     "name": {
       "type": "string",
       "metadata": {
@@ -39,20 +32,6 @@
     }
   },
   "resources": [
-    {
-      "condition": "[parameters('enableDefaultTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": []
-        }
-      }
-    },
     {
       "type": "Microsoft.ApiManagement/service/products/groups",
       "apiVersion": "2021-08-01",

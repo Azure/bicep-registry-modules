@@ -44,7 +44,6 @@ This module deploys an API Management Service API.
 | [`apiVersionDescription`](#parameter-apiversiondescription) | string | Description of the API Version. |
 | [`apiVersionSetId`](#parameter-apiversionsetid) | string | Indicates the Version identifier of the API version set. |
 | [`authenticationSettings`](#parameter-authenticationsettings) | object | Collection of authentication settings included into this API. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`format`](#parameter-format) | string | Format of the Content in which the API is getting imported. |
 | [`isCurrent`](#parameter-iscurrent) | bool | Indicates if API revision is current API revision. |
 | [`policies`](#parameter-policies) | array | Array of Policies to apply to the Service API. |
@@ -157,14 +156,6 @@ Collection of authentication settings included into this API.
 - Required: No
 - Type: object
 - Default: `{}`
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `format`
 

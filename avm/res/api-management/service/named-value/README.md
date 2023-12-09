@@ -35,7 +35,6 @@ This module deploys an API Management Service Named Value.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`keyVault`](#parameter-keyvault) | object | KeyVault location details of the namedValue. |
 | [`secret`](#parameter-secret) | bool | Determines whether the value is a secret and should be encrypted or not. Default value is false. |
 | [`tags`](#parameter-tags) | array | Tags that when provided can be used to filter the NamedValue list. - string. |
@@ -61,14 +60,6 @@ The name of the parent API Management service. Required if the template is used 
 
 - Required: Yes
 - Type: string
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `keyVault`
 

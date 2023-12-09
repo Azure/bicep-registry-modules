@@ -37,7 +37,6 @@ This module deploys an API Management Service Backend.
 | :-- | :-- | :-- |
 | [`credentials`](#parameter-credentials) | object | Backend Credentials Contract Properties. |
 | [`description`](#parameter-description) | string | Backend Description. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`protocol`](#parameter-protocol) | string | Backend communication protocol. - http or soap. |
 | [`proxy`](#parameter-proxy) | object | Backend Proxy Contract Properties. |
 | [`resourceId`](#parameter-resourceid) | string | Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps. |
@@ -81,14 +80,6 @@ Backend Description.
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `protocol`
 

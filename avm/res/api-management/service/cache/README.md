@@ -36,7 +36,6 @@ This module deploys an API Management Service Cache.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`description`](#parameter-description) | string | Cache description. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`resourceId`](#parameter-resourceid) | string | Original uri of entity in external system cache points to. |
 
 ### Parameter: `connectionString`
@@ -74,14 +73,6 @@ Cache description.
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `resourceId`
 
