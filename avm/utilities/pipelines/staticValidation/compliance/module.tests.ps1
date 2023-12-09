@@ -462,6 +462,363 @@ Describe 'Module tests' -Tag 'Module' {
       }
     }
 
+
+    Context "Parameters" {
+
+      It '[<moduleFolderName>] The Location should be defined as a parameter, with the default value of "[resourceGroup().Location]" or "global" for ResourceGroup deployment scope.' -TestCases $moduleFolderTestCases {
+
+        param(
+          [hashtable] $templateFileParameters
+        )
+
+        if ((($templateFileContent.'$schema'.Split('/')[5]).Split('.')[0]) -eq (($RgDeploymentSchema.Split('/')[5]).Split('.')[0])) {
+          if ($locationParameter = $templateFileParameters.location) {
+            $locationParameter.defaultValue | Should -BeIn @('[resourceGroup().Location]', 'global')
+          }
+        }
+      }
+
+      It '[<moduleFolderName>] Parameter names should be camel-cased (no dashes or underscores and must start with lower-case letter).' -TestCases $moduleFolderTestCases {
+
+        param(
+          [hashtable] $templateFileParameters
+        )
+
+        if (-not $templateFileParameters) {
+          Set-ItResult -Skipped -Because 'the module template has no parameters.'
+          return
+        }
+
+        $incorrectParameters = @()
+        foreach ($parameter in ($templateFileParameters.Keys | Sort-Object)) {
+          # Parameters in the object are formatted like
+          # - tags
+          # - customerManagedKey.keyVaultResourceId
+          $paramName = ($parameter -split '\.')[-1]
+          if ($paramName.substring(0, 1) -cnotmatch '[a-z]' -or $paramName -match '-' -or $paramName -match '_') {
+            $incorrectParameters += @() + $parameter
+          }
+        }
+        $incorrectParameters | Should -BeNullOrEmpty -Because ('parameters in the template file should be camel-cased. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
+      }
+
+
+      It "[<moduleFolderName>] Each parameters' description should start with a one word category starting with a capital letter, followed by a dot, a space and the actual description text ending with a dot." -TestCases $moduleFolderTestCases {
+
+        param(
+          [string] $moduleFolderName,
+          [hashtable] $templateFileContent,
+          [hashtable] $templateFileParameters
+        )
+
+        if (-not $templateFileParameters) {
+          Set-ItResult -Skipped -Because 'the module template has no parameters.'
+          return
+        }
+
+        $incorrectParameters = @()
+        foreach ($parameter in ($templateFileParameters.Keys | Sort-Object)) {
+          $data = $templateFileParameters.$parameter.metadata.description
+          if ($data -notmatch '(?s)^[A-Z][a-zA-Z]+\. .+\.$') {
+            $incorrectParameters += $parameter
+          }
+        }
+        $incorrectParameters | Should -BeNullOrEmpty -Because ('each parameter in the template file should have a description starting with a "Category" prefix like "Required. " and ending with a dot. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
+      }
+
+      # TODO: Update specs with note
+      It "[<moduleFolderName>] Conditional parameters' description should contain 'Required if' followed by the condition making the parameter required." -TestCases $moduleFolderTestCases {
+
+        param(
+          [string] $moduleFolderName,
+          [hashtable] $templateFileContent,
+          [hashtable] $templateFileParameters
+        )
+
+        if (-not $templateFileParameters) {
+          Set-ItResult -Skipped -Because 'the module template has no parameters.'
+          return
+        }
+
+        $incorrectParameters = @()
+        foreach ($parameter in ($templateFileParameters.Keys | Sort-Object)) {
+          $data = $templateFileParameters.$parameter.metadata.description
+          switch -regex ($data) {
+            '^Conditional. .*' {
+              if ($data -notmatch '.+\. Required if .+') {
+                $incorrectParameters += $parameter
+              }
+            }
+          }
+        }
+        $incorrectParameters | Should -BeNullOrEmpty -Because ('conditional parameters in the template file should lack a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
+      }
+
+
+      It '[<moduleFolderName>] All non-required parameters in template file should not have description that start with "Required.".' -TestCases $moduleFolderTestCases {
+        param (
+          [hashtable] $templateFileContent,
+          [hashtable] $templateFileParameters
+        )
+
+        $incorrectParameters = @()
+        foreach ($parameter in ($templateFileParameters.Keys | Sort-Object)) {
+          $isRequired = Get-IsParameterRequired -TemplateFileContent $templateFileContent -Parameter $templateFileParameters.$parameter
+
+          if ($isRequired) {
+            $description = $templateFileParameters.$parameter.metadata.description
+            if ($description -match '.+\. Required if .+') {
+              $incorrectParameters += $parameter
+            }
+          }
+        }
+
+        $incorrectParameters | Should -BeNullOrEmpty -Because ('only required parameters in the template file should have a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
+      }
+
+      Context 'Custom User-defined-types tests' -Tag 'UDT' {
+
+        It '[<moduleFolderName>] UDT Property names should be camel-cased (no dashes or underscores and must start with lower-case letter).' -TestCases $moduleFolderTestCases {
+
+          param(
+            [hashtable] $templateFileContent
+          )
+
+          if (-not $templateFileContent.definitions) {
+            Set-ItResult -Skipped -Because 'the module template has no user-defined types.'
+            return
+          }
+
+          $CamelCasingFlag = @()
+          $Parameter = $templateFileContent.parameters.Keys
+          foreach ($Param in $Parameter) {
+            if ($Param.substring(0, 1) -cnotmatch '[a-z]' -or $Param -match '-' -or $Param -match '_') {
+              $CamelCasingFlag += $false
+            } else {
+              $CamelCasingFlag += $true
+            }
+          }
+          $CamelCasingFlag | Should -Not -Contain $false
+        }
+
+        It "[<moduleFolderName>] Each UDT property description should start with a one word category starting with a capital letter, followed by a dot, a space and the actual description text ending with a dot." -TestCases $moduleFolderTestCases {
+
+          param(
+            [hashtable] $templateFileContent
+          )
+
+          if (-not $templateFileContent.definitions) {
+            Set-ItResult -Skipped -Because 'the module template has no user-defined types.'
+            return
+          }
+
+          $incorrectParameters = @()
+          $templateParameters = $templateFileContent.parameters.Keys
+          foreach ($parameter in $templateParameters) {
+            $data = ($templateFileContent.parameters.$parameter.metadata).description
+            if ($data -notmatch '(?s)^[A-Z][a-zA-Z]+\. .+\.$') {
+              $incorrectParameters += $parameter
+            }
+          }
+          $incorrectParameters | Should -BeNullOrEmpty
+        }
+
+        It "[<moduleFolderName>] Conditional UDT property descriptions should contain a 'Required if' followed by the condition making the parameter required." -TestCases $moduleFolderTestCases {
+
+          param(
+            [hashtable] $templateFileContent
+          )
+
+          if (-not $templateFileContent.definitions) {
+            Set-ItResult -Skipped -Because 'the module template has no user-defined types.'
+            return
+          }
+
+          $incorrectParameters = @()
+          $templateParameters = $templateFileContent.parameters.Keys
+          foreach ($parameter in $templateParameters) {
+            $data = ($templateFileContent.parameters.$parameter.metadata).description
+            switch -regex ($data) {
+              '^Conditional. .*' {
+                if ($data -notmatch '.*\. Required if .*') {
+                  $incorrectParameters += $parameter
+                }
+              }
+            }
+          }
+          $incorrectParameters | Should -BeNullOrEmpty
+        }
+      }
+
+      Context 'Schema-based User-defined-types tests' -Tag 'UDT' {
+
+        # Creating custom test cases for the UDT schema-based tests
+        $udtTestCases = [System.Collections.ArrayList] @() # General UDT tests (e.g. param should exist)
+        $udtSpecificTestCases = [System.Collections.ArrayList] @() # Specific UDT test cases for singular UDTs (e.g. tags)
+        foreach ($moduleFolderPath in $moduleFolderPaths) {
+
+          $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
+          $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
+          $templateFileContent = $builtTestFileMap[$templateFilePath]
+
+          $udtSpecificTestCases += @{
+            moduleFolderName         = $resourceTypeIdentifier
+            templateFileContent      = $templateFileContent
+            templateFileContentBicep = Get-Content $templateFilePath
+          }
+
+          # Setting expected URL only for those that doen't have multiple different variants
+          $interfaceBase = 'https://aka.ms/avm/interfaces'
+          $udtCases = @(
+            @{
+              parameterName = 'diagnosticSettings'
+              udtName       = 'diagnosticSettingType'
+              link          = "$interfaceBase/diagnostic-settings"
+            }
+            @{
+              parameterName  = 'roleAssignments'
+              udtName        = 'roleAssignmentType'
+              udtExpectedUrl = "$interfaceBase/diagnostic-settings/udt-schema"
+              link           = "$interfaceBase/role-assignments"
+            }
+            @{
+              parameterName  = 'lock'
+              udtName        = 'lockType'
+              udtExpectedUrl = "$interfaceBase/resource-locks/udt-schema"
+              link           = "$interfaceBase/resource-locks"
+            }
+            @{
+              parameterName = 'managedIdentities'
+              udtName       = 'managedIdentitiesType'
+              link          = "$interfaceBase/managed-identities"
+            }
+            @{
+              parameterName = 'privateEndpoints'
+              udtName       = 'privateEndpointType'
+              link          = "$interfaceBase/private-endpoints"
+            }
+            @{
+              parameterName = 'customerManagedKey'
+              udtName       = 'customerManagedKeyType'
+              link          = "$interfaceBase/customer-managed-keys"
+            }
+          )
+
+          foreach ($udtCase in $udtCases) {
+            $udtTestCases += @{
+              moduleFolderName         = $resourceTypeIdentifier
+              templateFileContent      = $templateFileContent
+              templateFileContentBicep = Get-Content $templateFilePath
+              parameterName            = $udtCase.parameterName
+              udtName                  = $udtCase.udtName
+              expectedUdtUrl           = $udtCase.udtExpectedUrl ? $udtCase.udtExpectedUrl : ''
+              link                     = $udtCase.link
+            }
+          }
+        }
+
+        It '[<moduleFolderName>] If template has a parameter [<parameterName>], it should implement the user-defined type [<udtName>]' -TestCases $udtTestCases {
+
+          param(
+            [hashtable] $templateFileContent,
+            [string[]] $templateFileContentBicep,
+            [string] $parameterName,
+            [string] $udtName,
+            [string] $expectedUdtUrl,
+            [string] $link
+          )
+
+          if ($templateFileContent.parameters.Keys -contains $parameterName) {
+            $templateFileContent.parameters.$parameterName.Keys | Should -Contain '$ref' -Because "the [$parameterName] parameter should use a user-defined type. For information please review the [AVM Specs]($link)."
+            $templateFileContent.parameters.$parameterName.'$ref' | Should -Be "#/definitions/$udtName" -Because "the [$parameterName] parameter should use a user-defined type [$udtName]. For information please review the [AVM Specs]($link)."
+
+            if (-not [String]::IsNullOrEmpty($expectedUdtUrl)) {
+              $implementedSchemaStartIndex = $templateFileContentBicep.IndexOf("type $udtName = {")
+              $implementedSchemaEndIndex = $implementedSchemaStartIndex + 1
+              while ($templateFileContentBicep[$implementedSchemaEndIndex] -notmatch '^\}.*' -and $implementedSchemaEndIndex -lt $templateFileContentBicep.Length) {
+                $implementedSchemaEndIndex++
+              }
+              if ($implementedSchemaEndIndex -eq $templateFileContentBicep.Length) {
+                throw "Failed to identify [$udtName] user-defined type in template."
+              }
+              $implementedSchema = $templateFileContentBicep[$implementedSchemaStartIndex..$implementedSchemaEndIndex]
+
+              try {
+                $rawReponse = Invoke-WebRequest -Uri $expectedUdtUrl
+                if (($rawReponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
+                  $expectedSchemaFull = $rawReponse.Content -split '\n'
+                } else {
+                  throw "Failed to fetch schema from [$expectedUdtUrl]. Skipping schema check"
+                }
+              } catch {
+                Write-Warning "Failed to fetch schema from [$expectedUdtUrl]. Skipping schema check"
+                return
+              }
+
+              $expectedSchemaStartIndex = $expectedSchemaFull.IndexOf("type $udtName = {")
+              $expectedSchemaEndIndex = $expectedSchemaStartIndex + 1
+              while ($expectedSchemaFull[$expectedSchemaEndIndex] -notmatch '^\}.*' -and $expectedSchemaEndIndex -lt $expectedSchemaFull.Length) {
+                $expectedSchemaEndIndex++
+              }
+              if ($expectedSchemaEndIndex -eq $expectedSchemaFull.Length) {
+                throw "Failed to identify [$udtName] user-defined type in expected schema at URL [$expectedUdtUrl]."
+              }
+              $expectedSchema = $expectedSchemaFull[$expectedSchemaStartIndex..$expectedSchemaEndIndex]
+
+              $formattedDiff = @()
+              foreach ($finding in (Compare-Object $implementedSchema $expectedSchema)) {
+                if ($finding.SideIndicator -eq '=>') {
+                  $formattedDiff += ('+ {0}' -f $finding.InputObject)
+                } elseif ($finding.SideIndicator -eq '<=') {
+                  $formattedDiff += ('- {0}' -f $finding.InputObject)
+                }
+              }
+
+              if ($formattedDiff.Count -gt 0) {
+                $warningMessage = "The implemented user-defined type is not the same as the expected user-defined type ({0}) defined in the AVM specs ({1}) and should not have diff`n{2}" -f $expectedUdtUrl, $link, ($formattedDiff | Out-String)
+                Write-Warning $warningMessage
+
+                # Adding also to output to show in GitHub CI
+                $mdFormattedDiff = ($formattedDiff -join '</br>') -replace '\|', '\|'
+                $mdFormattedWarningMessage = 'The implemented user-defined type is not the same as the expected [user-defined type]({0}) defined in the [AVM specs]({1}) and should not have diff</br><pre>{2}</pre>' -f $expectedUdtUrl, $link, $mdFormattedDiff
+                Write-Output @{
+                  Warning = $mdFormattedWarningMessage
+                }
+              }
+            }
+          } else {
+            Set-ItResult -Skipped -Because "the module template has no [$parameterName] parameter."
+          }
+        }
+
+        It '[<moduleFolderName>] If a UDT definition [managedIdentitiesType] exists and supports system-assigned-identities, the template should have an output for its principal ID.' -TestCases $udtSpecificTestCases {
+
+          param(
+            [hashtable] $templateFileContent
+          )
+
+          if ($templateFileContent.definitions.Keys -contains 'managedIdentitiesType' -and $templateFileContent.definitions.managedIdentitiesType.properties.keys -contains 'systemAssigned') {
+            $templateFileContent.outputs.Keys | Should -Contain 'systemAssignedMIPrincipalId' -Because 'The AVM specs require a this output. For information please review the [AVM Specs](https://aka.ms/avm/interfaces/managed-identities).'
+          } else {
+            Set-ItResult -Skipped -Because 'the module template has no [managedIdentitiesType] UDT definition or does not support system-assigned-identities.'
+          }
+        }
+
+        It '[<moduleFolderName>] If a parameter [tags] exists it should be nullable.' -TestCases $udtSpecificTestCases {
+
+          param(
+            [hashtable] $templateFileContent
+          )
+
+          if ($templateFileContent.parameters.Keys -contains 'tags') {
+            $templateFileContent.parameters.tags.nullable | Should -Be $true -Because 'The AVM specs require a specific format. For information please review the [AVM Specs](https://aka.ms/avm/interfaces/tags).'
+          } else {
+            Set-ItResult -Skipped -Because 'the module template has no [tags] parameter.'
+          }
+        }
+      }
+    }
+
     Context "Variables" {
       It '[<moduleFolderName>] Variable names should be camel-cased (no dashes or underscores and must start with lower-case letter).' -TestCases $moduleFolderTestCases {
 
@@ -781,362 +1138,6 @@ Describe 'Module tests' -Tag 'Module' {
         # Otherwise test for standard outputs
         $outputs = $templateFileContent.outputs.Keys
         $outputs | Should -Contain 'systemAssignedMIPrincipalId'
-      }
-    }
-
-    Context "Parameters" {
-
-      It '[<moduleFolderName>] The Location should be defined as a parameter, with the default value of "[resourceGroup().Location]" or "global" for ResourceGroup deployment scope.' -TestCases $moduleFolderTestCases {
-
-        param(
-          [hashtable] $templateFileParameters
-        )
-
-        if ((($templateFileContent.'$schema'.Split('/')[5]).Split('.')[0]) -eq (($RgDeploymentSchema.Split('/')[5]).Split('.')[0])) {
-          if ($locationParameter = $templateFileParameters.location) {
-            $locationParameter.defaultValue | Should -BeIn @('[resourceGroup().Location]', 'global')
-          }
-        }
-      }
-
-      It '[<moduleFolderName>] Parameter names should be camel-cased (no dashes or underscores and must start with lower-case letter).' -TestCases $moduleFolderTestCases {
-
-        param(
-          [hashtable] $templateFileParameters
-        )
-
-        if (-not $templateFileParameters) {
-          Set-ItResult -Skipped -Because 'the module template has no parameters.'
-          return
-        }
-
-        $incorrectParameters = @()
-        foreach ($parameter in ($templateFileParameters.Keys | Sort-Object)) {
-          # Parameters in the object are formatted like
-          # - tags
-          # - customerManagedKey.keyVaultResourceId
-          $paramName = ($parameter -split '\.')[-1]
-          if ($paramName.substring(0, 1) -cnotmatch '[a-z]' -or $paramName -match '-' -or $paramName -match '_') {
-            $incorrectParameters += @() + $parameter
-          }
-        }
-        $incorrectParameters | Should -BeNullOrEmpty -Because ('parameters in the template file should be camel-cased. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
-      }
-
-
-      It "[<moduleFolderName>] Each parameters' description should start with a one word category starting with a capital letter, followed by a dot, a space and the actual description text ending with a dot." -TestCases $moduleFolderTestCases {
-
-        param(
-          [string] $moduleFolderName,
-          [hashtable] $templateFileContent,
-          [hashtable] $templateFileParameters
-        )
-
-        if (-not $templateFileParameters) {
-          Set-ItResult -Skipped -Because 'the module template has no parameters.'
-          return
-        }
-
-        $incorrectParameters = @()
-        foreach ($parameter in ($templateFileParameters.Keys | Sort-Object)) {
-          $data = $templateFileParameters.$parameter.metadata.description
-          if ($data -notmatch '(?s)^[A-Z][a-zA-Z]+\. .+\.$') {
-            $incorrectParameters += $parameter
-          }
-        }
-        $incorrectParameters | Should -BeNullOrEmpty -Because ('each parameter in the template file should have a description starting with a "Category" prefix like "Required. " and ending with a dot. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
-      }
-
-      # TODO: Update specs with note
-      It "[<moduleFolderName>] Conditional parameters' description should contain 'Required if' followed by the condition making the parameter required." -TestCases $moduleFolderTestCases {
-
-        param(
-          [string] $moduleFolderName,
-          [hashtable] $templateFileContent,
-          [hashtable] $templateFileParameters
-        )
-
-        if (-not $templateFileParameters) {
-          Set-ItResult -Skipped -Because 'the module template has no parameters.'
-          return
-        }
-
-        $incorrectParameters = @()
-        foreach ($parameter in ($templateFileParameters.Keys | Sort-Object)) {
-          $data = $templateFileParameters.$parameter.metadata.description
-          switch -regex ($data) {
-            '^Conditional. .*' {
-              if ($data -notmatch '.+\. Required if .+') {
-                $incorrectParameters += $parameter
-              }
-            }
-          }
-        }
-        $incorrectParameters | Should -BeNullOrEmpty -Because ('conditional parameters in the template file should lack a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
-      }
-
-
-      It '[<moduleFolderName>] All non-required parameters in template file should not have description that start with "Required.".' -TestCases $moduleFolderTestCases {
-        param (
-          [hashtable] $templateFileContent,
-          [hashtable] $templateFileParameters
-        )
-
-        $incorrectParameters = @()
-        foreach ($parameter in ($templateFileParameters.Keys | Sort-Object)) {
-          $isRequired = Get-IsParameterRequired -TemplateFileContent $templateFileContent -Parameter $templateFileParameters.$parameter
-
-          if ($isRequired) {
-            $description = $templateFileParameters.$parameter.metadata.description
-            if ($description -match '.+\. Required if .+') {
-              $incorrectParameters += $parameter
-            }
-          }
-        }
-
-        $incorrectParameters | Should -BeNullOrEmpty -Because ('only required parameters in the template file should have a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
-      }
-
-      Context 'Custom User-defined-types tests' -Tag 'UDT' {
-
-        It '[<moduleFolderName>] UDT Property names should be camel-cased (no dashes or underscores and must start with lower-case letter).' -TestCases $moduleFolderTestCases {
-
-          param(
-            [hashtable] $templateFileContent
-          )
-
-          if (-not $templateFileContent.definitions) {
-            Set-ItResult -Skipped -Because 'the module template has no user-defined types.'
-            return
-          }
-
-          $CamelCasingFlag = @()
-          $Parameter = $templateFileContent.parameters.Keys
-          foreach ($Param in $Parameter) {
-            if ($Param.substring(0, 1) -cnotmatch '[a-z]' -or $Param -match '-' -or $Param -match '_') {
-              $CamelCasingFlag += $false
-            } else {
-              $CamelCasingFlag += $true
-            }
-          }
-          $CamelCasingFlag | Should -Not -Contain $false
-        }
-
-        It "[<moduleFolderName>] Each UDT property description should start with a one word category starting with a capital letter, followed by a dot, a space and the actual description text ending with a dot." -TestCases $moduleFolderTestCases {
-
-          param(
-            [hashtable] $templateFileContent
-          )
-
-          if (-not $templateFileContent.definitions) {
-            Set-ItResult -Skipped -Because 'the module template has no user-defined types.'
-            return
-          }
-
-          $incorrectParameters = @()
-          $templateParameters = $templateFileContent.parameters.Keys
-          foreach ($parameter in $templateParameters) {
-            $data = ($templateFileContent.parameters.$parameter.metadata).description
-            if ($data -notmatch '(?s)^[A-Z][a-zA-Z]+\. .+\.$') {
-              $incorrectParameters += $parameter
-            }
-          }
-          $incorrectParameters | Should -BeNullOrEmpty
-        }
-
-        It "[<moduleFolderName>] Conditional UDT property descriptions should contain a 'Required if' followed by the condition making the parameter required." -TestCases $moduleFolderTestCases {
-
-          param(
-            [hashtable] $templateFileContent
-          )
-
-          if (-not $templateFileContent.definitions) {
-            Set-ItResult -Skipped -Because 'the module template has no user-defined types.'
-            return
-          }
-
-          $incorrectParameters = @()
-          $templateParameters = $templateFileContent.parameters.Keys
-          foreach ($parameter in $templateParameters) {
-            $data = ($templateFileContent.parameters.$parameter.metadata).description
-            switch -regex ($data) {
-              '^Conditional. .*' {
-                if ($data -notmatch '.*\. Required if .*') {
-                  $incorrectParameters += $parameter
-                }
-              }
-            }
-          }
-          $incorrectParameters | Should -BeNullOrEmpty
-        }
-      }
-    }
-  }
-
-  Context 'Schema-based User-defined-types tests' -Tag 'UDT' {
-
-    $udtTestCases = [System.Collections.ArrayList] @() # General UDT tests (e.g. param should exist)
-    $udtSpecificTestCases = [System.Collections.ArrayList] @() # Specific UDT test cases for singular UDTs (e.g. tags)
-    foreach ($moduleFolderPath in $moduleFolderPaths) {
-
-      $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]{1}avm[\/|\\]{1}(res|ptn)[\/|\\]{1}')[2] -replace '\\', '/' # avm/res/<provider>/<resourceType>
-      $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
-      $templateFileContent = $builtTestFileMap[$templateFilePath]
-
-      $udtSpecificTestCases += @{
-        moduleFolderName         = $resourceTypeIdentifier
-        templateFileContent      = $templateFileContent
-        templateFileContentBicep = Get-Content $templateFilePath
-      }
-
-      # Setting expected URL only for those that doen't have multiple different variants
-      $interfaceBase = 'https://aka.ms/avm/interfaces'
-      $udtCases = @(
-        @{
-          parameterName = 'diagnosticSettings'
-          udtName       = 'diagnosticSettingType'
-          link          = "$interfaceBase/diagnostic-settings"
-        }
-        @{
-          parameterName  = 'roleAssignments'
-          udtName        = 'roleAssignmentType'
-          udtExpectedUrl = "$interfaceBase/diagnostic-settings/udt-schema"
-          link           = "$interfaceBase/role-assignments"
-        }
-        @{
-          parameterName  = 'lock'
-          udtName        = 'lockType'
-          udtExpectedUrl = "$interfaceBase/resource-locks/udt-schema"
-          link           = "$interfaceBase/resource-locks"
-        }
-        @{
-          parameterName = 'managedIdentities'
-          udtName       = 'managedIdentitiesType'
-          link          = "$interfaceBase/managed-identities"
-        }
-        @{
-          parameterName = 'privateEndpoints'
-          udtName       = 'privateEndpointType'
-          link          = "$interfaceBase/private-endpoints"
-        }
-        @{
-          parameterName = 'customerManagedKey'
-          udtName       = 'customerManagedKeyType'
-          link          = "$interfaceBase/customer-managed-keys"
-        }
-      )
-
-      foreach ($udtCase in $udtCases) {
-        $udtTestCases += @{
-          moduleFolderName         = $resourceTypeIdentifier
-          templateFileContent      = $templateFileContent
-          templateFileContentBicep = Get-Content $templateFilePath
-          parameterName            = $udtCase.parameterName
-          udtName                  = $udtCase.udtName
-          expectedUdtUrl           = $udtCase.udtExpectedUrl ? $udtCase.udtExpectedUrl : ''
-          link                     = $udtCase.link
-        }
-      }
-    }
-
-
-    It '[<moduleFolderName>] If template has a parameter [<parameterName>], it should implement the user-defined type [<udtName>]' -TestCases $udtTestCases {
-
-      param(
-        [hashtable] $templateFileContent,
-        [string[]] $templateFileContentBicep,
-        [string] $parameterName,
-        [string] $udtName,
-        [string] $expectedUdtUrl,
-        [string] $link
-      )
-
-      if ($templateFileContent.parameters.Keys -contains $parameterName) {
-        $templateFileContent.parameters.$parameterName.Keys | Should -Contain '$ref' -Because "the [$parameterName] parameter should use a user-defined type. For information please review the [AVM Specs]($link)."
-        $templateFileContent.parameters.$parameterName.'$ref' | Should -Be "#/definitions/$udtName" -Because "the [$parameterName] parameter should use a user-defined type [$udtName]. For information please review the [AVM Specs]($link)."
-
-        if (-not [String]::IsNullOrEmpty($expectedUdtUrl)) {
-          $implementedSchemaStartIndex = $templateFileContentBicep.IndexOf("type $udtName = {")
-          $implementedSchemaEndIndex = $implementedSchemaStartIndex + 1
-          while ($templateFileContentBicep[$implementedSchemaEndIndex] -notmatch '^\}.*' -and $implementedSchemaEndIndex -lt $templateFileContentBicep.Length) {
-            $implementedSchemaEndIndex++
-          }
-          if ($implementedSchemaEndIndex -eq $templateFileContentBicep.Length) {
-            throw "Failed to identify [$udtName] user-defined type in template."
-          }
-          $implementedSchema = $templateFileContentBicep[$implementedSchemaStartIndex..$implementedSchemaEndIndex]
-
-          try {
-            $rawReponse = Invoke-WebRequest -Uri $expectedUdtUrl
-            if (($rawReponse.Headers['Content-Type'] | Out-String) -like "*text/plain*") {
-              $expectedSchemaFull = $rawReponse.Content -split '\n'
-            } else {
-              throw "Failed to fetch schema from [$expectedUdtUrl]. Skipping schema check"
-            }
-          } catch {
-            Write-Warning "Failed to fetch schema from [$expectedUdtUrl]. Skipping schema check"
-            return
-          }
-
-          $expectedSchemaStartIndex = $expectedSchemaFull.IndexOf("type $udtName = {")
-          $expectedSchemaEndIndex = $expectedSchemaStartIndex + 1
-          while ($expectedSchemaFull[$expectedSchemaEndIndex] -notmatch '^\}.*' -and $expectedSchemaEndIndex -lt $expectedSchemaFull.Length) {
-            $expectedSchemaEndIndex++
-          }
-          if ($expectedSchemaEndIndex -eq $expectedSchemaFull.Length) {
-            throw "Failed to identify [$udtName] user-defined type in expected schema at URL [$expectedUdtUrl]."
-          }
-          $expectedSchema = $expectedSchemaFull[$expectedSchemaStartIndex..$expectedSchemaEndIndex]
-
-          $formattedDiff = @()
-          foreach ($finding in (Compare-Object $implementedSchema $expectedSchema)) {
-            if ($finding.SideIndicator -eq '=>') {
-              $formattedDiff += ('+ {0}' -f $finding.InputObject)
-            } elseif ($finding.SideIndicator -eq '<=') {
-              $formattedDiff += ('- {0}' -f $finding.InputObject)
-            }
-          }
-
-          if ($formattedDiff.Count -gt 0) {
-            $warningMessage = "The implemented user-defined type is not the same as the expected user-defined type ({0}) defined in the AVM specs ({1}) and should not have diff`n{2}" -f $expectedUdtUrl, $link, ($formattedDiff | Out-String)
-            Write-Warning $warningMessage
-
-            # Adding also to output to show in GitHub CI
-            $mdFormattedDiff = ($formattedDiff -join '</br>') -replace '\|', '\|'
-            $mdFormattedWarningMessage = 'The implemented user-defined type is not the same as the expected [user-defined type]({0}) defined in the [AVM specs]({1}) and should not have diff</br><pre>{2}</pre>' -f $expectedUdtUrl, $link, $mdFormattedDiff
-            Write-Output @{
-              Warning = $mdFormattedWarningMessage
-            }
-          }
-        }
-      } else {
-        Set-ItResult -Skipped -Because "the module template has no [$parameterName] parameter."
-      }
-    }
-
-    It '[<moduleFolderName>] If a UDT definition [managedIdentitiesType] exists and supports system-assigned-identities, the template should have an output for its principal ID.' -TestCases $udtSpecificTestCases {
-
-      param(
-        [hashtable] $templateFileContent
-      )
-
-      if ($templateFileContent.definitions.Keys -contains 'managedIdentitiesType' -and $templateFileContent.definitions.managedIdentitiesType.properties.keys -contains 'systemAssigned') {
-        $templateFileContent.outputs.Keys | Should -Contain 'systemAssignedMIPrincipalId' -Because 'The AVM specs require a this output. For information please review the [AVM Specs](https://aka.ms/avm/interfaces/managed-identities).'
-      } else {
-        Set-ItResult -Skipped -Because 'the module template has no [managedIdentitiesType] UDT definition or does not support system-assigned-identities.'
-      }
-    }
-
-    It '[<moduleFolderName>] If a parameter [tags] exists it should be nullable.' -TestCases $udtSpecificTestCases {
-
-      param(
-        [hashtable] $templateFileContent
-      )
-
-      if ($templateFileContent.parameters.Keys -contains 'tags') {
-        $templateFileContent.parameters.tags.nullable | Should -Be $true -Because 'The AVM specs require a specific format. For information please review the [AVM Specs](https://aka.ms/avm/interfaces/tags).'
-      } else {
-        Set-ItResult -Skipped -Because 'the module template has no [tags] parameter.'
       }
     }
   }
