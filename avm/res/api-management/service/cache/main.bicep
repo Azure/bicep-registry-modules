@@ -11,9 +11,6 @@ param name string
 @sys.description('Required. Runtime connection string to cache. Can be referenced by a named value like so, {{<named-value>}}.')
 param connectionString string
 
-@sys.description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
 @sys.description('Optional. Cache description.')
 param description string = ''
 
@@ -22,18 +19,6 @@ param resourceId string = ''
 
 @sys.description('Required. Location identifier to use cache from (should be either \'default\' or valid Azure region identifier).')
 param useFromLocation string
-
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
-  }
-}
 
 resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
   name: apiManagementServiceName

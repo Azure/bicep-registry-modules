@@ -12,8 +12,8 @@ param name string
 @maxLength(10)
 param certificates array = []
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 @description('Optional. Custom properties of the API Management service.')
 param customProperties object = {}
@@ -128,8 +128,6 @@ param products array = []
 @description('Optional. Subscriptions.')
 param subscriptions array = []
 
-var enableReferencedModulesTelemetry = false
-
 var authorizationServerList = !empty(authorizationServers) ? authorizationServers.secureList : []
 
 var formattedUserAssignedIdentities = reduce(map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }), {}, (cur, next) => union(cur, next)) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
@@ -151,14 +149,20 @@ var builtInRoleNames = {
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.dbforpostgresql-flexibleserver.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
       contentVersion: '1.0.0.0'
       resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
     }
   }
 }
@@ -222,7 +226,6 @@ module service_apis 'api/main.bicep' = [for (api, index) in apis: {
     type: contains(api, 'type') ? api.type : 'http'
     value: contains(api, 'value') ? api.value : ''
     wsdlSelector: contains(api, 'wsdlSelector') ? api.wsdlSelector : {}
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     service_apiVersionSets
@@ -235,7 +238,6 @@ module service_apiVersionSets 'api-version-set/main.bicep' = [for (apiVersionSet
     apiManagementServiceName: service.name
     name: apiVersionSet.name
     properties: contains(apiVersionSet, 'properties') ? apiVersionSet.properties : {}
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -265,7 +267,6 @@ module service_authorizationServers 'authorization-server/main.bicep' = [for (au
     supportState: contains(authorizationServer, 'supportState') ? authorizationServer.supportState : false
     tokenBodyParameters: contains(authorizationServer, 'tokenBodyParameters') ? authorizationServer.tokenBodyParameters : []
     tokenEndpoint: contains(authorizationServer, 'tokenEndpoint') ? authorizationServer.tokenEndpoint : ''
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -286,7 +287,6 @@ module service_backends 'backend/main.bicep' = [for (backend, index) in backends
       validateCertificateChain: false
       validateCertificateName: false
     }
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -299,7 +299,6 @@ module service_caches 'cache/main.bicep' = [for (cache, index) in caches: {
     name: cache.name
     resourceId: contains(cache, 'resourceId') ? cache.resourceId : ''
     useFromLocation: cache.useFromLocation
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -319,7 +318,6 @@ module service_identityProviders 'identity-provider/main.bicep' = [for (identity
     signInTenant: contains(identityProvider, 'signInTenant') ? identityProvider.signInTenant : ''
     signUpPolicyName: contains(identityProvider, 'signUpPolicyName') ? identityProvider.signUpPolicyName : ''
     type: contains(identityProvider, 'type') ? identityProvider.type : 'aad'
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -333,7 +331,6 @@ module service_namedValues 'named-value/main.bicep' = [for (namedValue, index) i
     tags: namedValue.?tags // Note: these are not resource tags
     secret: contains(namedValue, 'secret') ? namedValue.secret : false
     value: contains(namedValue, 'value') ? namedValue.value : newGuidValue
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -343,7 +340,6 @@ module service_portalsettings 'portalsetting/main.bicep' = [for (portalsetting, 
     apiManagementServiceName: service.name
     name: portalsetting.name
     properties: contains(portalsetting, 'properties') ? portalsetting.properties : {}
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -353,7 +349,6 @@ module service_policies 'policy/main.bicep' = [for (policy, index) in policies: 
     apiManagementServiceName: service.name
     value: policy.value
     format: contains(policy, 'format') ? policy.format : 'xml'
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -370,7 +365,6 @@ module service_products 'product/main.bicep' = [for (product, index) in products
     subscriptionRequired: contains(product, 'subscriptionRequired') ? product.subscriptionRequired : false
     subscriptionsLimit: contains(product, 'subscriptionsLimit') ? product.subscriptionsLimit : 1
     terms: contains(product, 'terms') ? product.terms : ''
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     service_apis
@@ -388,7 +382,6 @@ module service_subscriptions 'subscription/main.bicep' = [for (subscription, ind
     scope: contains(subscription, 'scope') ? subscription.scope : '/apis'
     secondaryKey: contains(subscription, 'secondaryKey') ? subscription.secondaryKey : ''
     state: contains(subscription, 'state') ? subscription.state : ''
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 

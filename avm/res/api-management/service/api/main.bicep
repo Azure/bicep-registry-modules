@@ -38,9 +38,6 @@ param apiVersionDescription string = ''
 @description('Optional. Collection of authentication settings included into this API.')
 param authenticationSettings object = {}
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
 @description('Optional. Description of the API. May include HTML formatting tags.')
 param apiDescription string = ''
 
@@ -102,20 +99,6 @@ param value string = ''
 @description('Optional. Criteria to limit import of WSDL to a subset of the document.')
 param wsdlSelector object = {}
 
-var enableReferencedModulesTelemetry = false
-
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
-  }
-}
-
 resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
   name: apiManagementServiceName
 }
@@ -154,7 +137,6 @@ module policy 'policy/main.bicep' = [for (policy, index) in policies: {
     apiName: api.name
     format: contains(policy, 'format') ? policy.format : 'xml'
     value: policy.value
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
