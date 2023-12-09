@@ -64,7 +64,6 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
     location: 'Global'
     targetResourceRegion: 'westeurope'
     targetResourceType: 'microsoft.compute/virtualmachines'
-    windowSize: 'PT15M'
   }
 }
 ```
@@ -107,9 +106,6 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
     },
     "targetResourceType": {
       "value": "microsoft.compute/virtualmachines"
-    },
-    "windowSize": {
-      "value": "PT15M"
     }
   }
 }
