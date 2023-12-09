@@ -1080,77 +1080,77 @@ Describe 'Module tests' -Tag 'Module' {
         moduleFolderName    = $resourceTypeIdentifier
         templateFileContent = $templateFileContent
       }
+    }
 
-      It '[<moduleFolderName>] UDT Property names should be camel-cased (no dashes or underscores and must start with lower-case letter).' -TestCases $udtTestCases {
+    It '[<moduleFolderName>] UDT Property names should be camel-cased (no dashes or underscores and must start with lower-case letter).' -TestCases $udtTestCases {
 
-        param(
-          [hashtable] $templateFileContent
-        )
+      param(
+        [hashtable] $templateFileContent
+      )
 
-        if (-not $templateFileContent.definitions) {
-          Set-ItResult -Skipped -Because 'the module template has no user-defined types.'
-          return
-        }
-
-        $CamelCasingFlag = @()
-        $Parameter = $templateFileContent.parameters.Keys
-        foreach ($Param in $Parameter) {
-          if ($Param.substring(0, 1) -cnotmatch '[a-z]' -or $Param -match '-' -or $Param -match '_') {
-            $CamelCasingFlag += $false
-          } else {
-            $CamelCasingFlag += $true
-          }
-        }
-        $CamelCasingFlag | Should -Not -Contain $false
+      if (-not $templateFileContent.definitions) {
+        Set-ItResult -Skipped -Because 'the module template has no user-defined types.'
+        return
       }
 
-      It "[<moduleFolderName>] Each UDT property description should start with a one word category starting with a capital letter, followed by a dot, a space and the actual description text ending with a dot." -TestCases $deploymentFolderTestCases {
-
-        param(
-          [hashtable] $templateFileContent
-        )
-
-        if (-not $templateFileContent.definitions) {
-          Set-ItResult -Skipped -Because 'the module template has no user-defined types.'
-          return
+      $CamelCasingFlag = @()
+      $Parameter = $templateFileContent.parameters.Keys
+      foreach ($Param in $Parameter) {
+        if ($Param.substring(0, 1) -cnotmatch '[a-z]' -or $Param -match '-' -or $Param -match '_') {
+          $CamelCasingFlag += $false
+        } else {
+          $CamelCasingFlag += $true
         }
+      }
+      $CamelCasingFlag | Should -Not -Contain $false
+    }
 
-        $incorrectParameters = @()
-        $templateParameters = $templateFileContent.parameters.Keys
-        foreach ($parameter in $templateParameters) {
-          $data = ($templateFileContent.parameters.$parameter.metadata).description
-          if ($data -notmatch '(?s)^[A-Z][a-zA-Z]+\. .+\.$') {
-            $incorrectParameters += $parameter
-          }
-        }
-        $incorrectParameters | Should -BeNullOrEmpty
+    It "[<moduleFolderName>] Each UDT property description should start with a one word category starting with a capital letter, followed by a dot, a space and the actual description text ending with a dot." -TestCases $udtTestCases {
+
+      param(
+        [hashtable] $templateFileContent
+      )
+
+      if (-not $templateFileContent.definitions) {
+        Set-ItResult -Skipped -Because 'the module template has no user-defined types.'
+        return
       }
 
-      It "[<moduleFolderName>] Conditional UDT property descriptions should contain a 'Required if' followed by the condition making the parameter required." -TestCases $deploymentFolderTestCases {
-
-        param(
-          [hashtable] $templateFileContent
-        )
-
-        if (-not $templateFileContent.definitions) {
-          Set-ItResult -Skipped -Because 'the module template has no user-defined types.'
-          return
+      $incorrectParameters = @()
+      $templateParameters = $templateFileContent.parameters.Keys
+      foreach ($parameter in $templateParameters) {
+        $data = ($templateFileContent.parameters.$parameter.metadata).description
+        if ($data -notmatch '(?s)^[A-Z][a-zA-Z]+\. .+\.$') {
+          $incorrectParameters += $parameter
         }
+      }
+      $incorrectParameters | Should -BeNullOrEmpty
+    }
 
-        $incorrectParameters = @()
-        $templateParameters = $templateFileContent.parameters.Keys
-        foreach ($parameter in $templateParameters) {
-          $data = ($templateFileContent.parameters.$parameter.metadata).description
-          switch -regex ($data) {
-            '^Conditional. .*' {
-              if ($data -notmatch '.*\. Required if .*') {
-                $incorrectParameters += $parameter
-              }
+    It "[<moduleFolderName>] Conditional UDT property descriptions should contain a 'Required if' followed by the condition making the parameter required." -TestCases $udtTestCases {
+
+      param(
+        [hashtable] $templateFileContent
+      )
+
+      if (-not $templateFileContent.definitions) {
+        Set-ItResult -Skipped -Because 'the module template has no user-defined types.'
+        return
+      }
+
+      $incorrectParameters = @()
+      $templateParameters = $templateFileContent.parameters.Keys
+      foreach ($parameter in $templateParameters) {
+        $data = ($templateFileContent.parameters.$parameter.metadata).description
+        switch -regex ($data) {
+          '^Conditional. .*' {
+            if ($data -notmatch '.*\. Required if .*') {
+              $incorrectParameters += $parameter
             }
           }
         }
-        $incorrectParameters | Should -BeNullOrEmpty
       }
+      $incorrectParameters | Should -BeNullOrEmpty
     }
   }
 }
