@@ -370,13 +370,13 @@ module service_subscriptions 'subscription/main.bicep' = [for (subscription, ind
   name: '${uniqueString(deployment().name, location)}-Apim-Subscription-${index}'
   params: {
     apiManagementServiceName: service.name
-    name: contains(subscription, 'name') ? subscription.name : ''
-    allowTracing: contains(subscription, 'allowTracing') ? subscription.allowTracing : false
-    ownerId: contains(subscription, 'ownerId') ? subscription.ownerId : ''
-    primaryKey: contains(subscription, 'primaryKey') ? subscription.primaryKey : ''
-    scope: contains(subscription, 'scope') ? subscription.scope : '/apis'
-    secondaryKey: contains(subscription, 'secondaryKey') ? subscription.secondaryKey : ''
-    state: contains(subscription, 'state') ? subscription.state : ''
+    name: subscription.name
+    allowTracing: subscription.?allowTracing
+    ownerId: subscription.?ownerId
+    primaryKey: subscription.?primaryKey
+    scope: subscription.?scope
+    secondaryKey: subscription.?secondaryKey
+    state: subscription.?state
   }
 }]
 

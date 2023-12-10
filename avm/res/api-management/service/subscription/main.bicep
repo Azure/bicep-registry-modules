@@ -9,19 +9,19 @@ param allowTracing bool = true
 param apiManagementServiceName string
 
 @description('Optional. User (user ID path) for whom subscription is being created in form /users/{userId}.')
-param ownerId string = ''
+param ownerId string?
 
 @description('Optional. Primary subscription key. If not specified during request key will be generated automatically.')
-param primaryKey string = ''
+param primaryKey string?
 
 @description('Optional. Scope type to choose between a product, "allAPIs" or a specific API. Scope like "/products/{productId}" or "/apis" or "/apis/{apiId}".')
 param scope string = '/apis'
 
 @description('Optional. Secondary subscription key. If not specified during request key will be generated automatically.')
-param secondaryKey string = ''
+param secondaryKey string?
 
 @description('Optional. Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are "*" active "?" the subscription is active, "*" suspended "?" the subscription is blocked, and the subscriber cannot call any APIs of the product, * submitted ? the subscription request has been made by the developer, but has not yet been approved or rejected, * rejected ? the subscription request has been denied by an administrator, * cancelled ? the subscription has been cancelled by the developer or administrator, * expired ? the subscription reached its expiration date and was deactivated. - suspended, active, expired, submitted, rejected, cancelled.')
-param state string = ''
+param state string?
 
 @description('Required. Subscription name.')
 param name string
@@ -36,10 +36,10 @@ resource subscription 'Microsoft.ApiManagement/service/subscriptions@2021-08-01'
   properties: {
     scope: scope
     displayName: name
-    ownerId: !empty(ownerId) ? ownerId : null
-    primaryKey: !empty(primaryKey) ? primaryKey : null
-    secondaryKey: !empty(secondaryKey) ? secondaryKey : null
-    state: !empty(state) ? state : null
+    ownerId: ownerId
+    primaryKey: primaryKey
+    secondaryKey: secondaryKey
+    state: state
     allowTracing: allowTracing
   }
 }
