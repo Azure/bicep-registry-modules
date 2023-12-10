@@ -1013,6 +1013,7 @@ All access policies to create.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`objectId`](#parameter-accesspoliciesobjectid) | string | The object ID of a user, service principal or security group in the tenant for the vault. |
+| [`permissions`](#parameter-accesspoliciespermissions) | object | Permissions the identity has for keys, secrets and certificates. |
 
 **Optional parameters**
 
@@ -1027,6 +1028,13 @@ The object ID of a user, service principal or security group in the tenant for t
 
 - Required: Yes
 - Type: string
+
+### Parameter: `accessPolicies.permissions`
+
+Permissions the identity has for keys, secrets and certificates.
+
+- Required: Yes
+- Type: object
 
 ### Parameter: `accessPolicies.applicationId`
 

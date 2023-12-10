@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "6839784479789065018"
+      "templateHash": "14482549087020096615"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -511,6 +511,9 @@
                   "description": "Optional. Permissions to storage accounts."
                 }
               }
+            },
+            "metadata": {
+              "description": "Required. Permissions the identity has for keys, secrets and certificates."
             }
           }
         }
