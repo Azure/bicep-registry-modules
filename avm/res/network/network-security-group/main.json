@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "15234016184111184785"
+      "templateHash": "4873062381027294836"
     },
     "name": "Network Security Groups",
     "description": "This module deploys a Network security Group (NSG).",
@@ -246,7 +246,7 @@
         "description": "Optional. Tags of the NSG resource."
       }
     },
-    "enableDefaultTelemetry": {
+    "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
@@ -255,7 +255,6 @@
     }
   },
   "variables": {
-    "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
@@ -266,17 +265,23 @@
     }
   },
   "resources": {
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.network-networksecuritygroup.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
-          "resources": []
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
         }
       }
     },
@@ -381,7 +386,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-securityRule-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-NetworkSecurityGroup-SecurityRule-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -416,10 +421,7 @@
           "sourceAddressPrefixes": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'sourceAddressPrefixes'), createObject('value', parameters('securityRules')[copyIndex()].properties.sourceAddressPrefixes), createObject('value', createArray()))]",
           "destinationAddressPrefixes": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'destinationAddressPrefixes'), createObject('value', parameters('securityRules')[copyIndex()].properties.destinationAddressPrefixes), createObject('value', createArray()))]",
           "sourceApplicationSecurityGroups": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'sourceApplicationSecurityGroups'), createObject('value', parameters('securityRules')[copyIndex()].properties.sourceApplicationSecurityGroups), createObject('value', createArray()))]",
-          "destinationApplicationSecurityGroups": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'destinationApplicationSecurityGroups'), createObject('value', parameters('securityRules')[copyIndex()].properties.destinationApplicationSecurityGroups), createObject('value', createArray()))]",
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          }
+          "destinationApplicationSecurityGroups": "[if(contains(parameters('securityRules')[copyIndex()].properties, 'destinationApplicationSecurityGroups'), createObject('value', parameters('securityRules')[copyIndex()].properties.destinationApplicationSecurityGroups), createObject('value', createArray()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -428,7 +430,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "5230356401692373453"
+              "templateHash": "13132940167196258311"
             },
             "name": "Network Security Group (NSG) Security Rules",
             "description": "This module deploys a Network Security Group (NSG) Security Rule.",
@@ -565,30 +567,9 @@
               "metadata": {
                 "description": "Optional. The source port ranges."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.Network/networkSecurityGroups/securityRules",
               "apiVersion": "2023-04-01",
