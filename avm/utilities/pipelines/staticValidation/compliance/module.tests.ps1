@@ -559,9 +559,9 @@ Describe 'Module tests' -Tag 'Module' {
         foreach ($parameter in ($templateFileParameters.PSBase.Keys | Sort-Object)) {
           $isRequired = Get-IsParameterRequired -TemplateFileContent $templateFileContent -Parameter $templateFileParameters.$parameter
 
-          if ($isRequired) {
+          if (-not $isRequired) {
             $description = $templateFileParameters.$parameter.metadata.description
-            if ($description -match '.+\. Required if .+') {
+            if ($description -match "\('Required\.") {
               $incorrectParameters += $parameter
             }
           }
