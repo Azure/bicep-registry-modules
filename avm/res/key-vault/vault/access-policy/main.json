@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "3185669298547069044"
+      "templateHash": "11789070966732098618"
     },
     "name": "Key Vault Access Policies",
     "description": "This module deploys a Key Vault Access Policy.",
@@ -139,6 +139,9 @@
                   "description": "Optional. Permissions to storage accounts."
                 }
               }
+            },
+            "metadata": {
+              "description": "Required. Permissions the identity has for keys, secrets and certificates."
             }
           }
         }
