@@ -5,9 +5,6 @@ metadata owner = 'Azure/module-maintainers'
 @description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
 
-@description('Optional. Used to enable the deployment of the identityProviders child resource.')
-param enableIdentityProviders bool = false
-
 @description('Optional. List of Allowed Tenants when configuring Azure Active Directory login. - string.')
 param allowedTenants array = []
 
@@ -57,7 +54,7 @@ resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
   name: apiManagementServiceName
 }
 
-resource identityProvider 'Microsoft.ApiManagement/service/identityProviders@2021-08-01' = if (enableIdentityProviders) {
+resource identityProvider 'Microsoft.ApiManagement/service/identityProviders@2021-08-01' = {
   name: name
   parent: service
   properties: {

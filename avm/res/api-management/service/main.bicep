@@ -302,7 +302,6 @@ module service_identityProviders 'identity-provider/main.bicep' = [for (identity
   params: {
     apiManagementServiceName: service.name
     name: identityProvider.name
-    enableIdentityProviders: contains(identityProvider, 'enableIdentityProviders') ? identityProvider.enableIdentityProviders : false
     allowedTenants: contains(identityProvider, 'allowedTenants') ? identityProvider.allowedTenants : []
     authority: contains(identityProvider, 'authority') ? identityProvider.authority : ''
     clientId: contains(identityProvider, 'clientId') ? identityProvider.clientId : ''
@@ -329,12 +328,12 @@ module service_namedValues 'named-value/main.bicep' = [for (namedValue, index) i
   }
 }]
 
-module service_portalsettings 'portalsetting/main.bicep' = [for (portalsetting, index) in portalsettings: {
+module service_portalsettings 'portalsetting/main.bicep' = [for (portalsetting, index) in portalsettings: if (!empty(portalsetting.properties)) {
   name: '${uniqueString(deployment().name, location)}-Apim-PortalSetting-${index}'
   params: {
     apiManagementServiceName: service.name
     name: portalsetting.name
-    properties: contains(portalsetting, 'properties') ? portalsetting.properties : {}
+    properties: portalsetting.properties
   }
 }]
 

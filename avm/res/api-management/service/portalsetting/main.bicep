@@ -27,10 +27,10 @@ resource portalSetting 'Microsoft.ApiManagement/service/portalsettings@2021-08-0
 }
 
 @description('The resource ID of the API management service portal setting.')
-output resourceId string = portalSetting.id
+output resourceId string = !empty(properties) ? portalSetting.id : ''
 
 @description('The name of the API management service portal setting.')
-output name string = portalSetting.name
+output name string = !empty(properties) ? portalSetting.name : ''
 
 @description('The resource group the API management service portal setting was deployed into.')
 output resourceGroupName string = resourceGroup().name
