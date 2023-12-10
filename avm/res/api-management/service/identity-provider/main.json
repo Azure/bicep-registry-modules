@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "297906203261881810"
+      "templateHash": "2386575276292873532"
     },
     "name": "API Management Service Identity Providers",
     "description": "This module deploys an API Management Service Identity Provider.",
@@ -16,13 +16,6 @@
       "type": "string",
       "metadata": {
         "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
-      }
-    },
-    "enableIdentityProviders": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Optional. Used to enable the deployment of the identityProviders child resource."
       }
     },
     "allowedTenants": {
@@ -115,7 +108,6 @@
   },
   "resources": [
     {
-      "condition": "[parameters('enableIdentityProviders')]",
       "type": "Microsoft.ApiManagement/service/identityProviders",
       "apiVersion": "2021-08-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",

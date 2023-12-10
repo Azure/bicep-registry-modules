@@ -37,7 +37,6 @@ This module deploys an API Management Service Identity Provider.
 | :-- | :-- | :-- |
 | [`allowedTenants`](#parameter-allowedtenants) | array | List of Allowed Tenants when configuring Azure Active Directory login. - string. |
 | [`authority`](#parameter-authority) | string | OpenID Connect discovery endpoint hostname for AAD or AAD B2C. |
-| [`enableIdentityProviders`](#parameter-enableidentityproviders) | bool | Used to enable the deployment of the identityProviders child resource. |
 | [`passwordResetPolicyName`](#parameter-passwordresetpolicyname) | string | Password Reset Policy Name. Only applies to AAD B2C Identity Provider. |
 | [`profileEditingPolicyName`](#parameter-profileeditingpolicyname) | string | Profile Editing Policy Name. Only applies to AAD B2C Identity Provider. |
 | [`signInPolicyName`](#parameter-signinpolicyname) | string | Signin Policy Name. Only applies to AAD B2C Identity Provider. |
@@ -90,14 +89,6 @@ OpenID Connect discovery endpoint hostname for AAD or AAD B2C.
 - Required: No
 - Type: string
 - Default: `''`
-
-### Parameter: `enableIdentityProviders`
-
-Used to enable the deployment of the identityProviders child resource.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `passwordResetPolicyName`
 

@@ -22,18 +22,13 @@ This module deploys an API Management Service Portal Setting.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Portal setting name. |
+| [`properties`](#parameter-properties) | object | Portal setting properties. |
 
 **Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`apiManagementServiceName`](#parameter-apimanagementservicename) | string | The name of the parent API Management service. Required if the template is used in a standalone deployment. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`properties`](#parameter-properties) | object | Portal setting properties. |
 
 ### Parameter: `name`
 
@@ -50,20 +45,19 @@ Portal setting name.
   ]
   ```
 
+### Parameter: `properties`
+
+Portal setting properties.
+
+- Required: Yes
+- Type: object
+
 ### Parameter: `apiManagementServiceName`
 
 The name of the parent API Management service. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `properties`
-
-Portal setting properties.
-
-- Required: No
-- Type: object
-- Default: `{}`
 
 
 ## Outputs

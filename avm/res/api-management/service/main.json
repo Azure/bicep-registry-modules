@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "820541007254163027"
+      "templateHash": "9225380664567146930"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service.",
@@ -103,7 +103,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
             }
           },
           "conditionVersion": {
@@ -1782,7 +1782,6 @@
           "name": {
             "value": "[parameters('identityProviders')[copyIndex()].name]"
           },
-          "enableIdentityProviders": "[if(contains(parameters('identityProviders')[copyIndex()], 'enableIdentityProviders'), createObject('value', parameters('identityProviders')[copyIndex()].enableIdentityProviders), createObject('value', false()))]",
           "allowedTenants": "[if(contains(parameters('identityProviders')[copyIndex()], 'allowedTenants'), createObject('value', parameters('identityProviders')[copyIndex()].allowedTenants), createObject('value', createArray()))]",
           "authority": "[if(contains(parameters('identityProviders')[copyIndex()], 'authority'), createObject('value', parameters('identityProviders')[copyIndex()].authority), createObject('value', ''))]",
           "clientId": "[if(contains(parameters('identityProviders')[copyIndex()], 'clientId'), createObject('value', parameters('identityProviders')[copyIndex()].clientId), createObject('value', ''))]",
@@ -1801,7 +1800,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "297906203261881810"
+              "templateHash": "2386575276292873532"
             },
             "name": "API Management Service Identity Providers",
             "description": "This module deploys an API Management Service Identity Provider.",
@@ -1812,13 +1811,6 @@
               "type": "string",
               "metadata": {
                 "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
-              }
-            },
-            "enableIdentityProviders": {
-              "type": "bool",
-              "defaultValue": false,
-              "metadata": {
-                "description": "Optional. Used to enable the deployment of the identityProviders child resource."
               }
             },
             "allowedTenants": {
@@ -1911,7 +1903,6 @@
           },
           "resources": [
             {
-              "condition": "[parameters('enableIdentityProviders')]",
               "type": "Microsoft.ApiManagement/service/identityProviders",
               "apiVersion": "2021-08-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
@@ -2110,6 +2101,7 @@
         "name": "service_portalsettings",
         "count": "[length(parameters('portalsettings'))]"
       },
+      "condition": "[not(empty(parameters('portalsettings')[copyIndex()].properties))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Apim-PortalSetting-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
@@ -2125,7 +2117,9 @@
           "name": {
             "value": "[parameters('portalsettings')[copyIndex()].name]"
           },
-          "properties": "[if(contains(parameters('portalsettings')[copyIndex()], 'properties'), createObject('value', parameters('portalsettings')[copyIndex()].properties), createObject('value', createObject()))]"
+          "properties": {
+            "value": "[parameters('portalsettings')[copyIndex()].properties]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2134,7 +2128,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "4726445299726220796"
+              "templateHash": "17882646930090717237"
             },
             "name": "API Management Service Portal Settings",
             "description": "This module deploys an API Management Service Portal Setting.",
@@ -2160,15 +2154,13 @@
             },
             "properties": {
               "type": "object",
-              "defaultValue": {},
               "metadata": {
-                "description": "Optional. Portal setting properties."
+                "description": "Required. Portal setting properties."
               }
             }
           },
           "resources": [
             {
-              "condition": "[not(empty(parameters('properties')))]",
               "type": "Microsoft.ApiManagement/service/portalsettings",
               "apiVersion": "2021-08-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
