@@ -29,7 +29,7 @@ param sshDeploymentScriptName string
 param sshKeyName string
 
 @description('Optional. The location to deploy to.')
-param location string = resourceGroup().location
+param location string = 'NorthEurope' //resourceGroup().location
 
 var storageAccountCSEFileName = 'scriptExtensionMasterInstaller.ps1'
 var addressPrefix = '10.0.0.0/16'
