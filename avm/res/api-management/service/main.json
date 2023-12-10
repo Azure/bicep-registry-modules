@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "5274790859500825878"
+      "templateHash": "15188303031972056658"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service.",
@@ -670,7 +670,7 @@
             "value": "[tryGet(parameters('apis')[copyIndex()], 'apiVersionSetId')]"
           },
           "authenticationSettings": {
-            "value": "[parameters('apis')[copyIndex()].authenticationSettings]"
+            "value": "[tryGet(parameters('apis')[copyIndex()], 'authenticationSettings')]"
           },
           "format": {
             "value": "[coalesce(tryGet(parameters('apis')[copyIndex()], 'format'), 'openapi')]"
@@ -1442,27 +1442,46 @@
           "apiManagementServiceName": {
             "value": "[parameters('name')]"
           },
-          "url": "[if(contains(parameters('backends')[copyIndex()], 'url'), createObject('value', parameters('backends')[copyIndex()].url), createObject('value', ''))]",
-          "description": "[if(contains(parameters('backends')[copyIndex()], 'description'), createObject('value', parameters('backends')[copyIndex()].description), createObject('value', ''))]",
-          "credentials": "[if(contains(parameters('backends')[copyIndex()], 'credentials'), createObject('value', parameters('backends')[copyIndex()].credentials), createObject('value', createObject()))]",
+          "url": {
+            "value": "[parameters('backends')[copyIndex()].url]"
+          },
+          "description": {
+            "value": "[tryGet(parameters('backends')[copyIndex()], 'description')]"
+          },
+          "credentials": {
+            "value": "[tryGet(parameters('backends')[copyIndex()], 'credentials')]"
+          },
           "name": {
             "value": "[parameters('backends')[copyIndex()].name]"
           },
-          "protocol": "[if(contains(parameters('backends')[copyIndex()], 'protocol'), createObject('value', parameters('backends')[copyIndex()].protocol), createObject('value', 'http'))]",
-          "proxy": "[if(contains(parameters('backends')[copyIndex()], 'proxy'), createObject('value', parameters('backends')[copyIndex()].proxy), createObject('value', createObject()))]",
-          "resourceId": "[if(contains(parameters('backends')[copyIndex()], 'resourceId'), createObject('value', parameters('backends')[copyIndex()].resourceId), createObject('value', ''))]",
-          "serviceFabricCluster": "[if(contains(parameters('backends')[copyIndex()], 'serviceFabricCluster'), createObject('value', parameters('backends')[copyIndex()].serviceFabricCluster), createObject('value', createObject()))]",
-          "title": "[if(contains(parameters('backends')[copyIndex()], 'title'), createObject('value', parameters('backends')[copyIndex()].title), createObject('value', ''))]",
-          "tls": "[if(contains(parameters('backends')[copyIndex()], 'tls'), createObject('value', parameters('backends')[copyIndex()].tls), createObject('value', createObject('validateCertificateChain', false(), 'validateCertificateName', false())))]"
+          "protocol": {
+            "value": "[tryGet(parameters('backends')[copyIndex()], 'protocol')]"
+          },
+          "proxy": {
+            "value": "[tryGet(parameters('backends')[copyIndex()], 'proxy')]"
+          },
+          "resourceId": {
+            "value": "[tryGet(parameters('backends')[copyIndex()], 'resourceId')]"
+          },
+          "serviceFabricCluster": {
+            "value": "[tryGet(parameters('backends')[copyIndex()], 'serviceFabricCluster')]"
+          },
+          "title": {
+            "value": "[tryGet(parameters('backends')[copyIndex()], 'title')]"
+          },
+          "tls": {
+            "value": "[tryGet(parameters('backends')[copyIndex()], 'tls')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "3889592459835000845"
+              "templateHash": "17308512999364094689"
             },
             "name": "API Management Service Backends",
             "description": "This module deploys an API Management Service Backend.",
@@ -1483,14 +1502,14 @@
             },
             "credentials": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Backend Credentials Contract Properties."
               }
             },
             "description": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Backend Description."
               }
@@ -1504,28 +1523,28 @@
             },
             "proxy": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Backend Proxy Contract Properties."
               }
             },
             "resourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps."
               }
             },
             "serviceFabricCluster": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Backend Service Fabric Cluster Properties."
               }
             },
             "title": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Backend Title."
               }
@@ -1547,26 +1566,35 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "service": {
+              "existing": true,
+              "type": "Microsoft.ApiManagement/service",
+              "apiVersion": "2021-08-01",
+              "name": "[parameters('apiManagementServiceName')]"
+            },
+            "backend": {
               "type": "Microsoft.ApiManagement/service/backends",
               "apiVersion": "2021-08-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
-                "title": "[if(not(empty(parameters('title'))), parameters('title'), null())]",
-                "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
-                "resourceId": "[if(not(empty(parameters('resourceId'))), parameters('resourceId'), null())]",
+                "title": "[parameters('title')]",
+                "description": "[parameters('description')]",
+                "resourceId": "[parameters('resourceId')]",
                 "properties": {
-                  "serviceFabricCluster": "[if(not(empty(parameters('serviceFabricCluster'))), parameters('serviceFabricCluster'), null())]"
+                  "serviceFabricCluster": "[parameters('serviceFabricCluster')]"
                 },
-                "credentials": "[if(not(empty(parameters('credentials'))), parameters('credentials'), null())]",
-                "proxy": "[if(not(empty(parameters('proxy'))), parameters('proxy'), null())]",
-                "tls": "[if(not(empty(parameters('tls'))), parameters('tls'), null())]",
+                "credentials": "[parameters('credentials')]",
+                "proxy": "[parameters('proxy')]",
+                "tls": "[parameters('tls')]",
                 "url": "[parameters('url')]",
                 "protocol": "[parameters('protocol')]"
-              }
+              },
+              "dependsOn": [
+                "service"
+              ]
             }
-          ],
+          },
           "outputs": {
             "resourceId": {
               "type": "string",
@@ -1613,26 +1641,31 @@
           "apiManagementServiceName": {
             "value": "[parameters('name')]"
           },
-          "description": "[if(contains(parameters('caches')[copyIndex()], 'description'), createObject('value', parameters('caches')[copyIndex()].description), createObject('value', ''))]",
+          "description": {
+            "value": "[tryGet(parameters('caches')[copyIndex()], 'description')]"
+          },
           "connectionString": {
             "value": "[parameters('caches')[copyIndex()].connectionString]"
           },
           "name": {
             "value": "[parameters('caches')[copyIndex()].name]"
           },
-          "resourceId": "[if(contains(parameters('caches')[copyIndex()], 'resourceId'), createObject('value', parameters('caches')[copyIndex()].resourceId), createObject('value', ''))]",
+          "resourceId": {
+            "value": "[tryGet(parameters('caches')[copyIndex()], 'resourceId')]"
+          },
           "useFromLocation": {
             "value": "[parameters('caches')[copyIndex()].useFromLocation]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "8859819270896717418"
+              "templateHash": "16122304424283274558"
             },
             "name": "API Management Service Caches",
             "description": "This module deploys an API Management Service Cache.",
@@ -1659,14 +1692,14 @@
             },
             "description": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Cache description."
               }
             },
             "resourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Original uri of entity in external system cache points to."
               }
@@ -1678,19 +1711,28 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "service": {
+              "existing": true,
+              "type": "Microsoft.ApiManagement/service",
+              "apiVersion": "2021-08-01",
+              "name": "[parameters('apiManagementServiceName')]"
+            },
+            "cache": {
               "type": "Microsoft.ApiManagement/service/caches",
               "apiVersion": "2021-08-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
-                "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
+                "description": "[parameters('description')]",
                 "connectionString": "[parameters('connectionString')]",
                 "useFromLocation": "[parameters('useFromLocation')]",
-                "resourceId": "[if(not(empty(parameters('resourceId'))), parameters('resourceId'), null())]"
-              }
+                "resourceId": "[parameters('resourceId')]"
+              },
+              "dependsOn": [
+                "service"
+              ]
             }
-          ],
+          },
           "outputs": {
             "resourceId": {
               "type": "string",

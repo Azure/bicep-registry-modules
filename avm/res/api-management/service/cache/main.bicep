@@ -12,10 +12,10 @@ param name string
 param connectionString string
 
 @sys.description('Optional. Cache description.')
-param description string = ''
+param description string?
 
 @sys.description('Optional. Original uri of entity in external system cache points to.')
-param resourceId string = ''
+param resourceId string?
 
 @sys.description('Required. Location identifier to use cache from (should be either \'default\' or valid Azure region identifier).')
 param useFromLocation string
@@ -28,10 +28,10 @@ resource cache 'Microsoft.ApiManagement/service/caches@2021-08-01' = {
   name: name
   parent: service
   properties: {
-    description: !empty(description) ? description : null
+    description: description
     connectionString: connectionString
     useFromLocation: useFromLocation
-    resourceId: !empty(resourceId) ? resourceId : null
+    resourceId: resourceId
   }
 }
 

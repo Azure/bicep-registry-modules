@@ -9,25 +9,25 @@ param apiManagementServiceName string
 param name string
 
 @sys.description('Optional. Backend Credentials Contract Properties.')
-param credentials object = {}
+param credentials object?
 
 @sys.description('Optional. Backend Description.')
-param description string = ''
+param description string?
 
 @sys.description('Optional. Backend communication protocol. - http or soap.')
 param protocol string = 'http'
 
 @sys.description('Optional. Backend Proxy Contract Properties.')
-param proxy object = {}
+param proxy object?
 
 @sys.description('Optional. Management Uri of the Resource in External System. This URL can be the Arm Resource ID of Logic Apps, Function Apps or API Apps.')
-param resourceId string = ''
+param resourceId string?
 
 @sys.description('Optional. Backend Service Fabric Cluster Properties.')
-param serviceFabricCluster object = {}
+param serviceFabricCluster object?
 
 @sys.description('Optional. Backend Title.')
-param title string = ''
+param title string?
 
 @sys.description('Optional. Backend TLS Properties.')
 param tls object = {
@@ -46,15 +46,15 @@ resource backend 'Microsoft.ApiManagement/service/backends@2021-08-01' = {
   name: name
   parent: service
   properties: {
-    title: !empty(title) ? title : null
-    description: !empty(description) ? description : null
-    resourceId: !empty(resourceId) ? resourceId : null
+    title: title
+    description: description
+    resourceId: resourceId
     properties: {
-      serviceFabricCluster: !empty(serviceFabricCluster) ? serviceFabricCluster : null
+      serviceFabricCluster: serviceFabricCluster
     }
-    credentials: !empty(credentials) ? credentials : null
-    proxy: !empty(proxy) ? proxy : null
-    tls: !empty(tls) ? tls : null
+    credentials: credentials
+    proxy: proxy
+    tls: tls
     url: url
     protocol: protocol
   }

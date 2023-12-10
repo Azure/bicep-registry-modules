@@ -72,7 +72,6 @@ Cache description.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `resourceId`
 
@@ -80,7 +79,6 @@ Original uri of entity in external system cache points to.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 
 ## Outputs

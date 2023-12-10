@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "8859819270896717418"
+      "templateHash": "16122304424283274558"
     },
     "name": "API Management Service Caches",
     "description": "This module deploys an API Management Service Cache.",
@@ -32,14 +33,14 @@
     },
     "description": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Cache description."
       }
     },
     "resourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Original uri of entity in external system cache points to."
       }
@@ -51,19 +52,28 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2021-08-01",
+      "name": "[parameters('apiManagementServiceName')]"
+    },
+    "cache": {
       "type": "Microsoft.ApiManagement/service/caches",
       "apiVersion": "2021-08-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
-        "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
+        "description": "[parameters('description')]",
         "connectionString": "[parameters('connectionString')]",
         "useFromLocation": "[parameters('useFromLocation')]",
-        "resourceId": "[if(not(empty(parameters('resourceId'))), parameters('resourceId'), null())]"
-      }
+        "resourceId": "[parameters('resourceId')]"
+      },
+      "dependsOn": [
+        "service"
+      ]
     }
-  ],
+  },
   "outputs": {
     "resourceId": {
       "type": "string",

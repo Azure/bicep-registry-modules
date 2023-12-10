@@ -71,7 +71,6 @@ Backend Credentials Contract Properties.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `description`
 
@@ -79,7 +78,6 @@ Backend Description.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `protocol`
 
@@ -95,7 +93,6 @@ Backend Proxy Contract Properties.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `resourceId`
 
@@ -103,7 +100,6 @@ Management Uri of the Resource in External System. This URL can be the Arm Resou
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `serviceFabricCluster`
 
@@ -111,7 +107,6 @@ Backend Service Fabric Cluster Properties.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `title`
 
@@ -119,7 +114,6 @@ Backend Title.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `tls`
 

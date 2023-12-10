@@ -212,7 +212,7 @@ module service_apis 'api/main.bicep' = [for (api, index) in apis: {
     apiVersion: api.?apiVersion
     apiVersionDescription: api.?apiVersionDescription
     apiVersionSetId: api.?apiVersionSetId
-    authenticationSettings: api.authenticationSettings
+    authenticationSettings: api.?authenticationSettings
     format: api.?format ?? 'openapi'
     isCurrent: api.?isCurrent
     protocols: api.?protocols
@@ -272,19 +272,16 @@ module service_backends 'backend/main.bicep' = [for (backend, index) in backends
   name: '${uniqueString(deployment().name, location)}-Apim-Backend-${index}'
   params: {
     apiManagementServiceName: service.name
-    url: contains(backend, 'url') ? backend.url : ''
-    description: contains(backend, 'description') ? backend.description : ''
-    credentials: contains(backend, 'credentials') ? backend.credentials : {}
+    url: backend.url
+    description: backend.?description
+    credentials: backend.?credentials
     name: backend.name
-    protocol: contains(backend, 'protocol') ? backend.protocol : 'http'
-    proxy: contains(backend, 'proxy') ? backend.proxy : {}
-    resourceId: contains(backend, 'resourceId') ? backend.resourceId : ''
-    serviceFabricCluster: contains(backend, 'serviceFabricCluster') ? backend.serviceFabricCluster : {}
-    title: contains(backend, 'title') ? backend.title : ''
-    tls: contains(backend, 'tls') ? backend.tls : {
-      validateCertificateChain: false
-      validateCertificateName: false
-    }
+    protocol: backend.?protocol
+    proxy: backend.?proxy
+    resourceId: backend.?resourceId
+    serviceFabricCluster: backend.?serviceFabricCluster
+    title: backend.?title
+    tls: backend.?tls
   }
 }]
 
@@ -292,10 +289,10 @@ module service_caches 'cache/main.bicep' = [for (cache, index) in caches: {
   name: '${uniqueString(deployment().name, location)}-Apim-Cache-${index}'
   params: {
     apiManagementServiceName: service.name
-    description: contains(cache, 'description') ? cache.description : ''
+    description: cache.?description
     connectionString: cache.connectionString
     name: cache.name
-    resourceId: contains(cache, 'resourceId') ? cache.resourceId : ''
+    resourceId: cache.?resourceId
     useFromLocation: cache.useFromLocation
   }
 }]
