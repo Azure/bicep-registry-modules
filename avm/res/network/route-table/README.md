@@ -487,6 +487,7 @@ An array of routes to be established within the hub route table.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-routesname) | string | Name of the route. |
+| [`properties`](#parameter-routesproperties) | object | Properties of the route. |
 
 ### Parameter: `routes.name`
 
@@ -494,6 +495,13 @@ Name of the route.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `routes.properties`
+
+Properties of the route.
+
+- Required: Yes
+- Type: object
 
 ### Parameter: `tags`
 

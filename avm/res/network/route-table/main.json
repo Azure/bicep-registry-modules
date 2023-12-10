@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "11126034258539165221"
+      "templateHash": "2759864696260113002"
     },
     "name": "Route Tables",
     "description": "This module deploys a User Defined Route Table (UDR).",
@@ -152,6 +152,9 @@
                   "description": "Optional. The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance."
                 }
               }
+            },
+            "metadata": {
+              "description": "Required. Properties of the route."
             }
           }
         }

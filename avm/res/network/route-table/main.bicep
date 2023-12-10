@@ -137,6 +137,7 @@ type routeType = {
   @description('Required. Name of the route.')
   name: string
 
+  @description('Required. Properties of the route.')
   properties: {
     @description('Required. The type of Azure hop the packet should be sent to.')
     nextHopType: ('VirtualAppliance' | 'VnetLocal' | 'Internet' | 'VirtualNetworkGateway' | 'None')
