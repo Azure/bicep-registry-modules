@@ -52,7 +52,7 @@ param severity int = 3
 @description('Optional. How often the scheduled query rule is evaluated represented in ISO 8601 duration format. Relevant and required only for rules of the kind LogAlert.')
 param evaluationFrequency string = ''
 
-@description('Optional. The period of time (in ISO 8601 duration format) on which the Alert query will be executed (bin size). Relevant and required only for rules of the kind LogAlert.')
+@description('Conditional. The period of time (in ISO 8601 duration format) on which the Alert query will be executed (bin size). Required if the kind is set to \'LogAlert\', otherwise not relevant.')
 param windowSize string = ''
 
 @description('Optional. Actions to invoke when the alert fires.')

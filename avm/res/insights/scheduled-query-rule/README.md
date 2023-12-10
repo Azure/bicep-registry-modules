@@ -497,6 +497,12 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
 | [`name`](#parameter-name) | string | The name of the Alert. |
 | [`scopes`](#parameter-scopes) | array | The list of resource IDs that this scheduled query rule is scoped to. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`windowSize`](#parameter-windowsize) | string | The period of time (in ISO 8601 duration format) on which the Alert query will be executed (bin size). Required if the kind is set to 'LogAlert', otherwise not relevant. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -516,7 +522,6 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
 | [`suppressForMinutes`](#parameter-suppressforminutes) | string | Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled.Relevant only for rules of the kind LogAlert. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`targetResourceTypes`](#parameter-targetresourcetypes) | array | List of resource type of the target resource(s) on which the alert is created/updated. For example if the scope is a resource group and targetResourceTypes is Microsoft.Compute/virtualMachines, then a different alert will be fired for each virtual machine in the resource group which meet the alert criteria. Relevant only for rules of the kind LogAlert. |
-| [`windowSize`](#parameter-windowsize) | string | The period of time (in ISO 8601 duration format) on which the Alert query will be executed (bin size). Relevant and required only for rules of the kind LogAlert. |
 
 ### Parameter: `criterias`
 
@@ -538,6 +543,14 @@ The list of resource IDs that this scheduled query rule is scoped to.
 
 - Required: Yes
 - Type: array
+
+### Parameter: `windowSize`
+
+The period of time (in ISO 8601 duration format) on which the Alert query will be executed (bin size). Required if the kind is set to 'LogAlert', otherwise not relevant.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `actions`
 
@@ -755,14 +768,6 @@ List of resource type of the target resource(s) on which the alert is created/up
 - Required: No
 - Type: array
 - Default: `[]`
-
-### Parameter: `windowSize`
-
-The period of time (in ISO 8601 duration format) on which the Alert query will be executed (bin size). Relevant and required only for rules of the kind LogAlert.
-
-- Required: No
-- Type: string
-- Default: `''`
 
 
 ## Outputs
