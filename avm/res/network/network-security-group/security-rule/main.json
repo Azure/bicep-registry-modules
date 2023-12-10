@@ -1,0 +1,215 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.22.6.54827",
+      "templateHash": "820939823450891186"
+    },
+    "name": "Network Security Group (NSG) Security Rules",
+    "description": "This module deploys a Network Security Group (NSG) Security Rule.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the security rule."
+      }
+    },
+    "networkSecurityGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent network security group to deploy the security rule into. Required if the template is used in a standalone deployment."
+      }
+    },
+    "access": {
+      "type": "string",
+      "defaultValue": "Deny",
+      "allowedValues": [
+        "Allow",
+        "Deny"
+      ],
+      "metadata": {
+        "description": "Optional. Whether network traffic is allowed or denied."
+      }
+    },
+    "description": {
+      "type": "string",
+      "defaultValue": "",
+      "maxLength": 140,
+      "metadata": {
+        "description": "Optional. A description for this rule."
+      }
+    },
+    "destinationAddressPrefix": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The destination address prefix. CIDR or destination IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used."
+      }
+    },
+    "destinationAddressPrefixes": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The destination address prefixes. CIDR or destination IP ranges."
+      }
+    },
+    "destinationApplicationSecurityGroups": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The application security group specified as destination."
+      }
+    },
+    "destinationPortRange": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The destination port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
+      }
+    },
+    "destinationPortRanges": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The destination port ranges."
+      }
+    },
+    "direction": {
+      "type": "string",
+      "allowedValues": [
+        "Inbound",
+        "Outbound"
+      ],
+      "metadata": {
+        "description": "Required. The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic."
+      }
+    },
+    "priority": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
+      }
+    },
+    "protocol": {
+      "type": "string",
+      "allowedValues": [
+        "*",
+        "Ah",
+        "Esp",
+        "Icmp",
+        "Tcp",
+        "Udp"
+      ],
+      "metadata": {
+        "description": "Required. Network protocol this rule applies to."
+      }
+    },
+    "sourceAddressPrefix": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The CIDR or source IP range. Asterisk \"*\" can also be used to match all source IPs. Default tags such as \"VirtualNetwork\", \"AzureLoadBalancer\" and \"Internet\" can also be used. If this is an ingress rule, specifies where network traffic originates from."
+      }
+    },
+    "sourceAddressPrefixes": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The CIDR or source IP ranges."
+      }
+    },
+    "sourceApplicationSecurityGroups": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The application security group specified as source."
+      }
+    },
+    "sourcePortRange": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The source port or range. Integer or range between 0 and 65535. Asterisk \"*\" can also be used to match all ports."
+      }
+    },
+    "sourcePortRanges": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The source port ranges."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+      "apiVersion": "2023-04-01",
+      "name": "[format('{0}/{1}', parameters('networkSecurityGroupName'), parameters('name'))]",
+      "properties": {
+        "access": "[parameters('access')]",
+        "description": "[parameters('description')]",
+        "destinationAddressPrefix": "[parameters('destinationAddressPrefix')]",
+        "destinationAddressPrefixes": "[parameters('destinationAddressPrefixes')]",
+        "destinationApplicationSecurityGroups": "[parameters('destinationApplicationSecurityGroups')]",
+        "destinationPortRange": "[parameters('destinationPortRange')]",
+        "destinationPortRanges": "[parameters('destinationPortRanges')]",
+        "direction": "[parameters('direction')]",
+        "priority": "[parameters('priority')]",
+        "protocol": "[parameters('protocol')]",
+        "sourceAddressPrefix": "[parameters('sourceAddressPrefix')]",
+        "sourceAddressPrefixes": "[parameters('sourceAddressPrefixes')]",
+        "sourceApplicationSecurityGroups": "[parameters('sourceApplicationSecurityGroups')]",
+        "sourcePortRange": "[parameters('sourcePortRange')]",
+        "sourcePortRanges": "[parameters('sourcePortRanges')]"
+      }
+    }
+  ],
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the security rule was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the security rule."
+      },
+      "value": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', parameters('networkSecurityGroupName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the security rule."
+      },
+      "value": "[parameters('name')]"
+    }
+  }
+}
