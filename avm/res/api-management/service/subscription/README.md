@@ -68,7 +68,6 @@ User (user ID path) for whom subscription is being created in form /users/{userI
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `primaryKey`
 
@@ -76,7 +75,6 @@ Primary subscription key. If not specified during request key will be generated 
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `scope`
 
@@ -92,7 +90,6 @@ Secondary subscription key. If not specified during request key will be generate
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `state`
 
@@ -100,7 +97,6 @@ Initial subscription state. If no value is specified, subscription is created wi
 
 - Required: No
 - Type: string
-- Default: `''`
 
 
 ## Outputs

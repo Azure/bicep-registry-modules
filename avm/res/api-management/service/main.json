@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "15188303031972056658"
+      "templateHash": "820541007254163027"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service.",
@@ -2688,22 +2688,37 @@
           "apiManagementServiceName": {
             "value": "[parameters('name')]"
           },
-          "name": "[if(contains(parameters('subscriptions')[copyIndex()], 'name'), createObject('value', parameters('subscriptions')[copyIndex()].name), createObject('value', ''))]",
-          "allowTracing": "[if(contains(parameters('subscriptions')[copyIndex()], 'allowTracing'), createObject('value', parameters('subscriptions')[copyIndex()].allowTracing), createObject('value', false()))]",
-          "ownerId": "[if(contains(parameters('subscriptions')[copyIndex()], 'ownerId'), createObject('value', parameters('subscriptions')[copyIndex()].ownerId), createObject('value', ''))]",
-          "primaryKey": "[if(contains(parameters('subscriptions')[copyIndex()], 'primaryKey'), createObject('value', parameters('subscriptions')[copyIndex()].primaryKey), createObject('value', ''))]",
-          "scope": "[if(contains(parameters('subscriptions')[copyIndex()], 'scope'), createObject('value', parameters('subscriptions')[copyIndex()].scope), createObject('value', '/apis'))]",
-          "secondaryKey": "[if(contains(parameters('subscriptions')[copyIndex()], 'secondaryKey'), createObject('value', parameters('subscriptions')[copyIndex()].secondaryKey), createObject('value', ''))]",
-          "state": "[if(contains(parameters('subscriptions')[copyIndex()], 'state'), createObject('value', parameters('subscriptions')[copyIndex()].state), createObject('value', ''))]"
+          "name": {
+            "value": "[parameters('subscriptions')[copyIndex()].name]"
+          },
+          "allowTracing": {
+            "value": "[tryGet(parameters('subscriptions')[copyIndex()], 'allowTracing')]"
+          },
+          "ownerId": {
+            "value": "[tryGet(parameters('subscriptions')[copyIndex()], 'ownerId')]"
+          },
+          "primaryKey": {
+            "value": "[tryGet(parameters('subscriptions')[copyIndex()], 'primaryKey')]"
+          },
+          "scope": {
+            "value": "[tryGet(parameters('subscriptions')[copyIndex()], 'scope')]"
+          },
+          "secondaryKey": {
+            "value": "[tryGet(parameters('subscriptions')[copyIndex()], 'secondaryKey')]"
+          },
+          "state": {
+            "value": "[tryGet(parameters('subscriptions')[copyIndex()], 'state')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "4483385337799839102"
+              "templateHash": "17130710293008431926"
             },
             "name": "API Management Service Subscriptions",
             "description": "This module deploys an API Management Service Subscription.",
@@ -2725,14 +2740,14 @@
             },
             "ownerId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. User (user ID path) for whom subscription is being created in form /users/{userId}."
               }
             },
             "primaryKey": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Primary subscription key. If not specified during request key will be generated automatically."
               }
@@ -2746,14 +2761,14 @@
             },
             "secondaryKey": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Secondary subscription key. If not specified during request key will be generated automatically."
               }
             },
             "state": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Initial subscription state. If no value is specified, subscription is created with Submitted state. Possible states are \"*\" active \"?\" the subscription is active, \"*\" suspended \"?\" the subscription is blocked, and the subscriber cannot call any APIs of the product, * submitted ? the subscription request has been made by the developer, but has not yet been approved or rejected, * rejected ? the subscription request has been denied by an administrator, * cancelled ? the subscription has been cancelled by the developer or administrator, * expired ? the subscription reached its expiration date and was deactivated. - suspended, active, expired, submitted, rejected, cancelled."
               }
@@ -2765,22 +2780,31 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "service": {
+              "existing": true,
+              "type": "Microsoft.ApiManagement/service",
+              "apiVersion": "2021-08-01",
+              "name": "[parameters('apiManagementServiceName')]"
+            },
+            "subscription": {
               "type": "Microsoft.ApiManagement/service/subscriptions",
               "apiVersion": "2021-08-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
               "properties": {
                 "scope": "[parameters('scope')]",
                 "displayName": "[parameters('name')]",
-                "ownerId": "[if(not(empty(parameters('ownerId'))), parameters('ownerId'), null())]",
-                "primaryKey": "[if(not(empty(parameters('primaryKey'))), parameters('primaryKey'), null())]",
-                "secondaryKey": "[if(not(empty(parameters('secondaryKey'))), parameters('secondaryKey'), null())]",
-                "state": "[if(not(empty(parameters('state'))), parameters('state'), null())]",
+                "ownerId": "[parameters('ownerId')]",
+                "primaryKey": "[parameters('primaryKey')]",
+                "secondaryKey": "[parameters('secondaryKey')]",
+                "state": "[parameters('state')]",
                 "allowTracing": "[parameters('allowTracing')]"
-              }
+              },
+              "dependsOn": [
+                "service"
+              ]
             }
-          ],
+          },
           "outputs": {
             "resourceId": {
               "type": "string",
