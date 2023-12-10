@@ -13,24 +13,24 @@ param apiManagementServiceName string
 ])
 param name string
 
-@description('Optional. Portal setting properties.')
-param properties object = {}
+@description('Required. Portal setting properties.')
+param properties object
 
 resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
   name: apiManagementServiceName
 }
 
-resource portalSetting 'Microsoft.ApiManagement/service/portalsettings@2021-08-01' = if (!empty(properties)) {
+resource portalSetting 'Microsoft.ApiManagement/service/portalsettings@2021-08-01' = {
   name: any(name)
   parent: service
   properties: properties
 }
 
 @description('The resource ID of the API management service portal setting.')
-output resourceId string = !empty(properties) ? portalSetting.id : ''
+output resourceId string = portalSetting.id
 
 @description('The name of the API management service portal setting.')
-output name string = !empty(properties) ? portalSetting.name : ''
+output name string = portalSetting.name
 
 @description('The resource group the API management service portal setting was deployed into.')
 output resourceGroupName string = resourceGroup().name
