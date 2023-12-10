@@ -55,14 +55,14 @@
 #/avm/res/health-bot/health-bot/ @Azure/avm-res-healthbot-healthbot-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/healthcare-apis/workspace/ @Azure/avm-res-healthcareapis-workspace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/action-group/ @Azure/avm-res-insights-actiongroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/insights/activity-log-alert/ @Azure/avm-res-insights-activitylogalert-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/insights/activity-log-alert/ @Azure/avm-res-insights-activitylogalert-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/component/ @Azure/avm-res-insights-component-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/data-collection-endpoint/ @Azure/avm-res-insights-datacollectionendpoint-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/data-collection-rule/ @Azure/avm-res-insights-datacollectionrule-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/diagnostic-setting/ @Azure/avm-res-insights-diagnosticsetting-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/insights/metric-alert/ @Azure/avm-res-insights-metricalert-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/insights/metric-alert/ @Azure/avm-res-insights-metricalert-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/insights/private-link-scope/ @Azure/avm-res-insights-privatelinkscope-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/insights/scheduled-query-rule/ @Azure/avm-res-insights-scheduledqueryrule-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/insights/scheduled-query-rule/ @Azure/avm-res-insights-scheduledqueryrule-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/insights/webtest/ @Azure/avm-res-insights-webtest-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/key-vault/vault/ @Azure/avm-res-keyvault-vault-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/kubernetes-configuration/extension/ @Azure/avm-res-kubernetesconfiguration-extension-module-owners-bicep @Azure/avm-core-team-technical-bicep
