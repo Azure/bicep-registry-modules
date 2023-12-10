@@ -461,7 +461,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     osType: 'Linux'
-    vmSize: 'Standard_D2_v4'
+    vmSize: 'Standard_DS2_v2'
     // Non-required parameters
     availabilityZone: 1
     backupPolicyName: '<backupPolicyName>'
@@ -725,7 +725,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "Linux"
     },
     "vmSize": {
-      "value": "Standard_D2_v4"
+      "value": "Standard_DS2_v2"
     },
     // Non-required parameters
     "availabilityZone": {
