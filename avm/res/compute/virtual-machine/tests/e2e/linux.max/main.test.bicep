@@ -164,7 +164,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       }
     }
     osType: 'Linux'
-    vmSize: 'Standard_DS2_v2'
+    vmSize: 'Standard_DS2_v4'
     availabilityZone: 1
     backupPolicyName: nestedDependencies.outputs.recoveryServicesVaultBackupPolicyName
     backupVaultName: nestedDependencies.outputs.recoveryServicesVaultName
