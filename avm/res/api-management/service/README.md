@@ -534,7 +534,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         apiVersionSet: {
           name: 'echo-version-set'
           properties: {
-            description: 'echo-version-set'
+            description: 'An echo API version set'
             displayName: 'echo-version-set'
             versioningScheme: 'Segment'
           }
@@ -551,7 +551,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         {
           authorizationEndpoint: '<authorizationEndpoint>'
           clientId: 'apimClientid'
-          clientRegistrationEndpoint: 'http://localhost'
+          clientRegistrationEndpoint: 'https://localhost'
           clientSecret: '<clientSecret>'
           grantTypes: [
             'authorizationCode'
@@ -568,7 +568,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           validateCertificateChain: false
           validateCertificateName: false
         }
-        url: 'http://echoapi.cloudapp.net/api'
+        url: 'https://echoapi.cloudapp.net/api'
       }
     ]
     caches: [
@@ -578,6 +578,23 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         useFromLocation: 'westeurope'
       }
     ]
+    customProperties: {
+      'Microsoft.WindowsAzure.ApiManagement.Gateway.Protocols.Server.Http2': 'True'
+      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Ssl30': 'False'
+      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls10': 'False'
+      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls11': 'False'
+      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA': 'False'
+      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA': 'False'
+      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA': 'False'
+      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA256': 'False'
+      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_GCM_SHA256': 'False'
+      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA': 'False'
+      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA256': 'False'
+      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168': 'False'
+      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Ssl30': 'False'
+      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10': 'False'
+      'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11': 'False'
+    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -696,7 +713,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "apiVersionSet": {
             "name": "echo-version-set",
             "properties": {
-              "description": "echo-version-set",
+              "description": "An echo API version set",
               "displayName": "echo-version-set",
               "versioningScheme": "Segment"
             }
@@ -715,7 +732,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           {
             "authorizationEndpoint": "<authorizationEndpoint>",
             "clientId": "apimClientid",
-            "clientRegistrationEndpoint": "http://localhost",
+            "clientRegistrationEndpoint": "https://localhost",
             "clientSecret": "<clientSecret>",
             "grantTypes": [
               "authorizationCode"
@@ -734,7 +751,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             "validateCertificateChain": false,
             "validateCertificateName": false
           },
-          "url": "http://echoapi.cloudapp.net/api"
+          "url": "https://echoapi.cloudapp.net/api"
         }
       ]
     },
@@ -746,6 +763,25 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "useFromLocation": "westeurope"
         }
       ]
+    },
+    "customProperties": {
+      "value": {
+        "Microsoft.WindowsAzure.ApiManagement.Gateway.Protocols.Server.Http2": "True",
+        "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Ssl30": "False",
+        "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls10": "False",
+        "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls11": "False",
+        "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA": "False",
+        "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA": "False",
+        "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA": "False",
+        "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA256": "False",
+        "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_GCM_SHA256": "False",
+        "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA": "False",
+        "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA256": "False",
+        "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168": "False",
+        "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Ssl30": "False",
+        "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10": "False",
+        "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11": "False"
+      }
     },
     "diagnosticSettings": {
       "value": [
