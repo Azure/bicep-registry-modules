@@ -6,7 +6,7 @@ metadata owner = 'Azure/module-maintainers'
 param name string
 
 @description('Optional. Array of Policies to apply to the Service API.')
-param policies array = []
+param policies array?
 
 @description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
@@ -130,7 +130,7 @@ resource api 'Microsoft.ApiManagement/service/apis@2021-08-01' = {
   }
 }
 
-module policy 'policy/main.bicep' = [for (policy, index) in policies: if (!empty(policies)) {
+module policy 'policy/main.bicep' = [for (policy, index) in policies ?? []: {
   name: '${deployment().name}-Policy-${index}'
   params: {
     apiManagementServiceName: apiManagementServiceName
