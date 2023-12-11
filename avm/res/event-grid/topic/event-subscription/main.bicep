@@ -54,7 +54,7 @@ resource eventSubscription 'Microsoft.EventGrid/topics/eventSubscriptions@2022-0
     deadLetterDestination: !empty(deadLetterDestination) ? deadLetterDestination : null
     deadLetterWithResourceIdentity: !empty(deadLetterWithResourceIdentity) ? deadLetterWithResourceIdentity : null
     deliveryWithResourceIdentity: !empty(deliveryWithResourceIdentity) ? deliveryWithResourceIdentity : null
-    destination: destination
+    destination: !empty(deliveryWithResourceIdentity) ? null: destination
     eventDeliverySchema: eventDeliverySchema
     expirationTimeUtc: !empty(expirationTimeUtc) ? expirationTimeUtc : ''
     filter: !empty(filter) ? filter : {}
