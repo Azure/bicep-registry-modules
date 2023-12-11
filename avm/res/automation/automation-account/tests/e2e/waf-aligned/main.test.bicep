@@ -204,12 +204,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         ]
       }
     ]
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
+    // managedIdentities: {
+    //   systemAssigned: true
+    //   userAssignedResourceIds: [
+    //     nestedDependencies.outputs.managedIdentityResourceId
+    //   ]
+    // }
     variables: [
       {
         description: 'TestStringDescription'
