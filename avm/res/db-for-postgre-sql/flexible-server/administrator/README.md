@@ -37,27 +37,24 @@ This module deploys a DBforPostgreSQL Flexible Server Administrator.
 | :-- | :-- | :-- |
 | [`tenantId`](#parameter-tenantid) | string | The tenantId of the Active Directory administrator. |
 
-### Parameter: `flexibleServerName`
-
-The name of the parent PostgreSQL flexible server. Required if the template is used in a standalone deployment.
-- Required: Yes
-- Type: string
-
 ### Parameter: `objectId`
 
 The objectId of the Active Directory administrator.
+
 - Required: Yes
 - Type: string
 
 ### Parameter: `principalName`
 
 Active Directory administrator principal name.
+
 - Required: Yes
 - Type: string
 
 ### Parameter: `principalType`
 
 The principal type used to represent the type of Active Directory Administrator.
+
 - Required: Yes
 - Type: string
 - Allowed:
@@ -70,9 +67,17 @@ The principal type used to represent the type of Active Directory Administrator.
   ]
   ```
 
+### Parameter: `flexibleServerName`
+
+The name of the parent PostgreSQL flexible server. Required if the template is used in a standalone deployment.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `tenantId`
 
 The tenantId of the Active Directory administrator.
+
 - Required: No
 - Type: string
 - Default: `[tenant().tenantId]`
