@@ -49,6 +49,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       family: 'P'
       capacity: 3
     }
-    zoneRedundant: true
   }
 }]
