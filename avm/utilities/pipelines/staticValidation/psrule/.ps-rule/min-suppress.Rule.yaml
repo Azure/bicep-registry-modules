@@ -16,6 +16,8 @@ spec:
       # Key Vault specific
     - Azure.KeyVault.Logs
     - Azure.KeyVault.Firewall
+      # Azure Network specific
+    - Azure.Network.LoadBalancer
   if:
     name: "."
     contains:
