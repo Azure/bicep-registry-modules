@@ -120,7 +120,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     ]
     identityProviders: [
       {
-        name: 'aadProvider'
+        name: 'aad'
       }
     ]
     namedValues: [

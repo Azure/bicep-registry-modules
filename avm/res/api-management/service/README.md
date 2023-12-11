@@ -189,7 +189,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     ]
     identityProviders: [
       {
-        name: 'aadProvider'
+        name: 'aad'
       }
     ]
     location: '<location>'
@@ -380,7 +380,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "identityProviders": {
       "value": [
         {
-          "name": "aadProvider"
+          "name": "aad"
         }
       ]
     },
@@ -573,7 +573,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     ]
     identityProviders: [
       {
-        name: 'aadProvider'
+        name: 'aad'
       }
     ]
     location: '<location>'
@@ -734,7 +734,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "identityProviders": {
       "value": [
         {
-          "name": "aadProvider"
+          "name": "aad"
         }
       ]
     },
