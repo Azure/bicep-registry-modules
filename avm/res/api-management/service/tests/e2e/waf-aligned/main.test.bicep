@@ -62,6 +62,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     location: location
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: '${namePrefix}-az-amorg-x-001'
+    minApiVersion: '2021-08-01'
     apis: [
       {
         apiVersionSet: {
@@ -73,16 +74,17 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           }
         }
         displayName: 'Echo API'
+        description: 'An echo API service'
         name: 'echo-api'
         path: 'echo'
-        serviceUrl: 'http://echoapi.cloudapp.net/api'
+        serviceUrl: 'httpss://echoapi.cloudapp.net/api'
       }
     ]
     authorizationServers: {
       secureList: [
         {
           authorizationEndpoint: '${environment().authentication.loginEndpoint}651b43ce-ccb8-4301-b551-b04dd872d401/oauth2/v2.0/authorize'
-          clientId: 'apimclientid'
+          clientId: 'apimClientid'
           clientSecret: customSecret
           clientRegistrationEndpoint: 'http://localhost'
           grantTypes: [
@@ -122,7 +124,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       {
         name: 'aad'
         clientId: 'apimClientid'
-        clientSecret: 'apimSlientSecret'
+        clientSecret: customSecret
         authority: split(environment().authentication.loginEndpoint, '/')[2]
         signinTenant: 'mytenant.onmicrosoft.com'
         allowedTenants: [
@@ -168,14 +170,16 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             name: 'echo-api'
           }
         ]
-        approvalRequired: false
+        approvalRequired: true
         groups: [
           {
             name: 'developers'
           }
         ]
         name: 'Starter'
-        subscriptionRequired: false
+        subscriptionRequired: true
+        displayName: 'Echo API'
+        description: 'This is an echo API'
       }
     ]
     subscriptions: [
