@@ -156,6 +156,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         numberOfProbes: 5
         port: 80
         protocol: 'Http'
+        requestPath: '/'
       }
       {
         name: 'probe2'

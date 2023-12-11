@@ -738,6 +738,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
         numberOfProbes: 5
         port: 80
         protocol: 'Http'
+        requestPath: '/'
       }
       {
         name: 'probe2'
@@ -896,7 +897,8 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
           "name": "probe1",
           "numberOfProbes": 5,
           "port": 80,
-          "protocol": "Http"
+          "protocol": "Http",
+          "requestPath": "/"
         },
         {
           "name": "probe2",
