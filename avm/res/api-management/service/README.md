@@ -539,17 +539,18 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             versioningScheme: 'Segment'
           }
         }
+        description: 'An echo API service'
         displayName: 'Echo API'
         name: 'echo-api'
         path: 'echo'
-        serviceUrl: 'http://echoapi.cloudapp.net/api'
+        serviceUrl: 'httpss://echoapi.cloudapp.net/api'
       }
     ]
     authorizationServers: {
       secureList: [
         {
           authorizationEndpoint: '<authorizationEndpoint>'
-          clientId: 'apimclientid'
+          clientId: 'apimClientid'
           clientRegistrationEndpoint: 'http://localhost'
           clientSecret: '<clientSecret>'
           grantTypes: [
@@ -592,7 +593,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         ]
         authority: '<authority>'
         clientId: 'apimClientid'
-        clientSecret: 'apimSlientSecret'
+        clientSecret: '<clientSecret>'
         name: 'aad'
         signinTenant: 'mytenant.onmicrosoft.com'
       }
@@ -601,6 +602,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     managedIdentities: {
       systemAssigned: true
     }
+    minApiVersion: '2021-08-01'
     namedValues: [
       {
         displayName: 'apimkey'
@@ -639,14 +641,16 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             name: 'echo-api'
           }
         ]
-        approvalRequired: false
+        approvalRequired: true
+        description: 'This is an echo API'
+        displayName: 'Echo API'
         groups: [
           {
             name: 'developers'
           }
         ]
         name: 'Starter'
-        subscriptionRequired: false
+        subscriptionRequired: true
       }
     ]
     subscriptions: [
@@ -697,10 +701,11 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
               "versioningScheme": "Segment"
             }
           },
+          "description": "An echo API service",
           "displayName": "Echo API",
           "name": "echo-api",
           "path": "echo",
-          "serviceUrl": "http://echoapi.cloudapp.net/api"
+          "serviceUrl": "httpss://echoapi.cloudapp.net/api"
         }
       ]
     },
@@ -709,7 +714,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         "secureList": [
           {
             "authorizationEndpoint": "<authorizationEndpoint>",
-            "clientId": "apimclientid",
+            "clientId": "apimClientid",
             "clientRegistrationEndpoint": "http://localhost",
             "clientSecret": "<clientSecret>",
             "grantTypes": [
@@ -760,7 +765,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           ],
           "authority": "<authority>",
           "clientId": "apimClientid",
-          "clientSecret": "apimSlientSecret",
+          "clientSecret": "<clientSecret>",
           "name": "aad",
           "signinTenant": "mytenant.onmicrosoft.com"
         }
@@ -773,6 +778,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": {
         "systemAssigned": true
       }
+    },
+    "minApiVersion": {
+      "value": "2021-08-01"
     },
     "namedValues": {
       "value": [
@@ -819,14 +827,16 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
               "name": "echo-api"
             }
           ],
-          "approvalRequired": false,
+          "approvalRequired": true,
+          "description": "This is an echo API",
+          "displayName": "Echo API",
           "groups": [
             {
               "name": "developers"
             }
           ],
           "name": "Starter",
-          "subscriptionRequired": false
+          "subscriptionRequired": true
         }
       ]
     },
