@@ -543,7 +543,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         displayName: 'Echo API'
         name: 'echo-api'
         path: 'echo'
-        serviceUrl: 'httpss://echoapi.cloudapp.net/api'
+        serviceUrl: 'https://echoapi.cloudapp.net/api'
       }
     ]
     authorizationServers: {
@@ -723,7 +723,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "displayName": "Echo API",
           "name": "echo-api",
           "path": "echo",
-          "serviceUrl": "httpss://echoapi.cloudapp.net/api"
+          "serviceUrl": "https://echoapi.cloudapp.net/api"
         }
       ]
     },

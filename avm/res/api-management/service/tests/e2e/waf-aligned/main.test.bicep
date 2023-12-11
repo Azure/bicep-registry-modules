@@ -94,7 +94,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         description: 'An echo API service'
         name: 'echo-api'
         path: 'echo'
-        serviceUrl: 'httpss://echoapi.cloudapp.net/api'
+        serviceUrl: 'https://echoapi.cloudapp.net/api'
       }
     ]
     authorizationServers: {
