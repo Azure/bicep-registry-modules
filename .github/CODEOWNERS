@@ -55,14 +55,14 @@
 #/avm/res/health-bot/health-bot/ @Azure/avm-res-healthbot-healthbot-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/healthcare-apis/workspace/ @Azure/avm-res-healthcareapis-workspace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/action-group/ @Azure/avm-res-insights-actiongroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/insights/activity-log-alert/ @Azure/avm-res-insights-activitylogalert-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/insights/activity-log-alert/ @Azure/avm-res-insights-activitylogalert-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/component/ @Azure/avm-res-insights-component-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/data-collection-endpoint/ @Azure/avm-res-insights-datacollectionendpoint-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/insights/data-collection-rule/ @Azure/avm-res-insights-datacollectionrule-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/insights/data-collection-rule/ @Azure/avm-res-insights-datacollectionrule-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/insights/diagnostic-setting/ @Azure/avm-res-insights-diagnosticsetting-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/insights/metric-alert/ @Azure/avm-res-insights-metricalert-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/insights/metric-alert/ @Azure/avm-res-insights-metricalert-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/insights/private-link-scope/ @Azure/avm-res-insights-privatelinkscope-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/insights/scheduled-query-rule/ @Azure/avm-res-insights-scheduledqueryrule-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/insights/scheduled-query-rule/ @Azure/avm-res-insights-scheduledqueryrule-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/insights/webtest/ @Azure/avm-res-insights-webtest-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/key-vault/vault/ @Azure/avm-res-keyvault-vault-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/kubernetes-configuration/extension/ @Azure/avm-res-kubernetesconfiguration-extension-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -96,7 +96,7 @@
 #/avm/res/network/nat-gateway/ @Azure/avm-res-network-natgateway-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/network-interface/ @Azure/avm-res-network-networkinterface-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/network/network-manager/ @Azure/avm-res-network-networkmanager-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/network/network-security-group/ @Azure/avm-res-network-networksecuritygroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/network/network-security-group/ @Azure/avm-res-network-networksecuritygroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/network/network-watcher/ @Azure/avm-res-network-networkwatcher-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/private-dns-zone/ @Azure/avm-res-network-privatednszone-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/network/private-endpoint/ @Azure/avm-res-network-privateendpoint-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -121,7 +121,7 @@
 #/avm/res/relay/namespace/ @Azure/avm-res-relay-namespace-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/resource-graph/query/ @Azure/avm-res-resourcegraph-query-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/resources/deployment-script/ @Azure/avm-res-resources-deploymentscript-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/resources/resource-group/ @Azure/avm-res-resources-resourcegroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/resources/resource-group/ @Azure/avm-res-resources-resourcegroup-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/resources/tags/ @Azure/avm-res-resources-tags-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/search/search-service/ @Azure/avm-res-search-searchservice-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/service-bus/namespace/ @Azure/avm-res-servicebus-namespace-module-owners-bicep @Azure/avm-core-team-technical-bicep
