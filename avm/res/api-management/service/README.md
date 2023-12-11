@@ -189,7 +189,14 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     ]
     identityProviders: [
       {
+        allowedTenants: [
+          'mytenant.onmicrosoft.com'
+        ]
+        authority: '<authority>'
+        clientId: 'apimClientid'
+        clientSecret: 'apimSlientSecret'
         name: 'aad'
+        signinTenant: 'mytenant.onmicrosoft.com'
       }
     ]
     location: '<location>'
@@ -380,7 +387,14 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "identityProviders": {
       "value": [
         {
-          "name": "aad"
+          "allowedTenants": [
+            "mytenant.onmicrosoft.com"
+          ],
+          "authority": "<authority>",
+          "clientId": "apimClientid",
+          "clientSecret": "apimSlientSecret",
+          "name": "aad",
+          "signinTenant": "mytenant.onmicrosoft.com"
         }
       ]
     },
@@ -573,7 +587,14 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     ]
     identityProviders: [
       {
+        allowedTenants: [
+          'mytenant.onmicrosoft.com'
+        ]
+        authority: '<authority>'
+        clientId: 'apimClientid'
+        clientSecret: 'apimSlientSecret'
         name: 'aad'
+        signinTenant: 'mytenant.onmicrosoft.com'
       }
     ]
     location: '<location>'
@@ -734,7 +755,14 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "identityProviders": {
       "value": [
         {
-          "name": "aad"
+          "allowedTenants": [
+            "mytenant.onmicrosoft.com"
+          ],
+          "authority": "<authority>",
+          "clientId": "apimClientid",
+          "clientSecret": "apimSlientSecret",
+          "name": "aad",
+          "signinTenant": "mytenant.onmicrosoft.com"
         }
       ]
     },

@@ -121,6 +121,13 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     identityProviders: [
       {
         name: 'aad'
+        clientId: 'apimClientid'
+        clientSecret: 'apimSlientSecret'
+        authority: split(environment().authentication.loginEndpoint, '/')[2]
+        signinTenant: 'mytenant.onmicrosoft.com'
+        allowedTenants: [
+          'mytenant.onmicrosoft.com'
+        ]
       }
     ]
     namedValues: [
