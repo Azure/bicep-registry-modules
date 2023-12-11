@@ -3,7 +3,7 @@
 Check if a module in a given path is published in a given version
 
 .DESCRIPTION
-Check if a module in a given path is published in a given version. Tries to find the module & version for a maximum of 60 minutes.
+Check if a module in a given path is published in a given version. Tries to find the module & version for a maximum of 90 minutes.
 
 .PARAMETER Version
 Mandatory. The version of the module to check for. For example: '0.2.0'
@@ -31,7 +31,7 @@ function Confirm-ModuleIsPublished {
     $catalogUrl = "$baseUrl/_catalog"
     $moduleVersionsUrl = "$baseUrl/bicep/$PublishedModuleName/tags/list"
 
-    $time_limit_seconds = 3600 # 1h
+    $time_limit_seconds = 5400 # 90 min
     $end_time = (Get-Date).AddSeconds($time_limit_seconds)
     $retry_seconds = 60
     $index = 0
