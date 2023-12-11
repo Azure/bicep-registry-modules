@@ -127,7 +127,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
             category: 'AllMetrics'
           }
         ]
-        name: 'customSetting'
+        name: 'customSettingwsfmax'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
       }
@@ -202,7 +202,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
               "category": "AllMetrics"
             }
           ],
-          "name": "customSetting",
+          "name": "customSettingwsfmax",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
@@ -291,7 +291,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
             category: 'AllMetrics'
           }
         ]
-        name: 'customSetting'
+        name: 'customSettingwsfwaf'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
       }
@@ -348,7 +348,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
               "category": "AllMetrics"
             }
           ],
-          "name": "customSetting",
+          "name": "customSettingwsfwaf",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
