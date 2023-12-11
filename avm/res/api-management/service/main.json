@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "9225380664567146930"
+      "templateHash": "13172227925591684898"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service.",
@@ -714,7 +714,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "6833640993258659219"
+              "templateHash": "8297194138144491601"
             },
             "name": "API Management Service APIs",
             "description": "This module deploys an API Management Service API.",
@@ -729,7 +729,7 @@
             },
             "policies": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Array of Policies to apply to the Service API."
               }
@@ -947,7 +947,7 @@
             "policy": {
               "copy": {
                 "name": "policy",
-                "count": "[length(parameters('policies'))]"
+                "count": "[length(coalesce(parameters('policies'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -964,9 +964,9 @@
                   "apiName": {
                     "value": "[parameters('name')]"
                   },
-                  "format": "[if(contains(parameters('policies')[copyIndex()], 'format'), createObject('value', parameters('policies')[copyIndex()].format), createObject('value', 'xml'))]",
+                  "format": "[if(contains(coalesce(parameters('policies'), createArray())[copyIndex()], 'format'), createObject('value', coalesce(parameters('policies'), createArray())[copyIndex()].format), createObject('value', 'xml'))]",
                   "value": {
-                    "value": "[parameters('policies')[copyIndex()].value]"
+                    "value": "[coalesce(parameters('policies'), createArray())[copyIndex()].value]"
                   }
                 },
                 "template": {

@@ -187,7 +187,6 @@ Array of Policies to apply to the Service API.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `protocols`
 
