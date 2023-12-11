@@ -738,13 +738,13 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
         numberOfProbes: 5
         port: 80
         protocol: 'Http'
-        requestPath: '/'
+        requestPath: '/http-probe'
       }
       {
         name: 'probe2'
         port: 443
         protocol: 'Https'
-        requestPath: '/'
+        requestPath: '/https-probe'
       }
     ]
     roleAssignments: [
@@ -898,13 +898,13 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:<version>' = {
           "numberOfProbes": 5,
           "port": 80,
           "protocol": "Http",
-          "requestPath": "/"
+          "requestPath": "/http-probe"
         },
         {
           "name": "probe2",
           "port": 443,
           "protocol": "Https",
-          "requestPath": "/"
+          "requestPath": "/https-probe"
         }
       ]
     },
