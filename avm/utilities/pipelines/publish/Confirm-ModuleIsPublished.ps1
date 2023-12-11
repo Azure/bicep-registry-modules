@@ -39,10 +39,17 @@ function Confirm-ModuleIsPublished {
     #####################################
     ##   Confirm module is published   ##
     #####################################
+    Write-Verbose "Invoking WebRequest for [$catalogUrl] to fetch modules" -Verbose
     while ($true) {
         $index++
-        $catalogContentRaw = (Invoke-WebRequest -Uri $catalogUrl -UseBasicParsing).Content
-        $bicepCatalogContent = ($catalogContentRaw | ConvertFrom-Json).repositories | Select-String 'bicep/'
+
+        try {
+            $catalogContentRaw = (Invoke-WebRequest -Uri $catalogUrl -UseBasicParsing).Content
+            $bicepCatalogContent = ($catalogContentRaw | ConvertFrom-Json).repositories | Select-String 'bicep/'
+        } catch {
+            Write-Warning ('WebRequest failed: {0}' -f $_.Exception.Message)
+        }
+
         Write-Verbose ("Bicep modules found in MCR catalog:`n{0}" -f ($bicepCatalogContent | Out-String))
 
         if ($bicepCatalogContent -match "bicep/$PublishedModuleName") {
@@ -61,10 +68,16 @@ function Confirm-ModuleIsPublished {
     #############################################
     ##   Confirm module version is published   ##
     #############################################
+    Write-Verbose "Invoking WebRequest for [$moduleVersionsUrl] to fetch modules versions" -Verbose
     while ($true) {
         $index++
-        $tagsContentRaw = (Invoke-WebRequest -Uri $moduleVersionsUrl -UseBasicParsing).Content
-        $tagsContent = ($tagsContentRaw | ConvertFrom-Json).tags
+
+        try {
+            $tagsContentRaw = (Invoke-WebRequest -Uri $moduleVersionsUrl -UseBasicParsing).Content
+            $tagsContent = ($tagsContentRaw | ConvertFrom-Json).tags
+        } catch {
+            Write-Warning ('WebRequest failed: {0}' -f $_.Exception.Message)
+        }
 
         Write-Verbose ("Tags for module in path [$PublishedModuleName] found in MCR catalog:`n{0}" -f ($tagsContent | Out-String))
 
