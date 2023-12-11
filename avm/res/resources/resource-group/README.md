@@ -99,6 +99,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    managedBy: '<managedBy>'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -150,6 +151,9 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
+    },
+    "managedBy": {
+      "value": "<managedBy>"
     },
     "roleAssignments": {
       "value": [
