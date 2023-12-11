@@ -19,9 +19,6 @@ param roleAssignments roleAssignmentType
 @description('Optional. Tags of the storage account resource.')
 param tags object?
 
-@description('Optional. The ID of the resource that manages this resource group.')
-param managedBy string = ''
-
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -61,7 +58,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: location
   name: name
   tags: tags
-  managedBy: managedBy
   properties: {}
 }
 

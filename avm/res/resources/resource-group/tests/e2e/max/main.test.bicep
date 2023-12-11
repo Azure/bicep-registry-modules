@@ -76,6 +76,5 @@ module testDeployment '../../../main.bicep' = {
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    managedBy: nestedDependencies.outputs.recoveryServicesVaultResourceId
   }
 }
