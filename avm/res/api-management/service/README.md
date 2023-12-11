@@ -535,7 +535,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           name: 'echo-version-set'
           properties: {
             description: 'An echo API version set'
-            displayName: 'echo-version-set'
+            displayName: 'Echo version set'
             versioningScheme: 'Segment'
           }
         }
@@ -668,6 +668,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         ]
         name: 'Starter'
         subscriptionRequired: true
+        terms: 'By accessing or using the services provided by Echo API through Azure API Management you agree to be bound by these Terms of Use. These terms may be updated from time to time and your continued use of the services constitutes acceptance of any changes.'
       }
     ]
     subscriptions: [
@@ -714,7 +715,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             "name": "echo-version-set",
             "properties": {
               "description": "An echo API version set",
-              "displayName": "echo-version-set",
+              "displayName": "Echo version set",
               "versioningScheme": "Segment"
             }
           },
@@ -872,7 +873,8 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             }
           ],
           "name": "Starter",
-          "subscriptionRequired": true
+          "subscriptionRequired": true,
+          "terms": "By accessing or using the services provided by Echo API through Azure API Management, you agree to be bound by these Terms of Use. These terms may be updated from time to time, and your continued use of the services constitutes acceptance of any changes."
         }
       ]
     },

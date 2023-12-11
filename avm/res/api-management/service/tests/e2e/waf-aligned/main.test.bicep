@@ -86,7 +86,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           name: 'echo-version-set'
           properties: {
             description: 'An echo API version set'
-            displayName: 'echo-version-set'
+            displayName: 'Echo version set'
             versioningScheme: 'Segment'
           }
         }
@@ -197,6 +197,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         subscriptionRequired: true
         displayName: 'Echo API'
         description: 'This is an echo API'
+        terms: 'By accessing or using the services provided by Echo API through Azure API Management, you agree to be bound by these Terms of Use. These terms may be updated from time to time, and your continued use of the services constitutes acceptance of any changes.'
       }
     ]
     subscriptions: [
