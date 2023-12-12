@@ -1,4 +1,4 @@
-name: "avm.res.app.containerapp"
+name: "avm.res.app.container-app"
 
 on:
   schedule:
@@ -34,7 +34,7 @@ on:
 
 env:
   modulePath: "avm/res/app/container-app"
-  workflowPath: ".github/workflows/avm.res.app.container-a.yml"
+  workflowPath: ".github/workflows/avm.res.app.container-app.yml"
 
 concurrency:
   group: ${{ github.workflow }}
