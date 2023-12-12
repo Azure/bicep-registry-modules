@@ -58,6 +58,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: location
   name: name
   tags: tags
+  // managedBy: managedBy // removed due to immutable string, only used for managed resource groups
   properties: {}
 }
 
