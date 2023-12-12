@@ -16,7 +16,7 @@
 #/avm/res/authorization/policy-set-definition/ @Azure/avm-res-authorization-policysetdefinition-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/authorization/role-assignment/ @Azure/avm-res-authorization-roleassignment-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/authorization/role-definition/ @Azure/avm-res-authorization-roledefinition-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/automation/automation-account/ @Azure/avm-res-automation-automationaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/automation/automation-account/ @Azure/avm-res-automation-automationaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
 /avm/res/batch/batch-account/ @Azure/avm-res-batch-batchaccount-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/cache/redis/ @Azure/avm-res-cache-redis-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/cdn/profile/ @Azure/avm-res-cdn-profile-module-owners-bicep @Azure/avm-core-team-technical-bicep
@@ -136,7 +136,7 @@
 #/avm/res/virtual-machine-images/image-template/ @Azure/avm-res-virtualmachineimages-imagetemplate-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/web/connection/ @Azure/avm-res-web-connection-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/web/hosting-environment/ @Azure/avm-res-web-hostingenvironment-module-owners-bicep @Azure/avm-core-team-technical-bicep
-#/avm/res/web/serverfarm/ @Azure/avm-res-web-serverfarm-module-owners-bicep @Azure/avm-core-team-technical-bicep
+/avm/res/web/serverfarm/ @Azure/avm-res-web-serverfarm-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/web/site/ @Azure/avm-res-web-site-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/res/web/static-site/ @Azure/avm-res-web-staticsite-module-owners-bicep @Azure/avm-core-team-technical-bicep
 #/avm/ptn/avd-lza/insights/ @Azure/avm-ptn-avd-lza-insights-module-owners-bicep @Azure/avm-core-team-technical-bicep
