@@ -291,10 +291,6 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
       }
     }
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     maintenanceWindow: {
       duration: '03:00'
       expirationDateTime: '9999-12-31 23:59:59'
@@ -355,12 +351,6 @@ module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-confi
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "maintenanceWindow": {
       "value": {
