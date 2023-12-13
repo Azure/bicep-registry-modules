@@ -59,7 +59,7 @@ runs:
         $psRuleCompressedOutput = $psRuleTestFilePaths | ForEach-Object {
           @{
             path = $_
-            name = Split-Path $_ -Leaf
+            name = Split-Path (Split-Path $_) -Leaf
           }
         } | ConvertTo-Json -Compress
 
