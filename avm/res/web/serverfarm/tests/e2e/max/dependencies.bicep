@@ -6,7 +6,7 @@ param managedIdentityName string
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: managedIdentityName
-  location: 'eastus'
+  location: location
 }
 
 @description('The principal ID of the created Managed Identity, this will be used for module interface testing.')
