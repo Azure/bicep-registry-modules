@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "1673079785585436513"
+      "templateHash": "9785844775088487088"
     },
     "name": "Web Tests",
     "description": "This module deploys a Web Test.",
@@ -120,7 +120,6 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
         "description": "Required. A single hidden-link tag pointing to an existing AI component is required."
       }
