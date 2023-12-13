@@ -9,7 +9,7 @@ param name string
 param webTestName string
 
 @sys.description('Required. A single hidden-link tag pointing to an existing AI component is required.')
-param tags object
+param tags object?
 
 @sys.description('Required. The collection of request properties.')
 param request object

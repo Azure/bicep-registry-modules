@@ -54,13 +54,13 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
       HttpVerb: 'GET'
       RequestUrl: 'https://learn.microsoft.com/en-us/'
     }
+    webTestName: 'wt$iwtmin001'
+    // Non-required parameters
+    location: '<location>'
     tags: {
       'hidden-link:${nestedDependencies.outputs.appInsightResourceId}': 'Resource'
       'hidden-title': 'This is visible in the resource name'
     }
-    webTestName: 'wt$iwtmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -87,18 +87,18 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
         "RequestUrl": "https://learn.microsoft.com/en-us/"
       }
     },
-    "tags": {
-      "value": {
-        "hidden-link:${nestedDependencies.outputs.appInsightResourceId}": "Resource",
-        "hidden-title": "This is visible in the resource name"
-      }
-    },
     "webTestName": {
       "value": "wt$iwtmin001"
     },
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "hidden-link:${nestedDependencies.outputs.appInsightResourceId}": "Resource",
+        "hidden-title": "This is visible in the resource name"
+      }
     }
   }
 }
@@ -126,10 +126,6 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
       HttpVerb: 'GET'
       RequestUrl: 'https://learn.microsoft.com/en-us/'
     }
-    tags: {
-      'hidden-link:${nestedDependencies.outputs.appInsightResourceId}': 'Resource'
-      'hidden-title': 'This is visible in the resource name'
-    }
     webTestName: 'wt$iwtmax001'
     // Non-required parameters
     location: '<location>'
@@ -143,6 +139,10 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
       name: 'myCustomLockName'
     }
     syntheticMonitorId: 'iwtmax001'
+    tags: {
+      'hidden-link:${nestedDependencies.outputs.appInsightResourceId}': 'Resource'
+      'hidden-title': 'This is visible in the resource name'
+    }
   }
 }
 ```
@@ -169,12 +169,6 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
         "RequestUrl": "https://learn.microsoft.com/en-us/"
       }
     },
-    "tags": {
-      "value": {
-        "hidden-link:${nestedDependencies.outputs.appInsightResourceId}": "Resource",
-        "hidden-title": "This is visible in the resource name"
-      }
-    },
     "webTestName": {
       "value": "wt$iwtmax001"
     },
@@ -197,6 +191,12 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
     },
     "syntheticMonitorId": {
       "value": "iwtmax001"
+    },
+    "tags": {
+      "value": {
+        "hidden-link:${nestedDependencies.outputs.appInsightResourceId}": "Resource",
+        "hidden-title": "This is visible in the resource name"
+      }
     }
   }
 }
@@ -224,10 +224,6 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
       HttpVerb: 'GET'
       RequestUrl: 'https://learn.microsoft.com/en-us/'
     }
-    tags: {
-      'hidden-link:${nestedDependencies.outputs.appInsightResourceId}': 'Resource'
-      'hidden-title': 'This is visible in the resource name'
-    }
     webTestName: 'wt$iwtwaf001'
     // Non-required parameters
     location: '<location>'
@@ -237,6 +233,10 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
       }
     ]
     syntheticMonitorId: 'iwtwaf001'
+    tags: {
+      'hidden-link:${nestedDependencies.outputs.appInsightResourceId}': 'Resource'
+      'hidden-title': 'This is visible in the resource name'
+    }
   }
 }
 ```
@@ -263,12 +263,6 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
         "RequestUrl": "https://learn.microsoft.com/en-us/"
       }
     },
-    "tags": {
-      "value": {
-        "hidden-link:${nestedDependencies.outputs.appInsightResourceId}": "Resource",
-        "hidden-title": "This is visible in the resource name"
-      }
-    },
     "webTestName": {
       "value": "wt$iwtwaf001"
     },
@@ -285,6 +279,12 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
     },
     "syntheticMonitorId": {
       "value": "iwtwaf001"
+    },
+    "tags": {
+      "value": {
+        "hidden-link:${nestedDependencies.outputs.appInsightResourceId}": "Resource",
+        "hidden-title": "This is visible in the resource name"
+      }
     }
   }
 }
@@ -342,7 +342,7 @@ The collection of request properties.
 
 A single hidden-link tag pointing to an existing AI component is required.
 
-- Required: Yes
+- Required: No
 - Type: object
 
 ### Parameter: `webTestName`
