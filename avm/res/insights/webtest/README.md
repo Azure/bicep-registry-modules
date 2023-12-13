@@ -1,5 +1,10 @@
 # Web Tests `[Microsoft.Insights/webtests]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys a Web Test.
 
 ## Navigation
@@ -24,7 +29,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/insights.webtest:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/insights/webtest:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -40,7 +45,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module webtest 'br:bicep/modules/insights.webtest:1.0.0' = {
+module webtest 'br/public:avm/res/insights/webtest:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-iwtmin'
   params: {
     // Required parameters
@@ -55,7 +60,7 @@ module webtest 'br:bicep/modules/insights.webtest:1.0.0' = {
     }
     webTestName: 'wt$iwtmin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -92,8 +97,8 @@ module webtest 'br:bicep/modules/insights.webtest:1.0.0' = {
       "value": "wt$iwtmin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -112,7 +117,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module webtest 'br:bicep/modules/insights.webtest:1.0.0' = {
+module webtest 'br/public:avm/res/insights/webtest:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-iwtmax'
   params: {
     // Required parameters
@@ -127,7 +132,7 @@ module webtest 'br:bicep/modules/insights.webtest:1.0.0' = {
     }
     webTestName: 'wt$iwtmax001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     locations: [
       {
         Id: 'emea-nl-ams-azr'
@@ -174,8 +179,8 @@ module webtest 'br:bicep/modules/insights.webtest:1.0.0' = {
       "value": "wt$iwtmax001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "locations": {
       "value": [
@@ -210,7 +215,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module webtest 'br:bicep/modules/insights.webtest:1.0.0' = {
+module webtest 'br/public:avm/res/insights/webtest:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-iwtwaf'
   params: {
     // Required parameters
@@ -225,7 +230,7 @@ module webtest 'br:bicep/modules/insights.webtest:1.0.0' = {
     }
     webTestName: 'wt$iwtwaf001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     locations: [
       {
         Id: 'emea-nl-ams-azr'
@@ -272,8 +277,8 @@ module webtest 'br:bicep/modules/insights.webtest:1.0.0' = {
       "value": "wt$iwtwaf001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "locations": {
       "value": [
@@ -317,7 +322,7 @@ module webtest 'br:bicep/modules/insights.webtest:1.0.0' = {
 | [`configuration`](#parameter-configuration) | object | An XML configuration specification for a WebTest. |
 | [`description`](#parameter-description) | string | User defined description for this WebTest. |
 | [`enabled`](#parameter-enabled) | bool | Is the test actively being monitored. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`frequency`](#parameter-frequency) | int | Interval in seconds between test runs for this WebTest. |
 | [`kind`](#parameter-kind) | string | The kind of WebTest that this web test watches. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -381,9 +386,9 @@ Is the test actively being monitored.
 - Type: bool
 - Default: `True`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
