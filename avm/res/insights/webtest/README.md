@@ -236,10 +236,6 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
         Id: 'emea-nl-ams-azr'
       }
     ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     syntheticMonitorId: 'iwtwaf001'
   }
 }
@@ -286,12 +282,6 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
           "Id": "emea-nl-ams-azr"
         }
       ]
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "syntheticMonitorId": {
       "value": "iwtwaf001"

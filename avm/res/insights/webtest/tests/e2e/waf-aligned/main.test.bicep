@@ -67,9 +67,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       RequestUrl: 'https://learn.microsoft.com/en-us/'
       HttpVerb: 'GET'
     }
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
   }
 }]
