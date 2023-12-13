@@ -54,13 +54,13 @@ jobs:
   #   PSRule validation   #
   #########################
   job_psrule_test: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-    name: "PSRule"
+    name: "PSRule ${{ matrix.testCases.name }}"
     runs-on: ubuntu-20.04
     if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
     strategy:
       fail-fast: false
       matrix:
-        psRuleModuleTestFilePaths: ${{ fromJson(inputs.psRuleModuleTestFilePaths) }}
+        testCases: ${{ fromJson(inputs.psRuleModuleTestFilePaths) }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -69,7 +69,7 @@ jobs:
       - name: Set PSRule validation
         uses: ./.github/actions/templates/avm-validateModulePSRule
         with:
-          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.psRuleModuleTestFilePaths }}"
+          templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
           subscriptionId: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           psrulePath: "avm/utilities/pipelines/staticValidation/psrule" #'${{ github.workspace }}/avm'
