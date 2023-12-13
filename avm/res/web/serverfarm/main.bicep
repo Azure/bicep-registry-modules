@@ -110,7 +110,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 resource appServicePlan 'Microsoft.Web/serverfarms@2022-09-01' = {
   name: name
   kind: kind
-  location: 'eastus'
+  location: location
   tags: tags
   sku: sku
   properties: {

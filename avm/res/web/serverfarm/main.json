@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "8596034649422470301"
+      "templateHash": "12011804954242525711"
     },
     "name": "App Service Plan",
     "description": "This module deploys an App Service Plan.",
@@ -350,7 +350,7 @@
       "apiVersion": "2022-09-01",
       "name": "[parameters('name')]",
       "kind": "[parameters('kind')]",
-      "location": "eastus",
+      "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "sku": "[parameters('sku')]",
       "properties": {
