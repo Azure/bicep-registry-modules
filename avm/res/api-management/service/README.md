@@ -616,9 +616,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       }
     ]
     location: '<location>'
-    managedIdentities: {
-      systemAssigned: true
-    }
     minApiVersion: '2021-08-01'
     namedValues: [
       {
@@ -810,11 +807,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
     },
     "minApiVersion": {
       "value": "2021-08-01"
