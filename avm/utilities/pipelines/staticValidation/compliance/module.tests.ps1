@@ -472,7 +472,7 @@ Describe 'Module tests' -Tag 'Module' {
         }
       }
 
-      It '[<moduleFolderName>] Parameter names should be camel-cased (no dashes or underscores and must start with lower-case letter).' -TestCases $moduleFolderTestCases {
+      It '[<moduleFolderName>] Parameter & UDT names should be camel-cased (no dashes or underscores and must start with lower-case letter).' -TestCases $moduleFolderTestCases {
 
         param(
           [hashtable] $templateFileParameters
@@ -497,7 +497,7 @@ Describe 'Module tests' -Tag 'Module' {
       }
 
 
-      It "[<moduleFolderName>] Each parameters' description should start with a one word category starting with a capital letter, followed by a dot, a space and the actual description text ending with a dot." -TestCases $moduleFolderTestCases {
+      It "[<moduleFolderName>] Each parameters' & UDT's description should start with a one word category starting with a capital letter, followed by a dot, a space and the actual description text ending with a dot." -TestCases $moduleFolderTestCases {
 
         param(
           [string] $moduleFolderName,
@@ -521,7 +521,7 @@ Describe 'Module tests' -Tag 'Module' {
       }
 
       # TODO: Update specs with note
-      It "[<moduleFolderName>] Conditional parameters' description should contain 'Required if' followed by the condition making the parameter required." -TestCases $moduleFolderTestCases {
+      It "[<moduleFolderName>] Conditional parameters' & UDT's description should contain 'Required if' followed by the condition making the parameter required." -TestCases $moduleFolderTestCases {
 
         param(
           [string] $moduleFolderName,
@@ -549,7 +549,7 @@ Describe 'Module tests' -Tag 'Module' {
       }
 
 
-      It '[<moduleFolderName>] All non-required parameters in template file should not have description that start with "Required.".' -TestCases $moduleFolderTestCases {
+      It '[<moduleFolderName>] All non-required parameters & UDTs in template file should not have description that start with "Required.".' -TestCases $moduleFolderTestCases {
         param (
           [hashtable] $templateFileContent,
           [hashtable] $templateFileParameters
@@ -568,80 +568,6 @@ Describe 'Module tests' -Tag 'Module' {
         }
 
         $incorrectParameters | Should -BeNullOrEmpty -Because ('only required parameters in the template file should have a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
-      }
-
-      Context 'Custom User-defined-types tests' -Tag 'UDT' {
-
-        It '[<moduleFolderName>] UDT Property names should be camel-cased (no dashes or underscores and must start with lower-case letter).' -TestCases $moduleFolderTestCases {
-
-          param(
-            [hashtable] $templateFileContent
-          )
-
-          if (-not $templateFileContent.definitions) {
-            Set-ItResult -Skipped -Because 'the module template has no user-defined types.'
-            return
-          }
-
-          $CamelCasingFlag = @()
-          $Parameter = $templateFileContent.parameters.Keys
-          foreach ($Param in $Parameter) {
-            if ($Param.substring(0, 1) -cnotmatch '[a-z]' -or $Param -match '-' -or $Param -match '_') {
-              $CamelCasingFlag += $false
-            } else {
-              $CamelCasingFlag += $true
-            }
-          }
-          $CamelCasingFlag | Should -Not -Contain $false
-        }
-
-        It "[<moduleFolderName>] Each UDT property description should start with a one word category starting with a capital letter, followed by a dot, a space and the actual description text ending with a dot." -TestCases $moduleFolderTestCases {
-
-          param(
-            [hashtable] $templateFileContent
-          )
-
-          if (-not $templateFileContent.definitions) {
-            Set-ItResult -Skipped -Because 'the module template has no user-defined types.'
-            return
-          }
-
-          $incorrectParameters = @()
-          $templateParameters = $templateFileContent.parameters.Keys
-          foreach ($parameter in $templateParameters) {
-            $data = ($templateFileContent.parameters.$parameter.metadata).description
-            if ($data -notmatch '(?s)^[A-Z][a-zA-Z]+\. .+\.$') {
-              $incorrectParameters += $parameter
-            }
-          }
-          $incorrectParameters | Should -BeNullOrEmpty
-        }
-
-        It "[<moduleFolderName>] Conditional UDT property descriptions should contain a 'Required if' followed by the condition making the parameter required." -TestCases $moduleFolderTestCases {
-
-          param(
-            [hashtable] $templateFileContent
-          )
-
-          if (-not $templateFileContent.definitions) {
-            Set-ItResult -Skipped -Because 'the module template has no user-defined types.'
-            return
-          }
-
-          $incorrectParameters = @()
-          $templateParameters = $templateFileContent.parameters.Keys
-          foreach ($parameter in $templateParameters) {
-            $data = ($templateFileContent.parameters.$parameter.metadata).description
-            switch -regex ($data) {
-              '^Conditional. .*' {
-                if ($data -notmatch '.*\. Required if .*') {
-                  $incorrectParameters += $parameter
-                }
-              }
-            }
-          }
-          $incorrectParameters | Should -BeNullOrEmpty
-        }
       }
 
       Context 'Schema-based User-defined-types tests' -Tag 'UDT' {
