@@ -56,7 +56,13 @@ runs:
         $psRuleTestFilePaths | ForEach-Object { Write-Verbose "- [$_]" -Verbose }
 
         # Output values to be accessed by next jobs
-        $psRuleCompressedOutput = $psRuleTestFilePaths | ConvertTo-Json -Compress
+        $psRuleOutput = $psRuleTestFilePaths | ForEach-Object {
+          @{
+            path = $_
+            name = Split-Path $_ -Leaf
+          }
+        } | ConvertTo-Json -Compress
+
         if($psRuleCompressedOutput -notmatch "\[.*\]") {
           $psRuleCompressedOutput = "[$psRuleCompressedOutput]"
         }
