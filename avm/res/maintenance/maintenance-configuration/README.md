@@ -24,7 +24,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/maintenance.maintenance-configuration:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/maintenance/maintenance-configuration:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -40,13 +40,13 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module maintenanceConfiguration 'br:bicep/modules/maintenance.maintenance-configuration:1.0.0' = {
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-mmcmin'
   params: {
     // Required parameters
     name: 'mmcmin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -68,8 +68,8 @@ module maintenanceConfiguration 'br:bicep/modules/maintenance.maintenance-config
       "value": "mmcmin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -88,13 +88,12 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module maintenanceConfiguration 'br:bicep/modules/maintenance.maintenance-configuration:1.0.0' = {
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-mmcmax'
   params: {
     // Required parameters
     name: 'mmcmax001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     extensionProperties: {
       InGuestPatchMode: 'User'
     }
@@ -114,6 +113,7 @@ module maintenanceConfiguration 'br:bicep/modules/maintenance.maintenance-config
         kbNumbersToInclude: '<kbNumbersToInclude>'
       }
     }
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -170,9 +170,6 @@ module maintenanceConfiguration 'br:bicep/modules/maintenance.maintenance-config
       "value": "mmcmax001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "extensionProperties": {
       "value": {
         "InGuestPatchMode": "User"
@@ -195,6 +192,9 @@ module maintenanceConfiguration 'br:bicep/modules/maintenance.maintenance-config
           "kbNumbersToInclude": "<kbNumbersToInclude>"
         }
       }
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -260,13 +260,12 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module maintenanceConfiguration 'br:bicep/modules/maintenance.maintenance-configuration:1.0.0' = {
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-mmcwaf'
   params: {
     // Required parameters
     name: 'mmcwaf001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     extensionProperties: {
       InGuestPatchMode: 'User'
     }
@@ -286,6 +285,7 @@ module maintenanceConfiguration 'br:bicep/modules/maintenance.maintenance-config
         kbNumbersToInclude: '<kbNumbersToInclude>'
       }
     }
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -325,9 +325,6 @@ module maintenanceConfiguration 'br:bicep/modules/maintenance.maintenance-config
       "value": "mmcwaf001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "extensionProperties": {
       "value": {
         "InGuestPatchMode": "User"
@@ -350,6 +347,9 @@ module maintenanceConfiguration 'br:bicep/modules/maintenance.maintenance-config
           "kbNumbersToInclude": "<kbNumbersToInclude>"
         }
       }
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -399,7 +399,7 @@ module maintenanceConfiguration 'br:bicep/modules/maintenance.maintenance-config
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`extensionProperties`](#parameter-extensionproperties) | object | Gets or sets extensionProperties of the maintenanceConfiguration. |
 | [`installPatches`](#parameter-installpatches) | object | Configuration settings for VM guest patching with Azure Update Manager. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -418,9 +418,9 @@ Maintenance Configuration Name.
 - Required: Yes
 - Type: string
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
