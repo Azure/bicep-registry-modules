@@ -1,0 +1,110 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.23.1.45101",
+      "templateHash": "10377382264693749693"
+    },
+    "name": "Data Factory Integration RunTimes",
+    "description": "This module deploys a Data Factory Managed or Self-Hosted Integration Runtime.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "dataFactoryName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Azure Data Factory. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Integration Runtime."
+      }
+    },
+    "type": {
+      "type": "string",
+      "allowedValues": [
+        "Managed",
+        "SelfHosted"
+      ],
+      "metadata": {
+        "description": "Required. The type of Integration Runtime."
+      }
+    },
+    "managedVirtualNetworkName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The name of the Managed Virtual Network if using type \"Managed\" ."
+      }
+    },
+    "typeProperties": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Integration Runtime type properties. Required if type is \"Managed\"."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "variables": {
+    "managedVirtualNetworkVar": {
+      "referenceName": "[if(equals(parameters('type'), 'Managed'), parameters('managedVirtualNetworkName'), null())]",
+      "type": "[if(equals(parameters('type'), 'Managed'), 'ManagedVirtualNetworkReference', null())]"
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.DataFactory/factories/integrationRuntimes",
+      "apiVersion": "2018-06-01",
+      "name": "[format('{0}/{1}', parameters('dataFactoryName'), parameters('name'))]",
+      "properties": "[if(equals(parameters('type'), 'Managed'), createObject('type', parameters('type'), 'managedVirtualNetwork', variables('managedVirtualNetworkVar'), 'typeProperties', parameters('typeProperties')), createObject('type', parameters('type')))]"
+    }
+  ],
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the Integration Runtime was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Integration Runtime."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Integration Runtime."
+      },
+      "value": "[resourceId('Microsoft.DataFactory/factories/integrationRuntimes', parameters('dataFactoryName'), parameters('name'))]"
+    }
+  }
+}
