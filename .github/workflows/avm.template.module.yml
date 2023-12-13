@@ -54,7 +54,7 @@ jobs:
   #   PSRule validation   #
   #########################
   job_psrule_test: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-    name: "PSRule ${{ matrix.testCases.name }}"
+    name: "PSRule [${{ matrix.testCases.name }}]"
     runs-on: ubuntu-20.04
     if: (fromJson(inputs.workflowInput)).staticValidation == 'true'
     strategy:
