@@ -56,7 +56,7 @@ runs:
         $psRuleTestFilePaths | ForEach-Object { Write-Verbose "- [$_]" -Verbose }
 
         # Output values to be accessed by next jobs
-        $psRuleOutput = $psRuleTestFilePaths | ForEach-Object {
+        $psRuleCompressedOutput = $psRuleTestFilePaths | ForEach-Object {
           @{
             path = $_
             name = Split-Path $_ -Leaf
