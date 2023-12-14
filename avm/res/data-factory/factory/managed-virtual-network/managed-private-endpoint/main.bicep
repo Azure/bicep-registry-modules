@@ -20,26 +20,11 @@ param fqdns array
 @description('Required. The ARM resource ID of the resource to which the managed private endpoint is created.')
 param privateLinkResourceId string
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
 resource datafactory 'Microsoft.DataFactory/factories@2018-06-01' existing = {
   name: dataFactoryName
 
   resource managedVirtualNetwork 'managedVirtualNetworks@2018-06-01' existing = {
     name: managedVirtualNetworkName
-  }
-}
-
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
   }
 }
 

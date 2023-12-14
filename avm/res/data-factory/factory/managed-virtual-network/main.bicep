@@ -11,23 +11,6 @@ param name string
 @description('Optional. An array of managed private endpoints objects created in the Data Factory managed virtual network.')
 param managedPrivateEndpoints array = []
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
-var enableReferencedModulesTelemetry = false
-
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-    }
-  }
-}
-
 resource dataFactory 'Microsoft.DataFactory/factories@2018-06-01' existing = {
   name: dataFactoryName
 }
@@ -47,7 +30,6 @@ module managedVirtualNetwork_managedPrivateEndpoint 'managed-private-endpoint/ma
     fqdns: managedPrivateEndpoint.fqdns
     groupId: managedPrivateEndpoint.groupId
     privateLinkResourceId: managedPrivateEndpoint.privateLinkResourceId
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
