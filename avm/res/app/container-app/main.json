@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "7167506561528624829"
+      "templateHash": "10344651199371334726"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App.",
@@ -462,11 +462,11 @@
         "description": "Optional. List of volume definitions for the Container App."
       }
     },
-    "workloadProfileType": {
+    "workloadProfileName": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Workload profile type to pin for container app execution."
+        "description": "Optional. Workload profile name to pin for container app execution."
       }
     }
   },
@@ -500,7 +500,7 @@
     },
     "containerApp": {
       "type": "Microsoft.App/containerApps",
-      "apiVersion": "2022-10-01",
+      "apiVersion": "2023-05-01",
       "name": "[parameters('name')]",
       "tags": "[parameters('tags')]",
       "location": "[parameters('location')]",
@@ -542,7 +542,7 @@
           },
           "volumes": "[if(not(empty(parameters('volumes'))), parameters('volumes'), null())]"
         },
-        "workloadProfileType": "[parameters('workloadProfileType')]"
+        "workloadProfileName": "[parameters('workloadProfileName')]"
       }
     },
     "containerApp_diagnosticSettings": {
@@ -632,14 +632,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('containerApp', '2022-10-01', 'full').identity, 'principalId')), reference('containerApp', '2022-10-01', 'full').identity.principalId, '')]"
+      "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('containerApp', '2023-05-01', 'full').identity, 'principalId')), reference('containerApp', '2023-05-01', 'full').identity.principalId, '')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('containerApp', '2022-10-01', 'full').location]"
+      "value": "[reference('containerApp', '2023-05-01', 'full').location]"
     }
   }
 }

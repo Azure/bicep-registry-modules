@@ -523,7 +523,7 @@ module containerApp 'br/public:avm/res/automation/automation-account:<version>' 
 | [`trafficRevisionName`](#parameter-trafficrevisionname) | string | Name of a revision. |
 | [`trafficWeight`](#parameter-trafficweight) | int | Traffic weight assigned to a revision. |
 | [`volumes`](#parameter-volumes) | array | List of volume definitions for the Container App. |
-| [`workloadProfileType`](#parameter-workloadprofiletype) | string | Workload profile type to pin for container app execution. |
+| [`workloadProfileName`](#parameter-workloadProfileName) | string | Workload profile type to pin for container app execution. |
 
 ### Parameter: `containers`
 
@@ -1005,7 +1005,7 @@ List of volume definitions for the Container App.
 - Type: array
 - Default: `[]`
 
-### Parameter: `workloadProfileType`
+### Parameter: `workloadProfileName`
 
 Workload profile type to pin for container app execution.
 
