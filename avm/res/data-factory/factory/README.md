@@ -372,32 +372,15 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     // Required parameters
     name: 'dffwaf001'
     // Non-required parameters
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
     gitConfigureLater: true
-    globalParameters: {
-      testParameter1: {
-        type: 'String'
-        value: 'testValue1'
-      }
-    }
     integrationRuntimes: [
       {
         managedVirtualNetworkName: 'default'
@@ -415,39 +398,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
       }
     ]
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    managedPrivateEndpoints: [
-      {
-        fqdns: [
-          '<storageAccountBlobEndpoint>'
-        ]
-        groupId: 'blob'
-        name: '<name>'
-        privateLinkResourceId: '<privateLinkResourceId>'
-      }
-    ]
-    managedVirtualNetworkName: 'default'
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
-        subnetResourceId: '<subnetResourceId>'
-        tags: {
-          application: 'CARML'
-          'hidden-title': 'This is visible in the resource name'
-        }
-      }
-    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -474,24 +424,11 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
       "value": "dffwaf001"
     },
     // Non-required parameters
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
-      }
-    },
     "diagnosticSettings": {
       "value": [
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
@@ -499,14 +436,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     },
     "gitConfigureLater": {
       "value": true
-    },
-    "globalParameters": {
-      "value": {
-        "testParameter1": {
-          "type": "String",
-          "value": "testValue1"
-        }
-      }
     },
     "integrationRuntimes": {
       "value": [
@@ -528,49 +457,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "managedPrivateEndpoints": {
-      "value": [
-        {
-          "fqdns": [
-            "<storageAccountBlobEndpoint>"
-          ],
-          "groupId": "blob",
-          "name": "<name>",
-          "privateLinkResourceId": "<privateLinkResourceId>"
-        }
-      ]
-    },
-    "managedVirtualNetworkName": {
-      "value": "default"
-    },
-    "privateEndpoints": {
-      "value": [
-        {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "application": "CARML",
-            "hidden-title": "This is visible in the resource name"
-          }
-        }
-      ]
     },
     "tags": {
       "value": {

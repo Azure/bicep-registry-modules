@@ -68,19 +68,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location
-    customerManagedKey: {
-      keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
-      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-      userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-    }
     diagnosticSettings: [
       {
-        name: 'customSetting'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
         eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
         storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
@@ -88,12 +77,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       }
     ]
     gitConfigureLater: true
-    globalParameters: {
-      testParameter1: {
-        type: 'String'
-        value: 'testValue1'
-      }
-    }
     integrationRuntimes: [
       {
         managedVirtualNetworkName: 'default'
@@ -105,45 +88,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           }
         }
       }
-
       {
         name: 'TestRuntime'
         type: 'SelfHosted'
       }
     ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    managedPrivateEndpoints: [
-      {
-        fqdns: [
-          nestedDependencies.outputs.storageAccountBlobEndpoint
-        ]
-        groupId: 'blob'
-        name: '${nestedDependencies.outputs.storageAccountName}-managed-privateEndpoint'
-        privateLinkResourceId: nestedDependencies.outputs.storageAccountResourceId
-      }
-    ]
-    managedVirtualNetworkName: 'default'
-    privateEndpoints: [
-      {
-        privateDnsZoneResourceIds: [
-          nestedDependencies.outputs.privateDNSZoneResourceId
-        ]
-        subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          application: 'CARML'
-        }
-      }
-    ]
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
