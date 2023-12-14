@@ -31,7 +31,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/data-factory.factory:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/data-factory/factory:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -47,13 +47,13 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module factory 'br:bicep/modules/data-factory.factory:1.0.0' = {
+module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-dffmin'
   params: {
     // Required parameters
     name: 'dffmin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -75,8 +75,8 @@ module factory 'br:bicep/modules/data-factory.factory:1.0.0' = {
       "value": "dffmin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -95,7 +95,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module factory 'br:bicep/modules/data-factory.factory:1.0.0' = {
+module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-dffmax'
   params: {
     // Required parameters
@@ -120,7 +120,6 @@ module factory 'br:bicep/modules/data-factory.factory:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     gitConfigureLater: true
     globalParameters: {
       testParameter1: {
@@ -144,6 +143,7 @@ module factory 'br:bicep/modules/data-factory.factory:1.0.0' = {
         type: 'SelfHosted'
       }
     ]
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -243,9 +243,6 @@ module factory 'br:bicep/modules/data-factory.factory:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "gitConfigureLater": {
       "value": true
     },
@@ -274,6 +271,9 @@ module factory 'br:bicep/modules/data-factory.factory:1.0.0' = {
           "type": "SelfHosted"
         }
       ]
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -361,7 +361,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module factory 'br:bicep/modules/data-factory.factory:1.0.0' = {
+module factory 'br/public:avm/res/data-factory/factory:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-dffwaf'
   params: {
     // Required parameters
@@ -386,7 +386,6 @@ module factory 'br:bicep/modules/data-factory.factory:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     gitConfigureLater: true
     globalParameters: {
       testParameter1: {
@@ -410,6 +409,7 @@ module factory 'br:bicep/modules/data-factory.factory:1.0.0' = {
         type: 'SelfHosted'
       }
     ]
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -492,9 +492,6 @@ module factory 'br:bicep/modules/data-factory.factory:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "gitConfigureLater": {
       "value": true
     },
@@ -523,6 +520,9 @@ module factory 'br:bicep/modules/data-factory.factory:1.0.0' = {
           "type": "SelfHosted"
         }
       ]
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -596,7 +596,7 @@ module factory 'br:bicep/modules/data-factory.factory:1.0.0' = {
 | :-- | :-- | :-- |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`gitAccountName`](#parameter-gitaccountname) | string | The account name. |
 | [`gitCollaborationBranch`](#parameter-gitcollaborationbranch) | string | The collaboration branch name. Default is 'main'. |
 | [`gitConfigureLater`](#parameter-gitconfigurelater) | bool | Boolean to define whether or not to configure git during template deployment. |
@@ -765,9 +765,9 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
-Enable telemetry via a Globally Unique Identifier (GUID).
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -1326,7 +1326,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `modules/network/private-endpoint` | Local reference |
+| `br/public:avm/res/network/private-endpoint:0.3.2` | Remote reference |
 
 ## Notes
 

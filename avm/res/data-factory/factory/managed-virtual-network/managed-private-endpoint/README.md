@@ -33,12 +33,6 @@ This module deploys a Data Factory Managed Virtual Network Managed Private Endpo
 | :-- | :-- | :-- |
 | [`dataFactoryName`](#parameter-datafactoryname) | string | The name of the parent data factory. Required if the template is used in a standalone deployment. |
 
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
-
 ### Parameter: `fqdns`
 
 Fully qualified domain names.
@@ -80,14 +74,6 @@ The name of the parent data factory. Required if the template is used in a stand
 
 - Required: Yes
 - Type: string
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 
 ## Outputs
