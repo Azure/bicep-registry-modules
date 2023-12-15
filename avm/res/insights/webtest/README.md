@@ -133,6 +133,23 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
     syntheticMonitorId: 'iwtmax001'
     tags: {
       Environment: 'Non-Prod'
@@ -187,6 +204,25 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
     },
     "syntheticMonitorId": {
       "value": "iwtmax001"
@@ -323,7 +359,7 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
 | [`retryEnabled`](#parameter-retryenabled) | bool | Allow for retries should this WebTest fail. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 | [`syntheticMonitorId`](#parameter-syntheticmonitorid) | string | Unique ID of this WebTest. |
-| [`tags`](#parameter-tags) | object | Resource tags. Note: a mandatory tag 'hidden-link' will be automatically added to the tags defined here. |
+| [`tags`](#parameter-tags) | object | Resource tags. Note: a mandatory tag 'hidden-link' based on the 'appInsightResourceId' parameter will be automatically added to the tags defined here. |
 | [`timeout`](#parameter-timeout) | int | Seconds until this WebTest will timeout and fail. |
 | [`validationRules`](#parameter-validationrules) | object | The collection of validation rule properties. |
 
@@ -589,7 +625,7 @@ Unique ID of this WebTest.
 
 ### Parameter: `tags`
 
-Resource tags. Note: a mandatory tag 'hidden-link' will be automatically added to the tags defined here.
+Resource tags. Note: a mandatory tag 'hidden-link' based on the 'appInsightResourceId' parameter will be automatically added to the tags defined here.
 
 - Required: No
 - Type: object

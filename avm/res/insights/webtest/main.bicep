@@ -11,7 +11,7 @@ param appInsightResourceId string
 @sys.description('Required. User defined name if this WebTest.')
 param webTestName string
 
-@sys.description('Optional. Resource tags. Note: a mandatory tag \'hidden-link\' will be automatically added to the tags defined here.')
+@sys.description('Optional. Resource tags. Note: a mandatory tag \'hidden-link\' based on the \'appInsightResourceId\' parameter will be automatically added to the tags defined here.')
 param tags object?
 
 @sys.description('Required. The collection of request properties.')

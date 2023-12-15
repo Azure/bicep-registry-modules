@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "10115259416053807883"
+      "templateHash": "15597399930177304296"
     },
     "name": "Web Tests",
     "description": "This module deploys a Web Test.",
@@ -128,7 +128,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Resource tags. Note: a mandatory tag 'hidden-link' will be automatically added to the tags defined here."
+        "description": "Optional. Resource tags. Note: a mandatory tag 'hidden-link' based on the 'appInsightResourceId' parameter will be automatically added to the tags defined here."
       }
     },
     "request": {
