@@ -52,10 +52,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      'hidden-link:${nestedDependencies.outputs.appInsightResourceId}': 'Resource'
-    }
+    appInsightResourceId: nestedDependencies.outputs.appInsightResourceId
     webTestName: 'wt${namePrefix}$${serviceShort}001'
     request: {
       RequestUrl: 'https://learn.microsoft.com/en-us/'

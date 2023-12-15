@@ -52,9 +52,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: location
+    appInsightResourceId: nestedDependencies.outputs.appInsightResourceId
     tags: {
       'hidden-title': 'This is visible in the resource name'
-      'hidden-link:${nestedDependencies.outputs.appInsightResourceId}': 'Resource'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
     }
     webTestName: 'wt${namePrefix}$${serviceShort}001'
     syntheticMonitorId: '${namePrefix}${serviceShort}001'

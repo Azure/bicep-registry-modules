@@ -5,11 +5,14 @@ metadata owner = 'Azure/module-maintainers'
 @sys.description('Required. Name of the webtest.')
 param name string
 
+@sys.description('Required. Resource ID of the App Insights resource to link with this webtest.')
+param appInsightResourceId string
+
 @sys.description('Required. User defined name if this WebTest.')
 param webTestName string
 
-@sys.description('Required. A single hidden-link tag pointing to an existing AI component is required.')
-param tags object
+@sys.description('Optional. Resource tags. Note: a mandatory tag \'hidden-link\' will be automatically added to the tags defined here.')
+param tags object?
 
 @sys.description('Required. The collection of request properties.')
 param request object
@@ -77,6 +80,10 @@ param roleAssignments roleAssignmentType
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var hiddenLinkTag = {
+  'hidden-link:${appInsightResourceId}': 'Resource'
+}
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -106,7 +113,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 resource webtest 'Microsoft.Insights/webtests@2022-06-15' = {
   name: name
   location: location
-  tags: tags
+  tags: union(tags ?? {}, hiddenLinkTag)
   properties: {
     Kind: kind
     Locations: locations

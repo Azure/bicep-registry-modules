@@ -49,14 +49,11 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-iwtmin'
   params: {
     // Required parameters
+    appInsightResourceId: '<appInsightResourceId>'
     name: 'iwtmin001'
     request: {
       HttpVerb: 'GET'
       RequestUrl: 'https://learn.microsoft.com/en-us/'
-    }
-    tags: {
-      'hidden-link:${nestedDependencies.outputs.appInsightResourceId}': 'Resource'
-      'hidden-title': 'This is visible in the resource name'
     }
     webTestName: 'wt$iwtmin001'
     // Non-required parameters
@@ -78,6 +75,9 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "appInsightResourceId": {
+      "value": "<appInsightResourceId>"
+    },
     "name": {
       "value": "iwtmin001"
     },
@@ -85,12 +85,6 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
       "value": {
         "HttpVerb": "GET",
         "RequestUrl": "https://learn.microsoft.com/en-us/"
-      }
-    },
-    "tags": {
-      "value": {
-        "hidden-link:${nestedDependencies.outputs.appInsightResourceId}": "Resource",
-        "hidden-title": "This is visible in the resource name"
       }
     },
     "webTestName": {
@@ -121,14 +115,11 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-iwtmax'
   params: {
     // Required parameters
+    appInsightResourceId: '<appInsightResourceId>'
     name: 'iwtmax001'
     request: {
       HttpVerb: 'GET'
       RequestUrl: 'https://learn.microsoft.com/en-us/'
-    }
-    tags: {
-      'hidden-link:${nestedDependencies.outputs.appInsightResourceId}': 'Resource'
-      'hidden-title': 'This is visible in the resource name'
     }
     webTestName: 'wt$iwtmax001'
     // Non-required parameters
@@ -143,6 +134,11 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
       name: 'myCustomLockName'
     }
     syntheticMonitorId: 'iwtmax001'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -160,6 +156,9 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "appInsightResourceId": {
+      "value": "<appInsightResourceId>"
+    },
     "name": {
       "value": "iwtmax001"
     },
@@ -167,12 +166,6 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
       "value": {
         "HttpVerb": "GET",
         "RequestUrl": "https://learn.microsoft.com/en-us/"
-      }
-    },
-    "tags": {
-      "value": {
-        "hidden-link:${nestedDependencies.outputs.appInsightResourceId}": "Resource",
-        "hidden-title": "This is visible in the resource name"
       }
     },
     "webTestName": {
@@ -197,6 +190,13 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
     },
     "syntheticMonitorId": {
       "value": "iwtmax001"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
@@ -219,14 +219,11 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-iwtwaf'
   params: {
     // Required parameters
+    appInsightResourceId: '<appInsightResourceId>'
     name: 'iwtwaf001'
     request: {
       HttpVerb: 'GET'
       RequestUrl: 'https://learn.microsoft.com/en-us/'
-    }
-    tags: {
-      'hidden-link:${nestedDependencies.outputs.appInsightResourceId}': 'Resource'
-      'hidden-title': 'This is visible in the resource name'
     }
     webTestName: 'wt$iwtwaf001'
     // Non-required parameters
@@ -237,6 +234,9 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
       }
     ]
     syntheticMonitorId: 'iwtwaf001'
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+    }
   }
 }
 ```
@@ -254,6 +254,9 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "appInsightResourceId": {
+      "value": "<appInsightResourceId>"
+    },
     "name": {
       "value": "iwtwaf001"
     },
@@ -261,12 +264,6 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
       "value": {
         "HttpVerb": "GET",
         "RequestUrl": "https://learn.microsoft.com/en-us/"
-      }
-    },
-    "tags": {
-      "value": {
-        "hidden-link:${nestedDependencies.outputs.appInsightResourceId}": "Resource",
-        "hidden-title": "This is visible in the resource name"
       }
     },
     "webTestName": {
@@ -285,6 +282,11 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
     },
     "syntheticMonitorId": {
       "value": "iwtwaf001"
+    },
+    "tags": {
+      "value": {
+        "hidden-title": "This is visible in the resource name"
+      }
     }
   }
 }
@@ -300,9 +302,9 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`appInsightResourceId`](#parameter-appinsightresourceid) | string | Resource ID of the App Insights resource to link with this webtest. |
 | [`name`](#parameter-name) | string | Name of the webtest. |
 | [`request`](#parameter-request) | object | The collection of request properties. |
-| [`tags`](#parameter-tags) | object | A single hidden-link tag pointing to an existing AI component is required. |
 | [`webTestName`](#parameter-webtestname) | string | User defined name if this WebTest. |
 
 **Optional parameters**
@@ -321,8 +323,16 @@ module webtest 'br/public:avm/res/insights/webtest:<version>' = {
 | [`retryEnabled`](#parameter-retryenabled) | bool | Allow for retries should this WebTest fail. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 | [`syntheticMonitorId`](#parameter-syntheticmonitorid) | string | Unique ID of this WebTest. |
+| [`tags`](#parameter-tags) | object | Resource tags. Note: a mandatory tag 'hidden-link' will be automatically added to the tags defined here. |
 | [`timeout`](#parameter-timeout) | int | Seconds until this WebTest will timeout and fail. |
 | [`validationRules`](#parameter-validationrules) | object | The collection of validation rule properties. |
+
+### Parameter: `appInsightResourceId`
+
+Resource ID of the App Insights resource to link with this webtest.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `name`
 
@@ -334,13 +344,6 @@ Name of the webtest.
 ### Parameter: `request`
 
 The collection of request properties.
-
-- Required: Yes
-- Type: object
-
-### Parameter: `tags`
-
-A single hidden-link tag pointing to an existing AI component is required.
 
 - Required: Yes
 - Type: object
@@ -583,6 +586,13 @@ Unique ID of this WebTest.
 - Required: No
 - Type: string
 - Default: `[parameters('name')]`
+
+### Parameter: `tags`
+
+Resource tags. Note: a mandatory tag 'hidden-link' will be automatically added to the tags defined here.
+
+- Required: No
+- Type: object
 
 ### Parameter: `timeout`
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "9785844775088487088"
+      "templateHash": "10115259416053807883"
     },
     "name": "Web Tests",
     "description": "This module deploys a Web Test.",
@@ -112,6 +112,12 @@
         "description": "Required. Name of the webtest."
       }
     },
+    "appInsightResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Resource ID of the App Insights resource to link with this webtest."
+      }
+    },
     "webTestName": {
       "type": "string",
       "metadata": {
@@ -120,8 +126,9 @@
     },
     "tags": {
       "type": "object",
+      "nullable": true,
       "metadata": {
-        "description": "Required. A single hidden-link tag pointing to an existing AI component is required."
+        "description": "Optional. Resource tags. Note: a mandatory tag 'hidden-link' will be automatically added to the tags defined here."
       }
     },
     "request": {
@@ -249,6 +256,9 @@
     }
   },
   "variables": {
+    "hiddenLinkTag": {
+      "[format('hidden-link:{0}', parameters('appInsightResourceId'))]": "Resource"
+    },
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -283,7 +293,7 @@
       "apiVersion": "2022-06-15",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
-      "tags": "[parameters('tags')]",
+      "tags": "[union(coalesce(parameters('tags'), createObject()), variables('hiddenLinkTag'))]",
       "properties": {
         "Kind": "[parameters('kind')]",
         "Locations": "[parameters('locations')]",
