@@ -61,7 +61,7 @@ param targetWorkerCount int = 0
 ])
 param targetWorkerSize int = 0
 
-@description('Optional. Zone Redundancy can only be used on Premium or ElasticPremium SKU Tiers.')
+@description('Optional. Zone Redundancy can only be used on Premium or ElasticPremium SKU Tiers within ZRS Supported regions (https://learn.microsoft.com/en-us/azure/storage/common/redundancy-regions-zrs).')
 param zoneRedundant bool = (sku.tier == 'Premium' || sku.tier == 'ElasticPremium') ? true : false
 
 @description('Optional. The lock settings of the service.')
