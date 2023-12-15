@@ -67,16 +67,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     gitConfigureLater: true
     integrationRuntimes: [
       {
-        managedVirtualNetworkName: 'default'
-        name: 'AutoResolveIntegrationRuntime'
-        type: 'Managed'
-        typeProperties: {
-          computeProperties: {
-            location: 'AutoResolve'
-          }
-        }
-      }
-      {
         name: 'TestRuntime'
         type: 'SelfHosted'
       }

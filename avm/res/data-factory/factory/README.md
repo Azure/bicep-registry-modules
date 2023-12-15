@@ -383,16 +383,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     gitConfigureLater: true
     integrationRuntimes: [
       {
-        managedVirtualNetworkName: 'default'
-        name: 'AutoResolveIntegrationRuntime'
-        type: 'Managed'
-        typeProperties: {
-          computeProperties: {
-            location: 'AutoResolve'
-          }
-        }
-      }
-      {
         name: 'TestRuntime'
         type: 'SelfHosted'
       }
@@ -439,16 +429,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     },
     "integrationRuntimes": {
       "value": [
-        {
-          "managedVirtualNetworkName": "default",
-          "name": "AutoResolveIntegrationRuntime",
-          "type": "Managed",
-          "typeProperties": {
-            "computeProperties": {
-              "location": "AutoResolve"
-            }
-          }
-        },
         {
           "name": "TestRuntime",
           "type": "SelfHosted"
