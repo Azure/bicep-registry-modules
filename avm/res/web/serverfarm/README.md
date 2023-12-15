@@ -416,7 +416,7 @@ module serverfarm 'br/public:avm/res/web/serverfarm:<version>' = {
 | [`targetWorkerCount`](#parameter-targetworkercount) | int | Scaling worker count. |
 | [`targetWorkerSize`](#parameter-targetworkersize) | int | The instance size of the hosting plan (small, medium, or large). |
 | [`workerTierName`](#parameter-workertiername) | string | Target worker tier assigned to the App Service plan. |
-| [`zoneRedundant`](#parameter-zoneredundant) | bool | Zone Redundancy can only be used on Premium or ElasticPremium SKU Tiers. |
+| [`zoneRedundant`](#parameter-zoneredundant) | bool | Zone Redundancy can only be used on Premium or ElasticPremium SKU Tiers within ZRS Supported regions (https://learn.microsoft.com/en-us/azure/storage/common/redundancy-regions-zrs). |
 
 ### Parameter: `name`
 
@@ -739,7 +739,7 @@ Target worker tier assigned to the App Service plan.
 
 ### Parameter: `zoneRedundant`
 
-Zone Redundancy can only be used on Premium or ElasticPremium SKU Tiers.
+Zone Redundancy can only be used on Premium or ElasticPremium SKU Tiers within ZRS Supported regions (https://learn.microsoft.com/en-us/azure/storage/common/redundancy-regions-zrs).
 
 - Required: No
 - Type: bool
