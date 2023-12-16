@@ -1,0 +1,91 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.23.1.45101",
+      "templateHash": "13866251531253553631"
+    },
+    "name": "DocumentDB Database Account MongoDB Database Collections",
+    "description": "This module deploys a MongoDB Database Collection.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "databaseAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Cosmos DB database account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "mongodbDatabaseName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent mongodb database. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the collection."
+      }
+    },
+    "throughput": {
+      "type": "int",
+      "defaultValue": 400,
+      "metadata": {
+        "description": "Optional. Request Units per second."
+      }
+    },
+    "indexes": {
+      "type": "array",
+      "metadata": {
+        "description": "Required. Indexes for the collection."
+      }
+    },
+    "shardKey": {
+      "type": "object",
+      "metadata": {
+        "description": "Required. ShardKey for the collection."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections",
+      "apiVersion": "2023-04-15",
+      "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('mongodbDatabaseName'), parameters('name'))]",
+      "properties": {
+        "options": "[if(contains(reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), '2023-04-15').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput')))]",
+        "resource": {
+          "id": "[parameters('name')]",
+          "indexes": "[parameters('indexes')]",
+          "shardKey": "[parameters('shardKey')]"
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the mongodb database collection."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the mongodb database collection."
+      },
+      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections', parameters('databaseAccountName'), parameters('mongodbDatabaseName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the mongodb database collection was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
