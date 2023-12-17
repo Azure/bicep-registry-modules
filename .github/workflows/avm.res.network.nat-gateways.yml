@@ -27,14 +27,14 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.network.nat-gateway.yml"
+      - ".github/workflows/avm.res.network.nat-gateways.yml"
       - "avm/res/network/nat-gateway/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
   modulePath: "avm/res/network/nat-gateway"
-  workflowPath: ".github/workflows/avm.res.network.nat-gateway.yml"
+  workflowPath: ".github/workflows/avm.res.network.nat-gateways.yml"
 
 concurrency:
   group: ${{ github.workflow }}
