@@ -29,15 +29,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/nat-gateway:<version>`.
 
-- [Using large parameter set](#example-1-using-large-parameter-set)
-- [Defaults](#example-2-defaults)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [Combine a generated and provided Public IP Prefix](#example-4-combine-a-generated-and-provided-public-ip-prefix)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [Combine a generated and provided Public IP Prefix](#example-3-combine-a-generated-and-provided-public-ip-prefix)
+- [WAF-aligned](#example-4-waf-aligned)
 
-### Example 1: _Using large parameter set_
+### Example 1: _Using only defaults_
 
-This instance deploys the module with most of its features enabled.
+This instance deploys the module with the minimum set of required parameters.
 
 
 <details>
@@ -52,17 +51,6 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     name: 'nngmin001'
     // Non-required parameters
     location: '<location>'
-    publicIPAddressObjects: [
-      {
-        name: 'nngmin001-pip'
-        skuTier: 'Regional'
-        zones: [
-          '1'
-          '2'
-          '3'
-        ]
-      }
-    ]
   }
 }
 ```
@@ -86,19 +74,6 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "publicIPAddressObjects": {
-      "value": [
-        {
-          "name": "nngmin001-pip",
-          "skuTier": "Regional",
-          "zones": [
-            "1",
-            "2",
-            "3"
-          ]
-        }
-      ]
     }
   }
 }
@@ -107,44 +82,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 </details>
 <p>
 
-### Example 2: _Defaults_
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nngdef'
-  params: {
-    name: 'nngdef001'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "name": {
-      "value": "nngdef001"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 3: _Using large parameter set_
+### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -320,7 +258,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 </details>
 <p>
 
-### Example 4: _Combine a generated and provided Public IP Prefix_
+### Example 3: _Combine a generated and provided Public IP Prefix_
 
 This example shows how you can provide a Public IP Prefix to the module, while also generating one in the module.
 
@@ -472,7 +410,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
