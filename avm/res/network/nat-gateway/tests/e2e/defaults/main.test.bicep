@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Using only defaults'
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+
 // ========== //
 // Parameters //
 // ========== //
@@ -40,6 +43,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     // You parameters go here
+    location: location
     name: '${namePrefix}${serviceShort}001'
   }
 }]
