@@ -93,7 +93,6 @@ ISO 8601 timespan idle interval after which the topic is automatically deleted. 
 
 - Required: No
 - Type: string
-- Default: `'PT5M'`
 
 ### Parameter: `defaultMessageTimeToLive`
 

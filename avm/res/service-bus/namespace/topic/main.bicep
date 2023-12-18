@@ -34,7 +34,7 @@ param maxMessageSizeInKilobytes int = 1024
 param supportOrdering bool = false
 
 @description('Optional. ISO 8601 timespan idle interval after which the topic is automatically deleted. The minimum duration is 5 minutes.')
-param autoDeleteOnIdle string = 'PT5M'
+param autoDeleteOnIdle string?
 
 @description('Optional. Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown.')
 @allowed([

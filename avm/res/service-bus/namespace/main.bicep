@@ -30,7 +30,7 @@ param alternateName string?
 param premiumMessagingPartitions int = 1
 
 @description('Optional. Authorization Rules for the Service Bus namespace.')
-param authorizationRules array = [
+param authorizationRules authorizationRuleType = [
   {
     name: 'RootManageSharedAccessKey'
     rights: [
@@ -42,10 +42,10 @@ param authorizationRules array = [
 ]
 
 @description('Optional. The migration configuration.')
-param migrationConfigurations object?
+param migrationConfiguration migrationConfigurationsType?
 
 @description('Optional. The disaster recovery configuration.')
-param disasterRecoveryConfigs object?
+param disasterRecoveryConfig disasterRecoveryConfigType?
 
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
@@ -72,7 +72,7 @@ param publicNetworkAccess string = ''
 param privateEndpoints privateEndpointType
 
 @description('Optional. Configure networking options for Premium SKU Service Bus. This object contains IPs/Subnets to allow or restrict access to private endpoints only. For security reasons, it is recommended to configure this object on the Namespace.')
-param networkRuleSets object?
+param networkRuleSets networkRuleSetType?
 
 @description('Optional. This property disables SAS authentication for the Service Bus namespace.')
 param disableLocalAuth bool = true
@@ -84,10 +84,10 @@ param tags object?
 param enableTelemetry bool = true
 
 @description('Optional. The queues to create in the service bus namespace.')
-param queues array?
+param queues queueType?
 
 @description('Optional. The topics to create in the service bus namespace.')
-param topics array?
+param topics topicType?
 
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType
@@ -187,22 +187,22 @@ module serviceBusNamespace_authorizationRules 'authorization-rule/main.bicep' = 
   }
 }]
 
-module serviceBusNamespace_disasterRecoveryConfig 'disaster-recovery-config/main.bicep' = if (!empty(disasterRecoveryConfigs)) {
+module serviceBusNamespace_disasterRecoveryConfig 'disaster-recovery-config/main.bicep' = if (!empty(disasterRecoveryConfig)) {
   name: '${uniqueString(deployment().name, location)}-DisasterRecoveryConfig'
   params: {
     namespaceName: serviceBusNamespace.name
-    name: disasterRecoveryConfigs.?name ?? 'default'
-    alternateName: disasterRecoveryConfigs.?alternateName ?? ''
-    partnerNamespaceResourceID: disasterRecoveryConfigs.?partnerNamespace ?? ''
+    name: disasterRecoveryConfig.?name ?? 'default'
+    alternateName: disasterRecoveryConfig.?alternateName ?? ''
+    partnerNamespaceResourceID: disasterRecoveryConfig.?partnerNamespace ?? ''
   }
 }
 
-module serviceBusNamespace_migrationConfigurations 'migration-configuration/main.bicep' = if (!empty(migrationConfigurations)) {
+module serviceBusNamespace_migrationConfigurations 'migration-configuration/main.bicep' = if (!empty(migrationConfiguration)) {
   name: '${uniqueString(deployment().name, location)}-MigrationConfigurations'
   params: {
     namespaceName: serviceBusNamespace.name
-    postMigrationName: migrationConfigurations.?postMigrationName
-    targetNamespaceResourceId: migrationConfigurations.?targetNamespace
+    postMigrationName: migrationConfiguration.?postMigrationName ?? ''
+    targetNamespaceResourceId: migrationConfiguration.?targetNamespace ?? ''
   }
 }
 
@@ -550,3 +550,171 @@ type skuType = {
   @description('Optional. The specified messaging units for the tier. Only used for Premium Sku tier.')
   capacity: int?
 }
+
+type authorizationRuleType = {
+  @description('Required. The name of the authorization rule.')
+  name: string
+
+  @description('Optional. The rights associated with the rule.')
+  rights: ('Listen' | 'Manage' | 'Send')[]?
+}[]
+
+type disasterRecoveryConfigType = {
+  @description('Optional. The name of the disaster recovery config.')
+  name: string?
+
+  @description('Optional. Primary/Secondary eventhub namespace name, which is part of GEO DR pairing.')
+  alternateName: string?
+
+  @description('Optional. Resource ID of the Primary/Secondary event hub namespace name, which is part of GEO DR pairing.')
+  partnerNamespace: string?
+}?
+
+type migrationConfigurationsType = {
+  @description('Required. Name to access Standard Namespace after migration.')
+  postMigrationName: string
+
+  @description('Required. Existing premium Namespace resource ID which has no entities, will be used for migration.')
+  targetNamespace: string
+}?
+
+type networkRuleSetType = {
+  @description('Optional. This determines if traffic is allowed over public network. Default is "Enabled". If set to "Disabled", traffic to this namespace will be restricted over Private Endpoints only and network rules will not be applied.')
+  publicNetworkAccess: ('Disabled' | 'Enabled')?
+
+  @description('Optional. Default Action for Network Rule Set. Default is "Allow". It will not be set if publicNetworkAccess is "Disabled". Otherwise, it will be set to "Deny" if ipRules or virtualNetworkRules are being used.')
+  defaultAction: ('Allow' | 'Deny')?
+
+  @description('Optional. Value that indicates whether Trusted Service Access is enabled or not. Default is "true". It will not be set if publicNetworkAccess is "Disabled".')
+  trustedServiceAccessEnabled: bool?
+
+  @description('Optional. List of IpRules. It will not be set if publicNetworkAccess is "Disabled". Otherwise, when used, defaultAction will be set to "Deny".')
+  ipRules: {
+    @description('Required. The IP filter action.')
+    action: ('Allow' | 'Deny')
+
+    @description('Required. The IP mask.')
+    ipMask: string
+  }[]?
+
+  @description('Optional. List virtual network rules. It will not be set if publicNetworkAccess is "Disabled". Otherwise, when used, defaultAction will be set to "Deny".')
+  virtualNetworkRules: {
+    @description('Required. The virtual network rule name.')
+    ignoreMissingVnetServiceEndpoint: bool
+
+    @description('Required. The subnet properties for the virtual network rule.')
+    subnet: {
+      @description('Required. The ID of the subnet.')
+      id: string
+    }
+  }[]?
+}?
+
+type queueType = {
+  @description('Required. The name of the queue.')
+  name: string
+
+  @description('Optional. ISO 8061 timeSpan idle interval after which the queue is automatically deleted. The minimum duration is 5 minutes (PT5M).')
+  autoDeleteOnIdle: string?
+
+  @description('Optional. Queue/Topic name to forward the Dead Letter message.')
+  forwardDeadLetteredMessagesTo: string?
+
+  @description('Optional. Queue/Topic name to forward the messages.')
+  forwardTo: string?
+
+  @description('Optional. Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024.')
+  maxMessageSizeInKilobytes: int?
+
+  @description('Optional. Authorization Rules for the Service Bus Queue.')
+  authorizationRules: authorizationRuleType?
+
+  @description('Optional. A value that indicates whether this queue has dead letter support when a message expires.')
+  deadLetteringOnMessageExpiration: bool?
+
+  @description('Optional. ISO 8601 default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself.')
+  defaultMessageTimeToLive: string?
+
+  @description('Optional. ISO 8601 timeSpan structure that defines the duration of the duplicate detection history. The default value is 10 minutes.')
+  duplicateDetectionHistoryTimeWindow: string?
+
+  @description('Optional. Value that indicates whether server-side batched operations are enabled.')
+  enableBatchedOperations: bool?
+
+  @description('Optional. A value that indicates whether Express Entities are enabled. An express queue holds a message in memory temporarily before writing it to persistent storage.')
+  enableExpress: bool?
+
+  @description('Optional. A value that indicates whether the queue is to be partitioned across multiple message brokers.')
+  enablePartitioning: bool?
+
+  @description('Optional. The lock settings of the service.')
+  lock: lockType?
+
+  @description('Optional. ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute.')
+  lockDuration: string?
+
+  @description('Optional. The maximum delivery count. A message is automatically deadlettered after this number of deliveries. default value is 10.')
+  maxDeliveryCount: int?
+
+  @description('Optional. The maximum size of the queue in megabytes, which is the size of memory allocated for the queue. Default is 1024.')
+  maxSizeInMegabytes: int?
+
+  @description('Optional. A value indicating if this queue requires duplicate detection.')
+  requiresDuplicateDetection: bool?
+
+  @description('Optional. A value that indicates whether the queue supports the concept of sessions.')
+  requiresSession: bool?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType?
+
+  @description('Optional. Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown.')
+  status: ('Active' | 'Disabled' | 'Restoring' | 'SendDisabled' | 'ReceiveDisabled' | 'Creating' | 'Deleting' | 'Renaming' | 'Unknown')?
+}[]?
+
+type topicType = {
+  @description('Required. The name of the topic.')
+  name: string
+
+  @description('Optional. Authorization Rules for the Service Bus Topic.')
+  authorizationRules: authorizationRuleType?
+
+  @description('Optional. ISO 8601 timespan idle interval after which the topic is automatically deleted. The minimum duration is 5 minutes.')
+  autoDeleteOnIdle: string?
+
+  @description('Optional. ISO 8601 default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself.')
+  defaultMessageTimeToLive: string?
+
+  @description('Optional. ISO 8601 timeSpan structure that defines the duration of the duplicate detection history. The default value is 10 minutes.')
+  duplicateDetectionHistoryTimeWindow: string?
+
+  @description('Optional. Value that indicates whether server-side batched operations are enabled.')
+  enableBatchedOperations: bool?
+
+  @description('Optional. A value that indicates whether Express Entities are enabled. An express topic holds a message in memory temporarily before writing it to persistent storage.')
+  enableExpress: bool?
+
+  @description('Optional. A value that indicates whether the topic is to be partitioned across multiple message brokers.')
+  enablePartitioning: bool?
+
+  @description('Optional. The lock settings of the service.')
+  lock: lockType?
+
+  @description('Optional. Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024.')
+  maxMessageSizeInKilobytes: int?
+
+  @description('Optional. The maximum size in megabytes.')
+  maxSizeInMegabytes: int?
+
+  @description('Optional. A value indicating if this topic requires duplicate detection.')
+  requiresDuplicateDetection: bool?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType?
+
+  @description('Optional. Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown.')
+  status: ('Active' | 'Disabled' | 'Restoring' | 'SendDisabled' | 'ReceiveDisabled' | 'Creating' | 'Deleting' | 'Renaming' | 'Unknown')?
+
+  @description('Optional. Value that indicates whether the topic supports ordering.')
+  supportOrdering: bool?
+}[]?

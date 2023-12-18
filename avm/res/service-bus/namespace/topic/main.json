@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "16042975236040796641"
+      "templateHash": "3446096169234035274"
     },
     "name": "Service Bus Namespace Topic",
     "description": "This module deploys a Service Bus Namespace Topic.",
@@ -173,7 +173,7 @@
     },
     "autoDeleteOnIdle": {
       "type": "string",
-      "defaultValue": "PT5M",
+      "nullable": true,
       "metadata": {
         "description": "Optional. ISO 8601 timespan idle interval after which the topic is automatically deleted. The minimum duration is 5 minutes."
       }
