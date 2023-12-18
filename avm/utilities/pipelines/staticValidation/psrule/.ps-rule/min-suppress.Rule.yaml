@@ -21,6 +21,8 @@ spec:
       # Traffic Manager specific
     - Azure.TrafficManager.Endpoints
     - Azure.TrafficManager.Protocol
+      # Azure Load Balancer specific
+    - Azure.LB.Probe
   if:
     name: "."
     contains:

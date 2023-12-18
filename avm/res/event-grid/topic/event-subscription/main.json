@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "9051512137045314881"
+      "templateHash": "14979311756953443999"
     },
     "name": "EventGrid Topic Event Subscriptions",
     "description": "This module deploys an Event Grid Topic Event Subscription.",
@@ -102,7 +102,7 @@
         "deadLetterDestination": "[if(not(empty(parameters('deadLetterDestination'))), parameters('deadLetterDestination'), null())]",
         "deadLetterWithResourceIdentity": "[if(not(empty(parameters('deadLetterWithResourceIdentity'))), parameters('deadLetterWithResourceIdentity'), null())]",
         "deliveryWithResourceIdentity": "[if(not(empty(parameters('deliveryWithResourceIdentity'))), parameters('deliveryWithResourceIdentity'), null())]",
-        "destination": "[parameters('destination')]",
+        "destination": "[if(empty(parameters('deliveryWithResourceIdentity')), parameters('destination'), null())]",
         "eventDeliverySchema": "[parameters('eventDeliverySchema')]",
         "expirationTimeUtc": "[if(not(empty(parameters('expirationTimeUtc'))), parameters('expirationTimeUtc'), '')]",
         "filter": "[if(not(empty(parameters('filter'))), parameters('filter'), createObject())]",
