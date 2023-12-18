@@ -155,13 +155,14 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         name: 'probe1'
         numberOfProbes: 5
         port: 80
-        protocol: 'Tcp'
+        protocol: 'Http'
+        requestPath: '/http-probe'
       }
       {
         name: 'probe2'
         port: 443
         protocol: 'Https'
-        requestPath: '/'
+        requestPath: '/https-probe'
       }
     ]
     roleAssignments: [
