@@ -72,7 +72,7 @@ resource eventSubscription 'Microsoft.EventGrid/systemTopics/eventSubscriptions@
     deadLetterDestination: !empty(deadLetterDestination) ? deadLetterDestination : null
     deadLetterWithResourceIdentity: !empty(deadLetterWithResourceIdentity) ? deadLetterWithResourceIdentity : null
     deliveryWithResourceIdentity: !empty(deliveryWithResourceIdentity) ? deliveryWithResourceIdentity : null
-    destination: destination
+    destination: empty(deliveryWithResourceIdentity) ? destination: null
     eventDeliverySchema: eventDeliverySchema
     expirationTimeUtc: !empty(expirationTimeUtc) ? expirationTimeUtc : ''
     filter: !empty(filter) ? filter : {}
