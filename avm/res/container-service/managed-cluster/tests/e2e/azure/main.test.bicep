@@ -208,12 +208,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     }
     extension: {
       configurationSettings: {
-        'helm-controller.enabled': 'true'
-        'source-controller.enabled': 'true'
-        'kustomize-controller.enabled': 'true'
-        'notification-controller.enabled': 'true'
         'image-automation-controller.enabled': 'false'
         'image-reflector-controller.enabled': 'false'
+        'kustomize-controller.enabled': 'true'
+        'notification-controller.enabled': 'false'
+        'source-controller.enabled': 'true'
       }
       configurations: [
         {
@@ -228,39 +227,12 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             timeoutInSeconds: 180
             url: 'https://github.com/mspnp/aks-baseline'
           }
-        }
-        {
-          namespace: 'flux-system-helm'
-          scope: 'cluster'
-          gitRepository: {
-            repositoryRef: {
-              branch: 'main'
-            }
-            sshKnownHosts: ''
-            syncIntervalInSeconds: 300
-            timeoutInSeconds: 180
-            url: 'https://github.com/Azure/gitops-flux2-kustomize-helm-mt'
-          }
           kustomizations: {
-            infra: {
-              path: './infrastructure'
-              dependsOn: []
-              timeoutInSeconds: 600
-              syncIntervalInSeconds: 600
-              validation: 'none'
-              prune: true
-            }
-            apps: {
-              path: './apps/staging'
-              dependsOn: [
-                'infra'
-              ]
-              timeoutInSeconds: 600
-              syncIntervalInSeconds: 600
-              retryIntervalInSeconds: 120
-              prune: true
+            unified: {
+              path: './cluster-manifests'
             }
           }
+          suspend: false
         }
       ]
     }

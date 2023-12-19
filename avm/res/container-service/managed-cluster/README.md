@@ -163,47 +163,20 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
             timeoutInSeconds: 180
             url: 'https://github.com/mspnp/aks-baseline'
           }
-          namespace: 'flux-system'
-        }
-        {
-          gitRepository: {
-            repositoryRef: {
-              branch: 'main'
-            }
-            sshKnownHosts: ''
-            syncIntervalInSeconds: 300
-            timeoutInSeconds: 180
-            url: 'https://github.com/Azure/gitops-flux2-kustomize-helm-mt'
-          }
           kustomizations: {
-            apps: {
-              dependsOn: [
-                'infra'
-              ]
-              path: './apps/staging'
-              prune: true
-              retryIntervalInSeconds: 120
-              syncIntervalInSeconds: 600
-              timeoutInSeconds: 600
-            }
-            infra: {
-              dependsOn: []
-              path: './infrastructure'
-              prune: true
-              syncIntervalInSeconds: 600
-              timeoutInSeconds: 600
-              validation: 'none'
+            unified: {
+              path: './cluster-manifests'
             }
           }
-          namespace: 'flux-system-helm'
+          namespace: 'flux-system'
+          suspend: false
         }
       ]
       configurationSettings: {
-        'helm-controller.enabled': 'true'
         'image-automation-controller.enabled': 'false'
         'image-reflector-controller.enabled': 'false'
         'kustomize-controller.enabled': 'true'
-        'notification-controller.enabled': 'true'
+        'notification-controller.enabled': 'false'
         'source-controller.enabled': 'true'
       }
     }
@@ -401,47 +374,20 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
               "timeoutInSeconds": 180,
               "url": "https://github.com/mspnp/aks-baseline"
             },
-            "namespace": "flux-system"
-          },
-          {
-            "gitRepository": {
-              "repositoryRef": {
-                "branch": "main"
-              },
-              "sshKnownHosts": "",
-              "syncIntervalInSeconds": 300,
-              "timeoutInSeconds": 180,
-              "url": "https://github.com/Azure/gitops-flux2-kustomize-helm-mt"
-            },
             "kustomizations": {
-              "apps": {
-                "dependsOn": [
-                  "infra"
-                ],
-                "path": "./apps/staging",
-                "prune": true,
-                "retryIntervalInSeconds": 120,
-                "syncIntervalInSeconds": 600,
-                "timeoutInSeconds": 600
-              },
-              "infra": {
-                "dependsOn": [],
-                "path": "./infrastructure",
-                "prune": true,
-                "syncIntervalInSeconds": 600,
-                "timeoutInSeconds": 600,
-                "validation": "none"
+              "unified": {
+                "path": "./cluster-manifests"
               }
             },
-            "namespace": "flux-system-helm"
+            "namespace": "flux-system",
+            "suspend": false
           }
         ],
         "configurationSettings": {
-          "helm-controller.enabled": "true",
           "image-automation-controller.enabled": "false",
           "image-reflector-controller.enabled": "false",
           "kustomize-controller.enabled": "true",
-          "notification-controller.enabled": "true",
+          "notification-controller.enabled": "false",
           "source-controller.enabled": "true"
         }
       }
@@ -1183,7 +1129,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           'CriticalAddonsOnly=true:NoSchedule'
         ]
         osDiskSizeGB: 128
-        osDiskType: 'Standard_LRS'
+        osDiskType: 'Ephemeral'
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
@@ -1209,7 +1155,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           'CriticalAddonsOnly=true:NoSchedule'
         ]
         osDiskSizeGB: 128
-        osDiskType: 'Standard_LRS'
+        osDiskType: 'Ephemeral'
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
@@ -1335,7 +1281,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
             "CriticalAddonsOnly=true:NoSchedule"
           ],
           "osDiskSizeGB": 128,
-          "osDiskType": "Standard_LRS",
+          "osDiskType": "Ephemeral",
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",
@@ -1361,7 +1307,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
             "CriticalAddonsOnly=true:NoSchedule"
           ],
           "osDiskSizeGB": 128,
-          "osDiskType": "Standard_LRS",
+          "osDiskType": "Ephemeral",
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
           "scaleSetPriority": "Regular",

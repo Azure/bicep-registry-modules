@@ -339,6 +339,18 @@ param httpProxyConfig object?
 @description('Optional. Identities associated with the cluster.')
 param identityProfile object?
 
+@description('Optional. The customer managed key definition.')
+param customerManagedKey customerManagedKeyType
+
+@description('Optional. Whether the metrics profile for the Azure Monitor managed service for Prometheus addon is enabled.')
+param enableAzureMonitorProfileMetrics bool = false
+
+@description('Optional. A comma-separated list of additional Kubernetes label keys.')
+param metricLabelsAllowlist string = ''
+
+@description('Optional. A comma-separated list of Kubernetes annotation keys.')
+param metricAnnotationsAllowList string = ''
+
 // =========== //
 // Variables   //
 // =========== //
@@ -409,6 +421,15 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
         }
       }
     }
+  }
+}
+
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  scope: resourceGroup(split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2], split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4])
+
+  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName ?? 'dummyKey'
   }
 }
 
@@ -538,6 +559,15 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2023-07-02-p
       enablePrivateCluster: enablePrivateCluster
       enablePrivateClusterPublicFQDN: enablePrivateClusterPublicFQDN
       privateDNSZone: privateDNSZone
+    }
+    azureMonitorProfile: {
+      metrics: enableAzureMonitorProfileMetrics ? {
+        enabled: true
+        kubeStateMetrics: {
+          metricAnnotationsAllowList: metricAnnotationsAllowList
+          metricLabelsAllowlist: metricLabelsAllowlist
+        }
+      } : null
     }
     podIdentityProfile: {
       allowNetworkPluginKubenet: podIdentityProfileAllowNetworkPluginKubenet
@@ -683,7 +713,7 @@ resource managedCluster_roleAssignments 'Microsoft.Authorization/roleAssignments
   scope: managedCluster
 }]
 
-resource dnsZone 'Microsoft.Network/dnsZones@2018-05-01' existing = if (dnsZoneResourceId != null && webApplicationRoutingEnabled) {
+resource dnsZone 'Microsoft.Network/dnsZones@2018-05-01' existing = if (enableDnsZoneContributorRoleAssignment == true && dnsZoneResourceId != null && webApplicationRoutingEnabled) {
   name: last(split((!empty(dnsZoneResourceId) ? any(dnsZoneResourceId) : '/dummmyZone'), '/'))!
 }
 
@@ -723,6 +753,9 @@ output keyvaultIdentityObjectId string = contains(managedCluster.properties, 'ad
 
 @description('The Client ID of the Key Vault Secrets Provider identity.')
 output keyvaultIdentityClientId string = contains(managedCluster.properties, 'addonProfiles') ? contains(managedCluster.properties.addonProfiles, 'azureKeyvaultSecretsProvider') ? contains(managedCluster.properties.addonProfiles.azureKeyvaultSecretsProvider, 'identity') ? managedCluster.properties.addonProfiles.azureKeyvaultSecretsProvider.identity.clientId : '' : '' : ''
+
+@description('The Object ID of Application Gateway Ingress Controller (AGIC) identity.')
+output ingressApplicationGatewayIdentityObjectId string = managedCluster.properties.addonProfiles.?ingressApplicationGateway.?identity.?objectId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = managedCluster.location
@@ -960,4 +993,18 @@ type extensionType = {
 
   @description('Optional. The flux configurations of the extension.')
   configurations: array?
+}?
+
+type customerManagedKeyType = {
+  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
+  keyVaultResourceId: string
+
+  @description('Required. The name of the customer managed key to use for encryption.')
+  keyName: string
+
+  @description('Optional. The version of the customer managed key to reference for encryption. If not provided, using \'latest\'.')
+  keyVersion: string?
+
+  @description('Required. Network access of key vault. The possible values are Public and Private. Public means the key vault allows public access from all networks. Private means the key vault disables public access and enables private link. The default value is Public.')
+  keyVaultNetworkAccess: ('Private' | 'Public')
 }?
