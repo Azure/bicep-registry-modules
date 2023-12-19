@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "10804116039256053338"
+      "templateHash": "14704173586636885064"
     },
     "name": "Public IP Addresses",
     "description": "This module deploys a Public IP Address.",
@@ -220,7 +220,7 @@
             },
             "nullable": true,
             "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
+              "description": "Optional. The name of logs that will be streamed. \"allMetrics\" includes all possible logs for the resource. Set to '' to disable log collection."
             }
           },
           "logAnalyticsDestinationType": {
