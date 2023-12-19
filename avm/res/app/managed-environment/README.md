@@ -26,11 +26,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/app/managed-environment:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Max](#example-2-max)
-- [Waf-Aligned](#example-3-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
-### Example 1: _Defaults_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -44,7 +47,8 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'amemin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -69,8 +73,11 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "amemin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
+    },
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -79,7 +86,10 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 </details>
 <p>
 
-### Example 2: _Max_
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -94,7 +104,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     name: 'amemax001'
     // Non-required parameters
     dockerBridgeCidr: '172.16.0.1/28'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
     internal: true
@@ -137,8 +147,8 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "infrastructureResourceGroupName": {
       "value": "<infrastructureResourceGroupName>"
@@ -180,7 +190,10 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 </details>
 <p>
 
-### Example 3: _Waf-Aligned_
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
@@ -195,7 +208,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     name: 'amewaf001'
     // Non-required parameters
     dockerBridgeCidr: '172.16.0.1/28'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    enableTelemetry: '<enableTelemetry>'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
     internal: true
@@ -238,8 +251,8 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
     },
     "infrastructureResourceGroupName": {
       "value": "<infrastructureResourceGroupName>"

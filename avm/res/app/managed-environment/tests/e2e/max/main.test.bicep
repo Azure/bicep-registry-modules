@@ -20,7 +20,7 @@ param location string = deployment().location
 param serviceShort string = 'amemax'
 
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
+param enableTelemetry bool = true
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '[[namePrefix]]'
@@ -52,6 +52,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    location: location
   }
 }
 
@@ -64,7 +65,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
-    enableDefaultTelemetry: enableDefaultTelemetry
+    enableTelemetry: enableTelemetry
     name: '${namePrefix}${serviceShort}001'
     logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
     location: location
