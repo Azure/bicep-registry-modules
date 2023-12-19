@@ -65,10 +65,14 @@ function Invoke-GitHubWorkflow {
         } | ConvertTo-Json
     }
     if ($PSCmdlet.ShouldProcess("GitHub workflow [$WorkflowFileName] for branch [$TargetBranch]", 'Invoke')) {
-        $response = Invoke-RestMethod @requestInputObject -Verbose:$false
-
+        try {
+            $response = Invoke-RestMethod @requestInputObject -Verbose:$false
+        } catch {
+            Write-Error ("Request failed for [$WorkflowFileName]. Response: [{0}]" -f $_.ErrorDetails)
+            return $false
+        }
         if ($response) {
-            Write-Error "Request failed. Reponse: [$response]"
+            Write-Error "Request failed. Response: [$response]"
             return $false
         }
     }
