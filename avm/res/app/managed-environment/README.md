@@ -430,7 +430,7 @@ Boolean indicating the environment only has an internal load balancer. These env
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `location`
 
