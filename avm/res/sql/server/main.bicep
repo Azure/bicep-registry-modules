@@ -24,7 +24,7 @@ param primaryUserAssignedIdentityId string = ''
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
-@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+@description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
 @description('Optional. Tags of the resource.')
@@ -163,7 +163,7 @@ resource server_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(loc
 resource server_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
   name: guid(server.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
   properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : roleAssignment.roleDefinitionIdOrName
+    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
     principalId: roleAssignment.principalId
     description: roleAssignment.?description
     principalType: roleAssignment.?principalType
@@ -234,14 +234,21 @@ module server_elasticPools 'elastic-pool/main.bicep' = [for (elasticPool, index)
   }
 }]
 
-module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.2.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
   name: '${uniqueString(deployment().name, location)}-server-PrivateEndpoint-${index}'
   params: {
-    groupIds: [
-      privateEndpoint.?service ?? 'sqlServer'
+    privateLinkServiceConnections: [
+      {
+        name: name
+        properties: {
+          privateLinkServiceId: server.id
+          groupIds: [
+            privateEndpoint.?service ?? 'sqlServer'
+          ]
+        }
+      }
     ]
     name: privateEndpoint.?name ?? 'pep-${last(split(server.id, '/'))}-${privateEndpoint.?service ?? 'sqlServer'}-${index}'
-    serviceResourceId: server.id
     subnetResourceId: privateEndpoint.subnetResourceId
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
@@ -369,7 +376,7 @@ type lockType = {
 }?
 
 type roleAssignmentType = {
-  @description('Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.')
+  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
   @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
@@ -392,6 +399,7 @@ type roleAssignmentType = {
 }[]?
 
 type privateEndpointType = {
+
   @description('Optional. The name of the private endpoint.')
   name: string?
 
@@ -404,7 +412,7 @@ type privateEndpointType = {
   @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
   subnetResourceId: string
 
-  @description('Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.')
+  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
   privateDnsZoneGroupName: string?
 
   @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
@@ -412,10 +420,10 @@ type privateEndpointType = {
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint ip address.')
+    @description('Required. Fqdn that resolves to private endpoint IP address.')
     fqdn: string?
 
-    @description('Required. A list of private ip addresses of the private endpoint.')
+    @description('Required. A list of private IP addresses of the private endpoint.')
     ipAddresses: string[]
   }[]?
 
@@ -432,7 +440,7 @@ type privateEndpointType = {
       @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
       memberName: string
 
-      @description('Required. A private ip address obtained from the private endpoint\'s subnet.')
+      @description('Required. A private IP address obtained from the private endpoint\'s subnet.')
       privateIPAddress: string
     }
   }[]?
@@ -446,7 +454,7 @@ type privateEndpointType = {
   @description('Optional. Specify the type of lock.')
   lock: lockType
 
-  @description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+  @description('Optional. Array of role assignments to create.')
   roleAssignments: roleAssignmentType
 
   @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')

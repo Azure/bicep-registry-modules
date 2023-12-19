@@ -85,8 +85,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
         suspend: false
       }
     ]
-    // Workaround for PSRule
-    configurationProtectedSettings: null
-    targetNamespace: null
   }
 }]

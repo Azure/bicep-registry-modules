@@ -142,8 +142,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
-    // Workaround for PSRule
-    roleAssignments: []
-    accessPolicies: []
   }
 }]

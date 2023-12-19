@@ -37,44 +37,51 @@ This module deploys a DNS Resolver Inbound Endpoint.
 ### Parameter: `dnsResolverName`
 
 Name of the Private DNS Resolver.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `name`
+
+The name of the inbound endpoint.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `subnetResourceId`
+
+The subnet ID of the inbound endpoint.
+
 - Required: Yes
 - Type: string
 
 ### Parameter: `location`
 
 Location for all resources.
+
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
 
-### Parameter: `name`
-
-The name of the inbound endpoint.
-- Required: Yes
-- Type: string
-
 ### Parameter: `privateIpAddress`
 
 The private IP address of the inbound endpoint.
+
 - Required: No
 - Type: string
 
 ### Parameter: `privateIpAllocationMethod`
 
 The private IP allocation method of the inbound endpoint.
+
 - Required: No
 - Type: string
 - Default: `'Dynamic'`
 
-### Parameter: `subnetResourceId`
-
-The subnet ID of the inbound endpoint.
-- Required: Yes
-- Type: string
-
 ### Parameter: `tags`
 
 Tags of the resource.
+
 - Required: No
 - Type: object
 

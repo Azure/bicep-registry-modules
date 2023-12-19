@@ -5,12 +5,11 @@ $repoRootPath = (Get-Item $PSScriptRoot).Parent.Parent.Parent.Parent.Parent.Pare
 
 . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-NestedResourceList.ps1')
 . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-ScopeOfTemplateFile.ps1')
-. (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-ModuleTestFileList.ps1')
 . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-PipelineFileName.ps1')
 . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-IsParameterRequired.ps1')
 . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'ConvertTo-OrderedHashtable.ps1')
 . (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-CrossReferencedModuleList.ps1')
-. (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'publish' 'helper' 'Get-BRMRepositoryName.ps1')
+. (Join-Path $repoRootPath 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-BRMRepositoryName.ps1')
 
 ####################################
 #   Load test-specific functions   #
@@ -177,4 +176,52 @@ function Remove-JSONMetadata {
   }
 
   return $TemplateObject
+}
+
+<#
+.SYNOPSIS
+Get a hashtable of all environment variables in the given GitHub workflow
+
+.DESCRIPTION
+Get a hashtable of all environment variables in the given GitHub workflow
+
+.PARAMETER WorkflowPath
+Mandatory. The path of the workflow to get the environment variables from
+
+.EXAMPLE
+Get-WorkflowEnvVariablesAsObject -WorkflowPath 'C:/bicep-registry-modules/.github/workflows/test.yml'
+
+Get the environment variables from the given workflow
+#>
+function Get-WorkflowEnvVariablesAsObject {
+
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory)]
+    [string] $WorkflowPath
+  )
+
+  $contentFileContent = Get-Content -Path $workflowPath
+
+  $envStartIndex = $contentFileContent.IndexOf('env:')
+
+  if (-not $envStartIndex) {
+    # No env variables defined in the given workflow
+    return @{}
+  }
+
+  $searchIndex = $envStartIndex + 1
+  $envVars = @{}
+
+  while ($searchIndex -lt $contentFileContent.Count) {
+    $line = $contentFileContent[$searchIndex]
+    if ($line -match "^\s+(\w+): (?:`"|')*([^`"'\s]+)(?:`"|')*$") {
+      $envVars[($Matches[1])] = $Matches[2]
+    } else {
+      break
+    }
+    $searchIndex++
+  }
+
+  return $envVars
 }

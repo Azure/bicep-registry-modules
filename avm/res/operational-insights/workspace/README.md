@@ -798,7 +798,17 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       {
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     savedSearches: [
@@ -1018,7 +1028,17 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         {
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -1457,7 +1477,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both. |
 | [`publicNetworkAccessForIngestion`](#parameter-publicnetworkaccessforingestion) | string | The network access type for accessing Log Analytics ingestion. |
 | [`publicNetworkAccessForQuery`](#parameter-publicnetworkaccessforquery) | string | The network access type for accessing Log Analytics query. |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`savedSearches`](#parameter-savedsearches) | array | Kusto Query Language searches to save. |
 | [`skuCapacityReservationLevel`](#parameter-skucapacityreservationlevel) | int | The capacity reservation level in GB for this workspace, when CapacityReservation sku is selected. Must be in increments of 100 between 100 and 5000. |
 | [`skuName`](#parameter-skuname) | string | The name of the SKU. |
@@ -1466,9 +1486,25 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`useResourcePermissions`](#parameter-useresourcepermissions) | bool | Set to 'true' to use resource or workspace permissions and 'false' (or leave empty) to require workspace permissions. |
 
+### Parameter: `name`
+
+Name of the Log Analytics workspace.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `linkedStorageAccounts`
+
+List of Storage Accounts to be linked. Required if 'forceCmkForQuery' is set to 'true' and 'savedSearches' is not empty.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
 ### Parameter: `dailyQuotaGb`
 
 The workspace daily quota for ingestion.
+
 - Required: No
 - Type: int
 - Default: `-1`
@@ -1476,6 +1512,7 @@ The workspace daily quota for ingestion.
 ### Parameter: `dataExports`
 
 LAW data export instances to be deployed.
+
 - Required: No
 - Type: array
 - Default: `[]`
@@ -1483,6 +1520,7 @@ LAW data export instances to be deployed.
 ### Parameter: `dataRetention`
 
 Number of days data will be retained for.
+
 - Required: No
 - Type: int
 - Default: `365`
@@ -1490,6 +1528,7 @@ Number of days data will be retained for.
 ### Parameter: `dataSources`
 
 LAW data sources to configure.
+
 - Required: No
 - Type: array
 - Default: `[]`
@@ -1497,114 +1536,90 @@ LAW data sources to configure.
 ### Parameter: `diagnosticSettings`
 
 The diagnostic settings of the service.
+
 - Required: No
 - Type: array
 
+**Optional parameters**
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`eventHubAuthorizationRuleResourceId`](#parameter-diagnosticsettingseventhubauthorizationruleresourceid) | No | string | Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
-| [`eventHubName`](#parameter-diagnosticsettingseventhubname) | No | string | Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | No | string | Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
-| [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | No | array | Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
-| [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | No | string | Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | No | array | Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
-| [`name`](#parameter-diagnosticsettingsname) | No | string | Optional. The name of diagnostic setting. |
-| [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | No | string | Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | No | string | Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-diagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-diagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
 ### Parameter: `diagnosticSettings.eventHubAuthorizationRuleResourceId`
 
-Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
 
 - Required: No
 - Type: string
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
-Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
-Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
 
 - Required: No
 - Type: string
-- Allowed: `[AzureDiagnostics, Dedicated]`
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups`
 
-Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection.
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection.
 
 - Required: No
 - Type: array
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | No | string | Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
-| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | No | string | Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs. |
-
-### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
-
-Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
-
-Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs.
-
-- Required: No
-- Type: string
-
-
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
-Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
 
 - Required: No
 - Type: string
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
-Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection.
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection.
 
 - Required: No
 - Type: array
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | Yes | string | Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics. |
-
-### Parameter: `diagnosticSettings.metricCategories.category`
-
-Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics.
-
-- Required: Yes
-- Type: string
-
-
 ### Parameter: `diagnosticSettings.name`
 
-Optional. The name of diagnostic setting.
+The name of diagnostic setting.
 
 - Required: No
 - Type: string
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
-Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
-Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
@@ -1612,6 +1627,7 @@ Optional. Resource ID of the diagnostic log analytics workspace. For security re
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
+
 - Required: No
 - Type: bool
 - Default: `True`
@@ -1619,6 +1635,7 @@ Enable/Disable usage telemetry for module.
 ### Parameter: `forceCmkForQuery`
 
 Indicates whether customer managed storage is mandatory for query management.
+
 - Required: No
 - Type: bool
 - Default: `True`
@@ -1626,6 +1643,7 @@ Indicates whether customer managed storage is mandatory for query management.
 ### Parameter: `gallerySolutions`
 
 List of gallerySolutions to be created in the log analytics workspace.
+
 - Required: No
 - Type: array
 - Default: `[]`
@@ -1633,13 +1651,7 @@ List of gallerySolutions to be created in the log analytics workspace.
 ### Parameter: `linkedServices`
 
 List of services to be linked.
-- Required: No
-- Type: array
-- Default: `[]`
 
-### Parameter: `linkedStorageAccounts`
-
-List of Storage Accounts to be linked. Required if 'forceCmkForQuery' is set to 'true' and 'savedSearches' is not empty.
 - Required: No
 - Type: array
 - Default: `[]`
@@ -1647,6 +1659,7 @@ List of Storage Accounts to be linked. Required if 'forceCmkForQuery' is set to 
 ### Parameter: `location`
 
 Location for all resources.
+
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
@@ -1654,26 +1667,35 @@ Location for all resources.
 ### Parameter: `lock`
 
 The lock settings of the service.
+
 - Required: No
 - Type: object
 
+**Optional parameters**
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`kind`](#parameter-lockkind) | No | string | Optional. Specify the type of lock. |
-| [`name`](#parameter-lockname) | No | string | Optional. Specify the name of lock. |
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-lockname) | string | Specify the name of lock. |
 
 ### Parameter: `lock.kind`
 
-Optional. Specify the type of lock.
+Specify the type of lock.
 
 - Required: No
 - Type: string
-- Allowed: `[CanNotDelete, None, ReadOnly]`
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
 
 ### Parameter: `lock.name`
 
-Optional. Specify the name of lock.
+Specify the name of lock.
 
 - Required: No
 - Type: string
@@ -1681,38 +1703,35 @@ Optional. Specify the name of lock.
 ### Parameter: `managedIdentities`
 
 The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.
+
 - Required: No
 - Type: object
 
+**Optional parameters**
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | No | bool | Optional. Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | No | array | Optional. The resource ID(s) to assign to the resource. |
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
-Optional. Enables system assigned managed identity on the resource.
+Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-Optional. The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
 
-### Parameter: `name`
-
-Name of the Log Analytics workspace.
-- Required: Yes
-- Type: string
-
 ### Parameter: `publicNetworkAccessForIngestion`
 
 The network access type for accessing Log Analytics ingestion.
+
 - Required: No
 - Type: string
 - Default: `'Enabled'`
@@ -1727,6 +1746,7 @@ The network access type for accessing Log Analytics ingestion.
 ### Parameter: `publicNetworkAccessForQuery`
 
 The network access type for accessing Log Analytics query.
+
 - Required: No
 - Type: string
 - Default: `'Enabled'`
@@ -1740,75 +1760,97 @@ The network access type for accessing Log Analytics query.
 
 ### Parameter: `roleAssignments`
 
-Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+Array of role assignments to create.
+
 - Required: No
 - Type: array
 
+**Required parameters**
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`condition`](#parameter-roleassignmentscondition) | No | string | Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
-| [`conditionVersion`](#parameter-roleassignmentsconditionversion) | No | string | Optional. Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | No | string | Optional. The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-roleassignmentsdescription) | No | string | Optional. The description of the role assignment. |
-| [`principalId`](#parameter-roleassignmentsprincipalid) | Yes | string | Required. The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`principalType`](#parameter-roleassignmentsprincipaltype) | No | string | Optional. The principal type of the assigned principal ID. |
-| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead. |
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-roleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `roleAssignments.condition`
 
-Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
 
 - Required: No
 - Type: string
 
 ### Parameter: `roleAssignments.conditionVersion`
 
-Optional. Version of the condition.
+Version of the condition.
 
 - Required: No
 - Type: string
-- Allowed: `[2.0]`
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
-Optional. The Resource Id of the delegated managed identity resource.
+The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
 
 ### Parameter: `roleAssignments.description`
 
-Optional. The description of the role assignment.
+The description of the role assignment.
 
 - Required: No
-- Type: string
-
-### Parameter: `roleAssignments.principalId`
-
-Required. The principal ID of the principal (user/group/identity) to assign the role to.
-
-- Required: Yes
 - Type: string
 
 ### Parameter: `roleAssignments.principalType`
 
-Optional. The principal type of the assigned principal ID.
+The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Allowed: `[Device, ForeignGroup, Group, ServicePrincipal, User]`
-
-### Parameter: `roleAssignments.roleDefinitionIdOrName`
-
-Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.
-
-- Required: Yes
-- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
 
 ### Parameter: `savedSearches`
 
 Kusto Query Language searches to save.
+
 - Required: No
 - Type: array
 - Default: `[]`
@@ -1816,6 +1858,7 @@ Kusto Query Language searches to save.
 ### Parameter: `skuCapacityReservationLevel`
 
 The capacity reservation level in GB for this workspace, when CapacityReservation sku is selected. Must be in increments of 100 between 100 and 5000.
+
 - Required: No
 - Type: int
 - Default: `100`
@@ -1823,6 +1866,7 @@ The capacity reservation level in GB for this workspace, when CapacityReservatio
 ### Parameter: `skuName`
 
 The name of the SKU.
+
 - Required: No
 - Type: string
 - Default: `'PerGB2018'`
@@ -1843,6 +1887,7 @@ The name of the SKU.
 ### Parameter: `storageInsightsConfigs`
 
 List of storage accounts to be read by the workspace.
+
 - Required: No
 - Type: array
 - Default: `[]`
@@ -1850,6 +1895,7 @@ List of storage accounts to be read by the workspace.
 ### Parameter: `tables`
 
 LAW custom tables to be deployed.
+
 - Required: No
 - Type: array
 - Default: `[]`
@@ -1857,12 +1903,14 @@ LAW custom tables to be deployed.
 ### Parameter: `tags`
 
 Tags of the resource.
+
 - Required: No
 - Type: object
 
 ### Parameter: `useResourcePermissions`
 
 Set to 'true' to use resource or workspace permissions and 'false' (or leave empty) to require workspace permissions.
+
 - Required: No
 - Type: bool
 - Default: `False`

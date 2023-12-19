@@ -8,9 +8,6 @@ param name string
 @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
 param subnetResourceId string
 
-@description('Required. Resource ID of the resource that needs to be connected to the network.')
-param serviceResourceId string
-
 @description('Optional. Application security groups in which the private endpoint IP configuration is included.')
 param applicationSecurityGroupResourceIds array?
 
@@ -19,9 +16,6 @@ param customNetworkInterfaceName string?
 
 @description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
 param ipConfigurations ipConfigurationsType
-
-@description('Required. Subtype(s) of the connection to be created. The allowed values depend on the type serviceResourceId refers to.')
-param groupIds array
 
 @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
 param privateDnsZoneGroupName string?
@@ -35,7 +29,7 @@ param location string = resourceGroup().location
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
-@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+@description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
 @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
@@ -44,8 +38,11 @@ param tags object?
 @description('Optional. Custom DNS configurations.')
 param customDnsConfigs customDnsConfigType
 
-@description('Optional. Manual PrivateLink Service Connections.')
-param manualPrivateLinkServiceConnections array?
+@description('Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource.')
+param manualPrivateLinkServiceConnections manualPrivateLinkServiceConnectionsType
+
+@description('Optional. A grouping of information about the connection to the remote resource.')
+param privateLinkServiceConnections privateLinkServiceConnectionsType
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -93,19 +90,10 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-04-01' = {
     customNetworkInterfaceName: customNetworkInterfaceName ?? ''
     ipConfigurations: ipConfigurations ?? []
     manualPrivateLinkServiceConnections: manualPrivateLinkServiceConnections ?? []
-    privateLinkServiceConnections: [
-      {
-        name: name
-        properties: {
-          privateLinkServiceId: serviceResourceId
-          groupIds: groupIds
-        }
-      }
-    ]
+    privateLinkServiceConnections: privateLinkServiceConnections ?? []
     subnet: {
       id: subnetResourceId
     }
-
   }
 }
 
@@ -130,7 +118,7 @@ resource privateEndpoint_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!
 resource privateEndpoint_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for (roleAssignment, index) in (roleAssignments ?? []): {
   name: guid(privateEndpoint.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
   properties: {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : roleAssignment.roleDefinitionIdOrName
+    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName) ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName] : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/') ? roleAssignment.roleDefinitionIdOrName : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
     principalId: roleAssignment.principalId
     description: roleAssignment.?description
     principalType: roleAssignment.?principalType
@@ -158,7 +146,7 @@ output location string = privateEndpoint.location
 // ================ //
 
 type roleAssignmentType = {
-  @description('Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.')
+  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
   roleDefinitionIdOrName: string
 
   @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
@@ -200,15 +188,49 @@ type ipConfigurationsType = {
     @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
     memberName: string
 
-    @description('Required. A private ip address obtained from the private endpoint\'s subnet.')
+    @description('Required. A private IP address obtained from the private endpoint\'s subnet.')
     privateIPAddress: string
   }
 }[]?
 
+type manualPrivateLinkServiceConnectionsType = {
+  @description('Required. The name of the private link service connection.')
+  name: string
+
+  @description('Required. Properties of private link service connection.')
+  properties: {
+    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
+    groupIds: array
+
+    @description('Required. The resource id of private link service.')
+    privateLinkServiceId: string
+
+    @description('Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.')
+    requestMessage: string
+  }
+}[]?
+
+type privateLinkServiceConnectionsType = {
+  @description('Required. The name of the private link service connection.')
+  name: string
+
+  @description('Required. Properties of private link service connection.')
+  properties: {
+    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
+    groupIds: array
+
+    @description('Required. The resource id of private link service.')
+    privateLinkServiceId: string
+
+    @description('Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.')
+    requestMessage: string?
+  }
+}[]?
+
 type customDnsConfigType = {
-  @description('Required. Fqdn that resolves to private endpoint ip address.')
+  @description('Required. Fqdn that resolves to private endpoint IP address.')
   fqdn: string
 
-  @description('Required. A list of private ip addresses of the private endpoint.')
+  @description('Required. A list of private IP addresses of the private endpoint.')
   ipAddresses: string[]
 }[]?
