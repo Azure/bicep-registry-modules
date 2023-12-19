@@ -721,7 +721,7 @@ Specifies the properties of the Public IP to create and be used by Azure Bastion
 - Default:
   ```Bicep
   {
-      name: '[format(\'{0}-pip\' parameters(\'name\'))]'
+      name: '[format(\'{0}-pip\', parameters(\'name\'))]'
   }
   ```
 

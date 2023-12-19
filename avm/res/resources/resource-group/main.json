@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "6824052460043471158"
+      "templateHash": "3602482923715259848"
     },
     "name": "Resource Groups",
     "description": "This module deploys a Resource Group.",
@@ -138,13 +138,6 @@
         "description": "Optional. Tags of the storage account resource."
       }
     },
-    "managedBy": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. The ID of the resource that manages this resource group."
-      }
-    },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
@@ -195,7 +188,6 @@
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
-      "managedBy": "[parameters('managedBy')]",
       "properties": {}
     },
     "resourceGroup_roleAssignments": {

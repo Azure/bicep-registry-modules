@@ -58,7 +58,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
         streams: [
           'Custom-CustomTableAdvanced_CL'
         ]
-        transformKql: 'source | extend LogFields = split(RawData \'\') | extend EventTime = todatetime(LogFields[0]) | extend EventLevel = tostring(LogFields[1]) | extend EventCode = toint(LogFields[2]) | extend Message = tostring(LogFields[3]) | project TimeGenerated EventTime EventLevel EventCode Message'
+        transformKql: 'source | extend LogFields = split(RawData, \',\') | extend EventTime = todatetime(LogFields[0]) | extend EventLevel = tostring(LogFields[1]) | extend EventCode = toint(LogFields[2]) | extend Message = tostring(LogFields[3]) | project TimeGenerated, EventTime, EventLevel, EventCode, Message'
       }
     ]
     dataSources: {
@@ -92,7 +92,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
     name: 'idcrcusadv001'
     // Non-required parameters
     dataCollectionEndpointId: '<dataCollectionEndpointId>'
-    description: 'Collecting custom text logs with ingestion-time transformation to columns. Expected format of a log line (comma separated values): \'<DateTime><EventLevel><EventCode><Message>\' for example: \'2023-01-25T20:15:05ZERROR404Page not found\''
+    description: 'Collecting custom text logs with ingestion-time transformation to columns. Expected format of a log line (comma separated values): \'<DateTime>,<EventLevel>,<EventCode>,<Message>\', for example: \'2023-01-25T20:15:05Z,ERROR,404,Page not found\''
     kind: 'Windows'
     location: '<location>'
     streamDeclarations: {
@@ -1421,7 +1421,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
           ]
           xPathQueries: [
             'Application!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]'
-            'Security!*[System[(band(Keywords13510798882111488))]]'
+            'Security!*[System[(band(Keywords,13510798882111488))]]'
             'System!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]'
           ]
         }
@@ -1697,7 +1697,7 @@ module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<vers
           ]
           xPathQueries: [
             'Application!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]'
-            'Security!*[System[(band(Keywords13510798882111488))]]'
+            'Security!*[System[(band(Keywords,13510798882111488))]]'
             'System!*[System[(Level=1 or Level=2 or Level=3 or Level=4 or Level=0 or Level=5)]]'
           ]
         }

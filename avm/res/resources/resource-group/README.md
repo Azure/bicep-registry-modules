@@ -270,7 +270,6 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:<version>' = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location of the Resource Group. It uses the deployment's location when not provided. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`managedBy`](#parameter-managedby) | string | The ID of the resource that manages this resource group. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the storage account resource. |
 
@@ -332,14 +331,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-
-### Parameter: `managedBy`
-
-The ID of the resource that manages this resource group.
-
-- Required: No
-- Type: string
-- Default: `''`
 
 ### Parameter: `roleAssignments`
 
