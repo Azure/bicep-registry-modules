@@ -13,12 +13,16 @@ spec:
     - Azure.Policy.AssignmentDescriptors
       # Cognitive Services specific
     - Azure.Cognitive.ManagedIdentity
+      # Automation specific
+    - Azure.Automation.ManagedIdentity
       # Key Vault specific
     - Azure.KeyVault.Logs
     - Azure.KeyVault.Firewall
       # Traffic Manager specific
     - Azure.TrafficManager.Endpoints
     - Azure.TrafficManager.Protocol
+      # Azure Load Balancer specific
+    - Azure.LB.Probe
   if:
     name: "."
     contains:
