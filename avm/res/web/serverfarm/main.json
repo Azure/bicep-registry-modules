@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "10514343252503210690"
+      "version": "0.24.24.22086",
+      "templateHash": "15512038576028662646"
     },
     "name": "App Service Plan",
     "description": "This module deploys an App Service Plan.",

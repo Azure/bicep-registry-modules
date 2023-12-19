@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "6009492441042780474"
+      "version": "0.24.24.22086",
+      "templateHash": "3543265320789085006"
     },
     "name": "Deployment Scripts",
     "description": "This module deploys Deployment Scripts.",

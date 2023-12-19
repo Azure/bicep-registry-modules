@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "12131247304139082452"
+      "version": "0.24.24.22086",
+      "templateHash": "5458835139739754715"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service.",

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "8898228356717539557"
+      "version": "0.24.24.22086",
+      "templateHash": "17909997479406761822"
     },
     "name": "Public DNS Zone SRV record",
     "description": "This module deploys a Public DNS Zone SRV record.",

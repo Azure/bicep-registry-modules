@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "3137121248446075281"
+      "version": "0.24.24.22086",
+      "templateHash": "10804116039256053338"
     },
     "name": "Public IP Addresses",
     "description": "This module deploys a Public IP Address.",

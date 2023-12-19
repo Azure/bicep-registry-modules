@@ -665,7 +665,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         ]
         name: 'Starter'
         subscriptionRequired: true
-        terms: 'By accessing or using the services provided by Echo API through Azure API Management you agree to be bound by these Terms of Use. These terms may be updated from time to time and your continued use of the services constitutes acceptance of any changes.'
+        terms: 'By accessing or using the services provided by Echo API through Azure API Management, you agree to be bound by these Terms of Use. These terms may be updated from time to time, and your continued use of the services constitutes acceptance of any changes.'
       }
     ]
     subscriptions: [

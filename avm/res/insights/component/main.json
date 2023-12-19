@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "14980753651845437091"
+      "version": "0.24.24.22086",
+      "templateHash": "1107250344010517466"
     },
     "name": "Application Insights",
     "description": "This component deploys an Application Insights instance.",

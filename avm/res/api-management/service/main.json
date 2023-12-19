@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "13172227925591684898"
+      "version": "0.24.24.22086",
+      "templateHash": "4989534590165598552"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service.",
@@ -713,8 +713,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "8297194138144491601"
+              "version": "0.24.24.22086",
+              "templateHash": "16858272831537944791"
             },
             "name": "API Management Service APIs",
             "description": "This module deploys an API Management Service API.",
@@ -975,8 +975,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "16094287091554497025"
+                      "version": "0.24.24.22086",
+                      "templateHash": "17055958863698771520"
                     },
                     "name": "API Management Service APIs Policies",
                     "description": "This module deploys an API Management Service API Policy.",
@@ -1121,8 +1121,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "14468307728701762315"
+              "version": "0.24.24.22086",
+              "templateHash": "9070035824484371815"
             },
             "name": "API Management Service API Version Sets",
             "description": "This module deploys an API Management Service API Version Set.",
@@ -1237,8 +1237,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "16321328968047142432"
+              "version": "0.24.24.22086",
+              "templateHash": "6542432156469813267"
             },
             "name": "API Management Service Authorization Servers",
             "description": "This module deploys an API Management Service Authorization Server.",
@@ -1480,8 +1480,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "17308512999364094689"
+              "version": "0.24.24.22086",
+              "templateHash": "1760564242838625433"
             },
             "name": "API Management Service Backends",
             "description": "This module deploys an API Management Service Backend.",
@@ -1664,8 +1664,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "16122304424283274558"
+              "version": "0.24.24.22086",
+              "templateHash": "16846150865263245054"
             },
             "name": "API Management Service Caches",
             "description": "This module deploys an API Management Service Cache.",
@@ -1799,8 +1799,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "2386575276292873532"
+              "version": "0.24.24.22086",
+              "templateHash": "10477107104795505586"
             },
             "name": "API Management Service Identity Providers",
             "description": "This module deploys an API Management Service Identity Provider.",
@@ -1986,8 +1986,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "14423803808142765353"
+              "version": "0.24.24.22086",
+              "templateHash": "14717777062043537489"
             },
             "name": "API Management Service Named Values",
             "description": "This module deploys an API Management Service Named Value.",
@@ -2127,8 +2127,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "17882646930090717237"
+              "version": "0.24.24.22086",
+              "templateHash": "1608393236922114459"
             },
             "name": "API Management Service Portal Settings",
             "description": "This module deploys an API Management Service Portal Setting.",
@@ -2224,8 +2224,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "2972278282486423100"
+              "version": "0.24.24.22086",
+              "templateHash": "836906111243238614"
             },
             "name": "API Management Service Policies",
             "description": "This module deploys an API Management Service Policy.",
@@ -2340,8 +2340,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "13412848310424617232"
+              "version": "0.24.24.22086",
+              "templateHash": "5075187296088698151"
             },
             "name": "API Management Service Products",
             "description": "This module deploys an API Management Service Product.",
@@ -2462,8 +2462,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "14722621268708488261"
+                      "version": "0.24.24.22086",
+                      "templateHash": "7732422845023417889"
                     },
                     "name": "API Management Service Products APIs",
                     "description": "This module deploys an API Management Service Product API.",
@@ -2552,8 +2552,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.23.1.45101",
-                      "templateHash": "15349196511355180524"
+                      "version": "0.24.24.22086",
+                      "templateHash": "16924441760570909209"
                     },
                     "name": "API Management Service Products Groups",
                     "description": "This module deploys an API Management Service Product Group.",
@@ -2709,8 +2709,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "17130710293008431926"
+              "version": "0.24.24.22086",
+              "templateHash": "8462322691003694396"
             },
             "name": "API Management Service Subscriptions",
             "description": "This module deploys an API Management Service Subscription.",
