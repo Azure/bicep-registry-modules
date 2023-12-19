@@ -39,6 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: location
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
 }
 
@@ -56,5 +57,6 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     location: location
     logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
     internal: true
+    infrastructureSubnetId: nestedDependencies.outputs.subnetResourceId
   }
 }]
