@@ -1,0 +1,110 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.23.1.45101",
+      "templateHash": "17367962996789020433"
+    },
+    "name": "Automation Account Modules",
+    "description": "This module deploys an Azure Automation Account Module.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the Automation Account module."
+      }
+    },
+    "automationAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Automation Account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "uri": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Module package URI, e.g. https://www.powershellgallery.com/api/v2/package."
+      }
+    },
+    "version": {
+      "type": "string",
+      "defaultValue": "latest",
+      "metadata": {
+        "description": "Optional. Module version or specify latest to get the latest version."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the Automation Account resource."
+      }
+    }
+  },
+  "resources": {
+    "automationAccount": {
+      "existing": true,
+      "type": "Microsoft.Automation/automationAccounts",
+      "apiVersion": "2022-08-08",
+      "name": "[parameters('automationAccountName')]"
+    },
+    "module": {
+      "type": "Microsoft.Automation/automationAccounts/modules",
+      "apiVersion": "2022-08-08",
+      "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "contentLink": {
+          "uri": "[if(not(equals(parameters('version'), 'latest')), format('{0}/{1}/{2}', parameters('uri'), parameters('name'), parameters('version')), format('{0}/{1}', parameters('uri'), parameters('name')))]",
+          "version": "[if(not(equals(parameters('version'), 'latest')), parameters('version'), null())]"
+        }
+      },
+      "dependsOn": [
+        "automationAccount"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed module."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed module."
+      },
+      "value": "[resourceId('Microsoft.Automation/automationAccounts/modules', parameters('automationAccountName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed module."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('module', '2022-08-08', 'full').location]"
+    }
+  }
+}
