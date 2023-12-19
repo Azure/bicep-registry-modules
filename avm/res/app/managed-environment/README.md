@@ -26,14 +26,11 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/app/managed-environment:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Defaults](#example-1-defaults)
+- [Max](#example-2-max)
+- [Waf-Aligned](#example-3-waf-aligned)
 
-### Example 1: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
+### Example 1: _Defaults_
 
 <details>
 
@@ -44,9 +41,10 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   name: '${uniqueString(deployment().name, location)}-test-amemin'
   params: {
     // Required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'amemin001'
+    // Non-required parameters
+    enableDefaultTelemetry: '<enableDefaultTelemetry>'
   }
 }
 ```
@@ -64,14 +62,15 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "logAnalyticsWorkspaceResourceId": {
       "value": "<logAnalyticsWorkspaceResourceId>"
     },
     "name": {
       "value": "amemin001"
+    },
+    // Non-required parameters
+    "enableDefaultTelemetry": {
+      "value": "<enableDefaultTelemetry>"
     }
   }
 }
@@ -80,10 +79,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
-
-This instance deploys the module with most of its features enabled.
-
+### Example 2: _Max_
 
 <details>
 
@@ -94,11 +90,11 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   name: '${uniqueString(deployment().name, location)}-test-amemax'
   params: {
     // Required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'amemax001'
     // Non-required parameters
     dockerBridgeCidr: '172.16.0.1/28'
+    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
     internal: true
@@ -131,9 +127,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "logAnalyticsWorkspaceResourceId": {
       "value": "<logAnalyticsWorkspaceResourceId>"
     },
@@ -143,6 +136,9 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Non-required parameters
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
+    },
+    "enableDefaultTelemetry": {
+      "value": "<enableDefaultTelemetry>"
     },
     "infrastructureResourceGroupName": {
       "value": "<infrastructureResourceGroupName>"
@@ -184,10 +180,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
+### Example 3: _Waf-Aligned_
 
 <details>
 
@@ -198,11 +191,11 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   name: '${uniqueString(deployment().name, location)}-test-amewaf'
   params: {
     // Required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'amewaf001'
     // Non-required parameters
     dockerBridgeCidr: '172.16.0.1/28'
+    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
     internal: true
@@ -235,9 +228,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "logAnalyticsWorkspaceResourceId": {
       "value": "<logAnalyticsWorkspaceResourceId>"
     },
@@ -247,6 +237,9 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Non-required parameters
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
+    },
+    "enableDefaultTelemetry": {
+      "value": "<enableDefaultTelemetry>"
     },
     "infrastructureResourceGroupName": {
       "value": "<infrastructureResourceGroupName>"
@@ -314,7 +307,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 | [`daprAIInstrumentationKey`](#parameter-dapraiinstrumentationkey) | securestring | Azure Monitor instrumentation key used by Dapr to export Service to Service communication telemetry. |
 | [`dnsSuffix`](#parameter-dnssuffix) | string | DNS suffix for the environment domain. |
 | [`dockerBridgeCidr`](#parameter-dockerbridgecidr) | string | CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`infrastructureResourceGroupName`](#parameter-infrastructureresourcegroupname) | string | Name of the infrastructure resource group. If not provided, it will be set with a default value. |
 | [`internal`](#parameter-internal) | bool | Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -397,12 +390,13 @@ CIDR notation IP range assigned to the Docker bridge, network. It must not overl
 - Type: string
 - Default: `''`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
 Enable telemetry via a Globally Unique Identifier (GUID).
 
-- Required: Yes
+- Required: No
 - Type: bool
+- Default: `True`
 
 ### Parameter: `infrastructureResourceGroupName`
 
