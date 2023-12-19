@@ -1144,7 +1144,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         nodeTaints: [
           'CriticalAddonsOnly=true:NoSchedule'
         ]
-        osDiskSizeGB: 128
+        osDiskSizeGB: 60
         osDiskType: 'Ephemeral'
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
@@ -1170,7 +1170,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         nodeTaints: [
           'CriticalAddonsOnly=true:NoSchedule'
         ]
-        osDiskSizeGB: 128
+        osDiskSizeGB: 60
         osDiskType: 'Ephemeral'
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
@@ -1296,7 +1296,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "nodeTaints": [
             "CriticalAddonsOnly=true:NoSchedule"
           ],
-          "osDiskSizeGB": 128,
+          "osDiskSizeGB": 60,
           "osDiskType": "Ephemeral",
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
@@ -1322,7 +1322,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "nodeTaints": [
             "CriticalAddonsOnly=true:NoSchedule"
           ],
-          "osDiskSizeGB": 128,
+          "osDiskSizeGB": 60,
           "osDiskType": "Ephemeral",
           "osType": "Linux",
           "scaleSetEvictionPolicy": "Delete",
@@ -3109,6 +3109,7 @@ Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.
 | `resourceGroupName` | string | The resource group the managed cluster was deployed into. |
 | `resourceId` | string | The resource ID of the managed cluster. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+| `webAppRoutingIdentityObjectId` | string | The Object ID of Web Application Routing. |
 
 ## Cross-referenced modules
 

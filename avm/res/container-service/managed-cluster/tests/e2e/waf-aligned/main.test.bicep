@@ -108,7 +108,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           'CriticalAddonsOnly=true:NoSchedule'
         ]
         osDiskType: 'Ephemeral'
-        osDiskSizeGB: 128
+        osDiskSizeGB: 60
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'
@@ -134,7 +134,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
           'CriticalAddonsOnly=true:NoSchedule'
         ]
         osDiskType: 'Ephemeral'
-        osDiskSizeGB: 128
+        osDiskSizeGB: 60
         osType: 'Linux'
         scaleSetEvictionPolicy: 'Delete'
         scaleSetPriority: 'Regular'

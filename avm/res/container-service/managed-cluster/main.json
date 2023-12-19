@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "14555186880893144121"
+      "templateHash": "8785574806166687152"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -2738,6 +2738,13 @@
         "description": "The addonProfiles of the Kubernetes cluster."
       },
       "value": "[if(contains(reference('managedCluster'), 'addonProfiles'), reference('managedCluster').addonProfiles, createObject())]"
+    },
+    "webAppRoutingIdentityObjectId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Object ID of Web Application Routing."
+      },
+      "value": "[if(and(and(and(contains(reference('managedCluster'), 'ingressProfile'), contains(reference('managedCluster').ingressProfile, 'webAppRouting')), contains(reference('managedCluster').ingressProfile.webAppRouting, 'identity')), contains(reference('managedCluster').ingressProfile.webAppRouting.identity, 'objectId')), reference('managedCluster').ingressProfile.webAppRouting.identity.objectId, '')]"
     }
   }
 }
