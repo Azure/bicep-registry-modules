@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.21.1.54444",
-      "templateHash": "3081516840823027193"
+      "templateHash": "14555186880893144121"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Clusters",
     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -618,6 +618,41 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The flux configurations of the extension."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "customerManagedKeyType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+          }
+        },
+        "keyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the customer managed key to use for encryption."
+          }
+        },
+        "keyVersion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using 'latest'."
+          }
+        },
+        "keyVaultNetworkAccess": {
+          "type": "string",
+          "allowedValues": [
+            "Private",
+            "Public"
+          ],
+          "metadata": {
+            "description": "Required. Network access of key vault. The possible values are Public and Private. Public means the key vault allows public access from all networks. Private means the key vault disables public access and enables private link. The default value is Public."
           }
         }
       },
@@ -1314,6 +1349,33 @@
       "metadata": {
         "description": "Optional. Identities associated with the cluster."
       }
+    },
+    "customerManagedKey": {
+      "$ref": "#/definitions/customerManagedKeyType",
+      "metadata": {
+        "description": "Optional. The customer managed key definition."
+      }
+    },
+    "enableAzureMonitorProfileMetrics": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether the metrics profile for the Azure Monitor managed service for Prometheus addon is enabled."
+      }
+    },
+    "metricLabelsAllowlist": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. A comma-separated list of additional Kubernetes label keys."
+      }
+    },
+    "metricAnnotationsAllowList": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. A comma-separated list of Kubernetes annotation keys."
+      }
     }
   },
   "variables": {
@@ -1358,6 +1420,18 @@
     }
   },
   "resources": {
+    "cMKKeyVault::cMKKey": {
+      "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults/keys",
+      "apiVersion": "2023-02-01",
+      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
+      "dependsOn": [
+        "cMKKeyVault"
+      ]
+    },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
@@ -1377,6 +1451,15 @@
           }
         }
       }
+    },
+    "cMKKeyVault": {
+      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2023-02-01",
+      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
+      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/'))]"
     },
     "managedCluster": {
       "type": "Microsoft.ContainerService/managedClusters",
@@ -1490,6 +1573,9 @@
           "enablePrivateClusterPublicFQDN": "[parameters('enablePrivateClusterPublicFQDN')]",
           "privateDNSZone": "[parameters('privateDNSZone')]"
         },
+        "azureMonitorProfile": {
+          "metrics": "[if(parameters('enableAzureMonitorProfileMetrics'), createObject('enabled', true(), 'kubeStateMetrics', createObject('metricAnnotationsAllowList', parameters('metricAnnotationsAllowList'), 'metricLabelsAllowlist', parameters('metricLabelsAllowlist'))), null())]"
+        },
         "podIdentityProfile": {
           "allowNetworkPluginKubenet": "[parameters('podIdentityProfileAllowNetworkPluginKubenet')]",
           "enabled": "[parameters('podIdentityProfileEnable')]",
@@ -1577,7 +1663,7 @@
       ]
     },
     "dnsZone": {
-      "condition": "[and(not(equals(parameters('dnsZoneResourceId'), null())), parameters('webApplicationRoutingEnabled'))]",
+      "condition": "[and(and(equals(parameters('enableDnsZoneContributorRoleAssignment'), true()), not(equals(parameters('dnsZoneResourceId'), null()))), parameters('webApplicationRoutingEnabled'))]",
       "existing": true,
       "type": "Microsoft.Network/dnsZones",
       "apiVersion": "2018-05-01",
@@ -2624,6 +2710,13 @@
         "description": "The Client ID of the Key Vault Secrets Provider identity."
       },
       "value": "[if(contains(reference('managedCluster'), 'addonProfiles'), if(contains(reference('managedCluster').addonProfiles, 'azureKeyvaultSecretsProvider'), if(contains(reference('managedCluster').addonProfiles.azureKeyvaultSecretsProvider, 'identity'), reference('managedCluster').addonProfiles.azureKeyvaultSecretsProvider.identity.clientId, ''), ''), '')]"
+    },
+    "ingressApplicationGatewayIdentityObjectId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Object ID of Application Gateway Ingress Controller (AGIC) identity."
+      },
+      "value": "[coalesce(tryGet(tryGet(tryGet(reference('managedCluster').addonProfiles, 'ingressApplicationGateway'), 'identity'), 'objectId'), '')]"
     },
     "location": {
       "type": "string",

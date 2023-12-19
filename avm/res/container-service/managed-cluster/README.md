@@ -127,6 +127,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     ]
     autoUpgradeProfileUpgradeChannel: 'stable'
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultNetworkAccess: 'Public'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -143,6 +148,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     ]
     diskEncryptionSetID: '<diskEncryptionSetID>'
     enableAzureDefender: true
+    enableAzureMonitorProfileMetrics: true
     enableKeyvaultSecretsProvider: true
     enableOidcIssuerProfile: true
     enablePodSecurityPolicy: false
@@ -315,6 +321,13 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "autoUpgradeProfileUpgradeChannel": {
       "value": "stable"
     },
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultNetworkAccess": "Public",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    },
     "diagnosticSettings": {
       "value": [
         {
@@ -335,6 +348,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       "value": "<diskEncryptionSetID>"
     },
     "enableAzureDefender": {
+      "value": true
+    },
+    "enableAzureMonitorProfileMetrics": {
       "value": true
     },
     "enableKeyvaultSecretsProvider": {
@@ -1468,6 +1484,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`autoUpgradeProfileUpgradeChannel`](#parameter-autoupgradeprofileupgradechannel) | string | Auto-upgrade channel on the AKS cluster. |
 | [`azurePolicyEnabled`](#parameter-azurepolicyenabled) | bool | Specifies whether the azurepolicy add-on is enabled or not. For security reasons, this setting should be enabled. |
 | [`azurePolicyVersion`](#parameter-azurepolicyversion) | string | Specifies the azure policy version to use. |
+| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableLocalAccounts`](#parameter-disablelocalaccounts) | bool | If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled. |
 | [`disableRunCommand`](#parameter-disableruncommand) | bool | Whether to disable run command for the cluster or not. |
@@ -1476,6 +1493,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`dnsServiceIP`](#parameter-dnsserviceip) | string | Specifies the IP address assigned to the Kubernetes DNS service. It must be within the Kubernetes service address range specified in serviceCidr. |
 | [`dnsZoneResourceId`](#parameter-dnszoneresourceid) | string | Specifies the resource ID of connected DNS zone. It will be ignored if `webApplicationRoutingEnabled` is set to `false`. |
 | [`enableAzureDefender`](#parameter-enableazuredefender) | bool | Whether to enable Azure Defender. |
+| [`enableAzureMonitorProfileMetrics`](#parameter-enableazuremonitorprofilemetrics) | bool | Whether the metrics profile for the Azure Monitor managed service for Prometheus addon is enabled. |
 | [`enableDnsZoneContributorRoleAssignment`](#parameter-enablednszonecontributorroleassignment) | bool | Specifies whether assing the DNS zone contributor role to the cluster service principal. It will be ignored if `webApplicationRoutingEnabled` is set to `false` or `dnsZoneResourceId` not provided. |
 | [`enableKeyvaultSecretsProvider`](#parameter-enablekeyvaultsecretsprovider) | bool | Specifies whether the KeyvaultSecretsProvider add-on is enabled or not. |
 | [`enableOidcIssuerProfile`](#parameter-enableoidcissuerprofile) | bool | Whether the The OIDC issuer profile of the Managed Cluster is enabled. |
@@ -1502,6 +1520,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both. |
 | [`managedOutboundIPCount`](#parameter-managedoutboundipcount) | int | Outbound IP Count for the Load balancer. |
+| [`metricAnnotationsAllowList`](#parameter-metricannotationsallowlist) | string | A comma-separated list of Kubernetes annotation keys. |
+| [`metricLabelsAllowlist`](#parameter-metriclabelsallowlist) | string | A comma-separated list of additional Kubernetes label keys. |
 | [`monitoringWorkspaceId`](#parameter-monitoringworkspaceid) | string | Resource ID of the monitoring log analytics workspace. |
 | [`networkDataplane`](#parameter-networkdataplane) | string | Network dataplane used in the Kubernetes cluster. Not compatible with kubenet network plugin. |
 | [`networkPlugin`](#parameter-networkplugin) | string | Specifies the network plugin used for building Kubernetes network. |
@@ -1525,21 +1545,52 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`webApplicationRoutingEnabled`](#parameter-webapplicationroutingenabled) | bool | Specifies whether the webApplicationRoutingEnabled add-on is enabled or not. |
 
+### Parameter: `name`
+
+Specifies the name of the AKS cluster.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `primaryAgentPoolProfile`
+
+Properties of the primary agent pool.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `aksServicePrincipalProfile`
+
+Information about a service principal identity for the cluster to use for manipulating Azure APIs. Required if no managed identities are assigned to the cluster.
+
+- Required: No
+- Type: object
+
+### Parameter: `appGatewayResourceId`
+
+Specifies the resource ID of connected application gateway. Required if `ingressApplicationGatewayEnabled` is set to `true`.
+
+- Required: No
+- Type: string
+
 ### Parameter: `aadProfileAdminGroupObjectIDs`
 
 Specifies the AAD group object IDs that will have admin role of the cluster.
+
 - Required: No
 - Type: array
 
 ### Parameter: `aadProfileClientAppID`
 
 The client AAD application ID.
+
 - Required: No
 - Type: string
 
 ### Parameter: `aadProfileEnableAzureRBAC`
 
 Specifies whether to enable Azure RBAC for Kubernetes authorization.
+
 - Required: No
 - Type: bool
 - Default: `[parameters('enableRBAC')]`
@@ -1547,6 +1598,7 @@ Specifies whether to enable Azure RBAC for Kubernetes authorization.
 ### Parameter: `aadProfileManaged`
 
 Specifies whether to enable managed AAD integration.
+
 - Required: No
 - Type: bool
 - Default: `True`
@@ -1554,18 +1606,21 @@ Specifies whether to enable managed AAD integration.
 ### Parameter: `aadProfileServerAppID`
 
 The server AAD application ID.
+
 - Required: No
 - Type: string
 
 ### Parameter: `aadProfileServerAppSecret`
 
 The server AAD application secret.
+
 - Required: No
 - Type: string
 
 ### Parameter: `aadProfileTenantId`
 
 Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication.
+
 - Required: No
 - Type: string
 - Default: `[subscription().tenantId]`
@@ -1573,6 +1628,7 @@ Specifies the tenant ID of the Azure Active Directory used by the AKS cluster fo
 ### Parameter: `aciConnectorLinuxEnabled`
 
 Specifies whether the aciConnectorLinux add-on is enabled or not.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -1580,6 +1636,7 @@ Specifies whether the aciConnectorLinux add-on is enabled or not.
 ### Parameter: `adminUsername`
 
 Specifies the administrator username of Linux virtual machines.
+
 - Required: No
 - Type: string
 - Default: `'azureuser'`
@@ -1587,345 +1644,387 @@ Specifies the administrator username of Linux virtual machines.
 ### Parameter: `agentPools`
 
 Define one or more secondary/additional agent pools.
+
 - Required: No
 - Type: array
 
+**Required parameters**
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`availabilityZones`](#parameter-agentpoolsavailabilityzones) | No | array | Optional. The availability zones of the agent pool. |
-| [`count`](#parameter-agentpoolscount) | No | int | Optional. The number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
-| [`enableAutoScaling`](#parameter-agentpoolsenableautoscaling) | No | bool | Optional. Whether to enable auto-scaling for the agent pool. |
-| [`enableDefaultTelemetry`](#parameter-agentpoolsenabledefaulttelemetry) | No | bool | Optional. The enable default telemetry of the agent pool. |
-| [`enableEncryptionAtHost`](#parameter-agentpoolsenableencryptionathost) | No | bool | Optional. Whether to enable encryption at host for the agent pool. |
-| [`enableFIPS`](#parameter-agentpoolsenablefips) | No | bool | Optional. Whether to enable FIPS for the agent pool. |
-| [`enableNodePublicIP`](#parameter-agentpoolsenablenodepublicip) | No | bool | Optional. Whether to enable node public IP for the agent pool. |
-| [`enableUltraSSD`](#parameter-agentpoolsenableultrassd) | No | bool | Optional. Whether to enable Ultra SSD for the agent pool. |
-| [`gpuInstanceProfile`](#parameter-agentpoolsgpuinstanceprofile) | No | string | Optional. The GPU instance profile of the agent pool. |
-| [`kubeletDiskType`](#parameter-agentpoolskubeletdisktype) | No | string | Optional. The kubelet disk type of the agent pool. |
-| [`maxCount`](#parameter-agentpoolsmaxcount) | No | int | Optional. The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
-| [`maxPods`](#parameter-agentpoolsmaxpods) | No | int | Optional. The maximum number of pods that can run on a node. |
-| [`maxSurge`](#parameter-agentpoolsmaxsurge) | No | string | Optional. The maximum number of nodes that can be created during an upgrade. |
-| [`minCount`](#parameter-agentpoolsmincount) | No | int | Optional. The minimum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
-| [`minPods`](#parameter-agentpoolsminpods) | No | int | Optional. The minimum number of pods that can run on a node. |
-| [`mode`](#parameter-agentpoolsmode) | No | string | Optional. The mode of the agent pool. |
-| [`name`](#parameter-agentpoolsname) | No | string | Required. The name of the agent pool. |
-| [`nodeLabels`](#parameter-agentpoolsnodelabels) | No | object | Optional. The node labels of the agent pool. |
-| [`nodePublicIpPrefixId`](#parameter-agentpoolsnodepublicipprefixid) | No | string | Optional. The node public IP prefix ID of the agent pool. |
-| [`nodeTaints`](#parameter-agentpoolsnodetaints) | No | array | Optional. The node taints of the agent pool. |
-| [`orchestratorVersion`](#parameter-agentpoolsorchestratorversion) | No | string | Optional. The Kubernetes version of the agent pool. |
-| [`osDiskSizeGB`](#parameter-agentpoolsosdisksizegb) | No | int | Optional. The OS disk size in GB of the agent pool. |
-| [`osDiskType`](#parameter-agentpoolsosdisktype) | No | string | Optional. The OS disk type of the agent pool. |
-| [`osSku`](#parameter-agentpoolsossku) | No | string | Optional. The OS SKU of the agent pool. |
-| [`osType`](#parameter-agentpoolsostype) | No | string | Optional. The OS type of the agent pool. |
-| [`podSubnetId`](#parameter-agentpoolspodsubnetid) | No | string | Optional. The pod subnet ID of the agent pool. |
-| [`proximityPlacementGroupResourceId`](#parameter-agentpoolsproximityplacementgroupresourceid) | No | string | Optional. The proximity placement group resource ID of the agent pool. |
-| [`scaleDownMode`](#parameter-agentpoolsscaledownmode) | No | string | Optional. The scale down mode of the agent pool. |
-| [`scaleSetEvictionPolicy`](#parameter-agentpoolsscalesetevictionpolicy) | No | string | Optional. The scale set eviction policy of the agent pool. |
-| [`scaleSetPriority`](#parameter-agentpoolsscalesetpriority) | No | string | Optional. The scale set priority of the agent pool. |
-| [`sourceResourceId`](#parameter-agentpoolssourceresourceid) | No | string | Optional. The source resource ID to create the agent pool from. |
-| [`spotMaxPrice`](#parameter-agentpoolsspotmaxprice) | No | int | Optional. The spot max price of the agent pool. |
-| [`storageProfile`](#parameter-agentpoolsstorageprofile) | No | string |  |
-| [`tags`](#parameter-agentpoolstags) | No | object | Optional. The tags of the agent pool. |
-| [`type`](#parameter-agentpoolstype) | No | string | Optional. The type of the agent pool. |
-| [`vmSize`](#parameter-agentpoolsvmsize) | No | string | Optional. The VM size of the agent pool. |
-| [`vnetSubnetID`](#parameter-agentpoolsvnetsubnetid) | No | string | Optional. The VNet subnet ID of the agent pool. |
-| [`workloadRuntime`](#parameter-agentpoolsworkloadruntime) | No | string | Optional. The workload runtime of the agent pool. |
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-agentpoolsname) | string | The name of the agent pool. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`availabilityZones`](#parameter-agentpoolsavailabilityzones) | array | The availability zones of the agent pool. |
+| [`count`](#parameter-agentpoolscount) | int | The number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
+| [`enableAutoScaling`](#parameter-agentpoolsenableautoscaling) | bool | Whether to enable auto-scaling for the agent pool. |
+| [`enableDefaultTelemetry`](#parameter-agentpoolsenabledefaulttelemetry) | bool | The enable default telemetry of the agent pool. |
+| [`enableEncryptionAtHost`](#parameter-agentpoolsenableencryptionathost) | bool | Whether to enable encryption at host for the agent pool. |
+| [`enableFIPS`](#parameter-agentpoolsenablefips) | bool | Whether to enable FIPS for the agent pool. |
+| [`enableNodePublicIP`](#parameter-agentpoolsenablenodepublicip) | bool | Whether to enable node public IP for the agent pool. |
+| [`enableUltraSSD`](#parameter-agentpoolsenableultrassd) | bool | Whether to enable Ultra SSD for the agent pool. |
+| [`gpuInstanceProfile`](#parameter-agentpoolsgpuinstanceprofile) | string | The GPU instance profile of the agent pool. |
+| [`kubeletDiskType`](#parameter-agentpoolskubeletdisktype) | string | The kubelet disk type of the agent pool. |
+| [`maxCount`](#parameter-agentpoolsmaxcount) | int | The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
+| [`maxPods`](#parameter-agentpoolsmaxpods) | int | The maximum number of pods that can run on a node. |
+| [`maxSurge`](#parameter-agentpoolsmaxsurge) | string | The maximum number of nodes that can be created during an upgrade. |
+| [`minCount`](#parameter-agentpoolsmincount) | int | The minimum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
+| [`minPods`](#parameter-agentpoolsminpods) | int | The minimum number of pods that can run on a node. |
+| [`mode`](#parameter-agentpoolsmode) | string | The mode of the agent pool. |
+| [`nodeLabels`](#parameter-agentpoolsnodelabels) | object | The node labels of the agent pool. |
+| [`nodePublicIpPrefixId`](#parameter-agentpoolsnodepublicipprefixid) | string | The node public IP prefix ID of the agent pool. |
+| [`nodeTaints`](#parameter-agentpoolsnodetaints) | array | The node taints of the agent pool. |
+| [`orchestratorVersion`](#parameter-agentpoolsorchestratorversion) | string | The Kubernetes version of the agent pool. |
+| [`osDiskSizeGB`](#parameter-agentpoolsosdisksizegb) | int | The OS disk size in GB of the agent pool. |
+| [`osDiskType`](#parameter-agentpoolsosdisktype) | string | The OS disk type of the agent pool. |
+| [`osSku`](#parameter-agentpoolsossku) | string | The OS SKU of the agent pool. |
+| [`osType`](#parameter-agentpoolsostype) | string | The OS type of the agent pool. |
+| [`podSubnetId`](#parameter-agentpoolspodsubnetid) | string | The pod subnet ID of the agent pool. |
+| [`proximityPlacementGroupResourceId`](#parameter-agentpoolsproximityplacementgroupresourceid) | string | The proximity placement group resource ID of the agent pool. |
+| [`scaleDownMode`](#parameter-agentpoolsscaledownmode) | string | The scale down mode of the agent pool. |
+| [`scaleSetEvictionPolicy`](#parameter-agentpoolsscalesetevictionpolicy) | string | The scale set eviction policy of the agent pool. |
+| [`scaleSetPriority`](#parameter-agentpoolsscalesetpriority) | string | The scale set priority of the agent pool. |
+| [`sourceResourceId`](#parameter-agentpoolssourceresourceid) | string | The source resource ID to create the agent pool from. |
+| [`spotMaxPrice`](#parameter-agentpoolsspotmaxprice) | int | The spot max price of the agent pool. |
+| [`tags`](#parameter-agentpoolstags) | object | The tags of the agent pool. |
+| [`type`](#parameter-agentpoolstype) | string | The type of the agent pool. |
+| [`vmSize`](#parameter-agentpoolsvmsize) | string | The VM size of the agent pool. |
+| [`vnetSubnetID`](#parameter-agentpoolsvnetsubnetid) | string | The VNet subnet ID of the agent pool. |
+| [`workloadRuntime`](#parameter-agentpoolsworkloadruntime) | string | The workload runtime of the agent pool. |
+
+** parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+
+### Parameter: `agentPools.name`
+
+The name of the agent pool.
+
+- Required: No
+- Type: string
 
 ### Parameter: `agentPools.availabilityZones`
 
-Optional. The availability zones of the agent pool.
+The availability zones of the agent pool.
 
 - Required: No
 - Type: array
 
 ### Parameter: `agentPools.count`
 
-Optional. The number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).
+The number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).
 
 - Required: No
 - Type: int
 
 ### Parameter: `agentPools.enableAutoScaling`
 
-Optional. Whether to enable auto-scaling for the agent pool.
+Whether to enable auto-scaling for the agent pool.
 
 - Required: No
 - Type: bool
 
 ### Parameter: `agentPools.enableDefaultTelemetry`
 
-Optional. The enable default telemetry of the agent pool.
+The enable default telemetry of the agent pool.
 
 - Required: No
 - Type: bool
 
 ### Parameter: `agentPools.enableEncryptionAtHost`
 
-Optional. Whether to enable encryption at host for the agent pool.
+Whether to enable encryption at host for the agent pool.
 
 - Required: No
 - Type: bool
 
 ### Parameter: `agentPools.enableFIPS`
 
-Optional. Whether to enable FIPS for the agent pool.
+Whether to enable FIPS for the agent pool.
 
 - Required: No
 - Type: bool
 
 ### Parameter: `agentPools.enableNodePublicIP`
 
-Optional. Whether to enable node public IP for the agent pool.
+Whether to enable node public IP for the agent pool.
 
 - Required: No
 - Type: bool
 
 ### Parameter: `agentPools.enableUltraSSD`
 
-Optional. Whether to enable Ultra SSD for the agent pool.
+Whether to enable Ultra SSD for the agent pool.
 
 - Required: No
 - Type: bool
 
 ### Parameter: `agentPools.gpuInstanceProfile`
 
-Optional. The GPU instance profile of the agent pool.
+The GPU instance profile of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed: `[MIG1g, MIG2g, MIG3g, MIG4g, MIG7g]`
+- Allowed:
+  ```Bicep
+  [
+    'MIG1g'
+    'MIG2g'
+    'MIG3g'
+    'MIG4g'
+    'MIG7g'
+  ]
+  ```
 
 ### Parameter: `agentPools.kubeletDiskType`
 
-Optional. The kubelet disk type of the agent pool.
+The kubelet disk type of the agent pool.
 
 - Required: No
 - Type: string
 
 ### Parameter: `agentPools.maxCount`
 
-Optional. The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).
+The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).
 
 - Required: No
 - Type: int
 
 ### Parameter: `agentPools.maxPods`
 
-Optional. The maximum number of pods that can run on a node.
+The maximum number of pods that can run on a node.
 
 - Required: No
 - Type: int
 
 ### Parameter: `agentPools.maxSurge`
 
-Optional. The maximum number of nodes that can be created during an upgrade.
+The maximum number of nodes that can be created during an upgrade.
 
 - Required: No
 - Type: string
 
 ### Parameter: `agentPools.minCount`
 
-Optional. The minimum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).
+The minimum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive).
 
 - Required: No
 - Type: int
 
 ### Parameter: `agentPools.minPods`
 
-Optional. The minimum number of pods that can run on a node.
+The minimum number of pods that can run on a node.
 
 - Required: No
 - Type: int
 
 ### Parameter: `agentPools.mode`
 
-Optional. The mode of the agent pool.
+The mode of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed: `[System, User]`
-
-### Parameter: `agentPools.name`
-
-Required. The name of the agent pool.
-
-- Required: No
-- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'System'
+    'User'
+  ]
+  ```
 
 ### Parameter: `agentPools.nodeLabels`
 
-Optional. The node labels of the agent pool.
+The node labels of the agent pool.
 
 - Required: No
 - Type: object
 
 ### Parameter: `agentPools.nodePublicIpPrefixId`
 
-Optional. The node public IP prefix ID of the agent pool.
+The node public IP prefix ID of the agent pool.
 
 - Required: No
 - Type: string
 
 ### Parameter: `agentPools.nodeTaints`
 
-Optional. The node taints of the agent pool.
+The node taints of the agent pool.
 
 - Required: No
 - Type: array
 
 ### Parameter: `agentPools.orchestratorVersion`
 
-Optional. The Kubernetes version of the agent pool.
+The Kubernetes version of the agent pool.
 
 - Required: No
 - Type: string
 
 ### Parameter: `agentPools.osDiskSizeGB`
 
-Optional. The OS disk size in GB of the agent pool.
+The OS disk size in GB of the agent pool.
 
 - Required: No
 - Type: int
 
 ### Parameter: `agentPools.osDiskType`
 
-Optional. The OS disk type of the agent pool.
+The OS disk type of the agent pool.
 
 - Required: No
 - Type: string
 
 ### Parameter: `agentPools.osSku`
 
-Optional. The OS SKU of the agent pool.
+The OS SKU of the agent pool.
 
 - Required: No
 - Type: string
 
 ### Parameter: `agentPools.osType`
 
-Optional. The OS type of the agent pool.
+The OS type of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed: `[Linux, Windows]`
+- Allowed:
+  ```Bicep
+  [
+    'Linux'
+    'Windows'
+  ]
+  ```
 
 ### Parameter: `agentPools.podSubnetId`
 
-Optional. The pod subnet ID of the agent pool.
+The pod subnet ID of the agent pool.
 
 - Required: No
 - Type: string
 
 ### Parameter: `agentPools.proximityPlacementGroupResourceId`
 
-Optional. The proximity placement group resource ID of the agent pool.
+The proximity placement group resource ID of the agent pool.
 
 - Required: No
 - Type: string
 
 ### Parameter: `agentPools.scaleDownMode`
 
-Optional. The scale down mode of the agent pool.
+The scale down mode of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed: `[Delete, DeleteRequeue, Pause, Requeue]`
+- Allowed:
+  ```Bicep
+  [
+    'Delete'
+    'DeleteRequeue'
+    'Pause'
+    'Requeue'
+  ]
+  ```
 
 ### Parameter: `agentPools.scaleSetEvictionPolicy`
 
-Optional. The scale set eviction policy of the agent pool.
+The scale set eviction policy of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed: `[Deallocate, Delete]`
+- Allowed:
+  ```Bicep
+  [
+    'Deallocate'
+    'Delete'
+  ]
+  ```
 
 ### Parameter: `agentPools.scaleSetPriority`
 
-Optional. The scale set priority of the agent pool.
+The scale set priority of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed: `[Low, Regular, Spot]`
+- Allowed:
+  ```Bicep
+  [
+    'Low'
+    'Regular'
+    'Spot'
+  ]
+  ```
 
 ### Parameter: `agentPools.sourceResourceId`
 
-Optional. The source resource ID to create the agent pool from.
+The source resource ID to create the agent pool from.
 
 - Required: No
 - Type: string
 
 ### Parameter: `agentPools.spotMaxPrice`
 
-Optional. The spot max price of the agent pool.
+The spot max price of the agent pool.
 
 - Required: No
 - Type: int
 
-### Parameter: `agentPools.storageProfile`
-
-
-
-- Required: No
-- Type: string
-
 ### Parameter: `agentPools.tags`
 
-Optional. The tags of the agent pool.
+The tags of the agent pool.
 
 - Required: No
 - Type: object
 
 ### Parameter: `agentPools.type`
 
-Optional. The type of the agent pool.
+The type of the agent pool.
 
 - Required: No
 - Type: string
-- Allowed: `[AvailabilitySet, VirtualMachineScaleSets]`
+- Allowed:
+  ```Bicep
+  [
+    'AvailabilitySet'
+    'VirtualMachineScaleSets'
+  ]
+  ```
 
 ### Parameter: `agentPools.vmSize`
 
-Optional. The VM size of the agent pool.
+The VM size of the agent pool.
 
 - Required: No
 - Type: string
 
 ### Parameter: `agentPools.vnetSubnetID`
 
-Optional. The VNet subnet ID of the agent pool.
+The VNet subnet ID of the agent pool.
 
 - Required: No
 - Type: string
 
 ### Parameter: `agentPools.workloadRuntime`
 
-Optional. The workload runtime of the agent pool.
+The workload runtime of the agent pool.
 
-- Required: No
-- Type: string
-
-### Parameter: `aksServicePrincipalProfile`
-
-Information about a service principal identity for the cluster to use for manipulating Azure APIs. Required if no managed identities are assigned to the cluster.
-- Required: No
-- Type: object
-
-### Parameter: `appGatewayResourceId`
-
-Specifies the resource ID of connected application gateway. Required if `ingressApplicationGatewayEnabled` is set to `true`.
 - Required: No
 - Type: string
 
 ### Parameter: `authorizedIPRanges`
 
 IP ranges are specified in CIDR format, e.g. 137.117.106.88/29. This feature is not compatible with clusters that use Public IP Per Node, or clusters that are using a Basic Load Balancer.
+
 - Required: No
 - Type: array
 
 ### Parameter: `autoScalerProfileBalanceSimilarNodeGroups`
 
 Specifies the balance of similar node groups for the auto-scaler of the AKS cluster.
+
 - Required: No
 - Type: string
 - Default: `'false'`
@@ -1940,6 +2039,7 @@ Specifies the balance of similar node groups for the auto-scaler of the AKS clus
 ### Parameter: `autoScalerProfileExpander`
 
 Specifies the expand strategy for the auto-scaler of the AKS cluster.
+
 - Required: No
 - Type: string
 - Default: `'random'`
@@ -1956,6 +2056,7 @@ Specifies the expand strategy for the auto-scaler of the AKS cluster.
 ### Parameter: `autoScalerProfileMaxEmptyBulkDelete`
 
 Specifies the maximum empty bulk delete for the auto-scaler of the AKS cluster.
+
 - Required: No
 - Type: string
 - Default: `'10'`
@@ -1963,6 +2064,7 @@ Specifies the maximum empty bulk delete for the auto-scaler of the AKS cluster.
 ### Parameter: `autoScalerProfileMaxGracefulTerminationSec`
 
 Specifies the max graceful termination time interval in seconds for the auto-scaler of the AKS cluster.
+
 - Required: No
 - Type: string
 - Default: `'600'`
@@ -1970,6 +2072,7 @@ Specifies the max graceful termination time interval in seconds for the auto-sca
 ### Parameter: `autoScalerProfileMaxNodeProvisionTime`
 
 Specifies the maximum node provisioning time for the auto-scaler of the AKS cluster. Values must be an integer followed by an "m". No unit of time other than minutes (m) is supported.
+
 - Required: No
 - Type: string
 - Default: `'15m'`
@@ -1977,6 +2080,7 @@ Specifies the maximum node provisioning time for the auto-scaler of the AKS clus
 ### Parameter: `autoScalerProfileMaxTotalUnreadyPercentage`
 
 Specifies the mximum total unready percentage for the auto-scaler of the AKS cluster. The maximum is 100 and the minimum is 0.
+
 - Required: No
 - Type: string
 - Default: `'45'`
@@ -1984,6 +2088,7 @@ Specifies the mximum total unready percentage for the auto-scaler of the AKS clu
 ### Parameter: `autoScalerProfileNewPodScaleUpDelay`
 
 For scenarios like burst/batch scale where you do not want CA to act before the kubernetes scheduler could schedule all the pods, you can tell CA to ignore unscheduled pods before they are a certain age. Values must be an integer followed by a unit ("s" for seconds, "m" for minutes, "h" for hours, etc).
+
 - Required: No
 - Type: string
 - Default: `'0s'`
@@ -1991,6 +2096,7 @@ For scenarios like burst/batch scale where you do not want CA to act before the 
 ### Parameter: `autoScalerProfileOkTotalUnreadyCount`
 
 Specifies the OK total unready count for the auto-scaler of the AKS cluster.
+
 - Required: No
 - Type: string
 - Default: `'3'`
@@ -1998,6 +2104,7 @@ Specifies the OK total unready count for the auto-scaler of the AKS cluster.
 ### Parameter: `autoScalerProfileScaleDownDelayAfterAdd`
 
 Specifies the scale down delay after add of the auto-scaler of the AKS cluster.
+
 - Required: No
 - Type: string
 - Default: `'10m'`
@@ -2005,6 +2112,7 @@ Specifies the scale down delay after add of the auto-scaler of the AKS cluster.
 ### Parameter: `autoScalerProfileScaleDownDelayAfterDelete`
 
 Specifies the scale down delay after delete of the auto-scaler of the AKS cluster.
+
 - Required: No
 - Type: string
 - Default: `'20s'`
@@ -2012,6 +2120,7 @@ Specifies the scale down delay after delete of the auto-scaler of the AKS cluste
 ### Parameter: `autoScalerProfileScaleDownDelayAfterFailure`
 
 Specifies scale down delay after failure of the auto-scaler of the AKS cluster.
+
 - Required: No
 - Type: string
 - Default: `'3m'`
@@ -2019,6 +2128,7 @@ Specifies scale down delay after failure of the auto-scaler of the AKS cluster.
 ### Parameter: `autoScalerProfileScaleDownUnneededTime`
 
 Specifies the scale down unneeded time of the auto-scaler of the AKS cluster.
+
 - Required: No
 - Type: string
 - Default: `'10m'`
@@ -2026,6 +2136,7 @@ Specifies the scale down unneeded time of the auto-scaler of the AKS cluster.
 ### Parameter: `autoScalerProfileScaleDownUnreadyTime`
 
 Specifies the scale down unready time of the auto-scaler of the AKS cluster.
+
 - Required: No
 - Type: string
 - Default: `'20m'`
@@ -2033,6 +2144,7 @@ Specifies the scale down unready time of the auto-scaler of the AKS cluster.
 ### Parameter: `autoScalerProfileScanInterval`
 
 Specifies the scan interval of the auto-scaler of the AKS cluster.
+
 - Required: No
 - Type: string
 - Default: `'10s'`
@@ -2040,6 +2152,7 @@ Specifies the scan interval of the auto-scaler of the AKS cluster.
 ### Parameter: `autoScalerProfileSkipNodesWithLocalStorage`
 
 Specifies if nodes with local storage should be skipped for the auto-scaler of the AKS cluster.
+
 - Required: No
 - Type: string
 - Default: `'true'`
@@ -2054,6 +2167,7 @@ Specifies if nodes with local storage should be skipped for the auto-scaler of t
 ### Parameter: `autoScalerProfileSkipNodesWithSystemPods`
 
 Specifies if nodes with system pods should be skipped for the auto-scaler of the AKS cluster.
+
 - Required: No
 - Type: string
 - Default: `'true'`
@@ -2068,6 +2182,7 @@ Specifies if nodes with system pods should be skipped for the auto-scaler of the
 ### Parameter: `autoScalerProfileUtilizationThreshold`
 
 Specifies the utilization threshold of the auto-scaler of the AKS cluster.
+
 - Required: No
 - Type: string
 - Default: `'0.5'`
@@ -2075,6 +2190,7 @@ Specifies the utilization threshold of the auto-scaler of the AKS cluster.
 ### Parameter: `autoUpgradeProfileUpgradeChannel`
 
 Auto-upgrade channel on the AKS cluster.
+
 - Required: No
 - Type: string
 - Allowed:
@@ -2091,6 +2207,7 @@ Auto-upgrade channel on the AKS cluster.
 ### Parameter: `azurePolicyEnabled`
 
 Specifies whether the azurepolicy add-on is enabled or not. For security reasons, this setting should be enabled.
+
 - Required: No
 - Type: bool
 - Default: `True`
@@ -2098,121 +2215,154 @@ Specifies whether the azurepolicy add-on is enabled or not. For security reasons
 ### Parameter: `azurePolicyVersion`
 
 Specifies the azure policy version to use.
+
 - Required: No
 - Type: string
 - Default: `'v2'`
 
+### Parameter: `customerManagedKey`
+
+The customer managed key definition.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
+| [`keyVaultNetworkAccess`](#parameter-customermanagedkeykeyvaultnetworkaccess) | string | Network access of key vault. The possible values are Public and Private. Public means the key vault allows public access from all networks. Private means the key vault disables public access and enables private link. The default value is Public. |
+| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
+
+### Parameter: `customerManagedKey.keyName`
+
+The name of the customer managed key to use for encryption.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.keyVaultNetworkAccess`
+
+Network access of key vault. The possible values are Public and Private. Public means the key vault allows public access from all networks. Private means the key vault disables public access and enables private link. The default value is Public.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Private'
+    'Public'
+  ]
+  ```
+
+### Parameter: `customerManagedKey.keyVaultResourceId`
+
+The resource ID of a key vault to reference a customer managed key for encryption from.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.keyVersion`
+
+The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
+
+- Required: No
+- Type: string
+
 ### Parameter: `diagnosticSettings`
 
 The diagnostic settings of the service.
+
 - Required: No
 - Type: array
 
+**Optional parameters**
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`eventHubAuthorizationRuleResourceId`](#parameter-diagnosticsettingseventhubauthorizationruleresourceid) | No | string | Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
-| [`eventHubName`](#parameter-diagnosticsettingseventhubname) | No | string | Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | No | string | Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
-| [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | No | array | Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
-| [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | No | string | Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | No | array | Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
-| [`name`](#parameter-diagnosticsettingsname) | No | string | Optional. The name of diagnostic setting. |
-| [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | No | string | Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
-| [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | No | string | Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-diagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-diagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
 ### Parameter: `diagnosticSettings.eventHubAuthorizationRuleResourceId`
 
-Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
 
 - Required: No
 - Type: string
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
-Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
-Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
 
 - Required: No
 - Type: string
-- Allowed: `[AzureDiagnostics, Dedicated]`
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups`
 
-Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection.
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection.
 
 - Required: No
 - Type: array
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | No | string | Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
-| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | No | string | Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs. |
-
-### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
-
-Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
-
-- Required: No
-- Type: string
-
-### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
-
-Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs.
-
-- Required: No
-- Type: string
-
-
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
-Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
 
 - Required: No
 - Type: string
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
-Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection.
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection.
 
 - Required: No
 - Type: array
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`category`](#parameter-diagnosticsettingsmetriccategoriescategory) | Yes | string | Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics. |
-
-### Parameter: `diagnosticSettings.metricCategories.category`
-
-Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to 'AllMetrics' to collect all metrics.
-
-- Required: Yes
-- Type: string
-
-
 ### Parameter: `diagnosticSettings.name`
 
-Optional. The name of diagnostic setting.
+The name of diagnostic setting.
 
 - Required: No
 - Type: string
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
-Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
-Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
 
 - Required: No
 - Type: string
@@ -2220,6 +2370,7 @@ Optional. Resource ID of the diagnostic log analytics workspace. For security re
 ### Parameter: `disableLocalAccounts`
 
 If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -2227,6 +2378,7 @@ If set to true, getting static credentials will be disabled for this cluster. Th
 ### Parameter: `disableRunCommand`
 
 Whether to disable run command for the cluster or not.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -2234,12 +2386,14 @@ Whether to disable run command for the cluster or not.
 ### Parameter: `diskEncryptionSetID`
 
 The resource ID of the disc encryption set to apply to the cluster. For security reasons, this value should be provided.
+
 - Required: No
 - Type: string
 
 ### Parameter: `dnsPrefix`
 
 Specifies the DNS prefix specified when creating the managed cluster.
+
 - Required: No
 - Type: string
 - Default: `[parameters('name')]`
@@ -2247,18 +2401,29 @@ Specifies the DNS prefix specified when creating the managed cluster.
 ### Parameter: `dnsServiceIP`
 
 Specifies the IP address assigned to the Kubernetes DNS service. It must be within the Kubernetes service address range specified in serviceCidr.
+
 - Required: No
 - Type: string
 
 ### Parameter: `dnsZoneResourceId`
 
 Specifies the resource ID of connected DNS zone. It will be ignored if `webApplicationRoutingEnabled` is set to `false`.
+
 - Required: No
 - Type: string
 
 ### Parameter: `enableAzureDefender`
 
 Whether to enable Azure Defender.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `enableAzureMonitorProfileMetrics`
+
+Whether the metrics profile for the Azure Monitor managed service for Prometheus addon is enabled.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -2266,6 +2431,7 @@ Whether to enable Azure Defender.
 ### Parameter: `enableDnsZoneContributorRoleAssignment`
 
 Specifies whether assing the DNS zone contributor role to the cluster service principal. It will be ignored if `webApplicationRoutingEnabled` is set to `false` or `dnsZoneResourceId` not provided.
+
 - Required: No
 - Type: bool
 - Default: `True`
@@ -2273,6 +2439,7 @@ Specifies whether assing the DNS zone contributor role to the cluster service pr
 ### Parameter: `enableKeyvaultSecretsProvider`
 
 Specifies whether the KeyvaultSecretsProvider add-on is enabled or not.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -2280,6 +2447,7 @@ Specifies whether the KeyvaultSecretsProvider add-on is enabled or not.
 ### Parameter: `enableOidcIssuerProfile`
 
 Whether the The OIDC issuer profile of the Managed Cluster is enabled.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -2287,6 +2455,7 @@ Whether the The OIDC issuer profile of the Managed Cluster is enabled.
 ### Parameter: `enablePodSecurityPolicy`
 
 Whether to enable Kubernetes pod security policy. Requires enabling the pod security policy feature flag on the subscription.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -2294,6 +2463,7 @@ Whether to enable Kubernetes pod security policy. Requires enabling the pod secu
 ### Parameter: `enablePrivateCluster`
 
 Specifies whether to create the cluster as a private cluster or not.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -2301,6 +2471,7 @@ Specifies whether to create the cluster as a private cluster or not.
 ### Parameter: `enablePrivateClusterPublicFQDN`
 
 Whether to create additional public FQDN for private cluster or not.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -2308,6 +2479,7 @@ Whether to create additional public FQDN for private cluster or not.
 ### Parameter: `enableRBAC`
 
 Whether to enable Kubernetes Role-Based Access Control.
+
 - Required: No
 - Type: bool
 - Default: `True`
@@ -2315,6 +2487,7 @@ Whether to enable Kubernetes Role-Based Access Control.
 ### Parameter: `enableSecretRotation`
 
 Specifies whether the KeyvaultSecretsProvider add-on uses secret rotation.
+
 - Required: No
 - Type: string
 - Default: `'false'`
@@ -2329,6 +2502,7 @@ Specifies whether the KeyvaultSecretsProvider add-on uses secret rotation.
 ### Parameter: `enableStorageProfileBlobCSIDriver`
 
 Whether the AzureBlob CSI Driver for the storage profile is enabled.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -2336,6 +2510,7 @@ Whether the AzureBlob CSI Driver for the storage profile is enabled.
 ### Parameter: `enableStorageProfileDiskCSIDriver`
 
 Whether the AzureDisk CSI Driver for the storage profile is enabled.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -2343,6 +2518,7 @@ Whether the AzureDisk CSI Driver for the storage profile is enabled.
 ### Parameter: `enableStorageProfileFileCSIDriver`
 
 Whether the AzureFile CSI Driver for the storage profile is enabled.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -2350,6 +2526,7 @@ Whether the AzureFile CSI Driver for the storage profile is enabled.
 ### Parameter: `enableStorageProfileSnapshotController`
 
 Whether the snapshot controller for the storage profile is enabled.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -2357,6 +2534,7 @@ Whether the snapshot controller for the storage profile is enabled.
 ### Parameter: `enableTelemetry`
 
 Enable telemetry via a Globally Unique Identifier (GUID).
+
 - Required: No
 - Type: bool
 - Default: `True`
@@ -2364,6 +2542,7 @@ Enable telemetry via a Globally Unique Identifier (GUID).
 ### Parameter: `enableWorkloadIdentity`
 
 Whether to enable Workload Identity. Requires OIDC issuer profile to be enabled.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -2371,73 +2550,93 @@ Whether to enable Workload Identity. Requires OIDC issuer profile to be enabled.
 ### Parameter: `extension`
 
 Settings and configurations for the flux extension.
-- Required: No
-- Type: object
-
-
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`configurationProtectedSettings`](#parameter-extensionconfigurationprotectedsettings) | No | object | Optional. The configuration protected settings of the extension. |
-| [`configurations`](#parameter-extensionconfigurations) | No | array | Optional. The flux configurations of the extension. |
-| [`configurationSettings`](#parameter-extensionconfigurationsettings) | No | object | Optional. The configuration settings of the extension. |
-| [`name`](#parameter-extensionname) | No | string | Required. The name of the extension. |
-| [`releaseNamespace`](#parameter-extensionreleasenamespace) | No | string | Optional. Namespace where the extension Release must be placed. |
-| [`releaseTrain`](#parameter-extensionreleasetrain) | No | string | Required. The release train of the extension. |
-| [`targetNamespace`](#parameter-extensiontargetnamespace) | No | string | Optional. Namespace where the extension will be created for an Namespace scoped extension. |
-| [`version`](#parameter-extensionversion) | No | string | Optional. The version of the extension. |
-
-### Parameter: `extension.configurationProtectedSettings`
-
-Optional. The configuration protected settings of the extension.
 
 - Required: No
 - Type: object
 
-### Parameter: `extension.configurations`
+**Required parameters**
 
-Optional. The flux configurations of the extension.
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-extensionname) | string | The name of the extension. |
+| [`releaseTrain`](#parameter-extensionreleasetrain) | string | The release train of the extension. |
 
-- Required: No
-- Type: array
+**Optional parameters**
 
-### Parameter: `extension.configurationSettings`
-
-Optional. The configuration settings of the extension.
-
-- Required: No
-- Type: object
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`configurationProtectedSettings`](#parameter-extensionconfigurationprotectedsettings) | object | The configuration protected settings of the extension. |
+| [`configurations`](#parameter-extensionconfigurations) | array | The flux configurations of the extension. |
+| [`configurationSettings`](#parameter-extensionconfigurationsettings) | object | The configuration settings of the extension. |
+| [`releaseNamespace`](#parameter-extensionreleasenamespace) | string | Namespace where the extension Release must be placed. |
+| [`targetNamespace`](#parameter-extensiontargetnamespace) | string | Namespace where the extension will be created for an Namespace scoped extension. |
+| [`version`](#parameter-extensionversion) | string | The version of the extension. |
 
 ### Parameter: `extension.name`
 
-Required. The name of the extension.
-
-- Required: No
-- Type: string
-
-### Parameter: `extension.releaseNamespace`
-
-Optional. Namespace where the extension Release must be placed.
+The name of the extension.
 
 - Required: No
 - Type: string
 
 ### Parameter: `extension.releaseTrain`
 
-Required. The release train of the extension.
+The release train of the extension.
+
+- Required: No
+- Type: string
+
+### Parameter: `extension.configurationProtectedSettings`
+
+The configuration protected settings of the extension.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sshPrivateKey`](#parameter-extensionconfigurationprotectedsettingssshprivatekey) | string | The SSH private key to use for Git authentication. |
+
+### Parameter: `extension.configurationProtectedSettings.sshPrivateKey`
+
+The SSH private key to use for Git authentication.
+
+- Required: No
+- Type: string
+
+### Parameter: `extension.configurations`
+
+The flux configurations of the extension.
+
+- Required: No
+- Type: array
+
+### Parameter: `extension.configurationSettings`
+
+The configuration settings of the extension.
+
+- Required: No
+- Type: object
+
+### Parameter: `extension.releaseNamespace`
+
+Namespace where the extension Release must be placed.
 
 - Required: No
 - Type: string
 
 ### Parameter: `extension.targetNamespace`
 
-Optional. Namespace where the extension will be created for an Namespace scoped extension.
+Namespace where the extension will be created for an Namespace scoped extension.
 
 - Required: No
 - Type: string
 
 ### Parameter: `extension.version`
 
-Optional. The version of the extension.
+The version of the extension.
 
 - Required: No
 - Type: string
@@ -2445,6 +2644,7 @@ Optional. The version of the extension.
 ### Parameter: `httpApplicationRoutingEnabled`
 
 Specifies whether the httpApplicationRouting add-on is enabled or not.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -2452,18 +2652,21 @@ Specifies whether the httpApplicationRouting add-on is enabled or not.
 ### Parameter: `httpProxyConfig`
 
 Configurations for provisioning the cluster with HTTP proxy servers.
+
 - Required: No
 - Type: object
 
 ### Parameter: `identityProfile`
 
 Identities associated with the cluster.
+
 - Required: No
 - Type: object
 
 ### Parameter: `ingressApplicationGatewayEnabled`
 
 Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -2471,6 +2674,7 @@ Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not.
 ### Parameter: `kubeDashboardEnabled`
 
 Specifies whether the kubeDashboard add-on is enabled or not.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -2478,12 +2682,14 @@ Specifies whether the kubeDashboard add-on is enabled or not.
 ### Parameter: `kubernetesVersion`
 
 Version of Kubernetes specified when creating the managed cluster.
+
 - Required: No
 - Type: string
 
 ### Parameter: `loadBalancerSku`
 
 Specifies the sku of the load balancer used by the virtual machine scale sets used by nodepools.
+
 - Required: No
 - Type: string
 - Default: `'standard'`
@@ -2498,6 +2704,7 @@ Specifies the sku of the load balancer used by the virtual machine scale sets us
 ### Parameter: `location`
 
 Specifies the location of AKS cluster. It picks up Resource Group's location by default.
+
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
@@ -2505,26 +2712,35 @@ Specifies the location of AKS cluster. It picks up Resource Group's location by 
 ### Parameter: `lock`
 
 The lock settings of the service.
+
 - Required: No
 - Type: object
 
+**Optional parameters**
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`kind`](#parameter-lockkind) | No | string | Optional. Specify the type of lock. |
-| [`name`](#parameter-lockname) | No | string | Optional. Specify the name of lock. |
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-lockname) | string | Specify the name of lock. |
 
 ### Parameter: `lock.kind`
 
-Optional. Specify the type of lock.
+Specify the type of lock.
 
 - Required: No
 - Type: string
-- Allowed: `[CanNotDelete, None, ReadOnly]`
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
 
 ### Parameter: `lock.name`
 
-Optional. Specify the name of lock.
+Specify the name of lock.
 
 - Required: No
 - Type: string
@@ -2532,25 +2748,27 @@ Optional. Specify the name of lock.
 ### Parameter: `managedIdentities`
 
 The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.
+
 - Required: No
 - Type: object
 
+**Optional parameters**
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | No | bool | Optional. Enables system assigned managed identity on the resource. |
-| [`userAssignedResourcesIds`](#parameter-managedidentitiesuserassignedresourcesids) | No | array | Optional. The resource ID(s) to assign to the resource. |
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourcesIds`](#parameter-managedidentitiesuserassignedresourcesids) | array | The resource ID(s) to assign to the resource. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
-Optional. Enables system assigned managed identity on the resource.
+Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
 
 ### Parameter: `managedIdentities.userAssignedResourcesIds`
 
-Optional. The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
@@ -2558,25 +2776,38 @@ Optional. The resource ID(s) to assign to the resource.
 ### Parameter: `managedOutboundIPCount`
 
 Outbound IP Count for the Load balancer.
+
 - Required: No
 - Type: int
 - Default: `0`
 
+### Parameter: `metricAnnotationsAllowList`
+
+A comma-separated list of Kubernetes annotation keys.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `metricLabelsAllowlist`
+
+A comma-separated list of additional Kubernetes label keys.
+
+- Required: No
+- Type: string
+- Default: `''`
+
 ### Parameter: `monitoringWorkspaceId`
 
 Resource ID of the monitoring log analytics workspace.
+
 - Required: No
-- Type: string
-
-### Parameter: `name`
-
-Specifies the name of the AKS cluster.
-- Required: Yes
 - Type: string
 
 ### Parameter: `networkDataplane`
 
 Network dataplane used in the Kubernetes cluster. Not compatible with kubenet network plugin.
+
 - Required: No
 - Type: string
 - Allowed:
@@ -2590,6 +2821,7 @@ Network dataplane used in the Kubernetes cluster. Not compatible with kubenet ne
 ### Parameter: `networkPlugin`
 
 Specifies the network plugin used for building Kubernetes network.
+
 - Required: No
 - Type: string
 - Allowed:
@@ -2603,6 +2835,7 @@ Specifies the network plugin used for building Kubernetes network.
 ### Parameter: `networkPluginMode`
 
 Network plugin mode used for building the Kubernetes network. Not compatible with kubenet network plugin.
+
 - Required: No
 - Type: string
 - Allowed:
@@ -2615,6 +2848,7 @@ Network plugin mode used for building the Kubernetes network. Not compatible wit
 ### Parameter: `networkPolicy`
 
 Specifies the network policy used for building Kubernetes network. - calico or azure.
+
 - Required: No
 - Type: string
 - Allowed:
@@ -2628,6 +2862,7 @@ Specifies the network policy used for building Kubernetes network. - calico or a
 ### Parameter: `nodeResourceGroup`
 
 Name of the resource group containing agent pool nodes.
+
 - Required: No
 - Type: string
 - Default: `[format('{0}_aks_{1}_nodes', resourceGroup().name, parameters('name'))]`
@@ -2635,6 +2870,7 @@ Name of the resource group containing agent pool nodes.
 ### Parameter: `omsAgentEnabled`
 
 Specifies whether the OMS agent is enabled.
+
 - Required: No
 - Type: bool
 - Default: `True`
@@ -2642,6 +2878,7 @@ Specifies whether the OMS agent is enabled.
 ### Parameter: `openServiceMeshEnabled`
 
 Specifies whether the openServiceMesh add-on is enabled or not.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -2649,6 +2886,7 @@ Specifies whether the openServiceMesh add-on is enabled or not.
 ### Parameter: `outboundType`
 
 Specifies outbound (egress) routing method. - loadBalancer or userDefinedRouting.
+
 - Required: No
 - Type: string
 - Default: `'loadBalancer'`
@@ -2663,12 +2901,14 @@ Specifies outbound (egress) routing method. - loadBalancer or userDefinedRouting
 ### Parameter: `podCidr`
 
 Specifies the CIDR notation IP range from which to assign pod IPs when kubenet is used.
+
 - Required: No
 - Type: string
 
 ### Parameter: `podIdentityProfileAllowNetworkPluginKubenet`
 
 Running in Kubenet is disabled by default due to the security related nature of AAD Pod Identity and the risks of IP spoofing.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -2676,6 +2916,7 @@ Running in Kubenet is disabled by default due to the security related nature of 
 ### Parameter: `podIdentityProfileEnable`
 
 Whether the pod identity addon is enabled.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -2683,104 +2924,124 @@ Whether the pod identity addon is enabled.
 ### Parameter: `podIdentityProfileUserAssignedIdentities`
 
 The pod identities to use in the cluster.
+
 - Required: No
 - Type: array
 
 ### Parameter: `podIdentityProfileUserAssignedIdentityExceptions`
 
 The pod identity exceptions to allow.
+
 - Required: No
-- Type: array
-
-### Parameter: `primaryAgentPoolProfile`
-
-Properties of the primary agent pool.
-- Required: Yes
 - Type: array
 
 ### Parameter: `privateDNSZone`
 
 Private DNS Zone configuration. Set to 'system' and AKS will create a private DNS zone in the node resource group. Set to '' to disable private DNS Zone creation and use public DNS. Supply the resource ID here of an existing Private DNS zone to use an existing zone.
+
 - Required: No
 - Type: string
 
 ### Parameter: `roleAssignments`
 
 Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
 - Required: No
 - Type: array
 
+**Required parameters**
 
-| Name | Required | Type | Description |
-| :-- | :-- | :--| :-- |
-| [`condition`](#parameter-roleassignmentscondition) | No | string | Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
-| [`conditionVersion`](#parameter-roleassignmentsconditionversion) | No | string | Optional. Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | No | string | Optional. The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-roleassignmentsdescription) | No | string | Optional. The description of the role assignment. |
-| [`principalId`](#parameter-roleassignmentsprincipalid) | Yes | string | Required. The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`principalType`](#parameter-roleassignmentsprincipaltype) | No | string | Optional. The principal type of the assigned principal ID. |
-| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | Yes | string | Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead. |
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-roleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-roleassignmentsroledefinitionidorname) | string | The name of the role to assign. If it cannot be found you can specify the role definition ID instead. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `roleAssignments.roleDefinitionIdOrName`
+
+The name of the role to assign. If it cannot be found you can specify the role definition ID instead.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `roleAssignments.condition`
 
-Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
 
 - Required: No
 - Type: string
 
 ### Parameter: `roleAssignments.conditionVersion`
 
-Optional. Version of the condition.
+Version of the condition.
 
 - Required: No
 - Type: string
-- Allowed: `[2.0]`
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
-Optional. The Resource Id of the delegated managed identity resource.
+The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
 
 ### Parameter: `roleAssignments.description`
 
-Optional. The description of the role assignment.
+The description of the role assignment.
 
 - Required: No
-- Type: string
-
-### Parameter: `roleAssignments.principalId`
-
-Required. The principal ID of the principal (user/group/identity) to assign the role to.
-
-- Required: Yes
 - Type: string
 
 ### Parameter: `roleAssignments.principalType`
 
-Optional. The principal type of the assigned principal ID.
+The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Allowed: `[Device, ForeignGroup, Group, ServicePrincipal, User]`
-
-### Parameter: `roleAssignments.roleDefinitionIdOrName`
-
-Required. The name of the role to assign. If it cannot be found you can specify the role definition ID instead.
-
-- Required: Yes
-- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
 
 ### Parameter: `serviceCidr`
 
 A CIDR notation IP range from which to assign service cluster IPs. It must not overlap with any Subnet IP ranges.
+
 - Required: No
 - Type: string
 
 ### Parameter: `skuTier`
 
 Tier of a managed cluster SKU. - Free, Standard or Premium.
+
 - Required: No
 - Type: string
 - Default: `'Standard'`
@@ -2796,12 +3057,14 @@ Tier of a managed cluster SKU. - Free, Standard or Premium.
 ### Parameter: `sshPublicKey`
 
 Specifies the SSH RSA public key string for the Linux nodes.
+
 - Required: No
 - Type: string
 
 ### Parameter: `supportPlan`
 
 The support plan for the Managed Cluster.
+
 - Required: No
 - Type: string
 - Default: `'KubernetesOfficial'`
@@ -2816,12 +3079,14 @@ The support plan for the Managed Cluster.
 ### Parameter: `tags`
 
 Tags of the resource.
+
 - Required: No
 - Type: object
 
 ### Parameter: `webApplicationRoutingEnabled`
 
 Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.
+
 - Required: No
 - Type: bool
 - Default: `False`
@@ -2833,6 +3098,7 @@ Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.
 | :-- | :-- | :-- |
 | `addonProfiles` | object | The addonProfiles of the Kubernetes cluster. |
 | `controlPlaneFQDN` | string | The control plane FQDN of the managed cluster. |
+| `ingressApplicationGatewayIdentityObjectId` | string | The Object ID of Application Gateway Ingress Controller (AGIC) identity. |
 | `keyvaultIdentityClientId` | string | The Client ID of the Key Vault Secrets Provider identity. |
 | `keyvaultIdentityObjectId` | string | The Object ID of the Key Vault Secrets Provider identity. |
 | `kubeletidentityObjectId` | string | The Object ID of the AKS identity. |
