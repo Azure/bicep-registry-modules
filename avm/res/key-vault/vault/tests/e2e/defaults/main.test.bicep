@@ -44,7 +44,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     name: '${namePrefix}${serviceShort}002'
-    location: locationRemove
+    location: location
     // Only for testing purposes
     enablePurgeProtection: false
   }
