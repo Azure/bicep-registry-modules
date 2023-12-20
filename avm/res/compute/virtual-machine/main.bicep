@@ -242,7 +242,7 @@ param timeZone string = ''
 param additionalUnattendContent array = []
 
 @description('Optional. Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell. - WinRMConfiguration object.')
-param winRM object = {}
+param winRM array = []
 
 @description('Required. The configuration profile of automanage.')
 @allowed([
