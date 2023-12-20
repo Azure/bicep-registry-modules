@@ -41,7 +41,7 @@ The following section provides usage examples for the module, which were used to
 - [Using encryption parameter set](#example-2-using-encryption-parameter-set)
 - [Using large parameter set](#example-3-using-large-parameter-set)
 - [Using private endpoint parameter set](#example-4-using-private-endpoint-parameter-set)
-- [Waf-Aligned](#example-5-waf-aligned)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -775,7 +775,10 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 </details>
 <p>
 
-### Example 5: _Waf-Aligned_
+### Example 5: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
+
 
 <details>
 
@@ -846,7 +849,9 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       virtualNetworkRules: [
         {
           ignoreMissingVnetServiceEndpoint: true
-          subnetResourceId: '<subnetResourceId>'
+          subnet: {
+            id: '<id>'
+          }
         }
       ]
     }
@@ -1017,7 +1022,9 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         "virtualNetworkRules": [
           {
             "ignoreMissingVnetServiceEndpoint": true,
-            "subnetResourceId": "<subnetResourceId>"
+            "subnet": {
+              "id": "<id>"
+            }
           }
         ]
       }
