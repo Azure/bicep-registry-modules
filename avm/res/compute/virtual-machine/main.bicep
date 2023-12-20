@@ -149,9 +149,6 @@ param extensionMonitoringAgentConfig object = {
   enabled: false
 }
 
-@description('Optional. Resource ID of the monitoring log analytics workspace. Must be set when extensionMonitoringAgentConfig is set to true.')
-param monitoringWorkspaceId string = ''
-
 @description('Optional. The configuration for the [Dependency Agent] extension. Must at least contain the ["enabled": true] property to be executed.')
 param extensionDependencyAgentConfig object = {
   enabled: false

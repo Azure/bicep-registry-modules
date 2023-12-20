@@ -232,7 +232,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmlindef'
+  name: '${uniqueString(deployment().name, location)}-test-cvmlinmin'
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
@@ -267,7 +267,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     disablePasswordAuthentication: true
     location: '<location>'
-    name: 'cvmlindef'
+    name: 'cvmlinmin'
     publicKeys: [
       {
         keyData: '<keyData>'
@@ -340,7 +340,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "<location>"
     },
     "name": {
-      "value": "cvmlindef"
+      "value": "cvmlinmin"
     },
     "publicKeys": {
       "value": [
@@ -599,7 +599,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
-    monitoringWorkspaceId: '<monitoringWorkspaceId>'
     name: 'cvmwinwaf'
     patchMode: 'AutomaticByPlatform'
     proximityPlacementGroupResourceId: '<proximityPlacementGroupResourceId>'
@@ -923,9 +922,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "<managedIdentityResourceId>"
         ]
       }
-    },
-    "monitoringWorkspaceId": {
-      "value": "<monitoringWorkspaceId>"
     },
     "name": {
       "value": "cvmwinwaf"
@@ -1459,7 +1455,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
-    monitoringWorkspaceId: '<monitoringWorkspaceId>'
     name: 'cvmwinmax'
     patchMode: 'AutomaticByPlatform'
     proximityPlacementGroupResourceId: '<proximityPlacementGroupResourceId>'
@@ -1784,9 +1779,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         ]
       }
     },
-    "monitoringWorkspaceId": {
-      "value": "<monitoringWorkspaceId>"
-    },
     "name": {
       "value": "cvmwinmax"
     },
@@ -2043,7 +2035,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. The system-assigned managed identity will automatically be enabled if extensionAadJoinConfig.enabled = "True". |
 | [`maxPriceForLowPriorityVm`](#parameter-maxpriceforlowpriorityvm) | string | Specifies the maximum price you are willing to pay for a low priority VM/VMSS. This price is in US Dollars. |
-| [`monitoringWorkspaceId`](#parameter-monitoringworkspaceid) | string | Resource ID of the monitoring log analytics workspace. Must be set when extensionMonitoringAgentConfig is set to true. |
 | [`name`](#parameter-name) | string | The name of the virtual machine to be created. You should use a unique prefix to reduce name collisions in Active Directory. If no value is provided, a 10 character long unique string will be generated based on the Resource Group's name. |
 | [`patchAssessmentMode`](#parameter-patchassessmentmode) | string | VM guest patching assessment mode. Set it to 'AutomaticByPlatform' to enable automatically check for updates every 24 hours. |
 | [`patchMode`](#parameter-patchmode) | string | VM guest patching orchestration mode. 'AutomaticByOS' & 'Manual' are for Windows only, 'ImageDefault' for Linux only. Refer to 'https://learn.microsoft.com/en-us/azure/virtual-machines/automatic-vm-guest-patching'. |
@@ -2535,14 +2526,6 @@ The resource ID(s) to assign to the resource.
 ### Parameter: `maxPriceForLowPriorityVm`
 
 Specifies the maximum price you are willing to pay for a low priority VM/VMSS. This price is in US Dollars.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `monitoringWorkspaceId`
-
-Resource ID of the monitoring log analytics workspace. Must be set when extensionMonitoringAgentConfig is set to true.
 
 - Required: No
 - Type: string
