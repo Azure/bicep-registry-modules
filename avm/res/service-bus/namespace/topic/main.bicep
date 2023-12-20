@@ -27,7 +27,7 @@ param enableBatchedOperations bool = true
 @description('Optional. ISO 8601 timeSpan structure that defines the duration of the duplicate detection history. The default value is 10 minutes.')
 param duplicateDetectionHistoryTimeWindow string = 'PT10M'
 
-@description('Optional. Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024.')
+@description('Optional. Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium.')
 param maxMessageSizeInKilobytes int = 1024
 
 @description('Optional. Value that indicates whether the topic supports ordering.')
@@ -53,7 +53,7 @@ param status string = 'Active'
 @description('Optional. A value that indicates whether the topic is to be partitioned across multiple message brokers.')
 param enablePartitioning bool = false
 
-@description('Optional. A value that indicates whether Express Entities are enabled. An express topic holds a message in memory temporarily before writing it to persistent storage.')
+@description('Optional. A value that indicates whether Express Entities are enabled. An express topic holds a message in memory temporarily before writing it to persistent storage. This property is only used if the `service-bus/namespace` sku is Premium.')
 param enableExpress bool = false
 
 @description('Optional. Authorization Rules for the Service Bus Topic.')
@@ -94,19 +94,20 @@ resource namespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' existing
 resource topic 'Microsoft.ServiceBus/namespaces/topics@2022-10-01-preview' = {
   name: name
   parent: namespace
-  properties: {
-    autoDeleteOnIdle: autoDeleteOnIdle
-    defaultMessageTimeToLive: defaultMessageTimeToLive
-    duplicateDetectionHistoryTimeWindow: duplicateDetectionHistoryTimeWindow
-    enableBatchedOperations: enableBatchedOperations
-    enableExpress: enableExpress
-    enablePartitioning: enablePartitioning
-    maxMessageSizeInKilobytes: maxMessageSizeInKilobytes
-    maxSizeInMegabytes: maxSizeInMegabytes
-    requiresDuplicateDetection: requiresDuplicateDetection
-    status: status
-    supportOrdering: supportOrdering
-  }
+  properties: union({
+      autoDeleteOnIdle: autoDeleteOnIdle
+      defaultMessageTimeToLive: defaultMessageTimeToLive
+      duplicateDetectionHistoryTimeWindow: duplicateDetectionHistoryTimeWindow
+      enableBatchedOperations: enableBatchedOperations
+      enablePartitioning: enablePartitioning
+      requiresDuplicateDetection: requiresDuplicateDetection
+      status: status
+      supportOrdering: supportOrdering
+      maxSizeInMegabytes: maxSizeInMegabytes
+    }, (namespace.sku.name == 'Premium') ? {
+      enableExpress: enableExpress
+      maxMessageSizeInKilobytes: maxMessageSizeInKilobytes
+    } : {})
 }
 
 module topic_authorizationRules 'authorization-rule/main.bicep' = [for (authorizationRule, index) in authorizationRules: {

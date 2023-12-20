@@ -95,7 +95,9 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       virtualNetworkRules: [
         {
           ignoreMissingVnetServiceEndpoint: true
-          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          subnet: {
+            id: nestedDependencies.outputs.subnetResourceId
+          }
         }
       ]
       ipRules: [

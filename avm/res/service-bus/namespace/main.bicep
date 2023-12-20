@@ -277,7 +277,6 @@ module serviceBusNamespace_topics 'topic/main.bicep' = [for (topic, index) in (t
     enablePartitioning: topic.?enablePartitioning ?? false
     lock: topic.?lock ?? lock
     maxMessageSizeInKilobytes: topic.?maxMessageSizeInKilobytes ?? 1024
-    maxSizeInMegabytes: topic.?maxSizeInMegabytes ?? 1024
     requiresDuplicateDetection: topic.?requiresDuplicateDetection ?? false
     roleAssignments: topic.?roleAssignments ?? []
     status: topic.?status ?? 'Active'
@@ -691,7 +690,7 @@ type topicType = {
   @description('Optional. Value that indicates whether server-side batched operations are enabled.')
   enableBatchedOperations: bool?
 
-  @description('Optional. A value that indicates whether Express Entities are enabled. An express topic holds a message in memory temporarily before writing it to persistent storage.')
+  @description('Optional. A value that indicates whether Express Entities are enabled. An express topic holds a message in memory temporarily before writing it to persistent storage. This property is only used if the `service-bus/namespace` sku is Premium.')
   enableExpress: bool?
 
   @description('Optional. A value that indicates whether the topic is to be partitioned across multiple message brokers.')
@@ -700,10 +699,10 @@ type topicType = {
   @description('Optional. The lock settings of the service.')
   lock: lockType?
 
-  @description('Optional. Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024.')
+  @description('Optional. Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium.')
   maxMessageSizeInKilobytes: int?
 
-  @description('Optional. The maximum size in megabytes.')
+  @description('Optional. The maximum size of the topic in megabytes, which is the size of memory allocated for the topic. Default is 1024.')
   maxSizeInMegabytes: int?
 
   @description('Optional. A value indicating if this topic requires duplicate detection.')
