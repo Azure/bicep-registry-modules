@@ -26,11 +26,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/ddos-protection-plan:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Max](#example-2-max)
-- [Waf-Aligned](#example-3-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
-### Example 1: _Defaults_
+### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -43,7 +46,7 @@ module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<versi
     // Required parameters
     name: 'ndppmin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -65,8 +68,8 @@ module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<versi
       "value": "ndppmin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -75,7 +78,10 @@ module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<versi
 </details>
 <p>
 
-### Example 2: _Max_
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -88,7 +94,7 @@ module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<versi
     // Required parameters
     name: 'ndppmax001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -136,8 +142,8 @@ module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<versi
       "value": "ndppmax001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -178,7 +184,10 @@ module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<versi
 </details>
 <p>
 
-### Example 3: _Waf-Aligned_
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
@@ -191,7 +200,7 @@ module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<versi
     // Required parameters
     name: 'ndppwaf001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -222,8 +231,8 @@ module ddosProtectionPlan 'br/public:avm/res/network/ddos-protection-plan:<versi
       "value": "ndppwaf001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
