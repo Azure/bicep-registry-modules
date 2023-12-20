@@ -39,7 +39,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using encryption parameter set](#example-2-using-encryption-parameter-set)
-- [Max](#example-3-max)
+- [Using large parameter set](#example-3-using-large-parameter-set)
 - [Using private endpoint parameter set](#example-4-using-private-endpoint-parameter-set)
 - [Waf-Aligned](#example-5-waf-aligned)
 
@@ -63,6 +63,11 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     }
     // Non-required parameters
     location: '<location>'
+    topics: [
+      {
+        name: 'topic001'
+      }
+    ]
   }
 }
 ```
@@ -91,6 +96,13 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "topics": {
+      "value": [
+        {
+          "name": "topic001"
+        }
+      ]
     }
   }
 }
@@ -183,7 +195,10 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
 </details>
 <p>
 
-### Example 3: _Max_
+### Example 3: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -265,7 +280,9 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       virtualNetworkRules: [
         {
           ignoreMissingVnetServiceEndpoint: true
-          subnetResourceId: '<subnetResourceId>'
+          subnet: {
+            id: '<id>'
+          }
         }
       ]
     }
@@ -483,7 +500,9 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         "virtualNetworkRules": [
           {
             "ignoreMissingVnetServiceEndpoint": true,
-            "subnetResourceId": "<subnetResourceId>"
+            "subnet": {
+              "id": "<id>"
+            }
           }
         ]
       }
@@ -1913,14 +1932,14 @@ The queues to create in the service bus namespace.
 | [`defaultMessageTimeToLive`](#parameter-queuesdefaultmessagetimetolive) | string | ISO 8601 default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself. |
 | [`duplicateDetectionHistoryTimeWindow`](#parameter-queuesduplicatedetectionhistorytimewindow) | string | ISO 8601 timeSpan structure that defines the duration of the duplicate detection history. The default value is 10 minutes. |
 | [`enableBatchedOperations`](#parameter-queuesenablebatchedoperations) | bool | Value that indicates whether server-side batched operations are enabled. |
-| [`enableExpress`](#parameter-queuesenableexpress) | bool | A value that indicates whether Express Entities are enabled. An express queue holds a message in memory temporarily before writing it to persistent storage. |
+| [`enableExpress`](#parameter-queuesenableexpress) | bool | A value that indicates whether Express Entities are enabled. An express queue holds a message in memory temporarily before writing it to persistent storage. This property is only used if the `service-bus/namespace` sku is Premium. |
 | [`enablePartitioning`](#parameter-queuesenablepartitioning) | bool | A value that indicates whether the queue is to be partitioned across multiple message brokers. |
 | [`forwardDeadLetteredMessagesTo`](#parameter-queuesforwarddeadletteredmessagesto) | string | Queue/Topic name to forward the Dead Letter message. |
 | [`forwardTo`](#parameter-queuesforwardto) | string | Queue/Topic name to forward the messages. |
 | [`lock`](#parameter-queueslock) | object | The lock settings of the service. |
 | [`lockDuration`](#parameter-queueslockduration) | string | ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute. |
 | [`maxDeliveryCount`](#parameter-queuesmaxdeliverycount) | int | The maximum delivery count. A message is automatically deadlettered after this number of deliveries. default value is 10. |
-| [`maxMessageSizeInKilobytes`](#parameter-queuesmaxmessagesizeinkilobytes) | int | Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024. |
+| [`maxMessageSizeInKilobytes`](#parameter-queuesmaxmessagesizeinkilobytes) | int | Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium. |
 | [`maxSizeInMegabytes`](#parameter-queuesmaxsizeinmegabytes) | int | The maximum size of the queue in megabytes, which is the size of memory allocated for the queue. Default is 1024. |
 | [`requiresDuplicateDetection`](#parameter-queuesrequiresduplicatedetection) | bool | A value indicating if this queue requires duplicate detection. |
 | [`requiresSession`](#parameter-queuesrequiressession) | bool | A value that indicates whether the queue supports the concept of sessions. |
@@ -2012,7 +2031,7 @@ Value that indicates whether server-side batched operations are enabled.
 
 ### Parameter: `queues.enableExpress`
 
-A value that indicates whether Express Entities are enabled. An express queue holds a message in memory temporarily before writing it to persistent storage.
+A value that indicates whether Express Entities are enabled. An express queue holds a message in memory temporarily before writing it to persistent storage. This property is only used if the `service-bus/namespace` sku is Premium.
 
 - Required: No
 - Type: bool
@@ -2090,7 +2109,7 @@ The maximum delivery count. A message is automatically deadlettered after this n
 
 ### Parameter: `queues.maxMessageSizeInKilobytes`
 
-Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024.
+Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium.
 
 - Required: No
 - Type: int
@@ -2352,11 +2371,11 @@ The topics to create in the service bus namespace.
 | [`defaultMessageTimeToLive`](#parameter-topicsdefaultmessagetimetolive) | string | ISO 8601 default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself. |
 | [`duplicateDetectionHistoryTimeWindow`](#parameter-topicsduplicatedetectionhistorytimewindow) | string | ISO 8601 timeSpan structure that defines the duration of the duplicate detection history. The default value is 10 minutes. |
 | [`enableBatchedOperations`](#parameter-topicsenablebatchedoperations) | bool | Value that indicates whether server-side batched operations are enabled. |
-| [`enableExpress`](#parameter-topicsenableexpress) | bool | A value that indicates whether Express Entities are enabled. An express topic holds a message in memory temporarily before writing it to persistent storage. |
+| [`enableExpress`](#parameter-topicsenableexpress) | bool | A value that indicates whether Express Entities are enabled. An express topic holds a message in memory temporarily before writing it to persistent storage. This property is only used if the `service-bus/namespace` sku is Premium. |
 | [`enablePartitioning`](#parameter-topicsenablepartitioning) | bool | A value that indicates whether the topic is to be partitioned across multiple message brokers. |
 | [`lock`](#parameter-topicslock) | object | The lock settings of the service. |
-| [`maxMessageSizeInKilobytes`](#parameter-topicsmaxmessagesizeinkilobytes) | int | Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024. |
-| [`maxSizeInMegabytes`](#parameter-topicsmaxsizeinmegabytes) | int | The maximum size in megabytes. |
+| [`maxMessageSizeInKilobytes`](#parameter-topicsmaxmessagesizeinkilobytes) | int | Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium. |
+| [`maxSizeInMegabytes`](#parameter-topicsmaxsizeinmegabytes) | int | The maximum size of the topic in megabytes, which is the size of memory allocated for the topic. Default is 1024. |
 | [`requiresDuplicateDetection`](#parameter-topicsrequiresduplicatedetection) | bool | A value indicating if this topic requires duplicate detection. |
 | [`roleAssignments`](#parameter-topicsroleassignments) | array | Array of role assignments to create. |
 | [`status`](#parameter-topicsstatus) | string | Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown. |
@@ -2440,7 +2459,7 @@ Value that indicates whether server-side batched operations are enabled.
 
 ### Parameter: `topics.enableExpress`
 
-A value that indicates whether Express Entities are enabled. An express topic holds a message in memory temporarily before writing it to persistent storage.
+A value that indicates whether Express Entities are enabled. An express topic holds a message in memory temporarily before writing it to persistent storage. This property is only used if the `service-bus/namespace` sku is Premium.
 
 - Required: No
 - Type: bool
@@ -2490,14 +2509,14 @@ Specify the name of lock.
 
 ### Parameter: `topics.maxMessageSizeInKilobytes`
 
-Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024.
+Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium.
 
 - Required: No
 - Type: int
 
 ### Parameter: `topics.maxSizeInMegabytes`
 
-The maximum size in megabytes.
+The maximum size of the topic in megabytes, which is the size of memory allocated for the topic. Default is 1024.
 
 - Required: No
 - Type: int

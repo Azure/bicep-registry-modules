@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "65806508206614094"
+      "templateHash": "4115415950473173882"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace.",
@@ -665,7 +665,7 @@
             "type": "int",
             "nullable": true,
             "metadata": {
-              "description": "Optional. Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024."
+              "description": "Optional. Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium."
             }
           },
           "authorizationRules": {
@@ -707,7 +707,7 @@
             "type": "bool",
             "nullable": true,
             "metadata": {
-              "description": "Optional. A value that indicates whether Express Entities are enabled. An express queue holds a message in memory temporarily before writing it to persistent storage."
+              "description": "Optional. A value that indicates whether Express Entities are enabled. An express queue holds a message in memory temporarily before writing it to persistent storage. This property is only used if the `service-bus/namespace` sku is Premium."
             }
           },
           "enablePartitioning": {
@@ -838,7 +838,7 @@
             "type": "bool",
             "nullable": true,
             "metadata": {
-              "description": "Optional. A value that indicates whether Express Entities are enabled. An express topic holds a message in memory temporarily before writing it to persistent storage."
+              "description": "Optional. A value that indicates whether Express Entities are enabled. An express topic holds a message in memory temporarily before writing it to persistent storage. This property is only used if the `service-bus/namespace` sku is Premium."
             }
           },
           "enablePartitioning": {
@@ -859,14 +859,14 @@
             "type": "int",
             "nullable": true,
             "metadata": {
-              "description": "Optional. Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024."
+              "description": "Optional. Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium."
             }
           },
           "maxSizeInMegabytes": {
             "type": "int",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The maximum size in megabytes."
+              "description": "Optional. The maximum size of the topic in megabytes, which is the size of memory allocated for the topic. Default is 1024."
             }
           },
           "requiresDuplicateDetection": {
@@ -1790,7 +1790,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "6112731988410579702"
+              "templateHash": "40179215590229029"
             },
             "name": "Service Bus Namespace Queue",
             "description": "This module deploys a Service Bus Namespace Queue.",
@@ -1994,7 +1994,7 @@
               "type": "int",
               "defaultValue": 1024,
               "metadata": {
-                "description": "Optional. Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024."
+                "description": "Optional. Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium."
               }
             },
             "status": {
@@ -2026,7 +2026,7 @@
               "type": "bool",
               "defaultValue": false,
               "metadata": {
-                "description": "Optional. A value that indicates whether Express Entities are enabled. An express queue holds a message in memory temporarily before writing it to persistent storage."
+                "description": "Optional. A value that indicates whether Express Entities are enabled. An express queue holds a message in memory temporarily before writing it to persistent storage. This property is only used if the `service-bus/namespace` sku is Premium."
               }
             },
             "authorizationRules": {
@@ -2329,9 +2329,6 @@
           "maxMessageSizeInKilobytes": {
             "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'maxMessageSizeInKilobytes'), 1024)]"
           },
-          "maxSizeInMegabytes": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'maxSizeInMegabytes'), 1024)]"
-          },
           "requiresDuplicateDetection": {
             "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'requiresDuplicateDetection'), false())]"
           },
@@ -2353,7 +2350,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "3446096169234035274"
+              "templateHash": "9024056571533157450"
             },
             "name": "Service Bus Namespace Topic",
             "description": "This module deploys a Service Bus Namespace Topic.",
@@ -2508,7 +2505,7 @@
               "type": "int",
               "defaultValue": 1024,
               "metadata": {
-                "description": "Optional. Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024."
+                "description": "Optional. Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium."
               }
             },
             "supportOrdering": {
@@ -2554,7 +2551,7 @@
               "type": "bool",
               "defaultValue": false,
               "metadata": {
-                "description": "Optional. A value that indicates whether Express Entities are enabled. An express topic holds a message in memory temporarily before writing it to persistent storage."
+                "description": "Optional. A value that indicates whether Express Entities are enabled. An express topic holds a message in memory temporarily before writing it to persistent storage. This property is only used if the `service-bus/namespace` sku is Premium."
               }
             },
             "authorizationRules": {
@@ -2611,19 +2608,7 @@
               "type": "Microsoft.ServiceBus/namespaces/topics",
               "apiVersion": "2022-10-01-preview",
               "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
-              "properties": {
-                "autoDeleteOnIdle": "[parameters('autoDeleteOnIdle')]",
-                "defaultMessageTimeToLive": "[parameters('defaultMessageTimeToLive')]",
-                "duplicateDetectionHistoryTimeWindow": "[parameters('duplicateDetectionHistoryTimeWindow')]",
-                "enableBatchedOperations": "[parameters('enableBatchedOperations')]",
-                "enableExpress": "[parameters('enableExpress')]",
-                "enablePartitioning": "[parameters('enablePartitioning')]",
-                "maxMessageSizeInKilobytes": "[parameters('maxMessageSizeInKilobytes')]",
-                "maxSizeInMegabytes": "[parameters('maxSizeInMegabytes')]",
-                "requiresDuplicateDetection": "[parameters('requiresDuplicateDetection')]",
-                "status": "[parameters('status')]",
-                "supportOrdering": "[parameters('supportOrdering')]"
-              },
+              "properties": "[union(createObject('autoDeleteOnIdle', parameters('autoDeleteOnIdle'), 'defaultMessageTimeToLive', parameters('defaultMessageTimeToLive'), 'duplicateDetectionHistoryTimeWindow', parameters('duplicateDetectionHistoryTimeWindow'), 'enableBatchedOperations', parameters('enableBatchedOperations'), 'enablePartitioning', parameters('enablePartitioning'), 'requiresDuplicateDetection', parameters('requiresDuplicateDetection'), 'status', parameters('status'), 'supportOrdering', parameters('supportOrdering'), 'maxSizeInMegabytes', parameters('maxSizeInMegabytes')), if(equals(reference('namespace', '2022-10-01-preview', 'full').sku.name, 'Premium'), createObject('enableExpress', parameters('enableExpress'), 'maxMessageSizeInKilobytes', parameters('maxMessageSizeInKilobytes')), createObject()))]",
               "dependsOn": [
                 "namespace"
               ]
