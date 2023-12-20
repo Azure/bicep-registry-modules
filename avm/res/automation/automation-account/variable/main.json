@@ -1,0 +1,83 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.23.1.45101",
+      "templateHash": "6672396434414300928"
+    },
+    "name": "Automation Account Variables",
+    "description": "This module deploys an Azure Automation Account Variable.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "automationAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Automation Account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the variable."
+      }
+    },
+    "value": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Required. The value of the variable. For security best practices, this value is always passed as a secure string as it could contain an encrypted value when the \"isEncrypted\" property is set to true."
+      }
+    },
+    "description": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The description of the variable."
+      }
+    },
+    "isEncrypted": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. If the variable should be encrypted. For security reasons encryption of variables should be enabled."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Automation/automationAccounts/variables",
+      "apiVersion": "2022-08-08",
+      "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
+      "properties": {
+        "description": "[parameters('description')]",
+        "isEncrypted": "[parameters('isEncrypted')]",
+        "value": "[parameters('value')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed variable."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed variable."
+      },
+      "value": "[resourceId('Microsoft.Automation/automationAccounts/variables', parameters('automationAccountName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed variable."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
