@@ -53,8 +53,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     name: 'amemin001'
     // Non-required parameters
     enableTelemetry: '<enableTelemetry>'
-    infrastructureSubnetId: '<infrastructureSubnetId>'
-    internal: true
     location: '<location>'
   }
 }
@@ -82,12 +80,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Non-required parameters
     "enableTelemetry": {
       "value": "<enableTelemetry>"
-    },
-    "infrastructureSubnetId": {
-      "value": "<infrastructureSubnetId>"
-    },
-    "internal": {
-      "value": true
     },
     "location": {
       "value": "<location>"
