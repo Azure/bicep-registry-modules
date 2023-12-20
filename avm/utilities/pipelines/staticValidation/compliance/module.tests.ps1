@@ -45,8 +45,12 @@ foreach ($moduleFolderPath in $moduleFolderPaths) {
 $builtTestFileMap = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
 $pathsToBuild | ForEach-Object -Parallel {
   $dict = $using:builtTestFileMap
-  $builtTemplate = (bicep build $_ --stdout 2>$null) | ConvertFrom-Json -AsHashtable
-  $null = $dict.TryAdd($_, $builtTemplate)
+  $builtTemplate = (bicep build $_ --stdout 2>$null) | Out-String
+  if ([String]::IsNullOrEmpty($builtTemplate)) {
+    throw "Failed to build template [$_]. Try running the command ``bicep build $_ --stdout`` locally for troubleshooting."
+  }
+  $templateHashTable = ConvertFrom-Json $builtTemplate -AsHashtable
+  $null = $dict.TryAdd($_, $templateHashTable)
 }
 
 Describe 'File/folder tests' -Tag 'Modules' {

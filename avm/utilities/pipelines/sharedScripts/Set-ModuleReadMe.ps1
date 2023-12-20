@@ -1158,11 +1158,17 @@ function Set-UsageExamplesSection {
     # Prepare data (using thread-safe multithreading) to consume later
     $buildTestFileMap = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
     $testFilePaths | ForEach-Object -Parallel {
-        $folderName = Split-Path (Split-Path -Path $_) -Leaf
-        $buildTemplate = (bicep build $_ --stdout 2>$null) | ConvertFrom-Json -AsHashtable
-
         $dict = $using:buildTestFileMap
-        $null = $dict.TryAdd($folderName, $buildTemplate)
+
+        $folderName = Split-Path (Split-Path -Path $_) -Leaf
+        $builtTemplate = (bicep build $_ --stdout 2>$null) | Out-String
+
+        if ([String]::IsNullOrEmpty($builtTemplate)) {
+            throw "Failed to build template [$_]. Try running the command ``bicep build $_ --stdout`` locally for troubleshooting."
+        }
+        $templateHashTable = ConvertFrom-Json $builtTemplate -AsHashtable
+
+        $null = $dict.TryAdd($folderName, $templateHashTable)
     }
 
     # Process data
