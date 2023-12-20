@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.23.1.45101",
-      "templateHash": "3578264423457994509"
+      "version": "0.24.24.22086",
+      "templateHash": "5920374298787956143"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -910,15 +910,6 @@
         "vm"
       ]
     },
-    "vm_logAnalyticsWorkspace": {
-      "condition": "[not(empty(parameters('monitoringWorkspaceId')))]",
-      "existing": true,
-      "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2021-06-01",
-      "subscriptionId": "[split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '////'), '/')[4]]",
-      "name": "[last(split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), 'law'), '/'))]"
-    },
     "vm_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
@@ -1527,8 +1518,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "9445653680126696241"
+              "version": "0.24.24.22086",
+              "templateHash": "10332103716678024514"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -1733,8 +1724,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "9445653680126696241"
+              "version": "0.24.24.22086",
+              "templateHash": "10332103716678024514"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -1934,8 +1925,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "9445653680126696241"
+              "version": "0.24.24.22086",
+              "templateHash": "10332103716678024514"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -2092,11 +2083,11 @@
         "vm"
       ]
     },
-    "vm_microsoftMonitoringAgentExtension": {
+    "vm_azureMonitoringAgentExtension": {
       "condition": "[parameters('extensionMonitoringAgentConfig').enabled]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-VM-MicrosoftMonitoringAgent', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-VM-AzureMonitoringAgent', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2107,30 +2098,20 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "MicrosoftMonitoringAgent"
+            "value": "AzureMonitoringAgent"
           },
           "location": {
             "value": "[parameters('location')]"
           },
           "publisher": {
-            "value": "Microsoft.EnterpriseCloud.Monitoring"
+            "value": "Microsoft.Azure.Monitor"
           },
-          "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'MicrosoftMonitoringAgent'), createObject('value', 'OmsAgentForLinux'))]",
-          "typeHandlerVersion": "[if(contains(parameters('extensionMonitoringAgentConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionMonitoringAgentConfig').typeHandlerVersion), if(equals(parameters('osType'), 'Windows'), createObject('value', '1.0'), createObject('value', '1.7')))]",
+          "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'AzureMonitorWindowsAgent'), createObject('value', 'AzureMonitorLinuxAgent'))]",
+          "typeHandlerVersion": "[if(contains(parameters('extensionMonitoringAgentConfig'), 'typeHandlerVersion'), createObject('value', parameters('extensionMonitoringAgentConfig').typeHandlerVersion), if(equals(parameters('osType'), 'Windows'), createObject('value', '1.0'), createObject('value', '1.21')))]",
           "autoUpgradeMinorVersion": "[if(contains(parameters('extensionMonitoringAgentConfig'), 'autoUpgradeMinorVersion'), createObject('value', parameters('extensionMonitoringAgentConfig').autoUpgradeMinorVersion), createObject('value', true()))]",
-          "enableAutomaticUpgrade": "[if(contains(parameters('extensionMonitoringAgentConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionMonitoringAgentConfig').enableAutomaticUpgrade), createObject('value', false()))]",
-          "settings": {
-            "value": {
-              "workspaceId": "[if(not(empty(parameters('monitoringWorkspaceId'))), reference('vm_logAnalyticsWorkspace').customerId, '')]"
-            }
-          },
+          "enableAutomaticUpgrade": "[if(contains(parameters('extensionMonitoringAgentConfig'), 'enableAutomaticUpgrade'), createObject('value', parameters('extensionMonitoringAgentConfig').enableAutomaticUpgrade), createObject('value', true()))]",
           "tags": {
             "value": "[coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'tags'), parameters('tags'))]"
-          },
-          "protectedSettings": {
-            "value": {
-              "workspaceKey": "[if(not(empty(parameters('monitoringWorkspaceId'))), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '//'), '/')[2], split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), '////'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(if(not(empty(parameters('monitoringWorkspaceId'))), parameters('monitoringWorkspaceId'), 'law'), '/'))), '2021-06-01').primarySharedKey, '')]"
-            }
           }
         },
         "template": {
@@ -2140,8 +2121,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "9445653680126696241"
+              "version": "0.24.24.22086",
+              "templateHash": "10332103716678024514"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -2295,8 +2276,7 @@
         }
       },
       "dependsOn": [
-        "vm",
-        "vm_logAnalyticsWorkspace"
+        "vm"
       ]
     },
     "vm_dependencyAgentExtension": {
@@ -2337,8 +2317,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "9445653680126696241"
+              "version": "0.24.24.22086",
+              "templateHash": "10332103716678024514"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -2533,8 +2513,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "9445653680126696241"
+              "version": "0.24.24.22086",
+              "templateHash": "10332103716678024514"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -2733,8 +2713,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "9445653680126696241"
+              "version": "0.24.24.22086",
+              "templateHash": "10332103716678024514"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -2941,8 +2921,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "9445653680126696241"
+              "version": "0.24.24.22086",
+              "templateHash": "10332103716678024514"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -3142,8 +3122,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "9445653680126696241"
+              "version": "0.24.24.22086",
+              "templateHash": "10332103716678024514"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension.",
@@ -3298,8 +3278,8 @@
       },
       "dependsOn": [
         "vm",
-        "vm_customScriptExtension",
-        "vm_microsoftMonitoringAgentExtension"
+        "vm_azureMonitoringAgentExtension",
+        "vm_customScriptExtension"
       ]
     },
     "vm_backup": {
@@ -3342,8 +3322,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.23.1.45101",
-              "templateHash": "17653239179026707614"
+              "version": "0.24.24.22086",
+              "templateHash": "12595215410082531283"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item.",
@@ -3447,12 +3427,12 @@
       "dependsOn": [
         "vm",
         "vm_aadJoinExtension",
+        "vm_azureMonitoringAgentExtension",
         "vm_customScriptExtension",
         "vm_dependencyAgentExtension",
         "vm_desiredStateConfigurationExtension",
         "vm_domainJoinExtension",
         "vm_microsoftAntiMalwareExtension",
-        "vm_microsoftMonitoringAgentExtension",
         "vm_networkWatcherAgentExtension"
       ]
     }
