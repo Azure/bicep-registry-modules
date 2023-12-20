@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "13043079875626136771"
+      "templateHash": "4087809008619576571"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment).",
@@ -262,7 +262,7 @@
     },
     "internal": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then \"infrastructureSubnetId\" must be provided."
       }
