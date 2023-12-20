@@ -48,7 +48,7 @@ param duplicateDetectionHistoryTimeWindow string = 'PT10M'
 @description('Optional. The maximum delivery count. A message is automatically deadlettered after this number of deliveries. default value is 10.')
 param maxDeliveryCount int = 10
 
-@description('Optional. Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024.')
+@description('Optional. Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium.')
 param maxMessageSizeInKilobytes int = 1024
 
 @description('Optional. Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown.')
@@ -68,7 +68,7 @@ param status string = 'Active'
 @description('Optional. A value that indicates whether the queue is to be partitioned across multiple message brokers.')
 param enablePartitioning bool = false
 
-@description('Optional. A value that indicates whether Express Entities are enabled. An express queue holds a message in memory temporarily before writing it to persistent storage.')
+@description('Optional. A value that indicates whether Express Entities are enabled. An express queue holds a message in memory temporarily before writing it to persistent storage. This property is only used if the `service-bus/namespace` sku is Premium.')
 param enableExpress bool = false
 
 @description('Optional. Authorization Rules for the Service Bus Queue.')

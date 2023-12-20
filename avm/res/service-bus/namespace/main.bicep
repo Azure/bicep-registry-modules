@@ -622,7 +622,7 @@ type queueType = {
   @description('Optional. Queue/Topic name to forward the messages.')
   forwardTo: string?
 
-  @description('Optional. Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024.')
+  @description('Optional. Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium.')
   maxMessageSizeInKilobytes: int?
 
   @description('Optional. Authorization Rules for the Service Bus Queue.')
@@ -640,7 +640,7 @@ type queueType = {
   @description('Optional. Value that indicates whether server-side batched operations are enabled.')
   enableBatchedOperations: bool?
 
-  @description('Optional. A value that indicates whether Express Entities are enabled. An express queue holds a message in memory temporarily before writing it to persistent storage.')
+  @description('Optional. A value that indicates whether Express Entities are enabled. An express queue holds a message in memory temporarily before writing it to persistent storage. This property is only used if the `service-bus/namespace` sku is Premium.')
   enableExpress: bool?
 
   @description('Optional. A value that indicates whether the queue is to be partitioned across multiple message brokers.')
