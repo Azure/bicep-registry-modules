@@ -28,6 +28,7 @@ This module deploys a Service Bus Namespace.
 | `Microsoft.ServiceBus/namespaces/queues/authorizationRules` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/queues/authorizationRules) |
 | `Microsoft.ServiceBus/namespaces/topics` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/topics) |
 | `Microsoft.ServiceBus/namespaces/topics/authorizationRules` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/topics/authorizationRules) |
+| `Microsoft.ServiceBus/namespaces/topics/subscriptions` | [2021-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2021-11-01/namespaces/topics/subscriptions) |
 
 ## Usage examples
 
@@ -2366,6 +2367,7 @@ The topics to create in the service bus namespace.
 | [`requiresDuplicateDetection`](#parameter-topicsrequiresduplicatedetection) | bool | A value indicating if this topic requires duplicate detection. |
 | [`roleAssignments`](#parameter-topicsroleassignments) | array | Array of role assignments to create. |
 | [`status`](#parameter-topicsstatus) | string | Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown. |
+| [`subscriptions`](#parameter-topicssubscriptions) | array | The subscriptions of the topic. |
 | [`supportOrdering`](#parameter-topicssupportordering) | bool | Value that indicates whether the topic supports ordering. |
 
 ### Parameter: `topics.name`
@@ -2624,6 +2626,13 @@ Enumerates the possible values for the status of a messaging entity. - Active, D
     'Unknown'
   ]
   ```
+
+### Parameter: `topics.subscriptions`
+
+The subscriptions of the topic.
+
+- Required: No
+- Type: array
 
 ### Parameter: `topics.supportOrdering`
 

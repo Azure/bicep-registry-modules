@@ -76,6 +76,9 @@ param lock lockType
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
+@description('Optional. The subscriptions of the topic.')
+param subscriptions array = []
+
 var builtInRoleNames = {
   'Azure Service Bus Data Owner': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '090c5cfd-751d-490a-894a-3ce6f1109419')
   'Azure Service Bus Data Receiver': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0')
@@ -143,6 +146,29 @@ resource topic_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-
   scope: topic
 }]
 
+module topic_subscription 'subscription/main.bicep' = [for (subscription, index) in (subscriptions ?? []): {
+  name: '${deployment().name}-subscription-${index}'
+  params: {
+    name: subscription.name
+    namespaceName: namespace.name
+    topicName: topic.name
+    autoDeleteOnIdle: subscription.?autoDeleteOnIdle ?? 'PT1H'
+    defaultMessageTimeToLive: subscription.?defaultMessageTimeToLive ?? 'P14D'
+    duplicateDetectionHistoryTimeWindow: subscription.?duplicateDetectionHistoryTimeWindow ?? 'PT10M'
+    enableBatchedOperations: subscription.?enableBatchedOperations ?? true
+    clientAffineProperties: subscription.?clientAffineProperties ?? {}
+    deadLetteringOnFilterEvaluationExceptions: subscription.?deadLetteringOnFilterEvaluationExceptions ?? true
+    deadLetteringOnMessageExpiration: subscription.?deadLetteringOnMessageExpiration ?? false
+    forwardDeadLetteredMessagesTo: subscription.?forwardDeadLetteredMessagesTo ?? null
+    forwardTo: subscription.?forwardTo ?? null
+    isClientAffine: subscription.?isClientAffine ?? false
+    lockDuration: subscription.?lockDuration ?? 'PT1M'
+    maxDeliveryCount: subscription.?maxDeliveryCount ?? 10
+    requiresSession: subscription.?requiresSession ?? false
+    status: subscription.?status ?? 'Active'
+  }
+}]
+
 @description('The name of the deployed topic.')
 output name string = topic.name
 
@@ -185,4 +211,60 @@ type roleAssignmentType = {
 
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
+}[]?
+
+type subscriptionsType = {
+  @description('Required. The name of the service bus namespace topic subscription.')
+  name: string
+
+  @description('Optional. ISO 8601 timespan idle interval after which the syubscription is automatically deleted. The minimum duration is 5 minutes.')
+  autoDeleteOnIdle: string
+
+  @description('Optional. The properties that are associated with a subscription that is client-affine.')
+  clientAffineProperties: {
+    @description('Required. Indicates the Client ID of the application that created the client-affine subscription.')
+    clientId: string
+
+    @description('Optional. For client-affine subscriptions, this value indicates whether the subscription is durable or not.')
+    isDurable: bool?
+
+    @description('Optional. For client-affine subscriptions, this value indicates whether the subscription is shared or not.')
+    isShared: bool?
+  }?
+
+  @description('Optional. A value that indicates whether a subscription has dead letter support when a message expires.')
+  deadLetteringOnMessageExpiration: bool?
+
+  @description('Optional. A value that indicates whether a subscription has dead letter support when a message expires.')
+  deadLetteringOnFilterEvaluationExceptions: bool?
+
+  @description('Optional. ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes.')
+  defaultMessageTimeToLive: string?
+
+  @description('Optional. ISO 8601 timespan that defines the duration of the duplicate detection history. The default value is 10 minutes.')
+  duplicateDetectionHistoryTimeWindow: string?
+
+  @description('Optional. A value that indicates whether server-side batched operations are enabled.')
+  enableBatchedOperations: bool?
+
+  @description('Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to.')
+  forwardDeadLetteredMessagesTo: string?
+
+  @description('Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to.')
+  forwardTo: string?
+
+  @description('Optional. A value that indicates whether the subscription supports the concept of session.')
+  isClientAffine: bool?
+
+  @description('Optional. ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute.')
+  lockDuration: string?
+
+  @description('Optional. Number of maximum deliveries. A message is automatically deadlettered after this number of deliveries. Default value is 10.')
+  maxDeliveryCount: int?
+
+  @description('Optional. A value that indicates whether the subscription supports the concept of session.')
+  requiresSession: bool?
+
+  @description('Optional. Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown.')
+  status: ('Active' | 'Disabled' | 'Restoring' | 'SendDisabled' | 'ReceiveDisabled' | 'Creating' | 'Deleting' | 'Renaming' | 'Unknown')?
 }[]?

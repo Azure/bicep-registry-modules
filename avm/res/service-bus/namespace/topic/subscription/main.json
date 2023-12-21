@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "18405474713574413241"
+      "templateHash": "17025485882664911641"
     },
     "name": "Service Bus Namespace Topic Subscription",
     "description": "This module deploys a Service Bus Namespace Topic Subscription.",
@@ -15,7 +15,7 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the service bus namespace topic."
+        "description": "Required. The name of the service bus namespace topic subscription."
       }
     },
     "namespaceName": {
@@ -154,7 +154,7 @@
         "duplicateDetectionHistoryTimeWindow": "[parameters('duplicateDetectionHistoryTimeWindow')]",
         "enableBatchedOperations": "[parameters('enableBatchedOperations')]",
         "forwardDeadLetteredMessagesTo": "[parameters('forwardDeadLetteredMessagesTo')]",
-        "forwardTo": "[parameters('forwardTo')]",
+        "forwardTo": "[if(not(empty(parameters('forwardTo'))), parameters('forwardTo'), parameters('topicName'))]",
         "isClientAffine": "[parameters('isClientAffine')]",
         "lockDuration": "[parameters('lockDuration')]",
         "maxDeliveryCount": "[parameters('maxDeliveryCount')]",

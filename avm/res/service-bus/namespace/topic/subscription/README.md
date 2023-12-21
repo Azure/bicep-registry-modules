@@ -21,7 +21,7 @@ This module deploys a Service Bus Namespace Topic Subscription.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the service bus namespace topic. |
+| [`name`](#parameter-name) | string | The name of the service bus namespace topic subscription. |
 
 **Conditional parameters**
 
@@ -51,7 +51,7 @@ This module deploys a Service Bus Namespace Topic Subscription.
 
 ### Parameter: `name`
 
-The name of the service bus namespace topic.
+The name of the service bus namespace topic subscription.
 
 - Required: Yes
 - Type: string
