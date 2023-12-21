@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "5920374298787956143"
+      "templateHash": "17379109609699248366"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -526,13 +526,6 @@
         "description": "Optional. The configuration for the [Monitoring Agent] extension. Must at least contain the [\"enabled\": true] property to be executed."
       }
     },
-    "monitoringWorkspaceId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. Resource ID of the monitoring log analytics workspace. Must be set when extensionMonitoringAgentConfig is set to true."
-      }
-    },
     "extensionDependencyAgentConfig": {
       "type": "object",
       "defaultValue": {
@@ -704,8 +697,8 @@
       }
     },
     "winRM": {
-      "type": "object",
-      "defaultValue": {},
+      "type": "array",
+      "defaultValue": [],
       "metadata": {
         "description": "Optional. Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell. - WinRMConfiguration object."
       }
