@@ -45,10 +45,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     skuObject: {
       name: 'Basic'
     }
-    topics: [
-      {
-        name: 'topic001'
-      }
-    ]
   }
 }]

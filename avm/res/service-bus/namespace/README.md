@@ -63,11 +63,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     }
     // Non-required parameters
     location: '<location>'
-    topics: [
-      {
-        name: 'topic001'
-      }
-    ]
   }
 }
 ```
@@ -96,13 +91,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
-    },
-    "topics": {
-      "value": [
-        {
-          "name": "topic001"
-        }
-      ]
     }
   }
 }
