@@ -36,13 +36,14 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    location: location
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
   }
 }
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../.shared/.templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-diagnosticDependencies'
   params: {

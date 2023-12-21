@@ -17,9 +17,6 @@ param location string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'asswaf'
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
@@ -34,18 +31,9 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: location
 }
 
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, location)}-nestedDependencies'
-  params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    location: location
-  }
-}
-
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../.shared/.templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-diagnosticDependencies'
   params: {

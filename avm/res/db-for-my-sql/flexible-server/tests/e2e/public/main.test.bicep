@@ -62,7 +62,7 @@ module nestedDependencies2 'dependencies2.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../.shared/.templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-diagnosticDependencies'
   params: {
