@@ -11,7 +11,7 @@ param namespaceName string
 @description('Conditional. The name of the parent Service Bus Namespace Topic. Required if the template is used in a standalone deployment.')
 param topicName string
 
-@description('Optional. ISO 8601 timespan idle interval after which the syubscription is automatically deleted. The minimum duration is 5 minutes.')
+@description('Optional. ISO 8601 timespan idle interval after which the subscription is automatically deleted. The minimum duration is 5 minutes.')
 param autoDeleteOnIdle string = 'PT1H'
 
 @description('Optional. The properties that are associated with a subscription that is client-affine.')
@@ -93,11 +93,11 @@ resource subscription 'Microsoft.ServiceBus/namespaces/topics/subscriptions@2021
   }
 }
 
-@description('The name of the authorization rule.')
+@description('The name of the topic subscription.')
 output name string = subscription.name
 
-@description('The Resource ID of the authorization rule.')
+@description('The Resource ID of the topic subscription.')
 output resourceId string = subscription.id
 
-@description('The name of the Resource Group the authorization rule was created in.')
+@description('The name of the Resource Group the topic subscription was created in.')
 output resourceGroupName string = resourceGroup().name

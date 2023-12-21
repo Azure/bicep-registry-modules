@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "4526208214244284616"
+      "templateHash": "4820734290952589619"
     },
     "name": "Service Bus Namespace Topic",
     "description": "This module deploys a Service Bus Namespace Topic.",
@@ -611,10 +611,10 @@
             "value": "[coalesce(tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'deadLetteringOnMessageExpiration'), false())]"
           },
           "forwardDeadLetteredMessagesTo": {
-            "value": "[coalesce(tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'forwardDeadLetteredMessagesTo'), null())]"
+            "value": "[tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'forwardDeadLetteredMessagesTo')]"
           },
           "forwardTo": {
-            "value": "[coalesce(tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'forwardTo'), null())]"
+            "value": "[tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'forwardTo')]"
           },
           "isClientAffine": {
             "value": "[coalesce(tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'isClientAffine'), false())]"
@@ -639,7 +639,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "17025485882664911641"
+              "templateHash": "6392413170251972432"
             },
             "name": "Service Bus Namespace Topic Subscription",
             "description": "This module deploys a Service Bus Namespace Topic Subscription.",
@@ -668,7 +668,7 @@
               "type": "string",
               "defaultValue": "PT1H",
               "metadata": {
-                "description": "Optional. ISO 8601 timespan idle interval after which the syubscription is automatically deleted. The minimum duration is 5 minutes."
+                "description": "Optional. ISO 8601 timespan idle interval after which the subscription is automatically deleted. The minimum duration is 5 minutes."
               }
             },
             "clientAffineProperties": {
@@ -801,21 +801,21 @@
             "name": {
               "type": "string",
               "metadata": {
-                "description": "The name of the authorization rule."
+                "description": "The name of the topic subscription."
               },
               "value": "[parameters('name')]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
-                "description": "The Resource ID of the authorization rule."
+                "description": "The Resource ID of the topic subscription."
               },
               "value": "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaceName'), parameters('topicName'), parameters('name'))]"
             },
             "resourceGroupName": {
               "type": "string",
               "metadata": {
-                "description": "The name of the Resource Group the authorization rule was created in."
+                "description": "The name of the Resource Group the topic subscription was created in."
               },
               "value": "[resourceGroup().name]"
             }

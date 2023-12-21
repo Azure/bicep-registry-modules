@@ -34,7 +34,7 @@ This module deploys a Service Bus Namespace Topic Subscription.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`autoDeleteOnIdle`](#parameter-autodeleteonidle) | string | ISO 8601 timespan idle interval after which the syubscription is automatically deleted. The minimum duration is 5 minutes. |
+| [`autoDeleteOnIdle`](#parameter-autodeleteonidle) | string | ISO 8601 timespan idle interval after which the subscription is automatically deleted. The minimum duration is 5 minutes. |
 | [`clientAffineProperties`](#parameter-clientaffineproperties) | object | The properties that are associated with a subscription that is client-affine. |
 | [`deadLetteringOnFilterEvaluationExceptions`](#parameter-deadletteringonfilterevaluationexceptions) | bool | A value that indicates whether a subscription has dead letter support when a message expires. |
 | [`deadLetteringOnMessageExpiration`](#parameter-deadletteringonmessageexpiration) | bool | A value that indicates whether a subscription has dead letter support when a message expires. |
@@ -72,7 +72,7 @@ The name of the parent Service Bus Namespace Topic. Required if the template is 
 
 ### Parameter: `autoDeleteOnIdle`
 
-ISO 8601 timespan idle interval after which the syubscription is automatically deleted. The minimum duration is 5 minutes.
+ISO 8601 timespan idle interval after which the subscription is automatically deleted. The minimum duration is 5 minutes.
 
 - Required: No
 - Type: string
@@ -201,9 +201,9 @@ Enumerates the possible values for the status of a messaging entity.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the authorization rule. |
-| `resourceGroupName` | string | The name of the Resource Group the authorization rule was created in. |
-| `resourceId` | string | The Resource ID of the authorization rule. |
+| `name` | string | The name of the topic subscription. |
+| `resourceGroupName` | string | The name of the Resource Group the topic subscription was created in. |
+| `resourceId` | string | The Resource ID of the topic subscription. |
 
 ## Cross-referenced modules
 

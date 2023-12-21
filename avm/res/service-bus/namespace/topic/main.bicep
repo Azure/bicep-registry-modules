@@ -159,8 +159,8 @@ module topic_subscription 'subscription/main.bicep' = [for (subscription, index)
     clientAffineProperties: subscription.?clientAffineProperties ?? {}
     deadLetteringOnFilterEvaluationExceptions: subscription.?deadLetteringOnFilterEvaluationExceptions ?? true
     deadLetteringOnMessageExpiration: subscription.?deadLetteringOnMessageExpiration ?? false
-    forwardDeadLetteredMessagesTo: subscription.?forwardDeadLetteredMessagesTo ?? null
-    forwardTo: subscription.?forwardTo ?? null
+    forwardDeadLetteredMessagesTo: subscription.?forwardDeadLetteredMessagesTo
+    forwardTo: subscription.?forwardTo
     isClientAffine: subscription.?isClientAffine ?? false
     lockDuration: subscription.?lockDuration ?? 'PT1M'
     maxDeliveryCount: subscription.?maxDeliveryCount ?? 10
