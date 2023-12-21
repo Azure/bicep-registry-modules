@@ -184,6 +184,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
             ]
           }
         ]
+        subscriptions: [
+          {
+            name: 'subscription001'
+          }
+        ]
       }
     ]
     diagnosticSettings: [

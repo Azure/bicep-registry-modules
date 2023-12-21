@@ -377,6 +377,11 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
             roleDefinitionIdOrName: 'Reader'
           }
         ]
+        subscriptions: [
+          {
+            name: 'subscription001'
+          }
+        ]
       }
     ]
     zoneRedundant: true
@@ -607,6 +612,11 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
               "roleDefinitionIdOrName": "Reader"
+            }
+          ],
+          "subscriptions": [
+            {
+              "name": "subscription001"
             }
           ]
         }
