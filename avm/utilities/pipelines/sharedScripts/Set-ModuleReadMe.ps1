@@ -396,9 +396,11 @@ function Set-DefinitionSection {
                     $roles = $TemplateFileContent.variables.builtInRoleNames.Keys
                 } else {
                     # Nested-invocation (requires e.g., roles for of nested private endpoint template)
-                    $flattendResources = Get-FlattenedResourceList -TemplateFileContent $TemplateFileContent
-                    if ($resourceIdentifier = $flattendResources.Keys | Where-Object { $_ -match '^.*_privateEndpoints$' }) {
-                        $roles = $flattendResources[$resourceIdentifier].properties.template.variables.builtInRoleNames.Keys
+                    $flattendResources = Get-NestedResourceList -TemplateFileContent $TemplateFileContent
+                    if ($resourceIdentifier = $flattendResources.identifier | Where-Object { $_ -match "^.*_$ParentName`$" }) {
+                        $roles = ($flattendResources | Where-Object {
+                                $_.identifier -eq $resourceIdentifier
+                            }).properties.template.variables.builtInRoleNames.Keys
                     } else {
                         Write-Warning ('Failed to identify roles for parameter [{0}] of type [{1}] as resource with identifier [{2}] was not found in the corresponding linked template.' -f $parameter.name, $ParentName, "*_$ParentName")
                     }
@@ -1627,7 +1629,6 @@ function Set-ModuleReadMe {
     . (Join-Path $PSScriptRoot 'helper' 'Get-SpecsAlignedResourceName.ps1')
     . (Join-Path $PSScriptRoot 'helper' 'ConvertTo-OrderedHashtable.ps1')
     . (Join-Path $PSScriptRoot 'Get-BRMRepositoryName.ps1')
-    . (Join-Path $PSScriptRoot 'Get-FlattenedResourceList.ps1')
 
     # Check template & make full path
     $TemplateFilePath = Resolve-Path -Path $TemplateFilePath -ErrorAction Stop
