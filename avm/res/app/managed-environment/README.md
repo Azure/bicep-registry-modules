@@ -52,7 +52,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'amemin001'
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
   }
 }
@@ -78,9 +77,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "amemin001"
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     }
@@ -109,7 +105,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     name: 'amemax001'
     // Non-required parameters
     dockerBridgeCidr: '172.16.0.1/28'
-    enableTelemetry: '<enableTelemetry>'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
     internal: true
@@ -175,9 +170,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Non-required parameters
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "infrastructureResourceGroupName": {
       "value": "<infrastructureResourceGroupName>"
@@ -263,7 +255,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     name: 'amewaf001'
     // Non-required parameters
     dockerBridgeCidr: '172.16.0.1/28'
-    enableTelemetry: '<enableTelemetry>'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
     internal: true
@@ -329,9 +320,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Non-required parameters
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "infrastructureResourceGroupName": {
       "value": "<infrastructureResourceGroupName>"
