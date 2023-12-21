@@ -1937,7 +1937,7 @@ The queues to create in the service bus namespace.
 | [`lock`](#parameter-queueslock) | object | The lock settings of the service. |
 | [`lockDuration`](#parameter-queueslockduration) | string | ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute. |
 | [`maxDeliveryCount`](#parameter-queuesmaxdeliverycount) | int | The maximum delivery count. A message is automatically deadlettered after this number of deliveries. default value is 10. |
-| [`maxMessageSizeInKilobytes`](#parameter-queuesmaxmessagesizeinkilobytes) | int | Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium. |
+| [`maxMessageSizeInKilobytes`](#parameter-queuesmaxmessagesizeinkilobytes) | int | Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024. |
 | [`maxSizeInMegabytes`](#parameter-queuesmaxsizeinmegabytes) | int | The maximum size of the queue in megabytes, which is the size of memory allocated for the queue. Default is 1024. |
 | [`requiresDuplicateDetection`](#parameter-queuesrequiresduplicatedetection) | bool | A value indicating if this queue requires duplicate detection. |
 | [`requiresSession`](#parameter-queuesrequiressession) | bool | A value that indicates whether the queue supports the concept of sessions. |
@@ -2107,7 +2107,7 @@ The maximum delivery count. A message is automatically deadlettered after this n
 
 ### Parameter: `queues.maxMessageSizeInKilobytes`
 
-Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium.
+Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024.
 
 - Required: No
 - Type: int
@@ -2372,7 +2372,7 @@ The topics to create in the service bus namespace.
 | [`enableExpress`](#parameter-topicsenableexpress) | bool | A value that indicates whether Express Entities are enabled. An express topic holds a message in memory temporarily before writing it to persistent storage. This property is only used if the `service-bus/namespace` sku is Premium. |
 | [`enablePartitioning`](#parameter-topicsenablepartitioning) | bool | A value that indicates whether the topic is to be partitioned across multiple message brokers. |
 | [`lock`](#parameter-topicslock) | object | The lock settings of the service. |
-| [`maxMessageSizeInKilobytes`](#parameter-topicsmaxmessagesizeinkilobytes) | int | Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium. |
+| [`maxMessageSizeInKilobytes`](#parameter-topicsmaxmessagesizeinkilobytes) | int | Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024. |
 | [`maxSizeInMegabytes`](#parameter-topicsmaxsizeinmegabytes) | int | The maximum size of the topic in megabytes, which is the size of memory allocated for the topic. Default is 1024. |
 | [`requiresDuplicateDetection`](#parameter-topicsrequiresduplicatedetection) | bool | A value indicating if this topic requires duplicate detection. |
 | [`roleAssignments`](#parameter-topicsroleassignments) | array | Array of role assignments to create. |
@@ -2508,7 +2508,7 @@ Specify the name of lock.
 
 ### Parameter: `topics.maxMessageSizeInKilobytes`
 
-Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium.
+Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024.
 
 - Required: No
 - Type: int

@@ -194,7 +194,7 @@ A value indicating if this topic requires duplicate detection.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `roleAssignments`
 

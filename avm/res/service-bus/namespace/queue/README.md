@@ -49,7 +49,7 @@ This module deploys a Service Bus Namespace Queue.
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`lockDuration`](#parameter-lockduration) | string | ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute. |
 | [`maxDeliveryCount`](#parameter-maxdeliverycount) | int | The maximum delivery count. A message is automatically deadlettered after this number of deliveries. default value is 10. |
-| [`maxMessageSizeInKilobytes`](#parameter-maxmessagesizeinkilobytes) | int | Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium. |
+| [`maxMessageSizeInKilobytes`](#parameter-maxmessagesizeinkilobytes) | int | Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024. |
 | [`maxSizeInMegabytes`](#parameter-maxsizeinmegabytes) | int | The maximum size of the queue in megabytes, which is the size of memory allocated for the queue. Default is 1024. |
 | [`requiresDuplicateDetection`](#parameter-requiresduplicatedetection) | bool | A value indicating if this queue requires duplicate detection. |
 | [`requiresSession`](#parameter-requiressession) | bool | A value that indicates whether the queue supports the concept of sessions. |
@@ -215,7 +215,7 @@ The maximum delivery count. A message is automatically deadlettered after this n
 
 ### Parameter: `maxMessageSizeInKilobytes`
 
-Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium.
+Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024.
 
 - Required: No
 - Type: int

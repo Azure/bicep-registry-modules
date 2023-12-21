@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "11828173341363257463"
+      "templateHash": "15625935842670392114"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace.",
@@ -657,7 +657,7 @@
             "type": "int",
             "nullable": true,
             "metadata": {
-              "description": "Optional. Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium."
+              "description": "Optional. Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024."
             }
           },
           "authorizationRules": {
@@ -851,7 +851,7 @@
             "type": "int",
             "nullable": true,
             "metadata": {
-              "description": "Optional. Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium."
+              "description": "Optional. Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024."
             }
           },
           "maxSizeInMegabytes": {
@@ -1126,14 +1126,12 @@
     },
     "migrationConfiguration": {
       "$ref": "#/definitions/migrationConfigurationsType",
-      "nullable": true,
       "metadata": {
         "description": "Optional. The migration configuration."
       }
     },
     "disasterRecoveryConfig": {
       "$ref": "#/definitions/disasterRecoveryConfigType",
-      "nullable": true,
       "metadata": {
         "description": "Optional. The disaster recovery configuration."
       }
@@ -1407,7 +1405,7 @@
             "value": "[parameters('authorizationRules')[copyIndex()].name]"
           },
           "rights": {
-            "value": "[coalesce(tryGet(parameters('authorizationRules')[copyIndex()], 'rights'), createArray())]"
+            "value": "[tryGet(parameters('authorizationRules')[copyIndex()], 'rights')]"
           }
         },
         "template": {
@@ -1508,10 +1506,10 @@
             "value": "[coalesce(tryGet(parameters('disasterRecoveryConfig'), 'name'), 'default')]"
           },
           "alternateName": {
-            "value": "[coalesce(tryGet(parameters('disasterRecoveryConfig'), 'alternateName'), '')]"
+            "value": "[tryGet(parameters('disasterRecoveryConfig'), 'alternateName')]"
           },
           "partnerNamespaceResourceID": {
-            "value": "[coalesce(tryGet(parameters('disasterRecoveryConfig'), 'partnerNamespace'), '')]"
+            "value": "[tryGet(parameters('disasterRecoveryConfig'), 'partnerNamespace')]"
           }
         },
         "template": {
@@ -1599,7 +1597,7 @@
       ]
     },
     "serviceBusNamespace_migrationConfigurations": {
-      "condition": "[not(empty(parameters('migrationConfiguration')))]",
+      "condition": "[not(empty(coalesce(parameters('migrationConfiguration'), createObject())))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-MigrationConfigurations', uniqueString(deployment().name, parameters('location')))]",
@@ -1613,10 +1611,10 @@
             "value": "[parameters('name')]"
           },
           "postMigrationName": {
-            "value": "[coalesce(tryGet(parameters('migrationConfiguration'), 'postMigrationName'), '')]"
+            "value": "[parameters('migrationConfiguration').postMigrationName]"
           },
           "targetNamespaceResourceId": {
-            "value": "[coalesce(tryGet(parameters('migrationConfiguration'), 'targetNamespace'), '')]"
+            "value": "[parameters('migrationConfiguration').targetNamespace]"
           }
         },
         "template": {
@@ -1866,61 +1864,61 @@
             "value": "[coalesce(parameters('queues'), createArray())[copyIndex()].name]"
           },
           "autoDeleteOnIdle": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'autoDeleteOnIdle'), '')]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'autoDeleteOnIdle')]"
           },
           "forwardDeadLetteredMessagesTo": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'forwardDeadLetteredMessagesTo'), '')]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'forwardDeadLetteredMessagesTo')]"
           },
           "forwardTo": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'forwardTo'), '')]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'forwardTo')]"
           },
           "maxMessageSizeInKilobytes": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'maxMessageSizeInKilobytes'), 1024)]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'maxMessageSizeInKilobytes')]"
           },
           "authorizationRules": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'authorizationRules'), createArray(createObject('name', 'RootManageSharedAccessKey', 'rights', createArray('Listen', 'Manage', 'Send'))))]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'authorizationRules')]"
           },
           "deadLetteringOnMessageExpiration": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'deadLetteringOnMessageExpiration'), true())]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'deadLetteringOnMessageExpiration')]"
           },
           "defaultMessageTimeToLive": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'defaultMessageTimeToLive'), 'P14D')]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'defaultMessageTimeToLive')]"
           },
           "duplicateDetectionHistoryTimeWindow": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'duplicateDetectionHistoryTimeWindow'), 'PT10M')]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'duplicateDetectionHistoryTimeWindow')]"
           },
           "enableBatchedOperations": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'enableBatchedOperations'), true())]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'enableBatchedOperations')]"
           },
           "enableExpress": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'enableExpress'), false())]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'enableExpress')]"
           },
           "enablePartitioning": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'enablePartitioning'), false())]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'enablePartitioning')]"
           },
           "lock": {
             "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
           "lockDuration": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'lockDuration'), 'PT1M')]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'lockDuration')]"
           },
           "maxDeliveryCount": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'maxDeliveryCount'), 10)]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'maxDeliveryCount')]"
           },
           "maxSizeInMegabytes": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'maxSizeInMegabytes'), 1024)]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'maxSizeInMegabytes')]"
           },
           "requiresDuplicateDetection": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'requiresDuplicateDetection'), false())]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'requiresDuplicateDetection')]"
           },
           "requiresSession": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'requiresSession'), false())]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'requiresSession')]"
           },
           "roleAssignments": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'roleAssignments'), createArray())]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'roleAssignments')]"
           },
           "status": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'status'), 'Active')]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'status')]"
           }
         },
         "template": {
@@ -1931,7 +1929,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "15472122599097892135"
+              "templateHash": "10108582310235056608"
             },
             "name": "Service Bus Namespace Queue",
             "description": "This module deploys a Service Bus Namespace Queue.",
@@ -2135,7 +2133,7 @@
               "type": "int",
               "defaultValue": 1024,
               "metadata": {
-                "description": "Optional. Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium."
+                "description": "Optional. Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024."
               }
             },
             "status": {
@@ -2444,49 +2442,49 @@
             "value": "[coalesce(parameters('topics'), createArray())[copyIndex()].name]"
           },
           "authorizationRules": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'authorizationRules'), createArray(createObject('name', 'RootManageSharedAccessKey', 'rights', createArray('Listen', 'Manage', 'Send'))))]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'authorizationRules')]"
           },
           "autoDeleteOnIdle": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'autoDeleteOnIdle'), 'PT5M')]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'autoDeleteOnIdle')]"
           },
           "defaultMessageTimeToLive": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'defaultMessageTimeToLive'), 'P14D')]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'defaultMessageTimeToLive')]"
           },
           "duplicateDetectionHistoryTimeWindow": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'duplicateDetectionHistoryTimeWindow'), 'PT10M')]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'duplicateDetectionHistoryTimeWindow')]"
           },
           "enableBatchedOperations": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'enableBatchedOperations'), true())]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'enableBatchedOperations')]"
           },
           "enableExpress": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'enableExpress'), false())]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'enableExpress')]"
           },
           "enablePartitioning": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'enablePartitioning'), false())]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'enablePartitioning')]"
           },
           "lock": {
             "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
           "maxMessageSizeInKilobytes": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'maxMessageSizeInKilobytes'), 1024)]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'maxMessageSizeInKilobytes')]"
           },
           "requiresDuplicateDetection": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'requiresDuplicateDetection'), false())]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'requiresDuplicateDetection')]"
           },
           "roleAssignments": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'roleAssignments'), createArray())]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'roleAssignments')]"
           },
           "status": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'status'), 'Active')]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'status')]"
           },
           "supportOrdering": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'supportOrdering'), false())]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'supportOrdering')]"
           },
           "subscriptions": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'subscriptions'), createArray())]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'subscriptions')]"
           },
           "maxSizeInMegabytes": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'maxSizeInMegabytes'), 1024)]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'maxSizeInMegabytes')]"
           }
         },
         "template": {
@@ -2497,7 +2495,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "4820734290952589619"
+              "templateHash": "17866416408257743365"
             },
             "name": "Service Bus Namespace Topic",
             "description": "This module deploys a Service Bus Namespace Topic.",
@@ -2767,7 +2765,7 @@
             },
             "requiresDuplicateDetection": {
               "type": "bool",
-              "defaultValue": false,
+              "defaultValue": true,
               "metadata": {
                 "description": "Optional. A value indicating if this topic requires duplicate detection."
               }

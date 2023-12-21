@@ -48,7 +48,7 @@ param duplicateDetectionHistoryTimeWindow string = 'PT10M'
 @description('Optional. The maximum delivery count. A message is automatically deadlettered after this number of deliveries. default value is 10.')
 param maxDeliveryCount int = 10
 
-@description('Optional. Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium.')
+@description('Optional. Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024.')
 param maxMessageSizeInKilobytes int = 1024
 
 @description('Optional. Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown.')

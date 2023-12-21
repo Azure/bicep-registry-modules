@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "4820734290952589619"
+      "templateHash": "17866416408257743365"
     },
     "name": "Service Bus Namespace Topic",
     "description": "This module deploys a Service Bus Namespace Topic.",
@@ -276,7 +276,7 @@
     },
     "requiresDuplicateDetection": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
         "description": "Optional. A value indicating if this topic requires duplicate detection."
       }

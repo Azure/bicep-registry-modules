@@ -16,7 +16,7 @@ param name string
 param maxSizeInMegabytes int = 1024
 
 @description('Optional. A value indicating if this topic requires duplicate detection.')
-param requiresDuplicateDetection bool = false
+param requiresDuplicateDetection bool = true
 
 @description('Optional. ISO 8601 default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself.')
 param defaultMessageTimeToLive string = 'P14D'

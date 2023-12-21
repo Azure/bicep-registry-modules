@@ -42,10 +42,10 @@ param authorizationRules authorizationRuleType = [
 ]
 
 @description('Optional. The migration configuration.')
-param migrationConfiguration migrationConfigurationsType?
+param migrationConfiguration migrationConfigurationsType
 
 @description('Optional. The disaster recovery configuration.')
-param disasterRecoveryConfig disasterRecoveryConfigType?
+param disasterRecoveryConfig disasterRecoveryConfigType
 
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
@@ -183,7 +183,7 @@ module serviceBusNamespace_authorizationRules 'authorization-rule/main.bicep' = 
   params: {
     namespaceName: serviceBusNamespace.name
     name: authorizationRule.name
-    rights: authorizationRule.?rights ?? []
+    rights: authorizationRule.?rights
   }
 }]
 
@@ -192,17 +192,17 @@ module serviceBusNamespace_disasterRecoveryConfig 'disaster-recovery-config/main
   params: {
     namespaceName: serviceBusNamespace.name
     name: disasterRecoveryConfig.?name ?? 'default'
-    alternateName: disasterRecoveryConfig.?alternateName ?? ''
-    partnerNamespaceResourceID: disasterRecoveryConfig.?partnerNamespace ?? ''
+    alternateName: disasterRecoveryConfig.?alternateName
+    partnerNamespaceResourceID: disasterRecoveryConfig.?partnerNamespace
   }
 }
 
-module serviceBusNamespace_migrationConfigurations 'migration-configuration/main.bicep' = if (!empty(migrationConfiguration)) {
+module serviceBusNamespace_migrationConfigurations 'migration-configuration/main.bicep' = if (!empty(migrationConfiguration ?? {})) {
   name: '${uniqueString(deployment().name, location)}-MigrationConfigurations'
   params: {
     namespaceName: serviceBusNamespace.name
-    postMigrationName: migrationConfiguration.?postMigrationName ?? ''
-    targetNamespaceResourceId: migrationConfiguration.?targetNamespace ?? ''
+    postMigrationName: migrationConfiguration!.postMigrationName
+    targetNamespaceResourceId: migrationConfiguration!.targetNamespace
   }
 }
 
@@ -223,34 +223,25 @@ module serviceBusNamespace_queues 'queue/main.bicep' = [for (queue, index) in (q
   params: {
     namespaceName: serviceBusNamespace.name
     name: queue.name
-    autoDeleteOnIdle: queue.?autoDeleteOnIdle ?? ''
-    forwardDeadLetteredMessagesTo: queue.?forwardDeadLetteredMessagesTo ?? ''
-    forwardTo: queue.?forwardTo ?? ''
-    maxMessageSizeInKilobytes: queue.?maxMessageSizeInKilobytes ?? 1024
-    authorizationRules: queue.?authorizationRules ?? [
-      {
-        name: 'RootManageSharedAccessKey'
-        rights: [
-          'Listen'
-          'Manage'
-          'Send'
-        ]
-      }
-    ]
-    deadLetteringOnMessageExpiration: queue.?deadLetteringOnMessageExpiration ?? true
-    defaultMessageTimeToLive: queue.?defaultMessageTimeToLive ?? 'P14D'
-    duplicateDetectionHistoryTimeWindow: queue.?duplicateDetectionHistoryTimeWindow ?? 'PT10M'
-    enableBatchedOperations: queue.?enableBatchedOperations ?? true
-    enableExpress: queue.?enableExpress ?? false
-    enablePartitioning: queue.?enablePartitioning ?? false
+    autoDeleteOnIdle: queue.?autoDeleteOnIdle
+    forwardDeadLetteredMessagesTo: queue.?forwardDeadLetteredMessagesTo
+    forwardTo: queue.?forwardTo
+    maxMessageSizeInKilobytes: queue.?maxMessageSizeInKilobytes
+    authorizationRules: queue.?authorizationRules
+    deadLetteringOnMessageExpiration: queue.?deadLetteringOnMessageExpiration
+    defaultMessageTimeToLive: queue.?defaultMessageTimeToLive
+    duplicateDetectionHistoryTimeWindow: queue.?duplicateDetectionHistoryTimeWindow
+    enableBatchedOperations: queue.?enableBatchedOperations
+    enableExpress: queue.?enableExpress
+    enablePartitioning: queue.?enablePartitioning
     lock: queue.?lock ?? lock
-    lockDuration: queue.?lockDuration ?? 'PT1M'
-    maxDeliveryCount: queue.?maxDeliveryCount ?? 10
-    maxSizeInMegabytes: queue.?maxSizeInMegabytes ?? 1024
-    requiresDuplicateDetection: queue.?requiresDuplicateDetection ?? false
-    requiresSession: queue.?requiresSession ?? false
-    roleAssignments: queue.?roleAssignments ?? []
-    status: queue.?status ?? 'Active'
+    lockDuration: queue.?lockDuration
+    maxDeliveryCount: queue.?maxDeliveryCount
+    maxSizeInMegabytes: queue.?maxSizeInMegabytes
+    requiresDuplicateDetection: queue.?requiresDuplicateDetection
+    requiresSession: queue.?requiresSession
+    roleAssignments: queue.?roleAssignments
+    status: queue.?status
   }
 }]
 
@@ -259,30 +250,21 @@ module serviceBusNamespace_topics 'topic/main.bicep' = [for (topic, index) in (t
   params: {
     namespaceName: serviceBusNamespace.name
     name: topic.name
-    authorizationRules: topic.?authorizationRules ?? [
-      {
-        name: 'RootManageSharedAccessKey'
-        rights: [
-          'Listen'
-          'Manage'
-          'Send'
-        ]
-      }
-    ]
-    autoDeleteOnIdle: topic.?autoDeleteOnIdle ?? 'PT5M'
-    defaultMessageTimeToLive: topic.?defaultMessageTimeToLive ?? 'P14D'
-    duplicateDetectionHistoryTimeWindow: topic.?duplicateDetectionHistoryTimeWindow ?? 'PT10M'
-    enableBatchedOperations: topic.?enableBatchedOperations ?? true
-    enableExpress: topic.?enableExpress ?? false
-    enablePartitioning: topic.?enablePartitioning ?? false
+    authorizationRules: topic.?authorizationRules
+    autoDeleteOnIdle: topic.?autoDeleteOnIdle
+    defaultMessageTimeToLive: topic.?defaultMessageTimeToLive
+    duplicateDetectionHistoryTimeWindow: topic.?duplicateDetectionHistoryTimeWindow
+    enableBatchedOperations: topic.?enableBatchedOperations
+    enableExpress: topic.?enableExpress
+    enablePartitioning: topic.?enablePartitioning
     lock: topic.?lock ?? lock
-    maxMessageSizeInKilobytes: topic.?maxMessageSizeInKilobytes ?? 1024
-    requiresDuplicateDetection: topic.?requiresDuplicateDetection ?? false
-    roleAssignments: topic.?roleAssignments ?? []
-    status: topic.?status ?? 'Active'
-    supportOrdering: topic.?supportOrdering ?? false
-    subscriptions: topic.?subscriptions ?? []
-    maxSizeInMegabytes: topic.?maxSizeInMegabytes ?? 1024
+    maxMessageSizeInKilobytes: topic.?maxMessageSizeInKilobytes
+    requiresDuplicateDetection: topic.?requiresDuplicateDetection
+    roleAssignments: topic.?roleAssignments
+    status: topic.?status
+    supportOrdering: topic.?supportOrdering
+    subscriptions: topic.?subscriptions
+    maxSizeInMegabytes: topic.?maxSizeInMegabytes
   }
 }]
 
@@ -621,7 +603,7 @@ type queueType = {
   @description('Optional. Queue/Topic name to forward the messages.')
   forwardTo: string?
 
-  @description('Optional. Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium.')
+  @description('Optional. Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024.')
   maxMessageSizeInKilobytes: int?
 
   @description('Optional. Authorization Rules for the Service Bus Queue.')
@@ -698,7 +680,7 @@ type topicType = {
   @description('Optional. The lock settings of the service.')
   lock: lockType?
 
-  @description('Optional. Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium.')
+  @description('Optional. Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024.')
   maxMessageSizeInKilobytes: int?
 
   @description('Optional. The maximum size of the topic in megabytes, which is the size of memory allocated for the topic. Default is 1024.')
