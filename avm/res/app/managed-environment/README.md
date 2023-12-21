@@ -110,7 +110,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Non-required parameters
     dockerBridgeCidr: '172.16.0.1/28'
     enableTelemetry: '<enableTelemetry>'
-    infrastructureResourceGroupName: 'me-dep-app.managedenvironments-amemax-rg'
+    infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
     internal: true
     location: '<location>'
@@ -120,6 +120,23 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     }
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
     tags: {
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
@@ -163,7 +180,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "<enableTelemetry>"
     },
     "infrastructureResourceGroupName": {
-      "value": "me-dep-app.managedenvironments-amemax-rg"
+      "value": "<infrastructureResourceGroupName>"
     },
     "infrastructureSubnetId": {
       "value": "<infrastructureSubnetId>"
@@ -185,6 +202,25 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     },
     "platformReservedDnsIP": {
       "value": "172.17.17.17"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
     },
     "tags": {
       "value": {
@@ -228,7 +264,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Non-required parameters
     dockerBridgeCidr: '172.16.0.1/28'
     enableTelemetry: '<enableTelemetry>'
-    infrastructureResourceGroupName: 'me-dep-app.managedenvironments-amewaf-rg'
+    infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
     internal: true
     location: '<location>'
@@ -238,6 +274,23 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     }
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
     tags: {
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
@@ -281,7 +334,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "<enableTelemetry>"
     },
     "infrastructureResourceGroupName": {
-      "value": "me-dep-app.managedenvironments-amewaf-rg"
+      "value": "<infrastructureResourceGroupName>"
     },
     "infrastructureSubnetId": {
       "value": "<infrastructureSubnetId>"
@@ -303,6 +356,25 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     },
     "platformReservedDnsIP": {
       "value": "172.17.17.17"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
     },
     "tags": {
       "value": {
