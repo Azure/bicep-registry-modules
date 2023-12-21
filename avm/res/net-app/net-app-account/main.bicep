@@ -42,11 +42,6 @@ param lock lockType
 @description('Optional. Tags for all resources.')
 param tags object?
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
-var enableReferencedModulesTelemetry = false
-
 var activeDirectoryConnectionProperties = [
   {
     username: !empty(domainName) ? domainJoinUser : null
@@ -73,14 +68,20 @@ var builtInRoleNames = {
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.network-networksecuritygroup.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
       contentVersion: '1.0.0.0'
       resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
     }
   }
 }
@@ -132,7 +133,6 @@ module netAppAccount_capacityPools 'capacity-pool/main.bicep' = [for (capacityPo
     roleAssignments: contains(capacityPool, 'roleAssignments') ? capacityPool.roleAssignments : []
     encryptionType: contains(capacityPool, 'encryptionType') ? capacityPool.encryptionType : 'Single'
     tags: capacityPool.?tags ?? tags
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 

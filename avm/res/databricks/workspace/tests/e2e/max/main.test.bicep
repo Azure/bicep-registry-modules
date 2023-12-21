@@ -24,7 +24,7 @@ param enableDefaultTelemetry bool = true
 param baseTime string = utcNow('u')
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '[[namePrefix]]'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //
@@ -42,6 +42,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    location: location
     amlWorkspaceName: 'dep-${namePrefix}-aml-${serviceShort}'
     applicationInsightsName: 'dep-${namePrefix}-appi-${serviceShort}'
     loadBalancerName: 'dep-${namePrefix}-lb-${serviceShort}'
@@ -77,8 +78,8 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   scope: resourceGroup
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
-    enableDefaultTelemetry: enableDefaultTelemetry
     name: '${namePrefix}${serviceShort}001'
+    location: location
     diagnosticSettings: [
       {
         name: 'customSetting'
@@ -162,6 +163,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     managedResourceGroupResourceId: '${subscription().id}/resourceGroups/rg-${resourceGroupName}-managed'
     requireInfrastructureEncryption: true
     vnetAddressPrefix: '10.100'
-    location: resourceGroup.location
   }
 }]
