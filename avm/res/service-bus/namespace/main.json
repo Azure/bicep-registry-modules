@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "8019817472700575213"
+      "templateHash": "2814309409542275500"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace.",
@@ -103,7 +103,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
             }
           },
           "conditionVersion": {
@@ -1931,7 +1931,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "40179215590229029"
+              "templateHash": "15472122599097892135"
             },
             "name": "Service Bus Namespace Queue",
             "description": "This module deploys a Service Bus Namespace Queue.",
@@ -2005,7 +2005,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                     }
                   },
                   "conditionVersion": {
@@ -2497,7 +2497,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "3885890297763429622"
+              "templateHash": "4526208214244284616"
             },
             "name": "Service Bus Namespace Topic",
             "description": "This module deploys a Service Bus Namespace Topic.",
@@ -2571,7 +2571,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                     }
                   },
                   "conditionVersion": {
