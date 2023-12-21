@@ -1,4 +1,4 @@
-Function Get-AvmCsv {
+function Get-AvmCsv {
   [CmdletBinding()]
   param (
     [Parameter(Mandatory)]
