@@ -1,0 +1,104 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.23.1.45101",
+      "templateHash": "7585808247826533259"
+    },
+    "name": "DBforMySQL Flexible Server Databases",
+    "description": "This module deploys a DBforMySQL Flexible Server Database.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the database."
+      }
+    },
+    "flexibleServerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent MySQL flexible server. Required if the template is used in a standalone deployment."
+      }
+    },
+    "collation": {
+      "type": "string",
+      "defaultValue": "utf8",
+      "metadata": {
+        "description": "Optional. The collation of the database."
+      }
+    },
+    "charset": {
+      "type": "string",
+      "defaultValue": "utf8_general_ci",
+      "metadata": {
+        "description": "Optional. The charset of the database."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    }
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.DBforMySQL/flexibleServers/databases",
+      "apiVersion": "2022-01-01",
+      "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
+      "properties": {
+        "collation": "[if(not(empty(parameters('collation'))), parameters('collation'), null())]",
+        "charset": "[if(not(empty(parameters('charset'))), parameters('charset'), null())]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed database."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed database."
+      },
+      "value": "[resourceId('Microsoft.DBforMySQL/flexibleServers/databases', parameters('flexibleServerName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed database."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

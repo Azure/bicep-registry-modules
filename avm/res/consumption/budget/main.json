@@ -1,0 +1,193 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.23.1.45101",
+      "templateHash": "10861664842554589267"
+    },
+    "name": "Consumption Budgets",
+    "description": "This module deploys a Consumption Budget for Subscriptions.",
+    "owner": "Azure/module-maintainers"
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the budget."
+      }
+    },
+    "category": {
+      "type": "string",
+      "defaultValue": "Cost",
+      "allowedValues": [
+        "Cost",
+        "Usage"
+      ],
+      "metadata": {
+        "description": "Optional. The category of the budget, whether the budget tracks cost or usage."
+      }
+    },
+    "amount": {
+      "type": "int",
+      "metadata": {
+        "description": "Required. The total amount of cost or usage to track with the budget."
+      }
+    },
+    "resetPeriod": {
+      "type": "string",
+      "defaultValue": "Monthly",
+      "allowedValues": [
+        "Monthly",
+        "Quarterly",
+        "Annually",
+        "BillingMonth",
+        "BillingQuarter",
+        "BillingAnnual"
+      ],
+      "metadata": {
+        "description": "Optional. The time covered by a budget. Tracking of the amount will be reset based on the time grain. BillingMonth, BillingQuarter, and BillingAnnual are only supported by WD customers."
+      }
+    },
+    "startDate": {
+      "type": "string",
+      "defaultValue": "[format('{0}-{1}-01T00:00:00Z', utcNow('yyyy'), utcNow('MM'))]",
+      "metadata": {
+        "description": "Optional. The start date for the budget. Start date should be the first day of the month and cannot be in the past (except for the current month)."
+      }
+    },
+    "endDate": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The end date for the budget. If not provided, it will default to 10 years from the start date."
+      }
+    },
+    "thresholds": {
+      "type": "array",
+      "defaultValue": [
+        50,
+        75,
+        90,
+        100,
+        110
+      ],
+      "maxLength": 5,
+      "metadata": {
+        "description": "Optional. Percent thresholds of budget for when to get a notification. Can be up to 5 thresholds, where each must be between 1 and 1000."
+      }
+    },
+    "contactEmails": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Conditional. The list of email addresses to send the budget notification to when the thresholds are exceeded. Required if neither `contactRoles` nor `actionGroups` was provided."
+      }
+    },
+    "contactRoles": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Conditional. The list of contact roles to send the budget notification to when the thresholds are exceeded. Required if neither `contactEmails` nor `actionGroups` was provided."
+      }
+    },
+    "actionGroups": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Conditional. List of action group resource IDs that will receive the alert. Required if neither `contactEmails` nor `contactEmails` was provided."
+      }
+    },
+    "enableDefaultTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[deployment().location]",
+      "metadata": {
+        "description": "Optional. Location deployment metadata."
+      }
+    }
+  },
+  "variables": {
+    "copy": [
+      {
+        "name": "notificationsArray",
+        "count": "[length(parameters('thresholds'))]",
+        "input": {
+          "[format('Actual_GreaterThan_{0}_Percentage', parameters('thresholds')[copyIndex('notificationsArray')])]": {
+            "enabled": true,
+            "operator": "GreaterThan",
+            "threshold": "[parameters('thresholds')[copyIndex('notificationsArray')]]",
+            "contactEmails": "[if(empty(parameters('contactEmails')), null(), array(parameters('contactEmails')))]",
+            "contactRoles": "[if(empty(parameters('contactRoles')), null(), array(parameters('contactRoles')))]",
+            "contactGroups": "[if(empty(parameters('actionGroups')), null(), array(parameters('actionGroups')))]",
+            "thresholdType": "Actual"
+          }
+        }
+      }
+    ],
+    "notifications": "[json(replace(replace(replace(string(variables('notificationsArray')), '[{', '{'), '}]', '}'), '}},{', '},'))]"
+  },
+  "resources": [
+    {
+      "condition": "[parameters('enableDefaultTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Consumption/budgets",
+      "apiVersion": "2021-10-01",
+      "name": "[parameters('name')]",
+      "properties": {
+        "category": "[parameters('category')]",
+        "amount": "[parameters('amount')]",
+        "timeGrain": "[parameters('resetPeriod')]",
+        "timePeriod": {
+          "startDate": "[parameters('startDate')]",
+          "endDate": "[parameters('endDate')]"
+        },
+        "filter": {},
+        "notifications": "[variables('notifications')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the budget."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the budget."
+      },
+      "value": "[subscriptionResourceId('Microsoft.Consumption/budgets', parameters('name'))]"
+    },
+    "subscriptionName": {
+      "type": "string",
+      "metadata": {
+        "description": "The subscription the budget was deployed into."
+      },
+      "value": "[subscription().displayName]"
+    }
+  }
+}
