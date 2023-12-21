@@ -1164,7 +1164,7 @@ function Set-UsageExamplesSection {
         $builtTemplate = (bicep build $_ --stdout 2>$null) | Out-String
 
         if ([String]::IsNullOrEmpty($builtTemplate)) {
-            throw "Failed to build template [$_]. Try running the command ``bicep build $_ --stdout`` locally for troubleshooting."
+            throw "Failed to build template [$_]. Try running the command ``bicep build $_ --stdout`` locally for troubleshooting. Make sure you have the latest Bicep CLI installed."
         }
         $templateHashTable = ConvertFrom-Json $builtTemplate -AsHashtable
 
