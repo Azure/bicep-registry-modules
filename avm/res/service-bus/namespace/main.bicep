@@ -601,11 +601,8 @@ type networkRuleSetType = {
     @description('Required. The virtual network rule name.')
     ignoreMissingVnetServiceEndpoint: bool
 
-    @description('Required. The subnet properties for the virtual network rule.')
-    subnet: {
-      @description('Required. The ID of the subnet.')
-      id: string
-    }
+    @description('Required. The ID of the subnet.')
+    subnetResourceId: string
   }[]?
 }?
 

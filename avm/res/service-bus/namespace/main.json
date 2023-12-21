@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "4115415950473173882"
+      "templateHash": "1205316324014787793"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace.",
@@ -605,18 +605,10 @@
                   "description": "Required. The virtual network rule name."
                 }
               },
-              "subnet": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The ID of the subnet."
-                    }
-                  }
-                },
+              "subnetResourceId": {
+                "type": "string",
                 "metadata": {
-                  "description": "Required. The subnet properties for the virtual network rule."
+                  "description": "Required. The ID of the subnet."
                 }
               }
             }

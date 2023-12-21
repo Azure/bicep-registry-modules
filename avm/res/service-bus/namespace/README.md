@@ -280,9 +280,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       virtualNetworkRules: [
         {
           ignoreMissingVnetServiceEndpoint: true
-          subnet: {
-            id: '<id>'
-          }
+          subnetResourceId: '<subnetResourceId>'
         }
       ]
     }
@@ -500,9 +498,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         "virtualNetworkRules": [
           {
             "ignoreMissingVnetServiceEndpoint": true,
-            "subnet": {
-              "id": "<id>"
-            }
+            "subnetResourceId": "<subnetResourceId>"
           }
         ]
       }
@@ -849,9 +845,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       virtualNetworkRules: [
         {
           ignoreMissingVnetServiceEndpoint: true
-          subnet: {
-            id: '<id>'
-          }
+          subnetResourceId: '<subnetResourceId>'
         }
       ]
     }
@@ -1022,9 +1016,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         "virtualNetworkRules": [
           {
             "ignoreMissingVnetServiceEndpoint": true,
-            "subnet": {
-              "id": "<id>"
-            }
+            "subnetResourceId": "<subnetResourceId>"
           }
         ]
       }
