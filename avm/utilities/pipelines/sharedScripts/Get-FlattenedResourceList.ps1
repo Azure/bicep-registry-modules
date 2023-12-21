@@ -1,18 +1,23 @@
 <#
 .SYNOPSIS
 Flatten the (nested) resources of a given template file content
+
 .DESCRIPTION
 Flatten the (nested) resources of a given template file content. Keys are either the identifier in the template file or a concatenation of the parent and their child identifiers
 For example:
 - batchAccount_roleAssignments
 - batchAccount_privateEndpoints.privateEndpoint_roleAssignments
+
 .PARAMETER TemplateFileContent
 Optional. The template file content who's resources to extract
+
 .PARAMETER Identifier
 Optional. A parent identifier to prepend to a resource's identifier
+
 .EXAMPLE
 Get-FlattenedResourceList -TemplateFileContent $templateContent @{ resource = @{}; ... }
 Extract all resources from the given template file content and return them as a flat hashtable
+
 .NOTES
 This only works if the template uses language version 2 (i.e., resources are defined in an object instead of an array)
 #>
