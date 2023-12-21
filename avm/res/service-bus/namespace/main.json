@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "13153178414136178430"
+      "templateHash": "15625935842670392114"
     },
     "name": "Service Bus Namespaces",
     "description": "This module deploys a Service Bus Namespace.",
@@ -103,7 +103,7 @@
             "type": "string",
             "nullable": true,
             "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
             }
           },
           "conditionVersion": {
@@ -462,6 +462,596 @@
           }
         }
       }
+    },
+    "authorizationRuleType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the authorization rule."
+            }
+          },
+          "rights": {
+            "type": "array",
+            "allowedValues": [
+              "Listen",
+              "Manage",
+              "Send"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The rights associated with the rule."
+            }
+          }
+        }
+      }
+    },
+    "disasterRecoveryConfigType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the disaster recovery config."
+          }
+        },
+        "alternateName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Primary/Secondary eventhub namespace name, which is part of GEO DR pairing."
+          }
+        },
+        "partnerNamespace": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the Primary/Secondary event hub namespace name, which is part of GEO DR pairing."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "migrationConfigurationsType": {
+      "type": "object",
+      "properties": {
+        "postMigrationName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name to access Standard Namespace after migration."
+          }
+        },
+        "targetNamespace": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Existing premium Namespace resource ID which has no entities, will be used for migration."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "networkRuleSetType": {
+      "type": "object",
+      "properties": {
+        "publicNetworkAccess": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. This determines if traffic is allowed over public network. Default is \"Enabled\". If set to \"Disabled\", traffic to this namespace will be restricted over Private Endpoints only and network rules will not be applied."
+          }
+        },
+        "defaultAction": {
+          "type": "string",
+          "allowedValues": [
+            "Allow",
+            "Deny"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Default Action for Network Rule Set. Default is \"Allow\". It will not be set if publicNetworkAccess is \"Disabled\". Otherwise, it will be set to \"Deny\" if ipRules or virtualNetworkRules are being used."
+          }
+        },
+        "trustedServiceAccessEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Value that indicates whether Trusted Service Access is enabled or not. Default is \"true\". It will not be set if publicNetworkAccess is \"Disabled\"."
+          }
+        },
+        "ipRules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "allowedValues": [
+                  "Allow",
+                  "Deny"
+                ],
+                "metadata": {
+                  "description": "Required. The IP filter action."
+                }
+              },
+              "ipMask": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The IP mask."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of IpRules. It will not be set if publicNetworkAccess is \"Disabled\". Otherwise, when used, defaultAction will be set to \"Deny\"."
+          }
+        },
+        "virtualNetworkRules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ignoreMissingVnetServiceEndpoint": {
+                "type": "bool",
+                "metadata": {
+                  "description": "Required. The virtual network rule name."
+                }
+              },
+              "subnetResourceId": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The ID of the subnet."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List virtual network rules. It will not be set if publicNetworkAccess is \"Disabled\". Otherwise, when used, defaultAction will be set to \"Deny\"."
+          }
+        }
+      },
+      "nullable": true
+    },
+    "queueType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the queue."
+            }
+          },
+          "autoDeleteOnIdle": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. ISO 8061 timeSpan idle interval after which the queue is automatically deleted. The minimum duration is 5 minutes (PT5M)."
+            }
+          },
+          "forwardDeadLetteredMessagesTo": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Queue/Topic name to forward the Dead Letter message."
+            }
+          },
+          "forwardTo": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Queue/Topic name to forward the messages."
+            }
+          },
+          "maxMessageSizeInKilobytes": {
+            "type": "int",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Maximum size (in KB) of the message payload that can be accepted by the queue. This property is only used in Premium today and default is 1024."
+            }
+          },
+          "authorizationRules": {
+            "$ref": "#/definitions/authorizationRuleType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Authorization Rules for the Service Bus Queue."
+            }
+          },
+          "deadLetteringOnMessageExpiration": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A value that indicates whether this queue has dead letter support when a message expires."
+            }
+          },
+          "defaultMessageTimeToLive": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. ISO 8601 default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself."
+            }
+          },
+          "duplicateDetectionHistoryTimeWindow": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. ISO 8601 timeSpan structure that defines the duration of the duplicate detection history. The default value is 10 minutes."
+            }
+          },
+          "enableBatchedOperations": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Value that indicates whether server-side batched operations are enabled."
+            }
+          },
+          "enableExpress": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A value that indicates whether Express Entities are enabled. An express queue holds a message in memory temporarily before writing it to persistent storage. This property is only used if the `service-bus/namespace` sku is Premium."
+            }
+          },
+          "enablePartitioning": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A value that indicates whether the queue is to be partitioned across multiple message brokers."
+            }
+          },
+          "lock": {
+            "$ref": "#/definitions/lockType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The lock settings of the service."
+            }
+          },
+          "lockDuration": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute."
+            }
+          },
+          "maxDeliveryCount": {
+            "type": "int",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The maximum delivery count. A message is automatically deadlettered after this number of deliveries. default value is 10."
+            }
+          },
+          "maxSizeInMegabytes": {
+            "type": "int",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The maximum size of the queue in megabytes, which is the size of memory allocated for the queue. Default is 1024."
+            }
+          },
+          "requiresDuplicateDetection": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A value indicating if this queue requires duplicate detection."
+            }
+          },
+          "requiresSession": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A value that indicates whether the queue supports the concept of sessions."
+            }
+          },
+          "roleAssignments": {
+            "$ref": "#/definitions/roleAssignmentType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Array of role assignments to create."
+            }
+          },
+          "status": {
+            "type": "string",
+            "allowedValues": [
+              "Active",
+              "Creating",
+              "Deleting",
+              "Disabled",
+              "ReceiveDisabled",
+              "Renaming",
+              "Restoring",
+              "SendDisabled",
+              "Unknown"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown."
+            }
+          }
+        }
+      },
+      "nullable": true
+    },
+    "topicType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the topic."
+            }
+          },
+          "authorizationRules": {
+            "$ref": "#/definitions/authorizationRuleType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Authorization Rules for the Service Bus Topic."
+            }
+          },
+          "autoDeleteOnIdle": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. ISO 8601 timespan idle interval after which the topic is automatically deleted. The minimum duration is 5 minutes."
+            }
+          },
+          "defaultMessageTimeToLive": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. ISO 8601 default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself."
+            }
+          },
+          "duplicateDetectionHistoryTimeWindow": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. ISO 8601 timeSpan structure that defines the duration of the duplicate detection history. The default value is 10 minutes."
+            }
+          },
+          "enableBatchedOperations": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Value that indicates whether server-side batched operations are enabled."
+            }
+          },
+          "enableExpress": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A value that indicates whether Express Entities are enabled. An express topic holds a message in memory temporarily before writing it to persistent storage. This property is only used if the `service-bus/namespace` sku is Premium."
+            }
+          },
+          "enablePartitioning": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A value that indicates whether the topic is to be partitioned across multiple message brokers."
+            }
+          },
+          "lock": {
+            "$ref": "#/definitions/lockType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The lock settings of the service."
+            }
+          },
+          "maxMessageSizeInKilobytes": {
+            "type": "int",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024."
+            }
+          },
+          "maxSizeInMegabytes": {
+            "type": "int",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The maximum size of the topic in megabytes, which is the size of memory allocated for the topic. Default is 1024."
+            }
+          },
+          "requiresDuplicateDetection": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A value indicating if this topic requires duplicate detection."
+            }
+          },
+          "roleAssignments": {
+            "$ref": "#/definitions/roleAssignmentType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Array of role assignments to create."
+            }
+          },
+          "status": {
+            "type": "string",
+            "allowedValues": [
+              "Active",
+              "Creating",
+              "Deleting",
+              "Disabled",
+              "ReceiveDisabled",
+              "Renaming",
+              "Restoring",
+              "SendDisabled",
+              "Unknown"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown."
+            }
+          },
+          "supportOrdering": {
+            "type": "bool",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Value that indicates whether the topic supports ordering."
+            }
+          },
+          "subscriptions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the service bus namespace topic subscription."
+                  }
+                },
+                "autoDeleteOnIdle": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. ISO 8601 timespan idle interval after which the syubscription is automatically deleted. The minimum duration is 5 minutes."
+                  }
+                },
+                "clientAffineProperties": {
+                  "type": "object",
+                  "properties": {
+                    "clientId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Indicates the Client ID of the application that created the client-affine subscription."
+                      }
+                    },
+                    "isDurable": {
+                      "type": "bool",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. For client-affine subscriptions, this value indicates whether the subscription is durable or not."
+                      }
+                    },
+                    "isShared": {
+                      "type": "bool",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. For client-affine subscriptions, this value indicates whether the subscription is shared or not."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The properties that are associated with a subscription that is client-affine."
+                  }
+                },
+                "deadLetteringOnMessageExpiration": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. A value that indicates whether a subscription has dead letter support when a message expires."
+                  }
+                },
+                "deadLetteringOnFilterEvaluationExceptions": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. A value that indicates whether a subscription has dead letter support when a message expires."
+                  }
+                },
+                "defaultMessageTimeToLive": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes."
+                  }
+                },
+                "duplicateDetectionHistoryTimeWindow": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. ISO 8601 timespan that defines the duration of the duplicate detection history. The default value is 10 minutes."
+                  }
+                },
+                "enableBatchedOperations": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. A value that indicates whether server-side batched operations are enabled."
+                  }
+                },
+                "forwardDeadLetteredMessagesTo": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to."
+                  }
+                },
+                "forwardTo": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to."
+                  }
+                },
+                "isClientAffine": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. A value that indicates whether the subscription supports the concept of session."
+                  }
+                },
+                "lockDuration": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute."
+                  }
+                },
+                "maxDeliveryCount": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Number of maximum deliveries. A message is automatically deadlettered after this number of deliveries. Default value is 10."
+                  }
+                },
+                "requiresSession": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. A value that indicates whether the subscription supports the concept of session."
+                  }
+                },
+                "status": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Active",
+                    "Creating",
+                    "Deleting",
+                    "Disabled",
+                    "ReceiveDisabled",
+                    "Renaming",
+                    "Restoring",
+                    "SendDisabled",
+                    "Unknown"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown."
+                  }
+                }
+              }
+            },
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The subscriptions of the topic."
+            }
+          }
+        }
+      },
+      "nullable": true
     }
   },
   "parameters": {
@@ -519,7 +1109,7 @@
       }
     },
     "authorizationRules": {
-      "type": "array",
+      "$ref": "#/definitions/authorizationRuleType",
       "defaultValue": [
         {
           "name": "RootManageSharedAccessKey",
@@ -534,16 +1124,14 @@
         "description": "Optional. Authorization Rules for the Service Bus namespace."
       }
     },
-    "migrationConfigurations": {
-      "type": "object",
-      "nullable": true,
+    "migrationConfiguration": {
+      "$ref": "#/definitions/migrationConfigurationsType",
       "metadata": {
         "description": "Optional. The migration configuration."
       }
     },
-    "disasterRecoveryConfigs": {
-      "type": "object",
-      "nullable": true,
+    "disasterRecoveryConfig": {
+      "$ref": "#/definitions/disasterRecoveryConfigType",
       "metadata": {
         "description": "Optional. The disaster recovery configuration."
       }
@@ -592,7 +1180,7 @@
       }
     },
     "networkRuleSets": {
-      "type": "object",
+      "$ref": "#/definitions/networkRuleSetType",
       "nullable": true,
       "metadata": {
         "description": "Optional. Configure networking options for Premium SKU Service Bus. This object contains IPs/Subnets to allow or restrict access to private endpoints only. For security reasons, it is recommended to configure this object on the Namespace."
@@ -620,14 +1208,14 @@
       }
     },
     "queues": {
-      "type": "array",
+      "$ref": "#/definitions/queueType",
       "nullable": true,
       "metadata": {
         "description": "Optional. The queues to create in the service bus namespace."
       }
     },
     "topics": {
-      "type": "array",
+      "$ref": "#/definitions/topicType",
       "nullable": true,
       "metadata": {
         "description": "Optional. The topics to create in the service bus namespace."
@@ -817,7 +1405,7 @@
             "value": "[parameters('authorizationRules')[copyIndex()].name]"
           },
           "rights": {
-            "value": "[coalesce(tryGet(parameters('authorizationRules')[copyIndex()], 'rights'), createArray())]"
+            "value": "[tryGet(parameters('authorizationRules')[copyIndex()], 'rights')]"
           }
         },
         "template": {
@@ -901,7 +1489,7 @@
       ]
     },
     "serviceBusNamespace_disasterRecoveryConfig": {
-      "condition": "[not(empty(parameters('disasterRecoveryConfigs')))]",
+      "condition": "[not(empty(parameters('disasterRecoveryConfig')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-DisasterRecoveryConfig', uniqueString(deployment().name, parameters('location')))]",
@@ -915,13 +1503,13 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[coalesce(tryGet(parameters('disasterRecoveryConfigs'), 'name'), 'default')]"
+            "value": "[coalesce(tryGet(parameters('disasterRecoveryConfig'), 'name'), 'default')]"
           },
           "alternateName": {
-            "value": "[coalesce(tryGet(parameters('disasterRecoveryConfigs'), 'alternateName'), '')]"
+            "value": "[tryGet(parameters('disasterRecoveryConfig'), 'alternateName')]"
           },
           "partnerNamespaceResourceID": {
-            "value": "[coalesce(tryGet(parameters('disasterRecoveryConfigs'), 'partnerNamespace'), '')]"
+            "value": "[tryGet(parameters('disasterRecoveryConfig'), 'partnerNamespace')]"
           }
         },
         "template": {
@@ -1009,7 +1597,7 @@
       ]
     },
     "serviceBusNamespace_migrationConfigurations": {
-      "condition": "[not(empty(parameters('migrationConfigurations')))]",
+      "condition": "[not(empty(coalesce(parameters('migrationConfiguration'), createObject())))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-MigrationConfigurations', uniqueString(deployment().name, parameters('location')))]",
@@ -1023,10 +1611,10 @@
             "value": "[parameters('name')]"
           },
           "postMigrationName": {
-            "value": "[tryGet(parameters('migrationConfigurations'), 'postMigrationName')]"
+            "value": "[parameters('migrationConfiguration').postMigrationName]"
           },
           "targetNamespaceResourceId": {
-            "value": "[tryGet(parameters('migrationConfigurations'), 'targetNamespace')]"
+            "value": "[parameters('migrationConfiguration').targetNamespace]"
           }
         },
         "template": {
@@ -1276,61 +1864,61 @@
             "value": "[coalesce(parameters('queues'), createArray())[copyIndex()].name]"
           },
           "autoDeleteOnIdle": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'autoDeleteOnIdle'), '')]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'autoDeleteOnIdle')]"
           },
           "forwardDeadLetteredMessagesTo": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'forwardDeadLetteredMessagesTo'), '')]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'forwardDeadLetteredMessagesTo')]"
           },
           "forwardTo": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'forwardTo'), '')]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'forwardTo')]"
           },
           "maxMessageSizeInKilobytes": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'maxMessageSizeInKilobytes'), 1024)]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'maxMessageSizeInKilobytes')]"
           },
           "authorizationRules": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'authorizationRules'), createArray(createObject('name', 'RootManageSharedAccessKey', 'rights', createArray('Listen', 'Manage', 'Send'))))]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'authorizationRules')]"
           },
           "deadLetteringOnMessageExpiration": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'deadLetteringOnMessageExpiration'), true())]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'deadLetteringOnMessageExpiration')]"
           },
           "defaultMessageTimeToLive": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'defaultMessageTimeToLive'), 'P14D')]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'defaultMessageTimeToLive')]"
           },
           "duplicateDetectionHistoryTimeWindow": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'duplicateDetectionHistoryTimeWindow'), 'PT10M')]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'duplicateDetectionHistoryTimeWindow')]"
           },
           "enableBatchedOperations": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'enableBatchedOperations'), true())]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'enableBatchedOperations')]"
           },
           "enableExpress": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'enableExpress'), false())]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'enableExpress')]"
           },
           "enablePartitioning": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'enablePartitioning'), false())]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'enablePartitioning')]"
           },
           "lock": {
             "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
           "lockDuration": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'lockDuration'), 'PT1M')]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'lockDuration')]"
           },
           "maxDeliveryCount": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'maxDeliveryCount'), 10)]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'maxDeliveryCount')]"
           },
           "maxSizeInMegabytes": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'maxSizeInMegabytes'), 1024)]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'maxSizeInMegabytes')]"
           },
           "requiresDuplicateDetection": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'requiresDuplicateDetection'), false())]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'requiresDuplicateDetection')]"
           },
           "requiresSession": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'requiresSession'), false())]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'requiresSession')]"
           },
           "roleAssignments": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'roleAssignments'), createArray())]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'roleAssignments')]"
           },
           "status": {
-            "value": "[coalesce(tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'status'), 'Active')]"
+            "value": "[tryGet(coalesce(parameters('queues'), createArray())[copyIndex()], 'status')]"
           }
         },
         "template": {
@@ -1341,7 +1929,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "6112731988410579702"
+              "templateHash": "10108582310235056608"
             },
             "name": "Service Bus Namespace Queue",
             "description": "This module deploys a Service Bus Namespace Queue.",
@@ -1415,7 +2003,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                     }
                   },
                   "conditionVersion": {
@@ -1577,7 +2165,7 @@
               "type": "bool",
               "defaultValue": false,
               "metadata": {
-                "description": "Optional. A value that indicates whether Express Entities are enabled. An express queue holds a message in memory temporarily before writing it to persistent storage."
+                "description": "Optional. A value that indicates whether Express Entities are enabled. An express queue holds a message in memory temporarily before writing it to persistent storage. This property is only used if the `service-bus/namespace` sku is Premium."
               }
             },
             "authorizationRules": {
@@ -1854,46 +2442,49 @@
             "value": "[coalesce(parameters('topics'), createArray())[copyIndex()].name]"
           },
           "authorizationRules": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'authorizationRules'), createArray(createObject('name', 'RootManageSharedAccessKey', 'rights', createArray('Listen', 'Manage', 'Send'))))]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'authorizationRules')]"
           },
           "autoDeleteOnIdle": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'autoDeleteOnIdle'), 'PT5M')]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'autoDeleteOnIdle')]"
           },
           "defaultMessageTimeToLive": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'defaultMessageTimeToLive'), 'P14D')]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'defaultMessageTimeToLive')]"
           },
           "duplicateDetectionHistoryTimeWindow": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'duplicateDetectionHistoryTimeWindow'), 'PT10M')]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'duplicateDetectionHistoryTimeWindow')]"
           },
           "enableBatchedOperations": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'enableBatchedOperations'), true())]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'enableBatchedOperations')]"
           },
           "enableExpress": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'enableExpress'), false())]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'enableExpress')]"
           },
           "enablePartitioning": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'enablePartitioning'), false())]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'enablePartitioning')]"
           },
           "lock": {
             "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
           "maxMessageSizeInKilobytes": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'maxMessageSizeInKilobytes'), 1024)]"
-          },
-          "maxSizeInMegabytes": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'maxSizeInMegabytes'), 1024)]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'maxMessageSizeInKilobytes')]"
           },
           "requiresDuplicateDetection": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'requiresDuplicateDetection'), false())]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'requiresDuplicateDetection')]"
           },
           "roleAssignments": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'roleAssignments'), createArray())]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'roleAssignments')]"
           },
           "status": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'status'), 'Active')]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'status')]"
           },
           "supportOrdering": {
-            "value": "[coalesce(tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'supportOrdering'), false())]"
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'supportOrdering')]"
+          },
+          "subscriptions": {
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'subscriptions')]"
+          },
+          "maxSizeInMegabytes": {
+            "value": "[tryGet(coalesce(parameters('topics'), createArray())[copyIndex()], 'maxSizeInMegabytes')]"
           }
         },
         "template": {
@@ -1904,7 +2495,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "16042975236040796641"
+              "templateHash": "17866416408257743365"
             },
             "name": "Service Bus Namespace Topic",
             "description": "This module deploys a Service Bus Namespace Topic.",
@@ -1978,7 +2569,7 @@
                     "type": "string",
                     "nullable": true,
                     "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\""
+                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                     }
                   },
                   "conditionVersion": {
@@ -1996,6 +2587,151 @@
                     "nullable": true,
                     "metadata": {
                       "description": "Optional. The Resource Id of the delegated managed identity resource."
+                    }
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "subscriptionsType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the service bus namespace topic subscription."
+                    }
+                  },
+                  "autoDeleteOnIdle": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Optional. ISO 8601 timespan idle interval after which the syubscription is automatically deleted. The minimum duration is 5 minutes."
+                    }
+                  },
+                  "clientAffineProperties": {
+                    "type": "object",
+                    "properties": {
+                      "clientId": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. Indicates the Client ID of the application that created the client-affine subscription."
+                        }
+                      },
+                      "isDurable": {
+                        "type": "bool",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. For client-affine subscriptions, this value indicates whether the subscription is durable or not."
+                        }
+                      },
+                      "isShared": {
+                        "type": "bool",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. For client-affine subscriptions, this value indicates whether the subscription is shared or not."
+                        }
+                      }
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The properties that are associated with a subscription that is client-affine."
+                    }
+                  },
+                  "deadLetteringOnMessageExpiration": {
+                    "type": "bool",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. A value that indicates whether a subscription has dead letter support when a message expires."
+                    }
+                  },
+                  "deadLetteringOnFilterEvaluationExceptions": {
+                    "type": "bool",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. A value that indicates whether a subscription has dead letter support when a message expires."
+                    }
+                  },
+                  "defaultMessageTimeToLive": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes."
+                    }
+                  },
+                  "duplicateDetectionHistoryTimeWindow": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. ISO 8601 timespan that defines the duration of the duplicate detection history. The default value is 10 minutes."
+                    }
+                  },
+                  "enableBatchedOperations": {
+                    "type": "bool",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. A value that indicates whether server-side batched operations are enabled."
+                    }
+                  },
+                  "forwardDeadLetteredMessagesTo": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to."
+                    }
+                  },
+                  "forwardTo": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to."
+                    }
+                  },
+                  "isClientAffine": {
+                    "type": "bool",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. A value that indicates whether the subscription supports the concept of session."
+                    }
+                  },
+                  "lockDuration": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute."
+                    }
+                  },
+                  "maxDeliveryCount": {
+                    "type": "int",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Number of maximum deliveries. A message is automatically deadlettered after this number of deliveries. Default value is 10."
+                    }
+                  },
+                  "requiresSession": {
+                    "type": "bool",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. A value that indicates whether the subscription supports the concept of session."
+                    }
+                  },
+                  "status": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Active",
+                      "Creating",
+                      "Deleting",
+                      "Disabled",
+                      "ReceiveDisabled",
+                      "Renaming",
+                      "Restoring",
+                      "SendDisabled",
+                      "Unknown"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown."
                     }
                   }
                 }
@@ -2029,7 +2765,7 @@
             },
             "requiresDuplicateDetection": {
               "type": "bool",
-              "defaultValue": false,
+              "defaultValue": true,
               "metadata": {
                 "description": "Optional. A value indicating if this topic requires duplicate detection."
               }
@@ -2059,7 +2795,7 @@
               "type": "int",
               "defaultValue": 1024,
               "metadata": {
-                "description": "Optional. Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024."
+                "description": "Optional. Maximum size (in KB) of the message payload that can be accepted by the topic. This property is only used in Premium today and default is 1024. This property is only used if the `service-bus/namespace` sku is Premium."
               }
             },
             "supportOrdering": {
@@ -2071,7 +2807,7 @@
             },
             "autoDeleteOnIdle": {
               "type": "string",
-              "defaultValue": "PT5M",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. ISO 8601 timespan idle interval after which the topic is automatically deleted. The minimum duration is 5 minutes."
               }
@@ -2105,7 +2841,7 @@
               "type": "bool",
               "defaultValue": false,
               "metadata": {
-                "description": "Optional. A value that indicates whether Express Entities are enabled. An express topic holds a message in memory temporarily before writing it to persistent storage."
+                "description": "Optional. A value that indicates whether Express Entities are enabled. An express topic holds a message in memory temporarily before writing it to persistent storage. This property is only used if the `service-bus/namespace` sku is Premium."
               }
             },
             "authorizationRules": {
@@ -2137,6 +2873,13 @@
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
               }
+            },
+            "subscriptions": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The subscriptions of the topic."
+              }
             }
           },
           "variables": {
@@ -2162,19 +2905,7 @@
               "type": "Microsoft.ServiceBus/namespaces/topics",
               "apiVersion": "2022-10-01-preview",
               "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
-              "properties": {
-                "autoDeleteOnIdle": "[parameters('autoDeleteOnIdle')]",
-                "defaultMessageTimeToLive": "[parameters('defaultMessageTimeToLive')]",
-                "duplicateDetectionHistoryTimeWindow": "[parameters('duplicateDetectionHistoryTimeWindow')]",
-                "enableBatchedOperations": "[parameters('enableBatchedOperations')]",
-                "enableExpress": "[parameters('enableExpress')]",
-                "enablePartitioning": "[parameters('enablePartitioning')]",
-                "maxMessageSizeInKilobytes": "[parameters('maxMessageSizeInKilobytes')]",
-                "maxSizeInMegabytes": "[parameters('maxSizeInMegabytes')]",
-                "requiresDuplicateDetection": "[parameters('requiresDuplicateDetection')]",
-                "status": "[parameters('status')]",
-                "supportOrdering": "[parameters('supportOrdering')]"
-              },
+              "properties": "[union(createObject('autoDeleteOnIdle', parameters('autoDeleteOnIdle'), 'defaultMessageTimeToLive', parameters('defaultMessageTimeToLive'), 'duplicateDetectionHistoryTimeWindow', parameters('duplicateDetectionHistoryTimeWindow'), 'enableBatchedOperations', parameters('enableBatchedOperations'), 'enablePartitioning', parameters('enablePartitioning'), 'requiresDuplicateDetection', parameters('requiresDuplicateDetection'), 'status', parameters('status'), 'supportOrdering', parameters('supportOrdering'), 'maxSizeInMegabytes', parameters('maxSizeInMegabytes')), if(equals(reference('namespace', '2022-10-01-preview', 'full').sku.name, 'Premium'), createObject('enableExpress', parameters('enableExpress'), 'maxMessageSizeInKilobytes', parameters('maxMessageSizeInKilobytes')), createObject()))]",
               "dependsOn": [
                 "namespace"
               ]
@@ -2321,6 +3052,267 @@
                 }
               },
               "dependsOn": [
+                "topic"
+              ]
+            },
+            "topic_subscription": {
+              "copy": {
+                "name": "topic_subscription",
+                "count": "[length(coalesce(parameters('subscriptions'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-subscription-{1}', deployment().name, copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[coalesce(parameters('subscriptions'), createArray())[copyIndex()].name]"
+                  },
+                  "namespaceName": {
+                    "value": "[parameters('namespaceName')]"
+                  },
+                  "topicName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "autoDeleteOnIdle": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'autoDeleteOnIdle'), 'PT1H')]"
+                  },
+                  "defaultMessageTimeToLive": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'defaultMessageTimeToLive'), 'P14D')]"
+                  },
+                  "duplicateDetectionHistoryTimeWindow": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'duplicateDetectionHistoryTimeWindow'), 'PT10M')]"
+                  },
+                  "enableBatchedOperations": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'enableBatchedOperations'), true())]"
+                  },
+                  "clientAffineProperties": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'clientAffineProperties'), createObject())]"
+                  },
+                  "deadLetteringOnFilterEvaluationExceptions": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'deadLetteringOnFilterEvaluationExceptions'), true())]"
+                  },
+                  "deadLetteringOnMessageExpiration": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'deadLetteringOnMessageExpiration'), false())]"
+                  },
+                  "forwardDeadLetteredMessagesTo": {
+                    "value": "[tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'forwardDeadLetteredMessagesTo')]"
+                  },
+                  "forwardTo": {
+                    "value": "[tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'forwardTo')]"
+                  },
+                  "isClientAffine": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'isClientAffine'), false())]"
+                  },
+                  "lockDuration": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'lockDuration'), 'PT1M')]"
+                  },
+                  "maxDeliveryCount": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'maxDeliveryCount'), 10)]"
+                  },
+                  "requiresSession": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'requiresSession'), false())]"
+                  },
+                  "status": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('subscriptions'), createArray())[copyIndex()], 'status'), 'Active')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.23.1.45101",
+                      "templateHash": "6392413170251972432"
+                    },
+                    "name": "Service Bus Namespace Topic Subscription",
+                    "description": "This module deploys a Service Bus Namespace Topic Subscription.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the service bus namespace topic subscription."
+                      }
+                    },
+                    "namespaceName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent Service Bus Namespace. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "topicName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent Service Bus Namespace Topic. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "autoDeleteOnIdle": {
+                      "type": "string",
+                      "defaultValue": "PT1H",
+                      "metadata": {
+                        "description": "Optional. ISO 8601 timespan idle interval after which the subscription is automatically deleted. The minimum duration is 5 minutes."
+                      }
+                    },
+                    "clientAffineProperties": {
+                      "type": "object",
+                      "defaultValue": {},
+                      "metadata": {
+                        "description": "Optional. The properties that are associated with a subscription that is client-affine."
+                      }
+                    },
+                    "deadLetteringOnFilterEvaluationExceptions": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Optional. A value that indicates whether a subscription has dead letter support when a message expires."
+                      }
+                    },
+                    "deadLetteringOnMessageExpiration": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Optional. A value that indicates whether a subscription has dead letter support when a message expires."
+                      }
+                    },
+                    "defaultMessageTimeToLive": {
+                      "type": "string",
+                      "defaultValue": "P10675199DT2H48M5.4775807S",
+                      "metadata": {
+                        "description": "Optional. ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes."
+                      }
+                    },
+                    "duplicateDetectionHistoryTimeWindow": {
+                      "type": "string",
+                      "defaultValue": "PT10M",
+                      "metadata": {
+                        "description": "Optional. ISO 8601 timespan that defines the duration of the duplicate detection history. The default value is 10 minutes."
+                      }
+                    },
+                    "enableBatchedOperations": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. A value that indicates whether server-side batched operations are enabled."
+                      }
+                    },
+                    "forwardDeadLetteredMessagesTo": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to."
+                      }
+                    },
+                    "forwardTo": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to."
+                      }
+                    },
+                    "isClientAffine": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Optional. A value that indicates whether the subscription supports the concept of session."
+                      }
+                    },
+                    "lockDuration": {
+                      "type": "string",
+                      "defaultValue": "PT1M",
+                      "metadata": {
+                        "description": "Optional. ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute."
+                      }
+                    },
+                    "maxDeliveryCount": {
+                      "type": "int",
+                      "defaultValue": 10,
+                      "metadata": {
+                        "description": "Optional. Number of maximum deliveries. A message is automatically deadlettered after this number of deliveries. Default value is 10."
+                      }
+                    },
+                    "requiresSession": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Optional. A value that indicates whether the subscription supports the concept of session."
+                      }
+                    },
+                    "status": {
+                      "type": "string",
+                      "defaultValue": "Active",
+                      "allowedValues": [
+                        "Active",
+                        "Creating",
+                        "Deleting",
+                        "Disabled",
+                        "ReceiveDisabled",
+                        "Renaming",
+                        "Restoring",
+                        "SendDisabled",
+                        "Unknown"
+                      ],
+                      "metadata": {
+                        "description": "Optional. Enumerates the possible values for the status of a messaging entity."
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+                      "apiVersion": "2021-11-01",
+                      "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('topicName'), parameters('name'))]",
+                      "properties": {
+                        "autoDeleteOnIdle": "[parameters('autoDeleteOnIdle')]",
+                        "clientAffineProperties": "[parameters('clientAffineProperties')]",
+                        "deadLetteringOnFilterEvaluationExceptions": "[parameters('deadLetteringOnFilterEvaluationExceptions')]",
+                        "deadLetteringOnMessageExpiration": "[parameters('deadLetteringOnMessageExpiration')]",
+                        "defaultMessageTimeToLive": "[parameters('defaultMessageTimeToLive')]",
+                        "duplicateDetectionHistoryTimeWindow": "[parameters('duplicateDetectionHistoryTimeWindow')]",
+                        "enableBatchedOperations": "[parameters('enableBatchedOperations')]",
+                        "forwardDeadLetteredMessagesTo": "[parameters('forwardDeadLetteredMessagesTo')]",
+                        "forwardTo": "[if(not(empty(parameters('forwardTo'))), parameters('forwardTo'), parameters('topicName'))]",
+                        "isClientAffine": "[parameters('isClientAffine')]",
+                        "lockDuration": "[parameters('lockDuration')]",
+                        "maxDeliveryCount": "[parameters('maxDeliveryCount')]",
+                        "requiresSession": "[parameters('requiresSession')]",
+                        "status": "[parameters('status')]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the topic subscription."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The Resource ID of the topic subscription."
+                      },
+                      "value": "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions', parameters('namespaceName'), parameters('topicName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the Resource Group the topic subscription was created in."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "namespace",
                 "topic"
               ]
             }
