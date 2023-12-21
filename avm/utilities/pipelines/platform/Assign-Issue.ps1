@@ -60,7 +60,7 @@ function Get-AvmCsv {
   return $filterCsvAvailableBicepModule
 }
 
-Function Set-Issue {
+function Set-Issue {
   [CmdletBinding(SupportsShouldProcess, ConfirmImpact = 'Low')]
   param (
     [Parameter(Mandatory = $true)]
