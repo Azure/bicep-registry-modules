@@ -54,4 +54,6 @@ function Get-FlattenedResourceList {
             }
         }
     }
+
+    return $result
 }
