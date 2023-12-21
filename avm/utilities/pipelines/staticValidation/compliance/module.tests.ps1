@@ -45,8 +45,12 @@ foreach ($moduleFolderPath in $moduleFolderPaths) {
 $builtTestFileMap = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
 $pathsToBuild | ForEach-Object -Parallel {
   $dict = $using:builtTestFileMap
-  $builtTemplate = (bicep build $_ --stdout 2>$null) | ConvertFrom-Json -AsHashtable
-  $null = $dict.TryAdd($_, $builtTemplate)
+  $builtTemplate = (bicep build $_ --stdout 2>$null) | Out-String
+  if ([String]::IsNullOrEmpty($builtTemplate)) {
+    throw "Failed to build template [$_]. Try running the command ``bicep build $_ --stdout`` locally for troubleshooting. Make sure you have the latest Bicep CLI installed."
+  }
+  $templateHashTable = ConvertFrom-Json $builtTemplate -AsHashtable
+  $null = $dict.TryAdd($_, $templateHashTable)
 }
 
 Describe 'File/folder tests' -Tag 'Modules' {
@@ -1182,7 +1186,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       ($testFileContent -match "^param serviceShort string = '(.*)$") | Should -Not -BeNullOrEmpty -Because 'the module test deployment file should contain a parameter [serviceShort] using the syntax [param serviceShort string = ''*''].'
     }
 
-    It '[<moduleFolderName>] [<testName>] Bicep test deployment files in a [defaults] folder should have a parameter [serviceShort] with a value ending with [min]' -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]defaults[\\|\/].*' }) {
+    It '[<moduleFolderName>] [<testName>] Bicep test deployment files in a [defaults] folder should have a parameter [serviceShort] with a value ending with [min]' -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/](.+\.)?defaults[\\|\/].*' }) {
 
       param(
         [object[]] $testFileContent
@@ -1195,7 +1199,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       }
     }
 
-    It '[<moduleFolderName>] [<testName>] Bicep test deployment files in a [max] folder should have a [serviceShort] parameter with a value ending with  [max]' -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]max[\\|\/].*' }) {
+    It '[<moduleFolderName>] [<testName>] Bicep test deployment files in a [max] folder should have a [serviceShort] parameter with a value ending with  [max]' -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/](.+\.)?max[\\|\/].*' }) {
 
       param(
         [object[]] $testFileContent
@@ -1208,7 +1212,7 @@ Describe 'Test file tests' -Tag 'TestTemplate' {
       }
     }
 
-    It '[<moduleFolderName>] [<testName>] Bicep test deployment files in a [waf-aligned] folder should have a [serviceShort] parameter with a value ending with [waf]' -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/]waf\-aligned[\\|\/].*' }) {
+    It '[<moduleFolderName>] [<testName>] Bicep test deployment files in a [waf-aligned] folder should have a [serviceShort] parameter with a value ending with [waf]' -TestCases ($deploymentTestFileTestCases | Where-Object { $_.testFilePath -match '.*[\\|\/](.+\.)?waf\-aligned[\\|\/].*' }) {
 
       param(
         [object[]] $testFileContent
