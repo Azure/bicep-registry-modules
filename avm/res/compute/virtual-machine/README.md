@@ -1108,7 +1108,7 @@ This instance deploys the module with the minimum set of required parameters.
 
 ```bicep
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-cvmwindef'
+  name: '${uniqueString(deployment().name, location)}-test-cvmwinmin'
   params: {
     // Required parameters
     adminUsername: 'localAdminUser'
@@ -1140,7 +1140,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     // Non-required parameters
     adminPassword: '<adminPassword>'
     location: '<location>'
-    name: 'cvmwindef'
+    name: 'cvmwinmin'
   }
 }
 ```
@@ -1204,7 +1204,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": "<location>"
     },
     "name": {
-      "value": "cvmwindef"
+      "value": "cvmwinmin"
     }
   }
 }
