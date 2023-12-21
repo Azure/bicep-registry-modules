@@ -10,9 +10,6 @@ metadata description = 'This instance deploys the module with most of its featur
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-app.managedenvironments-${serviceShort}-rg'
 
-@description('Optional. The name of the infrastructre resource group to deploy for testing purposes.')
-param infrastructureResourceGroupName string = 'me-dep-${namePrefix}-app.managedenvironments-${serviceShort}-rg'
-
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
 
@@ -24,16 +21,6 @@ param enableTelemetry bool = true
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
-
-@description('Optional. WorkloadProfile')
-param workloadProfiles array = [
-  {
-    workloadProfileType: 'D4'
-    name: 'CAW01'
-    minimumCount: 0
-    maximumCount: 3
-  }
-]
 
 // =========== //
 // Deployments //
@@ -69,13 +56,20 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     name: '${namePrefix}${serviceShort}001'
     logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
     location: location
-    workloadProfiles: workloadProfiles
+    workloadProfiles: [
+      {
+        workloadProfileType: 'D4'
+        name: 'CAW01'
+        minimumCount: 0
+        maximumCount: 3
+      }
+    ]
     internal: true
     dockerBridgeCidr: '172.16.0.1/28'
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
     infrastructureSubnetId: nestedDependencies.outputs.subnetResourceId
-    infrastructureResourceGroupName: infrastructureResourceGroupName
+    infrastructureResourceGroupName: 'me-dep-${namePrefix}-app.managedenvironments-${serviceShort}-rg'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'

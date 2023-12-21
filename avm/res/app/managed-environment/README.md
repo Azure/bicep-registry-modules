@@ -110,7 +110,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Non-required parameters
     dockerBridgeCidr: '172.16.0.1/28'
     enableTelemetry: '<enableTelemetry>'
-    infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
+    infrastructureResourceGroupName: 'me-dep-app.managedenvironments-amemax-rg'
     infrastructureSubnetId: '<infrastructureSubnetId>'
     internal: true
     location: '<location>'
@@ -124,7 +124,14 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
     }
-    workloadProfiles: '<workloadProfiles>'
+    workloadProfiles: [
+      {
+        maximumCount: 3
+        minimumCount: 0
+        name: 'CAW01'
+        workloadProfileType: 'D4'
+      }
+    ]
   }
 }
 ```
@@ -156,7 +163,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "<enableTelemetry>"
     },
     "infrastructureResourceGroupName": {
-      "value": "<infrastructureResourceGroupName>"
+      "value": "me-dep-app.managedenvironments-amemax-rg"
     },
     "infrastructureSubnetId": {
       "value": "<infrastructureSubnetId>"
@@ -186,7 +193,14 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       }
     },
     "workloadProfiles": {
-      "value": "<workloadProfiles>"
+      "value": [
+        {
+          "maximumCount": 3,
+          "minimumCount": 0,
+          "name": "CAW01",
+          "workloadProfileType": "D4"
+        }
+      ]
     }
   }
 }
@@ -214,7 +228,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Non-required parameters
     dockerBridgeCidr: '172.16.0.1/28'
     enableTelemetry: '<enableTelemetry>'
-    infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
+    infrastructureResourceGroupName: 'me-dep-app.managedenvironments-amewaf-rg'
     infrastructureSubnetId: '<infrastructureSubnetId>'
     internal: true
     location: '<location>'
@@ -228,7 +242,14 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
     }
-    workloadProfiles: '<workloadProfiles>'
+    workloadProfiles: [
+      {
+        maximumCount: 3
+        minimumCount: 0
+        name: 'CAW01'
+        workloadProfileType: 'D4'
+      }
+    ]
   }
 }
 ```
@@ -260,7 +281,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "<enableTelemetry>"
     },
     "infrastructureResourceGroupName": {
-      "value": "<infrastructureResourceGroupName>"
+      "value": "me-dep-app.managedenvironments-amewaf-rg"
     },
     "infrastructureSubnetId": {
       "value": "<infrastructureSubnetId>"
@@ -290,7 +311,14 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       }
     },
     "workloadProfiles": {
-      "value": "<workloadProfiles>"
+      "value": [
+        {
+          "maximumCount": 3,
+          "minimumCount": 0,
+          "name": "CAW01",
+          "workloadProfileType": "D4"
+        }
+      ]
     }
   }
 }
