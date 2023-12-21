@@ -47,7 +47,6 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
     name: 'nergmin001'
     virtualHubId: '<virtualHubId>'
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
   }
 }
@@ -73,9 +72,6 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
       "value": "<virtualHubId>"
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     }
@@ -105,7 +101,6 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
     // Non-required parameters
     autoScaleConfigurationBoundsMax: 3
     autoScaleConfigurationBoundsMin: 2
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -161,9 +156,6 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
     },
     "autoScaleConfigurationBoundsMin": {
       "value": 2
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "location": {
       "value": "<location>"
@@ -225,7 +217,6 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
     // Non-required parameters
     autoScaleConfigurationBoundsMax: 3
     autoScaleConfigurationBoundsMin: 2
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -264,9 +255,6 @@ module expressRouteGateway 'br/public:avm/res/network/express-route-gateway:<ver
     },
     "autoScaleConfigurationBoundsMin": {
       "value": 2
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "location": {
       "value": "<location>"

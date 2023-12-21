@@ -211,7 +211,6 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
     name: 'rdswaf001'
     query: 'resourcecontainers| where type == \'microsoft.resources/subscriptions\' | take 5'
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     lock: {
       kind: 'None'
@@ -246,9 +245,6 @@ module query 'br/public:avm/res/resource-graph/query:<version>' = {
       "value": "resourcecontainers| where type == \"microsoft.resources/subscriptions\" | take 5"
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },

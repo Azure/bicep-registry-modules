@@ -598,7 +598,6 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     // Non-required parameters
     azCliVersion: '2.9.1'
     cleanupPreference: 'Always'
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     lock: {
       kind: 'None'
@@ -647,9 +646,6 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
     },
     "cleanupPreference": {
       "value": "Always"
-    },
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
     },
     "location": {
       "value": "<location>"
