@@ -28,7 +28,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/cache.redis:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/cache/redis:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -44,13 +44,13 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module redis 'br:bicep/modules/cache.redis:1.0.0' = {
+module redis 'br/public:avm/res/cache/redis:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-crmin'
   params: {
     // Required parameters
     name: 'crmin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -72,8 +72,8 @@ module redis 'br:bicep/modules/cache.redis:1.0.0' = {
       "value": "crmin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -92,7 +92,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module redis 'br:bicep/modules/cache.redis:1.0.0' = {
+module redis 'br/public:avm/res/cache/redis:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-crmax'
   params: {
     // Required parameters
@@ -113,8 +113,8 @@ module redis 'br:bicep/modules/cache.redis:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     enableNonSslPort: true
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -192,11 +192,11 @@ module redis 'br:bicep/modules/cache.redis:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "enableNonSslPort": {
       "value": true
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -274,7 +274,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module redis 'br:bicep/modules/cache.redis:1.0.0' = {
+module redis 'br/public:avm/res/cache/redis:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-crwaf'
   params: {
     // Required parameters
@@ -295,8 +295,8 @@ module redis 'br:bicep/modules/cache.redis:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     enableNonSslPort: true
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -374,11 +374,11 @@ module redis 'br:bicep/modules/cache.redis:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "enableNonSslPort": {
       "value": true
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -461,8 +461,8 @@ module redis 'br:bicep/modules/cache.redis:1.0.0' = {
 | :-- | :-- | :-- |
 | [`capacity`](#parameter-capacity) | int | The size of the Redis cache to deploy. Valid values: for C (Basic/Standard) family (0, 1, 2, 3, 4, 5, 6), for P (Premium) family (1, 2, 3, 4). |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`enableNonSslPort`](#parameter-enablenonsslport) | bool | Specifies whether the non-ssl Redis server port (6379) is enabled. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`location`](#parameter-location) | string | The location to deploy the Redis cache service. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
@@ -601,14 +601,6 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
-
 ### Parameter: `enableNonSslPort`
 
 Specifies whether the non-ssl Redis server port (6379) is enabled.
@@ -616,6 +608,14 @@ Specifies whether the non-ssl Redis server port (6379) is enabled.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `enableTelemetry`
+
+Enable telemetry via a Globally Unique Identifier (GUID).
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `location`
 
@@ -731,7 +731,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualPrivateLinkServiceConnections`](#parameter-privateendpointsmanualprivatelinkserviceconnections) | array | Manual PrivateLink Service Connections. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided. |
+| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | string | The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob". |
@@ -838,7 +838,7 @@ The name of the private endpoint.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroupName`
 
-The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.
+The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
 
 - Required: No
 - Type: string
@@ -1188,7 +1188,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `modules/network/private-endpoint` | Local reference |
+| `br/public:avm/res/network/private-endpoint:0.3.1` | Remote reference |
 
 ## Notes
 

@@ -24,7 +24,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/compute.disk:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/disk:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Image](#example-2-image)
@@ -42,7 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module disk 'br:bicep/modules/compute.disk:1.0.0' = {
+module disk 'br/public:avm/res/compute/disk:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-cdmin'
   params: {
     // Required parameters
@@ -50,7 +50,7 @@ module disk 'br:bicep/modules/compute.disk:1.0.0' = {
     sku: 'Standard_LRS'
     // Non-required parameters
     diskSizeGB: 1
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -78,8 +78,8 @@ module disk 'br:bicep/modules/compute.disk:1.0.0' = {
     "diskSizeGB": {
       "value": 1
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -95,7 +95,7 @@ module disk 'br:bicep/modules/compute.disk:1.0.0' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module disk 'br:bicep/modules/compute.disk:1.0.0' = {
+module disk 'br/public:avm/res/compute/disk:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-cdimg'
   params: {
     // Required parameters
@@ -103,8 +103,8 @@ module disk 'br:bicep/modules/compute.disk:1.0.0' = {
     sku: 'Standard_LRS'
     // Non-required parameters
     createOption: 'FromImage'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     imageReferenceId: '<imageReferenceId>'
+    location: '<location>'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -154,11 +154,11 @@ module disk 'br:bicep/modules/compute.disk:1.0.0' = {
     "createOption": {
       "value": "FromImage"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "imageReferenceId": {
       "value": "<imageReferenceId>"
+    },
+    "location": {
+      "value": "<location>"
     },
     "roleAssignments": {
       "value": [
@@ -200,7 +200,7 @@ module disk 'br:bicep/modules/compute.disk:1.0.0' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module disk 'br:bicep/modules/compute.disk:1.0.0' = {
+module disk 'br/public:avm/res/compute/disk:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-cdimp'
   params: {
     // Required parameters
@@ -208,7 +208,7 @@ module disk 'br:bicep/modules/compute.disk:1.0.0' = {
     sku: 'Standard_LRS'
     // Non-required parameters
     createOption: 'Import'
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     roleAssignments: [
       {
         principalId: '<principalId>'
@@ -260,8 +260,8 @@ module disk 'br:bicep/modules/compute.disk:1.0.0' = {
     "createOption": {
       "value": "Import"
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "roleAssignments": {
       "value": [
@@ -312,7 +312,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module disk 'br:bicep/modules/compute.disk:1.0.0' = {
+module disk 'br/public:avm/res/compute/disk:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-cdmax'
   params: {
     // Required parameters
@@ -322,7 +322,7 @@ module disk 'br:bicep/modules/compute.disk:1.0.0' = {
     diskIOPSReadWrite: 500
     diskMBpsReadWrite: 60
     diskSizeGB: 128
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -385,8 +385,8 @@ module disk 'br:bicep/modules/compute.disk:1.0.0' = {
     "diskSizeGB": {
       "value": 128
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -446,7 +446,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module disk 'br:bicep/modules/compute.disk:1.0.0' = {
+module disk 'br/public:avm/res/compute/disk:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-cdwaf'
   params: {
     // Required parameters
@@ -456,7 +456,7 @@ module disk 'br:bicep/modules/compute.disk:1.0.0' = {
     diskIOPSReadWrite: 500
     diskMBpsReadWrite: 60
     diskSizeGB: 128
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -502,8 +502,8 @@ module disk 'br:bicep/modules/compute.disk:1.0.0' = {
     "diskSizeGB": {
       "value": 128
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -562,7 +562,7 @@ module disk 'br:bicep/modules/compute.disk:1.0.0' = {
 | [`createOption`](#parameter-createoption) | string | Sources of a disk creation. |
 | [`diskIOPSReadWrite`](#parameter-diskiopsreadwrite) | int | The number of IOPS allowed for this disk; only settable for UltraSSD disks. |
 | [`diskMBpsReadWrite`](#parameter-diskmbpsreadwrite) | int | The bandwidth allowed for this disk; only settable for UltraSSD disks. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`hyperVGeneration`](#parameter-hypervgeneration) | string | The hypervisor generation of the Virtual Machine. Applicable to OS disks only. |
 | [`imageReferenceId`](#parameter-imagereferenceid) | string | A relative uri containing either a Platform Image Repository or user image reference. |
 | [`location`](#parameter-location) | string | Resource location. |
@@ -701,7 +701,7 @@ The bandwidth allowed for this disk; only settable for UltraSSD disks.
 - Type: int
 - Default: `0`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
 Enable telemetry via a Globally Unique Identifier (GUID).
 

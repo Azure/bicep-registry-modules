@@ -24,7 +24,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/health-bot.health-bot:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/health-bot/health-bot:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -40,14 +40,14 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module healthBot 'br:bicep/modules/health-bot.health-bot:1.0.0' = {
+module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-hbhbmin'
   params: {
     // Required parameters
     name: 'hbhbmin001'
     sku: 'F0'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -72,8 +72,8 @@ module healthBot 'br:bicep/modules/health-bot.health-bot:1.0.0' = {
       "value": "F0"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -92,14 +92,14 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module healthBot 'br:bicep/modules/health-bot.health-bot:1.0.0' = {
+module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-hbhbmax'
   params: {
     // Required parameters
     name: 'hbhbmax001'
     sku: 'F0'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -155,8 +155,8 @@ module healthBot 'br:bicep/modules/health-bot.health-bot:1.0.0' = {
       "value": "F0"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -214,14 +214,14 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module healthBot 'br:bicep/modules/health-bot.health-bot:1.0.0' = {
+module healthBot 'br/public:avm/res/health-bot/health-bot:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-hbhbwaf'
   params: {
     // Required parameters
     name: 'hbhbwaf001'
     sku: 'F0'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -260,8 +260,8 @@ module healthBot 'br:bicep/modules/health-bot.health-bot:1.0.0' = {
       "value": "F0"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -304,7 +304,7 @@ module healthBot 'br:bicep/modules/health-bot.health-bot:1.0.0' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
@@ -333,7 +333,7 @@ The name of the Azure Health Bot SKU.
   ]
   ```
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
 Enable telemetry via a Globally Unique Identifier (GUID).
 

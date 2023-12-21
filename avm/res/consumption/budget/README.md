@@ -22,23 +22,20 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/consumption.budget:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/consumption/budget:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
+- [Defaults](#example-1-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Waf-Aligned](#example-3-waf-aligned)
 
-### Example 1: _Using only defaults_
-
-This instance deploys the module with the minimum set of required parameters.
-
+### Example 1: _Defaults_
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module budget 'br:bicep/modules/consumption.budget:1.0.0' = {
+module budget 'br/public:avm/res/consumption/budget:<version>' = {
   name: '${uniqueString(deployment().name)}-test-cbmin'
   params: {
     // Required parameters
@@ -48,7 +45,7 @@ module budget 'br:bicep/modules/consumption.budget:1.0.0' = {
     contactEmails: [
       'dummy@contoso.com'
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -78,8 +75,8 @@ module budget 'br:bicep/modules/consumption.budget:1.0.0' = {
         "dummy@contoso.com"
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -98,7 +95,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module budget 'br:bicep/modules/consumption.budget:1.0.0' = {
+module budget 'br/public:avm/res/consumption/budget:<version>' = {
   name: '${uniqueString(deployment().name)}-test-cbmax'
   params: {
     // Required parameters
@@ -108,7 +105,7 @@ module budget 'br:bicep/modules/consumption.budget:1.0.0' = {
     contactEmails: [
       'dummy@contoso.com'
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     thresholds: [
       50
       75
@@ -145,8 +142,8 @@ module budget 'br:bicep/modules/consumption.budget:1.0.0' = {
         "dummy@contoso.com"
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "thresholds": {
       "value": [
@@ -164,17 +161,14 @@ module budget 'br:bicep/modules/consumption.budget:1.0.0' = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
+### Example 3: _Waf-Aligned_
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module budget 'br:bicep/modules/consumption.budget:1.0.0' = {
+module budget 'br/public:avm/res/consumption/budget:<version>' = {
   name: '${uniqueString(deployment().name)}-test-cbwaf'
   params: {
     // Required parameters
@@ -184,7 +178,7 @@ module budget 'br:bicep/modules/consumption.budget:1.0.0' = {
     contactEmails: [
       'dummy@contoso.com'
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     thresholds: [
       50
       75
@@ -221,8 +215,8 @@ module budget 'br:bicep/modules/consumption.budget:1.0.0' = {
         "dummy@contoso.com"
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "thresholds": {
       "value": [
@@ -263,7 +257,7 @@ module budget 'br:bicep/modules/consumption.budget:1.0.0' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`category`](#parameter-category) | string | The category of the budget, whether the budget tracks cost or usage. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`endDate`](#parameter-enddate) | string | The end date for the budget. If not provided, it will default to 10 years from the start date. |
 | [`location`](#parameter-location) | string | Location deployment metadata. |
 | [`resetPeriod`](#parameter-resetperiod) | string | The time covered by a budget. Tracking of the amount will be reset based on the time grain. BillingMonth, BillingQuarter, and BillingAnnual are only supported by WD customers. |
@@ -323,7 +317,7 @@ The category of the budget, whether the budget tracks cost or usage.
   ]
   ```
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
 Enable telemetry via a Globally Unique Identifier (GUID).
 

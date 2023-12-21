@@ -28,7 +28,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/databricks.workspace:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/databricks/workspace:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -44,13 +44,13 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module workspace 'br:bicep/modules/databricks.workspace:1.0.0' = {
+module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-dwmin'
   params: {
     // Required parameters
     name: 'dwmin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -72,8 +72,8 @@ module workspace 'br:bicep/modules/databricks.workspace:1.0.0' = {
       "value": "dwmin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -92,7 +92,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module workspace 'br:bicep/modules/databricks.workspace:1.0.0' = {
+module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-dwmax'
   params: {
     // Required parameters
@@ -129,7 +129,6 @@ module workspace 'br:bicep/modules/databricks.workspace:1.0.0' = {
       }
     ]
     disablePublicIp: true
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     loadBalancerBackendPoolName: '<loadBalancerBackendPoolName>'
     loadBalancerResourceId: '<loadBalancerResourceId>'
     location: '<location>'
@@ -250,9 +249,6 @@ module workspace 'br:bicep/modules/databricks.workspace:1.0.0' = {
     "disablePublicIp": {
       "value": true
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "loadBalancerBackendPoolName": {
       "value": "<loadBalancerBackendPoolName>"
     },
@@ -358,7 +354,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module workspace 'br:bicep/modules/databricks.workspace:1.0.0' = {
+module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-dwwaf'
   params: {
     // Required parameters
@@ -395,7 +391,6 @@ module workspace 'br:bicep/modules/databricks.workspace:1.0.0' = {
       }
     ]
     disablePublicIp: true
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     loadBalancerBackendPoolName: '<loadBalancerBackendPoolName>'
     loadBalancerResourceId: '<loadBalancerResourceId>'
     location: '<location>'
@@ -499,9 +494,6 @@ module workspace 'br:bicep/modules/databricks.workspace:1.0.0' = {
     "disablePublicIp": {
       "value": true
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "loadBalancerBackendPoolName": {
       "value": "<loadBalancerBackendPoolName>"
     },
@@ -599,7 +591,7 @@ module workspace 'br:bicep/modules/databricks.workspace:1.0.0' = {
 | [`customVirtualNetworkResourceId`](#parameter-customvirtualnetworkresourceid) | string | The resource ID of a Virtual Network where this Databricks Cluster should be created. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disablePublicIp`](#parameter-disablepublicip) | bool | Disable Public IP. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`loadBalancerBackendPoolName`](#parameter-loadbalancerbackendpoolname) | string | Name of the outbound Load Balancer Backend Pool for Secure Cluster Connectivity (No Public IP). |
 | [`loadBalancerResourceId`](#parameter-loadbalancerresourceid) | string | Resource URI of Outbound Load balancer for Secure Cluster Connectivity (No Public IP) workspace. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
@@ -855,7 +847,7 @@ Disable Public IP.
 - Type: bool
 - Default: `False`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
 Enable telemetry via a Globally Unique Identifier (GUID).
 
@@ -973,7 +965,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualPrivateLinkServiceConnections`](#parameter-privateendpointsmanualprivatelinkserviceconnections) | array | Manual PrivateLink Service Connections. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided. |
+| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided. |
 | [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | string | The service (sub-) type to deploy the private endpoint for. For example "vault" or "blob". |
@@ -1080,7 +1072,7 @@ The name of the private endpoint.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroupName`
 
-The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.
+The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.
 
 - Required: No
 - Type: string
@@ -1393,7 +1385,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `modules/network/private-endpoint` | Local reference |
+| `br/public:avm/res/network/private-endpoint:0.3.1` | Remote reference |
 
 ## Notes
 

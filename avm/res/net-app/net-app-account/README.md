@@ -26,11 +26,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/net-app.net-app-account:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/net-app/net-app-account:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Nfs3](#example-2-nfs3)
 - [Nfs41](#example-3-nfs41)
+- [Waf-Aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -42,13 +43,13 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module netAppAccount 'br:bicep/modules/net-app.net-app-account:1.0.0' = {
+module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-nanaamin'
   params: {
     // Required parameters
     name: 'nanaamin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -70,8 +71,8 @@ module netAppAccount 'br:bicep/modules/net-app.net-app-account:1.0.0' = {
       "value": "nanaamin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -87,7 +88,7 @@ module netAppAccount 'br:bicep/modules/net-app.net-app-account:1.0.0' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module netAppAccount 'br:bicep/modules/net-app.net-app-account:1.0.0' = {
+module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-nanaanfs3'
   params: {
     // Required parameters
@@ -155,7 +156,7 @@ module netAppAccount 'br:bicep/modules/net-app.net-app-account:1.0.0' = {
         volumes: []
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -271,8 +272,8 @@ module netAppAccount 'br:bicep/modules/net-app.net-app-account:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -324,7 +325,7 @@ module netAppAccount 'br:bicep/modules/net-app.net-app-account:1.0.0' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module netAppAccount 'br:bicep/modules/net-app.net-app-account:1.0.0' = {
+module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-nanaanfs41'
   params: {
     // Required parameters
@@ -402,7 +403,7 @@ module netAppAccount 'br:bicep/modules/net-app.net-app-account:1.0.0' = {
         volumes: []
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -529,8 +530,8 @@ module netAppAccount 'br:bicep/modules/net-app.net-app-account:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "managedIdentities": {
       "value": {
@@ -576,6 +577,43 @@ module netAppAccount 'br:bicep/modules/net-app.net-app-account:1.0.0' = {
 </details>
 <p>
 
+### Example 4: _Waf-Aligned_
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-nanaawaf'
+  params: {
+    name: 'nanaawaf001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "nanaawaf001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
 
 ## Parameters
 
@@ -595,7 +633,7 @@ module netAppAccount 'br:bicep/modules/net-app.net-app-account:1.0.0' = {
 | [`domainJoinPassword`](#parameter-domainjoinpassword) | securestring | Required if domainName is specified. Password of the user specified in domainJoinUser parameter. |
 | [`domainJoinUser`](#parameter-domainjoinuser) | string | Required if domainName is specified. Username of Active Directory domain administrator, with permissions to create SMB server machine account in the AD domain. |
 | [`domainName`](#parameter-domainname) | string | Fully Qualified Active Directory DNS Domain Name (e.g. 'contoso.com'). |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
@@ -658,7 +696,7 @@ Fully Qualified Active Directory DNS Domain Name (e.g. 'contoso.com').
 - Type: string
 - Default: `''`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
 Enable telemetry via a Globally Unique Identifier (GUID).
 

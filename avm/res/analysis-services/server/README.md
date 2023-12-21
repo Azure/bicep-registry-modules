@@ -25,7 +25,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/analysis-services.server:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/analysis-services/server:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -41,13 +41,13 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module server 'br:bicep/modules/analysis-services.server:1.0.0' = {
+module server 'br/public:avm/res/analysis-services/server:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-assmin'
   params: {
     // Required parameters
     name: 'assmin'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -69,8 +69,8 @@ module server 'br:bicep/modules/analysis-services.server:1.0.0' = {
       "value": "assmin"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -89,7 +89,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module server 'br:bicep/modules/analysis-services.server:1.0.0' = {
+module server 'br/public:avm/res/analysis-services/server:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-assmax'
   params: {
     // Required parameters
@@ -117,7 +117,6 @@ module server 'br:bicep/modules/analysis-services.server:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     firewallSettings: {
       enablePowerBIService: true
       firewallRules: [
@@ -128,6 +127,7 @@ module server 'br:bicep/modules/analysis-services.server:1.0.0' = {
         }
       ]
     }
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -201,9 +201,6 @@ module server 'br:bicep/modules/analysis-services.server:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "firewallSettings": {
       "value": {
         "enablePowerBIService": true,
@@ -215,6 +212,9 @@ module server 'br:bicep/modules/analysis-services.server:1.0.0' = {
           }
         ]
       }
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -271,7 +271,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module server 'br:bicep/modules/analysis-services.server:1.0.0' = {
+module server 'br/public:avm/res/analysis-services/server:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-asswaf'
   params: {
     // Required parameters
@@ -299,7 +299,6 @@ module server 'br:bicep/modules/analysis-services.server:1.0.0' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     firewallSettings: {
       enablePowerBIService: true
       firewallRules: [
@@ -310,6 +309,7 @@ module server 'br:bicep/modules/analysis-services.server:1.0.0' = {
         }
       ]
     }
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -366,9 +366,6 @@ module server 'br:bicep/modules/analysis-services.server:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "firewallSettings": {
       "value": {
         "enablePowerBIService": true,
@@ -380,6 +377,9 @@ module server 'br:bicep/modules/analysis-services.server:1.0.0' = {
           }
         ]
       }
+    },
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -421,7 +421,7 @@ module server 'br:bicep/modules/analysis-services.server:1.0.0' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`firewallSettings`](#parameter-firewallsettings) | object | The inbound firewall rules to define on the server. If not specified, firewall is disabled. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -528,7 +528,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
 Enable telemetry via a Globally Unique Identifier (GUID).
 

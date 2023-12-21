@@ -24,7 +24,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/databricks.access-connector:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/databricks/access-connector:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -40,13 +40,13 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module accessConnector 'br:bicep/modules/databricks.access-connector:1.0.0' = {
+module accessConnector 'br/public:avm/res/databricks/access-connector:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-dacmin'
   params: {
     // Required parameters
     name: 'dacmin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -68,8 +68,8 @@ module accessConnector 'br:bicep/modules/databricks.access-connector:1.0.0' = {
       "value": "dacmin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -88,13 +88,12 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module accessConnector 'br:bicep/modules/databricks.access-connector:1.0.0' = {
+module accessConnector 'br/public:avm/res/databricks/access-connector:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-dacmax'
   params: {
     // Required parameters
     name: 'dacmax001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -149,9 +148,6 @@ module accessConnector 'br:bicep/modules/databricks.access-connector:1.0.0' = {
       "value": "dacmax001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
@@ -212,13 +208,12 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module accessConnector 'br:bicep/modules/databricks.access-connector:1.0.0' = {
+module accessConnector 'br/public:avm/res/databricks/access-connector:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-dacwaf'
   params: {
     // Required parameters
     name: 'dacwaf001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -256,9 +251,6 @@ module accessConnector 'br:bicep/modules/databricks.access-connector:1.0.0' = {
       "value": "dacwaf001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
@@ -303,7 +295,7 @@ module accessConnector 'br:bicep/modules/databricks.access-connector:1.0.0' = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
@@ -317,7 +309,7 @@ The name of the Azure Databricks access connector to create.
 - Required: Yes
 - Type: string
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
 Enable telemetry via a Globally Unique Identifier (GUID).
 

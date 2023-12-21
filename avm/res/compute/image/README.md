@@ -23,22 +23,57 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/compute.image:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/image:<version>`.
 
-- [Using large parameter set](#example-1-using-large-parameter-set)
-- [WAF-aligned](#example-2-waf-aligned)
+- [Defaults](#example-1-defaults)
+- [Max](#example-2-max)
+- [Waf-Aligned](#example-3-waf-aligned)
 
-### Example 1: _Using large parameter set_
-
-This instance deploys the module with most of its features enabled.
-
+### Example 1: _Defaults_
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module image 'br:bicep/modules/compute.image:1.0.0' = {
+module image 'br/public:avm/res/compute/image:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-cidef'
+  params: {
+    name: 'cidef001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "cidef001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 2: _Max_
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module image 'br/public:avm/res/compute/image:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-cimax'
   params: {
     // Required parameters
@@ -50,8 +85,8 @@ module image 'br:bicep/modules/compute.image:1.0.0' = {
     // Non-required parameters
     diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
     diskSizeGB: 128
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     hyperVGeneration: 'V1'
+    location: '<location>'
     osState: 'Generalized'
     roleAssignments: [
       {
@@ -115,11 +150,11 @@ module image 'br:bicep/modules/compute.image:1.0.0' = {
     "diskSizeGB": {
       "value": 128
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "hyperVGeneration": {
       "value": "V1"
+    },
+    "location": {
+      "value": "<location>"
     },
     "osState": {
       "value": "Generalized"
@@ -160,17 +195,14 @@ module image 'br:bicep/modules/compute.image:1.0.0' = {
 </details>
 <p>
 
-### Example 2: _WAF-aligned_
-
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
-
+### Example 3: _Waf-Aligned_
 
 <details>
 
 <summary>via Bicep module</summary>
 
 ```bicep
-module image 'br:bicep/modules/compute.image:1.0.0' = {
+module image 'br/public:avm/res/compute/image:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-ciwaf'
   params: {
     // Required parameters
@@ -182,8 +214,8 @@ module image 'br:bicep/modules/compute.image:1.0.0' = {
     // Non-required parameters
     diskEncryptionSetResourceId: '<diskEncryptionSetResourceId>'
     diskSizeGB: 128
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
     hyperVGeneration: 'V1'
+    location: '<location>'
     osState: 'Generalized'
     tags: {
       'hidden-title': 'This is visible in the resource name'
@@ -230,11 +262,11 @@ module image 'br:bicep/modules/compute.image:1.0.0' = {
     "diskSizeGB": {
       "value": 128
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
-    },
     "hyperVGeneration": {
       "value": "V1"
+    },
+    "location": {
+      "value": "<location>"
     },
     "osState": {
       "value": "Generalized"
@@ -274,7 +306,7 @@ module image 'br:bicep/modules/compute.image:1.0.0' = {
 | [`dataDisks`](#parameter-datadisks) | array | Specifies the parameters that are used to add a data disk to a virtual machine. |
 | [`diskEncryptionSetResourceId`](#parameter-diskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource ID for the managed image disk. |
 | [`diskSizeGB`](#parameter-disksizegb) | int | Specifies the size of empty data disks in gigabytes. This element can be used to overwrite the name of the disk in a virtual machine image. This value cannot be larger than 1023 GB. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`extendedLocation`](#parameter-extendedlocation) | object | The extended location of the Image. |
 | [`hyperVGeneration`](#parameter-hypervgeneration) | string | Gets the HyperVGenerationType of the VirtualMachine created from the image. - V1 or V2. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -333,7 +365,7 @@ Specifies the size of empty data disks in gigabytes. This element can be used to
 - Type: int
 - Default: `128`
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
 Enable telemetry via a Globally Unique Identifier (GUID).
 

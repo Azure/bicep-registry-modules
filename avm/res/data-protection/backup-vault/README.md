@@ -26,7 +26,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br:bicep/modules/data-protection.backup-vault:1.0.0`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/data-protection/backup-vault:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
@@ -42,13 +42,13 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module backupVault 'br:bicep/modules/data-protection.backup-vault:1.0.0' = {
+module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-dpbvmin'
   params: {
     // Required parameters
     name: 'dpbvmin001'
     // Non-required parameters
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
   }
 }
 ```
@@ -70,8 +70,8 @@ module backupVault 'br:bicep/modules/data-protection.backup-vault:1.0.0' = {
       "value": "dpbvmin001"
     },
     // Non-required parameters
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -90,7 +90,7 @@ This instance deploys the module with most of its features enabled.
 <summary>via Bicep module</summary>
 
 ```bicep
-module backupVault 'br:bicep/modules/data-protection.backup-vault:1.0.0' = {
+module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-dpbvmax'
   params: {
     // Required parameters
@@ -159,7 +159,7 @@ module backupVault 'br:bicep/modules/data-protection.backup-vault:1.0.0' = {
         }
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -277,8 +277,8 @@ module backupVault 'br:bicep/modules/data-protection.backup-vault:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -334,7 +334,7 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module backupVault 'br:bicep/modules/data-protection.backup-vault:1.0.0' = {
+module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-dpbvwaf'
   params: {
     // Required parameters
@@ -403,7 +403,7 @@ module backupVault 'br:bicep/modules/data-protection.backup-vault:1.0.0' = {
         }
       }
     ]
-    enableDefaultTelemetry: '<enableDefaultTelemetry>'
+    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -504,8 +504,8 @@ module backupVault 'br:bicep/modules/data-protection.backup-vault:1.0.0' = {
         }
       ]
     },
-    "enableDefaultTelemetry": {
-      "value": "<enableDefaultTelemetry>"
+    "location": {
+      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -548,7 +548,7 @@ module backupVault 'br:bicep/modules/data-protection.backup-vault:1.0.0' = {
 | [`azureMonitorAlertSettingsAlertsForAllJobFailures`](#parameter-azuremonitoralertsettingsalertsforalljobfailures) | string | Settings for Azure Monitor based alerts for job failures. |
 | [`backupPolicies`](#parameter-backuppolicies) | array | List of all backup policies. |
 | [`dataStoreType`](#parameter-datastoretype) | string | The datastore type to use. ArchiveStore does not support ZoneRedundancy. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`featureSettings`](#parameter-featuresettings) | object | Feature settings for the backup vault. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -604,7 +604,7 @@ The datastore type to use. ArchiveStore does not support ZoneRedundancy.
   ]
   ```
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
 Enable telemetry via a Globally Unique Identifier (GUID).
 

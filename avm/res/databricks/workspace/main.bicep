@@ -99,8 +99,6 @@ param requiredNsgRules string = 'AllRules'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointType
 
-var enableReferencedModulesTelemetry = false
-
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')

@@ -42,6 +42,9 @@ param lock lockType
 @description('Optional. Tags for all resources.')
 param tags object?
 
+@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+param enableTelemetry bool = true
+
 var activeDirectoryConnectionProperties = [
   {
     username: !empty(domainName) ? domainJoinUser : null
@@ -69,7 +72,7 @@ var builtInRoleNames = {
 }
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.network-networksecuritygroup.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.res.netapp-netappaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {

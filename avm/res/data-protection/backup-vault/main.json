@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "11737453267233569722"
+      "templateHash": "6830132536079831372"
     },
     "name": "Data Protection Backup Vaults",
     "description": "This module deploys a Data Protection Backup Vault.",
@@ -125,7 +125,7 @@
         "description": "Required. Name of the Backup Vault."
       }
     },
-    "enableDefaultTelemetry": {
+    "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
@@ -223,7 +223,6 @@
   },
   "variables": {
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', null())), null())]",
-    "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]",
       "Backup Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00c29273-979b-4161-815c-10b084fb9324')]",
@@ -236,17 +235,23 @@
     }
   },
   "resources": {
-    "defaultTelemetry": {
-      "condition": "[parameters('enableDefaultTelemetry')]",
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2021-04-01",
-      "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name, parameters('location')))]",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.dataprotection-backupvault.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
           "contentVersion": "1.0.0.0",
-          "resources": []
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
         }
       }
     },
@@ -331,9 +336,6 @@
           },
           "properties": {
             "value": "[parameters('backupPolicies')[copyIndex()].properties]"
-          },
-          "enableDefaultTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -343,7 +345,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.23.1.45101",
-              "templateHash": "3378438498887899064"
+              "templateHash": "9679092928668541836"
             },
             "name": "Data Protection Backup Vault Backup Policies",
             "description": "This module deploys a Data Protection Backup Vault Backup Policy.",
@@ -369,30 +371,9 @@
               "metadata": {
                 "description": "Optional. The properties of the backup policy."
               }
-            },
-            "enableDefaultTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
-              }
             }
           },
           "resources": [
-            {
-              "condition": "[parameters('enableDefaultTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2021-04-01",
-              "name": "[format('pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-{0}', uniqueString(deployment().name))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": []
-                }
-              }
-            },
             {
               "type": "Microsoft.DataProtection/backupVaults/backupPolicies",
               "apiVersion": "2023-05-01",
