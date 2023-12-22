@@ -14,7 +14,7 @@ This module deploys a Consumption Budget for Subscriptions.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Consumption/budgets` | [2021-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Consumption/2021-10-01/budgets) |
+| `Microsoft.Consumption/budgets` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Consumption/budgets) |
 
 ## Usage examples
 

@@ -75,6 +75,7 @@ var notifications = json(replace(replace(replace(string(notificationsArray), '[{
 
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.consumption-budget.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  location: location
   properties: {
     mode: 'Incremental'
     template: {
@@ -91,7 +92,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource budget 'Microsoft.Consumption/budgets@2021-10-01' = {
+resource budget 'Microsoft.Consumption/budgets@2023-11-01' = {
   name: name
   properties: {
     category: category

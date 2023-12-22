@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "6182258303963233923"
+      "templateHash": "5946331948544882274"
     },
     "name": "Consumption Budgets",
     "description": "This module deploys a Consumption Budget for Subscriptions.",
@@ -140,6 +140,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
       "name": "[format('46d3xbcp.res.consumption-budget.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "location": "[parameters('location')]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -157,7 +158,7 @@
     },
     {
       "type": "Microsoft.Consumption/budgets",
-      "apiVersion": "2021-10-01",
+      "apiVersion": "2023-11-01",
       "name": "[parameters('name')]",
       "properties": {
         "category": "[parameters('category')]",
