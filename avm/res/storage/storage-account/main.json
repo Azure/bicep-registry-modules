@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "7277224526367216296"
+      "templateHash": "4307641525954254990"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -584,12 +584,7 @@
     },
     "blobServices": {
       "type": "object",
-      "defaultValue": {
-        "containerDeleteRetentionPolicyEnabled": true,
-        "containerDeleteRetentionPolicyDays": 7,
-        "deleteRetentionPolicyEnabled": true,
-        "deleteRetentionPolicyDays": 6
-      },
+      "defaultValue": "[if(not(equals(parameters('kind'), 'FileStorage')), createObject('containerDeleteRetentionPolicyEnabled', true(), 'containerDeleteRetentionPolicyDays', 7, 'deleteRetentionPolicyEnabled', true(), 'deleteRetentionPolicyDays', 6), createObject())]",
       "metadata": {
         "description": "Optional. Blob service and containers to deploy."
       }
@@ -1958,7 +1953,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.24.24.22086",
-              "templateHash": "18041337021557675363"
+              "templateHash": "14265216897929790498"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service.",
@@ -2239,7 +2234,7 @@
                 },
                 "isVersioningEnabled": "[parameters('isVersioningEnabled')]",
                 "lastAccessTimeTrackingPolicy": {
-                  "enable": "[parameters('lastAccessTimeTrackingPolicyEnabled')]",
+                  "enable": "[if(not(equals(reference('storageAccount', '2022-09-01', 'full').kind, 'Storage')), parameters('lastAccessTimeTrackingPolicyEnabled'), false())]",
                   "name": "[if(equals(parameters('lastAccessTimeTrackingPolicyEnabled'), true()), 'AccessTimeTracking', null())]",
                   "trackingGranularityInDays": "[if(equals(parameters('lastAccessTimeTrackingPolicyEnabled'), true()), 1, null())]"
                 },

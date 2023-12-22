@@ -43,6 +43,5 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
     location: location
     name: '${namePrefix}${serviceShort}001'
     kind: 'Storage'
-    allowBlobPublicAccess: false
   }
 }]

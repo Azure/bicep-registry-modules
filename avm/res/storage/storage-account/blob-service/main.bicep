@@ -96,7 +96,7 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01
     }
     isVersioningEnabled: isVersioningEnabled
     lastAccessTimeTrackingPolicy: {
-      enable: lastAccessTimeTrackingPolicyEnabled
+      enable: storageAccount.kind != 'Storage' ? lastAccessTimeTrackingPolicyEnabled : false
       name: lastAccessTimeTrackingPolicyEnabled == true ? 'AccessTimeTracking' : null
       trackingGranularityInDays: lastAccessTimeTrackingPolicyEnabled == true ? 1 : null
     }

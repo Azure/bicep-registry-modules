@@ -807,7 +807,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     // Required parameters
     name: 'ssanfs001'
     // Non-required parameters
-    allowBlobPublicAccess: false
     fileServices: {
       shares: [
         {
@@ -819,7 +818,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     kind: 'FileStorage'
     location: '<location>'
     skuName: 'Premium_LRS'
-    supportsHttpsTrafficOnly: false
   }
 }
 ```
@@ -841,9 +839,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
       "value": "ssanfs001"
     },
     // Non-required parameters
-    "allowBlobPublicAccess": {
-      "value": false
-    },
     "fileServices": {
       "value": {
         "shares": [
@@ -862,9 +857,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     },
     "skuName": {
       "value": "Premium_LRS"
-    },
-    "supportsHttpsTrafficOnly": {
-      "value": false
     }
   }
 }
@@ -1103,7 +1095,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     // Required parameters
     name: 'ssav1001'
     // Non-required parameters
-    allowBlobPublicAccess: false
     kind: 'Storage'
     location: '<location>'
   }
@@ -1127,9 +1118,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
       "value": "ssav1001"
     },
     // Non-required parameters
-    "allowBlobPublicAccess": {
-      "value": false
-    },
     "kind": {
       "value": "Storage"
     },
@@ -1831,15 +1819,7 @@ Blob service and containers to deploy.
 
 - Required: No
 - Type: object
-- Default:
-  ```Bicep
-  {
-      containerDeleteRetentionPolicyDays: 7
-      containerDeleteRetentionPolicyEnabled: true
-      deleteRetentionPolicyDays: 6
-      deleteRetentionPolicyEnabled: true
-  }
-  ```
+- Default: `[if(not(equals(parameters('kind'), 'FileStorage')), createObject('containerDeleteRetentionPolicyEnabled', true(), 'containerDeleteRetentionPolicyDays', 7, 'deleteRetentionPolicyEnabled', true(), 'deleteRetentionPolicyDays', 6), createObject())]`
 
 ### Parameter: `customDomainName`
 
