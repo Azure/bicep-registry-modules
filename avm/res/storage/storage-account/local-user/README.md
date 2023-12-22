@@ -38,7 +38,7 @@ This module deploys a Storage Account Local User, which is used for SFTP authent
 | :-- | :-- | :-- |
 | [`hasSharedKey`](#parameter-hassharedkey) | bool | Indicates whether shared key exists. Set it to false to remove existing shared key. |
 | [`homeDirectory`](#parameter-homedirectory) | string | The local user home directory. |
-| [`sshAuthorizedKeys`](#parameter-sshauthorizedkeys) | array | The local user SSH authorized keys for SFTP. |
+| [`sshAuthorizedKeys`](#parameter-sshauthorizedkeys) | secureObject | The local user SSH authorized keys for SFTP. |
 
 ### Parameter: `hasSshKey`
 
@@ -96,7 +96,7 @@ The local user home directory.
 The local user SSH authorized keys for SFTP.
 
 - Required: No
-- Type: array
+- Type: secureObject
 
 
 ## Outputs

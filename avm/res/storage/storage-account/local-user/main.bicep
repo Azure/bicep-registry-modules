@@ -25,7 +25,7 @@ param homeDirectory string = ''
 param permissionScopes array
 
 @description('Optional. The local user SSH authorized keys for SFTP.')
-param sshAuthorizedKeys array?
+param sshAuthorizedKeys sshAuthorizedKeysType
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' existing = {
   name: storageAccountName
@@ -40,7 +40,7 @@ resource localUsers 'Microsoft.Storage/storageAccounts/localUsers@2022-05-01' = 
     hasSshPassword: hasSshPassword
     homeDirectory: homeDirectory
     permissionScopes: permissionScopes
-    sshAuthorizedKeys: sshAuthorizedKeys
+    sshAuthorizedKeys: sshAuthorizedKeys.?secureList
   }
 }
 
@@ -52,3 +52,20 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The resource ID of the deployed local user.')
 output resourceId string = localUsers.id
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@secure()
+type sshAuthorizedKeysType = {
+
+  @description('Optional. The list of SSH authorized keys.')
+  secureList: {
+    @description('Optional. Description used to store the function/usage of the key.')
+    description: string?
+
+    @description('Required. SSH public key base64 encoded. The format should be: \'{keyType} {keyData}\', e.g. ssh-rsa AAAABBBB.')
+    key: string
+  }[]
+}?
