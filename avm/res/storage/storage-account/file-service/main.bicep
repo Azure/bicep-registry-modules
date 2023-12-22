@@ -78,7 +78,6 @@ module fileServices_shares 'share/main.bicep' = [for (share, index) in shares: {
     rootSquash: contains(share, 'rootSquash') ? share.rootSquash : 'NoRootSquash'
     shareQuota: contains(share, 'shareQuota') ? share.shareQuota : 5120
     roleAssignments: contains(share, 'roleAssignments') ? share.roleAssignments : []
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 

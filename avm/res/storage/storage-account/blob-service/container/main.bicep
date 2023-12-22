@@ -44,8 +44,6 @@ param publicAccess string = 'None'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-var enableReferencedModulesTelemetry = false
-
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -100,10 +98,9 @@ module immutabilityPolicy 'immutability-policy/main.bicep' = if (!empty(immutabi
   params: {
     storageAccountName: storageAccount.name
     containerName: container.name
-    immutabilityPeriodSinceCreationInDays: contains(immutabilityPolicyProperties, 'immutabilityPeriodSinceCreationInDays') ? immutabilityPolicyProperties.immutabilityPeriodSinceCreationInDays : 365
-    allowProtectedAppendWrites: contains(immutabilityPolicyProperties, 'allowProtectedAppendWrites') ? immutabilityPolicyProperties.allowProtectedAppendWrites : true
-    allowProtectedAppendWritesAll: contains(immutabilityPolicyProperties, 'allowProtectedAppendWritesAll') ? immutabilityPolicyProperties.allowProtectedAppendWritesAll : true
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    immutabilityPeriodSinceCreationInDays: immutabilityPolicyProperties.?immutabilityPeriodSinceCreationInDays
+    allowProtectedAppendWrites: immutabilityPolicyProperties.?allowProtectedAppendWrites
+    allowProtectedAppendWritesAll: immutabilityPolicyProperties.?allowProtectedAppendWritesAll
   }
 }
 
@@ -129,6 +126,7 @@ output resourceId string = container.id
 
 @description('The resource group of the deployed container.')
 output resourceGroupName string = resourceGroup().name
+
 // =============== //
 //   Definitions   //
 // =============== //
@@ -146,7 +144,7 @@ type roleAssignmentType = {
   @description('Optional. The description of the role assignment.')
   description: string?
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"')
+  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
   condition: string?
 
   @description('Optional. Version of the condition.')

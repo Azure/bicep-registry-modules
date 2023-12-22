@@ -60,7 +60,6 @@ module queueServices_queues 'queue/main.bicep' = [for (queue, index) in queues: 
     name: queue.name
     metadata: contains(queue, 'metadata') ? queue.metadata : {}
     roleAssignments: contains(queue, 'roleAssignments') ? queue.roleAssignments : []
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 

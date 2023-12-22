@@ -67,8 +67,6 @@ param diagnosticSettings diagnosticSettingType
 // The name of the blob services
 var name = 'default'
 
-var enableReferencedModulesTelemetry = false
-
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
   name: storageAccountName
 }
@@ -140,16 +138,15 @@ module blobServices_container 'container/main.bicep' = [for (container, index) i
   params: {
     storageAccountName: storageAccount.name
     name: container.name
-    defaultEncryptionScope: contains(container, 'defaultEncryptionScope') ? container.defaultEncryptionScope : ''
-    denyEncryptionScopeOverride: contains(container, 'denyEncryptionScopeOverride') ? container.denyEncryptionScopeOverride : false
-    enableNfsV3AllSquash: contains(container, 'enableNfsV3AllSquash') ? container.enableNfsV3AllSquash : false
-    enableNfsV3RootSquash: contains(container, 'enableNfsV3RootSquash') ? container.enableNfsV3RootSquash : false
-    immutableStorageWithVersioningEnabled: contains(container, 'immutableStorageWithVersioningEnabled') ? container.immutableStorageWithVersioningEnabled : false
-    metadata: contains(container, 'metadata') ? container.metadata : {}
-    publicAccess: contains(container, 'publicAccess') ? container.publicAccess : 'None'
-    roleAssignments: contains(container, 'roleAssignments') ? container.roleAssignments : []
-    immutabilityPolicyProperties: contains(container, 'immutabilityPolicyProperties') ? container.immutabilityPolicyProperties : {}
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    defaultEncryptionScope: container.?defaultEncryptionScope
+    denyEncryptionScopeOverride: container.?denyEncryptionScopeOverride
+    enableNfsV3AllSquash: container.?enableNfsV3AllSquash
+    enableNfsV3RootSquash: container.?enableNfsV3RootSquash
+    immutableStorageWithVersioningEnabled: container.?immutableStorageWithVersioningEnabled
+    metadata: container.?metadata
+    publicAccess: container.?publicAccess
+    roleAssignments: container.?roleAssignments
+    immutabilityPolicyProperties: container.?immutabilityPolicyProperties
   }
 }]
 
@@ -161,6 +158,7 @@ output resourceId string = blobServices.id
 
 @description('The name of the deployed blob service.')
 output resourceGroupName string = resourceGroup().name
+
 // =============== //
 //   Definitions   //
 // =============== //

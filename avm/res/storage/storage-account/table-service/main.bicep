@@ -58,7 +58,6 @@ module tableServices_tables 'table/main.bicep' = [for (tableName, index) in tabl
   params: {
     name: tableName
     storageAccountName: storageAccount.name
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
