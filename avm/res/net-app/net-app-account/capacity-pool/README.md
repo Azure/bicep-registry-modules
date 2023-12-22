@@ -37,7 +37,6 @@ This module deploys an Azure NetApp Files Capacity Pool.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`coolAccess`](#parameter-coolaccess) | bool | If enabled (true) the pool can contain cool Access enabled volumes. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`encryptionType`](#parameter-encryptiontype) | string | Encryption type of the capacity pool, set encryption type for data at rest for this pool and all volumes in it. This value can only be set when creating new pool. |
 | [`location`](#parameter-location) | string | Location of the pool volume. |
 | [`qosType`](#parameter-qostype) | string | The qos type of the pool. |
@@ -74,14 +73,6 @@ If enabled (true) the pool can contain cool Access enabled volumes.
 - Required: No
 - Type: bool
 - Default: `False`
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `encryptionType`
 

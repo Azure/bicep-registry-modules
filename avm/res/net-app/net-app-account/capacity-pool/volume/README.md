@@ -38,7 +38,6 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`creationToken`](#parameter-creationtoken) | string | A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`exportPolicyRules`](#parameter-exportpolicyrules) | array | Export policy rules. |
 | [`location`](#parameter-location) | string | Location of the pool volume. |
 | [`protocolTypes`](#parameter-protocoltypes) | array | Set of protocol types. |
@@ -87,14 +86,6 @@ A unique file path for the volume. This is the name of the volume export. A volu
 - Required: No
 - Type: string
 - Default: `[parameters('name')]`
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `exportPolicyRules`
 

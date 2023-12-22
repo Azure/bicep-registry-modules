@@ -35,8 +35,6 @@ This module deploys a DBforMySQL Flexible Server Administrator.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
-| [`location`](#parameter-location) | string | Location for all resources. |
 | [`tenantId`](#parameter-tenantid) | string | The tenantId of the Active Directory administrator. |
 
 ### Parameter: `identityResourceId`
@@ -66,22 +64,6 @@ The name of the parent DBforMySQL flexible server. Required if the template is u
 
 - Required: Yes
 - Type: string
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `location`
-
-Location for all resources.
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
 
 ### Parameter: `tenantId`
 

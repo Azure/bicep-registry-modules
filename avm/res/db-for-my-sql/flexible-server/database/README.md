@@ -35,8 +35,6 @@ This module deploys a DBforMySQL Flexible Server Database.
 | :-- | :-- | :-- |
 | [`charset`](#parameter-charset) | string | The charset of the database. |
 | [`collation`](#parameter-collation) | string | The collation of the database. |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
-| [`location`](#parameter-location) | string | Location for all resources. |
 
 ### Parameter: `name`
 
@@ -67,22 +65,6 @@ The collation of the database.
 - Required: No
 - Type: string
 - Default: `'utf8'`
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `location`
-
-Location for all resources.
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
 
 
 ## Outputs

@@ -28,7 +28,6 @@ This module deploys a Data Protection Backup Vault Backup Policy.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`name`](#parameter-name) | string | The name of the backup policy. |
 | [`properties`](#parameter-properties) | object | The properties of the backup policy. |
 
@@ -38,14 +37,6 @@ The name of the backup vault.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `enableDefaultTelemetry`
-
-Enable telemetry via a Globally Unique Identifier (GUID).
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `name`
 
