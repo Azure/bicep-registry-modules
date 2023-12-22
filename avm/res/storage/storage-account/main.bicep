@@ -98,7 +98,12 @@ param customDomainUseSubDomainName bool = false
 param dnsEndpointType string = ''
 
 @description('Optional. Blob service and containers to deploy.')
-param blobServices object = {}
+param blobServices object = {
+  containerDeleteRetentionPolicyEnabled: true
+  containerDeleteRetentionPolicyDays: 7
+  deleteRetentionPolicyEnabled: true
+  deleteRetentionPolicyDays: 6
+}
 
 @description('Optional. File service and shares to deploy.')
 param fileServices object = {}

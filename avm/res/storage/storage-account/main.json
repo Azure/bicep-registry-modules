@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "1929423978853680137"
+      "templateHash": "4671385676865421877"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account.",
@@ -584,7 +584,12 @@
     },
     "blobServices": {
       "type": "object",
-      "defaultValue": {},
+      "defaultValue": {
+        "containerDeleteRetentionPolicyEnabled": true,
+        "containerDeleteRetentionPolicyDays": 7,
+        "deleteRetentionPolicyEnabled": true,
+        "deleteRetentionPolicyDays": 6
+      },
       "metadata": {
         "description": "Optional. Blob service and containers to deploy."
       }

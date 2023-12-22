@@ -1831,7 +1831,15 @@ Blob service and containers to deploy.
 
 - Required: No
 - Type: object
-- Default: `{}`
+- Default:
+  ```Bicep
+  {
+      containerDeleteRetentionPolicyDays: 7
+      containerDeleteRetentionPolicyEnabled: true
+      deleteRetentionPolicyDays: 6
+      deleteRetentionPolicyEnabled: true
+  }
+  ```
 
 ### Parameter: `customDomainName`
 
