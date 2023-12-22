@@ -1,5 +1,10 @@
 # DBforMySQL Flexible Servers `[Microsoft.DBforMySQL/flexibleServers]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys a DBforMySQL Flexible Server.
 
 ## Navigation
@@ -31,9 +36,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/db-for-my-sql/flexible-server:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Private](#example-2-private)
-- [Public](#example-3-public)
-- [Waf-Aligned](#example-4-waf-aligned)
+- [Max](#example-2-max)
+- [Deploys in connectivity mode "Private Access"](#example-3-deploys-in-connectivity-mode-private-access)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -99,7 +104,271 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
 </details>
 <p>
 
-### Example 2: _Private_
+### Example 2: _Max_
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-dfmsfsmax'
+  params: {
+    // Required parameters
+    name: 'dfmsfsmax001'
+    skuName: 'Standard_D2ds_v4'
+    tier: 'GeneralPurpose'
+    // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    availabilityZone: '1'
+    backupRetentionDays: 20
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    customerManagedKeyGeo: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
+    databases: [
+      {
+        name: 'testdb1'
+      }
+      {
+        charset: 'ascii'
+        collation: 'ascii_general_ci'
+        name: 'testdb2'
+      }
+    ]
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+    firewallRules: [
+      {
+        endIpAddress: '0.0.0.0'
+        name: 'AllowAllWindowsAzureIps'
+        startIpAddress: '0.0.0.0'
+      }
+      {
+        endIpAddress: '10.10.10.10'
+        name: 'test-rule1'
+        startIpAddress: '10.10.10.1'
+      }
+      {
+        endIpAddress: '100.100.100.10'
+        name: 'test-rule2'
+        startIpAddress: '100.100.100.1'
+      }
+    ]
+    geoRedundantBackup: 'Enabled'
+    highAvailability: 'SameZone'
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<geoBackupManagedIdentityResourceId>'
+        '<managedIdentityResourceId>'
+      ]
+    }
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    storageAutoGrow: 'Enabled'
+    storageAutoIoScaling: 'Enabled'
+    storageIOPS: 400
+    storageSizeGB: 32
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      resourceType: 'MySQL Flexible Server'
+      serverName: 'dfmsfsmax001'
+    }
+    version: '8.0.21'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dfmsfsmax001"
+    },
+    "skuName": {
+      "value": "Standard_D2ds_v4"
+    },
+    "tier": {
+      "value": "GeneralPurpose"
+    },
+    // Non-required parameters
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "availabilityZone": {
+      "value": "1"
+    },
+    "backupRetentionDays": {
+      "value": 20
+    },
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "customerManagedKeyGeo": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "databases": {
+      "value": [
+        {
+          "name": "testdb1"
+        },
+        {
+          "charset": "ascii",
+          "collation": "ascii_general_ci",
+          "name": "testdb2"
+        }
+      ]
+    },
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
+    "firewallRules": {
+      "value": [
+        {
+          "endIpAddress": "0.0.0.0",
+          "name": "AllowAllWindowsAzureIps",
+          "startIpAddress": "0.0.0.0"
+        },
+        {
+          "endIpAddress": "10.10.10.10",
+          "name": "test-rule1",
+          "startIpAddress": "10.10.10.1"
+        },
+        {
+          "endIpAddress": "100.100.100.10",
+          "name": "test-rule2",
+          "startIpAddress": "100.100.100.1"
+        }
+      ]
+    },
+    "geoRedundantBackup": {
+      "value": "Enabled"
+    },
+    "highAvailability": {
+      "value": "SameZone"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<geoBackupManagedIdentityResourceId>",
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Reader"
+        }
+      ]
+    },
+    "storageAutoGrow": {
+      "value": "Enabled"
+    },
+    "storageAutoIoScaling": {
+      "value": "Enabled"
+    },
+    "storageIOPS": {
+      "value": 400
+    },
+    "storageSizeGB": {
+      "value": 32
+    },
+    "tags": {
+      "value": {
+        "hidden-title": "This is visible in the resource name",
+        "resourceType": "MySQL Flexible Server",
+        "serverName": "dfmsfsmax001"
+      }
+    },
+    "version": {
+      "value": "8.0.21"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Deploys in connectivity mode "Private Access"_
+
+This instance deploys the module with connectivity mode "Private Access".
+
 
 <details>
 
@@ -320,7 +589,10 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
 </details>
 <p>
 
-### Example 3: _Public_
+### Example 4: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
@@ -328,98 +600,25 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
 
 ```bicep
 module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dfmsfsp'
+  name: '${uniqueString(deployment().name, location)}-test-dfmsfswaf'
   params: {
     // Required parameters
-    name: 'dfmsfsp001'
-    skuName: 'Standard_D2ds_v4'
-    tier: 'GeneralPurpose'
+    name: 'dfmsfswaf001'
+    skuName: 'Standard_B1ms'
+    tier: 'Burstable'
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
-    availabilityZone: '1'
-    backupRetentionDays: 20
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-    }
-    customerManagedKeyGeo: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-    }
-    databases: [
-      {
-        name: 'testdb1'
-      }
-      {
-        charset: 'ascii'
-        collation: 'ascii_general_ci'
-        name: 'testdb2'
-      }
-    ]
-    diagnosticSettings: [
-      {
-        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
-        eventHubName: '<eventHubName>'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        name: 'customSetting'
-        storageAccountResourceId: '<storageAccountResourceId>'
-        workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    firewallRules: [
-      {
-        endIpAddress: '0.0.0.0'
-        name: 'AllowAllWindowsAzureIps'
-        startIpAddress: '0.0.0.0'
-      }
-      {
-        endIpAddress: '10.10.10.10'
-        name: 'test-rule1'
-        startIpAddress: '10.10.10.1'
-      }
-      {
-        endIpAddress: '100.100.100.10'
-        name: 'test-rule2'
-        startIpAddress: '100.100.100.1'
-      }
-    ]
-    geoRedundantBackup: 'Enabled'
-    highAvailability: 'SameZone'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<geoBackupManagedIdentityResourceId>'
-        '<managedIdentityResourceId>'
-      ]
-    }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
-      }
-    ]
-    storageAutoGrow: 'Enabled'
-    storageAutoIoScaling: 'Enabled'
-    storageIOPS: 400
-    storageSizeGB: 32
     tags: {
+      Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
-      resourceType: 'MySQL Flexible Server'
-      serverName: 'dfmsfsp001'
+      Role: 'DeploymentValidation'
     }
-    version: '8.0.21'
   }
 }
 ```
@@ -438,13 +637,13 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dfmsfsp001"
+      "value": "dfmsfswaf001"
     },
     "skuName": {
-      "value": "Standard_D2ds_v4"
+      "value": "Standard_B1ms"
     },
     "tier": {
-      "value": "GeneralPurpose"
+      "value": "Burstable"
     },
     // Non-required parameters
     "administratorLogin": {
@@ -452,79 +651,6 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     },
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
-    },
-    "availabilityZone": {
-      "value": "1"
-    },
-    "backupRetentionDays": {
-      "value": 20
-    },
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
-      }
-    },
-    "customerManagedKeyGeo": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
-      }
-    },
-    "databases": {
-      "value": [
-        {
-          "name": "testdb1"
-        },
-        {
-          "charset": "ascii",
-          "collation": "ascii_general_ci",
-          "name": "testdb2"
-        }
-      ]
-    },
-    "diagnosticSettings": {
-      "value": [
-        {
-          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
-          "eventHubName": "<eventHubName>",
-          "metricCategories": [
-            {
-              "category": "AllMetrics"
-            }
-          ],
-          "name": "customSetting",
-          "storageAccountResourceId": "<storageAccountResourceId>",
-          "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
-    "firewallRules": {
-      "value": [
-        {
-          "endIpAddress": "0.0.0.0",
-          "name": "AllowAllWindowsAzureIps",
-          "startIpAddress": "0.0.0.0"
-        },
-        {
-          "endIpAddress": "10.10.10.10",
-          "name": "test-rule1",
-          "startIpAddress": "10.10.10.1"
-        },
-        {
-          "endIpAddress": "100.100.100.10",
-          "name": "test-rule2",
-          "startIpAddress": "100.100.100.1"
-        }
-      ]
-    },
-    "geoRedundantBackup": {
-      "value": "Enabled"
-    },
-    "highAvailability": {
-      "value": "SameZone"
     },
     "location": {
       "value": "<location>"
@@ -535,81 +661,12 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
         "name": "myCustomLockName"
       }
     },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<geoBackupManagedIdentityResourceId>",
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
-        }
-      ]
-    },
-    "storageAutoGrow": {
-      "value": "Enabled"
-    },
-    "storageAutoIoScaling": {
-      "value": "Enabled"
-    },
-    "storageIOPS": {
-      "value": 400
-    },
-    "storageSizeGB": {
-      "value": 32
-    },
     "tags": {
       "value": {
+        "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
-        "resourceType": "MySQL Flexible Server",
-        "serverName": "dfmsfsp001"
+        "Role": "DeploymentValidation"
       }
-    },
-    "version": {
-      "value": "8.0.21"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-### Example 4: _Waf-Aligned_
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-dfmsfswaf'
-  params: {
-    name: 'dfmsfswaf001'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "name": {
-      "value": "dfmsfswaf001"
     }
   }
 }
@@ -953,7 +1010,7 @@ The diagnostic settings of the service.
 | [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
+| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of logs that will be streamed. "allMetrics" includes all possible logs for the resource. Set to '' to disable log collection. |
 | [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
@@ -1002,7 +1059,7 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
-The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection.
+The name of logs that will be streamed. "allMetrics" includes all possible logs for the resource. Set to '' to disable log collection.
 
 - Required: No
 - Type: array
@@ -1161,7 +1218,7 @@ Array of role assignment objects that contain the "roleDefinitionIdOrName" and "
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
@@ -1183,7 +1240,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 ### Parameter: `roleAssignments.condition`
 
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string

@@ -1,5 +1,10 @@
 # Azure NetApp Files `[Microsoft.NetApp/netAppAccounts]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys an Azure NetApp File.
 
 ## Navigation
@@ -29,8 +34,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/net-app/net-app-account:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Nfs3](#example-2-nfs3)
-- [Nfs41](#example-3-nfs41)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [Using nfs31 parameter set](#example-3-using-nfs31-parameter-set)
 - [Waf-Aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
@@ -81,7 +86,272 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 </details>
 <p>
 
-### Example 2: _Nfs3_
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-nanaamax'
+  params: {
+    // Required parameters
+    name: 'nanaamax001'
+    // Non-required parameters
+    capacityPools: [
+      {
+        name: 'nanaamax-cp-001'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Reader'
+          }
+        ]
+        serviceLevel: 'Premium'
+        size: 4398046511104
+        volumes: [
+          {
+            exportPolicyRules: [
+              {
+                allowedClients: '0.0.0.0/0'
+                nfsv3: false
+                nfsv41: true
+                ruleIndex: 1
+                unixReadOnly: false
+                unixReadWrite: true
+              }
+            ]
+            name: 'nanaamax-vol-001'
+            protocolTypes: [
+              'NFSv4.1'
+            ]
+            roleAssignments: [
+              {
+                principalId: '<principalId>'
+                principalType: 'ServicePrincipal'
+                roleDefinitionIdOrName: 'Reader'
+              }
+            ]
+            subnetResourceId: '<subnetResourceId>'
+            usageThreshold: 107374182400
+          }
+          {
+            exportPolicyRules: [
+              {
+                allowedClients: '0.0.0.0/0'
+                nfsv3: false
+                nfsv41: true
+                ruleIndex: 1
+                unixReadOnly: false
+                unixReadWrite: true
+              }
+            ]
+            name: 'nanaamax-vol-002'
+            protocolTypes: [
+              'NFSv4.1'
+            ]
+            subnetResourceId: '<subnetResourceId>'
+            usageThreshold: 107374182400
+          }
+        ]
+      }
+      {
+        name: 'nanaamax-cp-002'
+        roleAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'Reader'
+          }
+        ]
+        serviceLevel: 'Premium'
+        size: 4398046511104
+        volumes: []
+      }
+    ]
+    location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    tags: {
+      Contact: 'test.user@testcompany.com'
+      CostCenter: '7890'
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      PurchaseOrder: '1234'
+      Role: 'DeploymentValidation'
+      ServiceName: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "nanaamax001"
+    },
+    // Non-required parameters
+    "capacityPools": {
+      "value": [
+        {
+          "name": "nanaamax-cp-001",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Reader"
+            }
+          ],
+          "serviceLevel": "Premium",
+          "size": 4398046511104,
+          "volumes": [
+            {
+              "exportPolicyRules": [
+                {
+                  "allowedClients": "0.0.0.0/0",
+                  "nfsv3": false,
+                  "nfsv41": true,
+                  "ruleIndex": 1,
+                  "unixReadOnly": false,
+                  "unixReadWrite": true
+                }
+              ],
+              "name": "nanaamax-vol-001",
+              "protocolTypes": [
+                "NFSv4.1"
+              ],
+              "roleAssignments": [
+                {
+                  "principalId": "<principalId>",
+                  "principalType": "ServicePrincipal",
+                  "roleDefinitionIdOrName": "Reader"
+                }
+              ],
+              "subnetResourceId": "<subnetResourceId>",
+              "usageThreshold": 107374182400
+            },
+            {
+              "exportPolicyRules": [
+                {
+                  "allowedClients": "0.0.0.0/0",
+                  "nfsv3": false,
+                  "nfsv41": true,
+                  "ruleIndex": 1,
+                  "unixReadOnly": false,
+                  "unixReadWrite": true
+                }
+              ],
+              "name": "nanaamax-vol-002",
+              "protocolTypes": [
+                "NFSv4.1"
+              ],
+              "subnetResourceId": "<subnetResourceId>",
+              "usageThreshold": 107374182400
+            }
+          ]
+        },
+        {
+          "name": "nanaamax-cp-002",
+          "roleAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "Reader"
+            }
+          ],
+          "serviceLevel": "Premium",
+          "size": 4398046511104,
+          "volumes": []
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Contact": "test.user@testcompany.com",
+        "CostCenter": "7890",
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "PurchaseOrder": "1234",
+        "Role": "DeploymentValidation",
+        "ServiceName": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using nfs31 parameter set_
+
+This instance deploys the module with nfs31.
+
 
 <details>
 
@@ -318,265 +588,6 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 </details>
 <p>
 
-### Example 3: _Nfs41_
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-nanaanfs41'
-  params: {
-    // Required parameters
-    name: 'nanaanfs41001'
-    // Non-required parameters
-    capacityPools: [
-      {
-        name: 'nanaanfs41-cp-001'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        serviceLevel: 'Premium'
-        size: 4398046511104
-        volumes: [
-          {
-            exportPolicyRules: [
-              {
-                allowedClients: '0.0.0.0/0'
-                nfsv3: false
-                nfsv41: true
-                ruleIndex: 1
-                unixReadOnly: false
-                unixReadWrite: true
-              }
-            ]
-            name: 'nanaanfs41-vol-001'
-            protocolTypes: [
-              'NFSv4.1'
-            ]
-            roleAssignments: [
-              {
-                principalId: '<principalId>'
-                principalType: 'ServicePrincipal'
-                roleDefinitionIdOrName: 'Reader'
-              }
-            ]
-            subnetResourceId: '<subnetResourceId>'
-            usageThreshold: 107374182400
-          }
-          {
-            exportPolicyRules: [
-              {
-                allowedClients: '0.0.0.0/0'
-                nfsv3: false
-                nfsv41: true
-                ruleIndex: 1
-                unixReadOnly: false
-                unixReadWrite: true
-              }
-            ]
-            name: 'nanaanfs41-vol-002'
-            protocolTypes: [
-              'NFSv4.1'
-            ]
-            subnetResourceId: '<subnetResourceId>'
-            usageThreshold: 107374182400
-          }
-        ]
-      }
-      {
-        name: 'nanaanfs41-cp-002'
-        roleAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
-          }
-        ]
-        serviceLevel: 'Premium'
-        size: 4398046511104
-        volumes: []
-      }
-    ]
-    location: '<location>'
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
-    tags: {
-      Contact: 'test.user@testcompany.com'
-      CostCenter: '7890'
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      PurchaseOrder: '1234'
-      Role: 'DeploymentValidation'
-      ServiceName: 'DeploymentValidation'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON Parameter file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "nanaanfs41001"
-    },
-    // Non-required parameters
-    "capacityPools": {
-      "value": [
-        {
-          "name": "nanaanfs41-cp-001",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "serviceLevel": "Premium",
-          "size": 4398046511104,
-          "volumes": [
-            {
-              "exportPolicyRules": [
-                {
-                  "allowedClients": "0.0.0.0/0",
-                  "nfsv3": false,
-                  "nfsv41": true,
-                  "ruleIndex": 1,
-                  "unixReadOnly": false,
-                  "unixReadWrite": true
-                }
-              ],
-              "name": "nanaanfs41-vol-001",
-              "protocolTypes": [
-                "NFSv4.1"
-              ],
-              "roleAssignments": [
-                {
-                  "principalId": "<principalId>",
-                  "principalType": "ServicePrincipal",
-                  "roleDefinitionIdOrName": "Reader"
-                }
-              ],
-              "subnetResourceId": "<subnetResourceId>",
-              "usageThreshold": 107374182400
-            },
-            {
-              "exportPolicyRules": [
-                {
-                  "allowedClients": "0.0.0.0/0",
-                  "nfsv3": false,
-                  "nfsv41": true,
-                  "ruleIndex": 1,
-                  "unixReadOnly": false,
-                  "unixReadWrite": true
-                }
-              ],
-              "name": "nanaanfs41-vol-002",
-              "protocolTypes": [
-                "NFSv4.1"
-              ],
-              "subnetResourceId": "<subnetResourceId>",
-              "usageThreshold": 107374182400
-            }
-          ]
-        },
-        {
-          "name": "nanaanfs41-cp-002",
-          "roleAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
-            }
-          ],
-          "serviceLevel": "Premium",
-          "size": 4398046511104,
-          "volumes": []
-        }
-      ]
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
-    },
-    "tags": {
-      "value": {
-        "Contact": "test.user@testcompany.com",
-        "CostCenter": "7890",
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "PurchaseOrder": "1234",
-        "Role": "DeploymentValidation",
-        "ServiceName": "DeploymentValidation"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
 ### Example 4: _Waf-Aligned_
 
 <details>
@@ -587,7 +598,10 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
 module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
   name: '${uniqueString(deployment().name, location)}-test-nanaawaf'
   params: {
+    // Required parameters
     name: 'nanaawaf001'
+    // Non-required parameters
+    location: '<location>'
   }
 }
 ```
@@ -604,8 +618,13 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "nanaawaf001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
     }
   }
 }
@@ -786,7 +805,7 @@ Array of role assignments to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container" |
+| [`condition`](#parameter-roleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
@@ -808,7 +827,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 ### Parameter: `roleAssignments.condition`
 
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container"
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
