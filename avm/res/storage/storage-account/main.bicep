@@ -138,8 +138,8 @@ param lock lockType
 @description('Optional. Tags of the resource.')
 param tags object?
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 @description('Optional. Restrict copy to and from Storage Accounts within an AAD tenant or with Private Links to the same VNet.')
 @allowed([
@@ -176,8 +176,6 @@ var identity = !empty(managedIdentities) ? {
   userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
 } : null
 
-var enableReferencedModulesTelemetry = false
-
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -203,14 +201,20 @@ var builtInRoleNames = {
   'User Access Administrator': subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')
 }
 
-resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.storage-storageaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
       contentVersion: '1.0.0.0'
       resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
     }
   }
 }
@@ -341,16 +345,23 @@ resource storageAccount_roleAssignments 'Microsoft.Authorization/roleAssignments
   scope: storageAccount
 }]
 
-module storageAccount_privateEndpoints '../../network/private-endpoint/main.bicep' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
-  name: '${uniqueString(deployment().name, location)}-storageAccount-PrivateEndpoint-${index}'
+module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.3.1' = [for (privateEndpoint, index) in (privateEndpoints ?? []): {
+  name: '${uniqueString(deployment().name, location)}-StorageAccount-PrivateEndpoint-${index}'
   params: {
-    groupIds: [
-      privateEndpoint.service
+    privateLinkServiceConnections: [
+      {
+        name: name
+        properties: {
+          privateLinkServiceId: storageAccount.id
+          groupIds: [
+            privateEndpoint.service
+          ]
+        }
+      }
     ]
-    name: privateEndpoint.?name ?? 'pep-${last(split(storageAccount.id, '/'))}-${privateEndpoint.?service ?? privateEndpoint.service}-${index}'
-    serviceResourceId: storageAccount.id
+    name: privateEndpoint.?name ?? 'pep-${last(split(storageAccount.id, '/'))}-${privateEndpoint.?service ?? 'vault'}-${index}'
     subnetResourceId: privateEndpoint.subnetResourceId
-    enableDefaultTelemetry: privateEndpoint.?enableDefaultTelemetry ?? enableReferencedModulesTelemetry
+    enableTelemetry: enableTelemetry
     location: privateEndpoint.?location ?? reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
     lock: privateEndpoint.?lock ?? lock
     privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
@@ -371,7 +382,6 @@ module storageAccount_managementPolicies 'management-policy/main.bicep' = if (!e
   params: {
     storageAccountName: storageAccount.name
     rules: managementPolicyRules
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
   dependsOn: [
     storageAccount_blobServices // To ensure the lastAccessTimeTrackingPolicy is set first (if used in rule)
@@ -390,7 +400,6 @@ module storageAccount_localUsers 'local-user/main.bicep' = [for (localUser, inde
     hasSharedKey: contains(localUser, 'hasSharedKey') ? localUser.hasSharedKey : false
     homeDirectory: contains(localUser, 'homeDirectory') ? localUser.homeDirectory : ''
     sshAuthorizedKeys: contains(localUser, 'sshAuthorizedKeys') ? localUser.sshAuthorizedKeys : []
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -416,7 +425,6 @@ module storageAccount_blobServices 'blob-service/main.bicep' = if (!empty(blobSe
     restorePolicyEnabled: contains(blobServices, 'restorePolicyEnabled') ? blobServices.restorePolicyEnabled : false
     restorePolicyDays: blobServices.?restorePolicyDays
     diagnosticSettings: blobServices.?diagnosticSettings
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -432,7 +440,6 @@ module storageAccount_fileServices 'file-service/main.bicep' = if (!empty(fileSe
       days: 7
     }
     shares: contains(fileServices, 'shares') ? fileServices.shares : []
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -443,7 +450,6 @@ module storageAccount_queueServices 'queue-service/main.bicep' = if (!empty(queu
     storageAccountName: storageAccount.name
     diagnosticSettings: blobServices.?diagnosticSettings
     queues: contains(queueServices, 'queues') ? queueServices.queues : []
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -454,7 +460,6 @@ module storageAccount_tableServices 'table-service/main.bicep' = if (!empty(tabl
     storageAccountName: storageAccount.name
     diagnosticSettings: blobServices.?diagnosticSettings
     tables: contains(tableServices, 'tables') ? tableServices.tables : []
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }
 
