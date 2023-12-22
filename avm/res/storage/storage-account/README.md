@@ -903,6 +903,11 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
     location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     privateEndpoints: [
       {
         privateDnsZoneResourceIds: [
@@ -957,6 +962,13 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     },
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
     },
     "privateEndpoints": {
       "value": [
@@ -1773,7 +1785,7 @@ The customer managed key definition.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
-| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
+| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. If used must also be specified in `managedIdentities.userAssignedResourceIds`. Required if no system assigned identity is available for use. |
 
 ### Parameter: `customerManagedKey.keyName`
 
@@ -1798,7 +1810,7 @@ The version of the customer managed key to reference for encryption. If not prov
 
 ### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
 
-User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
+User assigned identity to use when fetching the customer managed key. If used must also be specified in `managedIdentities.userAssignedResourceIds`. Required if no system assigned identity is available for use.
 
 - Required: No
 - Type: string

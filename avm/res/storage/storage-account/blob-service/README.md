@@ -139,6 +139,7 @@ Indicates the number of days that the deleted blob should be retained.
 
 - Required: No
 - Type: int
+- Default: `7`
 
 ### Parameter: `deleteRetentionPolicyEnabled`
 
@@ -245,7 +246,7 @@ Use versioning to automatically maintain previous versions of your blobs.
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
 
 ### Parameter: `lastAccessTimeTrackingPolicyEnabled`
 
@@ -261,6 +262,7 @@ How long this blob can be restored. It should be less than DeleteRetentionPolicy
 
 - Required: No
 - Type: int
+- Default: `6`
 
 ### Parameter: `restorePolicyEnabled`
 
@@ -268,7 +270,7 @@ The blob service properties for blob restore policy. If point-in-time restore is
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
 
 
 ## Outputs

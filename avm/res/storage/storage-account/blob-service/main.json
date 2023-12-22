@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.24.24.22086",
-      "templateHash": "9593763616311066612"
+      "templateHash": "18041337021557675363"
     },
     "name": "Storage Account blob Services",
     "description": "This module deploys a Storage Account Blob Service.",
@@ -197,7 +197,7 @@
     },
     "deleteRetentionPolicyDays": {
       "type": "int",
-      "nullable": true,
+      "defaultValue": 7,
       "minValue": 1,
       "maxValue": 365,
       "metadata": {
@@ -213,7 +213,7 @@
     },
     "isVersioningEnabled": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. Use versioning to automatically maintain previous versions of your blobs."
       }
@@ -227,14 +227,14 @@
     },
     "restorePolicyEnabled": {
       "type": "bool",
-      "defaultValue": true,
+      "defaultValue": false,
       "metadata": {
         "description": "Optional. The blob service properties for blob restore policy. If point-in-time restore is enabled, then versioning, change feed, and blob soft delete must also be enabled."
       }
     },
     "restorePolicyDays": {
       "type": "int",
-      "nullable": true,
+      "defaultValue": 6,
       "minValue": 1,
       "metadata": {
         "description": "Optional. How long this blob can be restored. It should be less than DeleteRetentionPolicy days."

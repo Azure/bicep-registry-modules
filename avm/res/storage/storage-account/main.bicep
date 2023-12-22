@@ -628,6 +628,6 @@ type customerManagedKeyType = {
   @description('Optional. The version of the customer managed key to reference for encryption. If not provided, using \'latest\'.')
   keyVersion: string?
 
-  @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
+  @description('Optional. User assigned identity to use when fetching the customer managed key. If used must also be specified in `managedIdentities.userAssignedResourceIds`. Required if no system assigned identity is available for use.')
   userAssignedIdentityResourceId: string?
 }?

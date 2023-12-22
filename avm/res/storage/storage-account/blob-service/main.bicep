@@ -40,23 +40,23 @@ param deleteRetentionPolicyEnabled bool = true
 @minValue(1)
 @maxValue(365)
 @description('Optional. Indicates the number of days that the deleted blob should be retained.')
-param deleteRetentionPolicyDays int?
+param deleteRetentionPolicyDays int = 7
 
 @description('Optional. This property when set to true allows deletion of the soft deleted blob versions and snapshots. This property cannot be used with blob restore policy. This property only applies to blob service and does not apply to containers or file share.')
 param deleteRetentionPolicyAllowPermanentDelete bool = false
 
 @description('Optional. Use versioning to automatically maintain previous versions of your blobs.')
-param isVersioningEnabled bool = true
+param isVersioningEnabled bool = false
 
 @description('Optional. The blob service property to configure last access time based tracking policy. When set to true last access time based tracking is enabled.')
 param lastAccessTimeTrackingPolicyEnabled bool = false
 
 @description('Optional. The blob service properties for blob restore policy. If point-in-time restore is enabled, then versioning, change feed, and blob soft delete must also be enabled.')
-param restorePolicyEnabled bool = true
+param restorePolicyEnabled bool = false
 
 @minValue(1)
 @description('Optional. How long this blob can be restored. It should be less than DeleteRetentionPolicy days.')
-param restorePolicyDays int?
+param restorePolicyDays int = 6
 
 @description('Optional. Blob containers to create.')
 param containers array?
