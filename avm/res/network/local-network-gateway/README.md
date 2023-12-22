@@ -321,7 +321,7 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableDefaultTelemetry`](#parameter-enabledefaulttelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry via a Globally Unique Identifier (GUID). |
 | [`fqdn`](#parameter-fqdn) | string | FQDN of local network gateway. |
 | [`localAsn`](#parameter-localasn) | string | The BGP speaker's ASN. Not providing this value will automatically disable BGP on this Local Network Gateway resource. |
 | [`localBgpPeeringAddress`](#parameter-localbgppeeringaddress) | string | The BGP peering address and BGP identifier of this BGP speaker. Not providing this value will automatically disable BGP on this Local Network Gateway resource. |
@@ -352,7 +352,7 @@ Name of the Local Network Gateway.
 - Required: Yes
 - Type: string
 
-### Parameter: `enableDefaultTelemetry`
+### Parameter: `enableTelemetry`
 
 Enable telemetry via a Globally Unique Identifier (GUID).
 

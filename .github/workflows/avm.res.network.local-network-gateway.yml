@@ -33,7 +33,7 @@ on:
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/event-grid/domain"
+  modulePath: "avm/res/network/local-network-gateway"
   workflowPath: ".github/workflows/avm.res.network.local-network-gateway.yml"
 
 concurrency:
