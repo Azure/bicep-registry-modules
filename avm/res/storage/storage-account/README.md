@@ -44,9 +44,10 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
 - [Deploying with a NFS File Share](#example-3-deploying-with-a-nfs-file-share)
-- [Using Customer-Managed-Keys with User-Assigned identity](#example-4-using-customer-managed-keys-with-user-assigned-identity)
-- [Deploying as Storage Account version 1](#example-5-deploying-as-storage-account-version-1)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-4-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-5-using-customer-managed-keys-with-user-assigned-identity)
+- [Deploying as Storage Account version 1](#example-6-deploying-as-storage-account-version-1)
+- [WAF-aligned](#example-7-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -872,7 +873,111 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 4: _Using Customer-Managed-Keys with User-Assigned identity_
+### Example 4: _Using Customer-Managed-Keys with System-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
+  name: '${uniqueString(deployment().name, location)}-test-ssasacr'
+  params: {
+    // Required parameters
+    name: '<name>'
+    // Non-required parameters
+    blobServices: {
+      containers: [
+        {
+          name: 'container'
+          publicAccess: 'None'
+        }
+      ]
+    }
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+    }
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneResourceIds: [
+          '<privateDNSZoneResourceId>'
+        ]
+        service: 'blob'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON Parameter file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "<name>"
+    },
+    // Non-required parameters
+    "blobServices": {
+      "value": {
+        "containers": [
+          {
+            "name": "container",
+            "publicAccess": "None"
+          }
+        ]
+      }
+    },
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>"
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneResourceIds": [
+            "<privateDNSZoneResourceId>"
+          ],
+          "service": "blob",
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+### Example 5: _Using Customer-Managed-Keys with User-Assigned identity_
 
 This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
 
@@ -883,12 +988,11 @@ This instance deploys the module using Customer-Managed-Keys using a User-Assign
 
 ```bicep
 module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
-  name: '${uniqueString(deployment().name, location)}-test-ssaencr'
+  name: '${uniqueString(deployment().name, location)}-test-ssauacr'
   params: {
     // Required parameters
-    name: 'ssaencr001'
+    name: 'ssauacr001'
     // Non-required parameters
-    allowBlobPublicAccess: false
     blobServices: {
       containers: [
         {
@@ -917,8 +1021,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         subnetResourceId: '<subnetResourceId>'
       }
     ]
-    requireInfrastructureEncryption: true
-    skuName: 'Standard_LRS'
   }
 }
 ```
@@ -937,12 +1039,9 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "ssaencr001"
+      "value": "ssauacr001"
     },
     // Non-required parameters
-    "allowBlobPublicAccess": {
-      "value": false
-    },
     "blobServices": {
       "value": {
         "containers": [
@@ -980,12 +1079,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
-    },
-    "requireInfrastructureEncryption": {
-      "value": true
-    },
-    "skuName": {
-      "value": "Standard_LRS"
     }
   }
 }
@@ -994,7 +1087,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 5: _Deploying as Storage Account version 1_
+### Example 6: _Deploying as Storage Account version 1_
 
 This instance deploys the module as Storage Account version 1.
 
@@ -1050,7 +1143,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 7: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 

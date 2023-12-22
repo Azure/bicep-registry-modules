@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using Customer-Managed-Keys with User-Assigned identity'
-metadata description = 'This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.'
+metadata name = 'Using Customer-Managed-Keys with System-Assigned identity'
+metadata description = 'This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-storage.storageaccounts-${se
 param location string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ssauacr'
+param serviceShort string = 'ssasacr'
 
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
@@ -39,6 +39,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, location)}-nestedDependencies'
   params: {
     location: location
+    storageAccountName: '${namePrefix}${serviceShort}001'
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
@@ -56,7 +57,7 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
   name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
   params: {
     location: location
-    name: '${namePrefix}${serviceShort}001'
+    name: nestedDependencies.outputs.storageAccountName
     privateEndpoints: [
       {
         service: 'blob'
@@ -75,14 +76,11 @@ module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem'
       ]
     }
     managedIdentities: {
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
+      systemAssigned: true
     }
     customerManagedKey: {
       keyName: nestedDependencies.outputs.keyName
       keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-      userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
     }
   }
 }]
