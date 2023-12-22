@@ -97,7 +97,6 @@ module systemTopics_eventSubscriptions 'event-subscription/main.bicep' = [for (e
     expirationTimeUtc: contains(eventSubscription, 'expirationTimeUtc') ? eventSubscription.expirationTimeUtc : ''
     filter: contains(eventSubscription, 'filter') ? eventSubscription.filter : {}
     labels: contains(eventSubscription, 'labels') ? eventSubscription.labels : []
-    location: contains(eventSubscription, 'location') ? eventSubscription.location : systemTopic.location
     retryPolicy: contains(eventSubscription, 'retryPolicy') ? eventSubscription.retryPolicy : {}
   }
 }]
