@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.23.1.45101",
-      "templateHash": "12487039479368500675"
+      "templateHash": "1383571101384884749"
     },
     "name": "Azure Health Bots",
     "description": "This module deploys an Azure Health Bot.",
@@ -195,7 +195,6 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
       "name": "[format('46d3xbcp.res.healthbot-healthbot.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
-      "location": "[parameters('location')]",
       "properties": {
         "mode": "Incremental",
         "template": {
