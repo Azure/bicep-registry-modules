@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Deploys in connectivity mode "Private Access"'
+metadata description = 'This instance deploys the module with connectivity mode "Private Access".'
+
 // ========== //
 // Parameters //
 // ========== //

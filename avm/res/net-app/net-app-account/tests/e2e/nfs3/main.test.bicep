@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Using nfs31 parameter set'
+metadata description = 'This instance deploys the module with nfs31.'
+
 // ========== //
 // Parameters //
 // ========== //
