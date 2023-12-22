@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Deploying with a NFS File Share'
+metadata description = 'This instance deploys the module with a NFS File Share.'
+
 // ========== //
 // Parameters //
 // ========== //

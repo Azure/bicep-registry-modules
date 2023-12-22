@@ -1,5 +1,8 @@
 targetScope = 'subscription'
 
+metadata name = 'Deploying as Storage Account version 1'
+metadata description = 'This instance deploys the module as Storage Account version 1.'
+
 // ========== //
 // Parameters //
 // ========== //
