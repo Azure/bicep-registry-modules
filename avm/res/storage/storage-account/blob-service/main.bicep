@@ -10,7 +10,7 @@ param storageAccountName string
 param automaticSnapshotPolicyEnabled bool = false
 
 @description('Optional. The blob service properties for change feed events. Indicates whether change feed event logging is enabled for the Blob service.')
-param changeFeedEnabled bool = true
+param changeFeedEnabled bool = false
 
 @minValue(0)
 @maxValue(146000)

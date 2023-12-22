@@ -70,7 +70,7 @@ The blob service properties for change feed events. Indicates whether change fee
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
 
 ### Parameter: `changeFeedRetentionInDays`
 
