@@ -27,14 +27,14 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.data-protection/backup-vault.yml"
+      - ".github/workflows/avm.res.data-protection.backup-vault.yml"
       - "avm/res/data-protection/backup-vault/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
   modulePath: "avm/res/data-protection/backup-vault"
-  workflowPath: ".github/workflows/avm.res.data-protection/backup-vault.yml"
+  workflowPath: ".github/workflows/avm.res.data-protection.backup-vault.yml"
 
 concurrency:
   group: ${{ github.workflow }}

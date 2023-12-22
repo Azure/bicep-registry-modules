@@ -27,14 +27,14 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.databricks/access-connector.yml"
+      - ".github/workflows/avm.res.databricks.access-connector.yml"
       - "avm/res/databricks/access-connector/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
   modulePath: "avm/res/databricks/access-connector"
-  workflowPath: ".github/workflows/avm.res.databricks/access-connector.yml"
+  workflowPath: ".github/workflows/avm.res.databricks.access-connector.yml"
 
 concurrency:
   group: ${{ github.workflow }}

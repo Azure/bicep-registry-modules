@@ -27,14 +27,14 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.net-app/net-app-account.yml"
+      - ".github/workflows/avm.res.net-app.net-app-account.yml"
       - "avm/res/net-app/net-app-account/**"
       - "avm/utilities/pipelines/**"
       - "!*/**/README.md"
 
 env:
   modulePath: "avm/res/net-app/net-app-account"
-  workflowPath: ".github/workflows/avm.res.net-app/net-app-account.yml"
+  workflowPath: ".github/workflows/avm.res.net-app.net-app-account.yml"
 
 concurrency:
   group: ${{ github.workflow }}
